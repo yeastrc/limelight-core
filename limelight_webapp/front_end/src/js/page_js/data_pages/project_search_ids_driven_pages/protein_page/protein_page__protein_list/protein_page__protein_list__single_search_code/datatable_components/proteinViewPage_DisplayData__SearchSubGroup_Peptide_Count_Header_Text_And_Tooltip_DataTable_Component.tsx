@@ -61,7 +61,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count
 
 }  ) : string {
 
-    return 'Peptides Unique (' + searchSubGroup.subgroupName_Display + ")"
+    return 'Unique Peptides (' + searchSubGroup.subgroupName_Display + ")"
 }
 
 /**

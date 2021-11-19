@@ -43,10 +43,7 @@ export class ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__
     dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId : Map<number, Map<number, ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry>>
 
     dataPerReportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_reportedPeptideId: Map<number, Map<number, ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry>>
-
-    // numPsmsTotal : number = 0;  //  Can NOT be summed across all Peptide List entries to get numberOfPsmIds_NonRedundant_AcrossAllPeptides
-    // psmCountsMap_KeyProjectSearchId : Map<number, number>
-
+    reportedPeptidesSet_Map_Key_SubSearchGroup_Id: Map<number,Set<number>> // Only populated when input param 'searchSubGroup_Ids_Selected' is populated
 }
 
 /**

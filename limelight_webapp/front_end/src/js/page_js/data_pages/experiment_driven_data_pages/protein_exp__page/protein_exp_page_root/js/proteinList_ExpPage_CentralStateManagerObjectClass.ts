@@ -36,6 +36,7 @@ const _SINGLE_PROTEIN_GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_EN
 const _DISTINCT_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'd';
 const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'e';
 const _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'f';
+const _PROTEIN_LIST_COLUMNS_DISPLAY_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'g';
 
 /**
  *
@@ -47,6 +48,7 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
         singleProtein_generatedPeptideContentsSelectedEncodedStateData? : any  //  Used on Single Protein. Saved here for continuity from view Single Protein to next view Single Protein
 
         distinctPeptideContents_For_ProteinList_Selection_EncodedStateData?: any // ProteinViewPage_DisplayData_ProteinList__DistinctPeptide_UserSelections_StateObject
+        proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData?: any // ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_Selection_EncodedStateData?: any // ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
         modsSelectedEncodedStateData? : any
     };
@@ -76,7 +78,8 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
                 singleProtein_generatedPeptideContentsSelectedEncodedStateData : encodedStateData[ _SINGLE_PROTEIN_GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
                 distinctPeptideContents_For_ProteinList_Selection_EncodedStateData : encodedStateData[ _DISTINCT_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
                 proteinList_FilterOnCounts_psm_peptide_uniquePeptide_Selection_EncodedStateData: encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-                modsSelectedEncodedStateData : encodedStateData[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+                modsSelectedEncodedStateData : encodedStateData[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+                proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData : encodedStateData[ _PROTEIN_LIST_COLUMNS_DISPLAY_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
         }
     }
@@ -107,6 +110,18 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
     }
     set_distinctPeptideContents_For_ProteinList_Selection_EncodedStateData( { distinctPeptideContents_For_ProteinList_Selection_EncodedStateData } : { distinctPeptideContents_For_ProteinList_Selection_EncodedStateData: any } ) {
         this._value.distinctPeptideContents_For_ProteinList_Selection_EncodedStateData = distinctPeptideContents_For_ProteinList_Selection_EncodedStateData;
+
+        if ( ! this._centralPageStateManager ) {
+            throw Error( "this._centralPageStateManager not set" );
+        }
+        this._centralPageStateManager.setState( { component : this } );
+    }
+
+    get_proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData() {
+        return this._value.proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData;
+    }
+    set_proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData( { proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData } : { proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData: any } ) {
+        this._value.proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData = proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData;
 
         if ( ! this._centralPageStateManager ) {
             throw Error( "this._centralPageStateManager not set" );
@@ -168,6 +183,9 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
         }
         if ( this._value.modsSelectedEncodedStateData !== undefined ) {
             dataForEncoding[ _MODIFICATION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.modsSelectedEncodedStateData;
+        }
+        if ( this._value.proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData !== undefined ) {
+            dataForEncoding[ _PROTEIN_LIST_COLUMNS_DISPLAY_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData;
         }
 
         return dataForEncoding;

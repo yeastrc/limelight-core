@@ -119,11 +119,14 @@ import {
     ProteinExperimentPage_Display__singleProteinRow_ClickHandler_Params,
     proteinExperimentPage_renderToPageProteinList__Create_DataTable_RootTableDataObject
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_DisplayData_ProteinList__Create_ProteinList_DataTable_RootTableDataObject";
-import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId";
 import {
     proteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_group,
     ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_group";
+import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_Root_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplay_UserSelections_Root_Component";
+import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
+import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId";
+import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId";
 
 /////////////////////////
 
@@ -161,6 +164,7 @@ export class ProteinExperimentPage_Display_MainContent_Component_Props_Prop {
 
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
+    proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
 }
 
@@ -239,6 +243,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
     private _proteinGroup_SelectionValues_Changed_Callback_BindThis = this._proteinGroup_SelectionValues_Changed_Callback.bind(this);
     private _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback_BindThis = this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback.bind(this);
+    private _proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback_BindThis = this._proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback.bind(this);
     private _updateMadeTo_proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject_Callback_BindThis = this._updateMadeTo_proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject_Callback.bind(this);
 
     private _openModificationMass_OpenUserSelections_Overlay_Override_BindThis : () => void = this._openModificationMass_OpenUserSelections_Overlay_Override.bind(this)
@@ -275,8 +280,6 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     private _load_PsmOpenModificationMasses_InProgress = false;  //  Flag that Loading PSM Open Modification Masses is In Progress
 
     private _data_LoadedFor_ComputedReportedPeptides_AllProteins: boolean = false;
-
-    private _show_proteinPageSearchesSummarySectionData_Root = false;
 
     /**
      *
@@ -992,6 +995,33 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     }
 
     /**
+     * User has changed the Protein List Columns Display Contents Selections.
+     *
+     * The Page State object and URL has already been updated
+     */
+    private _proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback() : void {
+        try {
+            window.setTimeout( () => {
+                try {
+                    //  Now update dependent page parts
+
+                    this._re_renderPage();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 0 );
+
+        } catch( e ) {
+            console.warn("Exception caught in _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback()");
+            console.warn( e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
      * User has changed the Filter On Counts (PSM, Peptide, Unique Peptide) Selections.
      *
      * The Page State object and URL has already been updated
@@ -1319,7 +1349,6 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
         });
 
-
         const process_SubGroups = false;  // ALWAYS false for Experiment
 
         if ( this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
@@ -1353,19 +1382,22 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         });
 
         {
-            let compute_PerProjectSearchId_Data = false;
-
-            if ( this._show_proteinPageSearchesSummarySectionData_Root ) {
-                //  "Show Summary Data Per Search" clicked so compute that data
-                compute_PerProjectSearchId_Data = true;
-            }
-
             //  Call after final filtering of protein list to compute Distinct Peptide and PSM totals
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_PeptidePSM_Totals({
-                compute_PerProjectSearchId_Data, searchSubGroup_Ids_Selected: undefined,
+                compute_PerProjectSearchId_Data: false,
+                searchSubGroup_Ids_Selected: undefined,
                 projectSearchIds,
                 proteinDisplayData,
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+            });
+        }
+
+        if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+            //  Compute NSAF per Per Experiment Condition Id of the first Condition Group
+            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId({
+                proteinDisplayData,
+                conditions_with_their_project_search_ids_for_First_condition_group
             });
         }
 
@@ -1389,6 +1421,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             singleProteinRowClickHandler_Callback : this._singleProteinRowClickHandler_BindThis,
             proteinDisplayData,
             proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass,
+            proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
             conditions_with_their_project_search_ids_for_First_condition_group,
             conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -1396,7 +1429,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager
         });
 
-        const tableObject_CurrentlyRendered_ProteinList = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Single Search Protein List" });
+        const tableObject_CurrentlyRendered_ProteinList = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Experiment Protein List" });
 
         let proteinList_DataCounts : ProteinList_DataCounts = null;
 
@@ -1790,6 +1823,14 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         updateMadeTo_proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject_Callback={
                             this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback_BindThis
                         }
+                    />
+
+                    <ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_Root_Component
+                        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject={ this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject }
+                        updateMadeTo_proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject_Callback={
+                            this._proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback_BindThis
+                        }
+                        showSequenceCoverageOption={ true }
                     />
 
                     {/******************/}

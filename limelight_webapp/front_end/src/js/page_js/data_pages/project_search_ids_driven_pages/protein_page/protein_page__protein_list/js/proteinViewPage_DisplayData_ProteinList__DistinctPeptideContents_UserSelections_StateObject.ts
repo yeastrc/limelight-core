@@ -12,8 +12,6 @@
 
 // VERSION 1 ENCODING STRING:
 
-//  Selected Reporter Ion Masses are sorted and stored in an Array
-
 const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 
 

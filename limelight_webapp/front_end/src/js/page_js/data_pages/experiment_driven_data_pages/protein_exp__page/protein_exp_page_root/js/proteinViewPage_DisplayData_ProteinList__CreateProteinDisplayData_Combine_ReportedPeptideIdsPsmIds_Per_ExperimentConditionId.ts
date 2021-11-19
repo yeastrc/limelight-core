@@ -12,7 +12,9 @@
 import {
     ProteinDisplayData_From_createProteinDisplayData_ProteinList,
     ProteinDataDisplay_ProteinList_Item,
-    ProteinDataDisplay_ProteinList_Experiment_SubData, ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition
+    ProteinDataDisplay_ProteinList_Experiment_SubData,
+    ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition,
+    ProteinDataDisplay_ProteinList_Sub_Item
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
 import {
     Experiment_Condition,
@@ -114,6 +116,8 @@ const _processProteinList_ProjectSearchId_Map = function(
             let numPsms = 0; // Accumulate for all searches in the condition
             const reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string> = new Set(); // Accumulate for all searches in the condition
 
+            const protein_SubItem_Record_Map_Key_ProjectSearchId: Map<number, ProteinDataDisplay_ProteinList_Sub_Item> = new Map()
+
             for ( const projectSearchId of condition.projectSearchIds ) {
 
                 const protein_SubItem_Record = proteinItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
@@ -121,6 +125,8 @@ const _processProteinList_ProjectSearchId_Map = function(
                     //  No entry found so skip
                     continue; // EARLY CONTINUE
                 }
+
+                protein_SubItem_Record_Map_Key_ProjectSearchId.set( projectSearchId, protein_SubItem_Record );
 
                 if ( protein_SubItem_Record.numPsms ) {
                     numPsms += protein_SubItem_Record.numPsms;
@@ -137,6 +143,7 @@ const _processProteinList_ProjectSearchId_Map = function(
 
             experiment_SubData_ForCondition.numPsms = numPsms;
             experiment_SubData_ForCondition.reportedPeptide_CommonValue_EncodedString_ForProtein_Set = reportedPeptide_CommonValue_EncodedString_ForProtein_Set;
+            experiment_SubData_ForCondition.protein_SubItem_Record_Map_Key_ProjectSearchId = protein_SubItem_Record_Map_Key_ProjectSearchId;
         }
     }
 }

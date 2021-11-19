@@ -54,6 +54,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_GetRecordForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdsForProjectSearchIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
@@ -120,6 +121,9 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 
 	@Autowired
 	private SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF searchDataLookupParametersLookupCode__Create_InsertToDB__Service;
+	
+	@Autowired
+	private Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF search_Has_SearchSubGroups_ForProjectSearchIdSearcher;
 	
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
@@ -228,6 +232,21 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
         	SearchDataLookupParametersLookupDTO searchDataLookupParametersLookupDTO = internal_LookupMethodResult.searchDataLookupParametersLookupDTO;
         	List<Integer> projectSearchIds = internal_LookupMethodResult.projectSearchIds;
         	
+        	boolean singleSearch_HasSearchSubGroups = false; //  used in part for default setting of "Show In Table:" on Protein Page
+        	{
+        		if ( projectSearchIds != null && projectSearchIds.size() == 1 ) {
+        			
+        			Integer projectSearchId = projectSearchIds.get(0);
+        			
+        			Boolean result = search_Has_SearchSubGroups_ForProjectSearchIdSearcher.get_Search_Has_SearchSubGroups_ForProjectSearchId(projectSearchId);
+        			
+        			if ( result != null && result.booleanValue() ) {
+        				singleSearch_HasSearchSubGroups = true;
+        			}
+        		}
+        	}
+        	
+        	
     		//  TODO !!!!  Use searchDataLookupParamsRoot project search ids to validate user access
 
     		//  TODO !!!!  Consider query for projectSearchIds one at a time 
@@ -250,6 +269,11 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 
     			httpServletRequest.setAttribute( 
     					WebConstants.SEARCH_DATA_LOOKUP_PARAMETERS_LOOKUP_CODE__COMPUTED, internal_LookupMethodResult.searchDataLookupParametersLookupCode );
+    		}
+    		
+    		if ( singleSearch_HasSearchSubGroups ) { //  used in part for default setting of "Show In Table:" on Protein Page
+    			
+    			httpServletRequest.setAttribute( WebConstants.REQUEST_SINGLE_SEARCH_HAS_SUB_GROUPS, true );
     		}
 
     		//		httpServletRequest.setAttribute( 

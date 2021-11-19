@@ -15,6 +15,7 @@ import {
     ProteinDataDisplay_ProteinList_Item,
     ProteinDataDisplay_ProteinList_Sub_Item
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
+import {NSAFAnnotationCalculator} from "page_js/data_pages/calculated_annotations/NSAF_annotation_calculator";
 
 
 /**
@@ -41,7 +42,6 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
 
         projectSearchIds,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-
     }: {
         proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
 
@@ -49,18 +49,19 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
 
         projectSearchIds: Array<number>
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+    }):
+    //  Returned Object
+    {
+        proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_ProteinList
 
-    }): {
+        //   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
+        proteinNameDescription_Key_ProteinSequenceVersionId : Map<number, ProteinNameDescriptionCacheEntry>
 
-    proteinDisplayData : ProteinDisplayData_From_createProteinDisplayData_ProteinList
+        //   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
+    }
 
-    //   Cached: Protein Name and Description in a Map, Key ProteinSequenceVersionId
-    proteinNameDescription_Key_ProteinSequenceVersionId : Map<number, ProteinNameDescriptionCacheEntry>
-
-    //   Clear: Cached: Protein Name(s) and Description(s) for Tooltip in a Map, Key ProteinSequenceVersionId
-    proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
-} {
-
+{
 
     //  Validate loadedDataPerProjectSearchIdHolder populated for all projectSearchIds
     for (const projectSearchId of projectSearchIds) {
@@ -159,6 +160,7 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
                             reportedPeptide_CommonValue_EncodedString_ForProtein_Set: new Set(),
                             reportedPeptideIds_NoPsmFilters: new Set(),
                             reportedPeptideIds_AndTheirPsmIds: new Map(),
+                            loadedDataPerProjectSearchIdHolder,
                             numPsms: -9997,
                             uniquePeptideCount: -9998
                         });
@@ -200,6 +202,7 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
                                                 reportedPeptide_CommonValue_EncodedString_ForProtein_Set: new Set(),
                                                 reportedPeptideIds_NoPsmFilters: new Set(),
                                                 reportedPeptideIds_AndTheirPsmIds: new Map(),
+                                                loadedDataPerProjectSearchIdHolder,
                                                 numPsms: 0,
                                                 uniquePeptideCount: -9998
                                             });
@@ -259,6 +262,7 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
                                                     reportedPeptide_CommonValue_EncodedString_ForProtein_Set: new Set(),
                                                     reportedPeptideIds_NoPsmFilters: new Set(),
                                                     reportedPeptideIds_AndTheirPsmIds: new Map(),
+                                                    loadedDataPerProjectSearchIdHolder,
                                                     numPsms: 0,
                                                     uniquePeptideCount: -9998
                                                 });
@@ -439,6 +443,10 @@ export const protein_view_page__display_data__protein_list__create_protein_displ
 
         proteinResultList.push( proteinEntry_InMap );
     }
+
+    /////////////////
+
+    //  Final result
 
     const proteinDisplayData = new ProteinDisplayData_From_createProteinDisplayData_ProteinList();
     proteinDisplayData.proteinList = proteinResultList;

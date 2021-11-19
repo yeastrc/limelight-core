@@ -26,6 +26,13 @@
 
 <script type="text/text" id="search_data_lookup_parameters_at_page_load_code"><html><body><c:out value="${ searchDataLookupParametersCode }"/></body><html></script>
 
+	<%-- Searches - From Java class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor --%>
+	
+<c:if test="${ singleSearchHasSubGroups }">
+  <script type="text/text" id="single_search_has_sub_groups">x</script>
+</c:if>
+	
+
 	<%-- Experiment - from Java class Experiment_Set_HTTPRequest_ForJSP --%>
 	
 <script type="text/text" id="experiment_name_from_server"><html><body><c:out value="${ experimentName }"></c:out></body><html></script>

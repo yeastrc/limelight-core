@@ -154,7 +154,7 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
                 {/*  Add to 2 column CSS Grid for "Filter On" Section  */}
 
                 <div >
-                    <span className="  filter-common-filter-label  " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
+                    <span className="  filter-common-filter-label  " style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                         Distinct Peptide Includes:
 
                         <div className=" help-tip-symbol--next-to-standard-font-size-text ">
@@ -170,7 +170,7 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
                     </span>
                 </div>
 
-                <div style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
+                <div style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                     { variableModsSelection }
                     { openModsSelection }
                 </div>

@@ -121,6 +121,9 @@ import {
     ProteinPage_Display__SingleProtein_singleProteinCloseCallback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Root";
 import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component} from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
+import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_Root_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplay_UserSelections_Root_Component";
+import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
+import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF";
 
 /**
  *
@@ -142,6 +145,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component_Props_Prop 
 
     proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
     proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
+    proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
 
     singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass
@@ -225,6 +229,8 @@ interface ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearc
 
     saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
+
+    proteinListColumnsDisplayContents__showSequenceCoverageOption?: boolean
 }
 
 /**
@@ -237,6 +243,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     private _proteinGroup_SelectionValues_Changed_Callback_BindThis = this._proteinGroup_SelectionValues_Changed_Callback.bind(this);
     private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
     private _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback_BindThis = this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_SelectionsChanged_Callback.bind(this);
+    private _proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback_BindThis = this._proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback.bind(this);
     private _updateMadeTo_proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject_Callback_BindThis = this._updateMadeTo_proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject_Callback.bind(this);
 
     private _openModificationMass_OpenUserSelections_Overlay_Override_BindThis : () => void = this._openModificationMass_OpenUserSelections_Overlay_Override.bind(this)
@@ -324,6 +331,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             }
         }
 
+        const proteinListColumnsDisplayContents__showSequenceCoverageOption = true;
+
         this.state = {
             show_InitialLoadingData_Message: true,
             show_proteinPageSingleSearchStatsSectionData_Root_Link,
@@ -334,7 +343,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: new Map(), //  Will be replaced later
             loadedDataCommonHolder,
             saveView_Component_React,
-            saveView_Component_Props_Prop
+            saveView_Component_Props_Prop,
+            proteinListColumnsDisplayContents__showSequenceCoverageOption
         }
     }
 
@@ -915,6 +925,33 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     }
 
     /**
+     * User has changed the Protein List Columns Display Contents Selections.
+     *
+     * The Page State object and URL has already been updated
+     */
+    private _proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback() : void {
+        try {
+            window.setTimeout( () => {
+                try {
+                    //  Now update dependent page parts
+
+                    this._re_renderPage();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 0 );
+
+        } catch( e ) {
+            console.warn("Exception caught in _searchSubGroup_SelectionsChanged_Callback()");
+            console.warn( e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
      * User has changed the Filter On Counts (PSM, Peptide, Unique Peptide) Selections.
      *
      * The Page State object and URL has already been updated
@@ -1313,14 +1350,13 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         }
 
 
-        {
-            if (projectSearchIds.length === 1 && (!searchSubGroup_Ids_Selected)) {
+        {  //  Compute Sequence Coverage (2 if statements in this block)
 
-                //  Only 1 search and NO Sub Groups so get Sequence Coverage
+            if ( ( projectSearchIds.length === 1 && (!searchSubGroup_Ids_Selected) ) || projectSearchIds.length > 1 ) {
 
-                {  // proteinCoverageRatioDisplay
+                //  Compute Sequence Coverage for:  Only 1 search and NO Sub Groups OR More than 1 Search
 
-                    const projectSearchId = projectSearchIds[0];
+                for ( const projectSearchId of projectSearchIds ) {  // proteinCoverageRatioDisplay
 
                     const loadedDataPerProjectSearchIdHolder = this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
                     const proteinCoverage_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
@@ -1329,9 +1365,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                         const protein_SubItem = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
                         if ( ! protein_SubItem ) {
-                            const msg = "proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId ); returned NOTHING for projectSearchId: " + projectSearchId;
-                            console.warn(msg);
-                            throw Error(msg);
+                            //  No Data found Skip
+                            continue; // EARLY CONTINUE
                         }
 
                         const reportedPeptideIds_For_Protein = new Set<number>();
@@ -1353,11 +1388,67 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         }
                         const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
 
-                        proteinListItem.proteinCoverageRatio_SingleSearch_NoSubGroups = proteinCoverageRatio;
-                        proteinListItem.proteinCoverageRatioDisplay_SingleSearch_NoSubGroups = proteinCoverageRatio.toFixed(3);
+                        protein_SubItem.proteinCoverageRatio = proteinCoverageRatio;
+                        protein_SubItem.proteinCoverageRatioDisplay = proteinCoverageRatio.toFixed(3);
                     }
                 }
             }
+
+            ////  Second 'if' for Compute Sequence Coverage.  Is really the 'else' of the first 'if'
+
+            if ( projectSearchIds.length === 1 && (searchSubGroup_Ids_Selected) ) {
+
+                //  Compute Sequence Coverage for:  Only 1 search and YES Sub Groups
+
+                const projectSearchId = projectSearchIds[0];
+
+                const loadedDataPerProjectSearchIdHolder = this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
+                const proteinCoverage_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
+
+                for (const proteinListItem of proteinDisplayData.proteinList) {
+
+                    const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get(proteinListItem.proteinSequenceVersionId);
+                    if (proteinCoverageObject === undefined) {
+                        throw Error("No proteinCoverageObject found.  proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId);
+                    }
+
+                    for ( const searchSubGroupId of searchSubGroup_Ids_Selected ) {
+
+                        const protein_SubItem = proteinListItem.protein_SubItem_Records_Map_Key_SubGroup_Id.get( searchSubGroupId )
+                        if ( ! protein_SubItem ) {
+                            //  No Data so skip
+                            continue; // EARLY CONTINUE
+                        }
+
+                        const reportedPeptideIds_For_Protein = new Set<number>();
+
+                        if ( protein_SubItem.reportedPeptideIds_AndTheirPsmIds && protein_SubItem.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
+                            for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+                                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+                            }
+                        }
+                        if ( protein_SubItem.reportedPeptideIds_NoPsmFilters && protein_SubItem.reportedPeptideIds_NoPsmFilters.size > 0 ) {
+                            for ( const reportedPeptideId of protein_SubItem.reportedPeptideIds_NoPsmFilters ) {
+                                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+                            }
+                        }
+
+                        const proteinCoverageRatio = proteinCoverageObject.getProteinSequenceCoverageRatio_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
+
+                        protein_SubItem.proteinCoverageRatio = proteinCoverageRatio;
+                        protein_SubItem.proteinCoverageRatioDisplay = proteinCoverageRatio.toFixed(3);
+                    }
+                }
+            }
+        }
+
+        if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF({
+                searchSubGroup_Ids_Selected, // Set<number>  undefined/null if not set
+                projectSearchIds,
+                proteinDisplayData
+            });
         }
 
         this._proteinDisplayData_Final_ForDisplayTable = proteinDisplayData
@@ -1413,6 +1504,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             singleProteinRowClickHandler_Callback : this._singleProteinRowClickHandler_BindThis,
             proteinDisplayData,
             proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass,
+            proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
             projectSearchIds,
             searchSubGroupIds: searchSubGroup_Ids_Selected_Array,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -1949,6 +2041,14 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
                         searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
                         searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
+                    />
+
+                    <ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_Root_Component
+                        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject={ this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject }
+                        updateMadeTo_proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject_Callback={
+                            this._proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_SelectionsChanged_Callback_BindThis
+                        }
+                        showSequenceCoverageOption={ this.state.proteinListColumnsDisplayContents__showSequenceCoverageOption }
                     />
 
                     {/******************/}

@@ -65,16 +65,16 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 	 */
 	initialize() {}
 
-	// /**
-	//  * Protein Length
-	//  */
-	// getProteinLength() {
-	//
-	// 	return this._proteinLength;
-	// }
+	/**
+	 * Protein Length
+	 */
+	getProteinLength() {
+
+		return this._proteinLength;
+	}
 
 	/**
-	 * Protein Coverage as ratio: (number of covered positions) / (protein length)
+	 * Protein Coverage as ratio: (number of covered positions) / (protein length) - Filtered on reportedPeptideIds_For_Protein
 	 */
 	getProteinSequenceCoverageRatio_FilteringOnReportedPeptideIds(
 		{
@@ -84,7 +84,8 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 		}
 	) : number
 	{
-		const booleanArrayOfProteinCoverage: Array<boolean> = [];
+
+		const booleanArrayOfProteinCoverage = this.getBooleanArrayOfProteinCoverage_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
 
 		for ( const reportedPeptideId of reportedPeptideIds_For_Protein ) {
 
@@ -290,7 +291,41 @@ export class ProteinSequenceCoverageData_For_ProteinSequenceVersionId {
 		
 		return this._booleanArrayOfProteinCoverage;
 	}
-	
-	
-	
+
+	/**
+	 * Return an Array of Boolean with true in each protein position (1 based) where there is protein coverage - Filtered on reportedPeptideIds_For_Protein
+	 */
+	getBooleanArrayOfProteinCoverage_FilteringOnReportedPeptideIds(
+		{
+			reportedPeptideIds_For_Protein
+		} : {
+			reportedPeptideIds_For_Protein: Set<number>
+		}
+	) : Array<boolean> {
+
+		const booleanArrayOfProteinCoverage: Array<boolean> = [];
+
+		for (const reportedPeptideId of reportedPeptideIds_For_Protein) {
+
+			const proteinCoverageEntries_For_ReportedPeptideId = this._proteinCoverageEntries_Map_Key_ReportedPeptideId.get(reportedPeptideId);
+			if (!proteinCoverageEntries_For_ReportedPeptideId) {
+				const msg = "this._proteinCoverageEntries_Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned NOTHING for reportedPeptideId: " + reportedPeptideId;
+				console.warn(msg);
+				throw Error(msg);
+			}
+
+			for (const proteinCoverageEntry of proteinCoverageEntries_For_ReportedPeptideId) {
+				const proteinStartPosition = proteinCoverageEntry.proteinStartPosition;
+				const proteinEndPosition = proteinCoverageEntry.proteinEndPosition;
+
+				for (let position = proteinStartPosition; position <= proteinEndPosition; position++) {
+					booleanArrayOfProteinCoverage[position] = true;
+				}
+			}
+		}
+
+		return booleanArrayOfProteinCoverage;
+	}
+
+
 }

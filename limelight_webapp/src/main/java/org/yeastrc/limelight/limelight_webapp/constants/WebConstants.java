@@ -102,6 +102,7 @@ public class WebConstants {
 	 */
 	public static final String REQUEST_PROJECT_ENTRIES = "projectEntries";
 	
+
 	//  Search Data for Project Search Id Based Pages AND some for Experiment Pages
 	//  From DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor and Experiment_Set_HTTPRequest_ForJSP
 	
@@ -110,6 +111,13 @@ public class WebConstants {
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS = "searchDataLookupParameters";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_JSON = "searchDataLookupParametersJSON";
 	public static final String REQUEST_SEARCH_DATA_LOOKUP_PARAMETERS_ROOT_IDS_JSON = "searchDataLookupParametersRootIdsJSON";
+	
+	//  Searches Only
+	
+	//  From DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor
+	
+	public static final String REQUEST_SINGLE_SEARCH_HAS_SUB_GROUPS = "singleSearchHasSubGroups";
+	
 	
 	//  Experiment Only
 

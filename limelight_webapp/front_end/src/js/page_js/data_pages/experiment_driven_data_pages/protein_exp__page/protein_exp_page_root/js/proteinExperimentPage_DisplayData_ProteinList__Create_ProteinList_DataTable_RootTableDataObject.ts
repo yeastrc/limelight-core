@@ -40,6 +40,8 @@ import {
     Experiment_ConditionGroupsContainer
 } from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
 import {ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_group";
+import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
+import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
 
 //  Strings used in the download of the table
 const _FALSE__DOWNLOAD_STRING = "false";
@@ -63,6 +65,7 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
         singleProteinRowClickHandler_Callback,
         proteinDisplayData,
         proteinGrouping_CentralStateManagerObjectClass,
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
         conditions_with_their_project_search_ids_for_First_condition_group,
         conditionGroupsContainer,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -71,6 +74,7 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
         conditionGroupsContainer : Experiment_ConditionGroupsContainer
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
@@ -81,7 +85,8 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
 
     // the columns for the data being shown on the page
     const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getProteinDataTableColumns( {
-        conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass
+        conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } );
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
@@ -97,7 +102,8 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
             conditions_with_their_project_search_ids_for_First_condition_group,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
-            singleProteinRowClickHandler_Callback
+            singleProteinRowClickHandler_Callback,
+            proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         });
 
     } else {
@@ -109,7 +115,8 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             groupNumber: undefined, greyOutRow, isSubsetGroup: undefined,
             proteinList: proteinDisplayData.proteinList,
-            conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+            conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+            singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         });
     }
 
@@ -127,13 +134,17 @@ export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_Roo
 /**
  * Create Table Columns
  */
-const _getProteinDataTableColumns = function( { conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass } : {
+const _getProteinDataTableColumns = function(
+    {
+        conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+    } : {
+        conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
+        proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
-    conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
-    dataPageStateManager_DataFrom_Server : DataPageStateManager
-    proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
-
-} ) : DataTable_RootTableDataObject_Both_ColumnArrays {
+    } ) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
     let columns : Array<DataTable_Column> = [ ];
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -170,64 +181,59 @@ const _getProteinDataTableColumns = function( { conditions_with_their_project_se
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    // {  //  Counts overall
-    //
-    //     {  // PSM count overall
-    //
-    //         const displayName = 'PSMs';
-    //
-    //         const column = new DataTable_Column({
-    //             id :           'psms',
-    //             displayName,
-    //             width :        80,
-    //             sortable : true,
-    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
-    //         });
-    //
-    //         columns.push( column );
-    //
-    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-    //         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-    //     }
-    //
-    //     {  //  Reported Peptides count overall
-    //
-    //         const displayName = 'Distinct Peptides';
-    //
-    //         const column = new DataTable_Column({
-    //             id: 'peptides',
-    //             displayName,
-    //             width: 80,
-    //             sortable: true,
-    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
-    //         });
-    //
-    //         columns.push(column);
-    //
-    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
-    //         dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
-    //     }
-    //     {  //  Reported Peptides Unique count overall
-    //
-    //         const displayName = 'Unique Peptides';
-    //
-    //         const column = new DataTable_Column({
-    //             id: 'peptidesUnique',
-    //             displayName,
-    //             width: 80,
-    //             columnHeader_Tooltip_HTML_TitleAttribute: "distinct unique peptides",
-    //             sortable: true,
-    //             onlyShow_ValueDisplay_FirstRowOfGroup: true
-    //         });
-    //
-    //         columns.push(column);
-    //
-    //         const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
-    //         dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
-    //     }
-    //
-    // }
-    {
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() ) {
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            const displayName = 'Sequence Coverage (' + condition.label + ")";
+
+            const column = new DataTable_Column({
+                id :           'protSeqCov_' + condition.id,
+                displayName,
+                width :        150,
+                sortable : true,
+
+                showHorizontalGraph: true,
+                graphMaxValue: 1,
+                graphWidth: 50,
+            });
+
+            columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+        //  NSAF
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            const displayName = 'NSAF (' + condition.label + ")";
+
+            const column = new DataTable_Column({
+                id :           'nsaf_' + condition.id,
+                displayName,
+                width :        80,
+                sortable : true,
+                onlyShow_ValueDisplay_FirstRowOfGroup: false
+            });
+
+            columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
+
         //  PSM Counts
 
         for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
@@ -249,14 +255,19 @@ const _getProteinDataTableColumns = function( { conditions_with_their_project_se
             const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
+    }
 
-        //  Distinct Peptide and Unique Distinct Peptide Counts
+    //  Distinct Peptide and Unique Distinct Peptide Counts
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected()
+        || proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_UniquePeptideCount_Selected() ) {
 
         for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
 
             const condition = conditionsEntry.condition;
 
-            {  //  Reported Peptides count
+            if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
+                //  Reported Peptides count
 
                 const displayName = 'Distinct Peptides (' + condition.label + ")";
 
@@ -273,9 +284,10 @@ const _getProteinDataTableColumns = function( { conditions_with_their_project_se
                 const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({cell_ColumnHeader_String: displayName});
                 dataTable_Column_DownloadTable_Entries.push(dataTable_Column_DownloadTable);
             }
-            {  //  Reported Peptides Unique count
+            if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_UniquePeptideCount_Selected() ) {
+                //  Reported Peptides Unique count
 
-                const displayName = 'Peptides Unique (' + condition.label + ")";
+                const displayName = 'Unique Peptides (' + condition.label + ")";
 
                 const column = new DataTable_Column({
                     id: 'peptidesUnique_' + condition.id,
@@ -338,7 +350,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
     {
         proteinGrouping_CentralStateManagerObjectClass, proteinDisplayData, conditions_with_their_project_search_ids_for_First_condition_group,
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
 
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
@@ -347,6 +360,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
     }) : Array<DataTable_DataGroupRowEntry> {
 
@@ -375,7 +389,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
 
         const dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             groupNumber, greyOutRow, isSubsetGroup, proteinList : groupedProteinItem.proteinList_Grouped, conditions_with_their_project_search_ids_for_First_condition_group,
-            proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+            proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
+            proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         });
 
         const first_dataTable_DataRowEntry = dataTable_DataRowEntries[ 0 ];
@@ -405,7 +420,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
  */
 const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+        singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
@@ -414,11 +430,13 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
     }) : Array<DataTable_DataRowEntry> {
 
     const dataTable_DataRowEntries = _createProteinList_ForDataTable( {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+        singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } );
 
     return dataTable_DataRowEntries;
@@ -429,7 +447,8 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
  */
 const _createProteinList_ForDataTable = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+        singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
@@ -438,6 +457,7 @@ const _createProteinList_ForDataTable = function(
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
     }) : Array<DataTable_DataRowEntry> {
 
@@ -462,7 +482,8 @@ const _createProteinList_ForDataTable = function(
 
         proteinList_ForDataTable.push(
             _createProteinItem_DataTableEntry( {
-                groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex : index, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback
+                groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex : index, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip,
+                singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
             } )
         );
         index++;
@@ -477,7 +498,8 @@ const _createProteinList_ForDataTable = function(
  */
 const _createProteinItem_DataTableEntry = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback
+        groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex, conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip,
+        singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
@@ -487,6 +509,7 @@ const _createProteinItem_DataTableEntry = function(
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
         proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry>
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
     }) : DataTable_DataRowEntry {
 
@@ -554,73 +577,74 @@ const _createProteinItem_DataTableEntry = function(
         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
     }
 
-    // {  // Overall: Num PSMs, Reported Peptides, and Reported Peptides Unique
-    //
-    //     {  //  Num PSMs
-    //
-    //         let num = -998;
-    //
-    //         if ( proteinListItem.numPsms_Overall !== undefined && proteinListItem.numPsms_Overall !== null ) {
-    //             num = proteinListItem.numPsms_Overall;
-    //         }
-    //         const valueDisplay = num.toLocaleString();
-    //         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
-    //             searchTableData,
-    //             valueDisplay,
-    //             valueSort : num
-    //         })
-    //         columnEntries.push( columnEntry );
-    //
-    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-    //         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-    //     }
-    //     { // Num Reported Peptides Unique
-    //
-    //         let num = -998;
-    //
-    //         if ( proteinListItem.peptideCount_Overall !== undefined && proteinListItem.peptideCount_Overall !== null ) {
-    //             num = proteinListItem.peptideCount_Overall;
-    //         }
-    //
-    //         const valueDisplay = num.toLocaleString();
-    //         const searchEntriesForColumn: Array<string> = [valueDisplay]
-    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
-    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
-    //             searchTableData,
-    //             valueDisplay,
-    //             valueSort: num
-    //         })
-    //         columnEntries.push(columnEntry);
-    //
-    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
-    //         dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
-    //     }
-    //     { // Reported Peptides Unique
-    //
-    //         let num = -998;
-    //
-    //         if ( proteinListItem.uniquePeptideCount_Overall !== undefined && proteinListItem.uniquePeptideCount_Overall !== null ) {
-    //             num = proteinListItem.uniquePeptideCount_Overall;
-    //         }
-    //
-    //         const valueDisplay = num.toLocaleString();
-    //         const searchEntriesForColumn: Array<string> = [valueDisplay]
-    //         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
-    //         const columnEntry = new DataTable_DataRow_ColumnEntry({
-    //             searchTableData,
-    //             valueDisplay,
-    //             valueSort: num
-    //         })
-    //         columnEntries.push(columnEntry);
-    //
-    //         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
-    //         dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
-    //     }
-    // }
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() ) {
 
-    {
+        // Per Group:  proteinCoverageRatioDisplay
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            let proteinCoverageRatio = 0;  // default to zero if no entry
+            let proteinCoverageRatioDisplay = "0";  // default to zero if no entry
+
+            const proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );
+            if ( proteinItemRecord ) {
+                const compute_SequenceCoverage_Result = proteinItemRecord.compute_SequenceCoverage();
+                proteinCoverageRatio = compute_SequenceCoverage_Result.proteinCoverageRatio;
+                proteinCoverageRatioDisplay = compute_SequenceCoverage_Result.proteinCoverageRatioDisplay;
+            }
+
+            const valueDisplay = proteinCoverageRatioDisplay;
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : proteinCoverageRatio
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+        // Per group:  NSAF
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            let nsaf = 0;  // default to zero if no entry
+
+            const proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );
+            if ( proteinItemRecord ) {
+                nsaf = proteinItemRecord.nsaf;
+            }
+
+            const nsafString = proteinView_nsaf_formatNumber_ForDisplayInTable( nsaf );
+
+            const valueDisplay = nsafString;
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : nsaf
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
+
         // Per group:  numPsms
 
         for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
@@ -648,13 +672,20 @@ const _createProteinItem_DataTableEntry = function(
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected()
+        || proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_UniquePeptideCount_Selected() ) {
+
         //  Per group: Num Distinct Peptides and Distinct Peptides Unique
 
         for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
 
             const condition = conditionsEntry.condition;
 
-            { // Num Distinct Peptides for group
+            if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
+
+                // Num Distinct Peptides for group
 
                 let num = 0;  // default to zero if no entry
 
@@ -676,7 +707,10 @@ const _createProteinItem_DataTableEntry = function(
                 const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
                 dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
             }
-            { // Num Distinct Peptides Unique for group
+
+            if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_UniquePeptideCount_Selected() ) {
+
+                // Num Distinct Peptides Unique for group
 
                 let num = 0;  // default to zero if no entry
 
