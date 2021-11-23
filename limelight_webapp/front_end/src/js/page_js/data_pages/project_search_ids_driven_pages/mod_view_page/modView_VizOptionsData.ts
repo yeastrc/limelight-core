@@ -34,6 +34,7 @@ export class ModView_VizOptionsData_SubPart_data {
     colorCutoffCount? : number
     modMassCutoffMin? : number
     modMassCutoffMax? : number
+    excludeUnlocalizedOpenMods? : boolean
     showZScore? : any   ///  TODO  Read but never set
 }
 

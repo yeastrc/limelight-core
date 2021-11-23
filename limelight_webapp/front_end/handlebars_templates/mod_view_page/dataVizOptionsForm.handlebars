@@ -56,7 +56,9 @@
             </div>
 
             <div class="viz-form-section" style="white-space:nowrap;">
-                <div><span data-tooltip="Instead of raw data show a transformation of the data, typically the result of a statistical test. For example, show p-values associated with the PSM count for each mod mass in each search." class="selector_tool_tip_attached">Transformations:</span></div>
+                <div><span data-tooltip="Exclude all PSMs that do not localize to any specific position(s) in a peptide." class="selector_tool_tip_attached">Exclude unlocalized mods:</span> <input type="checkbox" name="exclude-unlocalized-mods" id="exclude-unlocalized-mods-checkbox"></div>
+
+                <div style="margin-top:10px;"><span data-tooltip="Instead of raw data show a transformation of the data, typically the result of a statistical test. For example, show p-values associated with the PSM count for each mod mass in each search." class="selector_tool_tip_attached">Transformations:</span></div>
 
                 <div id="transformation-pulldown-div">
                     <select id="transformation-pulldown">

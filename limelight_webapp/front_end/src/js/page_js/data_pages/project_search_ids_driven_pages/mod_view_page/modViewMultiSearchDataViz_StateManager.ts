@@ -25,7 +25,8 @@ const _SAVE_STATE_KEYS = {
     'MOD_MASS_MIN_CUTOFF': 'n',
     'SELECTED_RECTS': 's',
     'DATA_TRANSFORMATION' : 't',
-    'PROTEIN_POSITION_FILTER' : 'pp'
+    'PROTEIN_POSITION_FILTER' : 'pp',
+    'EXCLUDE_UNLOCALIZED_MODS' : 'xu'
 };
 
 const _LOAD_STATE_KEYS = {
@@ -39,6 +40,7 @@ const _LOAD_STATE_KEYS = {
     'SELECTED_RECTS': 'selectedStateObject',
     'DATA_TRANSFORMATION' : 'dataTransformation',
     'PROTEIN_POSITION_FILTER' : 'proteinPositionFilter',
+    'EXCLUDE_UNLOCALIZED_MODS' : 'excludeUnlocalizedOpenMods',
 };
 
 const _PSM_QUANT_METHOD_ENCODING_KEYS = {
@@ -149,6 +151,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.PROTEIN_POSITION_FILTER)) {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.PROTEIN_POSITION_FILTER] = this.getDecodedProteinPositionFilter( encodedStateData[_SAVE_STATE_KEYS.PROTEIN_POSITION_FILTER] );
+            }
+
+            if(encodedDataKeys.includes(_SAVE_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS)) {
+                this._vizOptionsData.data[_LOAD_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] = encodedStateData[_SAVE_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] != 0;    // boolean trick, 0 == false, !0 == true
             }
 
         }
@@ -293,6 +299,10 @@ export class ModMultiSearch_DataVizPageStateManager {
 
         if(this._vizOptionsData.data[_LOAD_STATE_KEYS.MOD_MASS_MIN_CUTOFF] !== undefined) {
             dataForEncoding[_SAVE_STATE_KEYS.MOD_MASS_MIN_CUTOFF] = this._vizOptionsData.data[_LOAD_STATE_KEYS.MOD_MASS_MIN_CUTOFF];
+        }
+
+        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] !== undefined) {
+            dataForEncoding[_SAVE_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] = this._vizOptionsData.data[_LOAD_STATE_KEYS.EXCLUDE_UNLOCALIZED_MODS] ? 1 : 0;  // encode true as 1, false as 0
         }
 
         if( this._vizOptionsData.data[_LOAD_STATE_KEYS.SELECTED_RECTS] !== undefined

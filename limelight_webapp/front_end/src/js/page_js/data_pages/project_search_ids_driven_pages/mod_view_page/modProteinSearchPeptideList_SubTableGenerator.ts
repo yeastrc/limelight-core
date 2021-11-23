@@ -506,6 +506,17 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 continue;
             }
 
+            // if we are excluding unlocalized psms, skip this if it's unlocalized
+            if(vizOptionsData.data.excludeUnlocalizedOpenMods && await ModViewDataUtilities.psmIsUnlocalized({
+                modMass,
+                reportedPeptideId,
+                psm,
+                projectSearchId,
+                modViewDataManager,
+            })) {
+                continue;
+            }
+
             if(!(reportedPeptidePSMMap.has(reportedPeptideId))) {
                 reportedPeptidePSMMap.set(reportedPeptideId, new Set());
             }

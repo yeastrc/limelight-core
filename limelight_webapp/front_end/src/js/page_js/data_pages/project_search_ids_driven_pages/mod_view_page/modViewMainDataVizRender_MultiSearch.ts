@@ -1622,6 +1622,41 @@ export class ModViewDataVizRenderer_MultiSearch {
                             continue;
                         }
 
+                        // should this item be included based on the option to exclude unlocalized open mods?
+                        if (vizOptionsData.data.excludeUnlocalizedOpenMods !== undefined && vizOptionsData.data.excludeUnlocalizedOpenMods) {
+
+                            if (psmQuantType) {
+                                // if it's a psm
+                                if (await ModViewDataUtilities.openModPSMIsUnlocalized(
+                                    {
+                                        projectSearchId,
+                                        modMass,
+                                        reportedPeptideId: parseInt(reportedPeptideId),
+                                        modViewDataManager,
+                                        psmId: item.psmId
+                                    }
+                                )) {
+                                    continue;
+                                }
+
+                            } else {
+
+                                // if it's a scan
+                                if (await ModViewDataUtilities.allOpenModPSMsAreUnlocalized(
+                                    {
+                                        projectSearchId,
+                                        modMass,
+                                        reportedPeptideId: parseInt(reportedPeptideId),
+                                        modViewDataManager,
+                                        psmIds: item.psmIds
+                                    }
+                                )) {
+                                    continue;
+                                }
+
+                            }
+                        }
+
                         // should this item be included for this mod mass given the protein position filters?
 
                         if(psmQuantType) {

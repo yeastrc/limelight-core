@@ -63,6 +63,39 @@ export class ModViewDataUtilities {
         return false;
     }
 
+    static async psmIsUnlocalized(
+        {
+            projectSearchId,
+            modMass,
+            reportedPeptideId,
+            modViewDataManager,
+            psm
+        } : {
+            projectSearchId:number,
+            modMass:number,
+            reportedPeptideId:number,
+            modViewDataManager:ModViewDataManager,
+            psm:any
+        }
+    ):Promise<boolean> {
+
+        if(psm.open !== null && psm.open !== undefined) {
+            if(await ModViewDataUtilities.openModPSMIsUnlocalized({
+                projectSearchId,
+                modMass,
+                reportedPeptideId,
+                modViewDataManager,
+                psmId:psm.psmId
+            })) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
     static async variableModPositionInProteinPositionFilter(
         {
             projectSearchId,
@@ -120,6 +153,87 @@ export class ModViewDataUtilities {
 
         return false;
     }
+
+    /**
+     * Return true if the given open mod PSM is unlocalized (open mod mass not assigned to any position)
+     *
+     * @param projectSearchId
+     * @param modMass
+     * @param reportedPeptideId
+     * @param modViewDataManager
+     * @param psmId
+     */
+    static async openModPSMIsUnlocalized(
+        {
+            projectSearchId,
+            modMass,
+            reportedPeptideId,
+            modViewDataManager,
+            psmId
+        } : {
+            projectSearchId:number,
+            modMass:number,
+            reportedPeptideId:number,
+            modViewDataManager:ModViewDataManager,
+            psmId:number
+        }
+    ):Promise<boolean> {
+
+        const psmItem = await modViewDataManager.getOpenModPsmForModMassReportedPeptideIdPsmId({projectSearchId, reportedPeptideId, modMass, psmId});
+
+        if( psmItem === null) {
+            throw new Error("could not find open mod psm.");
+        }
+
+        if( psmItem.open === undefined) {
+            throw new Error("open mod psm has no open mod data.");
+        }
+
+
+        const openModData = psmItem.open;
+        return openModData.unloc;
+    }
+
+    /**
+     * Return true if all the supplied open mod PSMs are unlocalized, false otherwise
+     *
+     * @param projectSearchId
+     * @param modMass
+     * @param reportedPeptideId
+     * @param modViewDataManager
+     * @param psmIds
+     */
+    static async allOpenModPSMsAreUnlocalized(
+        {
+            projectSearchId,
+            modMass,
+            reportedPeptideId,
+            modViewDataManager,
+            psmIds
+        } : {
+            projectSearchId:number,
+            modMass:number,
+            reportedPeptideId:number,
+            modViewDataManager:ModViewDataManager,
+            psmIds:Array<number>
+        }
+    ):Promise<boolean> {
+
+        for(const psmId of psmIds) {
+            if(!(await ModViewDataUtilities.openModPSMIsUnlocalized({
+                projectSearchId,
+                modMass,
+                reportedPeptideId,
+                modViewDataManager,
+                psmId
+            }))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * Returns true if the supplied psm with the supplied open mod mod mass has a localization for that open

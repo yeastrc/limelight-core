@@ -589,9 +589,19 @@ export class ModViewDataVizRendererOptionsHandler {
                 } else {
                     vizOptionsData.data.quantType = 'scans';
                 }
-
-                console.log('vizOptionsData', vizOptionsData);
             }
+
+            // update whether we're excluding unlocalized modifications
+            {
+                const isExcludeChecked = $formDiv.find("input#exclude-unlocalized-mods-checkbox").prop('checked');
+                if(isExcludeChecked) {
+                    vizOptionsData.data.excludeUnlocalizedOpenMods = true;
+                } else {
+                    vizOptionsData.data.excludeUnlocalizedOpenMods = false;
+                }
+            }
+
+            console.log('vizOptionsData', vizOptionsData);
 
             // update hash in URL to reflect user customization state
             vizOptionsData.stateManagementObject.updateState();
@@ -673,7 +683,15 @@ export class ModViewDataVizRendererOptionsHandler {
             } else {
                 $formToUpdate.find("input#quant-type-option-scans").prop( "checked", true);
             }
+        }
 
+        // update whether we're excluding unlocalized mods
+        {
+            if( vizOptionsData.data.excludeUnlocalizedOpenMods === undefined || !(vizOptionsData.data.excludeUnlocalizedOpenMods) ) {
+                $formToUpdate.find("input#exclude-unlocalized-mods-checkbox").prop( "checked", false);
+            } else {
+                $formToUpdate.find("input#exclude-unlocalized-mods-checkbox").prop( "checked", true);
+            }
         }
 
     }
