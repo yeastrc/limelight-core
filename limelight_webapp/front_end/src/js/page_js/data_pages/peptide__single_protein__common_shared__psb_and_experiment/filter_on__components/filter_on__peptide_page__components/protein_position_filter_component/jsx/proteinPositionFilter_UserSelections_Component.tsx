@@ -215,8 +215,9 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    Only peptides that map to selected proteins and, optionally, map to selected positions in those proteins will be shown.
-                                    Click "Add Protein Position Filter" to add a protein and position range.
+                                    Use this option to define a one or more proteins and (optionally) regions in those proteins.
+                                    Only results that map to at least one of those proteins (or regions) will be shown.
+                                    Click "Add Protein" to add a new protein or region to the filter.
                                 </p>
                             </div>
                         </div>

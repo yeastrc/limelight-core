@@ -265,13 +265,13 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
                 {/* Parent is CSS Grid with 2 Columns */}
 
                 <div className=" filter-common-filter-label ">
-                    Filter On Peptide:
+                    Filter On Peptide Sequence:
 
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    All peptides’ amino acid sequence will contain the entered sequence.
+                                    All shown peptides will contain the entered sequence.
                                 </p>
                             </div>
                         </div>

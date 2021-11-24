@@ -220,13 +220,13 @@ export class GeneratedPeptideContents_UserSelections_Root_Component extends Reac
 
                 <div className=" filter-common-filter-label ">
                     <div style={ { marginTop: 10, marginBottom: 10 } }>
-                        Show in Peptides:
+                        Collate Peptides Using:
 
                         <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                             <div className=" inner-absolute-pos ">
                                 <div className=" main-div ">
                                     <p className="help-tip-actual">
-                                        The shown peptide will be the combination of amino acid sequence and the selected options.
+                                        This option does not filter peptides, instead it affects how peptides are collated in the table below. Peptides (and their PSMs) will be collated according to their amino acid sequence AND the options that are filtered here.
                                     </p>
                                 </div>
                             </div>
