@@ -9,8 +9,12 @@
 export const proteinView_nsaf_formatNumber_ForDisplayInTable = function( nsaf: number ) : string {
 
     let nsaf_Formatted: string = undefined;
+    
+    if ( nsaf === 0 ) {
+    
+    	nsaf_Formatted = "0";
 
-    if ( nsaf < 0.001 ) {
+    } else if ( nsaf < 0.001 ) {
 
         nsaf_Formatted = nsaf.toExponential(2);
     } else {
