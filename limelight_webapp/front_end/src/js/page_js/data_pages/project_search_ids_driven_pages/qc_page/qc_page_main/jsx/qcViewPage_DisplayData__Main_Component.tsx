@@ -2039,8 +2039,12 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 ) : (
                     <React.Fragment>
 
-                        <div style={ { display: "inline-block", position: "relative", marginTop: 20 } }  //  display: "inline-block" so can measure width of this div, including width of charts
-                             >
+                        {/*  Remove ' display: "inline-block" ' since is causing Firefox rendering issues  */}
+                        {/*<div style={ { display: "inline-block", position: "relative", marginTop: 20 } } >*/}
+
+                        {/*  Replace commented out <div> with following <div>  */}
+
+                        <div style={ { position: "relative", marginTop: 20 } }>
 
                             { ( this.props.propsValue.projectSearchIds.length === 1 ) ? (
                                 // Single Search
