@@ -390,10 +390,6 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/spectral-storage-data--no-peaks--single-project-search-id";
 	
-	//  Get MS2 count for a project search id
-	public static final String MS2_COUNT_SINGLE_PROJECT_SEARCH_ID =
-			"d/rws/for-page/psb/ms2-count-single-project-search-id";
-
 	//  Used across various pages beyond just Reported Peptides Page
 	//    Pass in Project Search Id and Cutoff Criteria
 	//    Returns Reported Peptide Ids and in some cases the Number of PSMs
@@ -478,8 +474,6 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = "d/rws/for-page/psb/protein-info-searchcriteria-list-version-0001";
 
 	public static final String PROTEIN_SEQUENCES_FOR_PROT_SEQ_VER_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-sequences-for-prot-seq-ver-ids";
-
-	public static final String REPORTED_PEPTIDES_HAVE_DYNAMIC_MODS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/reported-peptides-have-dynamic-mods";
 
 
 	//  Protein Sequence Version Ids for each Reported Peptide Id in request

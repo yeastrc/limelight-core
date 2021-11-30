@@ -258,15 +258,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     private _downloadPSMsClickHandler_BindThis = this._downloadPSMsClickHandler.bind(this);
     private _show_proteinPageSearchesSummarySectionData_ClickHandler_BindThis = this._show_proteinPageSearchesSummarySectionData_ClickHandler.bind(this);
 
-        //  NOT Currently USED
-
-        // The data shown when click "Show Stats" is Incorrect.
-        // Does NOT reflect Peptide and Protein filters and "Show Hidden Proteins".
-        // Does NOT update when Peptide and Protein filters and "Show Hidden Proteins" Update.
-
-    // private _showStatsSectionClickHandler_BindThis = this._showStatsSectionClickHandler.bind(this);
-
-
     private _DO_NOT_CALL_CastTestOnly () {
         //  Test function cast
         const proteinGroup_SelectionValues_Changed_Callback : ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback = this._proteinGroup_SelectionValues_Changed_Callback;
@@ -1722,64 +1713,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         }
     }
 
-    /////
-
-    //  NOT Currently USED
-
-    // The data shown when click "Show Stats" is Incorrect.
-    // Does NOT reflect Peptide and Protein filters and "Show Hidden Proteins".
-    // Does NOT update when Peptide and Protein filters and "Show Hidden Proteins" Update.
-
-    // private _showStatsSectionClickHandler() {
-    //     try {
-    //         this.setState({ showSearchStats_LoadingMessage: true });
-    //
-    //         const projectSearchId = this.props.propsValue.projectSearchIds[0];
-    //
-    //         const loadedDataPerProjectSearchIdHolder = this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-    //         if ( ! loadedDataPerProjectSearchIdHolder ) {
-    //             throw Error("_showStatsSectionClickHandler: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId) returned nothing. projectSearchId: " + projectSearchId );
-    //         }
-    //
-    //         const promise = proteinViewPage_GetStatsSectionData_SingleSearch({
-    //             projectSearchId,
-    //             proteinListData: {
-    //                 psmCount: this.state.proteinList_DataCounts.psmCount,
-    //                 reportedPeptideCount: this.state.proteinList_DataCounts.peptideCount,
-    //                 proteinCount: this.state.proteinList_DataCounts.proteinCount,
-    //             },
-    //             loadedDataPerProjectSearchIdHolder,
-    //             dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager
-    //         });
-    //
-    //         promise.catch( reason => {
-    //
-    //         });
-    //
-    //         promise.then( result => {
-    //             try {
-    //                 if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-    //                     result.searchContainsSubGroups = true;
-    //                 }
-    //
-    //                 this.setState({ proteinViewPage_StatsSection_Props: result, showSearchStats_Data: true, showSearchStats_LoadingMessage: false });
-    //
-    //             } catch( e ) {
-    //                 console.warn("Exception caught in _showStatsSectionClickHandler inside promise.then");
-    //                 console.warn( e );
-    //                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //                 throw e;
-    //             }
-    //         });
-    //
-    //     } catch( e ) {
-    //         console.warn("Exception caught in _showStatsSectionClickHandler inside setTimeout");
-    //         console.warn( e );
-    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //         throw e;
-    //     }
-    // }
-
     /**
      *
      */
@@ -2286,31 +2219,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                                 </div>
                             ): null }
-
-                            {/*
-
-                                //  NOT Currently USED
-
-                                // The data shown when click "Show Stats" is Incorrect.
-                                // Does NOT reflect Peptide and Protein filters and "Show Hidden Proteins".
-                                // Does NOT update when Peptide and Protein filters and "Show Hidden Proteins" Update.
-
-                                { ( this.state.showSearchStats_LoadingMessage ) ? (
-                                    <div >
-                                        <ProteinViewPage_StatsSection_LoadingMessage />
-                                    </div>
-                                ) : null }
-
-                                { ( this.state.showSearchStats_Data && this.state.proteinViewPage_StatsSection_Props ) ? (
-                                    <ProteinViewPage_StatsSection
-                                        data={ this.state.proteinViewPage_StatsSection_Props.data }
-                                        searchContainsSubGroups={ this.state.proteinViewPage_StatsSection_Props.searchContainsSubGroups }
-                                    />
-
-                                ) : null }
-
-                            */}
-
 
                             {/*  Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  */}
                             { ( this.state.show_proteinPageSearchesSummarySectionData_Root && this.state.proteinPageSearchesSummarySectionData_Root ) ? (
