@@ -79,12 +79,17 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
     private _proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler.bind(this)
     private _proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler.bind(this)
     private _proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis = this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler.bind(this)
+    private _showHiddenProteins_CheckBox_OnChange_Handler_BindThis = this._showHiddenProteins_CheckBox_OnChange_Handler.bind(this);
+
+    private _showHiddenProteins_Checkbox_Ref :  React.RefObject<HTMLInputElement>
 
     /**
      *
      */
     constructor(props: ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props) {
         super(props);
+
+        this._showHiddenProteins_Checkbox_Ref = React.createRef();
 
     }
 
@@ -148,6 +153,29 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                     const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
                     this.props.propValue.filterValuesChanged_Callback( param );
                 }
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    //  Click Handlers for the Check Boxes
+
+    private _showHiddenProteins_CheckBox_OnChange_Handler(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
+        try {
+            if ( ! this._showHiddenProteins_Checkbox_Ref.current ) {
+                console.warn( "this._showHiddenProteins_Checkbox_Ref.current NOT POPULATED.  Exit before Update.  In _showHiddenProteins_CheckBox_OnChange_Handler" );
+                return;
+            }
+
+            const checked = this._showHiddenProteins_Checkbox_Ref.current.checked;
+
+            this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.set_ShowHiddenProteins_Selected( checked );  // Update state in URL
+
+            if (  this.props.propValue.filterValuesChanged_Callback ) {
+                const param = new ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param();
+                this.props.propValue.filterValuesChanged_Callback( param );
+            }
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -261,8 +289,6 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                         </div>
                                     </div>
 
-
-
                                 </label>
                             </span>
 
@@ -306,6 +332,29 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                 </label>
                             </span>
                         </div>
+                        {/*{ ( proteinGroup_GroupProteins_NonSubset || proteinGroup_GroupProteins_Parsimonious ) ? (*/}
+                            <div style={ { marginTop: 4 } }>  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                                <label>
+                                    <input
+                                        type="checkbox" ref={ this._showHiddenProteins_Checkbox_Ref }
+                                        checked={ this.props.propValue.proteinGrouping_CentralStateManagerObjectClass.get_ShowHiddenProteins_Selected() }
+                                        onChange={ this._showHiddenProteins_CheckBox_OnChange_Handler_BindThis }
+                                    />
+                                    Show removed proteins
+
+                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    Protein groups that would be removed by the option above will instead be shown as greyed-out entries in the table below.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </label>
+                            </div>
+                        {/*) : null}*/}
                     </div>
                 </div>
             </React.Fragment>

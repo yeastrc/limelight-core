@@ -5,7 +5,7 @@
  */
 
 import {
-    ProteinDataDisplay__Summary_PerSearch,
+    ProteinDataDisplay__Summary_PerSearch, ProteinDataDisplay_ProteinList_Item,
     ProteinDisplayData_From_createProteinDisplayData_ProteinList,
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
@@ -88,7 +88,23 @@ const _process_Data_Compute_DistinctPeptide_Count = function(
         reportedPeptide_CommonValue_EncodedStringSet_Map_Key_ProjectSearchId = new Map();
     }
 
-    for (const proteinItem of proteinDisplayData.proteinList) {
+    let proteinList_Local: Array<ProteinDataDisplay_ProteinList_Item> = proteinDisplayData.proteinList;
+
+    if ( proteinDisplayData.proteinGroupsList ) {
+
+        //  Have Protein Groups so get the Protein Items from the Groups instead to make sure to process what is displayed on the page.
+
+        proteinList_Local = [];
+        for ( const proteinGroup of proteinDisplayData.proteinGroupsList ) {
+            for ( const proteinItem of proteinGroup.proteinList_Grouped ) {
+                proteinList_Local.push( proteinItem );
+            }
+        }
+
+    }
+
+
+    for (const proteinItem of proteinList_Local) {
 
         for (const reportedPeptide_CommonValue_EncodedString of proteinItem.generatedPeptides_Overall_Set) {
 
@@ -174,12 +190,14 @@ const _computePsmCountTotal = function(
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
     }) : void {
 
+    //   proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container  is populated after ALL Filtering
+
     let psmCountTotal = 0;
 
     //  Populated processing the distinct peptides
     const summaryMap_Key_ProjectSearchId = proteinDisplayData.summaryMap_Key_ProjectSearchId;
 
-    for ( const data_Per_ProjectSearchId_MapEntry of proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container.data_Per_ProjectSearchId_Map_Key_ProjectSearchId.entries() ) {
+    for ( const data_Per_ProjectSearchId_MapEntry of proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering.data_Per_ProjectSearchId_Map_Key_ProjectSearchId.entries() ) {
 
         const data_Per_ProjectSearchId = data_Per_ProjectSearchId_MapEntry[1];
 

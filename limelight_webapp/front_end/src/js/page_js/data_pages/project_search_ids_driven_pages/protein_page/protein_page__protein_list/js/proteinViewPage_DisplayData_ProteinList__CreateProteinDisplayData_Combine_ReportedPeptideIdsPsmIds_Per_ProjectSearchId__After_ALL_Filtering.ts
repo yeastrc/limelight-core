@@ -1,5 +1,5 @@
 /**
- * proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId.ts
+ * proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering.ts
  *
  * Create Display Data for Protein List - Combine Reported Peptide Ids Peptide and PSM Ids per Project Search Id for the final displayed Protein List
  *
@@ -20,9 +20,9 @@ import {
 
 
 /**
- *
+ *  Called after final filtering of protein list to populate data accumulated across proteins in the final list
  */
-export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId = function (
+export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering = function (
     {
         process_SubGroups,
         projectSearchIds,
@@ -34,7 +34,7 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_C
     }) : void {
 
     const reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container = new ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_Container();
-    proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container = reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container;
+    proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering = reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container;
 
     if ( proteinDisplayData.proteinGroupsList ) {
         for (const proteinGroupItem of proteinDisplayData.proteinGroupsList) {

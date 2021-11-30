@@ -31,20 +31,18 @@ const _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION = 1;
 const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _GROUP_PROTEINS_PROPERTY_NAME = 'b';
-
-
+const _SHOW_HIDDEN_PROTEINS_PROPERTY_NAME = 'c';
 
 //  Group Proteins values stored in _GROUP_PROTEINS_PROPERTY_NAME
 
 const _PROTEIN_GROUP_SELECTION_NO = 'a';
-
 const _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_ALL = 'b';
-
 const _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_NON_SUBSET = 'c';
-
 const _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_PARSIMONIOUS = 'd';
 
 
+const _ENCODED_DATA_VALUE_FOR_TRUE = 1;
+const _ENCODED_DATA_VALUE_FOR_FALSE = 0;
 
 /**
  * 
@@ -55,6 +53,7 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 
 	private _value : {
 		groupProteins? : string
+		showHiddenProteins?: boolean
 	};
 
 	private _centralPageStateManager : CentralPageStateManager;
@@ -104,6 +103,13 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 				this._value = {
 					groupProteins : encodedStateData[ _GROUP_PROTEINS_PROPERTY_NAME ]
 				};
+
+				if ( encodedStateData[ _SHOW_HIDDEN_PROTEINS_PROPERTY_NAME ] === _ENCODED_DATA_VALUE_FOR_TRUE ) {
+					this._value.showHiddenProteins = true;
+				} else {
+					this._value.showHiddenProteins = false;
+				}
+
 			} else {
 				const msg = "ProteinList_CentralStateManagerObjectClass:initialize: 'encodedVersion' value not recognized.  encodedVersion: " + encodedVersion;
 				console.warn( msg );
@@ -122,7 +128,11 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 		}
 
 		if ( ! this._value.groupProteins ) {
-			this._value.groupProteins = _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_PARSIMONIOUS;  // Default to NO
+			this._value.groupProteins = _PROTEIN_GROUP_SELECTION_GROUP_PROTEINS_PARSIMONIOUS;  // Default to PARSIMONIOUS
+		}
+
+		if ( this._value.showHiddenProteins === undefined ) {
+			this._value.showHiddenProteins = false;  // Default to false
 		}
 
 		this._initializeCalled = true;
@@ -248,7 +258,36 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 		return value;
 	}
 
-    /**
+	/**
+	 * @returns false if not set
+	 *
+	 */
+	get_ShowHiddenProteins_Selected() : boolean {
+
+		if ( this._value.showHiddenProteins ) {
+			return  true;
+		}
+		return  false;
+	}
+	/**
+	 */
+	set_ShowHiddenProteins_Selected( selected : boolean ) : void {
+
+		if ( ! this._initializeCalled ) {
+			const msg = "ProteinGrouping_CentralStateManagerObjectClass: initialize() NOT Called. set_ShowHiddenProteins_Selected() is being called"
+			console.warn( msg );
+			throw Error( msg );
+		}
+		this._value.showHiddenProteins = selected;
+
+		if ( ! this._centralPageStateManager ) {
+			throw Error( "this._centralPageStateManager not set" );
+		}
+		this._centralPageStateManager.setState( { component : this } );
+	}
+
+
+	/**
      * Called by Central State Manager and maybe other code
 	 */
 	getUniqueId() : any {
@@ -260,13 +299,18 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 	 */
 	getDataForEncoding() {
 		const dataForEncoding = {}
-		// @ts-ignore
+
 		dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
 		if ( this._value.groupProteins !== undefined ) {
-			// @ts-ignore
 			dataForEncoding[ _GROUP_PROTEINS_PROPERTY_NAME ] = this._value.groupProteins;
 		}
+		if (  this._value.showHiddenProteins ) {
+			dataForEncoding[ _SHOW_HIDDEN_PROTEINS_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_TRUE;
+		} else {
+			dataForEncoding[ _SHOW_HIDDEN_PROTEINS_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
+		}
+
 		return dataForEncoding;
 	}
 }

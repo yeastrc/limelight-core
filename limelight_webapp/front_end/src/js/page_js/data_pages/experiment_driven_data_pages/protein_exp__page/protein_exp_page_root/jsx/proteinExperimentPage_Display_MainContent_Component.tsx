@@ -95,9 +95,8 @@ import {
     ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_NOT_GroupProteins} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_NOT_GroupProteins";
-import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested";
+import {proteinPage_ProteinList__GroupProteins} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide";
-import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_PeptidePSM_Totals} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_PeptidePSM_Totals";
 import {
     DataTable_RootTableDataObject, DataTable_RootTableObject,
@@ -127,6 +126,9 @@ import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayConten
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId";
+import {proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious";
+import {proteinPage_ProteinList__GroupProteins_Compute_DistinctPeptideCounts_UniquePeptideCounts_For_ExperimentConditions} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins_Compute_DistinctPeptideCounts_UniquePeptideCounts_For_ExperimentConditions";
+import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering";
 
 /////////////////////////
 
@@ -1358,11 +1360,21 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             });
 
         } else {
-            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested({
-                process_ExperimentConditions: true, process_SubGroups, projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
+            proteinDisplayData = proteinPage_ProteinList__GroupProteins({
+                projectSearchIds, proteinDisplayData, proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
             });
+
+            proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_DistinctPeptideCounts_UniquePeptideCounts_For_ExperimentConditions({ proteinDisplayData });
         }
 
+
+        if ( ! this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
+
+            if ( ! this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass.get_ShowHiddenProteins_Selected() ) {
+                //  Remove proteinGroup.passesFilter is false - remove Subset Groups OR Not Parsimonious
+                proteinDisplayData = proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious({ proteinDisplayData });
+            }
+        }
 
         //   Add Filtering on PSM, Peptide, Unique Peptide counts HERE
 
@@ -1372,10 +1384,11 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 proteinDisplayData, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
             });
 
+        //  MUST have FINAL Protein List  for code after this point
 
 
         //  Call after final filtering of protein list to populate data accumulated across proteins in the final list
-        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId({
+        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering({
             process_SubGroups,
             projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
             proteinDisplayData
@@ -1393,6 +1406,8 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         }
 
         if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+            //  NSAF computed on FINAL Protein List
 
             //  Compute NSAF per Per Experiment Condition Id of the first Condition Group
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId({

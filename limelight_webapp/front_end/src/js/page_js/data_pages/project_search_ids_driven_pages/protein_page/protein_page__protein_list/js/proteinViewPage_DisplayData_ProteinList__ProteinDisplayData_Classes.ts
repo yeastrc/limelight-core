@@ -21,7 +21,7 @@ export class ProteinDisplayData_From_createProteinDisplayData_ProteinList{
 
     summaryMap_Key_ProjectSearchId? : Map<number, ProteinDataDisplay__Summary_PerSearch>
 
-    reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container?: ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_Container
+    reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering?: ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_Container
 
     distinctPeptide_TotalCount: number
     psm_TotalCount: number
@@ -31,7 +31,7 @@ export class ProteinDisplayData_From_createProteinDisplayData_ProteinList{
         clone.proteinList = this.proteinList;
         clone.proteinGroupsList = this.proteinGroupsList;
         clone.summaryMap_Key_ProjectSearchId = this.summaryMap_Key_ProjectSearchId;
-        clone.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container = this.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container;
+        clone.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering = this.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering;
         clone.distinctPeptide_TotalCount = this.distinctPeptide_TotalCount;
         clone.psm_TotalCount = this.psm_TotalCount;
 
@@ -56,9 +56,15 @@ export class ProteinDataDisplay__Summary_PerSearch {
  * Entry in proteinGroupsList
  */
 export class ProteinDataDisplay_ProteinList_GroupedProtein_Item {
+
     proteinList_Grouped : Array<ProteinDataDisplay_ProteinList_Item>
+
     proteinGroup : ProteinGroup
-    isSubsetGroup: boolean
+
+    isSubsetGroup: boolean  //   Set to true when proteinGroup.passesFilter is false.
+                            //   True when "Parsimonious" selected and this is not part of "Parsimonious" proteins
+                            //   True when "No Subgroups" selected and this is a subset group
+
     uniquePeptideCount_Overall: number //  Computed last across the protein groups
 }
 

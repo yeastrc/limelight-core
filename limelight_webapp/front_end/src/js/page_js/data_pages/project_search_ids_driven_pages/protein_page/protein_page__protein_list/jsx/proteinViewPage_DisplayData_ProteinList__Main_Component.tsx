@@ -87,9 +87,9 @@ import {
     ProteinNameDescriptionCacheEntry
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped.ts";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_NOT_GroupProteins} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_NOT_GroupProteins.ts";
-import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested.ts";
+import {proteinPage_ProteinList__GroupProteins} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins.ts";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_PeptidePSM_Totals} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_PeptidePSM_Totals.ts";
-import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId.ts";
+import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_PSM_Download_Create_PerProjectSearchId_Data} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_PSM_Download_Create_PerProjectSearchId_Data";
 import {
     ProteinDisplayData_From_createProteinDisplayData_ProteinList
@@ -117,6 +117,9 @@ import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Co
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_Root_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplay_UserSelections_Root_Component";
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF";
+import {proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious";
+import {proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_SubGroups} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_SubGroups";
+import {proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_ProjectSearchIds} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_ProjectSearchIds";
 
 /**
  *
@@ -1212,7 +1215,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
         if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
 
-            //  Only display for 1 search
+            //  Have Sub Groups and Only 1 search so display the Sub Groups
 
             const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
 
@@ -1305,15 +1308,34 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             });
 
         } else {
-            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_GroupProteinsIfRequested({
-                process_ExperimentConditions: false, process_SubGroups, projectSearchIds, proteinDisplayData,
+            proteinDisplayData = proteinPage_ProteinList__GroupProteins({
+                projectSearchIds, proteinDisplayData,
                 proteinGrouping_CentralStateManagerObjectClass: this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass
             });
+
+            //  If put following '...Compute_UniquePeptideCounts_For_...' after '...Remove_NotPassesFilter...'
+            //    Also have to recompute UniquePeptideCounts for Overall and for Single Search (Single Search Uses Overall as well)
+
+            if ( process_SubGroups ) {
+                proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_SubGroups({proteinDisplayData});
+            } else {
+                if ( projectSearchIds.length > 1 ) {
+                    proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_ProjectSearchIds({ projectSearchIds, proteinDisplayData });
+                }
+            }
         }
 
 
+        if ( ! this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
 
-        //   Add Filtering on PSM, Peptide, Unique Peptide counts HERE
+            if ( ! this.props.propsValue.proteinGrouping_CentralStateManagerObjectClass.get_ShowHiddenProteins_Selected() ) {
+                //  Remove proteinGroup.passesFilter is false - remove Subset Groups OR Not Parsimonious
+                proteinDisplayData = proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_RemoveSubsetOrNotParsimonious({ proteinDisplayData });
+            }
+        }
+
+
+        //   Filtering on PSM, Peptide, Unique Peptide counts
 
         //  Updated in this call (or just returns same object with no changes)
         proteinDisplayData =
@@ -1324,13 +1346,14 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
 
         //  Call after final filtering of protein list to populate data accumulated across proteins in the final list
-        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId({
+        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ProjectSearchId__After_ALL_Filtering({
             process_SubGroups,
             projectSearchIds : this.props.propsValue.projectSearchIds,
             proteinDisplayData
         });
 
-        {
+        {  //  Compute Peptide PSM Total Count
+
             let compute_PerProjectSearchId_Data = false;
 
             if ( this._show_proteinPageSearchesSummarySectionData_Root ) {
@@ -1348,7 +1371,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         }
 
 
-        {  //  Compute Sequence Coverage (2 if statements in this block)
+        {  //  Compute Sequence Coverage (2 'if' statements in this block)
 
             if ( ( projectSearchIds.length === 1 && (!searchSubGroup_Ids_Selected) ) || projectSearchIds.length > 1 ) {
 
@@ -1442,6 +1465,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
         if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
 
+            //  NSAF computed on FINAL Protein List
+
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF({
                 searchSubGroup_Ids_Selected, // Set<number>  undefined/null if not set
                 projectSearchIds,
@@ -1450,11 +1475,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         }
 
         this._proteinDisplayData_Final_ForDisplayTable = proteinDisplayData
-
-        //   Clear: Counts per Protein of peptide, unique peptide, and PSM in a Map, Key ProteinSequenceVersionId
-        // this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId = new Map();
-
-        // peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId: this._peptideUniquePeptidePSM_Counts_Key_ProteinSequenceVersionId,
 
             //   Protein Name and Description in a Map, Key ProteinSequenceVersionId
         this._proteinNameDescription_Key_ProteinSequenceVersionId = proteinNameDescription_Key_ProteinSequenceVersionId;
@@ -1510,7 +1530,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             dataPageStateManager_DataFrom_Server: this.props.propsValue.dataPageStateManager
         });
 
-        const tableObject_CurrentlyRendered_ProteinList = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Single Search Protein List" });
+        const tableObject_CurrentlyRendered_ProteinList = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Protein List (Search(es)" });
 
         let proteinList_DataCounts : ProteinList_DataCounts = null;
 
@@ -2167,7 +2187,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                                     <span  style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
                                         <span>
-                                            Peptide Count:
+                                            Distinct Peptide Count:
                                         </span>
                                         <span> </span>
                                         <span>{ this.state.proteinList_DataCounts.peptideCount.toLocaleString() }</span>

@@ -32,7 +32,7 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_P
 
     const result_PerProjectSearchId_Array: Array<DownloadPSMs_PerProjectSearchId_Entry> = [];
 
-    for ( const data_Per_ProjectSearchId_MapEntry of proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container.data_Per_ProjectSearchId_Map_Key_ProjectSearchId.entries() ) {
+    for ( const data_Per_ProjectSearchId_MapEntry of proteinDisplayData.reportedPeptideIds_AndTheir_PsmIds_PerSearch_Container__After_All_Filtering.data_Per_ProjectSearchId_Map_Key_ProjectSearchId.entries() ) {
 
         const data_Per_ProjectSearchId = data_Per_ProjectSearchId_MapEntry[1];
 
