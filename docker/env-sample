@@ -12,7 +12,7 @@ IMPORTER_JAVA_OPTIONS=-Xmx3g -Xms500m
 WEBAPP_JAVA_OPTIONS=-Xms2024m -Xmx2024m
 
 # This manages optimization settings for MySQL
-MYSQL_OPTIONS=--max-connections=500
+MYSQL_OPTIONS=--max-connections=500 --skip-ssl
 
 # Settings for setting up sending of emails by Limelight
 SMTP_HOST=smtp.example.com
