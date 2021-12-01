@@ -33,13 +33,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema limelight
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema limelight
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS limelight;
-ALTER DATABASE limelight CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
+CREATE SCHEMA  limelight DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 USE limelight ;
 
 -- -----------------------------------------------------
@@ -59,7 +53,7 @@ CREATE TABLE  user_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE UNIQUE INDEX user_mgmt_user_id_UNIQUE ON user_tbl (user_mgmt_user_id ASC);
+CREATE UNIQUE INDEX user_mgmt_user_id_UNIQUE ON user_tbl (user_mgmt_user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -86,7 +80,7 @@ CREATE TABLE  project_tbl (
   PRIMARY KEY (id))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX short_name ON project_tbl (short_name ASC);
+CREATE UNIQUE INDEX short_name ON project_tbl (short_name ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -100,7 +94,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX sequence ON reported_peptide_tbl (sequence(20) ASC);
+CREATE INDEX sequence ON reported_peptide_tbl (sequence(20) ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -114,7 +108,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX sequence ON peptide_tbl (sequence(20) ASC);
+CREATE INDEX sequence ON peptide_tbl (sequence(20) ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -156,7 +150,7 @@ CREATE TABLE  search_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_status_id_fk_idx ON search_tbl (status_id ASC);
+CREATE INDEX search_status_id_fk_idx ON search_tbl (status_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -198,15 +192,15 @@ CREATE TABLE  project_search_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_project_search_project_id_idx ON project_search_tbl (project_id ASC);
+CREATE INDEX fk_project_search_project_id_idx ON project_search_tbl (project_id ASC) VISIBLE;
 
-CREATE INDEX fk_project_search__search_id_idx ON project_search_tbl (search_id ASC);
+CREATE INDEX fk_project_search__search_id_idx ON project_search_tbl (search_id ASC) VISIBLE;
 
-CREATE INDEX fk_project_search__status_id_idx ON project_search_tbl (status_id ASC);
+CREATE INDEX fk_project_search__status_id_idx ON project_search_tbl (status_id ASC) VISIBLE;
 
-CREATE INDEX fk_project_search__del_user_id_idx ON project_search_tbl (marked_for_deletion_user_id ASC);
+CREATE INDEX fk_project_search__del_user_id_idx ON project_search_tbl (marked_for_deletion_user_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX project_id_search_id_unique_idx ON project_search_tbl (project_id ASC, search_id ASC);
+CREATE UNIQUE INDEX project_id_search_id_unique_idx ON project_search_tbl (project_id ASC, search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -233,9 +227,9 @@ CREATE TABLE  project_search__comment_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX project_search_id ON project_search__comment_tbl (project_search_id ASC, last_updated_date_time ASC);
+CREATE INDEX project_search_id ON project_search__comment_tbl (project_search_id ASC, last_updated_date_time ASC) VISIBLE;
 
-CREATE INDEX search_comment_user_fk_idx ON project_search__comment_tbl (last_updated_user_id ASC);
+CREATE INDEX search_comment_user_fk_idx ON project_search__comment_tbl (last_updated_user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -260,9 +254,9 @@ CREATE TABLE  search_reported_peptide_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX reported_peptide_id ON search_reported_peptide_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id ON search_reported_peptide_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX peptide_id ON search_reported_peptide_tbl (peptide_id ASC);
+CREATE INDEX peptide_id ON search_reported_peptide_tbl (peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -295,11 +289,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX psm_tbl_reported_peptide_id ON psm_tbl (reported_peptide_id ASC);
+CREATE INDEX psm_tbl_reported_peptide_id ON psm_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX psm__search_id_rep_pep_id ON psm_tbl (search_id ASC, reported_peptide_id ASC)  COMMENT 'This index covers the \nsearch_id foreign key since\nsearch_id is listed first';
+CREATE INDEX psm__search_id_rep_pep_id ON psm_tbl (search_id ASC, reported_peptide_id ASC) COMMENT 'This index covers the \nsearch_id foreign key since\nsearch_id is listed first' VISIBLE;
 
-CREATE INDEX scan_number_search_scan_file_id ON psm_tbl (scan_number ASC, search_scan_file_id ASC);
+CREATE INDEX scan_number_search_scan_file_id ON psm_tbl (scan_number ASC, search_scan_file_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -311,7 +305,7 @@ CREATE TABLE  taxonomy_tbl (
   PRIMARY KEY (id))
 ENGINE = InnoDB;
 
-CREATE INDEX name ON taxonomy_tbl (name ASC);
+CREATE INDEX name ON taxonomy_tbl (name ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -338,9 +332,9 @@ CREATE TABLE  note_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_project_id_idx ON note_tbl (project_id ASC);
+CREATE INDEX fk_project_id_idx ON note_tbl (project_id ASC) VISIBLE;
 
-CREATE INDEX fk_user_id_idx ON note_tbl (user_id_created ASC);
+CREATE INDEX fk_user_id_idx ON note_tbl (user_id_created ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -363,9 +357,9 @@ CREATE TABLE  user_forgot_password_tracking_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX forgot_password_tracking_code_UNIQUE ON user_forgot_password_tracking_tbl (forgot_password_tracking_code ASC);
+CREATE UNIQUE INDEX forgot_password_tracking_code_UNIQUE ON user_forgot_password_tracking_tbl (forgot_password_tracking_code ASC) VISIBLE;
 
-CREATE INDEX forgot_pwd_trk_user_id_fk_idx ON user_forgot_password_tracking_tbl (user_id ASC);
+CREATE INDEX forgot_pwd_trk_user_id_fk_idx ON user_forgot_password_tracking_tbl (user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -389,7 +383,7 @@ CREATE TABLE  project_user_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE INDEX idx_shared_objects_user_id ON project_user_tbl (user_id ASC);
+CREATE INDEX idx_shared_objects_user_id ON project_user_tbl (user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -440,15 +434,15 @@ CREATE TABLE  user_invite_tracking_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX invite_tracking_code_UNIQUE ON user_invite_tracking_tbl (invite_tracking_code ASC);
+CREATE UNIQUE INDEX invite_tracking_code_UNIQUE ON user_invite_tracking_tbl (invite_tracking_code ASC) VISIBLE;
 
-CREATE INDEX forgot_pwd_trk_user_id_fk_idx ON user_invite_tracking_tbl (submitting_user_id ASC);
+CREATE INDEX forgot_pwd_trk_user_id_fk_idx ON user_invite_tracking_tbl (submitting_user_id ASC) VISIBLE;
 
-CREATE INDEX user_invite_trk_revoking_user_id_idx ON user_invite_tracking_tbl (revoking_user_id ASC);
+CREATE INDEX user_invite_trk_revoking_user_id_idx ON user_invite_tracking_tbl (revoking_user_id ASC) VISIBLE;
 
-CREATE INDEX user_invite_trk_used_user_id_fk_idx ON user_invite_tracking_tbl (invite_used_user_id ASC);
+CREATE INDEX user_invite_trk_used_user_id_fk_idx ON user_invite_tracking_tbl (invite_used_user_id ASC) VISIBLE;
 
-CREATE INDEX user_invite_trk_project_id_fk_idx ON user_invite_tracking_tbl (invited_project_id ASC);
+CREATE INDEX user_invite_trk_project_id_fk_idx ON user_invite_tracking_tbl (invited_project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -474,7 +468,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE UNIQUE INDEX spectral_storage_api_key_UNIQUE ON scan_file_tbl (spectral_storage_api_key ASC);
+CREATE UNIQUE INDEX spectral_storage_api_key_UNIQUE ON scan_file_tbl (spectral_storage_api_key ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -495,9 +489,9 @@ CREATE TABLE  search_programs_per_search_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX search_program__search_id__name__unique_idx ON search_programs_per_search_tbl (search_id ASC, name ASC);
+CREATE UNIQUE INDEX search_program__search_id__name__unique_idx ON search_programs_per_search_tbl (search_id ASC, name ASC) VISIBLE;
 
-CREATE INDEX search_program__search_id_fk_idx ON search_programs_per_search_tbl (search_id ASC);
+CREATE INDEX search_program__search_id_fk_idx ON search_programs_per_search_tbl (search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -528,9 +522,9 @@ CREATE TABLE  search_file_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_file_search_id_fk_idx ON search_file_tbl (search_id ASC);
+CREATE INDEX search_file_search_id_fk_idx ON search_file_tbl (search_id ASC) VISIBLE;
 
-CREATE INDEX srch_file_srch_pgm_p_sch_id_idx ON search_file_tbl (search_programs_per_search_id ASC);
+CREATE INDEX srch_file_srch_pgm_p_sch_id_idx ON search_file_tbl (search_programs_per_search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -549,7 +543,7 @@ CREATE TABLE  static_mod_tbl (
     ON DELETE CASCADE)
 ENGINE = InnoDB;
 
-CREATE INDEX static_mod_search_id_fk_idx ON static_mod_tbl (search_id ASC);
+CREATE INDEX static_mod_search_id_fk_idx ON static_mod_tbl (search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -563,7 +557,7 @@ CREATE TABLE  config_system_tbl (
   PRIMARY KEY (id))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX config_system_config_key_idx ON config_system_tbl (config_key ASC);
+CREATE UNIQUE INDEX config_system_config_key_idx ON config_system_tbl (config_key ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -588,9 +582,9 @@ CREATE TABLE  project_search__web_links_tbl (
     ON DELETE CASCADE)
 ENGINE = InnoDB;
 
-CREATE INDEX search_links_search_id_fk_idx ON project_search__web_links_tbl (project_search_id ASC);
+CREATE INDEX search_links_search_id_fk_idx ON project_search__web_links_tbl (project_search_id ASC) VISIBLE;
 
-CREATE INDEX search_links_user_id_fk_idx ON project_search__web_links_tbl (user_id ASC);
+CREATE INDEX search_links_user_id_fk_idx ON project_search__web_links_tbl (user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -628,9 +622,9 @@ CREATE TABLE  annotation_type_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX ann_tp_srch_pgm_id_fk_idx ON annotation_type_tbl (search_programs_per_search_id ASC);
+CREATE INDEX ann_tp_srch_pgm_id_fk_idx ON annotation_type_tbl (search_programs_per_search_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX annotation_type_Unique_idx ON annotation_type_tbl (search_id ASC, search_programs_per_search_id ASC, psm_peptide_protein_type ASC, filterable_descriptive_type ASC, name ASC);
+CREATE UNIQUE INDEX annotation_type_Unique_idx ON annotation_type_tbl (search_id ASC, search_programs_per_search_id ASC, psm_peptide_protein_type ASC, filterable_descriptive_type ASC, name ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -672,7 +666,7 @@ CREATE TABLE  psm_descriptive_annotation_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_descriptive_annotation_tbl (psm_id ASC, annotation_type_id ASC);
+CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_descriptive_annotation_tbl (psm_id ASC, annotation_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -699,13 +693,13 @@ CREATE TABLE  srch__rep_pept_filterable_annotation_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE INDEX srch__rep_pept__ann__rep_pept_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (reported_peptide_id ASC);
+CREATE INDEX srch__rep_pept__ann__rep_pept_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX srch__rep_pept_search_id_reppeptid_ann__type_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (search_id ASC, reported_peptide_id ASC, annotation_type_id ASC);
+CREATE UNIQUE INDEX srch__rep_pept_search_id_reppeptid_ann__type_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (search_id ASC, reported_peptide_id ASC, annotation_type_id ASC) VISIBLE;
 
-CREATE INDEX srch__rep_pept__ann__type_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (annotation_type_id ASC);
+CREATE INDEX srch__rep_pept__ann__type_id_fk_idx ON srch__rep_pept_filterable_annotation_tbl (annotation_type_id ASC) VISIBLE;
 
-CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__rep_pept_filterable_annotation_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__rep_pept_filterable_annotation_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -732,13 +726,13 @@ CREATE TABLE  srch__rep_pept_descriptive_annotation_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE INDEX srch__rep_pept__ann__rep_pept_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (reported_peptide_id ASC);
+CREATE INDEX srch__rep_pept__ann__rep_pept_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX srch__rep_pept_search_id_reppeptid_ann__type_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (search_id ASC, reported_peptide_id ASC, annotation_type_id ASC);
+CREATE UNIQUE INDEX srch__rep_pept_search_id_reppeptid_ann__type_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (search_id ASC, reported_peptide_id ASC, annotation_type_id ASC) VISIBLE;
 
-CREATE INDEX srch__rep_pept__ann__type_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (annotation_type_id ASC);
+CREATE INDEX srch__rep_pept__ann__type_id_fk_idx ON srch__rep_pept_descriptive_annotation_tbl (annotation_type_id ASC) VISIBLE;
 
-CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__rep_pept_descriptive_annotation_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__rep_pept_descriptive_annotation_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -769,7 +763,7 @@ CREATE TABLE  psm_descriptive_annotation_large_value_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX psm_annotation_large_value_primary_id_fk_idx ON psm_descriptive_annotation_large_value_tbl (psm_descriptive_annotation_id ASC);
+CREATE INDEX psm_annotation_large_value_primary_id_fk_idx ON psm_descriptive_annotation_large_value_tbl (psm_descriptive_annotation_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -800,9 +794,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__dynamic_mod_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__dynamic_mod_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__dynamic_mod_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__dynamic_mod_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -837,11 +831,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX search__rep_pept__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept__lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX search__rep_pept__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept__lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search__rep_pept__generic_lookup__search_id_fk_idx ON search__rep_pept__lookup_tbl (search_id ASC);
+CREATE INDEX search__rep_pept__generic_lookup__search_id_fk_idx ON search__rep_pept__lookup_tbl (search_id ASC) VISIBLE;
 
-CREATE INDEX search__rep_pept__generic_lookup_search__srch_type_mts_dflt_idx ON search__rep_pept__lookup_tbl (search_id ASC, peptide_meets_default_cutoffs ASC);
+CREATE INDEX search__rep_pept__generic_lookup_search__srch_type_mts_dflt_idx ON search__rep_pept__lookup_tbl (search_id ASC, peptide_meets_default_cutoffs ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -871,9 +865,9 @@ CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__best_psm_value_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__best_psm_value_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC);
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -887,7 +881,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX sequence ON protein_sequence_tbl (sequence(500) ASC);
+CREATE INDEX sequence ON protein_sequence_tbl (sequence(500) ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -903,9 +897,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX name ON protein_sequence_annotation_tbl (name(100) ASC);
+CREATE INDEX name ON protein_sequence_annotation_tbl (name(100) ASC) VISIBLE;
 
-CREATE INDEX tax_name_desc ON protein_sequence_annotation_tbl (taxonomy ASC, name(100) ASC, description(100) ASC);
+CREATE INDEX tax_name_desc ON protein_sequence_annotation_tbl (taxonomy ASC, name(100) ASC, description(100) ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -917,7 +911,7 @@ CREATE TABLE  isotope_label_tbl (
   PRIMARY KEY (id))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX name ON isotope_label_tbl (name ASC);
+CREATE UNIQUE INDEX name ON isotope_label_tbl (name ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -943,11 +937,11 @@ DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin
 COMMENT = 'This table is the FK on many other tables';
 
-CREATE UNIQUE INDEX prot_seq_id_isotope_label_id ON protein_sequence_version_tbl (protein_sequence_id ASC, isotope_label_id ASC);
+CREATE UNIQUE INDEX prot_seq_id_isotope_label_id ON protein_sequence_version_tbl (protein_sequence_id ASC, isotope_label_id ASC) VISIBLE;
 
-CREATE INDEX srch_prt_sqnc_annttn_prot_seq_id_idx ON protein_sequence_version_tbl (protein_sequence_id ASC);
+CREATE INDEX srch_prt_sqnc_annttn_prot_seq_id_idx ON protein_sequence_version_tbl (protein_sequence_id ASC) VISIBLE;
 
-CREATE INDEX fk_protein__isotope_label_id_idx ON protein_sequence_version_tbl (isotope_label_id ASC);
+CREATE INDEX fk_protein__isotope_label_id_idx ON protein_sequence_version_tbl (isotope_label_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -978,11 +972,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE UNIQUE INDEX search_id_prot_seq_v_id_ann_id ON search__protein_sequence_version__annotation_tbl (search_id ASC, protein_sequence_version_id ASC, annotation_id ASC);
+CREATE UNIQUE INDEX search_id_prot_seq_v_id_ann_id ON search__protein_sequence_version__annotation_tbl (search_id ASC, protein_sequence_version_id ASC, annotation_id ASC) VISIBLE;
 
-CREATE INDEX srch_prt_sqnc_annttn_annotation_id_idx ON search__protein_sequence_version__annotation_tbl (annotation_id ASC);
+CREATE INDEX srch_prt_sqnc_annttn_annotation_id_idx ON search__protein_sequence_version__annotation_tbl (annotation_id ASC) VISIBLE;
 
-CREATE INDEX srch_prt_sqnc_annttn_prot_seq_v_id_fk_idx ON search__protein_sequence_version__annotation_tbl (protein_sequence_version_id ASC);
+CREATE INDEX srch_prt_sqnc_annttn_prot_seq_v_id_fk_idx ON search__protein_sequence_version__annotation_tbl (protein_sequence_version_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1037,11 +1031,11 @@ CREATE TABLE  file_import_tracking_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX file_import_tracking_user_id_idx ON file_import_tracking_tbl (user_id ASC);
+CREATE INDEX file_import_tracking_user_id_idx ON file_import_tracking_tbl (user_id ASC) VISIBLE;
 
-CREATE INDEX project_id_status_id ON file_import_tracking_tbl (project_id ASC, status_id ASC);
+CREATE INDEX project_id_status_id ON file_import_tracking_tbl (project_id ASC, status_id ASC) VISIBLE;
 
-CREATE INDEX file_import_tracking_status_id_idx ON file_import_tracking_tbl (status_id ASC);
+CREATE INDEX file_import_tracking_status_id_idx ON file_import_tracking_tbl (status_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1087,11 +1081,11 @@ CREATE TABLE  file_import_tracking_run_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_run_tbl (file_import_tracking_id ASC);
+CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_run_tbl (file_import_tracking_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_run_status_id_idx ON file_import_tracking_run_tbl (status_id ASC);
+CREATE INDEX file_imprt_trkng_run_status_id_idx ON file_import_tracking_run_tbl (status_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_run_sub_status_idx ON file_import_tracking_run_tbl (importer_sub_status_id ASC);
+CREATE INDEX file_imprt_trkng_run_sub_status_idx ON file_import_tracking_run_tbl (importer_sub_status_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1101,7 +1095,7 @@ CREATE TABLE  file_import_tracking_status_history_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   file_import_tracking_id INT UNSIGNED NOT NULL,
   status_id TINYINT UNSIGNED NOT NULL,
-  status_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT file_imprt_trkng_stats_hist_id
     FOREIGN KEY (file_import_tracking_id)
@@ -1110,7 +1104,7 @@ CREATE TABLE  file_import_tracking_status_history_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fl_imprt_trkng_stats_hist_id_idx ON file_import_tracking_status_history_tbl (file_import_tracking_id ASC);
+CREATE INDEX fl_imprt_trkng_stats_hist_id_idx ON file_import_tracking_status_history_tbl (file_import_tracking_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1166,11 +1160,11 @@ CREATE TABLE  file_import_tracking_single_file_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_single_file_tbl (file_import_tracking_id ASC);
+CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_single_file_tbl (file_import_tracking_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_sngl_fl_type_id_idx ON file_import_tracking_single_file_tbl (file_type_id ASC);
+CREATE INDEX file_imprt_trkng_sngl_fl_type_id_idx ON file_import_tracking_single_file_tbl (file_type_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON file_import_tracking_single_file_tbl (file_upload_status_id ASC);
+CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON file_import_tracking_single_file_tbl (file_upload_status_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1203,11 +1197,11 @@ CREATE TABLE  file_import_tracking_sngl_fl_del_web_user_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_import_tracking_id ASC);
+CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_import_tracking_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_sngl_fl_type_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_type_id ASC);
+CREATE INDEX file_imprt_trkng_sngl_fl_type_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_type_id ASC) VISIBLE;
 
-CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_upload_status_id ASC);
+CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON file_import_tracking_sngl_fl_del_web_user_tbl (file_upload_status_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1235,11 +1229,11 @@ CREATE TABLE  protein_coverage_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_tbl (search_id ASC, protein_sequence_version_id ASC);
+CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_tbl (search_id ASC, protein_sequence_version_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search_id_reportedpeptide_id ON protein_coverage_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX search_id_reportedpeptide_id ON protein_coverage_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1264,9 +1258,9 @@ CREATE TABLE  search_scan_file_tbl (
 ENGINE = InnoDB
 COMMENT = 'Scan file in a search.  May only be the filename. May be actual scan file uploaded.';
 
-CREATE UNIQUE INDEX unique_search_id_filename ON search_scan_file_tbl (search_id ASC, filename ASC);
+CREATE UNIQUE INDEX unique_search_id_filename ON search_scan_file_tbl (search_id ASC, filename ASC) VISIBLE;
 
-CREATE INDEX search_scan_filename_scan_file_fk_idx ON search_scan_file_tbl (scan_file_id ASC);
+CREATE INDEX search_scan_filename_scan_file_fk_idx ON search_scan_file_tbl (scan_file_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1286,9 +1280,9 @@ CREATE TABLE  terms_of_service_text_versions_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX id_string_UNIQUE ON terms_of_service_text_versions_tbl (id_string ASC);
+CREATE UNIQUE INDEX id_string_UNIQUE ON terms_of_service_text_versions_tbl (id_string ASC) VISIBLE;
 
-CREATE INDEX terms_of_service_text_versions_user_id_idx ON terms_of_service_text_versions_tbl (created_user_id ASC);
+CREATE INDEX terms_of_service_text_versions_user_id_idx ON terms_of_service_text_versions_tbl (created_user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1311,7 +1305,7 @@ CREATE TABLE  terms_of_service_user_accepted_version_history_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX tos_usr_a_v_hist_tos_text_v_id_fk_idx ON terms_of_service_user_accepted_version_history_tbl (terms_of_service_version_id ASC);
+CREATE INDEX tos_usr_a_v_hist_tos_text_v_id_fk_idx ON terms_of_service_user_accepted_version_history_tbl (terms_of_service_version_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1329,9 +1323,9 @@ CREATE TABLE  url_shortener_tbl (
   PRIMARY KEY (id, shortened_url_key))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX shortened_url_key_unique ON url_shortener_tbl (shortened_url_key ASC);
+CREATE UNIQUE INDEX shortened_url_key_unique ON url_shortener_tbl (shortened_url_key ASC) VISIBLE;
 
-CREATE INDEX url ON url_shortener_tbl (url_start_at_page_controller_path(500) ASC);
+CREATE INDEX url ON url_shortener_tbl (url_start_at_page_controller_path(500) ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1348,7 +1342,7 @@ CREATE TABLE  url_shortener_associated_project_search_id_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX default_page_view_search_id_fk_idx ON url_shortener_associated_project_search_id_tbl (url_shortener_id ASC);
+CREATE INDEX default_page_view_search_id_fk_idx ON url_shortener_associated_project_search_id_tbl (url_shortener_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1372,9 +1366,9 @@ CREATE TABLE  search_file__project_search_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_file__project_search_srch_fl_id_idx ON search_file__project_search_tbl (search_file_id ASC);
+CREATE INDEX search_file__project_search_srch_fl_id_idx ON search_file__project_search_tbl (search_file_id ASC) VISIBLE;
 
-CREATE INDEX search_file__project_search_proj_srch_id_idx ON search_file__project_search_tbl (project_search_id ASC);
+CREATE INDEX search_file__project_search_proj_srch_id_idx ON search_file__project_search_tbl (project_search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1408,7 +1402,7 @@ CREATE TABLE  folder_for_project_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX folder_for_project_proj_id_fk_idx ON folder_for_project_tbl (project_id ASC);
+CREATE INDEX folder_for_project_proj_id_fk_idx ON folder_for_project_tbl (project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1430,7 +1424,7 @@ CREATE TABLE  folder_project_search_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX folder_project_search_folder_id_idx ON folder_project_search_tbl (folder_id ASC);
+CREATE INDEX folder_project_search_folder_id_idx ON folder_project_search_tbl (folder_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1478,9 +1472,9 @@ CREATE TABLE  srch_rep_pept__prot_seq_v_id_tbl (
 ENGINE = InnoDB
 COMMENT = 'Each entry is a mapping of a search and reported peptide  pair\nto a protein.\n';
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__prot_seq_v_id_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__prot_seq_v_id_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX prot_seq_ver_id_fk_idx ON srch_rep_pept__prot_seq_v_id_tbl (protein_sequence_version_id ASC);
+CREATE INDEX prot_seq_ver_id_fk_idx ON srch_rep_pept__prot_seq_v_id_tbl (protein_sequence_version_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1530,9 +1524,9 @@ CREATE TABLE  srch_rep_pept__isotope_label_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_srch_rpppt_pptd_istplbl_istplbl_id_idx ON srch_rep_pept__isotope_label_tbl (isotope_label_id ASC);
+CREATE INDEX fk_srch_rpppt_pptd_istplbl_istplbl_id_idx ON srch_rep_pept__isotope_label_tbl (isotope_label_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__isotope_label_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__isotope_label_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1554,7 +1548,7 @@ CREATE TABLE  search__isotope_label_lookup_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search__isotope_label_lookup__isotope_label_id_fk_idx ON search__isotope_label_lookup_tbl (isotope_label_id ASC);
+CREATE INDEX search__isotope_label_lookup__isotope_label_id_fk_idx ON search__isotope_label_lookup_tbl (isotope_label_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1635,7 +1629,7 @@ CREATE TABLE  srch_protein_group__protein_version_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX srch_protn_grp_protn_v_tbl_protn_v_id_idx ON srch_protein_group__protein_version_tbl (protein_sequence_version_id ASC);
+CREATE INDEX srch_protn_grp_protn_v_tbl_protn_v_id_idx ON srch_protein_group__protein_version_tbl (protein_sequence_version_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1653,7 +1647,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE  search_data_lookup_parameters (
   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  hash_of_main_params VARCHAR(200) CHARACTER SET 'latin1' NOT NULL,
+  hash_of_main_params VARCHAR(200) CHARACTER SET 'latin1' COLLATE 'latin1_bin' NOT NULL,
   hash_collision_index INT NOT NULL COMMENT 'Increment for hash collisions',
   root_id_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'Project_search_ids, etc',
   root_ids_only_json MEDIUMTEXT NOT NULL COMMENT 'Just Root ids, in ARRAY JSON',
@@ -1672,9 +1666,9 @@ CREATE TABLE  search_data_lookup_parameters (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_data_lookup_parameters_type_id_fk_idx ON search_data_lookup_parameters (root_id_type_id ASC);
+CREATE INDEX search_data_lookup_parameters_type_id_fk_idx ON search_data_lookup_parameters (root_id_type_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX hash_hash_index ON search_data_lookup_parameters (hash_of_main_params ASC, hash_collision_index ASC);
+CREATE UNIQUE INDEX hash_hash_index ON search_data_lookup_parameters (hash_of_main_params ASC, hash_collision_index ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1692,7 +1686,7 @@ CREATE TABLE  search_data_lookup_parameters_assoc_project_search_id (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX search_data_lookup_parameters_assoc_project_search_id_fk_idx ON search_data_lookup_parameters_assoc_project_search_id (assoc_main_id ASC);
+CREATE INDEX search_data_lookup_parameters_assoc_project_search_id_fk_idx ON search_data_lookup_parameters_assoc_project_search_id (assoc_main_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1715,7 +1709,7 @@ CREATE TABLE  srch__prot_seq_v_id_tbl (
 ENGINE = InnoDB
 COMMENT = 'Each entry is a mapping of a search to a protein.\n';
 
-CREATE INDEX prot_seq_ver_id_fk_idx ON srch__prot_seq_v_id_tbl (protein_sequence_version_id ASC);
+CREATE INDEX prot_seq_ver_id_fk_idx ON srch__prot_seq_v_id_tbl (protein_sequence_version_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1743,7 +1737,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'records deleted from project_user_tbl';
 
-CREATE INDEX idx_shared_objects_user_id ON project_user_deleted_tbl (user_id ASC);
+CREATE INDEX idx_shared_objects_user_id ON project_user_deleted_tbl (user_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1764,7 +1758,7 @@ CREATE TABLE  psm_dynamic_modification_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_dynamic_modification_tbl (psm_id ASC);
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_dynamic_modification_tbl (psm_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1783,7 +1777,7 @@ CREATE TABLE  file_import_submit_import_program_key_per_user (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX submit_import_program_key ON file_import_submit_import_program_key_per_user (submit_import_program_key ASC);
+CREATE INDEX submit_import_program_key ON file_import_submit_import_program_key_per_user (submit_import_program_key ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1834,9 +1828,9 @@ CREATE TABLE  experiment_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_experiment_tbl_sdlp_id_idx ON experiment_tbl (assoc_search_data_lookup_parameters_id ASC);
+CREATE INDEX fk_experiment_tbl_sdlp_id_idx ON experiment_tbl (assoc_search_data_lookup_parameters_id ASC) VISIBLE;
 
-CREATE INDEX fk_experiment_tbl_prjct_id_idx ON experiment_tbl (project_id ASC);
+CREATE INDEX fk_experiment_tbl_prjct_id_idx ON experiment_tbl (project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1867,9 +1861,9 @@ CREATE TABLE  data_page_saved_view_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX data_page_saved_view_project_id_idx ON data_page_saved_view_tbl (project_id ASC);
+CREATE INDEX data_page_saved_view_project_id_idx ON data_page_saved_view_tbl (project_id ASC) VISIBLE;
 
-CREATE INDEX data_page_saved_view_experiment_id_idx ON data_page_saved_view_tbl (experiment_id ASC);
+CREATE INDEX data_page_saved_view_experiment_id_idx ON data_page_saved_view_tbl (experiment_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1887,7 +1881,7 @@ CREATE TABLE  data_page_saved_view_assoc_project_search_id_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX dt_pg_svd_vw_assc_prj_srch_id_assc_mn_id_idx ON data_page_saved_view_assoc_project_search_id_tbl (assoc_main_id ASC);
+CREATE INDEX dt_pg_svd_vw_assc_prj_srch_id_assc_mn_id_idx ON data_page_saved_view_assoc_project_search_id_tbl (assoc_main_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1909,7 +1903,7 @@ CREATE TABLE  conversion_program_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC);
+CREATE INDEX conv_pgm_search_id_fk_idx ON conversion_program_tbl (search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1927,7 +1921,7 @@ CREATE TABLE  experiment_assoc_project_search_id_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX experiment_assoc_prjct_srch_id_fk_idx ON experiment_assoc_project_search_id_tbl (assoc_main_id ASC);
+CREATE INDEX experiment_assoc_prjct_srch_id_fk_idx ON experiment_assoc_project_search_id_tbl (assoc_main_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1968,9 +1962,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__reporter_ion_mass_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1988,7 +1982,7 @@ CREATE TABLE  psm_reporter_ion_mass_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_reporter_ion_mass_tbl (psm_id ASC);
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_reporter_ion_mass_tbl (psm_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2006,7 +2000,7 @@ CREATE TABLE  data_page_saved_view_assoc_experiment_id_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX dt_pg_svd_vw_assc_exp_id_assc_mn_id_idx ON data_page_saved_view_assoc_experiment_id_tbl (assoc_main_id ASC);
+CREATE INDEX dt_pg_svd_vw_assc_exp_id_assc_mn_id_idx ON data_page_saved_view_assoc_experiment_id_tbl (assoc_main_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2023,7 +2017,7 @@ CREATE TABLE  url_shortener_associated_experiment_id_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX default_page_view_experiment_id_fk_idx ON url_shortener_associated_experiment_id_tbl (url_shortener_id ASC);
+CREATE INDEX default_page_view_experiment_id_fk_idx ON url_shortener_associated_experiment_id_tbl (url_shortener_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2041,7 +2035,7 @@ CREATE TABLE  psm_open_modification_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_tbl (psm_id ASC);
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_tbl (psm_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2061,7 +2055,7 @@ CREATE TABLE  psm_open_modification_position_tbl (
     ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
-CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_position_tbl (psm_open_modification_id ASC);
+CREATE INDEX psm_dynmc_modfctn__psm_id_fk_idx ON psm_open_modification_position_tbl (psm_open_modification_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2088,9 +2082,9 @@ DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin
 COMMENT = 'Unique open mod mass values at the psm level';
 
-CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__psm_open_mod_rounded_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2120,9 +2114,9 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (search_id ASC, reported_peptide_id ASC);
+CREATE INDEX srch_rep_pept_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (search_id ASC, reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON srch_rep_pept__open_mod_psm_unique_positions__lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2162,9 +2156,9 @@ CREATE TABLE  data_page_default_view_project_search_pages_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_data_pg_dt_vw_prj_srch_pgs_ps_id_idx ON data_page_default_view_project_search_pages_tbl (project_search_id ASC);
+CREATE INDEX fk_data_pg_dt_vw_prj_srch_pgs_ps_id_idx ON data_page_default_view_project_search_pages_tbl (project_search_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX proj_srch_id_bs_cntrllr_unique ON data_page_default_view_project_search_pages_tbl (project_search_id ASC, page_controller_path ASC);
+CREATE UNIQUE INDEX proj_srch_id_bs_cntrllr_unique ON data_page_default_view_project_search_pages_tbl (project_search_id ASC, page_controller_path ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2188,9 +2182,9 @@ CREATE TABLE  data_page_default_view_experiment_pages_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX fk_data_page_dflt_vw_exp_pgs_tbl_exp_id_idx ON data_page_default_view_experiment_pages_tbl (experiment_id ASC);
+CREATE INDEX fk_data_page_dflt_vw_exp_pgs_tbl_exp_id_idx ON data_page_default_view_experiment_pages_tbl (experiment_id ASC) VISIBLE;
 
-CREATE UNIQUE INDEX exp_id_bs_cntrllr_unique ON data_page_default_view_experiment_pages_tbl (experiment_id ASC, page_controller_path ASC);
+CREATE UNIQUE INDEX exp_id_bs_cntrllr_unique ON data_page_default_view_experiment_pages_tbl (experiment_id ASC, page_controller_path ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2283,11 +2277,11 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, protein_sequence_version_id ASC);
+CREATE INDEX search_id_protein_seq_version_id ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, protein_sequence_version_id ASC) VISIBLE;
 
-CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_peptide_protein_residue_different_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_fk_idx ON protein_coverage_peptide_protein_residue_different_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search_id_reppeptide_id_pept_pos ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, reported_peptide_id ASC, peptide_position ASC);
+CREATE INDEX search_id_reppeptide_id_pept_pos ON protein_coverage_peptide_protein_residue_different_tbl (search_id ASC, reported_peptide_id ASC, peptide_position ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2330,7 +2324,7 @@ CREATE TABLE  search_rep_pept_sub_group_tbl (
 ENGINE = InnoDB
 COMMENT = 'search sub groups per reported peptide id';
 
-CREATE INDEX srch_rep_pept_sub_grp_rp_p_fk_idx ON search_rep_pept_sub_group_tbl (reported_peptide_id ASC);
+CREATE INDEX srch_rep_pept_sub_grp_rp_p_fk_idx ON search_rep_pept_sub_group_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2377,7 +2371,7 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
-CREATE INDEX search__rep_pept_sg__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept_sub_group_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX search__rep_pept_sg__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept_sub_group_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2404,9 +2398,9 @@ CREATE TABLE  search__rep_pept_sub_group__best_psm_value_lookup_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (reported_peptide_id ASC);
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC);
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2432,7 +2426,7 @@ CREATE TABLE  project_search_sub_group_tbl (
 ENGINE = InnoDB
 COMMENT = 'Sub Group User Editable Data';
 
-CREATE INDEX project_search_sub_group_prj_search_fk_idx ON project_search_sub_group_tbl (search_id ASC);
+CREATE INDEX project_search_sub_group_prj_search_fk_idx ON project_search_sub_group_tbl (search_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2476,7 +2470,7 @@ CREATE TABLE  project_level_default_fltr_ann_cutoffs_tbl (
 ENGINE = InnoDB
 COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
 
-CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_tbl (project_id ASC);
+CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_tbl (project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2519,7 +2513,7 @@ CREATE TABLE  project_level_default_fltr_ann_cutoffs_prev_tbl (
 ENGINE = InnoDB
 COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
 
-CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_prev_tbl (project_id ASC);
+CREATE INDEX fk_prjt_lvl_dflt_fltr_ann_cutoffs_tbl_prj_id_fk_idx ON project_level_default_fltr_ann_cutoffs_prev_tbl (project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2538,7 +2532,7 @@ CREATE TABLE  project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk_idx ON project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl (project_id ASC);
+CREATE INDEX prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk_idx ON project_level_default_fltr_ann_cutoffs_cutoff_as_string_prev_tbl (project_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2546,14 +2540,14 @@ CREATE INDEX prj_lvl_dfltfltr_ann_ctffs_as_str_prev_fk_idx ON project_level_defa
 -- -----------------------------------------------------
 CREATE TABLE  project_search_id_code_tbl (
   project_search_id INT(10) UNSIGNED NOT NULL COMMENT 'Not Foreign Key',
-  project_search_id_code VARCHAR(20) CHARACTER SET 'latin1' NOT NULL,
+  project_search_id_code VARCHAR(20) CHARACTER SET 'latin1' COLLATE 'latin1_bin' NOT NULL,
   search_id MEDIUMINT UNSIGNED NOT NULL,
   project_id__at_time_of_insert INT UNSIGNED NOT NULL,
   created_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (project_search_id))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX project_search_id_code_UNIQUE ON project_search_id_code_tbl (project_search_id_code ASC);
+CREATE UNIQUE INDEX project_search_id_code_UNIQUE ON project_search_id_code_tbl (project_search_id_code ASC) VISIBLE;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
