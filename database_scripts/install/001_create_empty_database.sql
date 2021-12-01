@@ -1101,7 +1101,7 @@ CREATE TABLE  file_import_tracking_status_history_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   file_import_tracking_id INT UNSIGNED NOT NULL,
   status_id TINYINT UNSIGNED NOT NULL,
-  status_timestamp TIMESTAMP NOT NULL,
+  status_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT file_imprt_trkng_stats_hist_id
     FOREIGN KEY (file_import_tracking_id)
