@@ -303,7 +303,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 
 			BasicDataSource dataSource = new BasicDataSource();
 			dataSource.setUrl("jdbc:mysql://" + dbURL + ":" + dbPort + "/" + databaseName +
-					"?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=false" );  // removed autoReconnect=true&
+					"?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=false&allowPublicKeyRetrieval=true" );  // removed autoReconnect=true&
 
 			dataSource.setUsername( username );
 			dataSource.setPassword( password );
