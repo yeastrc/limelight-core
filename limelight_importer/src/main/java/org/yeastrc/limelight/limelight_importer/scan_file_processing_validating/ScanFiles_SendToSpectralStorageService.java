@@ -18,13 +18,12 @@
 package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating;
 
 import java.io.File;
-import java.util.Map;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchScanFileImporterDAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_SendFile;
@@ -50,13 +49,12 @@ public class ScanFiles_SendToSpectralStorageService {
 	 * @throws Exception 
 	 */
 	public void sendScanFilesToSpectralStorageService(
-			Map<String, ScanFileFileContainer> scanFileFileContainer_KeyFilename,
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
 		
-		for ( Map.Entry<String, ScanFileFileContainer> scanFileFileContainerEntry : scanFileFileContainer_KeyFilename.entrySet() ) {
+		for ( ScanFileFileContainer scanFileFileContainer : scanFileFileContainer_AllEntries.get_ScanFileFileContainer_List() ) {
 			
-			String scanFilename = scanFileFileContainerEntry.getKey();
-			ScanFileFileContainer scanFileFileContainer = scanFileFileContainerEntry.getValue();
+			String scanFilename = scanFileFileContainer.getScanFilename();
 			
 			SearchScanFileEntry searchScanFileEntry = searchScanFileEntry_AllEntries.get_From_ScanFilename( scanFilename );
 			if ( searchScanFileEntry == null ) {

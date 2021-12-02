@@ -43,6 +43,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProj
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.process_file_import_submission.ProcessFileImportSubmission;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
@@ -257,7 +258,7 @@ public class LimelightImporterProgram {
 			
 			Integer projectId = null;
 			Boolean noScanFilesCommandLineOptChosen = null;
-			Map<String,ScanFileFileContainer> scanFileFileContainer_KeyFilename = null;
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 			
 			File mainXMLFileToImport = null;
 			List<File> scanFileList = null;
@@ -359,10 +360,6 @@ public class LimelightImporterProgram {
 
 				if ( inputScanFileStringVector != null && ( ! inputScanFileStringVector.isEmpty() ) ) {
 
-					scanFileFileContainer_KeyFilename = new HashMap<>();
-					
-					Set<String> scanFilenames_NoSuffixes = new HashSet<>();
-
 					//  For return result
 					scanFileList = new ArrayList<>( inputScanFileStringVector.size() );
 
@@ -411,7 +408,7 @@ public class LimelightImporterProgram {
 
 						String scanFilename = scanFile.getName();
 
-						if ( scanFileFileContainer_KeyFilename.containsKey( scanFilename ) ) {
+						if ( scanFileFileContainer_AllEntries.get_From_ScanFilename( scanFilename ) != null ) {
 							System.err.println( "scan filename listed more than once: " + scanFilename );
 							System.err.println( "" );
 							System.err.println( FOR_HELP_STRING );
@@ -423,7 +420,7 @@ public class LimelightImporterProgram {
 						{
 							String scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
 							
-							if ( ! scanFilenames_NoSuffixes.add( scanFilename_NoSuffix ) ) {
+							if ( scanFileFileContainer_AllEntries.get_From_ScanFilename_NoSuffix( scanFilename_NoSuffix ) != null ) {
 								System.err.println( "scan filename (without Suffix) listed more than once: " 
 										+ scanFilename
 										+ ", scanFilename without Suffix: "
@@ -435,12 +432,12 @@ public class LimelightImporterProgram {
 								return importResults;  //  EARLY EXIT
 							}
 						}
-						
+
 						ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 						scanFileFileContainer.setScanFile( scanFile );
 						scanFileFileContainer.setScanFilename( scanFilename );
-
-						scanFileFileContainer_KeyFilename.put( scanFilename, scanFileFileContainer );
+						
+						scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
 
 					}
 				}
@@ -520,7 +517,7 @@ public class LimelightImporterProgram {
 								importDirectoryOverrideValue, 
 								mainXMLFileToImport, 
 								limelightInputForImportParam, 
-								scanFileFileContainer_KeyFilename,
+								scanFileFileContainer_AllEntries,
 								skipPopulatingPathOnSearchLineOptChosen
 								);
 				

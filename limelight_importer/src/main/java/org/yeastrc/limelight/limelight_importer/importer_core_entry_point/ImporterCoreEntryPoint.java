@@ -48,6 +48,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProj
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimelightXML_Statistics;
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateAnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatchedProteinSection;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
@@ -86,7 +87,7 @@ public class ImporterCoreEntryPoint {
 			String importDirectoryOverrideValue,
 			File mainXMLFileToImport,
 			LimelightInput limelightInputForImportParam,
-			Map<String,ScanFileFileContainer> scanFileFileContainer_KeyFilename,
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			Boolean skipPopulatingPathOnSearchLineOptChosen
 			) throws Exception, LimelightImporterProjectNotAllowImportException, LimelightImporterLimelightXMLDeserializeFailException {
 		
@@ -140,7 +141,7 @@ public class ImporterCoreEntryPoint {
 				projectId, 
 				userIdInsertingSearch,
 				limelightInputObjectContainer, 
-				scanFileFileContainer_KeyFilename, 
+				scanFileFileContainer_AllEntries, 
 				importDirectory, 
 				skipPopulatingPathOnSearchLineOptChosen );
 		
@@ -230,7 +231,7 @@ public class ImporterCoreEntryPoint {
 			int projectId,
 			Integer userIdInsertingSearch,
 			LimelightInputObjectContainer limelightInputObjectContainer,
-			Map<String,ScanFileFileContainer> scanFileFileContainer_KeyFilename,
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
 			Boolean skipPopulatingPathOnSearchLineOptChosen
 			) throws Exception, LimelightImporterProjectNotAllowImportException {
@@ -289,7 +290,7 @@ public class ImporterCoreEntryPoint {
 					projectId, 
 					userIdInsertingSearch,
 					limelightInputForImport, 
-					scanFileFileContainer_KeyFilename,
+					scanFileFileContainer_AllEntries,
 					importDirectory, 
 					skipPopulatingPathOnSearchLineOptChosen
 					);

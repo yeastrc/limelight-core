@@ -17,11 +17,10 @@
 */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_SendToSpectralStorageService;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ public class Process_ScanFilenames_ScanFiles {
 	public SearchScanFileEntry_AllEntries process_ScanFilenames_ScanFiles( 
 			int searchId,
 			Set<String> scanFilenamesLimelightXMLInputList, 
-			Map<String, ScanFileFileContainer> scanFileFileContainer_KeyFilename ) throws Exception {
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries ) throws Exception {
 		
 		if ( scanFilenamesLimelightXMLInputList == null || scanFilenamesLimelightXMLInputList.isEmpty() ) {
 			return null;  // EARLY RETURN
@@ -59,10 +58,10 @@ public class Process_ScanFilenames_ScanFiles {
 				CreateSaveSearchScanFileEntries.getInstance()
 				.createSaveSearchScanFileEntries( searchId, scanFilenamesLimelightXMLInputList );
 		
-		if ( scanFileFileContainer_KeyFilename != null && ( ! scanFileFileContainer_KeyFilename.isEmpty() ) ) {
+		if ( scanFileFileContainer_AllEntries.hasAnyEntries() ) {
 			
 			ScanFiles_SendToSpectralStorageService.getInstance()
-			.sendScanFilesToSpectralStorageService( scanFileFileContainer_KeyFilename, searchScanFileEntry_AllEntries );
+			.sendScanFilesToSpectralStorageService( scanFileFileContainer_AllEntries, searchScanFileEntry_AllEntries );
 		}
 		
 		log.warn( "INFO:  !!  Finished processing Scan Files.");

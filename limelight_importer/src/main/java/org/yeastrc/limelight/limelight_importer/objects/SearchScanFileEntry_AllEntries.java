@@ -103,7 +103,7 @@ public class SearchScanFileEntry_AllEntries {
 	 */
 	public SearchScanFileEntry get_From_ScanFilename_NoSuffix( String scanFilename_NoSuffix ) {
 		
-		SearchScanFileEntry entry = searchScanFileEntry_KeyScanFilename.get( scanFilename_NoSuffix );
+		SearchScanFileEntry entry = searchScanFileEntry_KeyScanFilename_NoSuffix.get( scanFilename_NoSuffix );
 		return entry;
 	}
 	

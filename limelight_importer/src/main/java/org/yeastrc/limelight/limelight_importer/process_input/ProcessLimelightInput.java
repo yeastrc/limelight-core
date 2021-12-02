@@ -40,7 +40,7 @@ import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
-import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.post_insert_search_processing.PerformPostInsertSearchProcessing;
@@ -93,7 +93,7 @@ public class ProcessLimelightInput {
 			int projectId,
 			Integer userIdInsertingSearch,
 			LimelightInput limelightInput,
-			Map<String,ScanFileFileContainer> scanFileFileContainer_KeyFilename,
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
 			Boolean skipPopulatingPathOnSearchLineOptChosen
 			) throws Exception {
@@ -104,7 +104,7 @@ public class ProcessLimelightInput {
 		try {
 			Set<String> scanFilenamesLimelightXMLInputSet =
 					PreprocessValidate_ScanFiles_ScanFilenames.getInstance()
-					.preprocessValidate_ScanFiles_ScanFilenames( limelightInput, scanFileFileContainer_KeyFilename );
+					.preprocessValidate_ScanFiles_ScanFilenames( limelightInput, scanFileFileContainer_AllEntries );
 			
 			Set<String> searchSubGroupnamesLimelightXMLInputSet =
 					PreprocessValidate_SearchSubGroups.getInstance()
@@ -150,7 +150,7 @@ public class ProcessLimelightInput {
 			} else {
 				searchDTO.setHasScanFilenames( false );
 			}
-			if ( scanFileFileContainer_KeyFilename == null || scanFileFileContainer_KeyFilename.isEmpty() ) {
+			if ( ! scanFileFileContainer_AllEntries.hasAnyEntries() ) {
 				searchDTO.setHasScanData( false );
 			} else {
 				searchDTO.setHasScanData( true );
@@ -194,7 +194,7 @@ public class ProcessLimelightInput {
 			
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries = 
 					Process_ScanFilenames_ScanFiles.getInstance()
-					.process_ScanFilenames_ScanFiles( searchId, scanFilenamesLimelightXMLInputSet, scanFileFileContainer_KeyFilename );
+					.process_ScanFilenames_ScanFiles( searchId, scanFilenamesLimelightXMLInputSet, scanFileFileContainer_AllEntries );
 			
 			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel = null;
 

@@ -19,10 +19,8 @@ package org.yeastrc.limelight.limelight_importer.process_file_import_submission;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
@@ -38,6 +36,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErro
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
@@ -181,13 +180,13 @@ public class ProcessFileImportSubmission {
 		FileImportTrackingSingleFileDAO_Importer.getInstance()
 		.updateFileSizeSHA1Sum(mainXMLFileToImportFileSize, SHA1Sum, limelightXMLFileDBRecord.getId() );
 		
-		Map<String,ScanFileFileContainer> scanFileFileContainer_KeyFilename = null;
+		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 		
 		if ( scanFilesDBRecords.isEmpty() ) {
 			// noScanFilesCommandLineOptChosen = true; 
 		} else {
 			
-			scanFileFileContainer_KeyFilename = new HashMap<>();
+			scanFileList = new ArrayList<>( scanFilesDBRecords.size() );
 			
 			Set<String> scanFilenameInUpload_NoSuffixes = new HashSet<>();
 			
@@ -220,8 +219,12 @@ public class ProcessFileImportSubmission {
 					}
 					ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 					scanFileFileContainer.setScanFile( scanFile );
+					scanFileFileContainer.setScanFilename( scanFile.getName() );
 					scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
-					scanFileFileContainer_KeyFilename.put( scanFile.getName(), scanFileFileContainer );
+					scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
+
+					scanFileList.add(scanFile);
+					
 				} else {
 					
 					//  Standard processing to handle scan file has been copied to the server via the web app
@@ -260,14 +263,14 @@ public class ProcessFileImportSubmission {
 					}
 					ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 					scanFileFileContainer.setScanFile( scanFile );
+					scanFileFileContainer.setScanFilename( scanFilenameInUpload );
 					scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
-					scanFileFileContainer_KeyFilename.put( scanFilenameInUpload, scanFileFileContainer );
+					scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
+					
+					scanFileList.add(scanFile);
 				}
 			}					
-			scanFileList = new ArrayList<>( scanFileFileContainer_KeyFilename.size() );
-			for ( Map.Entry<String, ScanFileFileContainer> scanFileFileContainerEntry : scanFileFileContainer_KeyFilename.entrySet() ) {
-				scanFileList.add( scanFileFileContainerEntry.getValue().getScanFile() );
-			}
+		
 			importResults.setScanFileList( scanFileList );
 
 		}
@@ -281,7 +284,7 @@ public class ProcessFileImportSubmission {
 						importDirectoryOverrideValue, 
 						mainXMLFileToImport, 
 						null, // LimelightInputForImportParam, 
-						scanFileFileContainer_KeyFilename,
+						scanFileFileContainer_AllEntries,
 						skipPopulatingPathOnSearchLineOptChosen
 						);
 		

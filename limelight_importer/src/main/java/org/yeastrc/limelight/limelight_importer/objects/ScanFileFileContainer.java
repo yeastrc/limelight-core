@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_importer.objects;
 
 import java.io.File;
 
+import org.apache.commons.io.FilenameUtils;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 
 /**
@@ -28,16 +29,20 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dt
 public class ScanFileFileContainer {
 
 	private File scanFile;
-	
-	/**
-	 * Populated when scan file specified on command line
-	 */
 	private String scanFilename;
+	
+	private String scanFilename_NoSuffix;  // Computed in setScanFile
+
 
 	/**
 	 * Populated when running the Import from the Run Importer Process
 	 */
 	private FileImportTrackingSingleFileDTO scanFileDBRecord;
+
+	/**
+	 * constructor
+	 */
+	public ScanFileFileContainer() {}
 	
 
 	public File getScanFile() {
@@ -45,11 +50,12 @@ public class ScanFileFileContainer {
 	}
 
 	public void setScanFile(File scanFile) {
+		
 		this.scanFile = scanFile;
 	}
 
 	/**
-	 * Populated when scan file specified on command line
+	 * 
 	 * @return
 	 */
 	public String getScanFilename() {
@@ -57,9 +63,16 @@ public class ScanFileFileContainer {
 	}
 
 	public void setScanFilename(String scanFilename) {
+		
+		this.scanFilename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+		
 		this.scanFilename = scanFilename;
 	}
 
+	public String getScanFilename_NoSuffix() {
+		return scanFilename_NoSuffix;  //  Getter Only
+	}
+	
 	/**
 	 * Populated when running the Import from the Run Importer Process
 	 * @return
