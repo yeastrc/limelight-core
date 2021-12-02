@@ -22,6 +22,13 @@
 	-- remove 'limelight.' in 'TRIGGER'
 
 
+--   !!!  IMPORTANT:  Replace "CREATE SCHEMA ..."  with these 2 lines.  Required for Docker implementation where limelight db already created.
+	
+--  CREATE SCHEMA IF NOT EXISTS limelight;
+--  ALTER DATABASE limelight CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+
 --  SQL from MySQL Workbench Forward Engineering
 
 -- MySQL Workbench Forward Engineering
@@ -33,8 +40,14 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema limelight
 -- -----------------------------------------------------
+
+
+--   !!!  IMPORTANT:  Replace "CREATE SCHEMA ..."  with these 2 lines.  Required for Docker implementation where limelight db already created.
+
 CREATE SCHEMA IF NOT EXISTS limelight;
 ALTER DATABASE limelight CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
 
 USE limelight ;
 
