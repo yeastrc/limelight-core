@@ -514,6 +514,30 @@ const _create_DataTable_Rows = function(
 
 	for ( const psmPeptideEntryAfterProcessingEntry of psmPeptideEntryAfterProcessingEntries ) {
 
+		let openModificationMassAndPosition_Entry : LorikeetSpectrumViewer_DataFromServer_OpenModification_Position_SubPart_Data = undefined;
+
+		if ( psmPeptideEntryAfterProcessingEntry.psmObject.openModificationMassAndPositionsList && psmPeptideEntryAfterProcessingEntry.psmObject.openModificationMassAndPositionsList.length > 0 ) {
+
+			if ( psmPeptideEntryAfterProcessingEntry.psmObject.openModificationMassAndPositionsList.length > 1 ) {
+				const msg = "( psmPeptideEntryAfterProcessingEntry.psmObject.openModificationMassAndPositionsList.length > 1 )";
+				console.warn(msg);
+				throw Error(msg);
+			}
+
+
+			const openModificationMassAndPositions = psmPeptideEntryAfterProcessingEntry.psmObject.openModificationMassAndPositionsList[0];
+			if ( openModificationMassAndPositions.positionEntries_Optional && openModificationMassAndPositions.positionEntries_Optional.length > 0 ) {
+
+				if ( openModificationMassAndPositions.positionEntries_Optional.length > 1 ) {
+					const msg = "In '_create_DataTable_Rows(...)' ( openModificationMassAndPositions.positionEntries_Optional.length > 1 )";
+					console.warn(msg);
+					throw Error(msg);
+				}
+
+				openModificationMassAndPosition_Entry = openModificationMassAndPositions.positionEntries_Optional[0];
+			}
+		}
+
 		const dataTable_DataRowEntry = _create_Single_DataTable_Row({
 
 			isPutIn_Groups: false,
@@ -521,7 +545,7 @@ const _create_DataTable_Rows = function(
 			psmId_Selection,
 			openModPosition_Selection,
 			psmPeptideEntryAfterProcessingEntry,
-			openModificationMassAndPosition_Entry: undefined,
+			openModificationMassAndPosition_Entry,
 			psmAnnotationTypesForPsmListEntries_DisplayOrder,
 			anyPsmsHave_precursor_M_Over_Z,
 			anyPsmsHave_retentionTime,
