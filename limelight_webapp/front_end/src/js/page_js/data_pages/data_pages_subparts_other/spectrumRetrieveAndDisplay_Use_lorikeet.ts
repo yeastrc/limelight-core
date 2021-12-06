@@ -122,10 +122,14 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		
 		 // MUST open window before make AJAX Call.  This is a Browser Security requirement
 		//  window.open(...): Must run in code directly triggered by click event
-		
+
+		//  WAS
+		// const newWindow = window.open( newWindowURL,
+		// 		"_blank",
+		// 		strWindowFeatures );
+
 		const newWindow = window.open( newWindowURL,
-				"_blank",
-				strWindowFeatures );
+			"_blank" );
 
 		return;
 		

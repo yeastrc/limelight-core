@@ -74,9 +74,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_F
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmsForScanNumberScanFilenameIdSearchId_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Peptide_List_Display_With_SpectrumViewer_Item;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_response_parts.PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
@@ -299,22 +296,23 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 					psmsWithSameScanNumberScanFilenameIdSearchIdSearcher
 					.getPsmsWithSameScanNumberScanFilenameIdSearchId( psmIdFromWebserviceRequest );
 			
-    		List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> resultList = new ArrayList<>( psmsFromDBList.size() );
+    		List<WebserviceResult_Item> resultList = new ArrayList<>( psmsFromDBList.size() );
     		
     		for ( PsmsForScanNumberScanFilenameIdSearchId_Result psmFromDBItem : psmsFromDBList ) {
     			
     			final long psmIdForDbItem = psmFromDBItem.getPsmId(); 
     			final int reportedPeptideId = psmFromDBItem.getReportedPeptideId();
     			
-    			PSM_Peptide_List_Display_With_SpectrumViewer_Item result = new PSM_Peptide_List_Display_With_SpectrumViewer_Item();
+    			WebserviceResult_Item result = new WebserviceResult_Item();
     			
-    			result.setPsmId( psmFromDBItem.getPsmId() );
-    			result.setCharge( psmFromDBItem.getCharge() );
+    			result.psmId = psmFromDBItem.getPsmId();
+    			result.charge = psmFromDBItem.getCharge();
+    			result.reportedPeptideId = reportedPeptideId;
     			
-    			result.setPsm_precursor_RetentionTime( psmFromDBItem.getPrecursor_RetentionTime() );
-    			result.setPsm_precursor_MZ( psmFromDBItem.getPrecursor_MZ() );
+    			result.psm_precursor_RetentionTime = psmFromDBItem.getPrecursor_RetentionTime();
+    			result.psm_precursor_MZ = psmFromDBItem.getPrecursor_MZ();
     			
-    			result.setScanNumber( psmFromDBItem.getScanNumber() );
+    			result.scanNumber = psmFromDBItem.getScanNumber();
 
     			PsmDTO psmDTOForFoundPsmId = psmDAO.getById( psmIdForDbItem );
     			if ( psmDTOForFoundPsmId == null ) {
@@ -323,8 +321,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
         			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
     			
-    			result.setHasReporterIons( psmDTOForFoundPsmId.isHasReporterIons() );
-    			result.setHasOpenModifications( psmDTOForFoundPsmId.isHasOpenModifications() );
+    			result.hasReporterIons = psmDTOForFoundPsmId.isHasReporterIons();
+    			result.hasOpenModifications = psmDTOForFoundPsmId.isHasOpenModifications();
     			
     			ReportedPeptideDTO reportedPeptideDTO = reportedPeptideDAO.getForId( reportedPeptideId );
     			if ( reportedPeptideDTO == null ) {
@@ -332,7 +330,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     				log.error( msg );
     			    throw new LimelightInternalErrorException( msg );
     			}
-    			result.setReportedPeptideString( reportedPeptideDTO.getSequence() );
+    			result.reportedPeptideString = reportedPeptideDTO.getSequence();
     			
     			String peptideSequence = 
     					peptideStringForSearchIdReportedPeptideIdSearcher
@@ -343,7 +341,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     				log.error( msg );
     			    throw new LimelightInternalErrorException( msg );
     			}
-    			result.setPeptideSequence( peptideSequence );
+    			result.peptideSequence = peptideSequence;
 
     	        // Variable Mods, N and C terminus Mods
     			
@@ -417,14 +415,14 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     				}
     			}
     	        
-    	        result.setVariableMods( variableMods );
+    	        result.variableMods = variableMods;
 
-    	        result.setNtermMod( ntermMod );
-    	        result.setCtermMod( ctermMod );
+    	        result.ntermMod = ntermMod;
+    	        result.ctermMod = ctermMod;
 
     			
-    			Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap = new HashMap<>();
-    			
+    	        List<AnnotationDataItem_ForPage> psmAnnotationList = null;
+    	        
     			//   TODO  Optimize this
     			{
     				//  Add in PSM Annotation data for Ann Type Display
@@ -437,6 +435,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     							psm_FilterableAnnotationData_Searcher
     							.getPsmFilterableAnnotationDTOList( 
     									psmList, annTypeIdsToRetrieve );
+    					
+    					psmAnnotationList = new ArrayList<>( psmFilterableAnnotationDTOList.size() );
 
     					for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
 
@@ -444,7 +444,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     						annotationDataItem_ForPage.setAnnotationTypeId( item.getAnnotationTypeId() );
     						annotationDataItem_ForPage.setValueString( item.getValueString() );
     						annotationDataItem_ForPage.setValueDouble( item.getValueDouble() );
-    						psmAnnotationMap.put( item.getAnnotationTypeId(), annotationDataItem_ForPage );
+    						psmAnnotationList.add( annotationDataItem_ForPage );
     					}
     				}
     				
@@ -460,12 +460,12 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     						AnnotationDataItem_ForPage annotationDataItem_ForPage = new AnnotationDataItem_ForPage();
     						annotationDataItem_ForPage.setAnnotationTypeId( item.getAnnotationTypeId() );
     						annotationDataItem_ForPage.setValueString( item.getValueString() );
-    						psmAnnotationMap.put( item.getAnnotationTypeId(), annotationDataItem_ForPage );
+    						psmAnnotationList.add( annotationDataItem_ForPage );
     					}
     				}
     			}
     			
-    			result.setPsmAnnotationMap( psmAnnotationMap );
+    			result.psmAnnotationList = psmAnnotationList;
     			
     			resultList.add( result );
     		}
@@ -498,7 +498,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
      * @return 
      * @throws SQLException 
      */
-    private void populateReporterIonMassesForPSMs( List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> psm_ResultList ) throws SQLException {
+    private void populateReporterIonMassesForPSMs( List<WebserviceResult_Item> psm_ResultList ) throws SQLException {
 
     	if ( psm_ResultList.isEmpty() ) {
     		//  No Input entries so return 
@@ -507,7 +507,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     	
     	List<Long> psmIds_ContainingReporterIonMasses = new ArrayList<>( psm_ResultList.size() );
     	
-    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psm_ResultList ) {
+    	for ( WebserviceResult_Item entry : psm_ResultList ) {
     		if ( entry.isHasReporterIons() ) {
     			psmIds_ContainingReporterIonMasses.add( entry.getPsmId() );
     		}
@@ -532,7 +532,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     		reporterIonMassesSet_For_PsmId.add( item.getReporterIonMass() );
     	}
     	
-    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psm_ResultList ) {
+    	for ( WebserviceResult_Item entry : psm_ResultList ) {
     		if ( entry.isHasReporterIons() ) {
     			Long psmId = entry.getPsmId();
     			Set<BigDecimal> reporterIonMassesSet_For_PsmId = reporterIonMassesSet_Key_PsmId.get( psmId );
@@ -543,7 +543,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			if ( reporterIonMassesSet_For_PsmId != null ) {
     				List<BigDecimal> reporterIonMassesList = new ArrayList<>( reporterIonMassesSet_For_PsmId );
     				Collections.sort( reporterIonMassesList );
-    				entry.setReporterIonMassList( reporterIonMassesList );
+    				entry.reporterIonMassList = reporterIonMassesList;
     			}
     		}
     	}
@@ -557,7 +557,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
      * @return 
      * @throws SQLException 
      */
-    private void populateOpenModificationMassesForPSMs( List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> psmWebDisplayList ) throws SQLException {
+    private void populateOpenModificationMassesForPSMs( List<WebserviceResult_Item> psmWebDisplayList ) throws SQLException {
 
     	if ( psmWebDisplayList.isEmpty() ) {
     		//  No Input entries so return 
@@ -566,7 +566,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     	
     	List<Long> psmIds_Containing_OpenModification_Masses = new ArrayList<>( psmWebDisplayList.size() );
     	
-    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psmWebDisplayList ) {
+    	for ( WebserviceResult_Item entry : psmWebDisplayList ) {
     		if ( entry.isHasOpenModifications() ) {
     			psmIds_Containing_OpenModification_Masses.add( entry.getPsmId() );
     		}
@@ -599,19 +599,19 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 
     	//  Copy into List in Map in Map
     	
-    	Map<Long, Map<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>>> openModificationPositionsList_Key_OpenModMass_Key_PsmId = new HashMap<>();
+    	Map<Long, Map<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>>> openModificationPositionsList_Key_OpenModMass_Key_PsmId = new HashMap<>();
     	
     	for ( PsmOpenModificationDTO item : openModificationMassesSearcherResult ) {
     		
     		Long psmOpenModificationId = item.getId();
     		Long psmId = item.getPsmId();
     		Double openModMass = item.getMass();
-    		Map<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    		Map<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
     		if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
     			openModificationPositionsList_Key_OpenModMass_For_PsmId = new HashMap<>();
     			openModificationPositionsList_Key_OpenModMass_Key_PsmId.put( psmId, openModificationPositionsList_Key_OpenModMass_For_PsmId );
     		}
-    		List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart> openModificationPositionsList = openModificationPositionsList_Key_OpenModMass_For_PsmId.get( openModMass );
+    		List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart> openModificationPositionsList = openModificationPositionsList_Key_OpenModMass_For_PsmId.get( openModMass );
     		if ( openModificationPositionsList == null ) {
     			openModificationPositionsList = new ArrayList<>();
     			openModificationPositionsList_Key_OpenModMass_For_PsmId.put( openModMass, openModificationPositionsList );
@@ -621,29 +621,29 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     		List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_MapEntry = psmOpenModificationPositionDTOList_Map_Key_psmOpenModificationId.get( psmOpenModificationId );
     		if ( psmOpenModificationPositionDTOList_MapEntry != null ) {
     			for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTOList_Entry : psmOpenModificationPositionDTOList_MapEntry ) {
-    				PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart webserviceResponse_PSM_OpenModItem_PositionItem = new PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart();
-    				webserviceResponse_PSM_OpenModItem_PositionItem.setPosition( psmOpenModificationPositionDTOList_Entry.getPosition() );
-    				webserviceResponse_PSM_OpenModItem_PositionItem.setIs_N_Terminal( psmOpenModificationPositionDTOList_Entry.isIs_N_Terminal() );
-    				webserviceResponse_PSM_OpenModItem_PositionItem.setIs_C_Terminal( psmOpenModificationPositionDTOList_Entry.isIs_C_Terminal() );
+    				WebserviceResult_Item_OpenMod__OpenModPosition_SubPart webserviceResponse_PSM_OpenModItem_PositionItem = new WebserviceResult_Item_OpenMod__OpenModPosition_SubPart();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.position = psmOpenModificationPositionDTOList_Entry.getPosition();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.is_N_Terminal = psmOpenModificationPositionDTOList_Entry.isIs_N_Terminal();
+    				webserviceResponse_PSM_OpenModItem_PositionItem.is_C_Terminal = psmOpenModificationPositionDTOList_Entry.isIs_C_Terminal();
     				openModificationPositionsList.add( webserviceResponse_PSM_OpenModItem_PositionItem );
     			}
     		}
     	}
     	
-    	for ( PSM_Peptide_List_Display_With_SpectrumViewer_Item entry : psmWebDisplayList ) {
+    	for ( WebserviceResult_Item entry : psmWebDisplayList ) {
     		if ( entry.isHasOpenModifications() ) {
     			Long psmId = entry.getPsmId();
-    			Map<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
+    			Map<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>> openModificationPositionsList_Key_OpenModMass_For_PsmId = openModificationPositionsList_Key_OpenModMass_Key_PsmId.get( psmId );
     			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId == null ) {
     				log.warn( "No entry in openModificationPositionsList_Key_OpenModMass_Key_PsmId when entry.isHasOpenModifications() is true. psmId: "
     						+ psmId );
     			}
     			if ( openModificationPositionsList_Key_OpenModMass_Key_PsmId != null ) {
-    				List<Map.Entry<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>>> openModificationMassesMapEntriesList = new ArrayList<>( openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet() );
-    				Collections.sort(openModificationMassesMapEntriesList, new Comparator<Map.Entry<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>>>() {
+    				List<Map.Entry<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>>> openModificationMassesMapEntriesList = new ArrayList<>( openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet() );
+    				Collections.sort(openModificationMassesMapEntriesList, new Comparator<Map.Entry<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>>>() {
 
 						@Override
-						public int compare(Entry<Double, List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>> o1, Entry<Double, List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>> o2) {
+						public int compare(Entry<Double, List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>> o1, Entry<Double, List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>> o2) {
 							if ( o1.getKey() < o2.getKey() )
 								return -1;
 							if ( o1.getKey() > o2.getKey() )
@@ -651,15 +651,15 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 							return 0;
 						}
 					});
-    				List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart> openModificationMassAndPositionsList = new ArrayList<>( openModificationMassesMapEntriesList.size() );
+    				List<WebserviceResult_Item_OpenMod_SubPart> openModificationMassAndPositionsList = new ArrayList<>( openModificationMassesMapEntriesList.size() );
 
-    				for ( Map.Entry<Double,List<PSM_Peptide_List_Display_With_SpectrumViewer_OpenModPosition_SubPart>> mapEntry : openModificationMassesMapEntriesList ) {
+    				for ( Map.Entry<Double,List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart>> mapEntry : openModificationMassesMapEntriesList ) {
     					
-    					PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart webserviceResponse_PSM_OpenModItem = new PSM_Peptide_List_Display_With_SpectrumViewer_OpenMod_SubPart();
-    					webserviceResponse_PSM_OpenModItem.setOpenModMass( mapEntry.getKey() );
+    					WebserviceResult_Item_OpenMod_SubPart webserviceResponse_PSM_OpenModItem = new WebserviceResult_Item_OpenMod_SubPart();
+    					webserviceResponse_PSM_OpenModItem.openModMass = mapEntry.getKey();
     					if ( ! mapEntry.getValue().isEmpty() ) {
     						//  Only populate if not empty
-    						webserviceResponse_PSM_OpenModItem.setPositionEntries_Optional( mapEntry.getValue() );
+    						webserviceResponse_PSM_OpenModItem.positionEntries_Optional = mapEntry.getValue();
     					}
     					openModificationMassAndPositionsList.add( webserviceResponse_PSM_OpenModItem );
     				}
@@ -670,7 +670,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     				}
     				
     				if ( ! openModificationMassAndPositionsList.isEmpty() ) {
-    					entry.setOpenModificationMassAndPositionsList( openModificationMassAndPositionsList );
+    					entry.openModificationMassAndPositionsList = openModificationMassAndPositionsList;
     				}
     			}
     		}
@@ -721,12 +721,135 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
      */
     public static class WebserviceResult {
 
-    	List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> resultList;
+    	List<WebserviceResult_Item> resultList;
 
-		public List<PSM_Peptide_List_Display_With_SpectrumViewer_Item> getResultList() {
+		public List<WebserviceResult_Item> getResultList() {
 			return resultList;
 		}
 
+    }
+
+
+    /**
+     * 
+     *
+     */
+    public static class WebserviceResult_Item {
+
+    	private long psmId;
+
+    	private int charge;
+    	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
+    	private BigDecimal psm_precursor_MZ;            // precursor_m_z
+
+    	private int scanNumber;
+
+    	private List<AnnotationDataItem_ForPage> psmAnnotationList;
+
+    	private int reportedPeptideId;
+
+    	private String reportedPeptideString;
+    	private String peptideSequence;
+
+    	private List<BigDecimal> reporterIonMassList;
+    	private boolean hasReporterIons;
+
+    	private List<WebserviceResult_Item_OpenMod_SubPart> openModificationMassAndPositionsList;
+    	private boolean hasOpenModifications;
+
+
+    	/**
+    	 * Variable Mods / Dynamic Mods
+    	 */
+    	private List<LorikeetVariableMod> variableMods; 
+
+    	private double ntermMod = 0; // additional mass to be added to the n-term
+    	private double ctermMod = 0; // additional mass to be added to the c-term
+    	
+    	private String label;		// stable isotope label name
+    	
+		public long getPsmId() {
+			return psmId;
+		}
+		public int getCharge() {
+			return charge;
+		}
+		public BigDecimal getPsm_precursor_RetentionTime() {
+			return psm_precursor_RetentionTime;
+		}
+		public BigDecimal getPsm_precursor_MZ() {
+			return psm_precursor_MZ;
+		}
+		public int getScanNumber() {
+			return scanNumber;
+		}
+		public int getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+		public String getReportedPeptideString() {
+			return reportedPeptideString;
+		}
+		public String getPeptideSequence() {
+			return peptideSequence;
+		}
+		public List<BigDecimal> getReporterIonMassList() {
+			return reporterIonMassList;
+		}
+		public boolean isHasReporterIons() {
+			return hasReporterIons;
+		}
+		public List<WebserviceResult_Item_OpenMod_SubPart> getOpenModificationMassAndPositionsList() {
+			return openModificationMassAndPositionsList;
+		}
+		public boolean isHasOpenModifications() {
+			return hasOpenModifications;
+		}
+		public List<LorikeetVariableMod> getVariableMods() {
+			return variableMods;
+		}
+		public double getNtermMod() {
+			return ntermMod;
+		}
+		public double getCtermMod() {
+			return ctermMod;
+		}
+		public String getLabel() {
+			return label;
+		}
+		public List<AnnotationDataItem_ForPage> getPsmAnnotationList() {
+			return psmAnnotationList;
+		}
+
+    }
+
+    public static class WebserviceResult_Item_OpenMod_SubPart {
+
+    	private double openModMass;
+    	private List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart> positionEntries_Optional;
+    	
+		public double getOpenModMass() {
+			return openModMass;
+		}
+		public List<WebserviceResult_Item_OpenMod__OpenModPosition_SubPart> getPositionEntries_Optional() {
+			return positionEntries_Optional;
+		}
+    }
+    
+    public static class WebserviceResult_Item_OpenMod__OpenModPosition_SubPart {
+    	
+    	private int position;
+    	private boolean is_N_Terminal;
+    	private boolean is_C_Terminal;
+    	
+		public int getPosition() {
+			return position;
+		}
+		public boolean isIs_N_Terminal() {
+			return is_N_Terminal;
+		}
+		public boolean isIs_C_Terminal() {
+			return is_C_Terminal;
+		}
     }
 }
 
