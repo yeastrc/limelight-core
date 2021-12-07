@@ -671,15 +671,15 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
 
         return (
-            <div style={ { marginTop: 10 } }>
-                <div>
+            <React.Fragment>
+                <div className="  filter-common-filter-label ">
                     <span  style={ { fontWeight: "bold" } } >
                         Current peptide filters:
                     </span>
                     <span> </span>
-                    <span style={ { fontSize: 12 } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
+                    <span style={ { fontSize: 12, fontWeight: "normal" } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
                 </div>
-                <div style={ { marginLeft: 80 } }>
+                <div className=" filter-common-selection-block " style={ { marginTop: 4, marginBottom: 6, marginLeft: 6 } }>
 
                     { ( selectedSearchSubGroupsList ) ?
                         <div>
@@ -762,7 +762,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     }
 
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

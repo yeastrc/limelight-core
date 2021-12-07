@@ -2006,20 +2006,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
                     </div>  {/* END: Main Content above Main QC data like charts, etc  */}
 
-                    { ( this.state.peptideFiltersDisplay_ComponentData ) ? (
-                        <div >
-
-                            {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                            <PeptideFiltersDisplay
-                                peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                                clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                            />
-
-                        </div>
-
-                    ): null }
-
                 </div>  {/* Close display of data above Main QC data like charts, etc */}
 
                 {/* Display of Main QC data like charts, etc  */}
@@ -2130,6 +2116,20 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 <div style={ { } } > {/*marginBottom: 10*/}
 
                     <div className=" filter-common-block-selection-container-block no-section-labels ">
+
+                        { ( this.state.peptideFiltersDisplay_ComponentData ) ? (
+                            <React.Fragment >
+
+                                {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+
+                                <PeptideFiltersDisplay
+                                    peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                                    clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
+                                />
+
+                            </React.Fragment>
+
+                        ): null }
 
                         <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                             displayData={ this.state.searchSubGroup_PropValue }

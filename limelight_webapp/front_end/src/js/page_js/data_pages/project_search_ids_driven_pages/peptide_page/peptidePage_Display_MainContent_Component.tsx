@@ -125,6 +125,7 @@ import {
     ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback,
     ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component";
+import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 
 
 ////
@@ -2404,9 +2405,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                                 showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
 
-                                peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                                clearAllSelections_Callback={ this._clearAllSelections_BindThis }
-
                                 create_GeneratedReportedPeptideListData_Result={ this.state.create_GeneratedReportedPeptideListData_Result }
 
                                 searchSubGroup_Ids_Selected={ searchSubGroup_Ids_Selected }
@@ -2482,6 +2480,15 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     <div className=" filter-common-block-selection-container-block no-section-labels ">
 
+                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+
+                        <PeptideFiltersDisplay
+                            peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                            clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
+                        />
+
+                        {/* Filter On ... */}
+
                         <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                             displayData={ this.state.searchSubGroup_PropValue }
                             searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
@@ -2547,8 +2554,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     </div>
 
                 </div>
-
-                {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
 
             </React.Fragment>
         )

@@ -123,6 +123,7 @@ import {
     ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
 } from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 
 
 /////////////////////////
@@ -2478,6 +2479,15 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                             <div className=" filter-common-block-selection-container-block no-section-labels ">
 
+                                {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+
+                                <PeptideFiltersDisplay
+                                    peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                                    clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
+                                />
+
+                                {/* Filter On ... */}
+
                                 <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                                     displayData={ this.state.searchSubGroup_PropValue }
                                     searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
@@ -2539,8 +2549,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                 updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
                             />
                         </div>
-
-                        {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
 
@@ -2704,9 +2712,6 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                         showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                         showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
-
-                        peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                        clearAllSelections_Callback={ this._clearAllSelections_BindThis }
 
                         create_GeneratedReportedPeptideListData_Result={ this.state.create_GeneratedReportedPeptideListData_Result }
 

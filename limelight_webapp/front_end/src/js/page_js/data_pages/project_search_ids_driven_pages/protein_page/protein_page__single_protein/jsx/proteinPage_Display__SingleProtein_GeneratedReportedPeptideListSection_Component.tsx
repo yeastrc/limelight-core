@@ -30,7 +30,6 @@ import {
     GetDataTableDataObjects_MultipleSearch_SingleProtein_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
-import {PeptideFiltersDisplay_ComponentData} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData";
 import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component} from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
 
 
@@ -41,9 +40,6 @@ export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSecti
  * 
  */
 export interface ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_Props {
-
-    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
-    clearAllSelections_Callback : () => void
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For displaying the peptide list in sub component
 
@@ -130,9 +126,6 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
                 <div style={ { position: "relative" }}>
                     <ReportedPeptideList_Component
 
-                        peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
-                        clearAllSelections_Callback={ this.props.clearAllSelections_Callback }
-
                         create_GeneratedReportedPeptideListData_Result={ this.props.create_GeneratedReportedPeptideListData_Result }
 
                         searchSubGroup_Ids_Selected={ this.props.searchSubGroup_Ids_Selected }
@@ -166,9 +159,6 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
  * 
  */
 export interface ReportedPeptideList_Component_Props {
-
-    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
-    clearAllSelections_Callback : () => void
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For displaying the peptide list in sub component
 
@@ -226,9 +216,6 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         }
 
         if ( this.props.create_GeneratedReportedPeptideListData_Result !== nextProps.create_GeneratedReportedPeptideListData_Result ) {
-            return true;
-        }
-        if ( this.props.peptideFiltersDisplay_ComponentData !== nextProps.peptideFiltersDisplay_ComponentData ) {
             return true;
         }
         return false;
@@ -355,17 +342,6 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             searchDataLookupParameters_Root={ this.props.searchDataLookupParamsRoot }
                             dataPageStateManager_DataFrom_Server={ this.props.dataPageStateManager }
                         />
-                    </div>
-
-                    <div >
-
-                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                        <PeptideFiltersDisplay
-                            peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
-                            clearAllFiltersClickHandler={ this.props.clearAllSelections_Callback }
-                        />
-
                     </div>
 
                     <div style={ { marginTop: 10 } }>

@@ -45,9 +45,6 @@ import {CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_Sin
  */
 export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component_Props {
 
-    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
-    clearAllSelections_Callback : () => void
-
     showProteins? : boolean
 
     //  Required when showProteins is true.  For Peptide Page
@@ -192,10 +189,8 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
 
             <div style={ { position: "relative" }}>
                 <div style={ { position: "relative" }}>
-                    <ReportedPeptideList_Component
 
-                        peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
-                        clearAllSelections_Callback={ this.props.clearAllSelections_Callback }
+                    <ReportedPeptideList_Component
 
                         create_GeneratedReportedPeptideListData_Result={ this.props.create_GeneratedReportedPeptideListData_Result }
 
@@ -229,9 +224,6 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
  * 
  */
 export interface ReportedPeptideList_Component_Props {
-
-    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData
-    clearAllSelections_Callback : () => void
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For dispaying the peptide list in sub component
     
@@ -294,9 +286,6 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         }
 
         if ( this.props.create_GeneratedReportedPeptideListData_Result !== nextProps.create_GeneratedReportedPeptideListData_Result ) {
-            return true;
-        }
-        if ( this.props.peptideFiltersDisplay_ComponentData !== nextProps.peptideFiltersDisplay_ComponentData ) {
             return true;
         }
 
@@ -373,17 +362,6 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                             <span style={ { fontWeight: "bold" } }>Peptides:</span>
                             <span >(Click row to expand.)</span>
                         </span>
-                    </div>
-
-                    <div >
-
-                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                        <PeptideFiltersDisplay
-                            peptideFiltersDisplay_ComponentData={ this.props.peptideFiltersDisplay_ComponentData }
-                            clearAllFiltersClickHandler={ this.props.clearAllSelections_Callback }
-                        />
-
                     </div>
 
                     <div style={ { marginTop: 10 } }>

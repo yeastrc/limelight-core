@@ -124,6 +124,7 @@ import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
 import {ProteinExperimentPage_Display_SingleProtein} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/js/proteinExperimentPage_Display_SingleProtein";
 import {ProteinExperimentPage_Display__singleProteinRow_ClickHandler_Params} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperimentPage_DisplayData_ProteinList__Create_ProteinList_DataTable_RootTableDataObject";
+import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 
 /////////////////////////
 
@@ -2609,9 +2610,6 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                             <ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSection_Component
 
-                                peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                                clearAllSelections_Callback={ this._clearAllSelections_BindThis }
-
                                 showProteins={ true }
                                 proteinName_Clicked_Callback_Function={ this._proteinName_Clicked_Callback_Function_BindThis }
 
@@ -2699,6 +2697,15 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
                     <div className=" filter-common-block-selection-container-block no-section-labels ">
 
+                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+
+                        <PeptideFiltersDisplay
+                            peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
+                            clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
+                        />
+
+                        {/* Filter On ... */}
+
                         <ModificationMass_UserSelections_Root
                             modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                             openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
@@ -2757,15 +2764,6 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                     </div>
 
                 </div>
-
-                {/*  <PeptideFiltersDisplay>  Moved to under "Peptides:(Click row to expand.)"  */}
-
-                {/* Display of User Selected Modifications and Protein Positions filtering on  */}
-
-                {/* <PeptideFiltersDisplay
-                    peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
-                    clearAllFiltersClickHandler={ this._clearAllSelections_BindThis }
-                /> */}
 
             </React.Fragment>
         )
