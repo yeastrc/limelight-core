@@ -35,6 +35,12 @@ export const proteinPage_ProteinList__GroupProteins_Remove_NotPassesFilter_Remov
     }): ProteinDisplayData_From_createProteinDisplayData_ProteinList {
 
     if ( ! proteinDisplayData.proteinGroupsList ) {
+
+        if ( proteinDisplayData.proteinList.length === 0 ) {
+            //  No entries in proteinList so just return
+            return proteinDisplayData;
+        }
+
         const msg = "( ! proteinDisplayData.proteinGroupsList )";
         console.warn(msg);
         throw Error(msg);

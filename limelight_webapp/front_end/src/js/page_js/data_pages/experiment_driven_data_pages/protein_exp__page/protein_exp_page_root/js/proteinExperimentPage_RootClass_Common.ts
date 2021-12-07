@@ -66,6 +66,7 @@ import {
 import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass";
 import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
+import {ReporterIonMass_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/reporter_ions_user_selections/js/reporterIonMass_UserSelections_StateObject";
 
 /**
  * 
@@ -83,6 +84,8 @@ export class ProteinExperimentPage_RootClass_Common {
 	private _proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass;
 	private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
+
+	private _reporterIonMass_UserSelections_StateObject = new ReporterIonMass_UserSelections_StateObject();
 	private _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
 	private _proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 	private _proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
@@ -166,6 +169,12 @@ export class ProteinExperimentPage_RootClass_Common {
 			const encodedStateData = this._proteinExperimentPageRoot_CentralStateManagerObjectClass.getModsSelectedEncodedStateData();
 			if ( encodedStateData ) {
 				this._modificationMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+		{
+			const encodedStateData = this._proteinExperimentPageRoot_CentralStateManagerObjectClass.getReporterIonMassesSelectedEncodedStateData();
+			if ( encodedStateData ) {
+				this._reporterIonMass_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
 
@@ -343,6 +352,7 @@ export class ProteinExperimentPage_RootClass_Common {
 
 					modificationMass_UserSelections_StateObject: this._modificationMass_UserSelections_StateObject,
 					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+					reporterIonMass_UserSelections_StateObject: this._reporterIonMass_UserSelections_StateObject,
 
 					proteinGrouping_CentralStateManagerObjectClass : this._proteinGrouping_CentralStateManagerObjectClass,
 					proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject,
