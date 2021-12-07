@@ -310,6 +310,9 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
             })
 
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
         const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =
             ProteinViewPage_DisplayData_ProteinList__Main_Component_nonClass_Functions.compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
                 propsValue : props.propsValue
@@ -354,7 +357,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             loadedDataCommonHolder,
             saveView_Component_React,
             saveView_Component_Props_Prop,
-            proteinListColumnsDisplayContents__showSequenceCoverageOption
+            proteinListColumnsDisplayContents__showSequenceCoverageOption,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
         }
     }
 
@@ -2256,7 +2260,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                             modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                             openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                             modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
-                            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ null /* this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class */ }
+                            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                             modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component

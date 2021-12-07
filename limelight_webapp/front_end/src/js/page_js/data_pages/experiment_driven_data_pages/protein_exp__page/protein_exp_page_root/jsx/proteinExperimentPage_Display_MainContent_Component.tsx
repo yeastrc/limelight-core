@@ -318,6 +318,9 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
             })
 
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
         const proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue = new ProteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue({
             displayOnly : false,
             proteinGrouping_CentralStateManagerObjectClass : props.propsValue.proteinGrouping_CentralStateManagerObjectClass,
@@ -405,6 +408,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             proteinPage_ProteinGroupingFilterSelection_Component_Root_Props_PropValue,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: new Map(), //  Will be replaced later
             loadedDataCommonHolder,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
             saveView_Component_React,
             saveView_Component_Props_Prop
         }
@@ -2100,7 +2104,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                         openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                         modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
-                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ null /* this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class */ }
+                        modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                         modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
