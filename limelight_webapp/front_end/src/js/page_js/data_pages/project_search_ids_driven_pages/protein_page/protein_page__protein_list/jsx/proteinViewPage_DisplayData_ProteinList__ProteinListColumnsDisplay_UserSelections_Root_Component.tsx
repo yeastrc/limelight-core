@@ -206,6 +206,16 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <label>
                             <input
                                 type="checkbox"
+                                checked={this.props.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected()}
+                                onChange={this._psmCount_Selected_Changed_BindThis}
+                            />
+                            <span>PSM Count</span>
+                        </label>
+                    </span>
+                    <span style={{paddingRight: 10, whiteSpace: "nowrap"}}>
+                        <label>
+                            <input
+                                type="checkbox"
                                 checked={this.props.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() }
                                 onChange={this._nsaf_Selected_Changed_BindThis}
                             />
@@ -213,16 +223,6 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         </label>
                     </span>
 
-                    <span style={{paddingRight: 10, whiteSpace: "nowrap"}}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={this.props.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected()}
-                                onChange={this._psmCount_Selected_Changed_BindThis}
-                            />
-                            <span>PSM Count</span>
-                        </label>
-                    </span>
                     <span style={{paddingRight: 10, whiteSpace: "nowrap"}}>
                         <label>
                             <input

@@ -64,6 +64,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
             //  For Single Search with Sub Groups OR Experiment OR search count > 1
 
             this._nsaf_Selected = true;
+            this._psmCount_Selected = true;
 
         } else {
 

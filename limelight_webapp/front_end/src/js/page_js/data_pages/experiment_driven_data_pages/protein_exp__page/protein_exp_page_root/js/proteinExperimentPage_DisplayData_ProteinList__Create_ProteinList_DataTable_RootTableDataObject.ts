@@ -207,31 +207,6 @@ const _getProteinDataTableColumns = function(
         }
     }
 
-    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
-
-        //  NSAF
-
-        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
-
-            const condition = conditionsEntry.condition;
-
-            const displayName = 'NSAF (' + condition.label + ")";
-
-            const column = new DataTable_Column({
-                id :           'nsaf_' + condition.id,
-                displayName,
-                width :        80,
-                sortable : true,
-                onlyShow_ValueDisplay_FirstRowOfGroup: false
-            });
-
-            columns.push( column );
-
-            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-        }
-    }
-
     if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
 
         //  PSM Counts
@@ -248,6 +223,31 @@ const _getProteinDataTableColumns = function(
                 width :        80,
                 sortable : true,
                 onlyShow_ValueDisplay_FirstRowOfGroup: true
+            });
+
+            columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+    }
+
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
+
+        //  NSAF
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            const displayName = 'NSAF (' + condition.label + ")";
+
+            const column = new DataTable_Column({
+                id :           'nsaf_' + condition.id,
+                displayName,
+                width :        80,
+                sortable : true,
+                onlyShow_ValueDisplay_FirstRowOfGroup: false
             });
 
             columns.push( column );
@@ -610,6 +610,37 @@ const _createProteinItem_DataTableEntry = function(
         }
     }
 
+    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
+
+        // Per group:  numPsms
+
+        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
+
+            const condition = conditionsEntry.condition;
+
+            let numPsms = 0;  // default to zero if no entry
+
+            const proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );
+            if ( proteinItemRecord ) {
+                numPsms = proteinItemRecord.numPsms;
+            }
+
+            const valueDisplay = numPsms.toLocaleString();
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : numPsms
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+    }
+
     if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
 
         // Per group:  NSAF
@@ -634,37 +665,6 @@ const _createProteinItem_DataTableEntry = function(
                 searchTableData,
                 valueDisplay,
                 valueSort : nsaf
-            })
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
-
-    }
-
-    if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
-
-        // Per group:  numPsms
-
-        for ( const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group ) {
-
-            const condition = conditionsEntry.condition;
-
-            let numPsms = 0;  // default to zero if no entry
-
-            const proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );
-            if ( proteinItemRecord ) {
-                numPsms = proteinItemRecord.numPsms;
-            }
-
-            const valueDisplay = numPsms.toLocaleString();
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort : numPsms
             })
             columnEntries.push( columnEntry );
 
