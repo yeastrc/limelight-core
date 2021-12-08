@@ -32,8 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -60,6 +58,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Forbidden_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -928,12 +927,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 * @param reportedPeptideId
 	 * @param psmWebDisplayList
 	 * @throws SQLException
+	 * @throws LimelightWebappDataException 
 	 */
 	private void transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
 			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds, 
 			Integer reportedPeptideId,
 			List<PsmWebDisplayWebServiceResult> psmWebDisplayList,
-			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException {
+			Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId ) throws SQLException, LimelightWebappDataException {
 		
 		if ( psmWebDisplayList.isEmpty() ) {
 			
@@ -1079,8 +1079,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
      * @param psmWebDisplayList
      * @return 
      * @throws SQLException 
+     * @throws LimelightWebappDataException 
      */
-    private void populateOpenModificationMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException {
+    private void populateOpenModificationMassesForPSMs( List<PsmEntry_InternalClass> psmEntry_InternalClass_List ) throws SQLException, LimelightWebappDataException {
 
     	if ( psmEntry_InternalClass_List.isEmpty() ) {
     		//  No Input entries so return 
@@ -1158,74 +1159,70 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     						+ psmId );
     			}
     			if ( openModificationPositionsList_Key_OpenModMass_For_PsmId != null ) {
-    				List<Map.Entry<Double,List<PsmOpenModificationPositionDTO>>> openModificationMassesMapEntriesList = new ArrayList<>( openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet() );
-    				//  Sort list of Map entries on Map Key
-    				Collections.sort(openModificationMassesMapEntriesList, new Comparator<Map.Entry<Double,List<PsmOpenModificationPositionDTO>>>() {
-						@Override
-						public int compare(Entry<Double, List<PsmOpenModificationPositionDTO>> o1, Entry<Double, List<PsmOpenModificationPositionDTO>> o2) {
-							if ( o1.getKey() < o2.getKey() )
-								return -1;
-							if ( o1.getKey() > o2.getKey() )
-								return 1;
-							return 0;
-						}
-					});
+
+    				if ( openModificationPositionsList_Key_OpenModMass_For_PsmId.isEmpty() ) {
+    					String msg = "openModificationPositionsList_Key_OpenModMass_For_PsmId.isEmpty() ):  Open Mod mass Map Empty for PSM.  MUST NOT be at this point.  psmId: " + psmId;
+    					log.error(msg);
+    					throw new LimelightWebappDataException(msg);
+    				}
     				
+    				if ( openModificationPositionsList_Key_OpenModMass_For_PsmId.size() > 1 ) {
+    					String msg = "( openModificationPositionsList_Key_OpenModMass_For_PsmId.size() > 1 ): More than 1 Open Mod mass for PSM.  psmId: " + psmId;
+    					log.error(msg);
+    					throw new LimelightWebappDataException(msg);
+    				}
+    				
+    				Map.Entry<Double,List<PsmOpenModificationPositionDTO>> openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry = openModificationPositionsList_Key_OpenModMass_For_PsmId.entrySet().iterator().next();
+
+					Double openModMass = openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry.getKey();
+					
     				//  Process Map entries into result display string for Open Mod Masses and positions
     				
-    				psmEntry_InternalClass_Entry.openModificationMassString = ""; //  Default
+    				psmEntry_InternalClass_Entry.openModificationMassString = openModMass.toString();
+    				psmEntry_InternalClass_Entry.openModificationMassPositions = ""; //  Default
     				
     				//  
-    				StringBuilder openModificationMassStringSB = new StringBuilder( 100000 );
+    				StringBuilder openModificationMassPositionsSB = new StringBuilder( 100000 );
 
-    				for ( Map.Entry<Double,List<PsmOpenModificationPositionDTO>> mapEntry : openModificationMassesMapEntriesList ) {
-    					
-    					if ( openModificationMassStringSB.length() != 0 ) {
-    						//  Not first entry, add comma delim
-    						openModificationMassStringSB.append( ", " );
+    				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_ForEntry = openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry.getValue();
+    				if ( psmOpenModificationPositionDTOList_ForEntry != null && ( ! psmOpenModificationPositionDTOList_ForEntry.isEmpty() ) ) {
+    					boolean is_N_Terminal = false;
+    					boolean is_C_Terminal = false;
+    					List<Integer> positions = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() );
+    					for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : psmOpenModificationPositionDTOList_ForEntry ) {
+    						if ( psmOpenModificationPositionDTO.isIs_N_Terminal() ) {
+    							is_N_Terminal = true;
+    						} else if ( psmOpenModificationPositionDTO.isIs_C_Terminal() ) {
+    							is_C_Terminal = true;
+    						}
+    						if ( ( ! psmOpenModificationPositionDTO.isIs_N_Terminal() ) && ( ! psmOpenModificationPositionDTO.isIs_C_Terminal() ) ) {
+    							positions.add( psmOpenModificationPositionDTO.getPosition() );
+    						}
     					}
-    					Double openModMass = mapEntry.getKey();
-    					openModificationMassStringSB.append( openModMass );
-    					List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_ForEntry = mapEntry.getValue();
-    					if ( psmOpenModificationPositionDTOList_ForEntry != null && ( ! psmOpenModificationPositionDTOList_ForEntry.isEmpty() ) ) {
-    						openModificationMassStringSB.append( "(" ); // put positions in '(' ')'
-    						boolean is_N_Terminal = false;
-    						boolean is_C_Terminal = false;
-    						List<Integer> positions = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() );
-    						for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : psmOpenModificationPositionDTOList_ForEntry ) {
-    							if ( psmOpenModificationPositionDTO.isIs_N_Terminal() ) {
-    								is_N_Terminal = true;
-    							} else if ( psmOpenModificationPositionDTO.isIs_C_Terminal() ) {
-    								is_C_Terminal = true;
-    							}
-    							if ( ( ! psmOpenModificationPositionDTO.isIs_N_Terminal() ) && ( ! psmOpenModificationPositionDTO.isIs_C_Terminal() ) ) {
-    								positions.add( psmOpenModificationPositionDTO.getPosition() );
-    							}
+    					Collections.sort( positions );
+    					boolean firstPositionEntry = true;
+    					if ( is_N_Terminal ) {
+    						firstPositionEntry = false;
+    						openModificationMassPositionsSB.append( "n-term" );
+    					}
+    					for ( Integer position : positions ) {
+    						if ( ! firstPositionEntry ) {
+    							openModificationMassPositionsSB.append( ", " );
     						}
-    						Collections.sort( positions );
-    						boolean firstPositionEntry = true;
-    						if ( is_N_Terminal ) {
-    							firstPositionEntry = false;
-    							openModificationMassStringSB.append( "n-term" );
+    						firstPositionEntry = false;
+    						openModificationMassPositionsSB.append( position );
+    					}
+    					if ( is_C_Terminal ) {
+    						if ( ! firstPositionEntry ) {
+    							openModificationMassPositionsSB.append( ", " );
     						}
-    						for ( Integer position : positions ) {
-    							if ( ! firstPositionEntry ) {
-    								openModificationMassStringSB.append( ", " );
-    							}
-    							firstPositionEntry = false;
-    							openModificationMassStringSB.append( position );
-    						}
-    						if ( is_C_Terminal ) {
-    							if ( ! firstPositionEntry ) {
-    								openModificationMassStringSB.append( ", " );
-    							}
-    							openModificationMassStringSB.append( "c-term" );
-    						}
-    						openModificationMassStringSB.append( ")" ); // put positions in '(' ')'
+    						openModificationMassPositionsSB.append( "c-term" );
     					}
     				}
+    				
+    				String openModificationMassPositions = openModificationMassPositionsSB.toString();
 
-    				psmEntry_InternalClass_Entry.openModificationMassString = openModificationMassStringSB.toString();
+    				psmEntry_InternalClass_Entry.openModificationMassPositions = openModificationMassPositions;
     			}
     		}
     	}
@@ -1492,7 +1489,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modifications\tSCAN FILENAME" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -1719,6 +1716,14 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 									writer.write( String.valueOf( openModificationMassString ) );
 								}
 							}
+							writer.write( "\t" );
+							{
+								String openModificationMassPositions = psmEntry_InternalClass.openModificationMassPositions;
+								if ( openModificationMassPositions != null ) {
+
+									writer.write( String.valueOf( openModificationMassPositions ) );
+								}
+							}
 
 							writer.write( "\t" );
 							if ( psmWebDisplay.getScanFilename() != null ) {
@@ -1871,6 +1876,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 		private List<BigDecimal> reporterIonMassList;
 		private String openModificationMassString;
+		private String openModificationMassPositions;
 	}
 	
 	/**
