@@ -133,7 +133,7 @@ To generate the Limelight XML file, enter the following:
 
     .. code-block:: bash
 
-      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum-percolator-to-limelight:4.1.1 -c ./treated-Magnum.conf -p ./percout.xml -f ./SearchDatabase.fasta -m ./treated.pep.xml -o treated.limelight.xml
+      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum-percolator-to-limelight:v4.1.1 -c ./treated-Magnum.conf -p ./percout.xml -f ./SearchDatabase.fasta -m ./treated.pep.xml -o treated.limelight.xml
 
 Here is that same command in multi-line format with comments. Note the command below won't run as-is, it is only
 meant to show you which parameters are being used in the event that you need to change the values.
@@ -257,7 +257,7 @@ Convert Untreated Results to Limelight XML
 
     .. code-block:: bash
 
-      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum-percolator-to-limelight:4.1.1 -c ./untreated-Magnum.conf -p ./percout.xml -f ./SearchDatabase.fasta -m ./untreated.pep.xml -o untreated.limelight.xml
+      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/magnum-percolator-to-limelight:v4.1.1 -c ./untreated-Magnum.conf -p ./percout.xml -f ./SearchDatabase.fasta -m ./untreated.pep.xml -o untreated.limelight.xml
 
 You should now have a ``untreated.limelight.xml`` file that will be used to import the results into Limelight.
 
