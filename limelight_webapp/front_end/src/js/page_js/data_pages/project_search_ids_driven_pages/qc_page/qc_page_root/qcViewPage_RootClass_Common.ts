@@ -361,6 +361,8 @@ export class QcViewPage_RootClass_Common {
 			peptideSequence_UserSelections_StateObject: this._peptideSequence_UserSelections_StateObject,
 			proteinPositionFilter_UserSelections_StateObject : this._proteinPositionFilter_UserSelections_StateObject,
 
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : undefined,  // Currently NOT USED on QC Page
+
 			generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject,
 
 			singleProtein_CentralStateManagerObject: this._singleProtein_CentralStateManagerObject,

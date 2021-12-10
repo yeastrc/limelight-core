@@ -57,6 +57,7 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateMa
 import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
 import {proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass";
 import {open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex} from "page_js/common_all_pages/limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 
 
 /**
@@ -112,6 +113,8 @@ export class ProteinPage_Display__SingleProtein_Root {
 	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
 
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
+
+	private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject;
 
 	//     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transferred to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
 	
@@ -318,6 +321,22 @@ export class ProteinPage_Display__SingleProtein_Root {
             }
         }
 
+		{ // this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.getEncodedStateData();
+				this._singleProtein_CentralStateManagerObject.set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData } );
+			}
+			this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject = new PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._singleProtein_CentralStateManagerObject.get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
         //  Create for Initial Load
 		const generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({ valueChangedCallback : undefined });
@@ -601,6 +620,7 @@ export class ProteinPage_Display__SingleProtein_Root {
 			reporterIonMass_UserSelections_StateObject : this._reporterIonMass_UserSelections_StateObject ,
 			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject ,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
 			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory
 		};

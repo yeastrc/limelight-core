@@ -325,7 +325,6 @@ const compute_FullPage_Except_SearchDetails = function(
     searchSubGroup_Ids_Selected : Set<number>
     searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
     searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
-    psmCountForUnfiltered : number,
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
     reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
@@ -396,13 +395,10 @@ const compute_FullPage_Except_SearchDetails = function(
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
         getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
 
-    const psmCountForUnfiltered = _computePsmCountForUnfiltered({ projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds });
-
     return {
         searchSubGroup_Ids_Selected,
         searchSubGroup_Are_All_SearchSubGroupIds_Selected,
         searchSubGroup_PropValue,
-        psmCountForUnfiltered,
         modificationMass_UserSelections_ComponentData,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
         reporterIons_UserSelections_ComponentData,
@@ -553,52 +549,6 @@ const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = functi
 
     return searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue;
 }
-
-/**
- * Compute PSM Count for All Project Search Ids - No Filtering for any user choices
- */
-const _computePsmCountForUnfiltered = function({ 
-
-    projectSearchIds, 
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds 
-} : {
-    projectSearchIds : Array<number>,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-
-}) : number {
-
-    let psmCount = 0;
-
-    for ( const projectSearchId of projectSearchIds ) {
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-        if ( ! loadedDataPerProjectSearchIdHolder ) {
-            //  No entry for this projectSearchId
-            continue; // EARLY CONTINUE
-        }
-
-        const reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
-
-        const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
-        if ( ! numPsmsForReportedPeptideIdMap ) {
-            //  No entry 
-            continue; // EARLY CONTINUE
-        }
-
-        for ( const reportedPeptideId of reportedPeptideIds ) {
-            const numPsmsForReportedPeptideId = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
-            if ( numPsmsForReportedPeptideId ) {
-                psmCount += numPsmsForReportedPeptideId;
-            }
-        }
-    }
-
-    return psmCount;
-}
-
-
-
-
 
 ///////////////////////////
 

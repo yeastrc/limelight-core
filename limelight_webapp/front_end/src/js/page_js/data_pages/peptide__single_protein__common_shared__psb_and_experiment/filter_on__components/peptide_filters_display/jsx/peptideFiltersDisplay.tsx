@@ -21,9 +21,6 @@ import {ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein} f
 
 const _PROTEIN_NAME_TRUNCATION = 20;
 
-
-
-
 /**
  * 
  */
@@ -137,6 +134,19 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 isAny_proteinPositionFilterSelections = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject.isAnySelections();
             }
 
+            let peptidePage_PSM_CountFilter_HasValue = false;
+            {
+                //  Test here is ONLY for whether or not to render the component.  The State Object value is tested again below for showing the specific value on the page
+
+                if ( this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ) {
+                    const peptidePage_PSM_CountFilter_Local = this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter();
+                    if ( peptidePage_PSM_CountFilter_Local !== undefined && peptidePage_PSM_CountFilter_Local !== null ) {
+                        // Only display has value
+                        peptidePage_PSM_CountFilter_HasValue = true
+                    }
+                }
+            }
+
             if ( ( searchSubGroup_Are_All_SearchSubGroupIds_Selected )
                 && ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
                 && ( ! is_Any_VariableModification_Selected )
@@ -147,6 +157,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 && ( ! peptideUniqueSelected )
                 && ( ! peptideSearchString )
                 && ( ! isAny_proteinPositionFilterSelections )
+                && ( ! peptidePage_PSM_CountFilter_HasValue )
             ) {
 
                 // Nothing to display
@@ -669,6 +680,18 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             )
         }
 
+        let peptidePage_PSM_CountFilter : number = undefined;
+        {
+            //  Test here is ONLY for showing the specific value on the page.  The State Object value is tested above for whether or not to render the component
+
+            if ( this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ) {
+                const peptidePage_PSM_CountFilter_Local = this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter();
+                if ( peptidePage_PSM_CountFilter_Local !== undefined && peptidePage_PSM_CountFilter_Local !== null ) {
+                    // Only display has value
+                    peptidePage_PSM_CountFilter = peptidePage_PSM_CountFilter_Local
+                }
+            }
+        }
 
         return (
             <React.Fragment>
@@ -679,7 +702,13 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     <span> </span>
                     <span style={ { fontSize: 12, fontWeight: "normal" } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
                 </div>
-                <div className=" filter-common-selection-block " style={ { marginTop: 4, marginBottom: 6, marginLeft: 6 } }>
+                <div className=" filter-common-selection-block  " style={ { marginTop: 4, marginBottom: 10, marginLeft: 6 } }>
+
+                    { ( peptidePage_PSM_CountFilter !== undefined && peptidePage_PSM_CountFilter !== null ) ? (
+                        <div >
+                            <span style={{whiteSpace: "nowrap"}}>At least one of these searches or conditions must have at least </span> <span>{ peptidePage_PSM_CountFilter }</span> <span>PSMs</span>
+                        </div>
+                    ) : null }
 
                     { ( selectedSearchSubGroupsList ) ?
                         <div>

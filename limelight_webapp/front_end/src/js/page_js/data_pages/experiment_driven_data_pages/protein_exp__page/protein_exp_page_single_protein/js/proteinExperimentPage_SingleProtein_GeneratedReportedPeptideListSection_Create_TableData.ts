@@ -47,7 +47,6 @@ import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/expe
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_Display_SingleProtein_GeneratedReportedPeptideListSection_Components_Other";
-import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup,
     CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter,
@@ -73,7 +72,7 @@ import {ProteinNameDescriptionCacheEntry} from "page_js/data_pages/project_searc
 
 //////////////////
 
-const dataTableId_ThisTable = "Single Protein Peptide List Root Table";
+const dataTableId_ThisTable = "Experiment Single Protein Peptide List Root Table";
 
 
 
@@ -143,10 +142,6 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     const first_conditionGroup = conditionGroupsContainer.conditionGroups[ 0 ];
 
     const first_conditionGroup_Conditions = first_conditionGroup.conditions;
-
-    const projectSearchIds_By_conditionId :  Map<number,Set<number>> =
-        Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer.
-        getProjectSearchIds_For_First_ConditionGroup({ conditionGroupsContainer, conditionGroupsDataContainer });
 
     /////////////
 
@@ -525,16 +520,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
             for ( const condition of first_conditionGroup_Conditions ) {
 
-                let psmCountAll = 0;
-
-                const projectSearchIds = projectSearchIds_By_conditionId.get( condition.id );
-                if ( projectSearchIds ) {
-                    for ( const projectSearchId of projectSearchIds ) {
-                        const psmCount = peptideEntry.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
-                        if ( psmCount ) {
-                            psmCountAll += psmCount;
-                        }
-                    }
+                let psmCountAll = peptideEntry.psmCountsMap_Key_Condition_Id.get( condition.id );
+                if ( ! psmCountAll ) {
+                    psmCountAll = 0;
                 }
 
                 const psmCountDisplay = psmCountAll.toLocaleString();

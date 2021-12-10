@@ -26,6 +26,9 @@ import {
 } from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
+import {Experiment_ConditionGroupsContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
+import {Experiment_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class";
+import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 
 ///////////////////
 
@@ -53,9 +56,13 @@ export class CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_
     protein_Post_Residue_C_Term : boolean
 
     peptideUnique : boolean;
+
     numPsmsTotal : number = 0;  //  Can NOT be summed across all Peptide List entries to get numberOfPsmIds_NonRedundant_AcrossAllPeptides
+
     psmCountsMap_KeyProjectSearchId : Map<number, number>
     psmCountsMap_Key_SubSearchGroup_Id : Map<number, number>
+    psmCountsMap_Key_Condition_Id : Map<number, number>
+
     dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId : Map<number, Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>>
 }
 
@@ -98,16 +105,24 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
     {
         forPeptidePage,
 
+        psmMinimumCount_Filter_UserEntry,  // May be undefined or null
+
         searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
         generatedPeptideContents_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         proteinSequenceVersionId,  // Not Populated on Peptide Page
         projectSearchIds,
+
+        conditionGroupsContainer,      // Only populated for experiment Page
+        conditionGroupsDataContainer,  // Only populated for experiment Page
+
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         loadedDataCommonHolder
     } : {
         forPeptidePage: boolean
+
+        psmMinimumCount_Filter_UserEntry: number
 
         searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
@@ -115,17 +130,62 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
         projectSearchIds : Array<number>
+
+        conditionGroupsContainer : Experiment_ConditionGroupsContainer
+        conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
+
         loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
 
 } ) : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result {
 
+
+    if ( ( ( conditionGroupsContainer ) && ( ! conditionGroupsDataContainer ) ) || ( ( ! conditionGroupsContainer ) && ( conditionGroupsDataContainer ) ) ) {
+        //  If one is populated, both MUST be populated.
+        const msg = "If one of 'conditionGroupsContainer' 'conditionGroupsDataContainer' is populated, both MUST be populated";
+        console.warn(msg);
+        throw Error(msg);
+    }
+
+    const projectSearchIds_Set = new Set( projectSearchIds );
+
+    let projectSearchIds_By_conditionId :  Map<number,Set<number>> = undefined;
+
+    if ( conditionGroupsContainer && conditionGroupsDataContainer ) {
+
+        // Have Experiment data so populate projectSearchIds_By_conditionId
+
+        projectSearchIds_By_conditionId = new Map();
+
+        // Filter projectSearchIds_By_conditionId_Local to only projectSearchIds in projectSearchIds_Set and store in  projectSearchIds_By_conditionId
+
+        const projectSearchIds_By_conditionId_Local :  Map<number,Set<number>> =
+            Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer.
+            getProjectSearchIds_For_First_ConditionGroup({ conditionGroupsContainer, conditionGroupsDataContainer });
+
+        for ( const projectSearchIds_By_conditionId_Local_Entry of projectSearchIds_By_conditionId_Local.entries() ) {
+            const conditionId = projectSearchIds_By_conditionId_Local_Entry[0];
+            const projectSearchIds = projectSearchIds_By_conditionId_Local_Entry[1];
+
+            const projectSearchIds_Result = new Set<number>();
+
+            for ( const projectSearchId of projectSearchIds ) {
+                if ( projectSearchIds_Set.has( projectSearchId ) ) {
+                    projectSearchIds_Result.add( projectSearchId );
+                }
+            }
+            if ( projectSearchIds_Result.size > 0 ) {
+                projectSearchIds_By_conditionId.set( conditionId, projectSearchIds_Result );
+            }
+        }
+    }
+
     const create_GeneratedReportedPeptideListData_Result = new Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result();
 
     const peptideItems_Map_Key_peptideSequenceDisplayString : Map<string , CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = new Map();
 
-    let numberOfPsmsForReportedPeptides = 0; // PSM Count Total
-    
+    let numberOfPsmIds_NonRedundant_AcrossAllPeptides = 0;  // Initially populate as processing Reported Peptides since then for sure to be a Non-Redundant count
+
     for ( const projectSearchId of projectSearchIds ) {
 
         const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId =
@@ -185,9 +245,9 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                 }
             }
 
-            let numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
+            const numPsms = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
 
-            numberOfPsmsForReportedPeptides += numPsms;
+            numberOfPsmIds_NonRedundant_AcrossAllPeptides += numPsms;
 
             const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId( { reportedPeptideId } );
             if ( ! peptideId ) {
@@ -270,29 +330,183 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
         }
     }
 
-    const peptideListResult : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = [];
+    const peptideList_BeforeFinalFiltering : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = Array.from( peptideItems_Map_Key_peptideSequenceDisplayString.values() );
+
+    if ( conditionGroupsContainer && conditionGroupsDataContainer ) {
+
+        //  Have Experiment Data so compute peptideItem.psmCountsMap_Key_Condition_Id
+
+        for ( const peptideItem of peptideList_BeforeFinalFiltering ) {
+
+            peptideItem.psmCountsMap_Key_Condition_Id = new Map();
+
+            for ( const projectSearchIds_By_conditionId_Entry of projectSearchIds_By_conditionId.entries() ) {
+                const conditionId = projectSearchIds_By_conditionId_Entry[0];
+                const projectSearchIds = projectSearchIds_By_conditionId_Entry[1];
+
+                let psmCount_ForCondition = 0;
+
+                for ( const projectSearchId of projectSearchIds ) {
+                    const psmCount = peptideItem.psmCountsMap_KeyProjectSearchId.get(projectSearchId);
+                    if ( psmCount ) {
+                        psmCount_ForCondition += psmCount;
+                    }
+                }
+
+                peptideItem.psmCountsMap_Key_Condition_Id.set( conditionId, psmCount_ForCondition );
+            }
+        }
+    }
+
+    let peptideList_Final : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = undefined;
+
+    //  Final Filtering
+
+    let finalFiltering_Performed = false;
+
+    if ( ( ! psmMinimumCount_Filter_UserEntry ) || psmMinimumCount_Filter_UserEntry <= 1 ) {
+
+        //  NO Filtering so just copy
+
+        peptideList_Final = peptideList_BeforeFinalFiltering;
+
+    } else {
+
+        //  YES Filtering so conditional copy
+
+        finalFiltering_Performed = true;
+
+        peptideList_Final = [];
+
+        for ( const peptideItem of peptideList_BeforeFinalFiltering ) {
+
+            if ( psmMinimumCount_Filter_UserEntry && psmMinimumCount_Filter_UserEntry > 1 ) {
+
+                //  Yes filtering on psmMinimumCount_Filter_UserEntry
+
+                let maxPsmCount_FromSubTypes = 0;  //  Max PSM Count from Sub Groups or Searches or Conditions
+
+                if ( peptideItem.psmCountsMap_Key_SubSearchGroup_Id ) {
+
+                    for ( const searchSubGroup of searchSubGroup_Ids_Selected ) {
+
+                        const psmCount = peptideItem.psmCountsMap_Key_SubSearchGroup_Id.get( searchSubGroup );
+                        if ( psmCount ) {
+                            if ( maxPsmCount_FromSubTypes < psmCount ) {
+                                maxPsmCount_FromSubTypes = psmCount;
+                            }
+                        }
+                    }
+                } else if ( peptideItem.psmCountsMap_Key_Condition_Id ) {
+
+                    for ( const psmCount of peptideItem.psmCountsMap_Key_Condition_Id.values() ) {
+                        if ( maxPsmCount_FromSubTypes < psmCount ) {
+                            maxPsmCount_FromSubTypes = psmCount;
+                        }
+                    }
+
+                } else {
+
+                    for ( const projectSearchId of projectSearchIds ) {
+                        const psmCount = peptideItem.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
+                        if ( psmCount ) {
+                            if ( maxPsmCount_FromSubTypes < psmCount ) {
+                                maxPsmCount_FromSubTypes = psmCount;
+                            }
+                        }
+                    }
+                }
+
+                if ( maxPsmCount_FromSubTypes < psmMinimumCount_Filter_UserEntry ) {
+
+                    //  Drop 'peptideItem' since does NOT meet psmMinimumCount_Filter_UserEntry
+
+                    //  First remove entry from peptideItems_Map_Key_peptideSequenceDisplayString
+                    const deleteResult = peptideItems_Map_Key_peptideSequenceDisplayString.delete( peptideItem.peptideSequenceDisplay );
+                    if ( ! deleteResult ) {
+                        //  peptideItem.peptideSequenceDisplay NOT found in peptideItems_Map_Key_peptideSequenceDisplayString
+                        const msg = "peptideItems_Map_Key_peptideSequenceDisplayString.delete( peptideItem.peptideSequenceDisplay ); NOT Delete anything.  peptideItem.peptideSequenceDisplay: " + peptideItem.peptideSequenceDisplay;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    // Drop 'peptideItem'
+                    continue; //  EARLY CONTINUE
+                }
+            }
+            peptideList_Final.push( peptideItem )
+        }
+    }
+
+    if ( finalFiltering_Performed ) {
+
+        //  Recompute PSM Count since removed Peptides from final list
+
+        numberOfPsmIds_NonRedundant_AcrossAllPeptides = 0;
+
+        for ( const peptideItem of peptideList_Final ) {
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideItem.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId );
+                if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                    //  No Data so skip to next projectSearchId
+                    continue; // EARLY CONTINUE
+                }
+                for ( const dataPerReportedPeptideId of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values() ) {
+
+                    if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
+
+                        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+                        if ( ! loadedDataPerProjectSearchIdHolder ) {
+                            throw Error( "No loadedDataPerProjectSearchIdHolder for projectSearchId: " + projectSearchId );
+                        }
+                        const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+                        if ( ! loadedDataPerProjectSearchIdHolder ) {
+                            throw Error( "loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap() returned NOTHING for projectSearchId: " + projectSearchId );
+                        }
+                        const numPsms = numPsmsForReportedPeptideIdMap.get( dataPerReportedPeptideId.reportedPeptideId );
+                        if ( ! numPsms ) {
+                            throw Error( "numPsmsForReportedPeptideIdMap.get( dataPerReportedPeptideId.reportedPeptideId ) returned NOTHING for dataPerReportedPeptideId.reportedPeptideId: " + dataPerReportedPeptideId.reportedPeptideId + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        numberOfPsmIds_NonRedundant_AcrossAllPeptides += numPsms;
+
+                    } else {
+                        if ( ! dataPerReportedPeptideId.psmIdsSet ) {
+                            throw Error( "( ! dataPerReportedPeptideId.psmIdsSet ) WHEN else of ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ). dataPerReportedPeptideId.reportedPeptideId: " + dataPerReportedPeptideId.reportedPeptideId + ", projectSearchId: " + projectSearchId );
+                        }
+
+                        numberOfPsmIds_NonRedundant_AcrossAllPeptides += dataPerReportedPeptideId.psmIdsSet.size;
+                    }
+                }
+            }
+        }
+    }
+
+    //  Compute Totals
+
     let numberOfUniquePeptides = 0;
 
-    //  Copy to array
-    for ( const peptideItemsEntry of peptideItems_Map_Key_peptideSequenceDisplayString.entries() ) {
-        const peptideItem = peptideItemsEntry[ 1 ];
-        peptideListResult.push( peptideItem );
+    for ( const peptideItem of peptideList_Final ) {
+
+        // numberOfPsmIds_NonRedundant_AcrossAllPeptides += peptideItem.numPsmsTotal;  !!!  DOES NOT WORK due to Open Mods with Multiple Positions
+
         if ( peptideItem.peptideUnique ) {
             numberOfUniquePeptides++;
         }
     }
 
     // Sort Peptides Array on Reported Peptide Ann Types Sort Order then Best PSM order then Reported Peptide Id
-    _sortPeptideListOnSortOrder( { peptideList : peptideListResult } );
+    _sortPeptideListOnSortOrder( { peptideList : peptideList_Final } );
     
-    const numberOfReportedPeptides = peptideListResult.length;
+    const peptideList_Length = peptideList_Final.length;
 
-    create_GeneratedReportedPeptideListData_Result.peptideList = peptideListResult;
+    create_GeneratedReportedPeptideListData_Result.peptideList = peptideList_Final;
     create_GeneratedReportedPeptideListData_Result.entries_Key_peptideSequenceDisplay = peptideItems_Map_Key_peptideSequenceDisplayString;
     
-    create_GeneratedReportedPeptideListData_Result.peptideList_Length = numberOfReportedPeptides;
+    create_GeneratedReportedPeptideListData_Result.peptideList_Length = peptideList_Length;
     create_GeneratedReportedPeptideListData_Result.numberOfUniquePeptides = numberOfUniquePeptides;
-    create_GeneratedReportedPeptideListData_Result.numberOfPsmIds_NonRedundant_AcrossAllPeptides = numberOfPsmsForReportedPeptides;
+    create_GeneratedReportedPeptideListData_Result.numberOfPsmIds_NonRedundant_AcrossAllPeptides = numberOfPsmIds_NonRedundant_AcrossAllPeptides;
 
     return create_GeneratedReportedPeptideListData_Result;
 }

@@ -103,12 +103,16 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
             create_GeneratedReportedPeptideListData__SingleProtein({
                 forPeptidePage: true,
 
+                psmMinimumCount_Filter_UserEntry: undefined,  // Never pass a value
+
                 searchSubGroup_Ids_Selected: undefined, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: this._reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                 generatedPeptideContents_UserSelections_StateObject,
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                 proteinSequenceVersionId: undefined,  // Not Populated on Peptide Page
                 projectSearchIds: this._projectSearchIds,
+                conditionGroupsContainer: undefined,     // Only populated for experiment Page
+                conditionGroupsDataContainer: undefined, // Only populated for experiment Page
                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                 loadedDataCommonHolder: this._loadedDataCommonHolder
             });

@@ -29,11 +29,11 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
-import {DataPageStateManager, SearchNames_AsMap} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 //  From data_pages_common
 
-import { _PATH_SEPARATOR, _EXPERIMENT_ID_IDENTIFIER, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
+import { _REFERRER_PATH_STRING } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
@@ -74,9 +74,9 @@ import {
 import {PeptideExperimentPageRoot_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPageRoot_CentralStateManagerObjectClass";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
 import {SingleProtein_ExpPage_CentralStateManagerObjectClass} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/singleProtein_ExpPage_CentralStateManagerObjectClass";
 import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 
 /**
  * 
@@ -92,6 +92,8 @@ export class PeptideExperimentPage_RootClass_Common {
 
 	private _peptideExperimentPageRoot_CentralStateManagerObjectClass : PeptideExperimentPageRoot_CentralStateManagerObjectClass;
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+
+	private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
 
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
@@ -223,6 +225,25 @@ export class PeptideExperimentPage_RootClass_Common {
 				this._generatedPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
+
+		{ // this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.getEncodedStateData();
+				this._peptideExperimentPageRoot_CentralStateManagerObjectClass.set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData } );
+			}
+			this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject = new PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+
 		let referrerFromURL = initialStateFromURL.referrer;
 		
 		if ( referrerFromURL === _REFERRER_PATH_STRING ) {
@@ -346,6 +367,7 @@ export class PeptideExperimentPage_RootClass_Common {
 					peptideUnique_UserSelection_StateObject: this._peptideUnique_UserSelection_StateObject,
 					peptideSequence_UserSelections_StateObject: this._peptideSequence_UserSelections_StateObject,
 					proteinPositionFilter_UserSelections_StateObject : this._proteinPositionFilter_UserSelections_StateObject,
+					peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
 
 					generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject
 				}

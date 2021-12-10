@@ -45,6 +45,7 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateMa
 import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
 import {loadDataForInitialOverlayShow_MultipleSearch_SingleProtein} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_nonClass_Functions";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 
 
 /**
@@ -105,6 +106,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 	//     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transferred to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
 	
 	private _proteinSequenceWidget_StateObject = new ProteinSequenceWidget_StateObject();
+
+	private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
 
 
 
@@ -316,6 +319,23 @@ export class ProteinExperimentPage_Display_SingleProtein {
                 this._peptideSequence_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
             }
         }
+
+		{ // this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.getEncodedStateData();
+				this._singleProtein_ExpPage_CentralStateManagerObjectClass.set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData } );
+			}
+			this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject = new PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
 
 		//  Create for Initial Load
@@ -585,6 +605,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			peptideUnique_UserSelection_StateObject : this._peptideUnique_UserSelection_StateObject,
 			peptideSequence_UserSelections_StateObject : this._peptideSequence_UserSelections_StateObject ,
 			proteinSequenceWidget_StateObject : this._proteinSequenceWidget_StateObject ,
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
 
 			experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
 		};

@@ -11,6 +11,9 @@
  * 		place default URL on page and redirect to it if coming from another page
  */
 
+import React from "react";
+import ReactDOM from "react-dom";
+
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
@@ -19,11 +22,11 @@ import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 //   From data_pages_common
-import {DataPageStateManager, SearchNames_AsMap} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
 //  From data_pages_common
 
-import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
+import { _REFERRER_PATH_STRING } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 import { Page_UserDefault_processing }  from 'page_js/data_pages/data_pages_common/page_UserDefault_processing';
 
@@ -49,8 +52,7 @@ import {ReporterIonMass_UserSelections_StateObject} from "page_js/data_pages/pep
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
 import {PeptideSequence_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_sequence_selected/js/peptideSequence_UserSelections_StateObject";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
-import React from "react";
-import ReactDOM from "react-dom";
+
 import {
 	PeptidePage_Display_Root_Component,
 	PeptidePage_Display_Root_Component_Props
@@ -59,6 +61,7 @@ import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pag
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 
 /**
  * 
@@ -85,6 +88,8 @@ export class PeptideViewPage_RootClass_Common {
 	private _proteinPositionFilter_UserSelections_StateObject = new ProteinPositionFilter_UserSelections_StateObject();
 
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
+
+	private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
 
 	//  Specific to pass in to Single Protein Overlay
 	private _singleProtein_CentralStateManagerObject : SingleProtein_CentralStateManagerObjectClass;
@@ -242,6 +247,23 @@ export class PeptideViewPage_RootClass_Common {
 			}
 		}
 
+		{ // this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.getEncodedStateData();
+				this._peptidePageRoot_CentralStateManagerObjectClass.set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData } );
+			}
+			this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject = new PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._peptidePageRoot_CentralStateManagerObjectClass.get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
 		let isSingleSearch = false
 		let isMultipleSearches = false
 		if ( projectSearchIds.length > 1 ) {
@@ -314,6 +336,7 @@ export class PeptideViewPage_RootClass_Common {
 			peptideUnique_UserSelection_StateObject: this._peptideUnique_UserSelection_StateObject,
 			peptideSequence_UserSelections_StateObject: this._peptideSequence_UserSelections_StateObject,
 			proteinPositionFilter_UserSelections_StateObject : this._proteinPositionFilter_UserSelections_StateObject,
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
 
 			generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject,
 

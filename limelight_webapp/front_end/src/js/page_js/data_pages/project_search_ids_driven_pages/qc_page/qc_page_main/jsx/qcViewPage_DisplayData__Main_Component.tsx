@@ -147,8 +147,6 @@ interface QcViewPage_DisplayData__Main_Component_State {
     searchSubGroup_Are_All_SearchSubGroupIds_Selected? : boolean
     searchSubGroup_PropValue? : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData;
 
-    psmCountForUnfilteredDisplay? : string;
-
     modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange?: object  //  Clear modificationMassSelections_AlwaysShow in Modifications Filter On Component when this object reference changes
     modificationMass_UserSelections_ComponentData? : ModificationMass_UserSelections_ComponentData; // Only updated when new updated need to push new values from above components
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData? : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData; // Only updated when new updated need to push new values from above components
@@ -506,7 +504,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             searchSubGroup_Ids_Selected,
             searchSubGroup_Are_All_SearchSubGroupIds_Selected,
             searchSubGroup_PropValue,
-            psmCountForUnfiltered,
             modificationMass_UserSelections_ComponentData,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
             reporterIons_UserSelections_ComponentData,
@@ -519,7 +516,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             searchSubGroup_Ids_Selected : Set<number>
             searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
             searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
-            psmCountForUnfiltered : number,
             modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData
             reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
@@ -584,12 +580,11 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
+            peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : undefined,  //  TNot Used Yet
             proteinSequenceWidget_StateObject : undefined,  //  NOT USED on Peptide Page
             searchSubGroup_Are_All_SearchSubGroupIds_Selected,
             searchSubGroup_PropValue
         };
-
-        const psmCountForUnfilteredDisplay = psmCountForUnfiltered.toLocaleString();
 
         this.setState({
             mainDisplayData_Loaded : true,
@@ -599,8 +594,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
             searchSubGroup_Are_All_SearchSubGroupIds_Selected,
             searchSubGroup_PropValue,
-
-            psmCountForUnfilteredDisplay,
 
             modificationMass_UserSelections_ComponentData,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData,
@@ -1873,6 +1866,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
+            peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : undefined,  //  Not Used Yet
             proteinSequenceWidget_StateObject : undefined,
             searchSubGroup_Are_All_SearchSubGroupIds_Selected : this.state.searchSubGroup_Are_All_SearchSubGroupIds_Selected,
             searchSubGroup_PropValue : this.state.searchSubGroup_PropValue

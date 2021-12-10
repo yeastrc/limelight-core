@@ -138,6 +138,8 @@ import {
     ModificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback
 } from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
+import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/jsx/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component";
 
 
 ////
@@ -189,6 +191,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
 	peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject;
+    peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
     
     experiment_DataPages_LoggedInUser_CommonObjectsFactory : Experiment_DataPages_LoggedInUser_CommonObjectsFactory
 }
@@ -232,6 +235,8 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
     userSearchString_LocationsOn_ProteinSequence_Root? : UserSearchString_LocationsOn_ProteinSequence_Root;
     proteinSequenceWidgetDisplay_Component_Data? : ProteinSequenceWidgetDisplay_Component_Data;
     sequenceCoverageBooleanArray_Unfiltered? : Array<boolean>;
+    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject? : object;
+
     peptideFiltersDisplay_ComponentData? : PeptideFiltersDisplay_ComponentData;
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList? : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds;  //  For displaying the peptide list in sub component
@@ -300,6 +305,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     private _updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback.bind(this);
     private _updateMadeTo_peptideUnique_UserSelection_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideUnique_UserSelection_StateObject_Callback.bind(this);
+
+    private _updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback.bind(this);
 
     private _updateMadeTo_peptideSequence_UserSelections_StateObject_New_UserSearchString_LocationsOn_ProteinSequence_Root_Callback_BindThis : ({ 
         userSearchString_LocationsOn_ProteinSequence_Root 
@@ -475,6 +482,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
+            peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : undefined,  // Peptide Page Only
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : undefined,  // Peptide Page Only
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
@@ -498,12 +506,17 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
             forPeptidePage: false,
+
+            psmMinimumCount_Filter_UserEntry: this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter(),
+
             searchSubGroup_Ids_Selected : null,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
             projectSearchIds : projectSearchIds_PossiblyFiltered,
+            conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder : this.props.propsValue.loadedDataCommonHolder,
         } );
@@ -783,6 +796,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
             forPeptidePage: false,
+
+            psmMinimumCount_Filter_UserEntry: undefined,  // Never pass a value since for ALL Peptides
+
             searchSubGroup_Ids_Selected : null,
 
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -792,6 +808,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             proteinSequenceVersionId,
             projectSearchIds,
+            conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
             loadedDataCommonHolder
         } );
@@ -1164,6 +1182,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             this.props.propsValue.peptideUnique_UserSelection_StateObject.clearPeptideUnique();
         
             this.props.propsValue.peptideSequence_UserSelections_StateObject.clearPeptideSearchStrings();
+
+            this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.clearAll();
         
             //     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transfered to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
             
@@ -1194,7 +1214,9 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             this._peptideUnique_Update_PeptideUnique_UserSelection_ComponentData();
             
                             this._peptideSequence_Update_peptideSequence_UserSelections_ComponentData();
-            
+
+                            this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Force_ReRender_Object()
+
                             this._proteinSequenceWidgetDisplay_Update_proteinSequenceWidgetDisplay_Component_Data();
 
                             window.setTimeout( () => {
@@ -1754,6 +1776,24 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     }
 
     /**
+     *
+     */
+    private _updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback() {
+
+        window.setTimeout( () => {
+            try {
+                //  Now update dependent page parts
+
+                this._updateRestOfPage_ForUserInteraction();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        }, 10 );
+    }
+
+    /**
      * create new this.state.peptideUnique_UserSelection_ComponentData
      */
     _peptideUnique_Update_PeptideUnique_UserSelection_ComponentData() {
@@ -1821,6 +1861,14 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             return { peptideSequence_UserSelections_ComponentData };
         });
+    }
+
+    /**
+     * create new this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object
+     */
+    private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Force_ReRender_Object() {
+
+        this.setState( { peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject: {} } );
     }
 
 
@@ -2100,12 +2148,17 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                             const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = create_GeneratedReportedPeptideListData__SingleProtein({
 
                                 forPeptidePage: false,
+
+                                psmMinimumCount_Filter_UserEntry: this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter(),
+
                                 searchSubGroup_Ids_Selected : null,
                                 generatedPeptideContents_UserSelections_StateObject : this._generatedPeptideContents_UserSelections_StateObject,
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                                 projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
+                                conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                                conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.propsValue.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
                                 loadedDataCommonHolder : this.props.propsValue.loadedDataCommonHolder,
                             } );
@@ -2230,6 +2283,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
+            peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : undefined,  // Peptide Page Only
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : undefined,  // Peptide Page Only
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
@@ -2607,6 +2661,14 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                                 />
 
                                 {/* Filter On ... */}
+
+                                <PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component
+                                    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject={ this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject }
+                                    peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject }
+                                    updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback={
+                                        this._updateMadeTo_peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject_Callback_BindThis
+                                    }
+                                />
 
                                 <ModificationMass_UserSelections_Root
                                     modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }

@@ -1,11 +1,11 @@
 /**
- * proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.ts
+ * peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.ts
  *
- * Filter on Counts - PSM, Peptide, Unique Peptide - State Object
+ * Filter on Counts - PSM - State Object
  *
  *
- * State Object used in:
- *      proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component.tsx
+ * State Object used in:   Peptide List - Peptide page and Single Protein  - Search Based and Experiment
+ *
  */
 
 ////////////////////
@@ -22,15 +22,11 @@ const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _ENCODED_DATA__PSM_COUNT_FILTER_ENCODING_PROPERTY_NAME = 'b';
-const _ENCODED_DATA__PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME = 'c';
-const _ENCODED_DATA__UNIQUE_PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME = 'd';
 
 
-export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_DefaultValues {
+export class PeptideList_SingleProtein_FilterOnCounts_psm_UserSelections_DefaultValues {
 
     static psm_Default = 1;
-    static peptide_Default = 1;
-    static uniquePeptide_Default = 0;
 }
 
 
@@ -39,13 +35,11 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
 /**
  *
  */
-export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject {
+export class PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject {
 
     // private _initializeCalled : boolean = false;
 
     private _psmCountFilter : number = undefined;
-    private _peptideCountFilter : number = undefined;
-    private _uniquePeptideCountFilter : number = undefined;
 
     private _valueChangedCallback: () => void;
 
@@ -84,56 +78,12 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
     }
 
     /**
-     * @returns undefined if default
-     */
-    get_Peptide_CountFilter() : number {
-
-        return this._peptideCountFilter;
-    }
-    /**
-     *
-     */
-    set_Peptide_CountFilter( peptideCountFilter : number ) : void {
-
-        this._peptideCountFilter = peptideCountFilter;
-
-        if ( ! this._valueChangedCallback ) {
-            throw Error("set_Peptide_CountFilter::( ! this._valueChangedCallback )")
-        }
-
-        this._valueChangedCallback();
-    }
-
-    /**
-     * @returns undefined if default
-     */
-    get_UniquePeptide_CountFilter() : number {
-
-        return this._uniquePeptideCountFilter;
-    }
-    /**
-     *
-     */
-    set_UniquePeptide_CountFilter( uniquePeptideCountFilter : number ) : void {
-
-        this._uniquePeptideCountFilter = uniquePeptideCountFilter;
-
-        if ( ! this._valueChangedCallback ) {
-            throw Error("set_UniquePeptide_CountFilter::( ! this._valueChangedCallback )")
-        }
-
-        this._valueChangedCallback();
-    }
-
-    /**
      *
      *
      */
     clearAll() {
 
         this._psmCountFilter = undefined;
-        this._peptideCountFilter = undefined;
-        this._uniquePeptideCountFilter = undefined;
 
         if ( ! this._valueChangedCallback ) {
             throw Error("clearAll::( ! this._valueChangedCallback )")
@@ -155,14 +105,10 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
     getEncodedStateData() : any {
 
         const result = {}
-        // @ts-ignore
+
         result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
-        // @ts-ignore
+
         result[ _ENCODED_DATA__PSM_COUNT_FILTER_ENCODING_PROPERTY_NAME ] = this._psmCountFilter;
-        // @ts-ignore
-        result[ _ENCODED_DATA__PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME ] = this._peptideCountFilter;
-        // @ts-ignore
-        result[ _ENCODED_DATA__UNIQUE_PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME ] = this._uniquePeptideCountFilter;
 
         return result;
     }
@@ -188,8 +134,6 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
         }
 
         this._psmCountFilter = encodedStateData[ _ENCODED_DATA__PSM_COUNT_FILTER_ENCODING_PROPERTY_NAME ];
-        this._peptideCountFilter = encodedStateData[ _ENCODED_DATA__PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME ];
-        this._uniquePeptideCountFilter = encodedStateData[ _ENCODED_DATA__UNIQUE_PEPTIDE_COUNT_FILTER_ENCODING_PROPERTY_NAME ];
     }
 }
 

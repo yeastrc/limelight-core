@@ -37,6 +37,7 @@ const _PEPTIDE_UNIQUE_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME
 const _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'f';
 const _PROTEIN_POSITION_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'g';
 const _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'h';
+const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 
 /**
  * 
@@ -50,6 +51,7 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		peptideSequenceFilterSelectedEncodedStateData? : any
 		proteinPositionFilter_UserSelections_EncodedStateData? : any
 		generatedPeptideContentsSelectedEncodedStateData? : any
+		peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData?: any // PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
 		generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay? : any
 	}
 
@@ -82,7 +84,8 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 				proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData[ _PROTEIN_POSITION_FILTER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				generatedPeptideContentsSelectedEncodedStateData : encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay :
-					encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+					encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData : encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -199,6 +202,33 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		return this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay;
 	}
 
+
+	/**
+	 * generatedPeptideContentsSelectedEncodedStateData  For  SingleProteinOverlay
+	 *
+	 * @param generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay
+	 */
+	set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData(
+		{
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData
+		} :{
+			peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData: any
+		} ) {
+		this._value.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData;
+
+		if ( ! this._centralPageStateManager ) {
+			throw Error( "this._centralPageStateManager not set" );
+		}
+		this._centralPageStateManager.setState( { component : this } );
+	}
+
+	/**
+	 * peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData
+	 */
+	get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData() {
+		return this._value.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData;
+	}
+
     /**
      * Called by Central State Manager and maybe other code
 	 */
@@ -235,6 +265,9 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		}
 		if ( this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay !== undefined ) {
 			dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay;
+		}
+		if ( this._value.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData !== undefined ) {
+			dataForEncoding[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData;
 		}
 
 		return dataForEncoding;
