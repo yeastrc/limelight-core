@@ -154,6 +154,10 @@ Point your web browser to |limelight_link| to access Limelight running on your o
 
    <a href="http://localhost:8080/limelight/" target="_blank" class="reference external">http://localhost:8080/limelight/</a>
 
+.. note::
+   If this is the first time bringing up Limelight, it may take a minute for the database to initialize. If you see message
+   saying there was a problem with your request, try again in about a minute.
+
 Login with Default User
 ------------------------
 By default, you can log in using ``admin`` as the username and ``changeme`` as the password.
