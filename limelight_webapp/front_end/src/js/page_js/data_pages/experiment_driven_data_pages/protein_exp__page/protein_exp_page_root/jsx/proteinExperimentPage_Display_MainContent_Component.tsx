@@ -1613,7 +1613,10 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         //  Updated in this call (or just returns same object with no changes)
         proteinDisplayData =
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide({
-                proteinDisplayData, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
+                proteinDisplayData,
+                proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
+                searchSubGroup_Ids_Selected: undefined,
+                projectSearchIds
             });
 
         //  MUST have FINAL Protein List  for code after this point

@@ -48,9 +48,7 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_N
         _process_Data_In_SubGroupId_Map({ proteinDisplayData });
     } else {
 
-        if ( projectSearchIds.length > 1 ) {
-            _process_Data_In_ProjectSearchId_Map({ proteinDisplayData });
-        }
+        _process_Data_In_ProjectSearchId_Map({ proteinDisplayData });
     }
 
     _sortProteinList({ proteinDisplayData });

@@ -1534,9 +1534,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             if ( process_SubGroups ) {
                 proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_SubGroups({proteinDisplayData});
             } else {
-                if ( projectSearchIds.length > 1 ) {
-                    proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_ProjectSearchIds({ projectSearchIds, proteinDisplayData });
-                }
+                proteinDisplayData = proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_For_ProjectSearchIds({ projectSearchIds, proteinDisplayData });
             }
         }
 
@@ -1555,7 +1553,10 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         //  Updated in this call (or just returns same object with no changes)
         proteinDisplayData =
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide({
-                proteinDisplayData, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
+                proteinDisplayData,
+                proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
+                searchSubGroup_Ids_Selected,
+                projectSearchIds
             });
 
 

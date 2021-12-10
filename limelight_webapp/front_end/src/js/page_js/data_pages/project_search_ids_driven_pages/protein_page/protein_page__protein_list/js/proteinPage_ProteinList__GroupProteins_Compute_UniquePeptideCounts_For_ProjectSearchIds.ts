@@ -41,9 +41,7 @@ export const proteinPage_ProteinList__GroupProteins_Compute_UniquePeptideCounts_
         return proteinDisplayData; // EARLY RETURN
     }
 
-    if ( projectSearchIds.length > 1 ) {
-        _process_Data_In_ProjectSearchId_Map({ proteinDisplayData });
-    }
+    _process_Data_In_ProjectSearchId_Map({ proteinDisplayData });
 
     return proteinDisplayData;
 }
@@ -164,9 +162,6 @@ const _process_Data_In_ProjectSearchId_Map = function(
                 if ( ! protein_SubItem_Record ) {
                     //  No entry for projectSearchId so skip to next entry
                     continue;  //  EARLY CONTINUE
-                    // const msg = "( ! protein_SubItem_Record ): Must be populated at this point. in _process_Data_In_ProjectSearchId_Map: ";
-                    // console.warn(msg);
-                    // throw Error(msg);
                 }
                 protein_SubItem_Record.uniquePeptideCount = uniquePeptideCount;
             }

@@ -982,26 +982,29 @@ const _createProteinItem_DataTableEntry = function(
 
         //  Only 1 search and NOT Sub Groups
 
+        const projectSearchId = projectSearchIds[0];
+
+        const protein_SubItem_Record__For__projectSearchId = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+
         //  Num PSMs, NSAF, Distinct Peptides, and Distinct Peptides Unique
 
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_PsmCount_Selected() ) {
 
             //  Num PSMs
 
-            if ( proteinListItem.numPsms_Overall === undefined || proteinListItem.numPsms_Overall === null ) {
-                const msg = "( proteinListItem.numPsms_Overall === undefined || proteinListItem.numPsms_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-            const num = proteinListItem.numPsms_Overall;
+            let psmCount = 0;
 
-            const valueDisplay = num.toLocaleString();
+            if ( protein_SubItem_Record__For__projectSearchId ) {
+                psmCount = protein_SubItem_Record__For__projectSearchId.numPsms;
+            }
+
+            const valueDisplay = psmCount.toLocaleString();
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort : num
+                valueSort : psmCount
             })
             columnEntries.push( columnEntry );
 
@@ -1013,12 +1016,11 @@ const _createProteinItem_DataTableEntry = function(
 
             //  NSAF
 
-            if ( proteinListItem.nsaf === undefined || proteinListItem.nsaf === null ) {
-                const msg = "( proteinListItem.nsaf === undefined || proteinListItem.nsaf === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
-                console.warn(msg);
-                throw Error(msg);
+            let nsaf = 0;
+
+            if ( protein_SubItem_Record__For__projectSearchId ) {
+                nsaf = protein_SubItem_Record__For__projectSearchId.nsaf;
             }
-            const nsaf = proteinListItem.nsaf;
 
             const nsafString = proteinView_nsaf_formatNumber_ForDisplayInTable( nsaf );
 
@@ -1038,22 +1040,22 @@ const _createProteinItem_DataTableEntry = function(
 
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
 
-            // Num Reported Peptides Unique
+            // Num Reported Peptides
 
-            if ( proteinListItem.peptideCount_Overall === undefined || proteinListItem.peptideCount_Overall === null ) {
-                const msg = "( proteinListItem.peptideCount_Overall === undefined || proteinListItem.peptideCount_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
-                console.warn(msg);
-                throw Error(msg);
+            let peptideCount = 0;
+            {
+                if ( protein_SubItem_Record__For__projectSearchId ) {
+                    peptideCount = protein_SubItem_Record__For__projectSearchId.peptideCount;
+                }
             }
-            const num = proteinListItem.peptideCount_Overall;
 
-            const valueDisplay = num.toLocaleString();
+            const valueDisplay = peptideCount.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort: num
+                valueSort: peptideCount
             })
             columnEntries.push(columnEntry);
 
@@ -1065,20 +1067,20 @@ const _createProteinItem_DataTableEntry = function(
 
             // Reported Peptides Unique
 
-            if ( proteinListItem.uniquePeptideCount_Overall === undefined || proteinListItem.uniquePeptideCount_Overall === null ) {
-                const msg = "( proteinListItem.uniquePeptideCount_Overall === undefined || proteinListItem.uniquePeptideCount_Overall === null ): proteinListItem.proteinSequenceVersionId: " + proteinListItem.proteinSequenceVersionId;
-                console.warn(msg);
-                throw Error(msg);
+            let uniquePeptideCount = 0;
+            {
+                if ( protein_SubItem_Record__For__projectSearchId ) {
+                    uniquePeptideCount = protein_SubItem_Record__For__projectSearchId.uniquePeptideCount;
+                }
             }
-            const num = proteinListItem.uniquePeptideCount_Overall;
 
-            const valueDisplay = num.toLocaleString();
+            const valueDisplay = uniquePeptideCount.toLocaleString();
             const searchEntriesForColumn: Array<string> = [valueDisplay]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
             const columnEntry = new DataTable_DataRow_ColumnEntry({
                 searchTableData,
                 valueDisplay,
-                valueSort: num
+                valueSort: uniquePeptideCount
             })
             columnEntries.push(columnEntry);
 
@@ -1273,7 +1275,6 @@ const _createProteinItem_DataTableEntry = function(
          //  Per Search: Num Distinct Peptides and Distinct Peptides Unique
 
         for ( const projectSearchId of projectSearchIds ) {
-
 
             if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
 

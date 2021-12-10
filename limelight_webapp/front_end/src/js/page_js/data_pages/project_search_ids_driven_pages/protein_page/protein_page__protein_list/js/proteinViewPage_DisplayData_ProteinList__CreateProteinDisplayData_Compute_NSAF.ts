@@ -110,31 +110,6 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_C
 
     //  Compute NSAF
 
-    //  NSAF Overall
-    if ( projectSearchIds.length === 1 && ( ! searchSubGroup_Ids_Selected ) ) {
-
-        const nsaf_Map_Key_ProteinSequenceVersionId: Map<number, number> =
-            NSAFAnnotationCalculator.getNSAFAnnotations({
-                proteinLengthMap: proteinLength_Map_Key_ProteinSequenceVersionId,
-                proteinPsmCountMap: psmCount_Map_Key_ProteinSequenceVersionId
-            });
-
-        for ( const proteinItems_Array_Entry of proteinItems_Array ) {
-
-            const proteinSequenceVersionId = proteinItems_Array_Entry.proteinSequenceVersionId;
-
-            const nsaf = nsaf_Map_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId);
-
-            if ( nsaf === undefined ) {
-                const msg = "NSAF Overall: No entry in nsaf_Map_Key_ProteinSequenceVersionId for proteinSequenceVersionId: " + proteinSequenceVersionId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            proteinItems_Array_Entry.nsaf = nsaf
-        }
-    }
-
     //  NSAF Per Search
     if ( projectSearchIds.length > 1 && ( ! searchSubGroup_Ids_Selected ) ) {
 

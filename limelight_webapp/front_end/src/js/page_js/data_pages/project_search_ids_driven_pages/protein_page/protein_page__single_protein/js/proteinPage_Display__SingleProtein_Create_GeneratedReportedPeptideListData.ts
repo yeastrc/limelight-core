@@ -429,10 +429,14 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         console.warn(msg);
                         throw Error(msg);
                     }
+
                     // Drop 'peptideItem'
                     continue; //  EARLY CONTINUE
                 }
             }
+
+            //  NOT dropped (by 'continue') so add to output Array.
+
             peptideList_Final.push( peptideItem )
         }
     }

@@ -64,8 +64,6 @@ export class ProteinDataDisplay_ProteinList_GroupedProtein_Item {
     isSubsetGroup: boolean  //   Set to true when proteinGroup.passesFilter is false.
                             //   True when "Parsimonious" selected and this is not part of "Parsimonious" proteins
                             //   True when "No Subgroups" selected and this is a subset group
-
-    uniquePeptideCount_Overall: number //  Computed last across the protein groups
 }
 
 
@@ -79,15 +77,167 @@ export class ProteinDataDisplay_ProteinList_Item {
     proteinDescriptions : string
 
     //  Overall
+    numPsms_Overall : number = 0;
     generatedPeptides_Overall_Set: Set<string> = new Set();
     uniquePeptideCount_Overall: number //  Computed last across the protein items
-    numPsms_Overall : number = 0;
 
-    nsaf : number = -9998;
+    /**
+     *
+     * @param searchSubGroup_Ids_Selected - Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+     * @param projectSearchIds
+     */
+    get_psm_Count_MaxValueForSubType(
+        {
+            searchSubGroup_Ids_Selected,
+            projectSearchIds
+        } : {
+            searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+            projectSearchIds: Array<number>
+        }
+    ) : number {
 
-    get peptideCount_Overall() : number {
+        let psm_Count_MaxValueForSubType = 0;
 
-        return this.generatedPeptides_Overall_Set.size;
+        if ( searchSubGroup_Ids_Selected && this.protein_SubItem_Records_Map_Key_SubGroup_Id ) {
+
+            for ( const searchSubGroup_Id of searchSubGroup_Ids_Selected ) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_SubGroup_Id.get( searchSubGroup_Id );
+                if ( protein_SubItem_Record ) {
+                    if ( psm_Count_MaxValueForSubType < protein_SubItem_Record.numPsms ) {
+                        psm_Count_MaxValueForSubType = protein_SubItem_Record.numPsms;
+                    }
+                }
+            }
+
+        } else if ( this.experiment_SubData ) {
+
+            for ( const protein_SubItem_Record of this.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.values() ) {
+
+                if ( psm_Count_MaxValueForSubType < protein_SubItem_Record.numPsms ) {
+                    psm_Count_MaxValueForSubType = protein_SubItem_Record.numPsms;
+                }
+            }
+        } else {
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                if ( protein_SubItem_Record ) {
+                    if ( psm_Count_MaxValueForSubType < protein_SubItem_Record.numPsms ) {
+                        psm_Count_MaxValueForSubType = protein_SubItem_Record.numPsms;
+                    }
+                }
+            }
+        }
+
+        return psm_Count_MaxValueForSubType;
+    }
+
+    /**
+     *
+     * @param searchSubGroup_Ids_Selected - Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+     * @param projectSearchIds
+     */
+    get_generatedPeptides_Count_MaxValueForSubType(
+        {
+            searchSubGroup_Ids_Selected,
+            projectSearchIds
+        } : {
+            searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+            projectSearchIds: Array<number>
+        }
+    ) : number {
+
+        let generatedPeptides_Count_MaxValueForSubType = 0;
+
+        if ( searchSubGroup_Ids_Selected && this.protein_SubItem_Records_Map_Key_SubGroup_Id ) {
+
+            for ( const searchSubGroup_Id of searchSubGroup_Ids_Selected ) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_SubGroup_Id.get( searchSubGroup_Id );
+                if ( protein_SubItem_Record ) {
+                    if ( generatedPeptides_Count_MaxValueForSubType < protein_SubItem_Record.peptideCount ) {
+                        generatedPeptides_Count_MaxValueForSubType = protein_SubItem_Record.peptideCount;
+                    }
+                }
+            }
+
+        } else if ( this.experiment_SubData ) {
+
+            for ( const protein_SubItem_Record of this.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.values() ) {
+
+                if ( generatedPeptides_Count_MaxValueForSubType < protein_SubItem_Record.peptideCount ) {
+                    generatedPeptides_Count_MaxValueForSubType = protein_SubItem_Record.peptideCount;
+                }
+            }
+        } else {
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                if ( protein_SubItem_Record ) {
+                    if ( generatedPeptides_Count_MaxValueForSubType < protein_SubItem_Record.peptideCount ) {
+                        generatedPeptides_Count_MaxValueForSubType = protein_SubItem_Record.peptideCount;
+                    }
+                }
+            }
+        }
+
+        return generatedPeptides_Count_MaxValueForSubType;
+    }
+
+    /**
+     *
+     * @param searchSubGroup_Ids_Selected - Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+     * @param projectSearchIds
+     */
+    get_uniquePeptideCount_Count_MaxValueForSubType(
+        {
+            searchSubGroup_Ids_Selected,
+            projectSearchIds
+        } : {
+            searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+            projectSearchIds: Array<number>
+        }
+    ) : number {
+
+        let uniquePeptideCount_Count_MaxValueForSubType = 0;
+
+        if ( searchSubGroup_Ids_Selected && this.protein_SubItem_Records_Map_Key_SubGroup_Id ) {
+
+            for (const searchSubGroup_Id of searchSubGroup_Ids_Selected) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_SubGroup_Id.get(searchSubGroup_Id);
+                if (protein_SubItem_Record) {
+                    if (uniquePeptideCount_Count_MaxValueForSubType < protein_SubItem_Record.uniquePeptideCount) {
+                        uniquePeptideCount_Count_MaxValueForSubType = protein_SubItem_Record.uniquePeptideCount;
+                    }
+                }
+            }
+
+        } else if ( this.experiment_SubData ) {
+
+            for ( const protein_SubItem_Record of this.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.values() ) {
+
+                if ( uniquePeptideCount_Count_MaxValueForSubType < protein_SubItem_Record.uniquePeptideCount ) {
+                    uniquePeptideCount_Count_MaxValueForSubType = protein_SubItem_Record.uniquePeptideCount;
+                }
+            }
+        } else {
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const protein_SubItem_Record = this.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                if ( protein_SubItem_Record ) {
+                    if ( uniquePeptideCount_Count_MaxValueForSubType < protein_SubItem_Record.uniquePeptideCount ) {
+                        uniquePeptideCount_Count_MaxValueForSubType = protein_SubItem_Record.uniquePeptideCount;
+                    }
+                }
+            }
+        }
+
+        return uniquePeptideCount_Count_MaxValueForSubType;
     }
 
     protein_SubItem_Records_Map_Key_projectSearchId : Map<number, ProteinDataDisplay_ProteinList_Sub_Item> = new Map();

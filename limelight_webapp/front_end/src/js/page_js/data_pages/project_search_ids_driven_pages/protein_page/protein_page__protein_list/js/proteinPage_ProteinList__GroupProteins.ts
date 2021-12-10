@@ -158,8 +158,7 @@ const _populate_ProteinGroupsList = function (
             const groupedProtein_NewEntry : ProteinDataDisplay_ProteinList_GroupedProtein_Item = {
                 proteinList_Grouped : [ proteinListItem ],
                 proteinGroup : proteinGroup_For_proteinListItem,
-                isSubsetGroup,
-                uniquePeptideCount_Overall: -998
+                isSubsetGroup
             };
 
             groupedProteins_map_Key_ProteinGroup.set( proteinGroup_For_proteinListItem, { groupedProtein_Entry : groupedProtein_NewEntry } );
@@ -273,8 +272,6 @@ const _process_Data_Overall = function(
                 uniquePeptideCount_Overall++;
             }
         }
-
-        proteinGroupItem.uniquePeptideCount_Overall = uniquePeptideCount_Overall;
 
         //  Set uniquePeptideCount_Overall on each Protein Item in the group with the same value as the group
         for ( const proteinItem of proteinGroupItem.proteinList_Grouped ) {

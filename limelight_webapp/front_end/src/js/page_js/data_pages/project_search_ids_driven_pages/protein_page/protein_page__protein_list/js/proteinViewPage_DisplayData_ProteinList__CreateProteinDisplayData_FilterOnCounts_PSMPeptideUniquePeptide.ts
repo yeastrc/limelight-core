@@ -19,10 +19,14 @@ import {
 export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_FilterOnCounts_PSMPeptideUniquePeptide = function (
     {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
-        proteinDisplayData
+        proteinDisplayData,
+        searchSubGroup_Ids_Selected,
+        projectSearchIds
     } : {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
+        searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        projectSearchIds: Array<number>
 
     }) : ProteinDisplayData_From_createProteinDisplayData_ProteinList {
 
@@ -68,11 +72,21 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_F
 
     if ( proteinDisplayData_Clone.proteinGroupsList ) {
 
-        const new_proteinGroupsList = _process_proteinGroupsList({ proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject, input_proteinGroupsList: proteinDisplayData_Clone.proteinGroupsList });
+        const new_proteinGroupsList = _process_proteinGroupsList({
+            proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
+            input_proteinGroupsList: proteinDisplayData_Clone.proteinGroupsList,
+            searchSubGroup_Ids_Selected,
+            projectSearchIds
+        });
         proteinDisplayData_Clone.proteinGroupsList = new_proteinGroupsList;
     }
 
-    const new_proteinList = _process_proteinList({ proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject, input_proteinList: proteinDisplayData_Clone.proteinList });
+    const new_proteinList = _process_proteinList({
+        proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
+        input_proteinList: proteinDisplayData_Clone.proteinList,
+        searchSubGroup_Ids_Selected,
+        projectSearchIds
+    });
     proteinDisplayData_Clone.proteinList = new_proteinList;
 
     return proteinDisplayData_Clone;
@@ -84,10 +98,14 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_F
 const _process_proteinGroupsList = function(
     {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
-        input_proteinGroupsList
+        input_proteinGroupsList,
+        searchSubGroup_Ids_Selected,
+        projectSearchIds
     } : {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
         input_proteinGroupsList: Array<ProteinDataDisplay_ProteinList_GroupedProtein_Item>
+        searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        projectSearchIds: Array<number>
 
     }) : Array<ProteinDataDisplay_ProteinList_GroupedProtein_Item> {
 
@@ -98,7 +116,9 @@ const _process_proteinGroupsList = function(
         let all_ProteinListItems_PassFilters = true;
         for ( const proteinList_Item of proteinGroupItem.proteinList_Grouped ) {
 
-            if ( ! _is_ProteinItem_PassFilters({ proteinList_Item, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject }) ) {
+            if ( ! _is_ProteinItem_PassFilters({
+                proteinList_Item, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject, searchSubGroup_Ids_Selected, projectSearchIds
+            }) ) {
                 all_ProteinListItems_PassFilters = false;
                 break;
             }
@@ -120,10 +140,14 @@ const _process_proteinGroupsList = function(
 const _process_proteinList = function(
     {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
-        input_proteinList
+        input_proteinList,
+        searchSubGroup_Ids_Selected,
+        projectSearchIds
     } : {
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
         input_proteinList: Array<ProteinDataDisplay_ProteinList_Item>
+        searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        projectSearchIds: Array<number>
 
     }) : Array<ProteinDataDisplay_ProteinList_Item> {
 
@@ -131,7 +155,9 @@ const _process_proteinList = function(
 
     for (const proteinList_Item of input_proteinList) {
 
-        if ( ! _is_ProteinItem_PassFilters({ proteinList_Item, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject }) ) {
+        if ( ! _is_ProteinItem_PassFilters({
+            proteinList_Item, proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject, searchSubGroup_Ids_Selected, projectSearchIds
+        }) ) {
             //  NOT pass filters so exclude the item
             continue; // EARLY CONTINUE
         }
@@ -148,10 +174,14 @@ const _process_proteinList = function(
 const _is_ProteinItem_PassFilters = function(
     {
         proteinList_Item,
-        proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
+        proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
+        searchSubGroup_Ids_Selected,
+        projectSearchIds
     } : {
         proteinList_Item: ProteinDataDisplay_ProteinList_Item
         proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
+        searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
+        projectSearchIds: Array<number>
 
     }) : boolean {
 
@@ -160,7 +190,7 @@ const _is_ProteinItem_PassFilters = function(
         if (countFilter === undefined) {
             countFilter = ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_DefaultValues.psm_Default
         }
-        if (proteinList_Item.numPsms_Overall < countFilter) {
+        if (proteinList_Item.get_psm_Count_MaxValueForSubType({ projectSearchIds, searchSubGroup_Ids_Selected }) < countFilter) {
             return false; // EARLY RETURN
         }
     }
@@ -169,7 +199,7 @@ const _is_ProteinItem_PassFilters = function(
         if (countFilter === undefined) {
             countFilter = ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_DefaultValues.peptide_Default
         }
-        if (proteinList_Item.peptideCount_Overall < countFilter) {
+        if (proteinList_Item.get_generatedPeptides_Count_MaxValueForSubType({ projectSearchIds, searchSubGroup_Ids_Selected }) < countFilter) {
             return false; // EARLY RETURN
         }
     }
@@ -178,7 +208,7 @@ const _is_ProteinItem_PassFilters = function(
         if (countFilter === undefined) {
             countFilter = ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_DefaultValues.uniquePeptide_Default
         }
-        if (proteinList_Item.uniquePeptideCount_Overall < countFilter) {
+        if (proteinList_Item.get_uniquePeptideCount_Count_MaxValueForSubType({ projectSearchIds, searchSubGroup_Ids_Selected }) < countFilter) {
             return false; // EARLY RETURN
         }
     }

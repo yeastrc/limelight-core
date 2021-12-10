@@ -286,7 +286,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    All proteins will have at least this many PSMs, summed across all searches and conditions.
+                                    All proteins will have at least this many PSMs in at least one search or condition.
                                 </p>
                             </div>
                         </div>
@@ -313,7 +313,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    All proteins will have at least many distinct peptides, summed across all searches and conditions.
+                                    All proteins will have at least this many distinct peptides in at least one search or condition.
                                     <br/>
                                     A distinct peptide is the unique combination of amino acid sequence and, optionally, variable and open modifications.
                                     See the option under "Options."
@@ -343,7 +343,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    All proteins will have at least this many unique peptides, summed across all searches and conditions.
+                                    All proteins will have at least this many unique peptides in at least one search or condition.
                                     A unique peptide is a distinct peptide only found for a single protein or protein group.
                                 </p>
                             </div>
