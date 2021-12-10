@@ -155,8 +155,10 @@ details about this converter.
 
 Upload to Limelight
 ==========================
-This section assumes you have access to a running Limelight installation. You may use the installation at
-https://use.limelight-ms.org/ or you may run your own. To run your own follow our :ref:`Limelight Installation Tutorial <Installing Limelight>`.
+
+    .. important::
+       This section assumes you have access to a running Limelight installation. You may use the installation at
+       https://use.limelight-ms.org/ or you may run your own. To run your own follow our :ref:`Limelight Installation Tutorial <Installing Limelight>`.
 
 To view the results in Limelight, use the Limelight web interface to upload the Limelight XML and (optionally)
 the mzml file.
@@ -168,6 +170,7 @@ the mzml file.
 
          .. code-block:: bash
 
+          mkdir /mnt/c/data_directory
           cp ~/my-project/treated.limelight.xml /mnt/c/data_directory/treated.limelight.xml
 
          ``/mnt/c/`` corresponds to your ``C:\`` drive. ``/mnt/d/`` corresponds to your ``D:\`` drive, and so on.
