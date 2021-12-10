@@ -163,19 +163,6 @@ Upload to Limelight
 To view the results in Limelight, use the Limelight web interface to upload the Limelight XML and (optionally)
 the mzml file.
 
-      .. note::
-         If you are using Windows, this step is greatly simplified by first copying your Limelight XML file to a
-         Windows filesystem drive, such as ``C:\``. To copy ``treated.limelight.xml`` to ``C:\data_directory\`` you would
-         enter the following into your terminal.
-
-         .. code-block:: bash
-
-          mkdir /mnt/c/data_directory
-          cp ~/my-project/treated.limelight.xml /mnt/c/data_directory/treated.limelight.xml
-
-         ``/mnt/c/`` corresponds to your ``C:\`` drive. ``/mnt/d/`` corresponds to your ``D:\`` drive, and so on.
-
-
 Steps to upload your data to Limelight:
 
  1. Log into Limelight
@@ -193,6 +180,30 @@ Steps to upload your data to Limelight:
  5. Enter a description of this run. E.g., ``Treated``.
 
  6. Click on the ``+Add Limelight XML File`` link and select your Limelight XML file on your computer.
+
+      .. note::
+         **Windows Users:** Access to files on WSL 2 (Linux) is slightly more complicated than accessing normal files. You
+         have two options:
+
+         1. You can copy your Limelight XML file (and, optionally, mzML file) to a
+            Windows directory, such as ``C:\data_directory``. To copy ``treated.limelight.xml`` to ``C:\data_directory\`` you would
+            enter the following into your terminal.
+
+            .. code-block:: bash
+
+             mkdir /mnt/c/data_directory
+             cp ~/my-project/treated.limelight.xml /mnt/c/data_directory/treated.limelight.xml
+
+             # optional: if you wish to upload and view spectra
+             cp ~/my-project/treated.mzML /mnt/c/data_directory/treated.mzML
+
+            Note: ``/mnt/c/data_directory`` corresponds to ``C:\data_directory``. To select your data to upload
+            below, you would navigate to ``C:\data_directory``.
+
+         2. You can access the files on your WSL 2 (Linux) installation directly. When you click ``+Add Limelight XML File``
+            a file browser will appear. At the top, click in the address bar. Erase what is there and put in:
+            ``\\wsl$\Ubuntu-20.04\home`` and hit the Enter key. You will see your Linux home directory listed. Double click
+            your home directory, then double click `my-project`. You should see your files from this tutorial listed here.
 
  7. (Optional) Click on the ``+Add Scan File`` link and select your mzml file on your computer. This is required
     if you would like to view spectra associated with peptide identifications.
