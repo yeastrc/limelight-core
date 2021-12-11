@@ -50,7 +50,7 @@ that is ``nano``. To edit the file, type:
     .. code-block:: bash
 
        # ensure you are in correct directory. if you followed tutorial type:
-       cd ~/limelight/limelight-core
+       cd ~/limelight
 
        # edit the file
        nano .env
@@ -110,7 +110,7 @@ To stop Limelight:
 
    .. code-block:: bash
 
-       cd ~/limelight/limelight-core
+       cd ~/limelight
 
 
 4. Proceed with installation

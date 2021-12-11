@@ -109,7 +109,7 @@ that is ``nano``. To edit the file, type:
     .. code-block:: bash
 
        # ensure you are in correct directory. if you followed tutorial type:
-       cd ~/limelight/limelight-core
+       cd ~/limelight
 
        # edit the file
        nano .env
@@ -147,7 +147,7 @@ Limelight must be restarted to use the new configuration settings in the ``.env`
     .. code-block:: bash
 
        # ensure you are in correct directory. if you followed tutorial type:
-       cd ~/limelight/limelight-core
+       cd ~/limelight
 
        # shutdown Limelight
        sudo docker-compose down

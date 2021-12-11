@@ -143,7 +143,7 @@ To stop Limelight:
 
    .. code-block:: bash
 
-       cd ~/limelight/limelight-core
+       cd ~/limelight
 
 
 6. Connect to Your Limelight Installation

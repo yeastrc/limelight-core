@@ -69,7 +69,7 @@ Linux terminal (including Windows users running Docker on WSL2 as per our :doc:`
 
 .. code-block:: bash
 
-   sudo docker inspect limelight-core_spectr_storage
+   sudo docker inspect limelight_spectr_storage
 
 The output should be similar to:
 
@@ -77,21 +77,21 @@ The output should be similar to:
 
     [
         {
-            "CreatedAt": "2021-04-27T12:48:13-07:00",
+            "CreatedAt": "2021-12-09T17:14:15-08:00",
             "Driver": "local",
             "Labels": {
-                "com.docker.compose.project": "limelight-core",
+                "com.docker.compose.project": "limelight",
                 "com.docker.compose.version": "1.29.1",
                 "com.docker.compose.volume": "spectr_storage"
             },
-            "Mountpoint": "/var/lib/docker/volumes/limelight-core_spectr_storage/_data",
-            "Name": "limelight-core_spectr_storage",
+            "Mountpoint": "/var/lib/docker/volumes/limelight_spectr_storage/_data",
+            "Name": "limelight_spectr_storage",
             "Options": null,
             "Scope": "local"
         }
     ]
 
-The directory is the one labeled with ``Mountpoint``. In this case, the data directory is: ``/var/lib/docker/volumes/limelight-core_spectr_storage/_data``.
+The directory is the one labeled with ``Mountpoint``. In this case, the data directory is: ``/var/lib/docker/volumes/limelight_spectr_storage/_data``.
 
 Customized Data Location
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -116,7 +116,7 @@ Using the directory you found above, type the following into a Linux terminal to
    sudo tar -C DIRECTORY_PATH -czf /path/to/limelight-spectra-backup.tgz .
 
    # for example:
-   sudo tar -C /var/lib/docker/volumes/limelight-core_spectr_storage/_data -czf ~/limelight-spectra-backup.tgz .
+   sudo tar -C /var/lib/docker/volumes/limelight_spectr_storage/_data -czf ~/limelight-spectra-backup.tgz .
 
 This will create a file named ``limelight-spectra-backup.tgz`` in your home directory that contains the
 spectra data. The ``~/limelight-spectra-backup.tgz`` part of the command may be replaced with any
@@ -125,7 +125,7 @@ directory or filename you prefer to use for your backup. For example:
 .. code-block:: bash
 
    # for example:
-   sudo tar -C /var/lib/docker/volumes/limelight-core_spectr_storage/_data -czf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz .
+   sudo tar -C /var/lib/docker/volumes/limelight_spectr_storage/_data -czf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz .
 
 Would save the backup in the ``limelight-backups`` directory of the ``D:\`` drive with the filename ``limelight-spectra-20210501.tgz``.
 
@@ -198,11 +198,11 @@ Type the following into a Linux terminal to restore a spectra data backup:
 is the location where the spectra data should go, determined by following the instructions above.
 
 For example, to restore a backup file named ``limelight-spectra-20210501.tgz`` found in ``D:\limelight-backups`` to
-the directory ``/var/lib/docker/volumes/limelight-core_spectr_storage/_data`` type the following:
+the directory ``/var/lib/docker/volumes/limelight_spectr_storage/_data`` type the following:
 
 .. code-block:: bash
 
-   sudo tar -xzf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz -C /var/lib/docker/volumes/limelight-core_spectr_storage/_data
+   sudo tar -xzf /mnt/d/limelight-backups/limelight-spectra-20210501.tgz -C /var/lib/docker/volumes/limelight_spectr_storage/_data
 
 You can now start Limelight. :ref:`Review how to start and stop Limelight<5. Starting and Stopping Limelight>`.
 
