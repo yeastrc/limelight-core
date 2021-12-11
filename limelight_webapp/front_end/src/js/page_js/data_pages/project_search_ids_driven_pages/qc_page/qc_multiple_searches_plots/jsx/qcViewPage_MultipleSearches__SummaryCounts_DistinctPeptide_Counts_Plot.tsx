@@ -66,6 +66,8 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -100,6 +102,8 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -107,6 +111,8 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -226,6 +232,11 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
      *
      */
     private _populateChart() {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =

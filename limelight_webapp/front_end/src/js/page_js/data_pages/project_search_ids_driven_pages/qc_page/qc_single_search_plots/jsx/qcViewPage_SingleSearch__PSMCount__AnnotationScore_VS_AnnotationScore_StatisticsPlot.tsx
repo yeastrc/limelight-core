@@ -61,6 +61,8 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
     private _prevProps: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_StatisticsPlot_Props
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -105,8 +107,18 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
     /**
      *
      */
+    componentWillUnmount() {
+
+        this._componentMounted = false;
+    }
+
+    /**
+     *
+     */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             if ( this._renderChart ) {
 
                 window.setTimeout(() => {
@@ -202,6 +214,11 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
      */
     private _populateChartData() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const promises: Array<Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>> = []
         {
             const psmFilterableAnnotationTypeIds_Requested: Set<number> = new Set();
@@ -237,6 +254,11 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
         promisesAll.catch( reason => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 this.setState({ showUpdatingMessage: false });
 
                 console.warn( "promise.catch(...): reason: ", reason );
@@ -249,6 +271,11 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
         promisesAll.then( values => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 const value = values[0]; // Just use first entry
 
                 this.setState({ showUpdatingMessage: false });

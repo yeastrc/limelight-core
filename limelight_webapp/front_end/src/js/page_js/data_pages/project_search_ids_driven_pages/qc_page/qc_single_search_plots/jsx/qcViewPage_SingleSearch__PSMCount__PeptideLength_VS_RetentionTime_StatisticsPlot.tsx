@@ -73,6 +73,8 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
 
     private _renderChart: boolean = true;
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -131,6 +133,8 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -138,7 +142,9 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
      */
     componentDidMount() {
         try {
-            if ( this._renderChart ) {
+            this._componentMounted = true;
+
+              if ( this._renderChart ) {
 
                 window.setTimeout(() => {
                     try {
@@ -262,6 +268,11 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
@@ -298,6 +309,11 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
 
         promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.then( value => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 const psmTblData = value.psmTblData;
                 const spectralStorage_NO_Peaks_Data = value.spectralStorage_NO_Peaks_Data;
 

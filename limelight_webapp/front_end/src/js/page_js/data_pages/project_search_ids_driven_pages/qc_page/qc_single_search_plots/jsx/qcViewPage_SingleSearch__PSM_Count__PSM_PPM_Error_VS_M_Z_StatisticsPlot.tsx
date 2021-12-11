@@ -74,6 +74,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
 
     private _renderChart: boolean = true;
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -132,6 +134,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -139,6 +143,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             if ( this._renderChart ) {
 
                 window.setTimeout(() => {
@@ -263,6 +269,11 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
      *
      */
     private _populateChart() {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         const psm_PPM_Error_List_Filtered = this.props.psm_PPM_Error_List_Filtered;
 

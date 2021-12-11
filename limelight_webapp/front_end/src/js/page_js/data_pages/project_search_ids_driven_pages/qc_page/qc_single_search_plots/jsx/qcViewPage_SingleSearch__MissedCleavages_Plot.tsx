@@ -244,6 +244,11 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
 
         this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point

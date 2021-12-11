@@ -165,9 +165,9 @@ export class QcViewPage_MultipleSearches__MissedCleavages_MissedCleavagesOnPSMs_
     componentDidUpdate(prevProps: Readonly<QcViewPage_MultipleSearches__MissedCleavages_MissedCleavagesOnPSMs_Plot_Props>, prevState: Readonly<QcViewPage_MultipleSearches__MissedCleavages_MissedCleavagesOnPSMs_Plot_State>, snapshot?: any) {
         try {
             if ( ! this._componentMounted ) {
-                return;
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
             }
-
 
             //  ALWAYS remove check of state properties in 'componentDidUpdate'
 
@@ -244,7 +244,8 @@ export class QcViewPage_MultipleSearches__MissedCleavages_MissedCleavagesOnPSMs_
     private _populateChart() {
 
         if ( ! this._componentMounted ) {
-            return;
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
         }
 
         this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point

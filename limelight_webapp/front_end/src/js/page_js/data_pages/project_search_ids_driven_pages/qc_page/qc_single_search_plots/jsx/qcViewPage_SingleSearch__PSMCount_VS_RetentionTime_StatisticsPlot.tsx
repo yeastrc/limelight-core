@@ -81,6 +81,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
 
     private _renderChart: boolean = true;
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -149,6 +151,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -156,6 +160,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             if ( this._renderChart ) {
 
                 window.setTimeout(() => {
@@ -281,6 +287,11 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
@@ -313,6 +324,11 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
 
         promisesAll.catch( reason => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 this.setState({ showUpdatingMessage: false });
 
                 console.warn( "promise.catch(...): reason: ", reason );
@@ -325,6 +341,11 @@ export class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_StatisticsPlot e
 
         promisesAll.then( values => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 const value = values[0]; // Just use first entry
 
                 this.setState({ showUpdatingMessage: false });

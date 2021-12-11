@@ -69,6 +69,8 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -103,6 +105,8 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -110,6 +114,8 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._loadData_IfNeeded_ThenCall_populateChart();
@@ -229,12 +235,21 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
      */
     private _loadData_IfNeeded_ThenCall_populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const promise =
             this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.
             qcPage_DataFromServer_AndDerivedData_MultipleSearches.get_PsmStatistics_RetentionTime_M_Z_Statistics_Data();
 
         promise.catch( reason => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -244,6 +259,11 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
 
         promise.then( data_Holder_MultipleSearches => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 this._populateChart({ data_Holder_MultipleSearches });
 
             } catch( e ) {
@@ -263,6 +283,11 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
             data_Holder_MultipleSearches: QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
         }
     ) : void {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         this.setState({showUpdatingMessage: false});
 

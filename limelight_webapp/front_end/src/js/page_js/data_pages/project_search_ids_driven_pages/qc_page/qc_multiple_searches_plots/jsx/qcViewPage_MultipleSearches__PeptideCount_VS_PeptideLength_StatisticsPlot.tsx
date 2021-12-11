@@ -66,6 +66,8 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -100,6 +102,8 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -107,6 +111,8 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -225,6 +231,11 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
      *
      */
     private _populateChart() {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         this.setState({ showUpdatingMessage: false });
 

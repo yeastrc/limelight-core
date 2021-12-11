@@ -70,6 +70,8 @@ export class QcViewPage_SingleSearch__PSM_ChargeState_StatisticsPlot extends Rea
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -103,6 +105,8 @@ export class QcViewPage_SingleSearch__PSM_ChargeState_StatisticsPlot extends Rea
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -110,6 +114,8 @@ export class QcViewPage_SingleSearch__PSM_ChargeState_StatisticsPlot extends Rea
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -232,6 +238,11 @@ export class QcViewPage_SingleSearch__PSM_ChargeState_StatisticsPlot extends Rea
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
@@ -264,6 +275,11 @@ export class QcViewPage_SingleSearch__PSM_ChargeState_StatisticsPlot extends Rea
 
         promise_get_PsmStatistics_ChargeStateStatistics_Data.then( value => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 const psmTblData = value.psmTblData;
 
                 this.setState({ showUpdatingMessage: false });

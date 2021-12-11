@@ -73,6 +73,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
 
     private _renderChart: boolean = true;
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -135,6 +137,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -142,6 +146,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             if ( this._renderChart ) {
 
                 window.setTimeout(() => {
@@ -268,6 +274,11 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
      *
      */
     private _populateChart() {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =

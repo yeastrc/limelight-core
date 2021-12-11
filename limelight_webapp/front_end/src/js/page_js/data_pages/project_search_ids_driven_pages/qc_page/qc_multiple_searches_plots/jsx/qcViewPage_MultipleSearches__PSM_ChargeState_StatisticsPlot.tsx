@@ -68,6 +68,8 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot extends
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -102,6 +104,8 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot extends
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -109,6 +113,8 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot extends
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -228,12 +234,23 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot extends
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const promise_get_PsmStatistics_ChargeStateStatistics_Data =
             this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.
             qcPage_DataFromServer_AndDerivedData_MultipleSearches.get_PsmStatistics_ChargeStateStatistics_Data();
 
         promise_get_PsmStatistics_ChargeStateStatistics_Data.catch( reason => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
+
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -243,6 +260,11 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot extends
 
         promise_get_PsmStatistics_ChargeStateStatistics_Data.then( data_Holder_MultipleSearches => {
             try {
+                if ( ! this._componentMounted ) {
+                    //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
                 this.setState({showUpdatingMessage: false});
 
                 const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;

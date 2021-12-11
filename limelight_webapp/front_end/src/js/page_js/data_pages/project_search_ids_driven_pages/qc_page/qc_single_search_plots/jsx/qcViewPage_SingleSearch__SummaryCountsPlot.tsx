@@ -69,6 +69,8 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -103,6 +105,8 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -110,6 +114,8 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -229,6 +235,11 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
      *
      */
     private _populateChart() {
+
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
 
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =

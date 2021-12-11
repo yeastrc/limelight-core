@@ -75,6 +75,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
 
     private _renderChart: boolean = true;
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -134,6 +136,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -141,6 +145,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             if ( this._renderChart ) {
 
                 window.setTimeout(() => {
@@ -266,19 +272,16 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const psm_PPM_Error_List_Filtered = this.props.psm_PPM_Error_List_Filtered;
 
         if ( ! psm_PPM_Error_List_Filtered ) {
             //  NO Data yet to display
             return; // EARLY RETURN
-        }
-
-        if ( ! this.plot_Ref.current ) {
-            const msg = "NO DOM element at this.plot_Ref.current to put the chart in.  class QcViewPage_SingleSearch__PSM_PPM_Error_StatisticsPlot."
-            console.warn(msg);
-
-            return; // EARLY RETURN
-            // throw Error(msg);
         }
 
         this.setState({ showUpdatingMessage: false });

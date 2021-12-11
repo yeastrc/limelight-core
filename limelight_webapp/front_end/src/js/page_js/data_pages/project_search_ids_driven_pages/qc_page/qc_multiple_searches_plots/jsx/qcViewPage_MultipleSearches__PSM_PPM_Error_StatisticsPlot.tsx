@@ -70,6 +70,8 @@ export class QcViewPage_MultipleSearches__PSM_PPM_Error_StatisticsPlot extends R
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
 
+    private _componentMounted = false;
+
     /**
      *
      */
@@ -104,6 +106,8 @@ export class QcViewPage_MultipleSearches__PSM_PPM_Error_StatisticsPlot extends R
         } catch (e) {
             //  Eat Exception
         }
+
+        this._componentMounted = false;
     }
 
     /**
@@ -111,6 +115,8 @@ export class QcViewPage_MultipleSearches__PSM_PPM_Error_StatisticsPlot extends R
      */
     componentDidMount() {
         try {
+            this._componentMounted = true;
+
             window.setTimeout( () => {
                 try {
                     this._populateChart();
@@ -232,6 +238,11 @@ export class QcViewPage_MultipleSearches__PSM_PPM_Error_StatisticsPlot extends R
      */
     private _populateChart() {
 
+        if ( ! this._componentMounted ) {
+            //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
         const psm_PPM_Error_List_Filtered_Map_Key_ProjectSearchId = this.props.psm_PPM_Error_List_Filtered_Map_Key_ProjectSearchId;
 
         if ( ! psm_PPM_Error_List_Filtered_Map_Key_ProjectSearchId ) {
@@ -244,7 +255,6 @@ export class QcViewPage_MultipleSearches__PSM_PPM_Error_StatisticsPlot extends R
             console.warn(msg);
 
             return; // EARLY RETURN
-            // throw Error(msg);
         }
 
         this.setState({ showUpdatingMessage: false });
