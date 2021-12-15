@@ -39,6 +39,15 @@ import {PeptideFiltersDisplay_ComponentData} from "page_js/data_pages/peptide__s
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 import {Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Create_TableData";
+import {
+    ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback,
+    ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component";
+
+
+
+export type ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = () => void;
+export type ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback = () => void;
 
 /**
  * 
@@ -64,6 +73,10 @@ export interface ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideLis
     dataPageStateManager : DataPageStateManager
     showUpdatingMessage : boolean 
     showGettingDataMessage : boolean
+
+    // For Peptide Page
+    downloadPeptides_Shown_ClickHandler? : ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
+    downloadPsms_Shown_ClickHandler? : ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
 }
 
 /**
@@ -207,6 +220,8 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
                         showUpdatingMessage={ this.props.showUpdatingMessage }
                         showProteins={ this.props.showProteins }
                         proteinName_Clicked_Callback_Function={ this.props.proteinName_Clicked_Callback_Function }
+                        downloadPeptides_Shown_ClickHandler={ this.props.downloadPeptides_Shown_ClickHandler }
+                        downloadPsms_Shown_ClickHandler={ this.props.downloadPsms_Shown_ClickHandler }
                     />
                 </div>
                 { updatingMessage }
@@ -243,6 +258,9 @@ export interface ReportedPeptideList_Component_Props {
     //  Required when showProteins is true.  For Peptide Page
     proteinName_Clicked_Callback_Function? : CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function
 
+    // For Peptide Page
+    downloadPeptides_Shown_ClickHandler : ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
+    downloadPsms_Shown_ClickHandler : ProteinExperimentPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
 }
 
 /**
@@ -328,6 +346,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
         const dataTable_RootTableObject : DataTable_RootTableObject = getDataTableDataObjects_Result.dataTable_RootTableObject;
 
+        let havePeptideDataTableContentsForDownload : boolean = false;
+
         let noPeptidesMessage = undefined;
         let peptideListTable = undefined;
 
@@ -340,6 +360,8 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                 </div>
             );
         } else {
+
+            havePeptideDataTableContentsForDownload = true;
 
             peptideListTable = (
                 <DataTable_TableRoot
@@ -366,10 +388,35 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
 
                     <div style={ { marginTop: 10 } }>
                         <span style={ { fontWeight: "bold" } }>Total Found: </span>
-
                         <span >{ numberOfPeptidesShown }</span>
                         <span > peptides </span>
                         <span >({ numberOfPSMsForReportedPeptidesShown } PSMs)</span>
+
+                        {/*   Displayed on Peptide page   */}
+
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler || this.props.downloadPsms_Shown_ClickHandler ) ) ? (
+                            //  Separator
+                            <React.Fragment>
+                                <span style={ { paddingLeft : 20 } }>&nbsp;</span>
+                            </React.Fragment>
+                        ) : null }
+
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler ) ) ? (
+                            // Peptide Download Link
+                            <span className=" fake-link "
+                                  onClick={ this.props.downloadPeptides_Shown_ClickHandler }
+                            >Download All Peptides</span>
+                        ) : null }
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && ( this.props.downloadPeptides_Shown_ClickHandler && this.props.downloadPsms_Shown_ClickHandler ) ) ? (
+                            //  Separator
+                            <span style={ { paddingLeft : 10 } }>&nbsp;</span>
+                        ) : null }
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.downloadPsms_Shown_ClickHandler ) ? (
+                            // PSM Download Link
+                            <span className=" fake-link "
+                                  onClick={ this.props.downloadPsms_Shown_ClickHandler }
+                            >Download All PSMs</span>
+                        ) : null }
                     </div>
                 </div>
 

@@ -140,6 +140,7 @@ import {
 import {PeptideFiltersDisplay} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/jsx/peptideFiltersDisplay";
 import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/jsx/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_Component";
+import {peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString} from "page_js/data_pages/experiment_driven_data_pages/peptide__single_protein__shared__exp__page/js/peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString";
 
 
 ////
@@ -816,8 +817,11 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
-        const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
-            peptideList
+        const reportedPeptideDisplayDownloadDataAsString : string = peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString({
+            peptideList,
+            conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
+            dataPageStateManager: this.props.propsValue.dataPageStateManager
         });
 
         StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
@@ -832,115 +836,16 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         
         const peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = create_GeneratedReportedPeptideListData_Result.peptideList
 
-        const reportedPeptideDisplayDownloadDataAsString : string = this.createReportedPeptideDisplayDownloadDataAsString({
-            peptideList
+        const reportedPeptideDisplayDownloadDataAsString : string = peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString({
+            peptideList,
+            conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
+            dataPageStateManager: this.props.propsValue.dataPageStateManager
         });
 
         StringDownloadUtils.downloadStringAsFile({ stringToDownload : reportedPeptideDisplayDownloadDataAsString, filename: 'peptides_for_protein.txt' });
     }
-    
-	/**
-	 * Create Reported Peptide Data as String, for Download
-	 * 
-	 */
-	createReportedPeptideDisplayDownloadDataAsString({ 
-        
-        peptideList
-    
-    } : {
-        peptideList : Array<CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry>
-    
-    }) : string {
 
-        // This is totally broken as it is designed for the OLD Table format
-
-        const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } = this._getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId_ForPSMDownloads();
-
-        //  For getting search info for projectSearchIds
-        //   searchNamesKeyProjectSearchId is Map with key are projectSearchId as type number
-		const searchNamesMap_KeyProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchNames_AsMap();
-
-
-		//  Array of Arrays of reportLineParts
-		const reportLineParts_AllLines = []; //  Lines will be joined with separator '\n' with '\n' added to last line prior to join
-		
-		//  reportLineParts will be joined with separator '\t'
-
-		//  Header Line
-		{
-            const reportLineParts = [ 'Search Id', 'Search Name', 'Sequence', 'PSM Count' ];
-            
-            for ( const conditionGroupLabel of conditionGroupLabels_Only_InSameOrder ) {
-
-                reportLineParts.push( conditionGroupLabel );
-            }
-
-			reportLineParts_AllLines.push( reportLineParts );
-		}
-
-        //  Data Lines - One line per peptideSequenceDisplay / Search Id
-
-		for ( const peptideItem of peptideList ) {
-
-            for ( const mapEntry of peptideItem.psmCountsMap_KeyProjectSearchId.entries() ) {
-
-                const projectSearchId = mapEntry[ 0 ];
-                const psmCount = mapEntry[ 1 ];
-
-                const searchNameEntry = searchNamesMap_KeyProjectSearchId.get( projectSearchId ); //   searchNamesKeyProjectSearchId is Object with property names are projectSearchId as type number
-                if ( ! searchNameEntry ) {
-                    const msg = "createReportedPeptideDisplayDownloadDataAsString: No value in searchNamesKeyProjectSearchId for projectSearchId: " + projectSearchId;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-
-                const searchId = searchNameEntry.searchId;
-                const searchName = searchNameEntry.name;
-
-                const reportLineParts = [
-                    searchId.toString(),
-                    searchName,
-                    peptideItem.peptideSequenceDisplay,
-                    psmCount.toString()
-                ];
-
-                const conditionGroupLabel_and_ConditionLabel_Data = conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId.get( projectSearchId );
-                if ( ! conditionGroupLabel_and_ConditionLabel_Data ) {
-                    const msg = "createReportedPeptideDisplayDownloadDataAsString: No value in conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId;
-                    console.warn( msg );
-                    throw Error( msg );
-                }
-
-                for ( const conditionGroupLabel_and_ConditionLabel_Data_Entry of conditionGroupLabel_and_ConditionLabel_Data ) {
-
-                    reportLineParts.push( conditionGroupLabel_and_ConditionLabel_Data_Entry.conditionLabel );
-                }
-                
-			    reportLineParts_AllLines.push( reportLineParts );
-			}
-		}
-
-        //  Join all line parts into string for each line, delimit on '\t'
-
-        const reportLine_AllLines = [];
-
-        for ( const reportLineParts of reportLineParts_AllLines ) {
-
-            const reportLine = reportLineParts.join( "\t" );
-            reportLine_AllLines.push( reportLine );
-        }
-
-        //  Add empty string to array so get \n at end of last line when do reportLine_AllLines.join( '\n' );
-        reportLine_AllLines.push("");
-
-        //  Join all Lines into single string, delimit on '\n'.  Last line already has '\n' at end
-
-        const reportLinesSingleString = reportLine_AllLines.join( '\n' );
-
-        return reportLinesSingleString;
-	}
-
-	
     /**
      * Download ALL PSMs for Protein based on current cutoff/filter criteria.  
 	 * 
@@ -949,7 +854,11 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     _downloadPsms_All_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
         try {
 
-            const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } = this._getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId_ForPSMDownloads();
+            const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } =
+                experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
+                    conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
+                });
 
             //  Data in Map
             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
@@ -1029,7 +938,11 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 	 */   
     _downloadPsms_Shown_ClickHandler( event : React.MouseEvent<HTMLHeadingElement, MouseEvent> ) : void {
         try {
-            const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } = this._getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId_ForPSMDownloads();
+            const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } =
+                experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
+                    conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
+                });
 
             //  Data in Map
             const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = getReportedPeptideIdsForDisplay_AllProjectSearchIds({ // External Function Call
@@ -1121,33 +1034,6 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             throw e;
         }
 	}
-	
-
-	/**
-	 * Get Condition Group Label and Condition Label Map Key ProjectSearchId.
-	 * 
-	 * 
-	 */
-	private _getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId_ForPSMDownloads() : {
-
-        conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId : Map<number, Array<DownloadPSMs_PerConditionGroupConditionData>>,
-        conditionGroupLabels_Only_InSameOrder : Array<string>
-    } {
-
-        const {
-            conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId,
-            conditionGroupLabels_Only_InSameOrder
-        } =
-            experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
-                conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
-                conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
-            });
-
-        return {
-            conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId,
-            conditionGroupLabels_Only_InSameOrder
-        };
-    }
 
 	/**
 	 * Download PSMs for Protein.  

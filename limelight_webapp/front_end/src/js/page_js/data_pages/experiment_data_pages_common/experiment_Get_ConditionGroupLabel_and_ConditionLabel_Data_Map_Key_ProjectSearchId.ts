@@ -41,12 +41,6 @@ export const experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_P
     conditionGroupLabels_Only_InSameOrder : Array<string>
 } {
 
-    /////   !!!!!!!!!
-
-    throw Error("!!!!!  NOT TESTED CODE:  experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId ")
-
-    /////   !!!!!!!!!
-
     const conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId : Map<number, Array<Experiment_ConditionGroupLabel_and_ConditionLabel>> = new Map();
 
     let conditionGroupLabels_Only_InSameOrder : Array<string> = undefined;
