@@ -931,8 +931,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 	 */
 	_downloadPeptides_Shown_ClickHandler() : void {
 
-        throw Error("Need to Update for PSM Count filter")
-
         const create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = this.state.create_GeneratedReportedPeptideListData_Result;
 
         let searchSubGroup_Ids_Selected : Set<number> = undefined;
