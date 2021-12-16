@@ -280,7 +280,7 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                 {/* Parent is CSS Grid with 2 Columns */}
 
                 <div className=" filter-common-filter-label ">
-                    Minimum PSM Count:
+                    Minimum Protein PSM Count:
 
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
