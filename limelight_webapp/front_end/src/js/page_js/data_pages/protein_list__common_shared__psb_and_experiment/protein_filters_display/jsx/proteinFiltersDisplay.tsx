@@ -1,81 +1,77 @@
 /**
- * peptideFiltersDisplay.tsx
- * 
- * Display currently applied Peptide Filters.  Shown above the Peptide List.
- * 
+ * proteinFiltersDisplay.tsx
+ *
+ * Display currently applied Protein Filters.  Shown above the Protein List.
+ *
  * Includes the "clear all" link to clear all filters
- * 
+ *
  * For use in proteinExperimentPage_SingleProtein_Root_Component.tsx
- * 
+ *
  */
 
 import React from 'react'
 
-import { PeptideFiltersDisplay_ComponentData } from 'page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/peptide_filters_display/js/peptideFiltersDisplay_ComponentData'
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
-import {ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
+import {ProteinFiltersDisplay_ComponentData} from "page_js/data_pages/protein_list__common_shared__psb_and_experiment/protein_filters_display/js/proteinFiltersDisplay_ComponentData";
 
 
 
-
-
-const _PROTEIN_NAME_TRUNCATION = 20;
 
 /**
- * 
+ *
  */
-export type PeptideFiltersDisplay_clearAllFiltersClickHandler = () => void;
+export type ProteinFiltersDisplay_clearAllFiltersClickHandler = () => void;
 
 /**
- * 
+ *
  */
-export interface PeptideFiltersDisplay_Props {
+export interface ProteinFiltersDisplay_Props {
 
-    peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData;
+    proteinFiltersDisplay_ComponentData : ProteinFiltersDisplay_ComponentData;
 
     //  All called clearAllFiltersClickHandler  has been modified to NOT clear ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-    clearAllFiltersClickHandler : PeptideFiltersDisplay_clearAllFiltersClickHandler;
+    clearAllFiltersClickHandler : ProteinFiltersDisplay_clearAllFiltersClickHandler;
 }
 
 /**
- * 
+ *
  */
-interface PeptideFiltersDisplay_State {
+interface ProteinFiltersDisplay_State {
 
-    prev_peptideFiltersDisplay_ComponentData : PeptideFiltersDisplay_ComponentData;
+    prev_proteinFiltersDisplay_ComponentData : ProteinFiltersDisplay_ComponentData;
 }
 
 /**
- * 
+ *
  */
-export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDisplay_Props, PeptideFiltersDisplay_State > {
+export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDisplay_Props, ProteinFiltersDisplay_State > {
 
     //  bind to 'this' for passing as parameters
     private _clearAllFiltersClickHandler_BindThis = this._clearAllFiltersClickHandler.bind(this);
 
     /**
-     * 
-     */    
-    constructor(props : PeptideFiltersDisplay_Props) {
+     *
+     */
+    constructor(props : ProteinFiltersDisplay_Props) {
         super(props);
 
-        this.state = { prev_peptideFiltersDisplay_ComponentData : props.peptideFiltersDisplay_ComponentData };
+        this.state = { prev_proteinFiltersDisplay_ComponentData : props.proteinFiltersDisplay_ComponentData };
     }
 
     /**
-     * 
-     */   
-    shouldComponentUpdate( nextProps: Readonly<PeptideFiltersDisplay_Props>, nextState: Readonly<PeptideFiltersDisplay_State>, nextContext: any) : boolean {
+     *
+     */
+    shouldComponentUpdate( nextProps: Readonly<ProteinFiltersDisplay_Props>, nextState: Readonly<ProteinFiltersDisplay_State>, nextContext: any) : boolean {
 
-        if ( nextProps.peptideFiltersDisplay_ComponentData !== this.props.peptideFiltersDisplay_ComponentData ) {
+        if ( nextProps.proteinFiltersDisplay_ComponentData !== this.props.proteinFiltersDisplay_ComponentData ) {
             return true;
         }
         return false;
     }
 
     /**
-     * 
-     */    
+     *
+     */
     _clearAllFiltersClickHandler( event : React.MouseEvent<HTMLSpanElement, MouseEvent> ) : void {
 
         // event.preventDefault();
@@ -89,75 +85,70 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
     ////////////////////////////////////////
 
     /**
-     * 
-     */    
+     *
+     */
     render() {
         {
             // if nothing selected, return null
 
             //  searchSubGroup properties not always populated
-            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
-            // const searchSubGroup_PropValue = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_PropValue;
+            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.proteinFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
+            // const searchSubGroup_PropValue = this.props.proteinFiltersDisplay_ComponentData.searchSubGroup_PropValue;
 
-            let selectedProteinSequencePositionsSet : Set<number> = undefined;
-
-            if ( this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject ) {
-                selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
-            }
-
-            const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
+            const modificationMass_UserSelections_StateObject = this.props.proteinFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
 
             const is_Any_VariableModification_Selected = modificationMass_UserSelections_StateObject.get_VariableModificationSelections().is_Any_Modification_Selected();
             const is_Any_OpenModification_Selected = modificationMass_UserSelections_StateObject.get_OpenModificationSelections().is_Any_Modification_Selected();
             const is_Any_StaticModification_Selected = modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected();
 
+
             //  Comment out since never display this info
 
             // let is_Treat_Mass_0_As_Unmodified_Selected = false;
 
-            // if ( this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-            //     && this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+            // if ( this.props.proteinFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+            //     && this.props.proteinFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
             //     is_Treat_Mass_0_As_Unmodified_Selected = true;
             // }
 
-            const reporterIonssSelectedsSet = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
+            const reporterIonssSelectedsSet = this.props.proteinFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
-            let peptideUniqueSelected = false;
-            if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
-                peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
-            }
-
-            const peptideSearchString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
-
-            let isAny_proteinPositionFilterSelections = false;
-            if ( this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject ) {
-                isAny_proteinPositionFilterSelections = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject.isAnySelections();
-            }
-
-            let peptidePage_PSM_CountFilter_HasValue = false;
+            let proteinPage_PSM_DistinctPeptide_CountFilter_HasValue = false;
             {
                 //  Test here is ONLY for whether or not to render the component.  The State Object value is tested again below for showing the specific value on the page
 
-                if ( this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ) {
-                    const peptidePage_PSM_CountFilter_Local = this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter();
-                    if ( peptidePage_PSM_CountFilter_Local !== undefined && peptidePage_PSM_CountFilter_Local !== null ) {
-                        // Only display has value
-                        peptidePage_PSM_CountFilter_HasValue = true
+                if ( this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject ) {
+                    { // PSM Count
+                        const countFilter = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_PSM_CountFilter();
+                        if ( countFilter !== undefined && countFilter !== null ) {
+                            // Only display has value
+                            proteinPage_PSM_DistinctPeptide_CountFilter_HasValue = true
+                        }
+                    }
+                    { // Distinct Peptide Count
+                        const countFilter = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_Peptide_CountFilter();
+                        if ( countFilter !== undefined && countFilter !== null ) {
+                            // Only display has value
+                            proteinPage_PSM_DistinctPeptide_CountFilter_HasValue = true
+                        }
+                    }
+                    { // Unique Peptide Count
+                        const countFilter = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_UniquePeptide_CountFilter();
+                        if ( countFilter !== undefined && countFilter !== null ) {
+                            // Only display has value
+                            proteinPage_PSM_DistinctPeptide_CountFilter_HasValue = true
+                        }
                     }
                 }
             }
 
             if ( ( searchSubGroup_Are_All_SearchSubGroupIds_Selected )
-                && ( ( ! selectedProteinSequencePositionsSet ) || ( selectedProteinSequencePositionsSet.size === 0 ) )
                 && ( ! is_Any_VariableModification_Selected )
                 && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
                 // && ( ! is_Treat_Mass_0_As_Unmodified_Selected )  //  Comment out since never display this info
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
-                && ( ! peptideUniqueSelected )
-                && ( ! peptideSearchString )
-                && ( ! isAny_proteinPositionFilterSelections )
-                && ( ! peptidePage_PSM_CountFilter_HasValue )
+                && ( ! proteinPage_PSM_DistinctPeptide_CountFilter_HasValue )
             ) {
 
                 // Nothing to display
@@ -169,8 +160,8 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
         let selectedSearchSubGroupsList : Array<JSX.Element> = null;
         {
-            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
-            const searchSubGroup_PropValue = this.props.peptideFiltersDisplay_ComponentData.searchSubGroup_PropValue;
+            const searchSubGroup_Are_All_SearchSubGroupIds_Selected = this.props.proteinFiltersDisplay_ComponentData.searchSubGroup_Are_All_SearchSubGroupIds_Selected;
+            const searchSubGroup_PropValue = this.props.proteinFiltersDisplay_ComponentData.searchSubGroup_PropValue;
 
             if ( ( ! searchSubGroup_Are_All_SearchSubGroupIds_Selected ) && searchSubGroup_PropValue ) {  // searchSubGroup_PropValue may not be populated
 
@@ -191,22 +182,6 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
         }
 
-        let selectedProteinSequencePositions_DisplayString : string = undefined;
-
-        {
-            if ( this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject ) {
-                const selectedProteinSequencePositionsSet = this.props.peptideFiltersDisplay_ComponentData.proteinSequenceWidget_StateObject.get_selectedProteinSequencePositions();
-
-                if ( selectedProteinSequencePositionsSet && ( selectedProteinSequencePositionsSet.size !== 0 ) ) {
-
-                    const selectedProteinSequencePositionsArray = Array.from( selectedProteinSequencePositionsSet );
-                    selectedProteinSequencePositionsArray.sort();
-
-                    selectedProteinSequencePositions_DisplayString = _userSelectionDisplay_CombineArrayIntoFormattedString({ array : selectedProteinSequencePositionsArray });
-                }
-            }
-        }
-
         const AND_SEPARATOR_STRING = "AND"
         const OR_SEPARATOR_STRING = "OR"
         const NOT_SEPARATOR_STRING = "OR"
@@ -219,7 +194,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
         let selection_NOT_UnModified_Open_Mods_Selected = false;
 
         {
-            const modificationMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
+            const modificationMass_UserSelections_StateObject = this.props.proteinFiltersDisplay_ComponentData.modificationMass_UserSelections_StateObject;
             const variable_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections()
             const open_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_OpenModificationSelections()
 
@@ -409,7 +384,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                 })
             }
 
-            const reporterIonMass_UserSelections_StateObject = this.props.peptideFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject;
+            const reporterIonMass_UserSelections_StateObject = this.props.proteinFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject;
 
             if ( reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected() ) {
                 {
@@ -490,228 +465,97 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             }
         }
 
-        let is_Treat_Mass_0_As_Unmodified_Selected : boolean = false;
-
         //  Comment out since never display this info
-        // if ( this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-        //     && this.props.peptideFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+
+        // let is_Treat_Mass_0_As_Unmodified_Selected : boolean = false;
+        //
+        // if ( this.props.proteinFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+        //     && this.props.proteinFiltersDisplay_ComponentData.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
         //     is_Treat_Mass_0_As_Unmodified_Selected = true;
         // }
 
-        let peptideUniqueSelected : boolean = false;
-
-        if ( this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject ) {
-            peptideUniqueSelected = this.props.peptideFiltersDisplay_ComponentData.peptideUnique_UserSelection_StateObject.getPeptideUnique();
-        }
-
-        let peptideSequenceSearchStrings_DisplayString : string = undefined;
-        {
-            peptideSequenceSearchStrings_DisplayString = this.props.peptideFiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject.getPeptideSearchString();
-        }
-
-        let proteinPositionFilter_JSX : JSX.Element = null;
-        if ( this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject
-            && this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject.isAnySelections() ) {
-
-            if ( ! this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
-                const msg = "this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data not populated when this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject is populated";
-                console.warn( msg )
-                throw Error( msg );
-            }
-
-            const proteinPosition_SelectionDisplay_Entries : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry> = [];
-
-            const selections_Ranges = this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges();
-
-            for ( const mapEntry of selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() ) {
-                const per_proteinSequenceVersionId_Entry  = mapEntry[ 1 ];
-                const proteinSequenceVersionId = per_proteinSequenceVersionId_Entry.proteinSequenceVersionId
-
-                let proteins_Names_LengthsData: ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein = undefined;
-                for ( const protein of
-                    this.props.peptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.
-                        proteinPositionFilter_UserInput__Component__ProteinData_Root.proteins ) {
-                    if ( protein.proteinSequenceVersionId === proteinSequenceVersionId ) {
-                        proteins_Names_LengthsData = protein;
-                        break;
-                    }
-                }
-
-                if ( ! proteins_Names_LengthsData ) {
-                    const msg = " nothing in proteins_Names_LengthsData for proteinSequenceVersionId: " + proteinSequenceVersionId;
-                    console.warn( msg, proteinSequenceVersionId )
-                    throw Error( msg + proteinSequenceVersionId )
-                }
-
-                const proteinName_Truncated = proteins_Names_LengthsData.proteinName.substring( 0, _PROTEIN_NAME_TRUNCATION );
-
-
-                if ( per_proteinSequenceVersionId_Entry.fullProteinSelected ){
-                    const resultEntry: ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry = {
-                        proteinSequenceVersionId,
-                        proteinName: proteins_Names_LengthsData.proteinName,
-                        proteinName_Truncated: proteinName_Truncated,
-                        proteinDescription: proteins_Names_LengthsData.proteinDescription,
-                        proteinPosition_Start: 1,
-                        proteinPosition_End: proteins_Names_LengthsData.proteinLength,
-                        proteinFullLengthSelected : true
-                    }
-                    proteinPosition_SelectionDisplay_Entries.push(resultEntry);
-                }
-
-                if ( per_proteinSequenceVersionId_Entry.rangeEntries && per_proteinSequenceVersionId_Entry.rangeEntries.length > 0 ) {
-                    for (const entry_For_ProteinSequenceVersionId of per_proteinSequenceVersionId_Entry.rangeEntries) {
-                        let proteinFullLengthSelected = false;
-                        if (entry_For_ProteinSequenceVersionId.proteinPosition_Start === 1 && entry_For_ProteinSequenceVersionId.proteinPosition_End === proteins_Names_LengthsData.proteinLength) {
-                            proteinFullLengthSelected = true;
-                        }
-                        const resultEntry: ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry = {
-                            proteinSequenceVersionId,
-                            proteinName: proteins_Names_LengthsData.proteinName,
-                            proteinName_Truncated: proteinName_Truncated,
-                            proteinDescription: proteins_Names_LengthsData.proteinDescription,
-                            proteinPosition_Start: entry_For_ProteinSequenceVersionId.proteinPosition_Start,
-                            proteinPosition_End: entry_For_ProteinSequenceVersionId.proteinPosition_End,
-                            proteinFullLengthSelected
-                        }
-                        proteinPosition_SelectionDisplay_Entries.push(resultEntry);
-                    }
-                }
-            }
-            proteinPosition_SelectionDisplay_Entries.sort( (a,b) => {
-                if ( a.proteinName < b.proteinName ) {
-                    return -1;
-                }
-                if ( a.proteinName > b.proteinName ) {
-                    return 1;
-                }
-                if ( a.proteinSequenceVersionId < b.proteinSequenceVersionId ) {
-                    return -1;
-                }
-                if ( a.proteinSequenceVersionId > b.proteinSequenceVersionId ) {
-                    return 1;
-                }
-                if ( a.proteinPosition_Start < b.proteinPosition_Start ) {
-                    return -1;
-                }
-                if ( a.proteinPosition_Start > b.proteinPosition_Start ) {
-                    return 1;
-                }
-                return 0;
-            });
-
-            const proteinPositionFilter_JSX_Entries : Array<JSX.Element> = [];
-            {
-                let index = 0;
-                for (const proteinPosition_SelectionDisplay_Entry of proteinPosition_SelectionDisplay_Entries) {
-
-                    let orSeparator : JSX.Element = null;
-                    if ( index !== 0 ) {
-                        //  Add separator "OR"
-                        const separatorKey = "separator_" + index;
-                        orSeparator = (
-                            <span style={ { whiteSpace: "nowrap" } }>
-                                {/* <span>&nbsp;</span> remove since each entry has trailing space */}
-                                <span key={ separatorKey } >
-                                    OR
-                                </span>
-                                <span>&nbsp;</span>
-                            </span>
-                        );
-                    }
-
-                    const proteinNameTitle = proteinPosition_SelectionDisplay_Entry.proteinName + "\n\n" + proteinPosition_SelectionDisplay_Entry.proteinDescription;
-
-                    if ( proteinPosition_SelectionDisplay_Entry.proteinFullLengthSelected ) {
-                        const rootElement_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId
-                        const jsx = (
-                            <span key={ rootElement_Key }>
-                                <span style={ { whiteSpace: "nowrap" } }>
-
-                                    { orSeparator } {/* Populated for all entries after the first one */}
-
-                                    <span>
-                                        Any position in&nbsp;
-                                    </span>
-                                    <span title={ proteinNameTitle }>
-                                        { proteinPosition_SelectionDisplay_Entry.proteinName_Truncated }
-                                    </span>
-                                </span>
-                                <span> </span>  {/* Empty span to allow line breaks */}
-                            </span>
-                        )
-                        proteinPositionFilter_JSX_Entries.push( jsx );
-                    } else {
-                        const rootElement_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId + "_" + proteinPosition_SelectionDisplay_Entry.proteinPosition_Start;
-                        const rootElement_SpanAfter_Key = proteinPosition_SelectionDisplay_Entry.proteinSequenceVersionId + "_" + proteinPosition_SelectionDisplay_Entry.proteinPosition_Start + "_SpanAfter";
-                        const jsx = (
-                            <span key={ rootElement_Key }>
-                                <span style={ { whiteSpace: "nowrap" } }>
-
-                                    { orSeparator } {/* Populated for all entries after the first one */}
-
-                                    <span>
-                                        Any position from&nbsp;
-                                        { proteinPosition_SelectionDisplay_Entry.proteinPosition_Start }
-                                        &nbsp;to&nbsp;
-                                        { proteinPosition_SelectionDisplay_Entry.proteinPosition_End }
-                                        &nbsp;in
-                                    </span>
-                                    <span>
-                                        &nbsp;
-                                    </span>
-                                    <span title={ proteinNameTitle }>
-                                        { proteinPosition_SelectionDisplay_Entry.proteinName_Truncated }
-                                    </span>
-                                </span>
-                                <span key={ rootElement_SpanAfter_Key }> </span>  {/* Empty span to allow line breaks */}
-                            </span>
-                        )
-                        proteinPositionFilter_JSX_Entries.push( jsx );
-                    }
-                    index++;
-                }
-            }
-
-            proteinPositionFilter_JSX = (
-                <div >
-                    All peptides must cover: { proteinPositionFilter_JSX_Entries }
-                </div>
-            )
-        }
-
-        let peptidePage_PSM_CountFilter : number = undefined;
+        let proteinPage_PSM_CountFilter : number = undefined;
+        let proteinPage_DistinctPeptide_CountFilter : number = undefined;
+        let proteinPage_UniquePeptide_CountFilter : number = undefined;
         {
             //  Test here is ONLY for showing the specific value on the page.  The State Object value is tested above for whether or not to render the component
 
-            if ( this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject ) {
-                const peptidePage_PSM_CountFilter_Local = this.props.peptideFiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter();
-                if ( peptidePage_PSM_CountFilter_Local !== undefined && peptidePage_PSM_CountFilter_Local !== null ) {
+            if ( this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject ) {
+                const proteinPage_PSM_CountFilter_Local = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_PSM_CountFilter();
+                if ( proteinPage_PSM_CountFilter_Local !== undefined && proteinPage_PSM_CountFilter_Local !== null ) {
                     // Only display has value
-                    peptidePage_PSM_CountFilter = peptidePage_PSM_CountFilter_Local
+                    proteinPage_PSM_CountFilter = proteinPage_PSM_CountFilter_Local
+                }
+            }
+            if ( this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject ) {
+                const proteinPage_DistinctPeptide_CountFilter_Local = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_Peptide_CountFilter();
+                if ( proteinPage_DistinctPeptide_CountFilter_Local !== undefined && proteinPage_DistinctPeptide_CountFilter_Local !== null ) {
+                    // Only display has value
+                    proteinPage_DistinctPeptide_CountFilter = proteinPage_DistinctPeptide_CountFilter_Local
+                }
+            }
+            if ( this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject ) {
+                const proteinPage_UniquePeptide_CountFilter_Local = this.props.proteinFiltersDisplay_ComponentData.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject.get_UniquePeptide_CountFilter();
+                if ( proteinPage_UniquePeptide_CountFilter_Local !== undefined && proteinPage_UniquePeptide_CountFilter_Local !== null ) {
+                    // Only display has value
+                    proteinPage_UniquePeptide_CountFilter = proteinPage_UniquePeptide_CountFilter_Local
                 }
             }
         }
 
         return (
             <React.Fragment>
-                <div className="  filter-common-filter-label ">
-                    <span  style={ { fontWeight: "bold" } } >
-                        Current peptide filters:
+                <div className="   ">
+                    <span  style={ { fontSize: 18, fontWeight: "bold" } } >
+                        Current filters:
                     </span>
                     <span> </span>
                     <span style={ { fontSize: 12, fontWeight: "normal" } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
                 </div>
-                <div className=" filter-common-selection-block  " style={ { marginTop: 4, marginBottom: 10, marginLeft: 6 } }>
+                <div className=" filter-common-selection-block  " style={ { marginTop: 4, marginBottom: 2, marginLeft: 6 } }>
 
-                    { ( peptidePage_PSM_CountFilter !== undefined && peptidePage_PSM_CountFilter !== null ) ? (
+                    { ( proteinPage_PSM_CountFilter !== undefined && proteinPage_PSM_CountFilter !== null ) ? (
                         <div >
-                            <span>The peptide must have least </span>
+                            <span>The protein must have least </span>
                             <span> </span>
-                            <span>{ peptidePage_PSM_CountFilter }</span>
+                            <span>{ proteinPage_PSM_CountFilter }</span>
                             <span> </span>
                             <span>PSM</span>
-                            { ( peptidePage_PSM_CountFilter > 1 ) ? ( // Make "PSM" plural to "PSMs"
+                            { ( proteinPage_PSM_CountFilter > 1 ) ? ( // Make "PSM" plural to "PSMs"
+                                <span>s</span>
+                            ) : null }
+                            <span> </span>
+                            <span>
+                                in at least one search or condition
+                            </span>
+                        </div>
+                    ) : null }
+
+                    { ( proteinPage_DistinctPeptide_CountFilter !== undefined && proteinPage_DistinctPeptide_CountFilter !== null ) ? (
+                        <div >
+                            <span>The protein must have least </span>
+                            <span> </span>
+                            <span>{ proteinPage_DistinctPeptide_CountFilter }</span>
+                            <span> </span>
+                            <span>distinct peptide</span>
+                            { ( proteinPage_DistinctPeptide_CountFilter > 1 ) ? ( // Make "peptide" plural to "peptides"
+                                <span>s</span>
+                            ) : null }
+                            <span> </span>
+                            <span>
+                                in at least one search or condition
+                            </span>
+                        </div>
+                    ) : null }
+
+                    { ( proteinPage_UniquePeptide_CountFilter !== undefined && proteinPage_UniquePeptide_CountFilter !== null ) ? (
+                        <div >
+                            <span>The protein must have least </span>
+                            <span> </span>
+                            <span>{ proteinPage_UniquePeptide_CountFilter }</span>
+                            <span> </span>
+                            <span>unique peptide</span>
+                            { ( proteinPage_UniquePeptide_CountFilter > 1 ) ? ( // Make "peptide" plural to "PSMs"
                                 <span>s</span>
                             ) : null }
                             <span> </span>
@@ -724,12 +568,6 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     { ( selectedSearchSubGroupsList ) ?
                         <div>
                             Filter on Sub Groups: { selectedSearchSubGroupsList }
-                        </div>
-                        : null /* Display nothing */ }
-
-                    { ( selectedProteinSequencePositions_DisplayString ) ?
-                        <div >
-                            <span style={{whiteSpace: "nowrap"}}>Must cover protein position(s): </span> <span>{ selectedProteinSequencePositions_DisplayString }</span> {/* example: 3, 6 or 987 */}
                         </div>
                         : null /* Display nothing */ }
 
@@ -780,26 +618,6 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
                     {/*        <span style={{whiteSpace: "nowrap"}}>{"Do not treat open modification masses that round to 0 (0.5 <= mass < 0.5) as open modifications."}</span>*/}
                     {/*    </div>*/}
                     {/*    : null / * Display nothing * / }*/}
-
-                    { ( peptideUniqueSelected ) ?
-                        <div >
-                            <span style={{whiteSpace: "nowrap"}}>Peptides must be Unique</span>
-                        </div>
-                        : null /* Display nothing */ }
-
-                    { ( peptideSequenceSearchStrings_DisplayString ) ?
-                        <div >
-                            <span style={{whiteSpace: "nowrap"}}>Peptide sequences must contain: </span> <span>{ peptideSequenceSearchStrings_DisplayString }</span>
-                        </div>
-                        : null /* Display nothing */
-                    }
-
-                    { ( proteinPositionFilter_JSX ) ?
-                        <div>
-                            { proteinPositionFilter_JSX }
-                        </div>
-                        : null /* Display nothing */
-                    }
 
                 </div>
             </React.Fragment>

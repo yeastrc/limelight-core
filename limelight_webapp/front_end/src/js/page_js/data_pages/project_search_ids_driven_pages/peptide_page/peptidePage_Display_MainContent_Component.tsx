@@ -1306,7 +1306,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                             this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
 
-                            this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject();
+                            this._update__peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject();
 
                             window.setTimeout( () => {
                                 try {
@@ -2102,9 +2102,9 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     }
 
     /**
-     * create new this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object
+     * create new this.state.peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject
      */
-    private _peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject() {
+    private _update__peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject() {
 
         this.setState( { peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject: {} } );
     }
@@ -2611,7 +2611,7 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                     <div className=" filter-common-block-selection-container-block no-section-labels ">
 
-                        {/* Display of User Selected Modifications and Protein Positions filtering on  */}
+                        {/* Display of User Selected filtering on  */}
 
                         <PeptideFiltersDisplay
                             peptideFiltersDisplay_ComponentData={ this.state.peptideFiltersDisplay_ComponentData }
