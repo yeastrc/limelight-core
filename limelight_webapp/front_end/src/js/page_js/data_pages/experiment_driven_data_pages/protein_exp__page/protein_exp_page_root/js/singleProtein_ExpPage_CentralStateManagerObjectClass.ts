@@ -123,10 +123,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setProteinSequenceVersionId( { proteinSequenceVersionId }: { proteinSequenceVersionId: number } ) {
 		this._value.proteinSequenceVersionId = proteinSequenceVersionId;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getProteinSequenceVersionId() {
@@ -136,10 +138,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setProteinSequenceFormattedDisplayWidgetEncodedStateData( { proteinSequenceFormattedDisplayWidgetEncodedStateData }: { proteinSequenceFormattedDisplayWidgetEncodedStateData: any } ) {
 		this._value.proteinSequenceFormattedDisplayWidgetEncodedStateData = proteinSequenceFormattedDisplayWidgetEncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getProteinSequenceFormattedDisplayWidgetEncodedStateData() {
@@ -149,10 +153,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setReporterIonMassesSelectedEncodedStateData( { reporterIonMassesSelectedEncodedStateData }: { reporterIonMassesSelectedEncodedStateData: any } ) {
 		this._value.reporterIonMassesSelectedEncodedStateData = reporterIonMassesSelectedEncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getReporterIonMassesSelectedEncodedStateData() {
@@ -162,10 +168,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setPeptideUniqueFilterSelectedEncodedStateData( { peptideUniqueFilterSelectedEncodedStateData }: { peptideUniqueFilterSelectedEncodedStateData: any } ) {
 		this._value.peptideUniqueFilterSelectedEncodedStateData = peptideUniqueFilterSelectedEncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getPeptideUniqueFilterSelectedEncodedStateData() {
@@ -175,10 +183,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setModsSelectedEncodedStateData( { modsSelectedEncodedStateData }: { modsSelectedEncodedStateData: any } ) {
 		this._value.modsSelectedEncodedStateData = modsSelectedEncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getModsSelectedEncodedStateData() {
@@ -188,10 +198,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	setPeptideSequenceFilterSelectedEncodedStateData( { peptideSequenceFilterSelectedEncodedStateData } :{ peptideSequenceFilterSelectedEncodedStateData: any } ) {
 		this._value.peptideSequenceFilterSelectedEncodedStateData = peptideSequenceFilterSelectedEncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	getPeptideSequenceFilterSelectedEncodedStateData() {
@@ -215,10 +227,12 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 	set_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData( { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData }: { peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData: any } ) {
 		this._value.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData = peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData;
 
-		if ( ! this._centralPageStateManager ) {
-			throw Error( "this._centralPageStateManager not set" );
+		// if ( ! this._centralPageStateManager ) {
+		// 	throw Error( "this._centralPageStateManager not set" );
+		// }
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState({component: this});
 		}
-		this._centralPageStateManager.setState( { component : this } );
 	}
 
 	get_peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData() {
