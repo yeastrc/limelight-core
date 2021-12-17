@@ -697,7 +697,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
             <React.Fragment>
                 <div className="  filter-common-filter-label ">
                     <span  style={ { fontWeight: "bold" } } >
-                        Current peptide filters:
+                        Current filters:
                     </span>
                     <span> </span>
                     <span style={ { fontSize: 12, fontWeight: "normal" } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
