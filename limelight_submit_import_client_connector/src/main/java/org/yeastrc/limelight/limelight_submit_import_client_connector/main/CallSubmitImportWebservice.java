@@ -241,7 +241,7 @@ public class CallSubmitImportWebservice {
 		Map<String,String> headersToSend = new HashMap<>();
 		headersToSend.put( SUBMIT_IMPORT_UPLOAD_FILE_HEADER_PARAMETER_PARAMS_PGM_XML, headerString );
 		
-		String webserviceURL = webappServerBaseURL + SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL + "__FAKE_EXTRA";
+		String webserviceURL = webappServerBaseURL + SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL;
 				
 		Object webserviceResponseAsObject = 
 				callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject(
