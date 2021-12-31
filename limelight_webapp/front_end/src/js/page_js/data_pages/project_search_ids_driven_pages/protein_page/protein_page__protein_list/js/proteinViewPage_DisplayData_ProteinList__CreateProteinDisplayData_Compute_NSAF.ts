@@ -110,8 +110,8 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_C
 
     //  Compute NSAF
 
-    //  NSAF Per Search
-    if ( projectSearchIds.length > 1 && ( ! searchSubGroup_Ids_Selected ) ) {
+    //  NSAF Per Search:  If > 1 search OR ( Single Search AND No Sub Groups )
+    if ( projectSearchIds.length > 1 || ( projectSearchIds.length === 1 && ( ! searchSubGroup_Ids_Selected ) ) ) {
 
         const nsaf_Map_Key_ProteinSequenceVersionId_Map_Key_ProjectSearchId: Map<number, Map<number, number>> = new Map();
 
