@@ -218,7 +218,7 @@ public class ProjectView_Controller {
 					httpServletRequest.setAttribute( "projectPublicAccessCodeEnabled", true );
 				}
 			
-			} else if ( webSessionAuthAccessLevel.isAssistantProjectOwnerIfProjectNotLockedAllowed() ) {
+			} else if ( webSessionAuthAccessLevel.isViewerReadOnlyIfProjectNotLockedAllowed() ) {
 				
 				//  Only needed for Assistant Project Owner (AKA Researcher)
 				
