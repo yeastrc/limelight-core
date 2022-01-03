@@ -647,7 +647,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 peptideSequenceDisplay_Charge_Display_RowsArray.sort();
 
                 const hoverText =
-                    '<b>MS' + spectralStorage_NO_Peaks_DataFor_ScanNumber.level + ' data for PSM</b>' +
+                    // Remove this line: '<b>MS' + spectralStorage_NO_Peaks_DataFor_ScanNumber.level + ' data for PSM</b>' +
                     '<br><b>M/Z</b>: ' + precursor_M_Over_Z_String +
                     '<br><b>Retention Time</b>: ' + retentionTime_InMinutes_String +
                     '<br>' + peptideSequenceDisplay_Charge_Display_RowsArray.join("<br>");
@@ -792,7 +792,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 text: chart_Text__MS_2_Plus_PrecursorData,
                 hoverinfo: 'text',
                 // hovertemplate: //  Added '<extra></extra>' to remove secondary box with trace name
-                //     '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
+                //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
                 //     '<br><b>M/Z</b>: %{y}' +
                 //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
             }
