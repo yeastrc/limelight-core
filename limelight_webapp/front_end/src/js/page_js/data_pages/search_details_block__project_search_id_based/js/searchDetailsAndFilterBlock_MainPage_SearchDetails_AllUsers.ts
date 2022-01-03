@@ -433,8 +433,9 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 					$tbody.append( genericForNoDataForProjectSearchId_HTML );
 
 					const weblinksShowAddWeblinkLink = projectPageSearchDetails_RootWsResult.weblinksShowAddWeblinkLink;
+					const commentsShowBlockAlways = projectPageSearchDetails_RootWsResult.commentsShowBlockAlways;
 
-					this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
+					this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, commentsShowBlockAlways, $selector_search_details_container });
 
 					this._attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });
 
@@ -443,6 +444,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 					//  YES projectPageSearchDetailsForProjectSearchId for projectSearchId
 
 					const weblinksShowAddWeblinkLink = projectPageSearchDetails_RootWsResult.weblinksShowAddWeblinkLink;
+					const commentsShowBlockAlways = projectPageSearchDetails_RootWsResult.commentsShowBlockAlways;
 
 					if ( projectPageSearchDetailsForProjectSearchId ) {
 
@@ -469,7 +471,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
 						this._searchDetails_AdditionsForSubLists({ data, projectSearchId, $selector_search_details_container });
 
-						this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
+						this._searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, commentsShowBlockAlways, $selector_search_details_container });
 
 						this._attachSearchDetails_ClickHandlers({ projectSearchId, $selector_search_details_container });
 					}
@@ -600,10 +602,10 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 	/**
 	 * 
 	 */    
-    private _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) {
+    private _searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, commentsShowBlockAlways, $selector_search_details_container }) {
 
         if ( this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers ) {
-            this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container });
+            this._searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers.searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, commentsShowBlockAlways, $selector_search_details_container });
         }
 	}
 	

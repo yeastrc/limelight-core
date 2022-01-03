@@ -109,7 +109,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
    /**
     * 
     */
-   public searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, $selector_search_details_container }) : void {
+   public searchDetails_AdditionsForLoggedInUsers({ projectSearchId, weblinksShowAddWeblinkLink, commentsShowBlockAlways, $selector_search_details_container }) : void {
 
        if ( weblinksShowAddWeblinkLink ) {
            
@@ -125,7 +125,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
            $htmlAddLink.appendTo($selector_weblinks_outer_container);
        }
 
-       {
+       if ( commentsShowBlockAlways ) {
            const $selector_comments_outer_container = $selector_search_details_container.find(".selector_comments_outer_container");
 
            //  $selector_comments_outer_container.length === 0 : true when User is NO LONGER Logged In
