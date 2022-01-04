@@ -18,7 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.services;
 
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,15 +80,15 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 				search_PathFastaFilenameImportEndTimestamp_ForProjectSearchIdsSearcher.getSearch_SearchDetailsDisplay_ListForProjectSearchIds( projectSearchIds, retrieve_Path, retrieve_CLI_PARAMS );
 
 		List<SearchDetails_Core_Item> results = new ArrayList<>( search_PathFastaFilename_ItemList.size() );
-		
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+		DateFormat dateTimeFormat = DateFormat.getDateTimeInstance( DateFormat.LONG, DateFormat.LONG );
+		
 		for ( Search__SearchDetailsDisplay_Item search_PathFastaFilename_Item : search_PathFastaFilename_ItemList ) {
 			
 			String formattedLoadTime = null;
 			
 			if ( search_PathFastaFilename_Item.getImportEndTimestamp() != null ) {
-				formattedLoadTime = simpleDateFormat.format( search_PathFastaFilename_Item.getImportEndTimestamp() );
+				formattedLoadTime = dateTimeFormat.format( search_PathFastaFilename_Item.getImportEndTimestamp() );
 			}
 			
 			SearchDetails_Core_Item searchDetails_Core_Item = new SearchDetails_Core_Item();
@@ -110,7 +110,7 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 				searchDetails_Core_Item.setConverterProgram_Pgm_Arguments( search_PathFastaFilename_Item.getConverterProgram_Pgm_Arguments() );
 			}
 			if ( search_PathFastaFilename_Item.getConverterProgram_ConversionDate() != null ) {
-				String formatted_converterProgram_ConversionDate = simpleDateFormat.format(search_PathFastaFilename_Item.getConverterProgram_ConversionDate());
+				String formatted_converterProgram_ConversionDate = dateTimeFormat.format(search_PathFastaFilename_Item.getConverterProgram_ConversionDate());
 				searchDetails_Core_Item.setFormatted_converterProgram_ConversionDate(formatted_converterProgram_ConversionDate);
 			}
 			

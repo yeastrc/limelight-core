@@ -18,7 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,9 +222,9 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 	 * @return
 	 */
 	private List<WebserviceResultSearchItem> convertSearchItemMinimalToWebserviceResultSearchItem( List<SearchItemMinimal> searches ) {
+
+		DateFormat dateTimeFormat = DateFormat.getDateTimeInstance( DateFormat.LONG, DateFormat.LONG );
 		
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
 		List<WebserviceResultSearchItem> webserviceResultSearchItemList = new ArrayList<>( searches.size() );
 		for ( SearchItemMinimal searchItemMinimal : searches ) {
 			
@@ -233,7 +233,7 @@ public class Project_OrganizeSearches_GetData_RestWebserviceController {
 			String formattedLoadTime = null;
 			
 			if ( searchItemMinimal.getImportEndTimestamp() != null ) {
-				formattedLoadTime = simpleDateFormat.format( searchItemMinimal.getImportEndTimestamp() );
+				formattedLoadTime = dateTimeFormat.format( searchItemMinimal.getImportEndTimestamp() );
 			}
 			
 			WebserviceResultSearchItem searchItem = new WebserviceResultSearchItem();
