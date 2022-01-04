@@ -11,6 +11,9 @@
  *
  * Peptide and Single Protein
  *
+ * !!!!   WARNING:  Other functions re-create this data structure based on additional filtering:
+ *
+ *                      create_GeneratedReportedPeptideListData__SingleProtein(...)
 */
 
 

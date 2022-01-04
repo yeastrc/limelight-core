@@ -11,6 +11,11 @@
  *
  * Companion file to Peptide and Single Protein
  *
+ *
+ * !!!!   WARNING:  Other functions re-create this data structure based on additional filtering:
+ *
+ *                      create_GeneratedReportedPeptideListData__SingleProtein(...)
+ *
  */
 
 import {ProteinView_LoadedDataCommonHolder} from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';

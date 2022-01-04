@@ -103,6 +103,8 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
             create_GeneratedReportedPeptideListData__SingleProtein({
                 forPeptidePage: true,
 
+                //  !!!  Important:   result from create_GeneratedReportedPeptideListData__SingleProtein has updated reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds if psmMinimumCount_Filter_UserEntry > 1
+
                 psmMinimumCount_Filter_UserEntry: undefined,  // Never pass a value
 
                 searchSubGroup_Ids_Selected: undefined, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
