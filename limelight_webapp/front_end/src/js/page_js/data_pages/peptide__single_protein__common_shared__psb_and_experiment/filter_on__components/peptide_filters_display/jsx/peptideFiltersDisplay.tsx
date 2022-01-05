@@ -723,7 +723,7 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
                     { ( selectedSearchSubGroupsList ) ?
                         <div>
-                            Filter on Sub Groups: { selectedSearchSubGroupsList }
+                            Filter on Sub Search: { selectedSearchSubGroupsList }
                         </div>
                         : null /* Display nothing */ }
 

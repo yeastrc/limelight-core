@@ -507,7 +507,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
             <ModalOverlay_Limelight_Component
                 width={ _WIDTH }
                 height={ _HEIGHT }
-                title={ "Manage Sub Group Names" }
+                title={ "Manage Sub Search Names" }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
                 <div >
@@ -532,10 +532,20 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
 
                                 <div  style={ { whiteSpace: "nowrap", marginBottom: 10, paddingLeft: ( ( subGroup_ItemOuterPartsWidths.borderWidth * 2 ) + subGroup_ItemOuterPartsWidths.paddingWidth ) } }>
                                     <div style={ { fontWeight: "bold", display: "inline-block", width : displayGroupName_ColumnHeaderWidth } }>
-                                        Display Group Name
+                                        Display<br/>Sub Search Name
+
+                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                            <div className=" inner-absolute-pos ">
+                                                <div className=" main-div ">
+                                                    <p className="help-tip-actual">
+                                                        Label that will be displayed on the website
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div style={ { fontWeight: "bold", display: "inline-block" } }>
-                                        Group Name
+                                        Sub Search Name
                                     </div>
                                 </div>
 

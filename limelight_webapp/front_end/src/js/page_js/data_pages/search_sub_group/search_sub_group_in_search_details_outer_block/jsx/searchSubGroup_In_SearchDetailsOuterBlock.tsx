@@ -222,7 +222,7 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
                 <tr >
                     <td style={ { verticalAlign : "top" } }>
                         <div style={ { whiteSpace : "nowrap" } }>
-                            Sub Groups:
+                            Sub Searches:
                         </div>
                         { ( this.props.searchSubGroup_ManageGroupNames_Clicked_Callback ) ?
                             <div >
@@ -355,14 +355,14 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                 {/* Parent is CSS Grid with 2 Columns */}
 
                 <div className=" filter-common-filter-label " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
-                    Filter On Sub Groups:
+                    Filter On Sub Search:
 
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    Only peptides from the selected sub groups will be used to build the protein list.
-                                    A sub group is typically a set of search results for a single run if multiple runs were combined for post processing.
+                                    Only peptides from the selected sub searches will be used to build the protein list.
+                                    A sub search is typically a set of search results for a single run if multiple runs were combined for post processing.
                                 </p>
                             </div>
                         </div>
