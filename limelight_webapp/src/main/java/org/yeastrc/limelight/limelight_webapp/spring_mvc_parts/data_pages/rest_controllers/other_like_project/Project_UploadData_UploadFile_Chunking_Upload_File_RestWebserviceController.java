@@ -206,6 +206,7 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 
 			WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
 			webserviceMethod_Internal_Params.projectId = projectId;
+			webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
 			webserviceMethod_Internal_Params.userId = userId;
 			webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
 			
@@ -420,24 +421,34 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 			Long fileChunk_StartByte = webserviceRequestHeaderContents.getFileChunk_StartByte();
 
 			if ( uploadFileSize == null ) {
-				log.warn( "'uploadFileSize' header JSON parameter is null" );
+				log.warn( "'uploadFileSize' header JSON parameter is null. uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( fileChunk_StartByte == null ) {
-				log.warn( "'fileChunk_StartByte' header JSON parameter is null" );
+				log.warn( "'fileChunk_StartByte' header JSON parameter is null.  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( StringUtils.isEmpty( uploadedFilename ) ) {
-				log.warn( "'filename' header JSON parameter is not sent or is empty" );
+				log.warn( "'filename' header JSON/XML parameter is not sent or is empty.  uploadKeyString: " + uploadKeyString
+						+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+						+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceRequestHeaderContents.getFileIndex() == null ) {
-				log.error( "'fileIndex' header JSON parameter is not sent or is null " );
+				log.error( "'fileIndex' header JSON/XML parameter is not sent or is null .  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
 			if ( webserviceRequestHeaderContents.getFileType() == null ) {
-				log.warn( "'fileType' header JSON parameter is not sent or is null " );
+				log.warn( "'fileType' header JSON parameter is not sent or is null .  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			int fileTypeInt = webserviceRequestHeaderContents.getFileType();
@@ -802,6 +813,18 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 				}
 			}
 		}
+
+		if ( log.isInfoEnabled() ) {
+
+			//  No SubmitProgramVersionNumber is passed from Submitter Program
+						
+			log.info( "Successful upload of file for import.  UserId: " + webserviceMethod_Internal_Params.userId
+					+ ", project id: " + webserviceMethod_Internal_Params.projectId
+					+ ", upload key: " + webserviceMethod_Internal_Params.uploadKey 
+					+ ", filename: " + webserviceRequestHeaderContents.getFilename()
+					+ ", FileChunk_StartByte: " + webserviceRequestHeaderContents.getFileChunk_StartByte()
+					+ ", request URL: " + webserviceMethod_Internal_Params.requestURL );
+		}
 		
 		webserviceResult.setStatusSuccess( true );
 		
@@ -822,6 +845,8 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 		long uploadKey = -1;
 		long maxFileSize = -1;
 		String maxFileSizeFormatted = null;
+
+		String requestURL;
 		
 		int userId;
 		

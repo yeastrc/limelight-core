@@ -181,6 +181,18 @@ public class Project_UploadData_SubmitterProgram_AuthTest_RestWebserviceControll
 			
 			webserviceResult.setStatusSuccess( false );
 			
+			if ( log.isInfoEnabled() ) {
+				
+				if ( validateResult.getUserId() == null ) {
+					log.info( "Validate Access: Result is Fail: Cannot find User for UserSubmitImportProgramKey.  Error mesage returned to Submit program: " + webserviceResult.getStatusFail_ErrorMessage() );
+				} else {
+					log.info( "Validate Access: Result is Fail: User does not have Project Owner access or project is locked.  UserId: " + validateResult.getUserId() 
+							+ ", projectId: " + projectId
+							+ ".  Error mesage returned to Submit program: " + webserviceResult.getStatusFail_ErrorMessage() );
+				}
+			}
+			
+			
 			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
 			
 			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );

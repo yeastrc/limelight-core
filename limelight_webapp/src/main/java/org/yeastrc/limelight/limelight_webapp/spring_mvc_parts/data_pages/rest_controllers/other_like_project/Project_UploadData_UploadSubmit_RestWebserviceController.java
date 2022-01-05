@@ -257,6 +257,7 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			webserviceMethod_Internal_Params.uploadKey = uploadKey;
 			webserviceMethod_Internal_Params.webservice_Request_Base = webserviceRequest;
 			webserviceMethod_Internal_Params.userId = userId;
+			webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
 			webserviceMethod_Internal_Params.webservice_Result_Base = new SubmitImport_FinalSubmit_Response_WebJSON();
 			
 //			WebserviceMethod_Internal_Results webserviceMethod_Internal_Results =
@@ -414,9 +415,16 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 				SubmitImport_FinalSubmit_Response_PgmXML submitImport_FinalSubmit_Response_PgmXML = new SubmitImport_FinalSubmit_Response_PgmXML();
 				
 				submitImport_FinalSubmit_Response_PgmXML.setStatusSuccess( false );
-				
-				//  TODO  Set error reason
-//				webserviceResult.set 
+
+				if ( log.isInfoEnabled() ) {
+					
+					if ( validateResult.getUserId() == null ) {
+						log.info( "Validate Access: Result is Fail: Cannot find User for UserSubmitImportProgramKey." );
+					} else {
+						log.info( "Validate Access: Result is Fail: User does not have Project Owner access or project is locked.  UserId: " + validateResult.getUserId() 
+								+ ", projectId: " + projectId );
+					}
+				}
 				
 				byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( submitImport_FinalSubmit_Response_PgmXML );
 
@@ -433,11 +441,14 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			SubmitImport_FinalSubmit_Response_PgmXML submitImport_FinalSubmit_Response_PgmXML = new SubmitImport_FinalSubmit_Response_PgmXML();
 			
 			WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
+			
+			webserviceMethod_Internal_Params.submitImport_FinalSubmit_Request_PgmXML = webserviceRequest;
 
 			webserviceMethod_Internal_Params.projectId = projectId;
 			webserviceMethod_Internal_Params.uploadKey = uploadKey;
 			webserviceMethod_Internal_Params.webservice_Request_Base = webserviceRequest;
 			webserviceMethod_Internal_Params.userId = validateResult.getUserId();
+			webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
 			webserviceMethod_Internal_Params.webservice_Result_Base = submitImport_FinalSubmit_Response_PgmXML;
 			
 			webserviceMethod_Internal_Params.submitterSameMachine = webserviceRequest.isSubmitterSameMachine();
@@ -826,6 +837,25 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		
 		webservice_Result_Base.setStatusSuccess( true );
 		
+
+		if ( log.isInfoEnabled() ) {
+			
+			String submitterProgramData = "";
+			
+			if ( webserviceMethod_Internal_Params.submitImport_FinalSubmit_Request_PgmXML != null ) {
+				
+				submitterProgramData = ", SubmitProgramVersionNumber: " +  webserviceMethod_Internal_Params.submitImport_FinalSubmit_Request_PgmXML.getSubmitProgramVersionNumber();
+			}
+			
+			
+			log.info( "Successful Submit Upload.  UserId: " + webserviceMethod_Internal_Params.userId
+					+ ", project id: " + webserviceMethod_Internal_Params.projectId
+					+ ", upload key: " + uploadKey
+					+ ", request URL: " + webserviceMethod_Internal_Params.requestURL
+					+ submitterProgramData );
+		}
+		
+		
 		try {
 			
 			// send email to notify submit received
@@ -1073,11 +1103,15 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 	private static class WebserviceMethod_Internal_Params {
 		
 		SubmitImport_FinalSubmit_Request_Base webservice_Request_Base;
+		
+		SubmitImport_FinalSubmit_Request_PgmXML submitImport_FinalSubmit_Request_PgmXML;
 
 		int projectId = -1;
 		long uploadKey = -1;
 		
 		int userId;
+		
+		String requestURL;
 		
 		SubmitImport_FinalSubmit_Response_Base webservice_Result_Base; 
 		

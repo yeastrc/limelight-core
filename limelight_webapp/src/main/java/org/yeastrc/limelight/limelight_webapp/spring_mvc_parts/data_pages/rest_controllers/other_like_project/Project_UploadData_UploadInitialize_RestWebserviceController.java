@@ -187,6 +187,8 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		webserviceMethod_Internal_Params.projectId = projectId;
 		webserviceMethod_Internal_Params.userId = userId;
 		webserviceMethod_Internal_Params.webserviceResult = new SubmitImport_Init_Response_WebJSON();
+		webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
+		webserviceMethod_Internal_Params.submitImport_Init_Request_WebJSON = webserviceRequest;
 		
     	webserviceMethod_Internal( webserviceMethod_Internal_Params);
     	
@@ -239,7 +241,7 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		}
 		try {
 			webserviceRequest = (SubmitImport_Init_Request_PgmXML) webserviceRequestAsObject;
-		} catch ( Exception e ) {
+		} catch ( Throwable e ) {
 			final String msg = "Failed to cast returned webserviceRequestAsObject from XML to SubmitImport_Init_Request_PgmXML."
 					+ " webserviceRequestAsObject.getClass(): " + webserviceRequestAsObject.getClass();
 			log.warn(msg );
@@ -252,11 +254,14 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		
+		String userSubmitImportProgramKey_First_5_characters = webserviceRequest.getUserSubmitImportProgramKey().substring(0, 5);
+		
 		SubmitImport_Init_Response_PgmXML webserviceResult = new SubmitImport_Init_Response_PgmXML();
 
 		if ( webserviceRequest.getSubmitProgramVersionNumber() == null ) {
 			
-			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() == null. webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier() );
+			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() == null. webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier()
+					+ ", userSubmitImportProgramKey_First_5_characters: " + userSubmitImportProgramKey_First_5_characters );
 			
 			webserviceResult.setStatusSuccess( false );
 			
@@ -270,10 +275,11 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 
 		if ( webserviceRequest.getSubmitProgramVersionNumber().intValue() < Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER ) {
 			
-			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() < Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER.  SubmitProgramVersionNumber: "
+			log.warn( "webserviceRequest.getSubmitProgramVersionNumber() < Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER.  SubmitProgramVersionNumber in request: "
 					+ webserviceRequest.getSubmitProgramVersionNumber().intValue()
 					+ ", SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER: " + Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__MINUMUM__VERSION_NUMBER
-					+ ", webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier() );
+					+ ", webserviceRequest.getProjectIdentifier(): " + webserviceRequest.getProjectIdentifier()
+					+ ", userSubmitImportProgramKey_First_5_characters: " + userSubmitImportProgramKey_First_5_characters );
 			
 			webserviceResult.setStatusSuccess( false );
 			webserviceResult.setSubmitProgramVersionNumber_NotAccepted(true);
@@ -299,6 +305,17 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		if ( ! validateResult.isSuccess() ) {
 			
 			webserviceResult.setStatusSuccess( false );
+
+			if ( log.isInfoEnabled() ) {
+				
+				if ( validateResult.getUserId() == null ) {
+					log.info( "Validate Access: Result is Fail: Cannot find User for UserSubmitImportProgramKey.  Error mesage returned to Submit program: " + webserviceResult.getStatusFail_ErrorMessage() );
+				} else {
+					log.info( "Validate Access: Result is Fail: User does not have Project Owner access or project is locked.  UserId: " + validateResult.getUserId() 
+							+ ", projectId: " + projectId
+							+ ".  Error mesage returned to Submit program: " + webserviceResult.getStatusFail_ErrorMessage() );
+				}
+			}
 			
 			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
 			
@@ -338,6 +355,8 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		webserviceMethod_Internal_Params.projectId = projectId;
 		webserviceMethod_Internal_Params.userId = validateResult.getUserId();
 		webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
+		webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
+		webserviceMethod_Internal_Params.submitImport_Init_Request_PgmXML = webserviceRequest;
 		
 		WebserviceMethod_Internal_Results webserviceMethod_Internal_Results = 
 				webserviceMethod_Internal( webserviceMethod_Internal_Params );
@@ -497,6 +516,23 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		webserviceResult.setUploadKey( uploadKeyString );
 		
 		methodResults.createdSubDir = createdSubDir;
+
+		if ( log.isInfoEnabled() ) {
+			
+			String submitterProgramData = "";
+			
+			if ( webserviceMethod_Internal_Params.submitImport_Init_Request_PgmXML != null ) {
+				
+				submitterProgramData = ", SubmitProgramVersionNumber: " +  webserviceMethod_Internal_Params.submitImport_Init_Request_PgmXML.getSubmitProgramVersionNumber();
+			}
+			
+			
+			log.info( "Successful Init Submit Upload.  UserId: " + webserviceMethod_Internal_Params.userId
+					+ ", project id: " + webserviceMethod_Internal_Params.projectId
+					+ ", upload key: " + uploadKeyString
+					+ ", request URL: " + webserviceMethod_Internal_Params.requestURL
+					+ submitterProgramData );
+		}
 		
 		return methodResults;
 	}
@@ -510,6 +546,18 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		int projectId; 
 		int userId;
 		SubmitImport_Init_Response_Base webserviceResult; 
+		
+		String requestURL;
+		
+		/**
+		 * Only populated when from Web App
+		 */
+		SubmitImport_Init_Request_WebJSON submitImport_Init_Request_WebJSON;
+		
+		/**
+		 * Only populated when from Submitter Program
+		 */
+		SubmitImport_Init_Request_PgmXML submitImport_Init_Request_PgmXML;
 	}
 
 	/**

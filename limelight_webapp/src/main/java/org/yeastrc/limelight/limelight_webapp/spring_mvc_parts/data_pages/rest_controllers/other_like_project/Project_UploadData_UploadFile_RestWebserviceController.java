@@ -21,9 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
@@ -43,10 +40,8 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.ut
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_Base;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_PgmXML;
-import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_WebJSON;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectIdIF;
-import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
@@ -64,7 +59,6 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.ut
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_XML_ToObject;
-import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
@@ -307,6 +301,19 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			SubmitImport_UploadFile_Response_PgmXML webserviceResult = new SubmitImport_UploadFile_Response_PgmXML();
 			
 			webserviceResult.setStatusSuccess( false );
+
+			if ( log.isInfoEnabled() ) {
+				
+				if ( validateResult.getUserId() == null ) {
+					log.info( "Validate Access: Result is Fail: Cannot find User for UserSubmitImportProgramKey. " );
+				} else {
+					log.info( "Validate Access: Result is Fail: User does not have Project Owner access or project is locked.  UserId: " + validateResult.getUserId() 
+							+ ", projectId: " + projectId
+							+ ", filename being uploaded (from request header):" + webserviceRequestHeaderContents.getFilename()
+							+ ", Upload Key (from request header):" + webserviceRequestHeaderContents.getUploadKey() );
+				}
+			}
+			
 			
 			//  TODO  Set error reason
 //			webserviceResult.set 
@@ -327,6 +334,7 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 
 		WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
 		webserviceMethod_Internal_Params.projectId = projectId;
+		webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
 		webserviceMethod_Internal_Params.userId = validateResult.getUserId();
 		webserviceMethod_Internal_Params.webserviceResult = webserviceResult;
 		
@@ -398,30 +406,40 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			String uploadKeyString = webserviceRequestHeaderContents.getUploadKey();
 
 			if ( StringUtils.isEmpty( uploadedFilename ) ) {
-				log.warn( "'filename' header JSON parameter is not sent or is empty" );
+				log.warn( "'filename' header JSON/XML parameter is not sent or is empty.  uploadKeyString: " + uploadKeyString
+						+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+						+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceRequestHeaderContents.getFileIndex() == null ) {
-				log.error( "'fileIndex' header JSON parameter is not sent or is null " );
+				log.error( "'fileIndex' header JSON/XML parameter is not sent or is null .  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
 			if ( webserviceRequestHeaderContents.getFileType() == null ) {
-				log.warn( "'fileType' header JSON parameter is not sent or is null " );
+				log.warn( "'fileType' header JSON parameter is not sent or is null .  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			int fileTypeInt = webserviceRequestHeaderContents.getFileType();
 			try {
 				webserviceMethod_Internal_Params.fileType = FileImportFileType.fromValue( fileTypeInt );
 			} catch (Exception e ) {
-				log.warn( "'fileType' header JSON is not a valid value: " + fileTypeInt );
+				log.warn( "'fileType' header JSON/XML is not a valid value: " + fileTypeInt + ".  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE 
 					&& ( ! isScanFileImportAllowedViaWebSubmit.isScanFileImportAllowedViaWebSubmit() ) ) {
 
-				log.warn( "'fileType' is : SCAN_FILE but scan files are not allowed via web submit" );
+				log.warn( "'fileType' is : SCAN_FILE but scan files are not allowed via web submit.  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 
 				//  Return Error
 				webserviceResult.setStatusSuccess(false);
@@ -433,7 +451,9 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				return methodResults;
 			}
 			if ( StringUtils.isEmpty( projectIdString ) ) {
-				log.warn( "'projectIdentifier' header JSON is not sent or is empty" );
+				log.warn( "'projectIdentifier' header JSON is not sent or is empty.  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			try {
@@ -459,7 +479,9 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE;
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED;
 			} else {
-				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType;
+				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType + ".  uploadKeyString: " + uploadKeyString
+					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
+					+ ", userId: " + webserviceMethod_Internal_Params.userId;
 				log.error( msg );
 				throw new LimelightWebappFileUploadFileSystemException( msg );
 			}
@@ -685,6 +707,17 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			}
 		}
 		
+		if ( log.isInfoEnabled() ) {
+
+			//  No SubmitProgramVersionNumber is passed from Submitter Program
+						
+			log.info( "Successful upload of file for import.  UserId: " + webserviceMethod_Internal_Params.userId
+					+ ", project id: " + webserviceMethod_Internal_Params.projectId
+					+ ", upload key: " + webserviceMethod_Internal_Params.uploadKey 
+					+ ", filename: " + webserviceRequestHeaderContents.getFilename()
+					+ ", request URL: " + webserviceMethod_Internal_Params.requestURL );
+		}
+		
 		webserviceResult.setStatusSuccess( true );
 		
 		return methodResults;
@@ -704,6 +737,8 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 		long uploadKey = -1;
 		long maxFileSize = -1;
 		String maxFileSizeFormatted = null;
+		
+		String requestURL;
 		
 		int userId;
 		
