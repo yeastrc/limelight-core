@@ -662,6 +662,11 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(resultEntry);
                 }
             }
+
+            if ( reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds().size > 0 ) {
+
+                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_FunctionResult.insert_Entry({ projectSearchId, entry: reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId });
+            }
         }
     }
 
