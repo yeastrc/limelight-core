@@ -191,7 +191,7 @@ const _create_dataTable_RootTableObject = function(
 
     {
         {
-            const displayName = "Search Sub Group";
+            const displayName = "Sub Search";
 
             const dataTable_Column = new DataTable_Column({
                 id : "srchSubGrpIds", // Used for tracking sort order. Keep short
