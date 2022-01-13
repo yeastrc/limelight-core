@@ -41,6 +41,7 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.StaticModDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
@@ -288,8 +289,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		//  throws an exception if access is not valid that is turned into a webservice response by Spring
     		
     		//  Comment out result since not use it
-//    		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
+    		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
+    		
+    		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
     		
     		////////////////
 
@@ -442,8 +445,31 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
    							peptideSequenceStringsForSearchIdReportedPeptideIdsSearcher.getPeptideSequenceStringsForSearchIdReportedPeptideIds(searchId, reportedPeptideIds);
 
    					for ( PeptideSequenceStringsForSearchIdReportedPeptideId_Item item : peptideSequenceStringsForSearchIdReportedPeptideId_Item_List ) {
+   						
+
+   						String peptideSequence_Original = item.getPeptideSequence();
+   						
+   						//  remove 'X' from peptideSequence
+   						//    since call to  PeptideMassCalculator.getInstance().getMassForPeptide( peptide, MassType.MONOISOTOPIC ); with sequence with 'X' it throws Exception
+   						
+   						String peptideSequence_No_X_Characters = peptideSequence_Original.replaceAll( "X", "" );
+   						
+//   						if ( peptideSequence_Original.length() != peptideSequence_No_X_Characters.length() ) {
+//   							
+//   							String msg = "Removed 'X' characters from Peptide before computing PSM Mass since 'X' characters cause it to throw an Exception.  projectSearchId: "
+//   									+ projectSearchId
+//   									+ ", searchId: " + searchId
+//   									+ ", projectIdsForProjectSearchIds: " + StringUtils.join( projectIdsForProjectSearchIds, ", " )
+//   									+ ", ReportedPeptideId: '" + item.getReportedPeptideId()
+//   									+ ", PeptideId: '" + item.getPeptideId()
+//   									+ ", peptideSequence_Original: '" + peptideSequence_Original + "'"
+//   									+ ", peptideSequence_No_X_Characters: '" + peptideSequence_No_X_Characters + "'";
+//   							log.warn(msg);
+//   						}
+   						
+   						
    						PSMMassCalculator_PeptideSequence psmMassCalculator_PeptideSequence = new PSMMassCalculator_PeptideSequence();
-   						psmMassCalculator_PeptideSequence.setSequence(item.getPeptideSequence());
+   						psmMassCalculator_PeptideSequence.setSequence( peptideSequence_No_X_Characters );
    						psmMassCalculator_PeptideSequence_Map_Key_ReportedPeptideId.put( item.getReportedPeptideId(), psmMassCalculator_PeptideSequence );
    					}
    				}
@@ -684,8 +710,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
    							}
    						}
 
-
-
    						PSMMassCalculatorParams params = new PSMMassCalculatorParams();
 
    						params.setCharge( psmTbl_dbEntry.getCharge() );
@@ -700,9 +724,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
    						params.setStaticMods( staticModDTOList );
 
-   						double ppmError = psmMassCalculator.calculatePPMEstimateForPSM( params );
-
-
+   						double ppmError = 0;
+   								
+   						try {
+   							ppmError = psmMassCalculator.calculatePPMEstimateForPSM( params );
+   						} catch ( Exception e ) {
+   							String msg = "Exception thrown from psmMassCalculator.calculatePPMEstimateForPSM( params ); params.getPeptideSequence(): " + params.getPeptideSequence();
+   							log.error(msg, e);
+   							throw e;
+   						}
 
    						WebserviceResult_PerPSM_Entry resultEntry = new WebserviceResult_PerPSM_Entry();
    						resultEntry.psmId = psmTbl_dbEntry.getPsmId();
