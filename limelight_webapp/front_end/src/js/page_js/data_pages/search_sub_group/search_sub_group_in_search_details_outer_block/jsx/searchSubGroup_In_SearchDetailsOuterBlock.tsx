@@ -404,11 +404,11 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                     >
                         <span
                             className=" fake-link "
+                            style={ { marginRight: 8 } }
                             onClick={ this._deselect_All_Clicked_BindThis }
                         >
                             deselect all
                         </span>
-                        <span> </span>
                         <span
                             className=" fake-link "
                             onClick={ this._select_All_Clicked_BindThis }

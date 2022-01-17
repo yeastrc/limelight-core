@@ -567,7 +567,15 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
 
                     { ( selectedSearchSubGroupsList ) ?
                         <div>
-                            Filter on Sub Search: { selectedSearchSubGroupsList }
+                            <span>Filter on Sub Search: </span>
+                            { ( selectedSearchSubGroupsList.length === 0 ) ? (
+                                <span>
+                                    None Selected
+                                </span>
+                            ) : (
+                                selectedSearchSubGroupsList
+                            )}
+
                         </div>
                         : null /* Display nothing */ }
 
