@@ -20,6 +20,7 @@
 import React from 'react'
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 
@@ -251,6 +252,16 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
 
 ////
 
+
+/**
+ *
+ */
+export interface SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props extends SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_Props {
+
+    projectSearchId: number
+    dataPageStateManager : DataPageStateManager
+}
+
 /**
  *
  */
@@ -271,7 +282,10 @@ interface SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State {
  *      is to create a new propValue : SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Props_PropValue object
  *      and pass that as the props
  */
-export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component extends React.Component< SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_Props, SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State > {
+export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component extends React.Component< SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props, SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State > {
+
+    private _deselect_All_Clicked_BindThis = this._deselect_All_Clicked.bind(this);
+    private _select_All_Clicked_BindThis = this._select_All_Clicked.bind(this);
 
     private _updateSelected_SearchSubGroupIds_Add_BindThis = this._updateSelected_SearchSubGroupIds_Add.bind(this);
     private _updateSelected_SearchSubGroupIds_Remove_BindThis = this._updateSelected_SearchSubGroupIds_Remove.bind(this);
@@ -279,7 +293,7 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
     /**
      *
      */
-    constructor(props : SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_Props) {
+    constructor(props : SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props) {
         super(props);
 
         // this.state = {};
@@ -288,12 +302,28 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
     /**
      * Only update when propValue is new object.
      */
-    shouldComponentUpdate(nextProps: Readonly<SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_Props>, nextState: Readonly<SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State>, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Readonly<SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props>, nextState: Readonly<SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State>, nextContext: any): boolean {
 
         if ( nextProps.displayData !== this.props.displayData ) {
             return  true
         }
         return false;
+    }
+
+    /**
+     *
+     */
+    private _deselect_All_Clicked() {
+
+        _deselect_All_Clicked_Update__searchSubGroup_CentralStateManagerObjectClass(this.props);
+    }
+
+    /**
+     *
+     */
+    private _select_All_Clicked() {
+
+            _select_All_Clicked_Update__searchSubGroup_CentralStateManagerObjectClass(this.props);
     }
 
     /**
@@ -355,17 +385,36 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                 {/* Parent is CSS Grid with 2 Columns */}
 
                 <div className=" filter-common-filter-label " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
-                    Filter On Sub Search:
+                    <div >
+                        Filter On Sub Search:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Only peptides from the selected sub searches will be used to build the protein list.
-                                    A sub search is typically a set of search results for a single run if multiple runs were combined for post processing.
-                                </p>
+                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                            <div className=" inner-absolute-pos ">
+                                <div className=" main-div ">
+                                    <p className="help-tip-actual">
+                                        Only peptides from the selected sub searches will be used to build the protein list.
+                                        A sub search is typically a set of search results for a single run if multiple runs were combined for post processing.
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div
+                        style={ { fontSize: 12, fontWeight: "normal", marginBottom: 6 } }
+                    >
+                        <span
+                            className=" fake-link "
+                            onClick={ this._deselect_All_Clicked_BindThis }
+                        >
+                            deselect all
+                        </span>
+                        <span> </span>
+                        <span
+                            className=" fake-link "
+                            onClick={ this._select_All_Clicked_BindThis }
+                        >
+                            select all
+                        </span>
                     </div>
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
@@ -383,6 +432,45 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
 ////////////
 
 //   Shared code between Root Components:
+
+/**
+ *
+ * @param props
+ */
+const _deselect_All_Clicked_Update__searchSubGroup_CentralStateManagerObjectClass = function ( props : SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props ) {
+
+    props.searchSubGroup_CentralStateManagerObjectClass.set_selectedSearchSubGroupIds({ selectedSearchSubGroupIds: new Set() });
+    if ( props.searchSubGroup_SelectionsChanged_Callback ) {
+        props.searchSubGroup_SelectionsChanged_Callback()
+    }
+}
+
+/**
+ *
+ * @param props
+ */
+const _select_All_Clicked_Update__searchSubGroup_CentralStateManagerObjectClass = function ( props : SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props ) {
+
+    const projectSearchId = props.projectSearchId;
+    const searchSubGroups_ForProjectSearchId = props.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+    if ( ! searchSubGroups_ForProjectSearchId ) {
+        const msg = "props.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+        console.warn(msg);
+        throw Error(msg);
+    }
+
+    const selectedSearchSubGroupIds : Set<number> = new Set();
+
+    for ( const searchSubGroup of searchSubGroups_ForProjectSearchId.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+        selectedSearchSubGroupIds.add(searchSubGroup.searchSubGroup_Id);
+    }
+
+
+    props.searchSubGroup_CentralStateManagerObjectClass.set_selectedSearchSubGroupIds({ selectedSearchSubGroupIds });
+    if ( props.searchSubGroup_SelectionsChanged_Callback ) {
+        props.searchSubGroup_SelectionsChanged_Callback()
+    }
+}
 
 /**
  *

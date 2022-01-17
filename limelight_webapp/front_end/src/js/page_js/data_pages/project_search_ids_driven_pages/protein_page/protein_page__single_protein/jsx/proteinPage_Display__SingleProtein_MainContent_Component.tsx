@@ -2625,6 +2625,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                 />
 
                                 <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
+                                    projectSearchId={ this.props.propsValue.projectSearchIds[0] }
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
                                     displayData={ this.state.searchSubGroup_PropValue }
                                     searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
                                     searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
