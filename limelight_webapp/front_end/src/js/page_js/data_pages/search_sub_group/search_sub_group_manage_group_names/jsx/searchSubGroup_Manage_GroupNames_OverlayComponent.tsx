@@ -33,6 +33,9 @@ export class SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object {
     displayName : string
     importedName : string
 
+    errorEntry_IsDuplicate_DisplayName: boolean
+    errorEntry_IsEmpty_DisplayName
+
     constructor({ id, displayName, importedName } : {
         id : number
         displayName : string
@@ -114,7 +117,8 @@ interface SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_Prop
  *
  */
 interface SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_State {
-    subGroup_Display_ObjectList : Array<SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object>
+    subGroup_Display_ObjectList? : Array<SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object>
+    updateButton_Enabled? : boolean
 }
 
 /**
@@ -144,7 +148,13 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
             subGroup_Display_ObjectList.push( subGroup_Display_Object_Clone );
         }
 
-        this.state = { subGroup_Display_ObjectList };
+        let updateButton_Enabled = true;
+
+        if ( this._update_subGroup_Display_ObjectList_ForErrors__ReturnTrueIfErrors({ subGroup_Display_ObjectList: subGroup_Display_ObjectList }) ) {
+            updateButton_Enabled = false;
+        }
+
+        this.state = { subGroup_Display_ObjectList, updateButton_Enabled };
     }
 
     /**
@@ -208,6 +218,13 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
         }
 
         //  When get here, The new groups are different from prev (new order and/or new values)
+
+        if ( this._update_subGroup_Display_ObjectList_ForErrors__ReturnTrueIfErrors({ subGroup_Display_ObjectList: this.state.subGroup_Display_ObjectList }) ) {
+
+            //  One or more entered values are invalid.  The error message would have been already rendered.  This is an extra check.
+
+            return; // EARLY RETURN
+        }
 
         {
             let displayOrder = 0;
@@ -305,6 +322,9 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
         });
     }
 
+    /**
+     *
+     */
     private _changeGroupName( value: any /* event.target.value */, id: any /* subGroup_Display_Object.id */ ) {
 
         this.setState( (state : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_State, props : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_Props ) : SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component_State => {
@@ -318,8 +338,67 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                 }
             }
 
-            return { subGroup_Display_ObjectList : state.subGroup_Display_ObjectList }
+            let updateButton_Enabled = true;
+
+            if ( this._update_subGroup_Display_ObjectList_ForErrors__ReturnTrueIfErrors({ subGroup_Display_ObjectList: state.subGroup_Display_ObjectList }) ) {
+                updateButton_Enabled = false;
+            }
+
+            return { subGroup_Display_ObjectList : state.subGroup_Display_ObjectList, updateButton_Enabled }
         });
+    }
+
+    /**
+     *
+     */
+    private _update_subGroup_Display_ObjectList_ForErrors__ReturnTrueIfErrors(
+        {
+            subGroup_Display_ObjectList
+        } : {
+            subGroup_Display_ObjectList: SearchSubGroup_Manage_GroupNames__SubGroup_Display_Object[]
+        }
+    ) : boolean {
+
+        const displayNames_Set = new Set<string>();
+
+        const displayNames_Duplicates_Set = new Set<string>();
+
+        let foundEmpty_displayNames = false;
+
+        for ( const subGroup_Display_Object of subGroup_Display_ObjectList ) {
+
+            subGroup_Display_Object.errorEntry_IsEmpty_DisplayName = false;
+            subGroup_Display_Object.errorEntry_IsDuplicate_DisplayName = false;
+
+            const displayName_Trimmed = subGroup_Display_Object.displayName.trim();
+
+            if ( displayName_Trimmed === "" ) {
+
+                subGroup_Display_Object.errorEntry_IsEmpty_DisplayName = true;
+                foundEmpty_displayNames = true;
+            } else {
+
+                if ( displayNames_Set.has(subGroup_Display_Object.displayName) ) {
+                    displayNames_Duplicates_Set.add(subGroup_Display_Object.displayName)
+                } else {
+                    displayNames_Set.add(subGroup_Display_Object.displayName);
+                }
+            }
+        }
+
+        for ( const subGroup_Display_Object of subGroup_Display_ObjectList ) {
+
+            if ( displayNames_Duplicates_Set.has(subGroup_Display_Object.displayName) ) {
+
+                subGroup_Display_Object.errorEntry_IsDuplicate_DisplayName = true;
+            }
+        }
+
+        if ( foundEmpty_displayNames || displayNames_Duplicates_Set.size > 0 ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -413,6 +492,19 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
 
                 const draggableId = subGroup_Display_Object.id.toString();
 
+                const displayName_InputField_Style : React.CSSProperties = { width : display_SubGroupName_InputField_Width };
+
+                if ( subGroup_Display_Object.errorEntry_IsDuplicate_DisplayName || subGroup_Display_Object.errorEntry_IsEmpty_DisplayName ) {
+                    displayName_InputField_Style.backgroundColor = "#ff7777";
+                }
+
+                let displayName_InputField_TitleAttr: string = null;
+                if ( subGroup_Display_Object.errorEntry_IsDuplicate_DisplayName ) {
+                    displayName_InputField_TitleAttr = "The same Display Name cannot be used in multiple entries"
+                } else if ( subGroup_Display_Object.errorEntry_IsEmpty_DisplayName ) {
+                    displayName_InputField_TitleAttr = "The Display Name cannot be empty";
+                }
+
                 const element = (
                     // <div key={ subGroup_Display_Object.id } style={ {  } }>
                     //     <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }
@@ -441,9 +533,10 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                                     <div style={ { width : subGroup_ItemPartsWidths.display_SubGroupName_Width, paddingBottom: 0 } }>
                                         {/*'defaultValue' for uncontrolled input.*/}
                                         {/*Change to 'value' for controlled input.*/}
-                                        <input type="text" style={ { width : display_SubGroupName_InputField_Width } }
+                                        <input type="text" style={ displayName_InputField_Style }
                                                maxLength={ _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH }
                                                value={ subGroup_Display_Object.displayName }
+                                               title={ displayName_InputField_TitleAttr }
                                                onChange={ (event) => { this._changeGroupName( event.target.value, subGroup_Display_Object.id ) }}
                                         />
                                     </div>
@@ -576,7 +669,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                         </div>
 
                         <div style={ { marginTop: 15 } }>
-                            <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+                            <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } disabled={ ! this.state.updateButton_Enabled } />
 
                             <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
                         </div>
