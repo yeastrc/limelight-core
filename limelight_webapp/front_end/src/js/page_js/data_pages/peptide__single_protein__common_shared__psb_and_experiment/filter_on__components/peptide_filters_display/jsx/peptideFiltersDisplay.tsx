@@ -723,16 +723,16 @@ export class PeptideFiltersDisplay extends React.Component< PeptideFiltersDispla
 
                     { ( selectedSearchSubGroupsList ) ?
                         <div>
-                            <span>Filter on Sub Search: </span>
-
                             { ( selectedSearchSubGroupsList.length === 0 ) ? (
                                 <span>
-                                    None Selected
+                                    Not showing data from any sub search
                                 </span>
                             ) : (
-                                selectedSearchSubGroupsList
+                                <React.Fragment>
+                                    <span>Filter on Sub Search: </span>
+                                    { selectedSearchSubGroupsList }
+                                </React.Fragment>
                             )}
-
                         </div>
                         : null /* Display nothing */ }
 
