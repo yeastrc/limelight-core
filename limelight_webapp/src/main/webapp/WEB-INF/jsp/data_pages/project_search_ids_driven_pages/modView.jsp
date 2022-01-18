@@ -32,13 +32,13 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
 
-	<h3>
-		Modifications View
-	</h3>
-	
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
 
+	<h1>
+		Modifications View
+	</h1>
+	
 	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
 	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
 

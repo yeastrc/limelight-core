@@ -39,12 +39,12 @@
    
    <div id="protein_page_outermost_block" >
    
-	<h3>
-		Proteins View
-	</h3>
-	
 	<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
 	<div id="data_pages_nav_links_page_container" ></div>
+	
+	<h1>
+		Proteins View
+	</h1>
 	
 	<%--  Loading message displayed until Javascript is loaded and initial search data is loaded. --%>
 	<div 

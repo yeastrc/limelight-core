@@ -34,12 +34,12 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-	<h3>
-		Peptides View
-	</h3>
-	
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
+	
+	<h1>
+		Peptides View
+	</h1>
 	
 	<!--  Main Peptide View Container -->
 	<div id="main_peptide_view_outer_block_react_root_container"></div>

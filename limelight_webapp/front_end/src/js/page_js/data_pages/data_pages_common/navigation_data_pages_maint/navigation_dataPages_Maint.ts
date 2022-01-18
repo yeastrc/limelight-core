@@ -186,15 +186,16 @@ class Navigation_dataPages_Maint {
 		for ( const navEntry of navEntries ) {
 
 			const nav_link_base_url = navEntry.nav_link_base_url
-			if ( nav_link_base_url === controllerPath_forCurrentPage ) {
-				//  Skip current page
-			} else {
-				const label = navEntry.label;
-				const href = nav_link_base_url + pathAddition;
 
-				const navComponentEntry = new Navigation_dataPages_Maint_Entry({ label, href });
-				navComponentEntries.push( navComponentEntry );
+			const label = navEntry.label;
+			let href : string = undefined;  //  Only populated if not current page
+
+			if ( nav_link_base_url !== controllerPath_forCurrentPage ) {
+				href = nav_link_base_url + pathAddition;
 			}
+
+			const navComponentEntry = new Navigation_dataPages_Maint_Entry({ label, href });
+			navComponentEntries.push( navComponentEntry );
 		}
 
 		const navigation_dataPages_Maint_Root_Component_Props_PropsValue = new Navigation_dataPages_Maint_Root_Component_Props_PropsValue({ navEntries : navComponentEntries })

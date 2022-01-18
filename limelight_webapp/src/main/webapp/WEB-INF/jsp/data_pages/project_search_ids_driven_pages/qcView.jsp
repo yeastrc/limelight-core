@@ -34,12 +34,12 @@
 
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_after_header_include_data_pages.jsp" %>
    
-	<h3>
-		QC View
-	</h3>
-	
 	<!--  Navigation Links -->
 	<div id="data_pages_nav_links_page_container" ></div>
+	
+	<h1>
+		QC View
+	</h1>
 	
 	<%--  Loading message displayed until Javascript is loaded and initial search data is loaded. --%>
 	<div 

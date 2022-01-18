@@ -9,10 +9,10 @@ import React from 'react'
 
 export class Navigation_dataPages_Maint_Entry {
     label : string
-    href : string
+    href : string  //  Only populated if not current page
     constructor({ label, href } : {
         label : string
-        href : string
+        href : string  //  Only populated if not current page
     }) {
         this.label = label
         this.href = href
@@ -116,18 +116,21 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
 
             mainContent = (
 
-                <span >{ navEntries }</span>
+                <span >
+                    { navEntries }
+                </span>
             )
         }
 
         return (
-            ( component_SubTree_ErrorMessage ) ? (
+            <div style={ { marginTop: 16 } } >
+                {( component_SubTree_ErrorMessage ) ? (
                     component_SubTree_ErrorMessage
                 ) : (
                     mainContent
-                )
+                )}
+            </div>
         )
-
     }
 
 }
@@ -170,15 +173,35 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
      */
     render() {
 
+        if ( this.props.navEntry.href ) {
+
+            //  Have href so render as link
+
+            return (
+                <React.Fragment>
+                    <span>
+                        [
+                        <a href={this.props.navEntry.href}>
+                            {this.props.navEntry.label}
+                        </a>
+                        ]
+                    </span>
+                    <span> </span>
+                </React.Fragment>
+            )
+        }
+
+        //  NOT have href so render as greyed out disabled
+
         return (
             <React.Fragment>
-                <span >
-                    [
-                    <a href={ this.props.navEntry.href }>
-                        { this.props.navEntry.label }
-                    </a>
-                    ]
-                </span>
+                    <span title="Current page" className=" gray-text ">
+                        [
+                        <span>
+                            { this.props.navEntry.label }
+                        </span>
+                        ]
+                    </span>
                 <span > </span>
             </React.Fragment>
         )
