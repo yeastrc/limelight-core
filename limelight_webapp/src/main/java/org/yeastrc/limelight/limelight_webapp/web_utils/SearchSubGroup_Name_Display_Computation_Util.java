@@ -19,8 +19,11 @@ package org.yeastrc.limelight.limelight_webapp.web_utils;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,6 +34,8 @@ import org.springframework.stereotype.Component;
 public class SearchSubGroup_Name_Display_Computation_Util {
 	
 	private static final int MAX_LENGTH_OF_DISPLAY_STRING = 8;
+
+	private static final int MIN_LENGTH_OF_DISPLAY_STRING = 2;
 
 	public static class SearchSubGroup_Name_Display_Computation_Entry {
 
@@ -142,13 +147,14 @@ public class SearchSubGroup_Name_Display_Computation_Util {
 
 		for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate ) {
 
-			if ( entry.subgroupName_Display_FromServer_IfUserEnteredAValue != null ) {
+			if ( StringUtils.isNotEmpty( entry.subgroupName_Display_FromServer_IfUserEnteredAValue ) ) {
 				//  has a value so copy and skip
 				
 				entry.subgroupName_Display = entry.subgroupName_Display_FromServer_IfUserEnteredAValue;
 				
 				continue;  // EARLY CONTINUE
 			}
+			
 			String searchSubgroupName_fromImportFile = entry.subgroupName_fromImportFile;
 			
 			int searchSubgroupName_fromImportFile_EndIndex = searchSubgroupName_fromImportFile.length();
@@ -159,6 +165,80 @@ public class SearchSubGroup_Name_Display_Computation_Util {
 			entry.subgroupName_Display = subgroupName_Display;
 		}
 		
+		//  Change as needed so NO Duplicate Display Names
+		
+		{
+			Set<String> displayNames_Set = new HashSet<>();
+			
+			int counter = 0;
+
+			for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate ) {
+				
+				counter++;
+
+				String subgroupName_Display_Altered = entry.subgroupName_Display;
+
+				boolean addSuccessful = false;
+
+				while ( ( ! addSuccessful ) && subgroupName_Display_Altered.length() > MIN_LENGTH_OF_DISPLAY_STRING ) {
+
+					if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+
+						addSuccessful = true;
+
+						break;  //  EARLY EXIT LOOP
+					}
+
+					subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 1 );  // Remove last character
+				}
+
+				if ( ! addSuccessful ) {
+
+					subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
+
+					while ( ( ! addSuccessful ) && subgroupName_Display_Altered.length() > MIN_LENGTH_OF_DISPLAY_STRING ) {
+
+						if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+
+							addSuccessful = true;
+
+							break;  //  EARLY EXIT LOOP
+						}
+
+						subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 1 );  // Remove first character
+					}
+				}
+				
+				if ( ! addSuccessful ) {
+
+					//  Try Add counter
+
+					subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
+
+					if( subgroupName_Display_Altered.length() >= MAX_LENGTH_OF_DISPLAY_STRING - 1 ) {
+						//  Remove last 1 or 2 characters to provide length under max length for up to 2 digit counter
+						
+						subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 2 );  // Remove last 2 characters
+					}
+					
+					subgroupName_Display_Altered = subgroupName_Display_Altered + counter;
+
+					if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+
+						addSuccessful = true;
+					}
+				}
+
+				if ( ! addSuccessful ) {
+
+					//  real mess.
+
+					// Give up for now
+				}
+				
+				entry.subgroupName_Display = subgroupName_Display_Altered;  // Save new value back to entry
+			}
+		}		
 
 		Collections.sort( entriesToUpdate, new Comparator<SearchSubGroup_Name_Display_Computation_Entry>() {
 
