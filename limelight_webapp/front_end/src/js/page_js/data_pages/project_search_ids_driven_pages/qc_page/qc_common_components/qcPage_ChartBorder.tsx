@@ -47,20 +47,22 @@ export class QcPage_ChartBorder extends React.Component< QcPage_ChartBorder_Prop
      */
     render () {
 
-        let width = qcPage_StandardChartLayout_StandardWidth();
-        let height = qcPage_StandardChartLayout_StandardHeight();
+        let minWidth = qcPage_StandardChartLayout_StandardWidth();
+        let minHeight = qcPage_StandardChartLayout_StandardHeight();
 
         if ( this.props.width_OverrideStandard ) {
-            width = this.props.width_OverrideStandard
+            minWidth = this.props.width_OverrideStandard
         }
         if ( this.props.height_OverrideStandard ) {
-            height = this.props.height_OverrideStandard
+            minHeight = this.props.height_OverrideStandard
         }
 
         return (
 
-            <div style={ { width, height, borderWidth: 1, borderStyle: "solid" } } className=" standard-border-color-gray ">
-                { this.props.children }
+            <div style={ { display: "inline-block" } }>
+                <div style={ { minWidth, minHeight, borderWidth: 1, borderStyle: "solid" } } className=" standard-border-color-gray ">
+                    { this.props.children }
+                </div>
             </div>
         )
     }

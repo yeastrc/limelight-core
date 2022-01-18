@@ -9,7 +9,10 @@
 
 import React from "react";
 
-import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {
@@ -74,7 +77,10 @@ import {
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides,
     ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
-import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    DataPageStateManager,
+    SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Qc_SingleSearch_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {
     qcPage_Get_Searches_Flags,
@@ -88,6 +94,10 @@ import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_
 import {Qc_MultipleSearches_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_AA__Root_DisplayBlock";
 import {Qc_compute_Cache_create_GeneratedReportedPeptideListData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/generatedReportedPeptideList_Compute/qc_compute_Cache_create_GeneratedReportedPeptideListData";
 import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_MultipleSearches";
+import {Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
+import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
+import {load_subGroupIdMap_Key_PsmId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_subGroupIdMap_Key_PsmId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject";
 
 
 
@@ -97,6 +107,8 @@ import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_ma
 export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
 
     projectSearchIds : Array<number>
+
+    searchSubGroup_Ids_Selected : Set<number>
 
     propsValue : PeptidePage_Display_MainContent_Component_Props_Prop
     propsValue_QC: QcViewPage_DisplayData__Main_Component_Props_Prop
@@ -119,6 +131,7 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
 export interface QcViewPage_DisplayData__Main_Component_Props_Prop {
 
     proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
+    qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject : QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
 }
 
 /**
@@ -186,7 +199,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     //  bind to 'this' for passing as parameters
 
-    private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis = this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback.bind(this);
 
     private _NOT_CALLED_Function() {
@@ -197,6 +209,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback;
     }
 
+    private _qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_Changed_BindThis = this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_Changed.bind(this);
+    private _searchSubGroup_SelectionsChanged_Callback_BindThis = this._searchSubGroup_SelectionsChanged_Callback.bind(this);
     private _clearAllSelections_BindThis = this._clearAllSelections.bind(this);
 
     private _openModificationMass_OpenUserSelections_Overlay_Override_BindThis : () => void = this._openModificationMass_OpenUserSelections_Overlay_Override.bind(this)
@@ -369,6 +383,48 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 this._qcPage_Searches_Info = promiseResults[1];
 
                 const promises_Load_ = [];
+
+                {
+                    if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+
+                        const projectSearchId = this.props.propsValue.projectSearchIds[0];
+
+                        const searchDataLookupParamsRoot: SearchDataLookupParameters_Root =
+                            this.props.propsValue.searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
+
+                        let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = undefined;
+
+                        for ( const searchDataLookupParams_For_Single_ProjectSearchId_In_List of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+
+                            if ( searchDataLookupParams_For_Single_ProjectSearchId_In_List.projectSearchId === projectSearchId ) {
+                                searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId_In_List;
+                                break;
+                            }
+                        }
+                        if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+                            const msg = "No entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
+                        if ( ! loadedDataPerProjectSearchIdHolder ) {
+                            const msg = "No entry in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        //  Single Search and Has Search Sub Groups
+                        const promise = load_subGroupIdMap_Key_PsmId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder({
+                            projectSearchId, loadedDataPerProjectSearchIdHolder, searchDataLookupParams_For_Single_ProjectSearchId
+                        });
+                        if ( promise ) {
+                            promises_Load_.push( promise );
+                        }
+                    }
+
+                }
+
                 const modificationMass_UserSelections_StateObject = this.props.propsValue.modificationMass_UserSelections_StateObject;
                 const generatedPeptideContents_UserSelections_StateObject = this.props.propsValue.generatedPeptideContents_UserSelections_StateObject;
 
@@ -559,6 +615,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         const qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent = {
             projectSearchIds: this.props.propsValue.projectSearchIds,
+            searchSubGroup_Ids_Selected,
             propsValue : this.props.propsValue,
             propsValue_QC : this.props.propsValue_QC,
             searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
@@ -622,6 +679,41 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
         this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
 
         this._reporterIonMass_Update_reporterIonMass_UserSelections_ComponentData();
+    }
+
+    /**
+     * User has changed the ShowSingleSearch_Not_SubSearches Selections.
+     *
+     * The Page State object has already been updated
+     */
+    private _qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_Changed() : void {
+        try {
+
+            if ( this.props.propsValue_QC.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.get_showSingleSearch_Not_SubSearches() ) {
+                this.props.propsValue_QC.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.set_showSingleSearch_Not_SubSearches( false );
+            } else {
+                this.props.propsValue_QC.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.set_showSingleSearch_Not_SubSearches( true );
+            }
+
+            // this.setState({ fakeStateValue: {} } ) //  Set state to force re-render component
+
+            window.setTimeout( () => {
+                try {
+                    //  Now update dependent page parts
+                    this._updateRestOfPage_ForUserInteraction();
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 0 );
+
+        } catch( e ) {
+            console.warn("Exception caught in _searchSubGroup_SelectionsChanged_Callback()");
+            console.warn( e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 
     /**
@@ -1792,6 +1884,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
                             const qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent = {
                                 projectSearchIds: this.props.propsValue.projectSearchIds,
+                                searchSubGroup_Ids_Selected,
                                 propsValue : this.props.propsValue,
                                 propsValue_QC : this.props.propsValue_QC,
                                 searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
@@ -1926,27 +2019,14 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         if ( this.state.mainDisplayData_Loaded ) {
 
-            filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section = this._render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section({  })
-        }
+            let display_ShowAsSingleSearchOption = false;
 
-        let searchSubGroup_Ids_Selected : Set<number> = undefined;
+            if ( this.props.propsValue.projectSearchIds.length === 1 && this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected ) {
 
-        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
-
-            //  Only display for 1 search
-
-            const projectSearchId = this.props.propsValue.projectSearchIds[ 0 ];
-
-            const searchSubGroups_ForProjectSearchId = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId );
-            if ( ! searchSubGroups_ForProjectSearchId ) {
-                const msg = "returned nothing: props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId( projectSearchId ), projectSearchId: " + projectSearchId;
-                console.warn( msg )
-                throw Error( msg )
+                display_ShowAsSingleSearchOption = true;
             }
 
-            searchSubGroup_Ids_Selected = searchSubGroup_Get_Selected_SearchSubGroupIds({
-                searchSubGroup_CentralStateManagerObjectClass : this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass, searchSubGroups_ForProjectSearchId
-            })
+            filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section = this._render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section({ display_ShowAsSingleSearchOption });
         }
 
         // if ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts ) {
@@ -2027,11 +2107,28 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                         <div style={ { position: "relative", marginTop: 20 } }>
 
                             { ( this.props.propsValue.projectSearchIds.length === 1 ) ? (
-                                // Single Search
 
-                                <Qc_SingleSearch_AA__Root_DisplayBlock
-                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                                />
+                                ( this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) ? (
+
+                                    ( this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected
+                                    && ( ! this.props.propsValue_QC.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.get_showSingleSearch_Not_SubSearches()  ) ) ? (
+
+                                        // Single Search with Sub Search Groups
+
+                                        <Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock
+                                            qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                        />
+
+                                    ) : (
+
+                                        // Single Search
+
+                                        <Qc_SingleSearch_AA__Root_DisplayBlock
+                                            qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.state.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                        />
+                                    )
+
+                                ) : null
 
                             ) : (
                                 // Multiple Searches
@@ -2064,9 +2161,9 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
      */
     private _render_filterOn_AND_generatedPeptideContents_UserSelections_Root_Component_Section(
         {
-
+            display_ShowAsSingleSearchOption,
         } : {
-
+            display_ShowAsSingleSearchOption: boolean
         }
     ) : JSX.Element{
 
@@ -2103,6 +2200,18 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             }
         }
 
+        let limelight_Colors_For_SingleSearch__SubSearches : Limelight_Colors_For_SingleSearch__SubSearches = undefined;
+
+        if ( this.props.propsValue.projectSearchIds.length === 1 && this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root() ) {
+            const projectSearchId = this.props.propsValue.projectSearchIds[0];
+            const searchSubGroupIds_DisplayOrder : Array<number> = [];
+            const searchSubGroups = this.props.propsValue.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+            for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+                searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
+            }
+            limelight_Colors_For_SingleSearch__SubSearches = Limelight_Colors_For_SingleSearch__SubSearches.getInstance({ searchSubGroupIds: searchSubGroupIds_DisplayOrder })
+        }
+
         return (
 
             <React.Fragment>
@@ -2125,6 +2234,31 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
                         ): null }
 
+                        {( display_ShowAsSingleSearchOption ) ? (
+                            <React.Fragment>
+                                <div className=" filter-common-filter-label " style={ { marginBottom: 8, paddingTop: 0 } }> {/*  filter-common-filter-label has paddingTop so add paddingTop: 0 to reset to zero  */}
+                                    View as Single Search?
+
+                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
+                                        <div className=" inner-absolute-pos ">
+                                            <div className=" main-div ">
+                                                <p className="help-tip-actual">
+                                                    When checked, view as standard Single Search
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="  filter-common-selection-block   ">
+                                    <input
+                                        type="checkbox"
+                                        checked={ this.props.propsValue_QC.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.get_showSingleSearch_Not_SubSearches() }
+                                        onChange={ this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_Changed_BindThis }
+                                    />
+                                </div>
+                            </React.Fragment>
+                            ): null}
+
                         <SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
                             projectSearchId={ this.props.propsValue.projectSearchIds[0] }
                             dataPageStateManager={ this.props.propsValue.dataPageStateManager }
@@ -2132,6 +2266,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
                             searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
                             searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
+                            limelight_Colors_For_SingleSearch__SubSearches={ limelight_Colors_For_SingleSearch__SubSearches }  //  Only for QC Page
                         />
 
                         <ModificationMass_UserSelections_Root

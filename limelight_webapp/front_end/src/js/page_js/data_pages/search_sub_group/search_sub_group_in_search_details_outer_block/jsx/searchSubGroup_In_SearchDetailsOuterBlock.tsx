@@ -21,6 +21,7 @@ import React from 'react'
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
 
 
 
@@ -101,6 +102,7 @@ export interface SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_Common_Root_
     searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
     searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
+    limelight_Colors_For_SingleSearch__SubSearches : Limelight_Colors_For_SingleSearch__SubSearches  //  Only for QC Page "Filter On ..."
 }
 
 ////
@@ -212,6 +214,7 @@ export class SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDet
                         searchSubGroupEntry={ searchSubGroupEntry }
                         updateSelected_SearchSubGroupIds_Add={ this._updateSelected_SearchSubGroupIds_Add_BindThis }
                         updateSelected_SearchSubGroupIds_Remove={ this._updateSelected_SearchSubGroupIds_Remove_BindThis }
+                        limelight_Colors_For_SingleSearch__SubSearches={ this.props.limelight_Colors_For_SingleSearch__SubSearches }
                     />
                 )
                 searchSubGroupsJSX.push( jsxEntry )
@@ -371,6 +374,7 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                         searchSubGroupEntry={ searchSubGroupEntry }
                         updateSelected_SearchSubGroupIds_Add={ this._updateSelected_SearchSubGroupIds_Add_BindThis }
                         updateSelected_SearchSubGroupIds_Remove={ this._updateSelected_SearchSubGroupIds_Remove_BindThis }
+                        limelight_Colors_For_SingleSearch__SubSearches={ this.props.limelight_Colors_For_SingleSearch__SubSearches }
                     />
                 )
                 searchSubGroupsJSX.push( jsxEntry )
@@ -385,6 +389,7 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                 {/* Parent is CSS Grid with 2 Columns */}
 
                 <div className=" filter-common-filter-label " style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
+
                     <div >
                         Filter On Sub Search:
 
@@ -535,6 +540,7 @@ interface SearchSubGroup_Entry_Props {
     searchSubGroupEntry : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData_Single_SearchSubGroup
     updateSelected_SearchSubGroupIds_Add : ( searchSubGroupId : number ) => void
     updateSelected_SearchSubGroupIds_Remove : ( searchSubGroupId : number ) => void
+    limelight_Colors_For_SingleSearch__SubSearches : Limelight_Colors_For_SingleSearch__SubSearches  //  Only for QC Page "Filter On ..."
 }
 
 /**
@@ -574,10 +580,24 @@ interface SearchSubGroup_Entry_State {
     }
 
     render() {
+
+        let colorBlockForSearchSubGroup_Color : string = undefined;
+        if ( this.props.limelight_Colors_For_SingleSearch__SubSearches ) {
+
+            colorBlockForSearchSubGroup_Color = "#" + this.props.limelight_Colors_For_SingleSearch__SubSearches.get_Color_AsHexString_By_SearchSubGroupId(this.props.searchSubGroupEntry.searchSubGroup_Id);
+        }
+
         return (
             <div className={ "filter-common-single-entry-outer-div" } title={ this.props.searchSubGroupEntry.searchSubgroupName_fromImportFile } >
                 <label>
                     <input type="checkbox" checked={ this.props.searchSubGroupEntry.selectedEntry } onChange={ this._checkboxChangeEvent_BindThis } />
+
+                    { ( colorBlockForSearchSubGroup_Color ) ? (
+                        <span
+                            style={ { marginLeft: 3, marginRight: 3, paddingLeft: 10, paddingRight: 10, backgroundColor: colorBlockForSearchSubGroup_Color } }
+                        >
+                        </span>
+                    ): null }
                     { this.props.searchSubGroupEntry.subgroupName_Display }
                 </label>
             </div>

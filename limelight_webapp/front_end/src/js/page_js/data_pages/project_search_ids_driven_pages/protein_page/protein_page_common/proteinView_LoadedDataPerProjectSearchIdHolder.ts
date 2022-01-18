@@ -256,12 +256,24 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data_AtCurrentCutoffs_Or_DisplayData._psmIdsForReportedPeptideIdMap = psmIdsForReportedPeptideIdMap;
 	}
 
-	//  Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>>
-	get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() {
+	/**
+	 * Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>> - for Reported Peptide Ids that have PSM Ids that have Open Mods or Reporter Ions
+	 */
+	get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon() {
 		return this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId;
 	}
-	set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId(subGroupIdMap_Key_PsmId_KeyReportedPeptideId) : void {
-		this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId;
+	set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon(subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon;
+	}
+
+	/**
+	 *  Map<Map<PSM Id, Sub Group Id> - All For Search
+	 */
+	get_subGroupIdMap_Key_PsmId() {
+		return this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId;
+	}
+	set_subGroupIdMap_Key_PsmId(subGroupIdMap_Key_PsmId) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId = subGroupIdMap_Key_PsmId;
 	}
 
 	//  Remove since NEVER Set
@@ -480,6 +492,8 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 	//  Sub Group Id for a PSM Id for a Reported Peptide - for Reported Peptide Ids that have PSM Ids that have Open Mods or Reporter Ions
 	_subGroupIdMap_Key_PsmId_KeyReportedPeptideId : Map<number, Map<number,number>>; // - Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>>
 
+	//  Sub Group Id for a PSM Id - for Reported Peptide Ids that have PSM Ids that have Open Mods or Reporter Ions
+	_subGroupIdMap_Key_PsmId : Map<number,number>; // - Map<PSM Id, Sub Group Id>
 
 	//  !!! Remove since NEVER Set
 	//  	PSM Filterable Annotation Values per Reported Peptide for Reported Peptides for Current Cutoffs/Filters

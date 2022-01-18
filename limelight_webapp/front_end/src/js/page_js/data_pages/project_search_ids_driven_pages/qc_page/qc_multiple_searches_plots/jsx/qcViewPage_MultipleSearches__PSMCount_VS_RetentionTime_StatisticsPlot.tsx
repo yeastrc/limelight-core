@@ -456,7 +456,8 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
             chart_X_Axis_Label: "Search Number",
             chart_X_Axis_IsTypeCategory: true,
             chart_Y_Axis_Label: "Retention Time (minutes)",
-            showlegend: false
+            showlegend: false,
+            search_SubSearch_Count_SizeFor: transforms_styles.length
         });
 
         try {

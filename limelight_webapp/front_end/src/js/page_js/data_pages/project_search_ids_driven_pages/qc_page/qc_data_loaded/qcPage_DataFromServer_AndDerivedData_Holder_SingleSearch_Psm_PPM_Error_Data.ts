@@ -3,6 +3,9 @@
  *
  * QC Page - Data Loaded - From Server - Single Search - PSM PPM Error Data
  *
+ *
+ *   Also used for Single Search with Sub Groups, per Search Sub Group Id
+ *
  */
 
 
@@ -11,7 +14,7 @@
 ////  psm_PPM_Error_Data
 
 /**
- *
+ * Also used for Single Search with Sub Groups, per Search Sub Group Id
  */
 export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_Root {
 
@@ -48,7 +51,7 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Er
 }
 
 /**
- *
+ * Also used for Single Search with Sub Groups, per Search Sub Group Id
  */
 export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSingleReportedPeptideId {
 
@@ -81,7 +84,7 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Er
 }
 
 /**
- *
+ * Also used for Single Search with Sub Groups, per Search Sub Group Id
  */
 export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId {
 

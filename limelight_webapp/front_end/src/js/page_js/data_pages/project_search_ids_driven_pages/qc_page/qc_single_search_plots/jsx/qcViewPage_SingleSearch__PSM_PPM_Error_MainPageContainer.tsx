@@ -18,7 +18,6 @@ import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_d
  */
 export interface QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer_Props {
 
-    show_NoData_Message: boolean
     psm_PPM_Error_List_Filtered: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
@@ -60,6 +59,12 @@ export class QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer extends Re
      */
     render() {
 
+        let show_NoData_Message = false;
+
+        if ( this.props.psm_PPM_Error_List_Filtered.length === 0 ) {
+            show_NoData_Message = true;
+        }
+
         return (
             <div >
                 {/*<div >*/}
@@ -68,7 +73,7 @@ export class QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer extends Re
                 {/*    </h2>*/}
                 {/*</div>*/}
                 <QcPage_ChartBorder>
-                    {( this.props.show_NoData_Message ) ? (
+                    {( show_NoData_Message ) ? (
                         <QcPage_ChartFiller_NoData chartTitle={ QcViewPage_SingleSearch__PSM_PPM_Error_StatisticsPlot.chartTitle } />
                     ) : (
                         <QcViewPage_SingleSearch__PSM_PPM_Error_StatisticsPlot

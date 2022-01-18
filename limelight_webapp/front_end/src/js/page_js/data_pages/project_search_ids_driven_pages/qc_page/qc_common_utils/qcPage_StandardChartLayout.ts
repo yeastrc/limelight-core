@@ -5,12 +5,20 @@
 
 import Plotly from 'plotly.js-dist/plotly'
 
+const _Search_SubSearch_Category_Each_MinWidth = 30;
+
+const _Plot_Margin_Left = 70;
+const _Plot_Margin_Right = 50;
+
+const _Plot_Margin_Top = 40;
+const _Plot_Margin_Bottom = 55;
+
 const _StandardChart_Width = 500;
 const _StandardChart_Height = 300;
 
 const _StandardChart_AspectRatio = _StandardChart_Width / _StandardChart_Height;
 
-const _StandardChart_ActualChartArea_Width = 380;  // Width of block used for actual bars/lines/etc of chart
+const _StandardChart_ActualChartArea_Width = _StandardChart_Width - _Plot_Margin_Left - _Plot_Margin_Right;  // Width of block used for actual bars/lines/etc of chart
 
 const _Overlay_Width_Min = 800;
 const _Overlay_Width_Max = 50000;
@@ -38,6 +46,13 @@ export const qcPage_StandardChartLayout_StandardWidth = function() {
  */
 export const qcPage_StandardChartLayout_StandardHeight = function() {
     return _StandardChart_Height
+}
+
+/**
+ *
+ */
+export const qcPage_StandardChartLayout_Standard_Plot_Margin_Bottom = function() {
+    return _Plot_Margin_Bottom
 }
 
 /**
@@ -75,7 +90,7 @@ export const qcPage_ChartOverlayDimensions = function() {
  */
 export const qcPage_StandardChartLayout = function (
     {
-        chartTitle, chart_X_Axis_Label, chart_X_Axis_IsTypeCategory, chart_Y_Axis_Label, showlegend, notMoveTitle
+        chartTitle, chart_X_Axis_Label, chart_X_Axis_IsTypeCategory, chart_Y_Axis_Label, showlegend, notMoveTitle, search_SubSearch_Count_SizeFor
     } : {
         chartTitle: string
         chart_X_Axis_Label: string
@@ -83,6 +98,7 @@ export const qcPage_StandardChartLayout = function (
         chart_Y_Axis_Label: string
         showlegend?: boolean // Default to false
         notMoveTitle?: boolean
+        search_SubSearch_Count_SizeFor?: number  //  Passed in for Combine Search and Sub Searches when Searches or Sub Searches are categories on Horizontal Access
 
     }) : Plotly.Layout {
 
@@ -92,8 +108,10 @@ export const qcPage_StandardChartLayout = function (
         chart_X_Axis_IsTypeCategory_Local = 'category';
     }
 
-    if ( ! showlegend ) {
-        showlegend = false;
+    let showlegend_Local = showlegend;
+
+    if ( ! showlegend_Local ) {
+        showlegend_Local = false;
     }
 
     let title_y;
@@ -104,6 +122,19 @@ export const qcPage_StandardChartLayout = function (
         title_yanchor = "top";
     }
 
+    let plotWidth = _StandardChart_Width;
+
+    if ( search_SubSearch_Count_SizeFor ) {
+
+        const mainPlotArea_Width = search_SubSearch_Count_SizeFor * _Search_SubSearch_Category_Each_MinWidth;
+
+        const minPlotWidth = mainPlotArea_Width + _Plot_Margin_Left + _Plot_Margin_Right;
+
+        if ( plotWidth < minPlotWidth ) {
+            plotWidth = minPlotWidth;
+        }
+    }
+
     return {
         title:{
             text: chartTitle,
@@ -112,13 +143,13 @@ export const qcPage_StandardChartLayout = function (
             yanchor: title_yanchor
         },
         autosize: false,
-        width: _StandardChart_Width,
+        width: plotWidth,
         height: _StandardChart_Height,
         margin: {
-            l: 70,
-            r: 50,
-            b: 55,
-            t: 40,
+            l: _Plot_Margin_Left,
+            r: _Plot_Margin_Right,
+            t: _Plot_Margin_Top,
+            b: _Plot_Margin_Bottom,
             pad: 4
         },
         xaxis: {
@@ -136,6 +167,6 @@ export const qcPage_StandardChartLayout = function (
             },
             exponentformat: 'e'
         },
-        showlegend
+        showlegend: showlegend_Local
     }
 }

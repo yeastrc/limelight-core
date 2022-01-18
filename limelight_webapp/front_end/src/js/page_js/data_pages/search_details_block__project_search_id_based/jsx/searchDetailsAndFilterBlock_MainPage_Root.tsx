@@ -434,6 +434,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                     searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
                     searchSubGroup_SelectionsChanged_Callback={ this.props.searchSubGroup_SelectionsChanged_Callback }
                     searchSubGroup_ManageGroupNames_Clicked_Callback={ this.props.searchSubGroup_ManageGroupNames_Clicked_Callback }
+                    limelight_Colors_For_SingleSearch__SubSearches={ undefined }  //  Only for QC Page
                 />
             </React.Fragment>
         )

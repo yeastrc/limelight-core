@@ -104,6 +104,7 @@ import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/peptid
 import {peptideUnique_UserSelection_BuildData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_BuildData_ForReactComponent";
 import {
     SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData,
+    SearchSubGroup_In_SearchDetailsAndFilterOuterBlock_EmbedInSearchDetailsRootBlock_Root_Component,
     SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
@@ -2631,6 +2632,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                                     searchSubGroup_CentralStateManagerObjectClass={ this.props.propsValue.searchSubGroup_CentralStateManagerObjectClass }
                                     searchSubGroup_SelectionsChanged_Callback={ this._searchSubGroup_SelectionsChanged_Callback_BindThis }
                                     searchSubGroup_ManageGroupNames_Clicked_Callback={ undefined }
+                                    limelight_Colors_For_SingleSearch__SubSearches={ undefined }  //  Only for QC Page
                                 />
 
                                 <ModificationMass_UserSelections_Root

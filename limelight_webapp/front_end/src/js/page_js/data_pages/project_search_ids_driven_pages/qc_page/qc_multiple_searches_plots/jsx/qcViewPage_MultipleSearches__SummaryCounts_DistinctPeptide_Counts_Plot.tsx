@@ -342,7 +342,8 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
             chart_X_Axis_Label: "Search Number",
             chart_X_Axis_IsTypeCategory: true,
             chart_Y_Axis_Label: "count",
-            showlegend: false
+            showlegend: false,
+            search_SubSearch_Count_SizeFor: chart_X.length
         });
 
         try {

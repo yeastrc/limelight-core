@@ -1,5 +1,5 @@
 /**
- * load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder.ts
+ * load_subGroupIdMap_Key_PsmId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder.ts
  *
  * Load data into object of class ProteinViewPage_LoadedDataPerProjectSearchIdHolder
  *
@@ -13,11 +13,10 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 
 
 /**
- * Get PSM Id to Search Sub Group Id For Single Project Search Id
+ * Get PSM Id to Search Sub Group Id For Single Project Search Id - All for Search
  *
  */
-
-export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder = function (
+export const load_subGroupIdMap_Key_PsmId_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder = function (
     {
         projectSearchId,
         searchDataLookupParams_For_Single_ProjectSearchId,
@@ -30,26 +29,7 @@ export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ForSearch_Reporte
 
     } ) : Promise<unknown> {
 
-    const reportedPeptideIds_Set = new Set<number>();
-
-    if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_OpenModifications() ) {
-        for ( const reportedPeptideId of loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_OpenModifications() ) {
-            reportedPeptideIds_Set.add( reportedPeptideId );
-        }
-    }
-    if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_ReporterIons() ) {
-        for ( const reportedPeptideId of loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_ReporterIons() ) {
-            reportedPeptideIds_Set.add( reportedPeptideId );
-        }
-    }
-
-    if ( reportedPeptideIds_Set.size === 0 ) {
-        //  Nothing to load so return
-
-        return null; //  EARLY RETURN
-    }
-
-    const reportedPeptideIds = Array.from( reportedPeptideIds_Set );
+    const reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
 
     let promise = new Promise( function( resolve, reject ) {
         try {
@@ -106,7 +86,7 @@ const _processResultsFromServer_Populate_loadedData = function ( { results, load
 
 } ) : void {
 
-    const resultMap : Map<number, Map<number, number>> = new Map();
+    const subGroupIdMap_Key_PsmId: Map<number, number> = new Map();
 
     for ( const result_Entry of results ) {
 
@@ -130,12 +110,7 @@ const _processResultsFromServer_Populate_loadedData = function ( { results, load
         const searchSubGroupId = result_Entry.sSbGpId;
         const psmId = result_Entry.psmId;
 
-        let getSubMap_Key_psmId = resultMap.get( reportedPeptideId );
-        if ( ! getSubMap_Key_psmId ) {
-            getSubMap_Key_psmId = new Map();
-            resultMap.set( reportedPeptideId, getSubMap_Key_psmId );
-        }
-        getSubMap_Key_psmId.set( psmId, searchSubGroupId );
+        subGroupIdMap_Key_PsmId.set( psmId, searchSubGroupId );
     }
-    loadedDataPerProjectSearchIdHolder.set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId( resultMap );
+    loadedDataPerProjectSearchIdHolder.set_subGroupIdMap_Key_PsmId(subGroupIdMap_Key_PsmId);
 }

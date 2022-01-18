@@ -378,7 +378,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                     </div>
                 )
             } else {
-                console.warn( "else of 'if ( scanFileData_For_SearchScanFileId )'")
+                // console.warn( "else of 'if ( scanFileData_For_SearchScanFileId )'")
             }
         }
 

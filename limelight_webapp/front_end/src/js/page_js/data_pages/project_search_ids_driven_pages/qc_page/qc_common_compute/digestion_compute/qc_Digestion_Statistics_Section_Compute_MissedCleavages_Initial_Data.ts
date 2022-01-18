@@ -127,9 +127,11 @@ export class Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
     }
 
     /**
+     * Overrides Missed Cleavage Count at Reported Peptide level
+     *
      * ONLY for PSM with OPEN Mod with Position
      *
-     * @returns undefined if not added.  If returns undefined use the value for the Reported Peptide
+     * @returns undefined if not added.  If returns undefined, use the value for the Reported Peptide
      */
     get_Result_ForSingle_Psm( psmId: number ) : Qc_SingleSearch_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_Psm {
         return this._result_PerPsm_Map_Key_PsmId.get( psmId );
@@ -151,6 +153,8 @@ export class Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
 }
 
 /**
+ * Overrides Missed Cleavage Count at Reported Peptide level
+ *
  * ONLY for PSM with OPEN Mod with Position
  */
 export class Qc_SingleSearch_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_Psm {
@@ -355,6 +359,7 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
 
                                 for ( const positionsMapValue of psmOpenModificationMassPerPSM_ForPsmIdMapValue.positionsMap_KeyPosition.values() ) {
                                     for ( const positionData of positionsMapValue ) {
+
                                         // positionData.position;
                                         // positionData.isNTerminal
                                         // positionData.isCTerminal
@@ -363,7 +368,7 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
                                     }
                                 }
 
-                                for ( const missedCleavagePositions_After_Remove_Varible_Dynamic_Static_Modifications_OneBased_Entry of missedCleavagePositions_After_Remove_Varible_Dynamic_Static_Modifications_OneBased ) {
+                                for ( const missedCleavagePositions_After_Remove_Variable_Dynamic_Static_Modifications_OneBased_Entry of missedCleavagePositions_After_Remove_Varible_Dynamic_Static_Modifications_OneBased ) {
 
                                     if ( openModPositions.size > 0 ) {
 
@@ -371,13 +376,15 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
 
                                         //    'else' of this 'if' would be: Open Mod is NOT localized, it can be at any position and thus no position can have missed cleavage
 
-                                        if ( ! openModPositions.has( missedCleavagePositions_After_Remove_Varible_Dynamic_Static_Modifications_OneBased_Entry ) ) {
+                                        if ( ! openModPositions.has( missedCleavagePositions_After_Remove_Variable_Dynamic_Static_Modifications_OneBased_Entry ) ) {
                                             //  Missed cleavage is not at any of open mod positions so count it.  (Already above removed missed cleavage sites at Variable/Dynamic or Static Mod sites)
                                             result_ForSingle_Psm.add_missedCleavageForCount();
                                         }
                                     }
                                 }
                             }
+
+                            result_ForSingle_ReportedPeptide.add_Result_ForSingle_Psm(result_ForSingle_Psm);
                         }
                     }
                 }

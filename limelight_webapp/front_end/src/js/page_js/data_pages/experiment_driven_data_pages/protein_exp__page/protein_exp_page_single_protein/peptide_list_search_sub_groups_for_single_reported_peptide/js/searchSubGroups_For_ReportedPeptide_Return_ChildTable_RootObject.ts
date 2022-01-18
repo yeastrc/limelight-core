@@ -267,12 +267,12 @@ const _create_dataTable_RootTableObject = function(
 
             psmCounts_Per_SubGroupId_ComputedFrom_psmCount_after_Include = new Map();
 
-            if ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() ) {
+            if ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon() ) {
                 const msg = "( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() )"
                 console.warn( msg )
                 throw Error( msg )
             }
-            const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId().get( reportedPeptideId_ForDisplay );
+            const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon().get( reportedPeptideId_ForDisplay );
             if ( ! subGroupIdMap_Key_PsmId ) {
                 const msg = "( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() ).get( reportedPeptideId_ForDisplay ) not return a value. reportedPeptideId_ForDisplay: " + reportedPeptideId_ForDisplay + ", projectSearchId: " + projectSearchId;
                 console.warn( msg )

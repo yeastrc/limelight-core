@@ -139,12 +139,6 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data = func
                     var zunused = 0;
                 }
 
-                if ( computeDataForCharts_Result__ForSingle_ReportedPeptide.anyData_PerSingle_Psm() ) {
-                    const msg = "Not Currently processing data per PSM from computeDataForCharts_Result__ForSingle_ReportedPeptide. returned true ( computeDataForCharts_Result__ForSingle_ReportedPeptide.anyData_PerSingle_Psm() ). projectSearchId: " + projectSearchId
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-
                 if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
 
                     const numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId );
@@ -191,10 +185,10 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data = func
 
                             const computeDataForCharts_Result__ForSingle_Psm = computeDataForCharts_Result__ForSingle_ReportedPeptide.get_Result_ForSingle_Psm( psmId );
                             if ( computeDataForCharts_Result__ForSingle_Psm ) {
-
+                                //  Have value for psmId so use that
                                 missedCleavage_Count_PerPsmId_Map_Key_PsmId.set( psmId, computeDataForCharts_Result__ForSingle_Psm.get_missedCleavageCount() );
-
                             } else {
+                                //  No value for psmId so use value at Reported Peptide level
                                 missedCleavage_Count_PerPsmId_Map_Key_PsmId.set( psmId, computeDataForCharts_Result__ForSingle_ReportedPeptide.get_missedCleavageCount() );
                             }
                         }

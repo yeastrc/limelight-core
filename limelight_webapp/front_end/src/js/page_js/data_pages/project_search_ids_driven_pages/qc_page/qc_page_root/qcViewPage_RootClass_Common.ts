@@ -66,6 +66,7 @@ import {QcViewPage_DisplayData__Main_Component_Props_Prop} from "page_js/data_pa
 import {ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject";
 import {QcPage_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcPage_CentralStateManagerObjectClass";
 import {ProteinList_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass";
+import {QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject";
 
 
 /**
@@ -105,8 +106,7 @@ export class QcViewPage_RootClass_Common {
 	private _qcPage_CentralStateManagerObjectClass : QcPage_CentralStateManagerObjectClass;
 
 	private _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
-
-
+	private _qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject : QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
 
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager;
@@ -282,8 +282,21 @@ export class QcViewPage_RootClass_Common {
 				this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
+		{
+			const valueChangedCallback = () => {
 
+				const qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData = this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.getEncodedStateData();
+				this._qcPage_CentralStateManagerObjectClass.set_qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData( { qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData } );
+			}
+			this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject = new QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject({
+				valueChangedCallback
+			});
 
+			const encodedStateData = this._qcPage_CentralStateManagerObjectClass.get_qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData();
+			if ( encodedStateData ) {
+				this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
 		/////////////////
 
@@ -372,7 +385,8 @@ export class QcViewPage_RootClass_Common {
 
 		const propsValue_QC: QcViewPage_DisplayData__Main_Component_Props_Prop = {
 
-			proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
+			proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject,
+			qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject: this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
 		}
 
 		const props : QcViewPage_DisplayData__Root_Component_Props = {

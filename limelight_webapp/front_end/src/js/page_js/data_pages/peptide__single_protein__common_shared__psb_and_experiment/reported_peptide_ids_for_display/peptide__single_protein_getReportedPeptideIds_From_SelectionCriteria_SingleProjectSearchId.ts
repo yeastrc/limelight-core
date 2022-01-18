@@ -403,7 +403,7 @@ const _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Select
     if ( ! numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map ) {
         throw Error("searchSubGroup_Ids_Selected is populated: loadedDataPerProjectSearchIdHolder.get_numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map(); not return a value. _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Selected(...)")
     }
-    let subGroupIdMap_Key_PsmId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId()
+    let subGroupIdMap_Key_PsmId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon()
 
     ///
 

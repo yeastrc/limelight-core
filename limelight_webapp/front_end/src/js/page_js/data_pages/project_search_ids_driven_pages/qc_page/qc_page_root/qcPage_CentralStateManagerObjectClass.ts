@@ -33,6 +33,8 @@ const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
 const _DISTINCT_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'd';
 
+const _SHOW_SINGLE_SEARCH_NOT_SUB_SEARCHES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'e';
+
 /**
  *
  */
@@ -40,6 +42,7 @@ export class QcPage_CentralStateManagerObjectClass {
 
     private _value : {
         distinctPeptideContents_For_ProteinList_Selection_EncodedStateData?: any // ProteinViewPage_DisplayData_ProteinList__DistinctPeptide_UserSelections_StateObject
+        qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData?: any   // QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
     };
 
     private _centralPageStateManager : CentralPageStateManager;
@@ -66,6 +69,7 @@ export class QcPage_CentralStateManagerObjectClass {
             this._value = {
                 // groupProteins_OLD_V1? : any //  OLD V1 value for groupProteins.  Only here for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
                 distinctPeptideContents_For_ProteinList_Selection_EncodedStateData : encodedStateData[ _DISTINCT_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+                qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData : encodedStateData[ _SHOW_SINGLE_SEARCH_NOT_SUB_SEARCHES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
         }
     }
@@ -91,6 +95,19 @@ export class QcPage_CentralStateManagerObjectClass {
         this._centralPageStateManager.setState( { component : this } );
     }
 
+    get_qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData() {
+        return this._value.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData;
+    }
+
+    set_qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData( { qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData } : { qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData: any } ) {
+        this._value.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData = qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData;
+
+        if ( ! this._centralPageStateManager ) {
+            throw Error( "this._centralPageStateManager not set" );
+        }
+        this._centralPageStateManager.setState( { component : this } );
+    }
+
     /**
      * Called by Central State Manager and maybe other code
      */
@@ -108,6 +125,9 @@ export class QcPage_CentralStateManagerObjectClass {
 
         if ( this._value.distinctPeptideContents_For_ProteinList_Selection_EncodedStateData !== undefined ) {
             dataForEncoding[ _DISTINCT_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.distinctPeptideContents_For_ProteinList_Selection_EncodedStateData;
+        }
+        if ( this._value.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData !== undefined ) {
+            dataForEncoding[ _SHOW_SINGLE_SEARCH_NOT_SUB_SEARCHES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_EncodedStateData;
         }
 
         return dataForEncoding;

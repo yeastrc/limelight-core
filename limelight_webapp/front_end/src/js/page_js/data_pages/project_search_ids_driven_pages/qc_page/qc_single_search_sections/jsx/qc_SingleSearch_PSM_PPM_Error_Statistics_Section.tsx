@@ -35,7 +35,6 @@ interface Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State {
 
     sectionExpanded?: boolean
     loadingData?: boolean
-    show_NoData_Message?: boolean
     psm_PPM_Error_List_Filtered?: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>
 }
 
@@ -97,8 +96,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
         this.state =  {
             sectionExpanded: this._sectionExpanded,
-            loadingData: true,
-            show_NoData_Message: false
+            loadingData: true
         };
     }
 
@@ -186,44 +184,6 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
      *
      */
     private _loadData() {
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        if ( peptideDistinct_Array.length === 0 ) {
-
-            //  NO Data
-
-            this.setState( (state: Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State, props: Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_Props ) : Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State => {
-
-                if ( ! state.show_NoData_Message ) {
-                    return { show_NoData_Message: true };
-                }
-                return null;
-            });
-
-            this.setState({ loadingData: false, psm_PPM_Error_List_Filtered: null });
-
-            return; // EARLY RETURN
-        }
-
-        //  YES Data
-
-        this.setState( (state: Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State, props: Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_Props ) : Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State => {
-
-            if ( state.show_NoData_Message ) {
-                return { show_NoData_Message: false };
-            }
-            return null;
-        });
-
-
-        //   !!!! ONLY Continue if peptideDistinct_Array.length > 0
-
-
 
         window.setTimeout( () => {
 
@@ -396,7 +356,6 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer
-                                            show_NoData_Message={ this.state.show_NoData_Message }
                                             psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
@@ -405,7 +364,6 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_MainPageContainer
-                                            show_NoData_Message={ this.state.show_NoData_Message }
                                             psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
@@ -414,7 +372,6 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_MainPageContainer
-                                            show_NoData_Message={ this.state.show_NoData_Message }
                                             psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
