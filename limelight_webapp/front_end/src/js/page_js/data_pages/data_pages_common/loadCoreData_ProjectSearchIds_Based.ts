@@ -16,6 +16,7 @@ import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPag
 import { SearchNameRetrieval }  from './searchNameRetrieval';
 import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval';
 import { AnnotationTypeDataRetrieval } from './annotationTypeDataRetrieval';
+import {dataPage_common_Get_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 
 
 /**
@@ -72,11 +73,51 @@ export class LoadCoreData_ProjectSearchIds_Based{
 		return new Promise( this._processRequestAsPromise_BoundThis );
 	}
 	
-	_processRequestAsPromise( resolve: any, reject: any ) {
+	_processRequestAsPromise( resolve_Overall: any, reject_Overall: any ) {
 		try {
+			const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 			
 			let promisesToWaitFor = []; //  'sub' promises
 
+			{
+				const promiseToAdd = new Promise<void>( (resolve_promise_dataPage_common_Get_Searches_Flags, reject_promise_dataPage_common_Get_Searches_Flags) => {
+					try {
+						const promise_dataPage_common_Get_Searches_Flags = dataPage_common_Get_Searches_Flags({ projectSearchIds });
+
+						promise_dataPage_common_Get_Searches_Flags.catch( reason => {
+							try {
+								reject_promise_dataPage_common_Get_Searches_Flags(reason);
+
+							} catch( e ) {
+								console.warn(e);
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						});
+
+						promise_dataPage_common_Get_Searches_Flags.then( result => {
+							try {
+								this._dataPageStateManager_DataFrom_Server.set_DataPage_common_Searches_Flags(result);
+
+								resolve_promise_dataPage_common_Get_Searches_Flags();
+
+							} catch( e ) {
+								console.warn(e);
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						})
+
+
+					} catch( e ) {
+						console.warn(e);
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+
+				promisesToWaitFor.push( promiseToAdd );
+			}
 			{
 				//  Retrieval of search names from server for project search ids
 				let retrieveSearchNames_Promise = this._searchNameRetrieval.retrieveSearchNames( {
@@ -114,7 +155,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 				
 				window.setTimeout( () => {
 					try {
-						resolve();
+						resolve_Overall();
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 						throw e;
@@ -127,7 +168,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 
 				promisesToWaitFor_Promise_all.catch( ( rejectionReason) => {
 					try {
-						reject();
+						reject_Overall();
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 						throw e;
@@ -137,7 +178,7 @@ export class LoadCoreData_ProjectSearchIds_Based{
 				promisesToWaitFor_Promise_all.then( ( resolvedPromisesArray ) => { 
 					try {
 						//  All loads complete
-						resolve();
+						resolve_Overall();
 
 					} catch( e ) {
 						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

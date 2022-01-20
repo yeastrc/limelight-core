@@ -83,13 +83,13 @@ import {
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Qc_SingleSearch_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {
-    qcPage_Get_Searches_Flags,
-    QcPage_Searches_Flags
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_Searches_Flags";
+    dataPage_common_Get_Searches_Flags,
+    DataPage_common_Searches_Flags
+} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {
-    qcPage_Get_Searches_Info,
-    QcPage_Searches_Info
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_QC_Page__Searches_Info";
+    dataPage_common_Get_Searches_Info,
+    DataPage_common_Searches_Info
+} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {Qc_MultipleSearches_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_AA__Root_DisplayBlock";
 import {Qc_compute_Cache_create_GeneratedReportedPeptideListData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/generatedReportedPeptideList_Compute/qc_compute_Cache_create_GeneratedReportedPeptideListData";
@@ -115,8 +115,8 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
 
     dataPageStateManager : DataPageStateManager
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-    qcPage_Searches_Flags: QcPage_Searches_Flags
-    qcPage_Searches_Info: QcPage_Searches_Info
+    qcPage_Searches_Flags: DataPage_common_Searches_Flags
+    qcPage_Searches_Info: DataPage_common_Searches_Info
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>;
     loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
@@ -238,8 +238,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
 
-    private _qcPage_Searches_Flags: QcPage_Searches_Flags; // Retrieved form server
-    private _qcPage_Searches_Info: QcPage_Searches_Info; // Retrieved form server
+    private _dataPage_common_Searches_Flags: DataPage_common_Searches_Flags; // Retrieved from server from dataPageStateManager
+    private _dataPage_common_Searches_Info: DataPage_common_Searches_Info; // Retrieved from server
 
     /**
      *
@@ -249,6 +249,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         this._div_MainGridAtTop_Ref = React.createRef<HTMLDivElement>();
         this._div_MainContent_LeftGridEntry_AtTop_Ref = React.createRef<HTMLDivElement>();
+
+        this._dataPage_common_Searches_Flags = props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags();
 
         this._modificationMass_ReporterIon__UserSelections__Coordinator_Class =
             new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
@@ -357,9 +359,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
         const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = new Map();
         const loadedDataCommonHolder = new ProteinView_LoadedDataCommonHolder();
 
-        const promise_qcPage_Get_Searches_Flags = qcPage_Get_Searches_Flags({ projectSearchIds : this.props.propsValue.projectSearchIds });
-
-        const promise_qcPage_Get_Searches_Info = qcPage_Get_Searches_Info({ projectSearchIds : this.props.propsValue.projectSearchIds });
+        const promise_qcPage_Get_Searches_Info = dataPage_common_Get_Searches_Info({ projectSearchIds : this.props.propsValue.projectSearchIds });
 
         const promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein = peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein({
             projectSearchIds : this.props.propsValue.projectSearchIds,
@@ -369,7 +369,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             loadedDataCommonHolder  //  Updated in this function
         })
 
-        const promises_All_TopLevel = Promise.all( [ promise_qcPage_Get_Searches_Flags, promise_qcPage_Get_Searches_Info, promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein ]);
+        const promises_All_TopLevel = Promise.all( [ promise_qcPage_Get_Searches_Info, promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein ]);
 
         promises_All_TopLevel.catch( (reason) => {
             console.warn("promise_peptidePage_Load_Base_Data_For_Cutoffs_PSM_Peptide_Protein.catch  reason: " + reason )
@@ -378,9 +378,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         promises_All_TopLevel.then( (promiseResults ) => {
             try {
-                this._qcPage_Searches_Flags = promiseResults[0];
-
-                this._qcPage_Searches_Info = promiseResults[1];
+                this._dataPage_common_Searches_Info = promiseResults[0];
 
                 const promises_Load_ = [];
 
@@ -619,8 +617,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             propsValue : this.props.propsValue,
             propsValue_QC : this.props.propsValue_QC,
             searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
-            qcPage_Searches_Flags: this._qcPage_Searches_Flags,
-            qcPage_Searches_Info: this._qcPage_Searches_Info,
+            qcPage_Searches_Flags: this._dataPage_common_Searches_Flags,
+            qcPage_Searches_Info: this._dataPage_common_Searches_Info,
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result: proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
@@ -1888,8 +1886,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                 propsValue : this.props.propsValue,
                                 propsValue_QC : this.props.propsValue_QC,
                                 searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
-                                qcPage_Searches_Flags: this._qcPage_Searches_Flags,
-                                qcPage_Searches_Info: this._qcPage_Searches_Info,
+                                qcPage_Searches_Flags: this._dataPage_common_Searches_Flags,
+                                qcPage_Searches_Info: this._dataPage_common_Searches_Info,
                                 proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result: proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result,
                                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                                 loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this.state.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,

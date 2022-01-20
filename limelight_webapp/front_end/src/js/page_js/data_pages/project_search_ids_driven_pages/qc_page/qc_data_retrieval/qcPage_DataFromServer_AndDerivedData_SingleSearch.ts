@@ -12,8 +12,8 @@ import {QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded} from "page_j
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded";
-import {QcPage_Flags_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_Searches_Flags";
-import {QcPage_Searches_Info_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_QC_Page__Searches_Info";
+import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {DataPage_common_Searches_Info_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded";
@@ -590,8 +590,8 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Param
     loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
     dataPageStateManager: DataPageStateManager
 
-    qcPage_Flags_SingleSearch_ForProjectSearchId: QcPage_Flags_SingleSearch
-    qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  QcPage_Searches_Info_SingleSearch
+    qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
+    qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
 
     /**
      *
@@ -606,8 +606,8 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Param
             loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
             loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
             dataPageStateManager: DataPageStateManager
-            qcPage_Flags_SingleSearch_ForProjectSearchId: QcPage_Flags_SingleSearch
-            qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  QcPage_Searches_Info_SingleSearch
+            qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
+            qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
         }) {
         this.projectSearchId = projectSearchId;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;

@@ -1,7 +1,7 @@
 /**
- * qcPage_Get_QC_Page__Searches_Info.ts
+ * dataPage_common_Get_dataPage_common__Searches_Info.ts
  *
- * Get Flags for Searches
+ * Get Search Info for Searches - Other than in search_tbl table - less efficient so only retrieve when needed
  *
  */
 
@@ -12,16 +12,16 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class QcPage_Searches_Info {
+export class DataPage_common_Searches_Info {
 
-    private _qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId: Map<number, QcPage_Searches_Info_SingleSearch> = new Map();
+    private _dataPage_common_Searches_Info_SingleSearch_Map_Key_ProjectSearchId: Map<number, DataPage_common_Searches_Info_SingleSearch> = new Map();
 
-    add_QcPage_Searches_Info_SingleSearch( item: QcPage_Searches_Info_SingleSearch ) {
-        this._qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId.set( item.projectSearchId, item );
+    add_DataPage_common_Searches_Info_SingleSearch(item: DataPage_common_Searches_Info_SingleSearch ) {
+        this._dataPage_common_Searches_Info_SingleSearch_Map_Key_ProjectSearchId.set( item.projectSearchId, item );
     }
 
-    get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId( projectSearchId: number ) {
-        return this._qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
+    get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId: number ) {
+        return this._dataPage_common_Searches_Info_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
     }
 
     private _ForceUseConstructor() {}
@@ -30,7 +30,7 @@ export class QcPage_Searches_Info {
 /**
  *
  */
-export class QcPage_Searches_Info_SingleSearch {
+export class DataPage_common_Searches_Info_SingleSearch {
     
     projectSearchId: number;
     searchId: number;
@@ -41,14 +41,14 @@ export class QcPage_Searches_Info_SingleSearch {
 /**
  *
  */
-export const qcPage_Get_Searches_Info = function (
+export const dataPage_common_Get_Searches_Info = function (
     {
         projectSearchIds
     } : {
         projectSearchIds: Array<number>
-    }) : Promise<QcPage_Searches_Info> {
+    }) : Promise<DataPage_common_Searches_Info> {
 
-    return new Promise<QcPage_Searches_Info>( (resolve, reject) => {
+    return new Promise<DataPage_common_Searches_Info>( (resolve, reject) => {
         try {
             const url = "d/rws/for-page/psb/qc-page-search-info-list-from-psi";
 
@@ -70,7 +70,7 @@ export const qcPage_Get_Searches_Info = function (
 
             promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
                 try {
-                    const qcPage_Searches_Info: QcPage_Searches_Info = _populateResult({ responseData });
+                    const qcPage_Searches_Info: DataPage_common_Searches_Info = _populateResult({ responseData });
 
                     resolve( qcPage_Searches_Info );
 
@@ -93,9 +93,9 @@ const _populateResult = function(
     } : {
         responseData: any
     }
-) : QcPage_Searches_Info {
+) : DataPage_common_Searches_Info {
 
-    const qcPage_Searches_Info = new QcPage_Searches_Info();
+    const qcPage_Searches_Info = new DataPage_common_Searches_Info();
 
     if ( ! responseData.searchInfoList ) {
         const msg = "( ! responseData.searchInfoList )";
@@ -109,7 +109,7 @@ const _populateResult = function(
     }
 
     for ( const searchInfoListEntry of responseData.searchInfoList ) {
-        const searchFlagsEntry : QcPage_Searches_Info_SingleSearch = searchInfoListEntry;
+        const searchFlagsEntry : DataPage_common_Searches_Info_SingleSearch = searchInfoListEntry;
         if ( searchFlagsEntry.projectSearchId === undefined || searchFlagsEntry.projectSearchId === null ) {
             const msg = "( searchFlagsEntry.projectSearchId === undefined || searchFlagsEntry.projectSearchId === null )";
             console.warn(msg);
@@ -141,7 +141,7 @@ const _populateResult = function(
             searchFlagsEntry.precursor_m_z__NotNull = false;
         }
 
-        qcPage_Searches_Info.add_QcPage_Searches_Info_SingleSearch( searchFlagsEntry );
+        qcPage_Searches_Info.add_DataPage_common_Searches_Info_SingleSearch( searchFlagsEntry );
     }
 
 

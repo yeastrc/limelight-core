@@ -223,7 +223,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock extends React
                 throw Error(msg);
             }
 
-            const qcPage_Searches_Flags_SingleSearch = qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Searches_Flags_SingleSearch = qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Searches_Flags_SingleSearch ) {
                 const msg = "qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);

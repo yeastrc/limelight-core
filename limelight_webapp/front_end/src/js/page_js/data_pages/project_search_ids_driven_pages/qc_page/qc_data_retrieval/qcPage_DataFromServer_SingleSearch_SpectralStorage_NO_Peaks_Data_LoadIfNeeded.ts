@@ -15,10 +15,11 @@ import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root,
+    DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber,
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
+    DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId
+} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
+import {dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadData";
 
 
 /**
@@ -53,15 +54,9 @@ export class QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_Lo
 
         this._promiseInProgress = new Promise<void>( (resolve, reject) => {
             try {
-                const url = "d/rws/for-page/psb/spectral-storage-data--no-peaks--single-project-search-id";
+                const promise = dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadData({ projectSearchId });
 
-                const requestData = { projectSearchId };
-
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
-
-                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-                promise_webserviceCallStandardPost.catch( () => {
+                promise.catch( () => {
                     try {
                         this._promiseInProgress = null;
 
@@ -73,11 +68,11 @@ export class QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_Lo
                     }
                 }  );
 
-                promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
+                promise.then( (spectralStorage_NO_Peaks_Data) => {
                     try {
                         this._promiseInProgress = null;
 
-                        _populateHolder({ responseData, data_Holder_SingleSearch });
+                        data_Holder_SingleSearch.spectralStorage_NO_Peaks_Data = spectralStorage_NO_Peaks_Data;
 
                         resolve();
 
@@ -94,146 +89,4 @@ export class QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_Lo
 
         return this._promiseInProgress;
     }
-}
-
-/**
- *
- */
-const _populateHolder = function (
-    {
-        responseData, data_Holder_SingleSearch
-    } : {
-        responseData: any
-        data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
-    }) : void {
-
-    const spectralStorage_NO_Peaks_Data = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root();
-
-    if ( responseData.scanFileEntries ) {
-        if ( ! ( responseData.scanFileEntries instanceof Array ) ) {
-            const msg = "( ! ( responseData.scanFileEntries instanceof Array ) )";
-            console.warn(msg);
-            throw Error(msg);
-        }
-        for ( const scanFileEntry of responseData.scanFileEntries ) {
-            if ( scanFileEntry.searchScanFileId === undefined || scanFileEntry.searchScanFileId === null ) {
-                const msg = "( scanFileEntry.searchScanFileId === undefined || scanFileEntry.searchScanFileId === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! variable_is_type_number_Check( scanFileEntry.searchScanFileId ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanFileEntry.searchScanFileId ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( scanFileEntry.scanEntries === undefined || scanFileEntry.scanEntries === null ) {
-                const msg = "( scanFileEntry.scanEntries === undefined || scanFileEntry.scanEntries === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! ( scanFileEntry.scanEntries instanceof Array ) ) {
-                const msg = "( ! ( scanFileEntry.scanEntries instanceof Array ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            const searchScanFileId = scanFileEntry.searchScanFileId;
-
-            const qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId =
-                new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId({ searchScanFileId });
-            spectralStorage_NO_Peaks_Data.add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId);
-
-            const scanLevels_Set : Set<number> = new Set()
-            const scanCount_Map_Key_ScanLevel: Map<number,number> = new Map();
-
-            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId.set_scanLevels( scanLevels_Set );
-            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId.set_scanCount_Map_Key_ScanLevel( scanCount_Map_Key_ScanLevel );
-
-            for ( const scanEntryFromArray of scanFileEntry.scanEntries ) {
-
-                const scanEntry : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber = scanEntryFromArray;
-
-                if ( scanEntry.scanNumber === undefined || scanEntry.scanNumber === null ) {
-                    const msg = "( scanEntry.scanNumber === undefined || scanEntry.scanNumber === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! variable_is_type_number_Check( scanEntry.scanNumber ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanEntry.scanNumber ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( scanEntry.level === undefined || scanEntry.level === null ) {
-                    const msg = "( scanEntry.level === undefined || scanEntry.level === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! variable_is_type_number_Check( scanEntry.level ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanEntry.level ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( scanEntry.retentionTime_InSeconds === undefined || scanEntry.retentionTime_InSeconds === null ) {
-                    const msg = "( scanEntry.retentionTime_InSeconds === undefined || scanEntry.retentionTime_InSeconds === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! variable_is_type_number_Check( scanEntry.retentionTime_InSeconds ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanEntry.retentionTime_InSeconds ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                //  Optional values
-                if ( scanEntry.totalIonCurrent_ForScan !== undefined && scanEntry.totalIonCurrent_ForScan !== null ) {
-                    if ( ! variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) ) {
-                        const msg = "( ! variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                }
-                if ( scanEntry.ionInjectionTime_InMilliseconds !== undefined && scanEntry.ionInjectionTime_InMilliseconds !== null ) {
-                    if ( ! variable_is_type_number_Check( scanEntry.ionInjectionTime_InMilliseconds ) ) {
-                        const msg = "( ! variable_is_type_number_Check( scanEntry.ionInjectionTime_InMilliseconds ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                }
-                if ( scanEntry.parentScanNumber !== undefined && scanEntry.parentScanNumber !== null ) {
-                    if ( ! variable_is_type_number_Check( scanEntry.parentScanNumber ) ) {
-                        const msg = "( ! variable_is_type_number_Check( scanEntry.parentScanNumber ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                }
-                if ( scanEntry.precursorCharge !== undefined && scanEntry.precursorCharge !== null ) {
-                    if ( ! variable_is_type_number_Check( scanEntry.precursorCharge ) ) {
-                        const msg = "( ! variable_is_type_number_Check( scanEntry.precursorCharge ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                }
-                if ( scanEntry.precursor_M_Over_Z !== undefined && scanEntry.precursor_M_Over_Z !== null ) {
-                    if ( ! variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) ) {
-                        const msg = "( ! variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                }
-
-                qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId.add_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanEntry);
-
-                scanLevels_Set.add( scanEntry.level );
-                {
-                    const scanCount = scanCount_Map_Key_ScanLevel.get(scanEntry.level);
-                    if ( ! scanCount ) {
-                        scanCount_Map_Key_ScanLevel.set(scanEntry.level, 1);
-                    } else {
-                        scanCount_Map_Key_ScanLevel.set(scanEntry.level, scanCount + 1);
-                    }
-                }
-            }
-        }
-    }
-    
-    data_Holder_SingleSearch.spectralStorage_NO_Peaks_Data = spectralStorage_NO_Peaks_Data;
 }

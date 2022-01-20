@@ -10,8 +10,8 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {QcPage_Flags_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_Searches_Flags";
-import {QcPage_Searches_Info_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_QC_Page__Searches_Info";
+import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {DataPage_common_Searches_Info_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch__SubSearches";
 import {QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded";
@@ -351,8 +351,8 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches_Cons
     loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
     dataPageStateManager: DataPageStateManager
 
-    qcPage_Flags_SingleSearch_ForProjectSearchId: QcPage_Flags_SingleSearch                   //  Same as for Single Search
-    qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  QcPage_Searches_Info_SingleSearch  //  Same as for Single Search
+    qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch                   //  Same as for Single Search
+    qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch  //  Same as for Single Search
 
     /**
      *
@@ -367,8 +367,8 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches_Cons
             loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
             loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
             dataPageStateManager: DataPageStateManager
-            qcPage_Flags_SingleSearch_ForProjectSearchId: QcPage_Flags_SingleSearch
-            qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  QcPage_Searches_Info_SingleSearch
+            qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
+            qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
         }) {
         this.projectSearchId = projectSearchId;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;

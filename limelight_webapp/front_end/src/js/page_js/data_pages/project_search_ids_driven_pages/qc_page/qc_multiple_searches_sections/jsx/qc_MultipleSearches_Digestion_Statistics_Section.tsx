@@ -293,7 +293,7 @@ export class Qc_MultipleSearches_Digestion_Statistics_Section extends React.Comp
         let anyPsmHas_OpenModifications = false;
 
         for ( const projectSearchId of projectSearchIds ) {
-            const qcPage_Flags_SingleSearch = qcPage_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
+            const qcPage_Flags_SingleSearch = qcPage_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
             if ( ! qcPage_Flags_SingleSearch ) {
                 const msg = "qcPage_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
                 console.warn(msg);

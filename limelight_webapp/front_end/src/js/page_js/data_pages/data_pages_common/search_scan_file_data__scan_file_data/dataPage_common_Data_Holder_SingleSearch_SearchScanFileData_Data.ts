@@ -1,7 +1,7 @@
 /**
- * qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileData.ts
+ * dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data.ts
  *
- * QC Page - Data Loaded - From Server - Single Search - Search File Data
+ * Common Data - Data Loaded - From Server - Single Search - Search File Data
  *
  */
 
@@ -13,10 +13,10 @@
 /**
  *
  */
-export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileData_Root {
+export class DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root {
 
-    private _searchScanFileData_PerSearchScanFileId_Map_Key_SearchScanFileId: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> = new Map();
-    private _searchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename__CACHE: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId>
+    private _searchScanFileData_PerSearchScanFileId_Map_Key_SearchScanFileId: Map<number, DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> = new Map();
+    private _searchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename__CACHE: Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId>
 
     constructor() {
     }
@@ -38,12 +38,12 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScan
     /**
      *
      */
-    get_SearchScanFileData_IterableIterator(): IterableIterator<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> {
+    get_SearchScanFileData_IterableIterator(): IterableIterator<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> {
 
         return this._searchScanFileData_PerSearchScanFileId_Map_Key_SearchScanFileId.values()
     }
     
-    get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() : Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> {
+    get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename() : Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> {
 
         if ( this._searchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename__CACHE !== undefined && this._searchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename__CACHE !== null ) {
             return this._searchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename__CACHE;
@@ -62,7 +62,7 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScan
 
     ///  Add/Set
 
-    add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( item : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId ) {
+    add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( item : DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId ) {
 
         this._searchScanFileData_PerSearchScanFileId_Map_Key_SearchScanFileId.set(item.searchScanFileId, item);
 
@@ -73,7 +73,7 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScan
 /**
  *
  */
-export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId{
+export class DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId{
 
     readonly searchScanFileId: number;
     readonly searchId: number;

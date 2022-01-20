@@ -12,8 +12,8 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_MultipleSearches";
 import {QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {QcPage_DataFromServer_MultipleSearches_SearchScanFileData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_SearchScanFileData_LoadIfNeeded";
-import {QcPage_Searches_Flags} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_Searches_Flags";
-import {QcPage_Searches_Info} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_QC_Page__Searches_Info";
+import {DataPage_common_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {DataPage_common_Searches_Info} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded";
 import {QcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
@@ -53,13 +53,13 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
                 console.warn(msg);
                 throw Error(msg);
             }
-            const qcPage_Flags_SingleSearch_ForProjectSearchId = retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Flags_SingleSearch_ForProjectSearchId = retrievalParams.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Flags_SingleSearch_ForProjectSearchId ) {
                 const msg = "retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_FlagsMultipleSearches_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
-            const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = retrievalParams.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = retrievalParams.qcPage_Searches_Info_MultipleSearches.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Searches_Info_SingleSearch_ForProjectSearchId ) {
                 const msg = "retrievalParams.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_InfoMultipleSearches_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);
@@ -179,7 +179,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
             const projectSearchIds_LoadScanData: Array<number> = [];
 
             for ( const projectSearchId of this._retrievalParams.projectSearchIds ) {
-                const qcPage_Searches_Info_SingleSearch = this._retrievalParams.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
+                const qcPage_Searches_Info_SingleSearch = this._retrievalParams.qcPage_Searches_Info_MultipleSearches.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
                 if ( ! qcPage_Searches_Info_SingleSearch ) {
                     const msg = "this._retrievalParams.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                     console.warn(msg);
@@ -195,7 +195,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
 
                 for ( const projectSearchId of projectSearchIds_LoadScanData ) {
 
-                    const qcPage_Flags_SingleSearch = this._retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+                    const qcPage_Flags_SingleSearch = this._retrievalParams.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
                     if ( ! qcPage_Flags_SingleSearch ) {
                         const msg = "this._retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                         console.warn(msg);
@@ -410,8 +410,8 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_P
     loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
     dataPageStateManager: DataPageStateManager
 
-    qcPage_Flags_MultipleSearches: QcPage_Searches_Flags
-    qcPage_Searches_Info_MultipleSearches:  QcPage_Searches_Info
+    qcPage_Flags_MultipleSearches: DataPage_common_Searches_Flags
+    qcPage_Searches_Info_MultipleSearches:  DataPage_common_Searches_Info
 
     /**
      *
@@ -426,8 +426,8 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_P
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
             loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
             dataPageStateManager: DataPageStateManager
-            qcPage_Flags_MultipleSearches: QcPage_Searches_Flags
-            qcPage_Searches_Info_MultipleSearches:  QcPage_Searches_Info
+            qcPage_Flags_MultipleSearches: DataPage_common_Searches_Flags
+            qcPage_Searches_Info_MultipleSearches:  DataPage_common_Searches_Info
         }) {
         this.projectSearchIds = projectSearchIds;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;

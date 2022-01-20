@@ -44,7 +44,7 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
 
         for ( const projectSearchId of retrievalParams.projectSearchIds ) {
 
-            const qcPage_Flags_SingleSearch = retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Flags_SingleSearch = retrievalParams.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Flags_SingleSearch ) {
                 const msg = "retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);

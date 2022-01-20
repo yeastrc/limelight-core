@@ -67,13 +67,13 @@ export class Qc_MultipleSearches_PSM_PPM_Error_Statistics_Section extends React.
 
         for ( const projectSearchId of props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds) {
 
-            const qcPage_Flags_SingleSearch = props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Flags_SingleSearch = props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Flags_SingleSearch) {
                 const msg = "props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
-            const qcPage_Searches_Info_SingleSearch = props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Searches_Info_SingleSearch = props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Searches_Info_SingleSearch) {
                 const msg = "props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);

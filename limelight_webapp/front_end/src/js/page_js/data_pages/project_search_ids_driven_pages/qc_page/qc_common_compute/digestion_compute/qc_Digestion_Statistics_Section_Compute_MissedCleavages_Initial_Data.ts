@@ -225,7 +225,7 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
 
     for ( const projectSearchId of qcViewPage_CommonData_To_AllComponents_From_MainComponent.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts.get_ProjectSearchIds() ) {
 
-        const qcPage_Flags = qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
+        const qcPage_Flags = qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
         if ( ! qcPage_Flags ) {
             const msg = "qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId;
             console.warn(msg);

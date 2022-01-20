@@ -60,7 +60,7 @@ export class Qc_MultipleSearches_ScanFile_Statistics_Section extends React.Compo
         let noData = true;
 
         for ( const projectSearchId of  this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds ) {
-            const qcPage_Flags_SingleSearch = this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Flags_SingleSearch = this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Flags_SingleSearch ) {
                 const msg = "this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);

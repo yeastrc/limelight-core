@@ -9,11 +9,11 @@ import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {Qc_MultipleSearches_SummaryStatistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_SummaryStatistics_Section";
 import {
-    QcPage_Searches_Flags
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_Searches_Flags";
+    DataPage_common_Searches_Flags
+} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {
-    QcPage_Searches_Info,
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/js/qcPage_Get_QC_Page__Searches_Info";
+    DataPage_common_Searches_Info,
+} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_DataFromServer_AndDerivedData_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_MultipleSearches";
 import {Qc_MultipleSearches_Peptide_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_Peptide_Level_Statistics_Section";
 import {Qc_MultipleSearches_Digestion_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_Digestion_Statistics_Section";
@@ -29,8 +29,8 @@ export class QcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainM
     projectSearchIds: Array<number>
     qcPage_DataFromServer_AndDerivedData_MultipleSearches: QcPage_DataFromServer_AndDerivedData_MultipleSearches
 
-    qcPage_Flags_MultipleSearches: QcPage_Searches_Flags
-    qcPage_Searches_Info_MultipleSearches:  QcPage_Searches_Info
+    qcPage_Flags_MultipleSearches: DataPage_common_Searches_Flags
+    qcPage_Searches_Info_MultipleSearches:  DataPage_common_Searches_Info
 }
 
 /**

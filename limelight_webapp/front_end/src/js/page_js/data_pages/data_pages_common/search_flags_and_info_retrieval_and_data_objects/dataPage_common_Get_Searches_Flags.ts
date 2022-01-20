@@ -1,7 +1,7 @@
 /**
- * qcPage_Get_Searches_Flags.ts
+ * dataPage_common_Get_Searches_Flags.ts
  *
- * Get Flags for Searches
+ * Get Flags for Searches - Currently from search_tbl so very fast, data may be cached in server memory
  *
  */
 
@@ -13,16 +13,16 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class QcPage_Searches_Flags {
+export class DataPage_common_Searches_Flags {
 
-    private _qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId: Map<number, QcPage_Flags_SingleSearch> = new Map();
+    private _dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId: Map<number, DataPage_common_Flags_SingleSearch> = new Map();
 
-    add_QcPage_Flags_SingleSearch( item: QcPage_Flags_SingleSearch ) {
-        this._qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId.set( item.projectSearchId, item );
+    add_DataPage_common_Flags_SingleSearch(item: DataPage_common_Flags_SingleSearch ) {
+        this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.set( item.projectSearchId, item );
     }
 
-    get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId: number ) {
-        return this._qcPage_Flags_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
+    get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId: number ) {
+        return this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
     }
 
     private _ForceUseConstructor() {}
@@ -31,7 +31,7 @@ export class QcPage_Searches_Flags {
 /**
  *
  */
-export class QcPage_Flags_SingleSearch {
+export class DataPage_common_Flags_SingleSearch {
     
     projectSearchId: number;
     searchId: number;
@@ -46,14 +46,14 @@ export class QcPage_Flags_SingleSearch {
 /**
  *
  */
-export const qcPage_Get_Searches_Flags = function (
+export const dataPage_common_Get_Searches_Flags = function (
     {
         projectSearchIds
     } : {
         projectSearchIds: Array<number>
-    }) : Promise<QcPage_Searches_Flags> {
+    }) : Promise<DataPage_common_Searches_Flags> {
 
-    return new Promise<QcPage_Searches_Flags>( (resolve, reject) => {
+    return new Promise<DataPage_common_Searches_Flags>( (resolve, reject) => {
         try {
             const url = "d/rws/for-page/psb/search-flags-list-from-psi";
 
@@ -75,7 +75,7 @@ export const qcPage_Get_Searches_Flags = function (
 
             promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
                 try {
-                    const qcPage_Searches_Flags: QcPage_Searches_Flags = _populateResult({ responseData });
+                    const qcPage_Searches_Flags: DataPage_common_Searches_Flags = _populateResult({ responseData });
 
                     resolve( qcPage_Searches_Flags );
 
@@ -98,9 +98,9 @@ const _populateResult = function(
     } : {
         responseData: any
     }
-) : QcPage_Searches_Flags {
+) : DataPage_common_Searches_Flags {
 
-    const qcPage_Searches_Flags = new QcPage_Searches_Flags();
+    const qcPage_Searches_Flags = new DataPage_common_Searches_Flags();
 
     if ( ! responseData.searchFlagsList ) {
         const msg = "( ! responseData.searchFlagsList )";
@@ -114,7 +114,7 @@ const _populateResult = function(
     }
 
     for ( const searchFlagsListEntry of responseData.searchFlagsList ) {
-        const searchFlagsEntry : QcPage_Flags_SingleSearch = searchFlagsListEntry;
+        const searchFlagsEntry : DataPage_common_Flags_SingleSearch = searchFlagsListEntry;
         if ( searchFlagsEntry.projectSearchId === undefined || searchFlagsEntry.projectSearchId === null ) {
             const msg = "( searchFlagsEntry.projectSearchId === undefined || searchFlagsEntry.projectSearchId === null )";
             console.warn(msg);
@@ -166,7 +166,7 @@ const _populateResult = function(
             searchFlagsEntry.anyPsmHas_ReporterIons = false;
         }
 
-        qcPage_Searches_Flags.add_QcPage_Flags_SingleSearch( searchFlagsEntry );
+        qcPage_Searches_Flags.add_DataPage_common_Flags_SingleSearch( searchFlagsEntry );
     }
 
 

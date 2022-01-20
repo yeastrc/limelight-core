@@ -1,5 +1,5 @@
 /**
- * qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data.ts
+ * dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data.ts
  *
  * QC Page - Data Loaded - From Server - Single Search - Spectral Storage Data - NO Scan Peaks
  *
@@ -13,9 +13,9 @@
 /**
  *
  */
-export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root {
+export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root {
 
-    private _spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> = new Map();
+    private _spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId: Map<number, DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> = new Map();
 
     constructor() {
     }
@@ -30,14 +30,14 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralSt
     /**
      *
      */
-    get_SpectralStorage_NO_Peaks_DataEntries_IterableIterator(): IterableIterator<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> {
+    get_SpectralStorage_NO_Peaks_DataEntries_IterableIterator(): IterableIterator<DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> {
 
         return this._spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId.values()
     }
 
     ///  Add/Set
 
-    add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( item : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId ) {
+    add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( item : DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId ) {
 
         this._spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId.set( item.searchScanFileId, item );
     }
@@ -46,7 +46,7 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralSt
 /**
  *
  */
-export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId{
+export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId{
 
     readonly searchScanFileId: number;
     private _singleScanEntry_Map_Key_ScanNumber: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
