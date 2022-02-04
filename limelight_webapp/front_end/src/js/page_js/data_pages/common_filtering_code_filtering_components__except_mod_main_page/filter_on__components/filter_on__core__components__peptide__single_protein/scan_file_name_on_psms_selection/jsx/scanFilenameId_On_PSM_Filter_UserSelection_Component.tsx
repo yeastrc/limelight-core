@@ -180,17 +180,16 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                     <div className=" filter-common-filter-label ">
                         Filter On Scan Filename:
 
-                        {/*
                         <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                             <div className=" inner-absolute-pos ">
                                 <div className=" main-div ">
                                     <p className="help-tip-actual">
-                                        Tooltip Contents HERE
+                                        Only data from the selected scan file(s) will be used.
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        */}
+
                     </div>
 
                     <div className=" filter-common-selection-block " >

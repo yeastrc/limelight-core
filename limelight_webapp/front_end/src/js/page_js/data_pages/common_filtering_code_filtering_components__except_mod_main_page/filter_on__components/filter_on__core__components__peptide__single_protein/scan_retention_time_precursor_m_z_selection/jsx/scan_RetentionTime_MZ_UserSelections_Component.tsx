@@ -385,17 +385,17 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
 
                 <div className=" filter-common-filter-label ">
                     Filter on Retention Time (Minutes):
-                    {/*
+
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    Tooltip Contents HERE
+                                    Only PSMs with a retention time in the supplied range will be used.
                                 </p>
                             </div>
                         </div>
                     </div>
-                    */}
+
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -435,17 +435,17 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
 
                 <div className=" filter-common-filter-label ">
                     Filter on Precursor M/Z:
-                    {/*
+
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
                             <div className=" main-div ">
                                 <p className="help-tip-actual">
-                                    Tooltip Contents HERE
+                                    Only PSMs with a MS1 precursor ion with an observed m/z in the supplied range will be used.
                                 </p>
                             </div>
                         </div>
                     </div>
-                    */}
+
                 </div>
 
                 <div className=" filter-common-selection-block " >
