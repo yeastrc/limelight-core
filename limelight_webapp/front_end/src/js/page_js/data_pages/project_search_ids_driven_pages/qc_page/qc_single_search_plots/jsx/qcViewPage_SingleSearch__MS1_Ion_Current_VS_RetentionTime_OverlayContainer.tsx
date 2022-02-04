@@ -142,9 +142,8 @@ class QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_OverlayContainer
 
                 <React.Fragment>
 
-                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                         style={ { marginBottom: 12, height: "100%" } }
-                        // style={ { padding : 6 } }
+                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                         style={ { height: "100%" } }
                     >
 
                         <div style={ { height: "100%", display: "grid", gridTemplateRows: "min-content auto" } } >

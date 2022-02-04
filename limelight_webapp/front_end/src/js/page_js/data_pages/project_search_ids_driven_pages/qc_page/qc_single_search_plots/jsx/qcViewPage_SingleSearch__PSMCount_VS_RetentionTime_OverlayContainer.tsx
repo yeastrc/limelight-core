@@ -205,9 +205,8 @@ class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_OverlayContainer extend
 
                 <React.Fragment>
 
-                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                         style={ { marginBottom: 12, height: "100%" } }
-                        // style={ { padding : 6 } }
+                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                         style={ { height: "100%" } }
                     >
 
                         { ( this.state.loadingData ) ? (
