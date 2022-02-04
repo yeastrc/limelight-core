@@ -65,14 +65,14 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateMa
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
 import {SearchSubGroups_Root__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/jsx/proteinPage_Display__SingleProtein_MainContent_Component";
-
-
+import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 
 
 /**
  * return type of linksToExternalResources
  */  
-class LinksToExternalResources {
+class ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class {
     NCBI_Blast_URL : string
     PDR_Blast_URL : string
     UniProtKB_Search_URL : string
@@ -82,8 +82,8 @@ class LinksToExternalResources {
 /**
  * 
  */  
-const initialPopulate = function({
-
+const initialPopulate = function(
+    {
     propsValue,
     proteinSequenceVersionId,
     proteinSequenceString,
@@ -93,6 +93,8 @@ const initialPopulate = function({
     modificationMass_UserSelections_StateObject,
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
     reporterIonMass_UserSelections_StateObject,
+    scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+    scan_RetentionTime_MZ_UserSelection_StateObject,
     peptideUnique_UserSelection_StateObject,
     peptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject
@@ -106,6 +108,8 @@ const initialPopulate = function({
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+    scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+    scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
@@ -116,7 +120,7 @@ const initialPopulate = function({
     searchSubGroup_Ids_Selected : Set<number>
     searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
     searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
-    linksToExternalResources : LinksToExternalResources,
+    linksToExternalResources : ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class,
     protein_fractionCovered_Unfiltered : number,
     psmCountForUnfiltered : number,
     modificationMass_UserSelections_ComponentData : ModificationMass_UserSelections_ComponentData,
@@ -185,6 +189,8 @@ const initialPopulate = function({
         modificationMass_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         reporterIonMass_UserSelections_StateObject,
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+        scan_RetentionTime_MZ_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root,
@@ -228,7 +234,7 @@ const initialPopulate = function({
         });
     }
 
-    const linksToExternalResources = _createLinksToExternalResources({ proteinSequenceVersionId, proteinSequenceString, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds });
+    const linksToExternalResources = _createProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class({ proteinSequenceVersionId, proteinSequenceString, projectSearchIds, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds });
 
     const protein_fractionCovered_Unfiltered = _computeSequenceCoverageFractionForUnfiltered({ proteinSequenceString, sequenceCoverageBooleanArray_Unfiltered });
     
@@ -398,7 +404,7 @@ const compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = functi
 /**
  * Create links to external resources
  */
-const _createLinksToExternalResources = function({ 
+const _createProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class = function({ 
     
     proteinSequenceVersionId, 
     proteinSequenceString, 
@@ -410,7 +416,7 @@ const _createLinksToExternalResources = function({
     projectSearchIds : Array<number>, 
     loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
 
-}) : LinksToExternalResources {
+}) : ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class {
 
     const NCBI_Blast_URL = "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE=Proteins&QUERY=" + proteinSequenceString;
     const PDR_Blast_URL = "https://yeastrc.org/pdr/blastSearchInit.do?query=" + proteinSequenceString;
@@ -422,14 +428,14 @@ const _createLinksToExternalResources = function({
         const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
         
         if ( ! loadedDataPerProjectSearchIdHolder ) {
-            const msg = "_createLinksToExternalResources(): No value in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
+            const msg = "_createProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class(): No value in loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds for projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
         }
 
         const proteinInfoMapKeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
         if ( ! proteinInfoMapKeyProteinSequenceVersionId ) {
-            const msg = "_createLinksToExternalResources(): No value in loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId() for projectSearchId: " + projectSearchId;
+            const msg = "_createProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class(): No value in loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId() for projectSearchId: " + projectSearchId;
             console.warn( msg );
             throw Error( msg );
         }
@@ -1129,7 +1135,6 @@ const _get_staticModificationMasses_All_OnProteinByPosition = function(
 	return modsOnProteinByPosition;
 }
 
-
 ////////////////////////////////////////////
 	
 //   Modification Mass Rounding to provide some level of commonality between searches
@@ -1146,17 +1151,21 @@ const _roundModificationMass_ReturnNumber_LocalFunction = function({ mass }: { m
 ///////////////////////////////////////////////
 
 
-export { 
-    initialPopulate,
-    compute_searchSubGroup_Ids_Selected,
-    compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected,
-    compute_searchSubGroup_PropValue,
-    compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
-    create_ModificationMass_UserSelections_ComponentData, 
-    create_ReporterIons_UserSelections_ComponentData, 
-    create_PeptideSequence_UserSelections_ComponentData,
-    create_ProteinSequenceWidgetDisplay_Component_Data, 
-    load_ReporterIonMasses_IfNeeded,
-    load_OpenModificationMasses_IfNeeded,
-    LinksToExternalResources // return type
+class ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions {
+    static initialPopulate = initialPopulate
+    static compute_searchSubGroup_Ids_Selected = compute_searchSubGroup_Ids_Selected
+    static compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected = compute_searchSubGroup_Are_All_SearchSubGroupIds_Selected
+    static compute_searchSubGroup_PropValue = compute_searchSubGroup_PropValue
+    static compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
+    static create_ModificationMass_UserSelections_ComponentData = create_ModificationMass_UserSelections_ComponentData
+    static create_ReporterIons_UserSelections_ComponentData = create_ReporterIons_UserSelections_ComponentData
+    static create_PeptideSequence_UserSelections_ComponentData = create_PeptideSequence_UserSelections_ComponentData
+    static create_ProteinSequenceWidgetDisplay_Component_Data =  create_ProteinSequenceWidgetDisplay_Component_Data
+    static load_ReporterIonMasses_IfNeeded = load_ReporterIonMasses_IfNeeded
+    static load_OpenModificationMasses_IfNeeded = load_OpenModificationMasses_IfNeeded
+}
+
+export {
+    ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions,
+    ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class // return type
 }

@@ -1,37 +1,38 @@
 /**
- * dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data_LoadData.ts
+ * dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData.ts
  *
- * Common Data - Data Loaded - From Server - Single Search - Search File Data - Load Data
+ * Common Data - Data Loaded - From Server - Search Scan File Data - Load Data
  *
  */
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root,
+    DataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+    DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData,
     DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId
-} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data";
+} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
- * Common Data - Data Loaded - From Server - Single Search - Search File Data - Load Data
+ * Common Data - Data Loaded - From Server - Search File Data - Load Data
  *
- * @param projectSearchId
+ * @param projectSearchIds
  */
-export const dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data_LoadData = function(
+export const dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData = function(
     {
-        projectSearchId
+        projectSearchIds
     } : {
-        projectSearchId: number
+        projectSearchIds: Array<number>  //  Must be Array to serialize to JSON
     }
-) : Promise<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root> {
+) : Promise<DataPage_common_Data_Holder_Holder_SearchScanFileData_Root> {
 
-    const promise = new Promise<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root>( (resolve, reject) => {
+    const promise = new Promise<DataPage_common_Data_Holder_Holder_SearchScanFileData_Root>( (resolve, reject) => {
         try {
-            const url = "d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id";
+            const url = "d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id-list";
 
-            const requestData = { projectSearchId };
+            const requestData = { projectSearchIdList: projectSearchIds };
 
             console.log( "START: getting data from URL: " + url );
 
@@ -55,7 +56,7 @@ export const dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data_Lo
                 try {
                     console.log( "END: Successful: getting data from URL: " + url );
 
-                    const result = _populate_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root({ responseData });
+                    const result = _populate_Result({ responseData });
 
                     resolve( result );
 
@@ -76,15 +77,15 @@ export const dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data_Lo
 /**
  *
  */
-const _populate_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root = function (
+const _populate_Result = function (
     {
         responseData
     } : {
         responseData: any
-    }) : DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root {
+    }) : DataPage_common_Data_Holder_Holder_SearchScanFileData_Root {
 
 
-    const searchScanFileData = new DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_Root();
+    const searchScanFileData_Root = new DataPage_common_Data_Holder_Holder_SearchScanFileData_Root();
 
     if ( responseData.scanFilenameEntries ) {
         if ( ! ( responseData.scanFilenameEntries instanceof Array ) ) {
@@ -103,6 +104,16 @@ const _populate_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDa
             }
             if ( ! variable_is_type_number_Check( scanFilenameEntry.searchScanFileId ) ) {
                 const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.searchScanFileId ) )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( scanFilenameEntry.projectSearchId === undefined || scanFilenameEntry.projectSearchId === null ) {
+                const msg = "( scanFilenameEntry.projectSearchId === undefined || scanFilenameEntry.projectSearchId === null )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( ! variable_is_type_number_Check( scanFilenameEntry.projectSearchId ) ) {
+                const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.projectSearchId ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -135,9 +146,20 @@ const _populate_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDa
                 }
             }
 
-            searchScanFileData.add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( scanFilenameEntry );
+            const projectSearchId = scanFilenameEntry.projectSearchId;
+
+            let data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId =
+                searchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId(projectSearchId);
+
+            if ( ! data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId ) {
+                data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId =
+                    new DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData({ projectSearchId, searchId: scanFilenameEntry.searchId });
+                searchScanFileData_Root.insert_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData( data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId );
+            }
+
+            data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId.add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( scanFilenameEntry );
         }
     }
 
-    return  searchScanFileData;
+    return  searchScanFileData_Root;
 }

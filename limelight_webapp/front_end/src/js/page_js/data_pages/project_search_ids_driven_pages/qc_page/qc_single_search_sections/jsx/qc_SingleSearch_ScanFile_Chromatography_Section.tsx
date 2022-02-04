@@ -9,12 +9,8 @@ import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
-import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SearchScanFileData_Data";
-import {QcViewPage_SingleSearch__ScanFileSummaryDataBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ScanFileSummaryDataBlock";
-import {QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_MainPageContainer";
-import {QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer";
-import {QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__ScanCount_VS_RetentionTime_MainPageContainer";
 import {QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainPageContainer";
+import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 
 /**
  *
@@ -38,6 +34,7 @@ interface Qc_SingleSearch_ScanFile_Chromatography_Section_State {
     searchScanFileData_OnlyOne?: DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId
     searchScanFileId_Selection?: number
     searchScanFileName_Selection?: string
+    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds?: boolean
 }
 
 /**
@@ -149,10 +146,16 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
 
                     const searchScanFileData_FirstEntry = searchScanFileData_Entries[0];
 
+                    let searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds = false;
+                    if ( searchScanFileData_Entries.length > 1 ) {
+                        searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds = true;
+                    }
+
                     this.setState({
                         searchScanFileData_Entries,
                         searchScanFileId_Selection: searchScanFileData_FirstEntry.searchScanFileId,
                         searchScanFileName_Selection: searchScanFileData_FirstEntry.filename,
+                        searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds,
                         loadingData: false
                     });
 
@@ -271,6 +274,7 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
                                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                                     searchScanFileId_Selected={ this.state.searchScanFileId_Selection }
                                                     searchScanFileName_Selected={ this.state.searchScanFileName_Selection }
+                                                    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds={ this.state.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds }
                                                 />
                                             </div>
                                         </div>

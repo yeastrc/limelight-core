@@ -5,12 +5,9 @@
 
 // String path = request.getContextPath();
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
---%>
-
-<%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
-<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
-
-<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
+--%><%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"
+%><%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" 
+%><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/top_of_every_page_doctype__jsp_cache_directives.jsp" %>
@@ -38,10 +35,12 @@
    	<%--  <div> to contain main display --%>
    	
    	<div >
-         <h3>List Proteins</h3>
-   
 		<!--  Navigation Links --> <%--  Contents inserted by Javascript --%>
 		<div id="data_pages_nav_links_page_container" ></div>
+		
+		<h1>
+			Proteins View
+		</h1>
 		
 	   	<div id="protein_experiment_data_page_overall_enclosing_block_div">
 	   	</div>

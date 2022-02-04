@@ -7,6 +7,8 @@
 		Pages in 'jsp/data_pages/project_search_ids_driven_pages'
 	
 --%>
+<%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
+
 <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_main_pages.jsp" %>
@@ -93,3 +95,11 @@
 }
 </script>
 
+
+<script id="controller_path_qc" type="text/text"><%= AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER %></script>
+<script id="controller_path_peptide" type="text/text"><%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %></script>
+<script id="controller_path_protein" type="text/text"><%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %></script>
+<script id="controller_path_mod" type="text/text"><%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %></script>
+
+
+	

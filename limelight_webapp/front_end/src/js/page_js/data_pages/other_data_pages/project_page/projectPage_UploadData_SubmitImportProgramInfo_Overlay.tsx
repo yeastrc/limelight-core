@@ -24,6 +24,7 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 
 const _Overlay_Title = "Command Line Import Information"
 
@@ -66,8 +67,7 @@ const projectPage_UploadData_SubmitImportProgramInfo__OpenOverlay__GetComponent 
         callbackOn_Close_Clicked: ()=>void
     }) : JSX.Element {
 
-    const $controller_path = $("#controller_path");
-    const controller_path = $controller_path.text();
+    const controller_path = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
     const urlFullPath = window.location.href;
 
     const controller_pathStart = urlFullPath.indexOf( controller_path );

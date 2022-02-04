@@ -72,6 +72,7 @@ export interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_O
 
     searchScanFileId_Selected: number
     searchScanFileName_Selected: string
+    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds: boolean
 
     cached_MS1_ChartData__ProjectSearchId: number
     cached_MS1_ChartData_Map_Key_SearchScanFileId: Map<number, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root>
@@ -146,8 +147,8 @@ class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayConta
 
                 <React.Fragment>
 
-                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                         style={ { marginBottom: 12, height: "100%" } }
+                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                         style={ { height: "100%" } }
                         // style={ { padding : 6 } }
                     >
 
@@ -164,6 +165,7 @@ class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayConta
                                     ms1_PeakIntensityBinnedOn_RT_MZ_OverallData={ this.props.params.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData }
                                     searchScanFileId_Selected={ this.props.params.searchScanFileId_Selected }
                                     searchScanFileName_Selected={ this.props.params.searchScanFileName_Selected }
+                                    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds={ this.props.params.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds }
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
 

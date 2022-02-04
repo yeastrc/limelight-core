@@ -38,6 +38,9 @@ import {
 } from "page_js/data_pages/reporter_ion_mass_common/reporter_ion_mass_rounding";
 import {load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_ProteinCoverage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
 import {ProteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_compute_proteinSequenceCoverage_Per_ProteinSequenceVersionId";
+import {PeptidePage_Display_MainContent_Component__LoadData_FromServer_Class} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component__LoadData_FromServer_Class";
+import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 
 
 //  Constants
@@ -453,7 +456,9 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject,
 	open_Modifications_Subpart_UserSelections_StateObject,
-	generatedPeptideContents_UserSelections_StateObject
+	generatedPeptideContents_UserSelections_StateObject,
+	scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+	scan_RetentionTime_MZ_UserSelection_StateObject
 } : {
 	forPeptidePage: boolean
 	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
@@ -467,6 +472,9 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
 	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+	scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+	scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+
 }) : Promise<void> {
 
 	//  NOT valid test to determine if skip loading. Broken if user changes PSM/Peptide Filters and thus loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds is cleared
@@ -489,7 +497,9 @@ const loadDataForInitialOverlayShow_MultipleSearch_SingleProtein = function ({
 		searchDataLookupParamsRoot,
 		reporterIonMass_UserSelections_StateObject,
 		open_Modifications_Subpart_UserSelections_StateObject,
-		generatedPeptideContents_UserSelections_StateObject
+		generatedPeptideContents_UserSelections_StateObject,
+		scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+		scan_RetentionTime_MZ_UserSelection_StateObject
 	});
 
 	//  Returned Promise
@@ -589,7 +599,9 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	searchDataLookupParamsRoot,
 	reporterIonMass_UserSelections_StateObject,
 	open_Modifications_Subpart_UserSelections_StateObject,
-	generatedPeptideContents_UserSelections_StateObject
+	generatedPeptideContents_UserSelections_StateObject,
+	scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+	scan_RetentionTime_MZ_UserSelection_StateObject
 } : {
 	forPeptidePage: boolean
 	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
@@ -603,6 +615,8 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 	open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
 	generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+	scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+	scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
 
 }) : Promise<any> {
 
@@ -661,9 +675,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 				});
 				promises_For_forPeptidePage_All.then( () => {
 					try {
-						const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART(
-							{
-								forPeptidePage,
+						const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART({
 								load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 								projectSearchId_Contains_proteinSequenceVersionId,
 								searchSubGroups_Root,
@@ -675,7 +687,9 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 								searchDataLookupParamsRoot,
 								reporterIonMass_UserSelections_StateObject,
 								open_Modifications_Subpart_UserSelections_StateObject,
-								generatedPeptideContents_UserSelections_StateObject
+								generatedPeptideContents_UserSelections_StateObject,
+								scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+								scan_RetentionTime_MZ_UserSelection_StateObject
 							});
 
 						if ( promise ) {
@@ -707,9 +721,7 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 
 	// NO promises_For_forPeptidePage_All so run next step directly
 
-	const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART(
-		{
-			forPeptidePage,
+	const promise = _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART({
 			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 			projectSearchId_Contains_proteinSequenceVersionId,
 			searchSubGroups_Root,
@@ -721,7 +733,9 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
 			searchDataLookupParamsRoot,
 			reporterIonMass_UserSelections_StateObject,
 			open_Modifications_Subpart_UserSelections_StateObject,
-			generatedPeptideContents_UserSelections_StateObject
+			generatedPeptideContents_UserSelections_StateObject,
+			scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+			scan_RetentionTime_MZ_UserSelection_StateObject
 		});
 
 	return promise
@@ -732,7 +746,6 @@ const _loadDataForInitialOverlayShow_FirstRetrieval = function ({
  */
 const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 	{
-		forPeptidePage,
 		load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 		projectSearchId_Contains_proteinSequenceVersionId,
 		searchSubGroups_Root,
@@ -744,9 +757,10 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 		searchDataLookupParamsRoot,
 		reporterIonMass_UserSelections_StateObject,
 		open_Modifications_Subpart_UserSelections_StateObject,
-		generatedPeptideContents_UserSelections_StateObject
+		generatedPeptideContents_UserSelections_StateObject,
+		scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+		scan_RetentionTime_MZ_UserSelection_StateObject
 	} : {
-		forPeptidePage: boolean
 		load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 		projectSearchId_Contains_proteinSequenceVersionId: number
 		searchSubGroups_Root: SearchSubGroups_Root__DataPageStateManagerEntry
@@ -759,6 +773,9 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 		reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
 		open_Modifications_Subpart_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
 		generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
+		scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+		scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+
 
 	}) : Promise<any[]> {
 
@@ -790,7 +807,6 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 		}
 
 		const promise = _loadDataForInitialOverlayShow_GetPer_projectSearchId({
-			forPeptidePage,
 			load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 			getSearchSubGroupIds,
 			proteinSequenceVersionId, 
@@ -807,6 +823,33 @@ const _loadDataForInitialOverlayShow_FirstRetrieval_MAIN_PART = function (
 		if ( promise ) {
 
 			promises.push( promise );
+		}
+	}
+
+	{
+		const peptidePage_Display_MainContent_Component__LoadData_FromServer_Class = new PeptidePage_Display_MainContent_Component__LoadData_FromServer_Class();
+
+		if ( scanFilenameId_On_PSM_Filter_UserSelection_StateObject && ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds() ) ) {
+			const  { load_Already_InProgress, promise } = peptidePage_Display_MainContent_Component__LoadData_FromServer_Class.loadData_For_scanFilenameId_On_PSM_Filter_UserSelection({
+				projectSearchIds,
+				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+				searchDataLookupParamsRoot
+			});
+
+			if ( promise ) {
+				promises.push( promise );
+			}
+		}
+		if ( scan_RetentionTime_MZ_UserSelection_StateObject && scan_RetentionTime_MZ_UserSelection_StateObject.is_Any_FilterHaveValue() ) {
+			const  { load_Already_InProgress, promise } = peptidePage_Display_MainContent_Component__LoadData_FromServer_Class.loadData_For_scan_RetentionTime_MZ_UserSelection({
+				projectSearchIds,
+				loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+				searchDataLookupParamsRoot
+			});
+
+			if ( promise ) {
+				promises.push( promise );
+			}
 		}
 	}
 
@@ -922,7 +965,6 @@ const _initialLoad_For_PeptidePage_SingleSearch = function (
  */
 const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 
-	forPeptidePage,
 	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage,
 	getSearchSubGroupIds,
 	proteinSequenceVersionId, 
@@ -935,7 +977,6 @@ const _loadDataForInitialOverlayShow_GetPer_projectSearchId = function ({
 	open_Modifications_Subpart_UserSelections_StateObject,
 	generatedPeptideContents_UserSelections_StateObject
 } : {
-	forPeptidePage: boolean
 	load_OpenModificationsFromServer_For_SetSelectionsFrom_ModMassFromModPage: boolean
 	getSearchSubGroupIds : boolean
 	proteinSequenceVersionId: number

@@ -22,6 +22,8 @@ import {loadData_SingleSearch_MainProteinPeptidePageLoad_LoadTo_loadedDataPerPro
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass";
 import {Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass";
+import {dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData";
+import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 
 /**
  *
@@ -51,6 +53,8 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
     private _singleProtein_CentralStateManagerObject: SingleProtein_CentralStateManagerObjectClass
     private _dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
 
+    private _allSearches_Have_ScanFilenames: boolean
+
 
     //  !!  When copy for Experiment, don't need this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass since only for pick up old values from URL
 
@@ -61,6 +65,8 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
     private _loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
     private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+
+    private _dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
 
     private _dataLoaded_For_SingleProtein = false;
 
@@ -114,6 +120,29 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory
 
         this._centralPageStateManager = centralPageStateManager;
+
+
+        {
+            let allSearches_Have_ScanFilenames = true;
+
+            for (const projectSearchId of this._projectSearchIds) {
+
+                const dataPage_common_Flags_SingleSearch_ForProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+                if (!dataPage_common_Flags_SingleSearch_ForProjectSearchId) {
+                    const msg = "this._dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                if (!dataPage_common_Flags_SingleSearch_ForProjectSearchId.hasScanFilenames) {
+                    allSearches_Have_ScanFilenames = false;
+                }
+            }
+
+            this._allSearches_Have_ScanFilenames = allSearches_Have_ScanFilenames;
+        }
+
+        //////////////////////
 
 
         this._singleProtein_CentralStateManagerObject = new SingleProtein_CentralStateManagerObjectClass({
@@ -319,6 +348,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
             loadedDataCommonHolder: this._loadedDataCommonHolder,
             loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this._dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
 
             dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
             dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
@@ -384,7 +414,8 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             proteinNameDescription: undefined,
             proteinSequenceVersionId,
             modMass_Rounded_From_ModPage_ForInitialSelection,
-            protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass: this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass
+            protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass: this._protein_singleProtein_EmbedInModPage_NewWindowContents_CentralStateManagerObjectClass,
+            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this._dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
         });
     }
 
@@ -393,7 +424,41 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
      */
     private _getDataFromServer_For_SingleProtein() : Promise<unknown> {
 
-        const getDataFromServer_AllPromises = [];
+        let load_searchSubGroupsData = false;
+        if ( this._projectSearchIds.length === 1 && this._dataPageStateManager_DataFrom_Server.get_SearchSubGroups_Root() ) {
+            load_searchSubGroupsData = true;
+        }
+
+        const getDataFromServer_AllPromises: Array< Promise<unknown>> = [];
+
+        if ( this._allSearches_Have_ScanFilenames ) {  // allSearches_Have_ScanFilenames set in constructor
+
+            const promise_ToAdd = new Promise<void>( (resolve, reject) => {
+                try {
+                    const promise = dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData({ projectSearchIds: this._projectSearchIds });
+                    promise.catch( reason => {
+                        try {
+                            reject(reason)
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    });
+                    promise.then( dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult => {
+
+                        this._dataPage_common_Data_Holder_Holder_SearchScanFileData_Root = dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult;
+
+                        resolve();
+                    })
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
+
+            getDataFromServer_AllPromises.push(promise_ToAdd);
+        }
 
         for (const projectSearchId of this._projectSearchIds) {
 
@@ -416,8 +481,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
                 projectSearchId,
                 searchDataLookupParams_For_Single_ProjectSearchId,
                 loadedDataPerProjectSearchIdHolder,
-                load_searchSubGroupsData : false
-                //  load_searchSubGroupsData : false since for now not processing subgroup data
+                load_searchSubGroupsData
             });
 
             getDataFromServer_AllPromises.push(promise_getDataFromServer);

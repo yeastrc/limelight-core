@@ -32,6 +32,11 @@ import {
     qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__Compute_MS1_Data,
     QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data";
+import {PeptidePageRoot_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePageRoot_CentralStateManagerObjectClass";
+import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
+import {ControllerPaths_forDataPages_FromDOM} from "page_js/data_pages/data_pages_common/controllerPaths_forDataPages_FromDOM";
+import {ProteinList_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass";
 
 
 
@@ -53,6 +58,8 @@ export interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_S
 
     searchScanFileName_Selected: string
     searchScanFileId_Selected: number
+
+    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds: boolean
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
@@ -95,6 +102,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
     private plot_Container_Ref :  React.RefObject<HTMLDivElement>
     private plot_Ref :  React.RefObject<HTMLDivElement>
+    private linksUnderPlot_Container_Ref :  React.RefObject<HTMLDivElement>
 
     private scanLevel_1_Ref :  React.RefObject<HTMLSpanElement>
     private scanLevel_2_Ref :  React.RefObject<HTMLSpanElement>
@@ -103,6 +111,13 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
     private _cached_MS1_ChartData_Map_Key_SearchScanFileId : Map<number, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root> = new Map();
 
     private _renderChart: boolean = true;
+
+    private _selectedChartArea: {
+        x_Axis_Start: number
+        x_Axis_End: number
+        y_Axis_Start: number
+        y_Axis_End: number
+    }
 
     private _resize_SetTimeoutId: any;
 
@@ -122,6 +137,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
         this.plot_Container_Ref = React.createRef();
         this.plot_Ref = React.createRef();
+        this.linksUnderPlot_Container_Ref = React.createRef();
+
         this.scanLevel_1_Ref = React.createRef();
         this.scanLevel_2_Ref = React.createRef();
 
@@ -314,9 +331,10 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
                             this.setState({ showUpdatingMessage: false });
 
-                            // this._populateChart();
-
                             //  Update chart
+
+                            //  Set plot container div back to height 100%
+                            this._plot_Container_Ref_Set_Height_100Percent();
 
                             //  Shrink Chart to 1px X 1px so not hold space so containing <div> will be correct measurement when window size is reduced.
                             this.plot_Ref.current.style.maxWidth = "1px";
@@ -327,6 +345,9 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                                 width: chart_Width,
                                 height: chart_Height,
                             };
+
+                            //  Remove plot container div height 100%
+                            this._plot_Container_Ref_Remove_Height_100Percent();
 
                             //  Remove: Shrink Chart to 1px X 1px
                             this.plot_Ref.current.style.maxWidth = "";
@@ -407,6 +428,11 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             console.warn("( ! this.plot_Ref.current ).  Exit _populateChart_Actual early")
 
             return;  // EARLY RETURN
+        }
+
+        if ( this.props.isInSingleChartOverlay ) {
+
+            this._plot_Container_Ref_Set_Height_100Percent();
         }
 
         this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State =>  {
@@ -830,14 +856,29 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     let newMarkerSize: number = undefined;
 
                     if (eventdata["xaxis.range[1]"] !== undefined) {
-                        //  Selected Range
+
+                        //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is M/Z
+
                         const xaxis_range_0 = eventdata["xaxis.range[0]"];
                         const xaxis_range_1 = eventdata["xaxis.range[1]"];
 
+                        const yaxis_range_0 = eventdata["yaxis.range[0]"];
+                        const yaxis_range_1 = eventdata["yaxis.range[1]"];
+
+                        this._selectedChartArea = {
+                            x_Axis_Start: xaxis_range_0,
+                            x_Axis_End: xaxis_range_1,
+                            y_Axis_Start: yaxis_range_0,
+                            y_Axis_End: yaxis_range_1
+                        }
+
                         newMarkerSize = this._computeMarkerSize({ chart_X_Max: xaxis_range_1, chart_X_Min: xaxis_range_0, plot_width });
+
                     } else {
                         //  NO Selected Range
                         newMarkerSize = this._computeMarkerSize({ chart_X_Max: ms1_ChartData.chart_X_Max, chart_X_Min: ms1_ChartData.chart_X_Min, plot_width });
+
+                        this._selectedChartArea = undefined;
                     }
 
                     const chartUpdate_Properties: any = {
@@ -860,6 +901,15 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
         }
 
+
+        if ( this.props.isInSingleChartOverlay ) {
+
+            this._plot_Container_Ref_Remove_Height_100Percent();
+
+            if ( this.linksUnderPlot_Container_Ref.current ) {
+                this.linksUnderPlot_Container_Ref.current.style.visibility = ""
+            }
+        }
     }
 
     /**
@@ -876,8 +926,12 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         // const targetDOMElement_domRect_Top = plotContainerDOMElement_domRect.top;
         // const targetDOMElement_domRect_Bottom = plotContainerDOMElement_domRect.bottom;
 
+        //  <div> containing the fake links under the plot
+        const linksUnderPlot_ContainerDOMElement_domRect = this.linksUnderPlot_Container_Ref.current.getBoundingClientRect();
+
         const chart_Width = Math.floor( plotContainerDOMElement_domRect.width );
-        const chart_Height = Math.floor( plotContainerDOMElement_domRect.height );  // Subtract divAbovePlotDOMElement_Height to provide space for it
+        const chart_Height = Math.floor( plotContainerDOMElement_domRect.height - ( linksUnderPlot_ContainerDOMElement_domRect.height / 2 ) );  // Subtract half of divAbovePlotDOMElement_Height to provide space for it
+
 
         //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
 
@@ -949,6 +1003,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     ms1_PeakIntensityBinnedOn_RT_MZ_OverallData: this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData,
                     searchScanFileId_Selected: this.props.searchScanFileId_Selected,
                     searchScanFileName_Selected: this.props.searchScanFileName_Selected,
+                    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds: this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds,
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent,
                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent,
                     cached_MS1_ChartData__ProjectSearchId: this._cached_MS1_ChartData__ProjectSearchId,
@@ -959,6 +1014,236 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _update_ThisPage_WithSelection() {
+        try {
+            if ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) {
+
+                const scanFilenameIds_Selected = new Set<number>();
+
+                scanFilenameIds_Selected.add( this.props.searchScanFileId_Selected );
+
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.
+                scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected(scanFilenameIds_Selected);
+            }
+
+            const scan_RetentionTime_MZ_UserSelection_StateObject = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject
+
+            if ( this._selectedChartArea ) {
+
+                //  Only set if an area of the chart is selected
+
+                scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__From__Filter(
+                    Math.floor( this._selectedChartArea.x_Axis_Start * 100 ) / 100
+                );
+                scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__To__Filter(
+                    Math.ceil(this._selectedChartArea.x_Axis_End * 100 ) / 100
+                );
+                scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__From__Filter(
+                    Math.floor(this._selectedChartArea.y_Axis_Start * 100 ) / 100
+                );
+                scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__To__Filter(
+                    Math.ceil(this._selectedChartArea.y_Axis_End * 100 ) / 100
+                );
+            } else {
+
+                //  No selection so clear the values
+
+                scan_RetentionTime_MZ_UserSelection_StateObject.clearAll();
+            }
+
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR___Scan_RetentionTime_MZ_UserSelections_StateObject__OUTSIDE_AssociatedComponent__Callback();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _open_Peptide_Page_WithSelection() {
+        try {
+
+            const pageControllerPath_Override = ControllerPaths_forDataPages_FromDOM.controllerPath_Peptide_Page_FromDOM();
+
+            //  Create to override the value of ... from the URL
+            const peptidePageRoot_CentralStateManagerObjectClass_ForNewWindow = new PeptidePageRoot_CentralStateManagerObjectClass({ centralPageStateManager: undefined });
+
+            {
+                const encodedStateData = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.peptidePageRoot_CentralStateManagerObjectClass.getDataForEncoding()
+                peptidePageRoot_CentralStateManagerObjectClass_ForNewWindow.initialize({optional_encodedStateData: encodedStateData });
+            }
+
+            if ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) {
+                const valueChangedCallback = () => {
+                }
+                const scanFilenameId_On_PSM_Filter_UserSelection_StateObject = new ScanFilenameId_On_PSM_Filter_UserSelection_StateObject({
+                    valueChangedCallback
+                });
+
+                const scanFilenameIds_Selected = new Set<number>();
+
+                scanFilenameIds_Selected.add( this.props.searchScanFileId_Selected );
+
+                scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected(scanFilenameIds_Selected);
+
+                const scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData = scanFilenameId_On_PSM_Filter_UserSelection_StateObject.getEncodedStateData();
+
+                peptidePageRoot_CentralStateManagerObjectClass_ForNewWindow.set_scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData({ scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData });
+            }
+
+            if ( this._selectedChartArea ) {
+
+                //  Only set if an area of the chart is selected
+
+                const valueChangedCallback = () => {
+                }
+                const scan_RetentionTime_MZ_UserSelection_StateObject = new Scan_RetentionTime_MZ_UserSelections_StateObject({
+                    valueChangedCallback
+                });
+
+                if ( this._selectedChartArea ) {
+
+                    //  Only set if an area of the chart is selected
+
+                    scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__From__Filter(
+                        Math.floor( this._selectedChartArea.x_Axis_Start * 100 ) / 100
+                    );
+                    scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__To__Filter(
+                        Math.ceil(this._selectedChartArea.x_Axis_End * 100 ) / 100
+                    );
+                    scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__From__Filter(
+                        Math.floor(this._selectedChartArea.y_Axis_Start * 100 ) / 100
+                    );
+                    scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__To__Filter(
+                        Math.ceil(this._selectedChartArea.y_Axis_End * 100 ) / 100
+                    );
+                }
+
+                const scan_RetentionTime_MZ_UserSelections_EncodedStateData = scan_RetentionTime_MZ_UserSelection_StateObject.getEncodedStateData();
+
+                peptidePageRoot_CentralStateManagerObjectClass_ForNewWindow.set_scan_RetentionTime_MZ_UserSelections_EncodedStateData({ scan_RetentionTime_MZ_UserSelections_EncodedStateData });
+            }
+
+            const newWindowURL = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.centralPageStateManager.getURL_ForCurrentState({
+                componentOverridesAdditions: [peptidePageRoot_CentralStateManagerObjectClass_ForNewWindow],
+                pageControllerPath_Override
+            })
+
+            // MUST open window before make AJAX Call.  This is a Browser Security requirement
+            //  window.open(...): Must run in code directly triggered by click event
+
+            const newWindow = window.open(newWindowURL, "_blank");
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    //   Not Used.  MAY NEED UPDATING if decide to use it
+    //
+    // /**
+    //  *
+    //  */
+    // private _open_Protein_Page_WithSelection() {
+    //     try {
+    //
+    //         const pageControllerPath_Override = ControllerPaths_forDataPages_FromDOM.controllerPath_Protein_Page_FromDOM();
+    //
+    //         //  Create to override the value of ... from the URL
+    //         const proteinList_CentralStateManagerObjectClass_ForNewWindow = new ProteinList_CentralStateManagerObjectClass({ centralPageStateManager: undefined });
+    //
+    //         //  Only easy way to get other filters from QC page is to have shared Root Central State object between Peptide, Protein, and QC main pages
+    //
+    //         {
+    //             const valueChangedCallback = () => {
+    //             }
+    //             const scanFilenameId_On_PSM_Filter_UserSelection_StateObject = new ScanFilenameId_On_PSM_Filter_UserSelection_StateObject({
+    //                 valueChangedCallback
+    //             });
+    //
+    //             const scanFilenameIds_Selected = new Set<number>();
+    //
+    //             scanFilenameIds_Selected.add( this.props.searchScanFileId_Selected );
+    //
+    //             scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected(scanFilenameIds_Selected);
+    //
+    //             const scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData = scanFilenameId_On_PSM_Filter_UserSelection_StateObject.getEncodedStateData();
+    //
+    //             proteinList_CentralStateManagerObjectClass_ForNewWindow.set_scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData({ scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData });
+    //         }
+    //
+    //         {
+    //             const valueChangedCallback = () => {
+    //             }
+    //             const scan_RetentionTime_MZ_UserSelection_StateObject = new Scan_RetentionTime_MZ_UserSelections_StateObject({
+    //                 valueChangedCallback
+    //             });
+    //
+    //             if ( this._selectedChartArea ) {
+    //
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__From__Filter(
+    //                     Math.floor( this._selectedChartArea.x_Axis_Start * 100 ) / 100
+    //                 );
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject.set_retentionTime_InMinutes__To__Filter(
+    //                     Math.ceil(this._selectedChartArea.x_Axis_End * 100 ) / 100
+    //                 );
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__From__Filter(
+    //                     Math.floor(this._selectedChartArea.y_Axis_Start * 100 ) / 100
+    //                 );
+    //                 scan_RetentionTime_MZ_UserSelection_StateObject.set_mz__To__Filter(
+    //                     Math.ceil(this._selectedChartArea.y_Axis_End * 100 ) / 100
+    //                 );
+    //             }
+    //
+    //             const scan_RetentionTime_MZ_UserSelections_EncodedStateData = scan_RetentionTime_MZ_UserSelection_StateObject.getEncodedStateData();
+    //
+    //             proteinList_CentralStateManagerObjectClass_ForNewWindow.set_scan_RetentionTime_MZ_UserSelections_EncodedStateData({ scan_RetentionTime_MZ_UserSelections_EncodedStateData });
+    //         }
+    //         { //  Copy Mod selections
+    //             const modsSelectedEncodedStateData = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.peptidePageRoot_CentralStateManagerObjectClass.getModsSelectedEncodedStateData();
+    //             proteinList_CentralStateManagerObjectClass_ForNewWindow.setModsSelectedEncodedStateData({ modsSelectedEncodedStateData });
+    //         }
+    //         { //  Copy Reporter Ion selections
+    //             const reporterIonMassesSelectedEncodedStateData = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.peptidePageRoot_CentralStateManagerObjectClass.getReporterIonMassesSelectedEncodedStateData();
+    //             proteinList_CentralStateManagerObjectClass_ForNewWindow.setReporterIonMassesSelectedEncodedStateData({ reporterIonMassesSelectedEncodedStateData });
+    //         }
+    //
+    //         const newWindowURL = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.centralPageStateManager.getURL_ForCurrentState({
+    //             componentOverridesAdditions: [proteinList_CentralStateManagerObjectClass_ForNewWindow],
+    //             pageControllerPath_Override
+    //         })
+    //
+    //         // MUST open window before make AJAX Call.  This is a Browser Security requirement
+    //         //  window.open(...): Must run in code directly triggered by click event
+    //
+    //         const newWindow = window.open(newWindowURL, "_blank");
+    //
+    //     } catch( e ) {
+    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+    //         throw e;
+    //     }
+    // }
+
+    private _plot_Container_Ref_Set_Height_100Percent() {
+
+        if ( this.plot_Container_Ref.current ) {
+            this.plot_Container_Ref.current.style.height = "100%"; //  set height 100%
+        }
+    }
+
+    private _plot_Container_Ref_Remove_Height_100Percent() {
+
+        if ( this.plot_Container_Ref.current ) {
+            this.plot_Container_Ref.current.style.height = ""; //  remove height 100%
         }
     }
 
@@ -980,10 +1265,48 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             style.minHeight = _MainPage_Chart_Height;
         }
 
+        let linksUnderPlot_Container_Style : React.CSSProperties = undefined;
+        if ( this.props.isInSingleChartOverlay ) {
+            //  In Overlay
+            linksUnderPlot_Container_Style = {position: "absolute", top: -15, left: 15, visibility: "hidden" };  // initially hide but take up space so can be measured
+        } else {
+            // Main page
+            linksUnderPlot_Container_Style = {position: "relative", marginLeft: 15, marginBottom: 15 };
+        }
+
         return (
             <div style={ style }>
                 <div ref={this.plot_Container_Ref} style={ style }>
                     <div ref={this.plot_Ref}></div>
+                </div>
+                <div style={ { position: "relative"} }>
+                    <div ref={this.linksUnderPlot_Container_Ref} style={ linksUnderPlot_Container_Style } >
+                        <div>
+                            <span
+                                className=" fake-link "
+                                onClick={ event =>  {
+                                    this._update_ThisPage_WithSelection();
+                                }}
+                                title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                    "Clicking this link will update this page's filters to the shown m/z range, retention time range, and scan file"
+                                ) : (
+                                    "Clicking this link will update this page's filters to the shown m/z range and retention time range"
+                                )}
+                            >
+                                Add displayed ranges to page filters
+                            </span>
+                        </div>
+                        <div>
+                            <span
+                                className=" fake-link "
+                                onClick={ event =>  {
+                                    this._open_Peptide_Page_WithSelection();
+                                }}
+                            >
+                                Show Peptide Page for Selection
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 {( this.state.showUpdatingMessage ) ? (
 

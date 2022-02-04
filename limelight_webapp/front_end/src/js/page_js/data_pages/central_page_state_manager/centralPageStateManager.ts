@@ -64,6 +64,14 @@ import { _PATH_SEPARATOR, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING
 
 import { navigation_dataPages_Maint_Instance } from 'page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint';
 
+
+class CentralPageStateManager_Method_getURL_ForCurrentState_Params {
+
+	componentOverridesAdditions? : Array<any>
+	pageControllerPath_Override? : string
+
+}
+
 /**
  * 
  */
@@ -253,12 +261,14 @@ export class CentralPageStateManager {
 	 * 
 	 * return: String of URL for current state (and componentOverridesAdditions if present)
 	 */
-	getURL_ForCurrentState( params : any ) {
+	getURL_ForCurrentState( params? : CentralPageStateManager_Method_getURL_ForCurrentState_Params ) {
 
-		let componentOverridesAdditions = undefined;
+		let componentOverridesAdditions: Array<any> = undefined;
+		let pageControllerPath_Override: string = undefined;
 
 		if ( params ) {
 			componentOverridesAdditions = params.componentOverridesAdditions;
+			pageControllerPath_Override = params.pageControllerPath_Override;
 		}
 
 		let pageStateObject = this._pageState;
@@ -300,7 +310,10 @@ export class CentralPageStateManager {
 
 		let stateAsJSON_Compressed = this._stringCompressDecompress.compress(stateAsJSON);
 
-		let pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+		let pageControllerPath = pageControllerPath_Override;
+		if ( ! pageControllerPath ) {
+			pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+		}
 
 		let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
 			pageControllerPath,
@@ -314,4 +327,3 @@ export class CentralPageStateManager {
 		return newURL;
 	}
 }
-

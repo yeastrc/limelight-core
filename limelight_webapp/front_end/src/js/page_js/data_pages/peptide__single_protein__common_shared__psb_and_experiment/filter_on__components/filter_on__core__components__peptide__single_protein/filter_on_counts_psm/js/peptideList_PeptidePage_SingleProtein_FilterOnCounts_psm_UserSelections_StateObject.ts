@@ -24,10 +24,10 @@ const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 const _ENCODED_DATA__PSM_COUNT_FILTER_ENCODING_PROPERTY_NAME = 'b';
 
 
-export class PeptideList_SingleProtein_FilterOnCounts_psm_UserSelections_DefaultValues {
-
-    static psm_Default = 1;
-}
+// export class PeptideList_SingleProtein_FilterOnCounts_psm_UserSelections_DefaultValues {
+//
+//     static psm_Default = 1;
+// }
 
 
 ///////

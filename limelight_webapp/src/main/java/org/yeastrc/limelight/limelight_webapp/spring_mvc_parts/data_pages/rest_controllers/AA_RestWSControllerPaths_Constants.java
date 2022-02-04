@@ -366,8 +366,8 @@ public class AA_RestWSControllerPaths_Constants {
 //			"d/rws/for-page/psb/search-sub-groups-search-level-single-project-search-id";
 
 	//  Search Scan File Data for Project Search Id
-	public static final String GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id";
+	public static final String GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id-list";
 
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =

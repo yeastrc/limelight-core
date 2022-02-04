@@ -20,6 +20,7 @@
 import { AnnotationTypeData_ReturnSpecifiedTypes } from './annotationTypeData_ReturnSpecifiedTypes';
 import { SearchDataLookupParameters_Root, copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root } from '../data_pages__common_data_classes/searchDataLookupParameters';
 import {DataPage_common_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {DataPage_common_Searches_Info} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 
 //  Class Exported at bottom
 
@@ -117,6 +118,19 @@ class DataPageStateManager {
 	set_DataPage_common_Searches_Flags( dataPage_common_Searches_Flags: DataPage_common_Searches_Flags ) {
 		this._PrivateProperties_MayChangeWithoutNotice._dataPage_common_Searches_Flags = dataPage_common_Searches_Flags;
 	}
+
+	get_DataPage_common_Searches_Info() : DataPage_common_Searches_Info {
+		return this._PrivateProperties_MayChangeWithoutNotice._dataPage_common_Searches_Info;
+	}
+
+	/**
+	 *
+	 * @param dataPage_common_Searches_Flags
+	 */
+	set_DataPage_common_Searches_Info( dataPage_common_Searches_Info: DataPage_common_Searches_Info ) {
+		this._PrivateProperties_MayChangeWithoutNotice._dataPage_common_Searches_Info = dataPage_common_Searches_Info;
+	}
+
 
 	/**
 	 * 
@@ -258,6 +272,8 @@ class PageState_InternalData_Properties {
 	// _projectSearchIdsSearchIdsMapping; // { <projectSearchId> : <searchId>, ... }
 
 	_dataPage_common_Searches_Flags: DataPage_common_Searches_Flags
+
+	_dataPage_common_Searches_Info: DataPage_common_Searches_Info
 
 	_searchNames_AsMap : SearchNames_AsMap
 

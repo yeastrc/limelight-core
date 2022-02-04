@@ -61,6 +61,13 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} 
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
 import {SearchSubGroups_Root__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {load_PsmTableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_PsmTableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {load_SpectralStorage_NO_Peaks_Data_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/load_SpectralStorage_NO_Peaks_Data_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder";
+import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/peptide__single_protein__common_shared__psb_and_experiment/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData";
+import {loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 /**
  *
@@ -305,19 +312,23 @@ const compute_FullPage_Except_SearchDetails = function(
         modificationMass_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         reporterIonMass_UserSelections_StateObject,
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+        scan_RetentionTime_MZ_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject
     } : {
         propsValue : PeptidePage_Display_MainContent_Component_Props_Prop
-        projectSearchIds : Array<number>,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
-        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
+        projectSearchIds : Array<number>
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+        loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
-        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+        scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
-        peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
+        peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
     }  ) :
 
@@ -386,6 +397,8 @@ const compute_FullPage_Except_SearchDetails = function(
         modificationMass_UserSelections_StateObject,
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
         reporterIonMass_UserSelections_StateObject,
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+        scan_RetentionTime_MZ_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         userSearchString_LocationsOn_ProteinSequence_Root : null,
@@ -962,6 +975,174 @@ const load_ProteinCoverage_IfNeeded = function(
 }
 
 
+
+//////////////////////////////////
+
+///   Get the PSM Ids for the Reported Peptide Ids
+
+
+/**
+ *
+ * @returns null if no data to load, otherwise returns Promise<any>
+ */
+const load_PsmIds_Per_ReportedPeptideId_IfNeeded = function(
+    {
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        searchDataLookupParamsRoot
+    } : {
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
+
+    }) : Promise<unknown> {
+
+    const promises_LoadData_Array: Array<Promise<unknown>> = [];
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+
+        const searchDataLookupParamsRoot__paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
+        const searchDataLookupParamsRoot__paramsForProjectSearchIdsList = searchDataLookupParamsRoot__paramsForProjectSearchIds.paramsForProjectSearchIdsList;
+
+        let searchDataLookupParams_For_projectSearchId = undefined;
+        for ( const searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry of searchDataLookupParamsRoot__paramsForProjectSearchIdsList ) {
+
+            if ( projectSearchId === searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry.projectSearchId ) {
+                searchDataLookupParams_For_projectSearchId = searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry;
+                break;
+            }
+        }
+        if ( ! searchDataLookupParams_For_projectSearchId ) {
+            const msg = "load_ReporterIonMasses_IfNeeded: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
+            console.warn( msg );
+            throw Error( msg );
+        }
+
+        const promise = loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder( {
+            projectSearchId, loadedDataPerProjectSearchIdHolder, searchDataLookupParams_For_Single_ProjectSearchId: searchDataLookupParams_For_projectSearchId,
+            proteinSequenceVersionId: undefined  // Never passed
+        } );
+        if (promise) {
+            promises_LoadData_Array.push(promise);
+        }
+    }
+
+    if ( promises_LoadData_Array.length === 0 ) {
+
+        return null;  // EARLY RETURN
+    }
+
+    const promiseAll = Promise.all( promises_LoadData_Array );
+
+    return promiseAll;
+}
+
+//////////////////////////////////
+
+///   Get PSM Table Data
+
+
+/**
+ *
+ * @returns null if no data to load, otherwise returns Promise<any>
+ */
+const load_PsmTableData_IfNeeded = function(
+    {
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        searchDataLookupParamsRoot
+    } : {
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
+
+    }) : Promise<any> {
+
+    const promises_LoadData_Array: Array<Promise<unknown>> = [];
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+
+        const searchDataLookupParamsRoot__paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
+        const searchDataLookupParamsRoot__paramsForProjectSearchIdsList = searchDataLookupParamsRoot__paramsForProjectSearchIds.paramsForProjectSearchIdsList;
+
+        let searchDataLookupParams_For_projectSearchId = undefined;
+        for ( const searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry of searchDataLookupParamsRoot__paramsForProjectSearchIdsList ) {
+
+            if ( projectSearchId === searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry.projectSearchId ) {
+                searchDataLookupParams_For_projectSearchId = searchDataLookupParamsRoot__paramsForProjectSearchIdsList_Entry;
+                break;
+            }
+        }
+        if ( ! searchDataLookupParams_For_projectSearchId ) {
+            const msg = "load_ReporterIonMasses_IfNeeded: No value in searchDataLookupParamsRoot for projectSearchId: " + projectSearchId;
+            console.warn( msg );
+            throw Error( msg );
+        }
+
+        const promise = load_PsmTableData_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
+            projectSearchId, loadedDataPerProjectSearchIdHolder, searchDataLookupParams_For_Single_ProjectSearchId: searchDataLookupParams_For_projectSearchId
+        } );
+        if (promise) {
+            promises_LoadData_Array.push(promise);
+        }
+    }
+
+    if ( promises_LoadData_Array.length === 0 ) {
+
+        return null;  // EARLY RETURN
+    }
+
+    const promiseAll = Promise.all( promises_LoadData_Array );
+
+    return promiseAll;
+}
+
+//////////////////////////////////
+
+///   Get SpectralStorage_NO_Peaks_Data
+
+/**
+ *
+ * @returns null if no data to load, otherwise returns Promise<any>
+ */
+const load_SpectralStorage_NO_Peaks_Data_IfNeeded = function(
+    {
+        projectSearchIds,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
+    } : {
+        projectSearchIds : Array<number>,
+        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+
+    }) : Promise<any> {
+
+    const promises_LoadData_Array: Array<Promise<unknown>> = [];
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+
+        const promise = load_SpectralStorage_NO_Peaks_Data_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder( {
+            projectSearchId, loadedDataPerProjectSearchIdHolder
+        } );
+        if (promise) {
+            promises_LoadData_Array.push(promise);
+        }
+    }
+
+    if ( promises_LoadData_Array.length === 0 ) {
+
+        return null;  // EARLY RETURN
+    }
+
+    const promiseAll = Promise.all( promises_LoadData_Array );
+
+    return promiseAll;
+}
+
 ////////////////////////////////////////////
 	
 //   Modification Mass Rounding to provide some level of commonality between searches
@@ -991,6 +1172,9 @@ class PeptidePage_Display_MainContent_Component_nonClass_Functions {
     static load_ReporterIonMasses_IfNeeded = load_ReporterIonMasses_IfNeeded
     static load_OpenModificationMasses_IfNeeded = load_OpenModificationMasses_IfNeeded
     static load_ProteinCoverage_IfNeeded = load_ProteinCoverage_IfNeeded
+    static load_PsmIds_Per_ReportedPeptideId_IfNeeded = load_PsmIds_Per_ReportedPeptideId_IfNeeded
+    static load_PsmTableData_IfNeeded = load_PsmTableData_IfNeeded
+    static load_SpectralStorage_NO_Peaks_Data_IfNeeded = load_SpectralStorage_NO_Peaks_Data_IfNeeded
 }
 
 export { PeptidePage_Display_MainContent_Component_nonClass_Functions }

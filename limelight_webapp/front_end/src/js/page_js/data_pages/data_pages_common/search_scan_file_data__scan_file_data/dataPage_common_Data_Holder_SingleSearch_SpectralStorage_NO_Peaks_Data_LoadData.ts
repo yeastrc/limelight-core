@@ -32,6 +32,8 @@ export const dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 
             const url = "d/rws/for-page/psb/spectral-storage-data--no-peaks--single-project-search-id";
 
+            console.log( "START: getting data from URL: " + url );
+
             const requestData = { projectSearchId };
 
             const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
@@ -52,6 +54,8 @@ export const dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 
             promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
                 try {
+                    console.log( "END: Successful: getting data from URL: " + url );
+
                     const result = _populate_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root({ responseData });
 
                     resolve( result );

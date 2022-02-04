@@ -313,7 +313,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                     forPeptidePage,
 
                     reportedPeptideId,
-                    psmIds_ToAdd : undefined,
+                    psmIds_ToAdd : psmIds_Include,
 
                     proteinSequenceVersionId,
 
@@ -615,7 +615,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         psmIds_IncludeSet_Map_Key_SearchSubGroupId = new Map();
                         psmCount_after_Include_Map_Key_SearchSubGroupId = new Map();
 
-                        const subGroupIdMap_Key_PsmId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon()
+                        const subGroupIdMap_Key_PsmId_KeyReportedPeptideId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId()
 
                         const subGroupIdMap_Key_PsmId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId.get( reportedPeptideId );
                         if ( ! subGroupIdMap_Key_PsmId ) {
@@ -789,12 +789,12 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
     let subGroupIdMap_Key_PsmId : Map<number, number> = undefined;
 
     if ( searchSubGroup_Ids_Selected ) {
-        if ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon() ) {
+        if ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() ) {
             const msg = "( searchSubGroup_Ids_Selected ) and ( ! loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() ): projectSearchId " + projectSearchId;
             console.warn( msg )
             throw Error( msg )
         }
-        subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon().get( reportedPeptideId )
+        subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId().get( reportedPeptideId )
         if ( ! subGroupIdMap_Key_PsmId ) {
             const msg = "( searchSubGroup_Ids_Selected ) and ( ! subGroupIdMap_Key_PsmId ): reportedPeptideId: " + reportedPeptideId + ", projectSearchId " + projectSearchId;
             console.warn( msg )
@@ -1037,7 +1037,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         forPeptidePage: boolean
 
         reportedPeptideId : number
-        psmIds_ToAdd : Set<number>  // Optional
+        psmIds_ToAdd : ReadonlySet<number>  // Optional
 
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
 

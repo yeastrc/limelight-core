@@ -16,7 +16,7 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
  * Get PSM Id to Search Sub Group Id For Single Project Search Id - for Reported Peptide Ids that have PSM Ids that have Open Mods or Reporter Ions
  *
  */
-export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon_ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder = function (
+export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId__ForSearch_ReportedPeptideIds_SearchDataLookupParams_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder = function (
     {
         projectSearchId,
         searchDataLookupParams_For_Single_ProjectSearchId,
@@ -29,18 +29,7 @@ export const load_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_Reporte
 
     } ) : Promise<unknown> {
 
-    const reportedPeptideIds_Set = new Set<number>();
-
-    if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_OpenModifications() ) {
-        for ( const reportedPeptideId of loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_OpenModifications() ) {
-            reportedPeptideIds_Set.add( reportedPeptideId );
-        }
-    }
-    if ( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_ReporterIons() ) {
-        for ( const reportedPeptideId of loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds_AnyPsmHas_ReporterIons() ) {
-            reportedPeptideIds_Set.add( reportedPeptideId );
-        }
-    }
+    const reportedPeptideIds_Set = new Set<number>( loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds() ) ;
 
     if ( reportedPeptideIds_Set.size === 0 ) {
         //  Nothing to load so return
@@ -136,5 +125,5 @@ const _processResultsFromServer_Populate_loadedData = function ( { results, load
         }
         getSubMap_Key_psmId.set( psmId, searchSubGroupId );
     }
-    loadedDataPerProjectSearchIdHolder.set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon( resultMap );
+    loadedDataPerProjectSearchIdHolder.set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId( resultMap );
 }

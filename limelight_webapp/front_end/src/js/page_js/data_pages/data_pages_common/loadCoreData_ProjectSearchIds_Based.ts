@@ -17,6 +17,7 @@ import { SearchNameRetrieval }  from './searchNameRetrieval';
 import { SearchProgramsPerSearchDataRetrieval }  from './searchProgramsPerSearchDataRetrieval';
 import { AnnotationTypeDataRetrieval } from './annotationTypeDataRetrieval';
 import {dataPage_common_Get_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {dataPage_common_Get_Searches_Info} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 
 
 /**
@@ -80,13 +81,13 @@ export class LoadCoreData_ProjectSearchIds_Based{
 			let promisesToWaitFor = []; //  'sub' promises
 
 			{
-				const promiseToAdd = new Promise<void>( (resolve_promise_dataPage_common_Get_Searches_Flags, reject_promise_dataPage_common_Get_Searches_Flags) => {
+				const promiseToAdd = new Promise<void>( (resolve_promiseToAdd, reject_promiseToAdd) => {
 					try {
 						const promise_dataPage_common_Get_Searches_Flags = dataPage_common_Get_Searches_Flags({ projectSearchIds });
 
 						promise_dataPage_common_Get_Searches_Flags.catch( reason => {
 							try {
-								reject_promise_dataPage_common_Get_Searches_Flags(reason);
+								reject_promiseToAdd(reason);
 
 							} catch( e ) {
 								console.warn(e);
@@ -99,7 +100,46 @@ export class LoadCoreData_ProjectSearchIds_Based{
 							try {
 								this._dataPageStateManager_DataFrom_Server.set_DataPage_common_Searches_Flags(result);
 
-								resolve_promise_dataPage_common_Get_Searches_Flags();
+								resolve_promiseToAdd();
+
+							} catch( e ) {
+								console.warn(e);
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						})
+
+
+					} catch( e ) {
+						console.warn(e);
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				})
+
+				promisesToWaitFor.push( promiseToAdd );
+			}
+			{
+				const promiseToAdd = new Promise<void>( (resolve_promiseToAdd, reject_promiseToAdd) => {
+					try {
+						const promise_dataPage_common_Get_Searches_Info = dataPage_common_Get_Searches_Info({ projectSearchIds });
+
+						promise_dataPage_common_Get_Searches_Info.catch( reason => {
+							try {
+								reject_promiseToAdd(reason);
+
+							} catch( e ) {
+								console.warn(e);
+								reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+								throw e;
+							}
+						});
+
+						promise_dataPage_common_Get_Searches_Info.then( result => {
+							try {
+								this._dataPageStateManager_DataFrom_Server.set_DataPage_common_Searches_Info(result);
+
+								resolve_promiseToAdd();
 
 							} catch( e ) {
 								console.warn(e);

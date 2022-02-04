@@ -10,7 +10,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/ProteinPage_SingleSearch_LoadTo_loadedDataPerProjectSearchIdHolder/loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder";
 
 /**
  * If Reporter Ion Masses or Open Modification Masses are selected,
@@ -114,7 +114,7 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
 
 
     { //  Get PSM Ids
-        const promise = _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId({
+        const promise = loadData_Get_PsmIds_Per_ReportedPeptideId_OptionallyFor_ProteinSequenceVersionId_LoadTo_loadedDataPerProjectSearchIdHolder({
             proteinSequenceVersionId, projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, loadedDataPerProjectSearchIdHolder
         })
 
@@ -181,176 +181,6 @@ export const loadData_If_ReporterIonMasses_OpenModMasses_Selected__For_PSM_Data_
 
 //////////
 
-
-//  For this proteinSequenceVersionId, get the PSM Ids for the Reported Peptide Ids
-
-/**
- *
- * For this proteinSequenceVersionId, get the PSM Ids for the Reported Peptide Ids
- * @returns Promise or null
- */
-const _loadDataFor_PSM_Ids_Per_ReportedPeptideId_For_ProteinSequenceVersionId = function (
-    {
-        proteinSequenceVersionId,
-        projectSearchId,
-        searchDataLookupParams_For_Single_ProjectSearchId,
-        loadedDataPerProjectSearchIdHolder
-    } : {
-
-        proteinSequenceVersionId: number
-        projectSearchId: number
-        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
-        loadedDataPerProjectSearchIdHolder : ProteinViewPage_LoadedDataPerProjectSearchIdHolder
-
-    } ) : Promise<unknown> {
-
-    //  Get Reported Peptide Ids for proteinSequenceVersionId
-
-    let reportedPeptideIds = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
-
-    if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null ) {
-
-        const reportedPeptideIdsKeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_reportedPeptideIdsKeyProteinSequenceVersionId();
-
-        reportedPeptideIds = reportedPeptideIdsKeyProteinSequenceVersionId.get(proteinSequenceVersionId);
-        if (reportedPeptideIds === undefined || reportedPeptideIds.length === 0) {
-
-            // No Reported Peptide Ids so skip
-
-            return null;  // EARLY RETURN
-        }
-    }
-
-    //  Get Reported Peptide Ids that don't have PSM IDs for
-
-    let psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
-    if ( ! psmIdsForReportedPeptideIdMap ) {
-        psmIdsForReportedPeptideIdMap = new Map();
-        loadedDataPerProjectSearchIdHolder.set_psmIdsForReportedPeptideIdMap( psmIdsForReportedPeptideIdMap );
-    }
-
-    const reportedPeptideIdsToLoadDataFor: Array<number> = [];
-    {
-        for ( const reportedPeptideId of reportedPeptideIds ) {
-
-            if ( ! psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) ) {
-                reportedPeptideIdsToLoadDataFor.push( reportedPeptideId );
-            }
-        }
-    }
-
-    if ( reportedPeptideIdsToLoadDataFor.length === 0 ) {
-        //  No data needs to be loaded
-        return null; // EARLY RETURN
-    }
-
-    const reportedPeptideIdsToLoadDataFor_AsSet = new Set( reportedPeptideIdsToLoadDataFor ); //  Create set for tracking received data for all reported peptide ids
-
-    return new Promise<void>( (resolve, reject) => {
-        try {
-            const promise = _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall({
-                projectSearchId : projectSearchId,
-                reportedPeptideIds : reportedPeptideIdsToLoadDataFor,
-                searchDataLookupParams_For_Single_ProjectSearchId
-            } );
-
-            promise.then( ( { reportedPeptideId_psmIdList_List } ) => {
-                try {
-                    let psmIdsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_psmIdsForReportedPeptideIdMap();
-                    if ( ! psmIdsForReportedPeptideIdMap ) {
-                        psmIdsForReportedPeptideIdMap = new Map();
-                        loadedDataPerProjectSearchIdHolder.set_psmIdsForReportedPeptideIdMap( psmIdsForReportedPeptideIdMap );
-                    }
-
-                    for ( const reportedPeptideId_psmIdList_Entry of reportedPeptideId_psmIdList_List ) {
-
-                        const reportedPeptideId = reportedPeptideId_psmIdList_Entry.reportedPeptideId;
-                        const psmIdList = reportedPeptideId_psmIdList_Entry.psmIdList;
-
-                        psmIdsForReportedPeptideIdMap.set( reportedPeptideId, psmIdList );
-
-                        reportedPeptideIdsToLoadDataFor_AsSet.delete( reportedPeptideId );
-                    }
-
-                    if ( reportedPeptideIdsToLoadDataFor_AsSet.size !== 0 ) {
-                        console.warn("reportedPeptideIdsToLoadDataFor_AsSet not empty after processing AJAX response");
-                    }
-
-                    resolve();
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-            promise.catch(function(reason) {
-                try {
-                    reject(reason);
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            })
-        } catch( e ) {
-            console.warn("Error caught: ", e )
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    })
-}
-
-
-/**
- *
- *
- * Get PSM IDs per Reported Peptide Id For Single Project Search Id, Reported Peptide Ids, Filter Cutoffs
- */
-const _getPsmsIdsForReportedPeptideIdsCutoffs_WebserviceCall = function (
-    {
-        projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId
-    }: {
-        projectSearchId: number
-        reportedPeptideIds: Array<number>
-        searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId
-    } ) {
-
-    let promise = new Promise( function( resolve, reject ) {
-        try {
-            let requestObject = {
-                projectSearchId,
-                reportedPeptideIds,
-                searchDataLookupParams_For_Single_ProjectSearchId,
-            };
-
-            console.log("AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
-
-            const url = "d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
-
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
-
-            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-            promise_webserviceCallStandardPost.catch( () => { reject() }  );
-
-            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
-                try {
-                    console.log("AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id END, Now: " + new Date() );
-
-                    resolve({ reportedPeptideId_psmIdList_List : responseData.reportedPeptideId_psmIdList_List });
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    });
-
-    return promise;
-}
 
 /////////////
 

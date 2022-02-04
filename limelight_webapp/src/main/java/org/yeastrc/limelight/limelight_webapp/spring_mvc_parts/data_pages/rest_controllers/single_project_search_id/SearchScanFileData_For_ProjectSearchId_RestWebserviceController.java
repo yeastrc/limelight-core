@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -23,10 +24,12 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Get Search Scan File Data entries for Project Search Id
+ * Get Search Scan File Data entries for Project Search Id List
  *
  */
 @RestController
@@ -59,7 +62,7 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
     @PostMapping(
             path = {
                     AA_RestWSControllerPaths_Constants.PATH_START_ALL
-                            + AA_RestWSControllerPaths_Constants.GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER
+                            + AA_RestWSControllerPaths_Constants.GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER
             },
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -85,37 +88,53 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
 
             WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
-            Integer projectSearchId = webserviceRequest.getProjectSearchId();
+            List<Integer> projectSearchIdList = webserviceRequest.projectSearchIdList;
 
-            if ( projectSearchId == null ) {
+            if ( projectSearchIdList == null || projectSearchIdList.isEmpty() ) {
                 log.warn( "No Project Search Ids" );
                 throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
             }
 
-            List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
-            projectSearchIdsForValidate.add( projectSearchId );
-            validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
+            validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdList, httpServletRequest );
 
-            Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
-            if ( searchId == null ) {
-                String msg = "No searchId for projectSearchId: " + projectSearchId;
-                log.warn( msg );
-                throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+            List<Integer> searchIds = new ArrayList<>( projectSearchIdList.size() );
+            Map<Integer, Integer> projectSearchId_Map_Key_SearchId = new HashMap<>();
+
+            for ( Integer projectSearchId : projectSearchIdList ) {
+            	Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
+            	if ( searchId == null ) {
+            		String msg = "No searchId for projectSearchId: " + projectSearchId;
+            		log.warn( msg );
+            		throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+            	}
+
+            	searchIds.add(searchId);
+            	projectSearchId_Map_Key_SearchId.put(searchId, projectSearchId);
             }
             
-            List<Integer> searchIds = new ArrayList<>( 1 );
-            searchIds.add(searchId);
+            //  Get from DB:
             
             List<SearchScanFileDTO> searchScanFileDTOList = searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds);
             
-            List<WebsserviceResult_SingleScanFilename> scanFilenameEntries = new ArrayList<>( searchScanFileDTOList.size() );
+            //  Transfer data to Webservice Re
 
+        	List<WebsserviceResult_SingleScanFilename> scanFilenameEntries = new ArrayList<>( searchScanFileDTOList.size() );
+        	
             for( SearchScanFileDTO searchScanFileDTO : searchScanFileDTOList ) {
+            	
+            	Integer searchId = searchScanFileDTO.getSearchId();
+            	Integer projectSearchId = projectSearchId_Map_Key_SearchId.get( searchId );
+            	if ( projectSearchId == null ) {
+            		String msg = "No projectSearchId for searchId in searchScanFileDTO: " + searchId;
+            		log.warn( msg );
+            		throw new LimelightInternalErrorException(msg);
+            	}
             	
                 WebsserviceResult_SingleScanFilename websserviceResult_SingleScanFilename = new WebsserviceResult_SingleScanFilename();
                 scanFilenameEntries.add(websserviceResult_SingleScanFilename);
                 
                 websserviceResult_SingleScanFilename.searchScanFileId = searchScanFileDTO.getId();
+                websserviceResult_SingleScanFilename.projectSearchId = projectSearchId;
                 websserviceResult_SingleScanFilename.searchId = searchScanFileDTO.getSearchId();
                 websserviceResult_SingleScanFilename.filename = searchScanFileDTO.getFilename();
                 websserviceResult_SingleScanFilename.scanFileId = searchScanFileDTO.getScanFileId();
@@ -145,14 +164,12 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
      *
      */
     public static class WebserviceRequest {
-        Integer projectSearchId;
+        
+    	List<Integer> projectSearchIdList;
 
-        public Integer getProjectSearchId() {
-            return projectSearchId;
-        }
-        public void setProjectSearchId(Integer projectSearchId) {
-            this.projectSearchId = projectSearchId;
-        }
+		public void setProjectSearchIdList(List<Integer> projectSearchIdList) {
+			this.projectSearchIdList = projectSearchIdList;
+		}
     }
 
     /**
@@ -173,7 +190,8 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
     */
     public static class WebsserviceResult_SingleScanFilename {
     	
-    	private int searchScanFileId;	
+    	private int searchScanFileId;
+    	private int projectSearchId;
     	private int searchId;
 
     	private String filename;
@@ -194,6 +212,10 @@ public class SearchScanFileData_For_ProjectSearchId_RestWebserviceController {
 
 		public Integer getScanFileId() {
 			return scanFileId;
+		}
+
+		public int getProjectSearchId() {
+			return projectSearchId;
 		}
     }
 

@@ -13,6 +13,7 @@ import React from 'react'
 
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {ProteinFiltersDisplay_ComponentData} from "page_js/data_pages/protein_list__common_shared__psb_and_experiment/protein_filters_display/js/proteinFiltersDisplay_ComponentData";
+import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 
 
 
@@ -113,6 +114,20 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
 
             const reporterIonssSelectedsSet = this.props.proteinFiltersDisplay_ComponentData.reporterIonMass_UserSelections_StateObject.get_ReporterIonssSelected_MassesOnly_AsSet();
 
+            let is_ScanFilenameId_Filter_AllSelected = false;
+            if ( this.props.proteinFiltersDisplay_ComponentData.scanFilenameId_On_PSM_Filter_UserSelection_StateObject ) {
+                if (this.props.proteinFiltersDisplay_ComponentData.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds()) {
+                    is_ScanFilenameId_Filter_AllSelected = true;
+                }
+            }
+
+            let is_any_scan_RetentionTime_MZ_FilterValue = false;
+            if ( this.props.proteinFiltersDisplay_ComponentData.scan_RetentionTime_MZ_UserSelections_StateObject ) {
+                if (this.props.proteinFiltersDisplay_ComponentData.scan_RetentionTime_MZ_UserSelections_StateObject.is_Any_FilterHaveValue()) {
+                    is_any_scan_RetentionTime_MZ_FilterValue = true;
+                }
+            }
+
             let proteinPage_PSM_DistinctPeptide_CountFilter_HasValue = false;
             {
                 //  Test here is ONLY for whether or not to render the component.  The State Object value is tested again below for showing the specific value on the page
@@ -148,6 +163,8 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
                 && ( ! is_Any_StaticModification_Selected )
                 // && ( ! is_Treat_Mass_0_As_Unmodified_Selected )  //  Comment out since never display this info
                 && ( ( ! reporterIonssSelectedsSet ) || ( reporterIonssSelectedsSet.size === 0 ) )
+                && ( is_ScanFilenameId_Filter_AllSelected )  //  If 'All' selected then do nothing
+                && ( ! is_any_scan_RetentionTime_MZ_FilterValue )
                 && ( ! proteinPage_PSM_DistinctPeptide_CountFilter_HasValue )
             ) {
 
@@ -474,6 +491,187 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
         //     is_Treat_Mass_0_As_Unmodified_Selected = true;
         // }
 
+
+        let scan_Filenames_Selected : JSX.Element = null;
+        {
+            const scanFilenameId_On_PSM_Filter_UserSelection_StateObject = this.props.proteinFiltersDisplay_ComponentData.scanFilenameId_On_PSM_Filter_UserSelection_StateObject;
+
+            if ( scanFilenameId_On_PSM_Filter_UserSelection_StateObject ) {
+
+                if ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds() ) {
+
+                    if ( this.props.proteinFiltersDisplay_ComponentData.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root ) {
+
+                        const scanFilenameIds_Selected = scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected();
+
+                        if ( scanFilenameIds_Selected.size === 0 ) {
+
+                            scan_Filenames_Selected = (
+                                <div key={ "none-selected-message" }>
+                                    Not showing data from any scan filename
+                                </div>
+                            )
+
+                        } else {
+
+                            const searchScanFileDataEntries: Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> = [];
+
+                            for ( const scanFilenameId of scanFilenameIds_Selected ) {
+                                for ( const data_Holder_Holder_SingleSearch_SearchScanFileData of this.props.proteinFiltersDisplay_ComponentData.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_IterableIterator() ) {
+                                    const searchScanFileData = data_Holder_Holder_SingleSearch_SearchScanFileData.get_SearchScanFileDataFor_SearchScanFileId(scanFilenameId);
+                                    if (searchScanFileData) {
+                                        searchScanFileDataEntries.push(searchScanFileData);
+                                    }
+                                }
+                            }
+                            if ( searchScanFileDataEntries.length > 0 ) {
+
+                                searchScanFileDataEntries.sort( (a, b) => {
+                                    return a.filename.localeCompare(b.filename)
+                                })
+
+
+                                let scan_Filename_Entries_Elements : Array<JSX.Element> = [];
+
+                                let firstEntry = true;
+                                for ( const searchScanFileDataEntry of searchScanFileDataEntries ) {
+
+                                    if ( ! firstEntry ) {
+                                        // Not first entry so add ' and ' separator
+                                        const and_Separator = (
+                                            <span key={ searchScanFileDataEntry.searchScanFileId + "_AND" }> and </span>
+                                        );
+                                        scan_Filename_Entries_Elements.push(and_Separator);
+                                    }
+
+                                    const scan_Filename_Selected = (
+                                        <span key={ searchScanFileDataEntry.searchScanFileId }>
+                                            { searchScanFileDataEntry.filename }
+                                        </span>
+                                    )
+                                    scan_Filename_Entries_Elements.push(scan_Filename_Selected);
+
+                                    firstEntry = false;  // Clear first entry flag
+                                }
+
+                                scan_Filenames_Selected = (
+                                    <div key={ "scan_Filename_Entries_Elements" }>
+                                        <span>
+                                            Only showing data from scan file
+                                        </span>
+                                        {( searchScanFileDataEntries.length > 1 ) ? (
+                                            //  Make 'file' plural to 'files'
+                                            <span>s</span>
+                                        ) : null }
+                                        <span> </span>
+                                        { scan_Filename_Entries_Elements }
+                                    </div>
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        let scan_RetentionTimes_PrecursorMZ_Selected : Array<JSX.Element> = undefined;
+        {
+            const scan_RetentionTime_MZ_UserSelections_StateObject = this.props.proteinFiltersDisplay_ComponentData.scan_RetentionTime_MZ_UserSelections_StateObject
+
+            if ( scan_RetentionTime_MZ_UserSelections_StateObject && scan_RetentionTime_MZ_UserSelections_StateObject.is_Any_FilterHaveValue() ) {
+
+                scan_RetentionTimes_PrecursorMZ_Selected = [];
+
+                const retentionTime_InMinutes__From__Filter = scan_RetentionTime_MZ_UserSelections_StateObject.get_retentionTime_InMinutes__From__Filter();
+                const retentionTime_InMinutes__To__Filter = scan_RetentionTime_MZ_UserSelections_StateObject.get_retentionTime_InMinutes__To__Filter();
+                const mz__From__Filter = scan_RetentionTime_MZ_UserSelections_StateObject.get_mz__From__Filter();
+                const mz__To__Filter = scan_RetentionTime_MZ_UserSelections_StateObject.get_mz__To__Filter();
+
+                //  Retention Time filter
+
+                if ( retentionTime_InMinutes__From__Filter !== undefined && retentionTime_InMinutes__From__Filter !== null
+                    && retentionTime_InMinutes__To__Filter !== undefined && retentionTime_InMinutes__To__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="RetentionTime__From_To">
+                            <span>Only showing data with Retention Time between </span>
+                            <span>{ retentionTime_InMinutes__From__Filter }</span>
+                            <span> and </span>
+                            <span>{ retentionTime_InMinutes__To__Filter }</span>
+                            <span> minutes</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+
+                } else if ( retentionTime_InMinutes__From__Filter !== undefined && retentionTime_InMinutes__From__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="RetentionTime__From">
+                            <span>Only showing data with Retention Time </span>
+                            <span>{ retentionTime_InMinutes__From__Filter }</span>
+                            <span> minutes or more</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+
+                } else if ( retentionTime_InMinutes__To__Filter !== undefined && retentionTime_InMinutes__To__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="RetentionTime__To">
+                            <span>Only showing data with Retention Time </span>
+                            <span>{ retentionTime_InMinutes__To__Filter }</span>
+                            <span> minutes or less</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+                }
+
+                //  M/Z filter
+
+                if ( mz__From__Filter !== undefined && mz__From__Filter !== null
+                    && mz__To__Filter !== undefined && mz__To__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="mz__From_To">
+                            <span>Only showing data with m/z between </span>
+                            <span>{ mz__From__Filter }</span>
+                            <span> and </span>
+                            <span>{ mz__To__Filter }</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+
+                } else if ( mz__From__Filter !== undefined && mz__From__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="mz__From">
+                            <span>Only showing data with m/z </span>
+                            <span>{ mz__From__Filter }</span>
+                            <span> or more</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+
+                } else if ( mz__To__Filter !== undefined && mz__To__Filter !== null ) {
+
+                    const filterEntry = (
+                        <div key="RetentionTime__To">
+                            <span>Only showing data with m/z </span>
+                            <span>{ mz__To__Filter }</span>
+                            <span> or less</span>
+                        </div>
+                    )
+
+                    scan_RetentionTimes_PrecursorMZ_Selected.push( filterEntry );
+                }
+            }
+        }
+
         let proteinPage_PSM_CountFilter : number = undefined;
         let proteinPage_DistinctPeptide_CountFilter : number = undefined;
         let proteinPage_UniquePeptide_CountFilter : number = undefined;
@@ -627,6 +825,18 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
                     {/*        <span style={{whiteSpace: "nowrap"}}>{"Do not treat open modification masses that round to 0 (0.5 <= mass < 0.5) as open modifications."}</span>*/}
                     {/*    </div>*/}
                     {/*    : null / * Display nothing * / }*/}
+
+                    { ( scan_Filenames_Selected ) ? (
+
+                        scan_Filenames_Selected
+
+                    ) : null }
+
+                    { ( scan_RetentionTimes_PrecursorMZ_Selected ) ? (
+
+                        scan_RetentionTimes_PrecursorMZ_Selected
+
+                    ) : null }
 
                 </div>
             </React.Fragment>

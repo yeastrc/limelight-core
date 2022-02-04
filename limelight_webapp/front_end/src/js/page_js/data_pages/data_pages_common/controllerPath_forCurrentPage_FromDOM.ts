@@ -35,15 +35,16 @@ export class ControllerPath_forCurrentPage_FromDOM {
 			return controller_path_Cached;
 		}
 
-		let $controller_path = $("#controller_path");
-		if ( $controller_path.length === 0 ) {
-			throw Error( "No page element with id 'controller_path'.  controller_path is specific to a page. controller_path is set on the JSP. " );
+
+		const controller_path_DOM = document.getElementById("controller_path");
+		if ( ! controller_path_DOM ) {
+			throw Error( "No page element with id 'controller_path'.  controller_path is set on the JSP. " );
 		}
-		let controller_path = $controller_path.html();
+		const controller_path  = controller_path_DOM.textContent;
 		if ( controller_path === undefined || controller_path === null || controller_path === "" ) {
 			throw Error( "Page element with id 'controller_path' not populated.  controller_path is specific to a page. controller_path is set on the JSP." );
 		}
-		
+
 		controller_path_Cached = controller_path;
 		
 		return controller_path;

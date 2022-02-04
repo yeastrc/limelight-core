@@ -27,6 +27,8 @@ export interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_M
     searchScanFileId_Selected: number
     searchScanFileName_Selected: string
 
+    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds: boolean
+
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
 }
@@ -274,6 +276,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
                                 <QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot
                                     ms1_PeakIntensityBinnedOn_RT_MZ_OverallData={ this.state.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData }
                                     searchScanFileId_Selected={ this.props.searchScanFileId_Selected }
+                                    searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds={ this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds }
                                     searchScanFileName_Selected={ this.props.searchScanFileName_Selected }
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }

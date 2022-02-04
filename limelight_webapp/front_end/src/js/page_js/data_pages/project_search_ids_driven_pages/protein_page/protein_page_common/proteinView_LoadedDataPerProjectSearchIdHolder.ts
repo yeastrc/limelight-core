@@ -15,8 +15,11 @@
 
 
 
- import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinSequenceCoverageData_For_ProteinSequenceVersionId';
+import { ProteinSequenceCoverageData_For_ProteinSequenceVersionId } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinSequenceCoverageData_For_ProteinSequenceVersionId';
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
+import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+import {DataPage_common_Data_Holder_SingleSearch_PsmTblData_Root} from "page_js/data_pages/data_pages_common/psm_data_from_server/dataPage_common_Data_Holder_SingleSearch_PsmTblData";
+import {DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 
  //  Sub classes used are defined below the main class
 
@@ -257,13 +260,13 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 	}
 
 	/**
-	 * Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>> - for Reported Peptide Ids that have PSM Ids that have Open Mods or Reporter Ions
+	 * Map<Reported Peptide Id, Map<PSM Id, Sub Group Id>>
 	 */
-	get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon() {
+	get_subGroupIdMap_Key_PsmId_KeyReportedPeptideId() {
 		return this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId;
 	}
-	set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon(subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon) : void {
-		this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId_ONLY_When_ReportedPeptideId_Have_PSM_W_OpenMod_or_ReporterIon;
+	set_subGroupIdMap_Key_PsmId_KeyReportedPeptideId(subGroupIdMap_Key_PsmId_KeyReportedPeptideId) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._subGroupIdMap_Key_PsmId_KeyReportedPeptideId = subGroupIdMap_Key_PsmId_KeyReportedPeptideId;
 	}
 
 	/**
@@ -400,6 +403,19 @@ export class ProteinViewPage_LoadedDataPerProjectSearchIdHolder {
 		this._data_AtCurrentCutoffs_Or_DisplayData._getReportedPeptideIdsForDisplay_SingleProjectSearchId__Cached_data = getReportedPeptideIdsForDisplay_SingleProjectSearchId__Cached_data;
 	}
 
+	get_DataPage_common_Data_Holder_SingleSearch_PsmTblData_Root() {
+		return this._data_AtCurrentCutoffs_Or_DisplayData._dataPage_common_Data_Holder_SingleSearch_PsmTblData_Root;
+	}
+	set_DataPage_common_Data_Holder_SingleSearch_PsmTblData_Root( dataPage_common_Data_Holder_SingleSearch_PsmTblData_Root: DataPage_common_Data_Holder_SingleSearch_PsmTblData_Root ) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._dataPage_common_Data_Holder_SingleSearch_PsmTblData_Root = dataPage_common_Data_Holder_SingleSearch_PsmTblData_Root;
+	}
+
+	get_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root() {
+		return this._data_AtCurrentCutoffs_Or_DisplayData._dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root;
+	}
+	set_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root( dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root ) : void {
+		this._data_AtCurrentCutoffs_Or_DisplayData._dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root = dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root;
+	}
 }
 
 class Data__NOT__AtCurrentCutoffs_Or_DisplayData {
@@ -590,6 +606,10 @@ class Data_AtCurrentCutoffs_Or_DisplayData {
 		}
 
 	}
+
+	_dataPage_common_Data_Holder_SingleSearch_PsmTblData_Root: DataPage_common_Data_Holder_SingleSearch_PsmTblData_Root
+
+	_dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
 
 }
 
