@@ -485,7 +485,7 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
                             start: 0,
                             size: _CHART_BIN_SIZE
                         },
-                        name: "All",
+                        name: "Unfiltered",
                         hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                             '<br><b>Scans</b>: %{y}' +
                             '<br><b>Retention Time</b>: %{x}<extra></extra>',
@@ -610,7 +610,7 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
                     showlegend: true
                 });
 
-                //  "Filtered" bars 'overlay' "All" bars
+                //  "Filtered" bars 'overlay' "Unfiltered" bars
                 chart_Layout.barmode = "overlay"
 
                 if ( this.props.isInSingleChartOverlay ) {

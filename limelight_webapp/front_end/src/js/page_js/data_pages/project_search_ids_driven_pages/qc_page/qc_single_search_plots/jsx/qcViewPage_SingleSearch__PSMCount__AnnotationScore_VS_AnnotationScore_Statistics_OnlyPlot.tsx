@@ -516,7 +516,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
             chart_Data = [
                 {
-                    name: "all",
+                    name: "Unfiltered",
                     x: chart_X_ALL__ScatterPlot,
                     y: chart_Y_ALL__ScatterPlot,
                     //  !!!!  hovertemplate is currently ignored since tooltips are disabled for scattergl chart due to Plotly performance problem
@@ -529,7 +529,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     }
                 },
                 {
-                    name: "filtered",
+                    name: "Filtered",
                     x: chart_X_Meet_PSM_Filters__ScatterPlot,
                     y: chart_Y_Meet_PSM_Filters__ScatterPlot,
                     //  !!!!  hovertemplate is currently ignored since tooltips are disabled for scattergl chart due to Plotly performance problem
