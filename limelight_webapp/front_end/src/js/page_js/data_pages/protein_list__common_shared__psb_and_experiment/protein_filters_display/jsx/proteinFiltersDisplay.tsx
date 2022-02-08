@@ -157,7 +157,7 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
                 }
             }
 
-            if ( ( searchSubGroup_Are_All_SearchSubGroupIds_Selected )
+            if ( ( ( ! this.props.proteinFiltersDisplay_ComponentData.searchSubGroup_PropValue ) || searchSubGroup_Are_All_SearchSubGroupIds_Selected )
                 && ( ! is_Any_VariableModification_Selected )
                 && ( ! is_Any_OpenModification_Selected )
                 && ( ! is_Any_StaticModification_Selected )
@@ -703,8 +703,8 @@ export class ProteinFiltersDisplay extends React.Component< ProteinFiltersDispla
 
         return (
             <React.Fragment>
-                <div className="   ">
-                    <span  style={ { fontSize: 18, fontWeight: "bold" } } >
+                <div className=" current-filters-label ">
+                    <span  style={ { fontWeight: "bold" } } >
                         Current filters:
                     </span>
                     <span> </span>

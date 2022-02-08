@@ -15,6 +15,7 @@ import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 
 
 /**
@@ -52,6 +53,31 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
     }
 
     /**
+     * NOT a React function override
+     *
+     * Called by this component and parent components
+     *
+     * @returns - true if component will render, false otherwise
+     */
+    static limelight_willComponentRender(
+        {
+            reporterIons_UserSelections_ComponentData
+        } : {
+            reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData
+        }
+    ) : boolean {
+
+        if ( ( ! reporterIons_UserSelections_ComponentData ) || reporterIons_UserSelections_ComponentData.showNoReporterIonsMsg ) {
+
+            //  Nothing to display so return false
+
+            return false;  //  EARLY RETURN
+        }
+
+        return true;
+    }
+
+    /**
      * @returns true if should update, false otherwise
      */
     // shouldComponentUpdate(nextProps : ReporterIonMass_UserSelections_Props, nextState:ReporterIonMass_UserSelections_State) {
@@ -73,10 +99,10 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
 
         const reporterIonsData = this.props.reporterIons_UserSelections_ComponentData;
 
-        const showNoReporterIonsMsg = reporterIonsData.showNoReporterIonsMsg;
+        // const showNoReporterIonsMsg = reporterIonsData.showNoReporterIonsMsg;
         const reporterIonEntries = reporterIonsData.reporterIonEntries;
 
-        if ( showNoReporterIonsMsg ) {
+        if ( ! ReporterIonMass_UserSelections.limelight_willComponentRender({ reporterIons_UserSelections_ComponentData: reporterIonsData }) ) {
 
             //  Nothing to Render
             return null;  // EARLY RETURN

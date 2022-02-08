@@ -303,6 +303,31 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
     }
 
     /**
+     * NOT a React function override
+     *
+     * Called by this component and parent components
+     *
+     * @returns - true if component will render, false otherwise
+     */
+    static limelight_willComponentRender(
+        {
+            displayData
+        } : {
+            displayData : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData
+        }
+    ) : boolean {
+
+        if ( ( ! displayData ) || ( ! displayData.searchSubGroupEntryArray ) || ( displayData.searchSubGroupEntryArray.length === 0 ) ) {
+
+            //  Nothing to display so return false
+
+            return false;  //  EARLY RETURN
+        }
+
+        return true;
+    }
+
+    /**
      * Only update when propValue is new object.
      */
     shouldComponentUpdate(nextProps: Readonly<SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component_Props>, nextState: Readonly<SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_State>, nextContext: any): boolean {
@@ -354,7 +379,7 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
      */
     render() {
 
-        if ( ( ! this.props.displayData ) || ( ! this.props.displayData.searchSubGroupEntryArray ) || ( this.props.displayData.searchSubGroupEntryArray.length === 0 ) ) {
+        if ( ! SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component.limelight_willComponentRender({ displayData: this.props.displayData }) ) {
 
             //  Nothing to display so return null
 
@@ -404,23 +429,25 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                             </div>
                         </div>
                     </div>
-                    <div
-                        style={ { fontSize: 12, fontWeight: "normal", marginBottom: 6 } }
-                    >
-                        <span
-                            className=" fake-link "
-                            style={ { marginRight: 8 } }
-                            onClick={ this._deselect_All_Clicked_BindThis }
+                    { ( this.props.displayData.searchSubGroupEntryArray.length > 5 ) ? (
+                        <div
+                            style={ { fontSize: 12, fontWeight: "normal", marginBottom: 6 } }
                         >
-                            deselect all
-                        </span>
-                        <span
-                            className=" fake-link "
-                            onClick={ this._select_All_Clicked_BindThis }
-                        >
-                            select all
-                        </span>
-                    </div>
+                            <span
+                                className=" fake-link "
+                                style={ { marginRight: 8 } }
+                                onClick={ this._deselect_All_Clicked_BindThis }
+                            >
+                                deselect all
+                            </span>
+                            <span
+                                className=" fake-link "
+                                onClick={ this._select_All_Clicked_BindThis }
+                            >
+                                select all
+                            </span>
+                        </div>
+                    ) : null }
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">
