@@ -364,7 +364,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot exte
             }
         ];
 
-        const chartTitle = "MS1 Ion Current vs/ M/Z";
+        const chartTitle = "MS1 Ion Current vs/ M/Z<br><sup>Note: Data in plot are not filtered.</sup>";
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,

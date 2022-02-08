@@ -353,7 +353,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_Statistic
             }
         ];
 
-        const chartTitle = "MS1 Ion Current vs/ Retention Time";
+        const chartTitle = "MS1 Ion Current vs/ Retention Time<br><sup>Note: Data in plot are not filtered.</sup>";
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,

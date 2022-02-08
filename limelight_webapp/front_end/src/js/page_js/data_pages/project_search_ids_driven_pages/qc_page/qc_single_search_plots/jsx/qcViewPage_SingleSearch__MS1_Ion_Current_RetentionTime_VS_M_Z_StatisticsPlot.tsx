@@ -471,7 +471,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             }
         }
 
-        const chartTitle = "MS1 Binned Ion Current: m/z vs/ Retention Time";
+        const chartTitle = "MS1 Binned Ion Current: m/z vs/ Retention Time<br><sup>Note: MS1 scan data in plot are not filtered.</sup>";
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,

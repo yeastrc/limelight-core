@@ -619,7 +619,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     }
                 ];
 
-                const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X_HTMLEncoded;
+                const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X_HTMLEncoded + "<br><sup>Note: Data in plot are not filtered.</sup>";
                 const chart_X_Axis_Label = "PSM Score: " + annotationType_Name_Score_X_HTMLEncoded;
                 let chart_Y_Axis_Label = "# PSM " + comparisonDirectionString + " " + annotationType_Name_Score_X_HTMLEncoded;
                 // if ( this.props.rawCounts_Percentage_Choice === QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM.PERCENTAGE ) {
