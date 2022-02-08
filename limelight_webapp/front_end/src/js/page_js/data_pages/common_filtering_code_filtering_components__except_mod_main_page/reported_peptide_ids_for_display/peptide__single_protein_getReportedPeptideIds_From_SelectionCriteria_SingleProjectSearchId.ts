@@ -111,33 +111,30 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 
     readonly psmIds_Include: ReadonlySet<number>
     readonly psmIds_IncludeSet_Map_Key_SearchSubGroupId: ReadonlyMap<number,ReadonlySet<number>>
-    readonly psmIds_UnionSelection_ExplicitSelectAll: boolean //  Currently always 'false'.  The UNION/ANY selection of PSM Ids has resulted in All PSM Ids for the Reported Peptide being selected.
 
     readonly psmCount_after_Include: number  //  Computed PSM Count after take into account Include and Exclude PSM Ids
 
     readonly psmCount_after_Include_Map_Key_SearchSubGroupId : ReadonlyMap<number,number>
 
     /**
-     * @param psmIds_UnionSelection_ExplicitSelectAll - The UNION/ANY selection of PSM Ids has resulted in All PSM Ids for the Reported Peptide being selected.
+     *
      */
     constructor(
         {
             reportedPeptideId, psmCount_after_Include_Map_Key_SearchSubGroupId,
             psmIds_Include, psmIds_IncludeSet_Map_Key_SearchSubGroupId,
-            psmIds_UnionSelection_ExplicitSelectAll, psmCount_after_Include
+            psmCount_after_Include
         }: {
             reportedPeptideId: number
             psmCount_after_Include_Map_Key_SearchSubGroupId? : ReadonlyMap<number,number>
             psmIds_Include: Set<number>
             psmIds_IncludeSet_Map_Key_SearchSubGroupId?: ReadonlyMap<number,ReadonlySet<number>>
-            psmIds_UnionSelection_ExplicitSelectAll: boolean
             psmCount_after_Include: number
         }) {
         this.reportedPeptideId = reportedPeptideId
         this.psmCount_after_Include_Map_Key_SearchSubGroupId = psmCount_after_Include_Map_Key_SearchSubGroupId
         this.psmIds_Include = psmIds_Include
         this.psmIds_IncludeSet_Map_Key_SearchSubGroupId = psmIds_IncludeSet_Map_Key_SearchSubGroupId
-        this.psmIds_UnionSelection_ExplicitSelectAll = psmIds_UnionSelection_ExplicitSelectAll
         this.psmCount_after_Include = psmCount_after_Include
     }
 }
@@ -281,8 +278,7 @@ export const peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProje
                 psmCount_after_Include: numPsms,
                 psmCount_after_Include_Map_Key_SearchSubGroupId: psmCount_after_Include_Map_Key_SearchSubGroupId,
                 psmIds_Include: undefined,
-                psmIds_IncludeSet_Map_Key_SearchSubGroupId : undefined,
-                psmIds_UnionSelection_ExplicitSelectAll: false,
+                psmIds_IncludeSet_Map_Key_SearchSubGroupId : undefined
             })
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
         }
@@ -519,7 +515,6 @@ const _update_reportedPeptideIds_AndTheir_PSM_IDs__For_searchSubGroup_Ids_Select
             reportedPeptideId,
             psmIds_Include,
             psmIds_IncludeSet_Map_Key_SearchSubGroupId : psmIds_IncludeSet_Map_Key_SearchSubGroupId,
-            psmIds_UnionSelection_ExplicitSelectAll : reportedPeptideIds_AndTheir_PSM_IDs_ExistingEntry.psmIds_UnionSelection_ExplicitSelectAll,
             psmCount_after_Include,
             psmCount_after_Include_Map_Key_SearchSubGroupId
         })

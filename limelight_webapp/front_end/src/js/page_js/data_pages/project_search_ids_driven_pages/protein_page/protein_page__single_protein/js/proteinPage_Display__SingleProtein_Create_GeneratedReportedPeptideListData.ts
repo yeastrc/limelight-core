@@ -590,8 +590,7 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         psmCount_after_Include: numPsms,
                         psmCount_after_Include_Map_Key_SearchSubGroupId: psmCount_after_Include_Map_Key_SearchSubGroupId,
                         psmIds_Include: undefined,
-                        psmIds_IncludeSet_Map_Key_SearchSubGroupId : undefined,
-                        psmIds_UnionSelection_ExplicitSelectAll: false,
+                        psmIds_IncludeSet_Map_Key_SearchSubGroupId : undefined
                     })
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry);
                 }
@@ -655,7 +654,6 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         reportedPeptideId,
                         psmIds_Include: psmIds_Set,
                         psmIds_IncludeSet_Map_Key_SearchSubGroupId,
-                        psmIds_UnionSelection_ExplicitSelectAll: false,
                         psmCount_after_Include: psmIds_Set.size,
                         psmCount_after_Include_Map_Key_SearchSubGroupId
                     })

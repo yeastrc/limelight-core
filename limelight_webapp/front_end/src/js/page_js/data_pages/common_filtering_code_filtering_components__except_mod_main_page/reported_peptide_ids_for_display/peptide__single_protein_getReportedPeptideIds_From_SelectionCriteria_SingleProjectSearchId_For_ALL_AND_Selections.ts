@@ -1870,7 +1870,6 @@ const _merge_new_psmIds_Include_As_INTERSECTION__For_ALL___To_Peptide__single_pr
     const newEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId : entry.reportedPeptideId,
         psmIds_Include : new_psmIds_Include,
-        psmIds_UnionSelection_ExplicitSelectAll : false,
         psmCount_after_Include: psmCount_after_Include_Exclude
     })
 

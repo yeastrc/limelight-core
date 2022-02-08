@@ -86,7 +86,6 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
             const newEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                 reportedPeptideId : entry_MAIN_Selection_For_reportedPeptideId.reportedPeptideId,
                 psmIds_Include : new_psmIds_Include,
-                psmIds_UnionSelection_ExplicitSelectAll : false,
                 psmCount_after_Include: new_psmIds_Include.size
             });
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(newEntry);

@@ -147,7 +147,7 @@ export const createReportedPeptideDisplayData = function(
                 psmCount_after_Include = proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
             }
             proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-                reportedPeptideId, psmIds_Include, psmCount_after_Include, psmIds_UnionSelection_ExplicitSelectAll : false
+                reportedPeptideId, psmIds_Include, psmCount_after_Include
             });
         }
 

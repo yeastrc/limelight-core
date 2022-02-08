@@ -132,8 +132,7 @@ const _create__ForSingleReportedPeptideId__For_ReportedPeptideId_numPSMsAllForRe
     const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId: reportedPeptideId,
         psmCount_after_Include: numPsms,
-        psmIds_Include: undefined,
-        psmIds_UnionSelection_ExplicitSelectAll: false
+        psmIds_Include: undefined
     })
 
     return entry;

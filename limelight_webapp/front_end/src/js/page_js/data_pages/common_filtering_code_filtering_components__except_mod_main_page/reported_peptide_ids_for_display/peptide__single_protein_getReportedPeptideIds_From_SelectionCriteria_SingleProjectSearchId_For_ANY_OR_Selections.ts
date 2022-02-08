@@ -310,8 +310,7 @@ const _get_ALL_Result = function (
             psmCount_after_Include: numPsms,
             psmCount_after_Include_Map_Key_SearchSubGroupId: psmCount_NO_PsmId_Filtering_Map_Key_SearchSubGroupId,
             psmIds_Include: undefined,
-            psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined,
-            psmIds_UnionSelection_ExplicitSelectAll: false,
+            psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined
         })
         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(entry)
     }
@@ -884,7 +883,6 @@ const _updateFor__SelectionType_ANY_NOT___For__Unmodified_Selected_In_OpenModifi
                         const resultEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                             reportedPeptideId,
                             psmIds_Include: psmIds_NOT_Containing_AnyOpenModificationMass,
-                            psmIds_UnionSelection_ExplicitSelectAll: false,
                             psmCount_after_Include: psmCount_after_Include_Exclude
                         })
                         reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.insert_Entry(resultEntry);
@@ -1006,7 +1004,6 @@ const _updateFor__SelectionType_ANY_NOT___For__OpenModificationMassesSelected_Ot
             const resultEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                 reportedPeptideId,
                 psmIds_Include,
-                psmIds_UnionSelection_ExplicitSelectAll: false,
                 psmCount_after_Include: psmIds_Include.size
             })
 
@@ -1115,7 +1112,6 @@ const _updateFor__SelectionType_ANY_NOT___For__ReporterIonMassesSelected = funct
             const resultEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                 reportedPeptideId,
                 psmIds_Include: psmIds_For_SelectedReporterIonMasses,
-                psmIds_UnionSelection_ExplicitSelectAll: false,
                 psmCount_after_Include: psmIds_For_SelectedReporterIonMasses.size
             })
 
@@ -1158,14 +1154,7 @@ const _merge_new_psmIds_Include_As_UNION__For_ANY_NOT___To_Peptide__single_prote
         return null; // EARLY RETURN
     }
 
-    if ( entry.psmIds_UnionSelection_ExplicitSelectAll ) {
-        //  Already explicitly added all PSM Ids for ReportedPeptideId for UNION/ANY so no changes needed
-        // NO Changes
-        return null; // EARLY RETURN
-    }
-
     let new_psmIds_Include : Set<number> = undefined
-    let psmIds_UnionSelection_ExplicitSelectAll = false
 
     if (entry.psmIds_Include) {
         //  Have Existing Include:
@@ -1192,7 +1181,6 @@ const _merge_new_psmIds_Include_As_UNION__For_ANY_NOT___To_Peptide__single_prote
     const newEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
         reportedPeptideId : entry.reportedPeptideId,
         psmIds_Include : new_psmIds_Include,
-        psmIds_UnionSelection_ExplicitSelectAll,
         psmCount_after_Include: psmCount_after_Include
     })
 
