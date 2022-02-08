@@ -61,7 +61,7 @@ export class FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component 
                                     this.setState({ showChildren: true });
                                 }}
                             >
-                                Show Filters and Options
+                                Click to Show Filters and Options
                             </div>
                         </React.Fragment>
                     ) : (
@@ -81,7 +81,7 @@ export class FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component 
                                     this.setState({ showChildren: false });
                                 }}
                             >
-                                Hide Filters and Options
+                                Click to Hide Filters and Options
                             </div>
                         </React.Fragment>
                     )}
