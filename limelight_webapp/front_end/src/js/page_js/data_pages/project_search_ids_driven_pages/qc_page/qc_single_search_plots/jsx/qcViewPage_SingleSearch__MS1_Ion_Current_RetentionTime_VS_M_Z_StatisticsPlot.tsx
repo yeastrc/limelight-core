@@ -1293,7 +1293,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                                     "Clicking this link will update this page's filters to the shown m/z range and retention time range"
                                 )}
                             >
-                                Add displayed ranges to page filters
+                                Add Displayed Ranges to Page Filters
                             </span>
                         </div>
                         <div>
@@ -1302,6 +1302,11 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                                 onClick={ event =>  {
                                     this._open_Peptide_Page_WithSelection();
                                 }}
+                                title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                    "Open the peptide view page using the selected scan file, m/z range, and retention time range currently visible in this plot."
+                                ) : (
+                                    "Open the peptide view page using the m/z range and retention time range currently visible in this plot."
+                                )}
                             >
                                 Show Peptide Page for Selection
                             </span>
