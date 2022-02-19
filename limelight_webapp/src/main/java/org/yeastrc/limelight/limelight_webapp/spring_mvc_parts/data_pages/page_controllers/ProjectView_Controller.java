@@ -121,11 +121,6 @@ public class ProjectView_Controller {
 		httpServletRequest.setAttribute( REQUEST_PROJECT_ID_FROM_VIEW_PROJECT_CONTROLLER, projectIdentifier );
 		
 		try {
-			
-			if ( true ) {
-				throw new Exception("FORCE");
-			}
-
 			int projectId = 0;
 
 			try {
