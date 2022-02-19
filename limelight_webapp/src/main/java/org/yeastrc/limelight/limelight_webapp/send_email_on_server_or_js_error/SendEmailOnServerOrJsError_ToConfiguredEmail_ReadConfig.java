@@ -46,6 +46,16 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 	
 	private static final String SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER__PROPERTY_FILE_KEY = "server.or.javascript.error.emails.server.identifier";
 
+	//  SMTP Server  Override for specific uses like when there is an error.
+	
+	//  If 'host' is in properties file, then ALL the SMTP Server values are used from the property file and none from config table.
+	
+	private static final String SMTP_SERVER_HOST_OVERRIDE_KEY = "smtp.server.host.override";
+	private static final String SMTP_SERVER_PORT_OVERRIDE_KEY = "smtp.server.port.override";
+
+	private static final String SMTP_SERVER_AUTH_USERNAME_OVERRIDE_KEY = "smtp.server.auth.username.override";
+	private static final String SMTP_SERVER_AUTH_PASSWORD_OVERRIDE_KEY = "smtp.server.auth.password.override";
+	
 	/**
 	 * 
 	 *
@@ -56,6 +66,13 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 		private String from_emailAddress;
 		private String serverIdentifier;
 		
+		//  Override main settings in config table
+		private String smtpServerHost_Override;
+		private String smtpServerPort_Override;
+		private String smtpAuthUsername_Override;
+		private String smtpAuthPassword_Override;
+
+		
 		public List<String> getTo_emailAddresses() {
 			return to_emailAddresses;
 		}
@@ -64,6 +81,18 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 		}
 		public String getServerIdentifier() {
 			return serverIdentifier;
+		}
+		public String getSmtpServerHost_Override() {
+			return smtpServerHost_Override;
+		}
+		public String getSmtpServerPort_Override() {
+			return smtpServerPort_Override;
+		}
+		public String getSmtpAuthUsername_Override() {
+			return smtpAuthUsername_Override;
+		}
+		public String getSmtpAuthPassword_Override() {
+			return smtpAuthPassword_Override;
 		}
 	}
 	
@@ -123,6 +152,13 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 		String from_emailAddress = null;
 		String serverIdentifier = null;
 
+		//  Override main settings in config table
+		String smtpServerHost_Override = null;
+		String smtpServerPort_Override = null;
+		String smtpAuthUsername_Override = null;
+		String smtpAuthPassword_Override = null;
+
+
 		{ // TO addresses, comma delimited
 			String propertyString = configProps.getProperty( SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO__PROPERTY_FILE_KEY );
 			
@@ -160,6 +196,43 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 				serverIdentifier = propertyString;
 			}
 		}
+		
+		{ // smtpServerHost_Override
+			String propertyString = configProps.getProperty( SMTP_SERVER_HOST_OVERRIDE_KEY );
+			
+			if ( StringUtils.isNotEmpty( propertyString ) ) {
+				
+				smtpServerHost_Override = propertyString;
+			}
+		}
+		{ // smtpServerPort_Override
+			String propertyString = configProps.getProperty( SMTP_SERVER_PORT_OVERRIDE_KEY );
+			
+			if ( StringUtils.isNotEmpty( propertyString ) ) {
+				
+				smtpServerPort_Override = propertyString;
+			}
+		}
+				
+		{ // smtpAuthUsername_Override
+			String propertyString = configProps.getProperty( SMTP_SERVER_AUTH_USERNAME_OVERRIDE_KEY );
+			
+			if ( StringUtils.isNotEmpty( propertyString ) ) {
+				
+				smtpAuthUsername_Override = propertyString;
+			}
+		}
+		{ // smtpAuthPassword_Override
+			String propertyString = configProps.getProperty( SMTP_SERVER_AUTH_PASSWORD_OVERRIDE_KEY );
+			
+			if ( StringUtils.isNotEmpty( propertyString ) ) {
+				
+				smtpAuthPassword_Override = propertyString;
+			}
+		}
+		
+		
+		////   Cross validation
 
 		if ( to_emailAddresses == null && from_emailAddress == null && serverIdentifier == null ) {
 
@@ -197,6 +270,11 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 		response.to_emailAddresses = to_emailAddresses;
 		response.from_emailAddress = from_emailAddress;
 		response.serverIdentifier = serverIdentifier;
+		
+		response.smtpServerHost_Override = smtpServerHost_Override;
+		response.smtpServerPort_Override = smtpServerPort_Override;
+		response.smtpAuthUsername_Override = smtpAuthUsername_Override;
+		response.smtpAuthPassword_Override = smtpAuthPassword_Override;
 		
 		return response;
 	}

@@ -28,6 +28,39 @@ public class SendEmailItem {
 	private String emailSubject;
 	private String emailBody;
 	
+	//  Normally NOT Set
+	
+	//  Override main settings in config table
+	private String smtpServerHost_Override_NORMALLY_NOT_SET;
+	private String smtpServerPort_Override_NORMALLY_NOT_SET;
+	private String smtpAuthUsername_Override_NORMALLY_NOT_SET;
+	private String smtpAuthPassword_Override_NORMALLY_NOT_SET;
+	
+	
+	public String getSmtpAuthUsername_Override_NORMALLY_NOT_SET() {
+		return smtpAuthUsername_Override_NORMALLY_NOT_SET;
+	}
+	public void setSmtpAuthUsername_Override_NORMALLY_NOT_SET(String smtpAuthUsername_Override_NORMALLY_NOT_SET) {
+		this.smtpAuthUsername_Override_NORMALLY_NOT_SET = smtpAuthUsername_Override_NORMALLY_NOT_SET;
+	}
+	public String getSmtpAuthPassword_Override_NORMALLY_NOT_SET() {
+		return smtpAuthPassword_Override_NORMALLY_NOT_SET;
+	}
+	public void setSmtpAuthPassword_Override_NORMALLY_NOT_SET(String smtpAuthPassword_Override_NORMALLY_NOT_SET) {
+		this.smtpAuthPassword_Override_NORMALLY_NOT_SET = smtpAuthPassword_Override_NORMALLY_NOT_SET;
+	}
+	public String getSmtpServerHost_Override_NORMALLY_NOT_SET() {
+		return smtpServerHost_Override_NORMALLY_NOT_SET;
+	}
+	public void setSmtpServerHost_Override_NORMALLY_NOT_SET(String smtpServerHost_Override_NORMALLY_NOT_SET) {
+		this.smtpServerHost_Override_NORMALLY_NOT_SET = smtpServerHost_Override_NORMALLY_NOT_SET;
+	}
+	public String getSmtpServerPort_Override_NORMALLY_NOT_SET() {
+		return smtpServerPort_Override_NORMALLY_NOT_SET;
+	}
+	public void setSmtpServerPort_Override_NORMALLY_NOT_SET(String smtpServerPort_Override_NORMALLY_NOT_SET) {
+		this.smtpServerPort_Override_NORMALLY_NOT_SET = smtpServerPort_Override_NORMALLY_NOT_SET;
+	}
 	public String getToEmailAddress() {
 		return toEmailAddress;
 	}

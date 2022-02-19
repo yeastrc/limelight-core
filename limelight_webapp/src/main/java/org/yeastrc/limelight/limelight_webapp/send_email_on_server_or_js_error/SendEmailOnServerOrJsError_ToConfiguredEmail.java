@@ -55,7 +55,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private SendEmailIF sendEmail;
-	
 
 	/* 
 	 * Spring LifeCycle Method
@@ -112,11 +111,22 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 									+ "An error has occurred in server or Javascript code.\n"
 									+ "\n"
 									+ "Emails will be sent at most once per hour";
+				
+					//  Allow override from how main emails are sent
+					String smtpServerHost_Override_NORMALLY_NOT_SET = configuration.getSmtpServerHost_Override();
+					String smtpServerPort_Override_NORMALLY_NOT_SET = configuration.getSmtpServerPort_Override();
+					String smtpAuthUsername_Override_NORMALLY_NOT_SET = configuration.getSmtpAuthUsername_Override();
+					String smtpAuthPassword_Override_NORMALLY_NOT_SET = configuration.getSmtpAuthPassword_Override();
+					
 
 					SendEmailItem sendEmailItem = new SendEmailItem();
 					sendEmailItem.setEmailBody( emailBody );
 					sendEmailItem.setEmailSubject( emailSubject );
 					sendEmailItem.setFromEmailAddress( configuration.getFrom_emailAddress() );
+					sendEmailItem.setSmtpServerHost_Override_NORMALLY_NOT_SET(smtpServerHost_Override_NORMALLY_NOT_SET);
+					sendEmailItem.setSmtpServerPort_Override_NORMALLY_NOT_SET(smtpServerPort_Override_NORMALLY_NOT_SET);
+					sendEmailItem.setSmtpAuthUsername_Override_NORMALLY_NOT_SET(smtpAuthUsername_Override_NORMALLY_NOT_SET);
+					sendEmailItem.setSmtpAuthPassword_Override_NORMALLY_NOT_SET(smtpAuthPassword_Override_NORMALLY_NOT_SET);
 
 					for ( String extraEmailAddressesToSendTo : configuration.getTo_emailAddresses() ) {
 

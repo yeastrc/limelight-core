@@ -90,22 +90,37 @@ public class SendEmail implements SendEmailIF {
 					sendEmailItem.getEmailBody() );
 		} else {
 			
-			String smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
-			String smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
+			String smtpServerHost = null;
+			String smtpServerPort = null;
 			
-			if ( StringUtils.isEmpty( smtpServerHost ) ) {
-				
-				String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY
-						+ "'.";
-				log.error(msg);
-				throw new LimelightWebappConfigException( msg );
-			}
+			String smtpAuthUsername = null;
+			String smtpAuthPassword = null;
+			
+			if ( StringUtils.isNotEmpty(sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET() ) ) {
 
-			//  Both smtpAuthUsername and smtpAuthPassword MUST be populated.  Ignored if only one is populated
-							
-			String smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
-			String smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
+				smtpServerHost = sendEmailItem.getSmtpServerHost_Override_NORMALLY_NOT_SET();
+				smtpServerPort = sendEmailItem.getSmtpServerPort_Override_NORMALLY_NOT_SET();
+				smtpAuthUsername = sendEmailItem.getSmtpAuthUsername_Override_NORMALLY_NOT_SET();
+				smtpAuthPassword = sendEmailItem.getSmtpAuthPassword_Override_NORMALLY_NOT_SET();
+				
+			} else {
 			
+				smtpServerHost = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY );
+				smtpServerPort = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY );
+
+				if ( StringUtils.isEmpty( smtpServerHost ) ) {
+
+					String msg = "Cannot send email: No entry in config table for key '" + ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_HOST_KEY
+							+ "'.";
+					log.error(msg);
+					throw new LimelightWebappConfigException( msg );
+				}
+
+				//  Both smtpAuthUsername and smtpAuthPassword MUST be populated.  Ignored if only one is populated
+
+				smtpAuthUsername = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_USERNAME_KEY );
+				smtpAuthPassword = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY );
+			}
 			
 			// Generate and send the email to the user.
 			try {
