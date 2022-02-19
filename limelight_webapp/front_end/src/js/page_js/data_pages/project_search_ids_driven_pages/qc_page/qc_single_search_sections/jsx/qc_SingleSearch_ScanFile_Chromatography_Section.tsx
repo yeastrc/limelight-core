@@ -133,16 +133,16 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
 
                 })
                 promise.then( result => {
-                    const searchScanFileData_Entries = result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
+                    if ( ( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 ) {
 
-                    if ( searchScanFileData_Entries.length == 0 ) {
-
-                        console.warn( "( searchScanFileData.length == 0 )");
+                        console.log( "( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 )");
 
                         this.setState({ noData: true, loadingData: false });
 
                         return;
                     }
+
+                    const searchScanFileData_Entries = result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
 
                     const searchScanFileData_FirstEntry = searchScanFileData_Entries[0];
 

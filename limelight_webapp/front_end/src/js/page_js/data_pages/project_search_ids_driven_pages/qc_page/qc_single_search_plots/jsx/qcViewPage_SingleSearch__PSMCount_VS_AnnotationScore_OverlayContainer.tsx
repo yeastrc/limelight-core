@@ -156,16 +156,17 @@ class QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer exte
 
             })
             promise.then( result => {
-                const searchScanFileData_Entries = result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
 
-                if ( searchScanFileData_Entries.length == 0 ) {
+                if ( ( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 ) {
 
-                    console.warn( "( searchScanFileData.length == 0 )");
+                    console.log( "( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 )");
 
                     this.setState({ searchScanFileData_NoEntries: true, loadingData: false });
 
                     return;
                 }
+
+                const searchScanFileData_Entries = result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
 
                 const searchScanFileData_FirstEntry = searchScanFileData_Entries[0];
                 // const searchScanFileDataId_FirstEntry = searchScanFileData_FirstEntry.searchScanFileId;
