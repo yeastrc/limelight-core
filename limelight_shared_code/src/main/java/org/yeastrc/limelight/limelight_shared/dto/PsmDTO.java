@@ -37,6 +37,7 @@ public class PsmDTO {
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
 
+
 	@Override
 	public String toString() {
 		return "PsmDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId + ", charge="
@@ -45,6 +46,7 @@ public class PsmDTO {
 				+ ", hasReporterIons=" + hasReporterIons + ", precursor_RetentionTime=" + precursor_RetentionTime
 				+ ", precursor_MZ=" + precursor_MZ + "]";
 	}
+
 
 	public long getId() {
 		return id;
@@ -111,4 +113,5 @@ public class PsmDTO {
 	}
 	public void setHasOpenModifications(boolean hasOpenModifications) {
 		this.hasOpenModifications = hasOpenModifications;
-	}}
+	}
+}

@@ -233,7 +233,7 @@ public class DB_Insert_PsmDAO {
 			
 		} catch ( Exception e ) {
 			
-			log.error( "ERROR: saveToDatabase(...) sql: " + sql, e );
+			log.error( "ERROR: saveToDatabase(...) sql: " + sql + "\npsm to save: " + psm, e );
 			
 			throw e;
 		}
