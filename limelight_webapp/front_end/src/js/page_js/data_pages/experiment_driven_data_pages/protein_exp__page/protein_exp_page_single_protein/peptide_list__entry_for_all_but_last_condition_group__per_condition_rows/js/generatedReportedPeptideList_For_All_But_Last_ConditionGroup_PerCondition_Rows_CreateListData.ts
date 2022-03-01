@@ -12,9 +12,6 @@
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
-import { ProteinView_LoadedDataCommonHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder';
-
 import {
     DataTable_RootTableObject,
     DataTable_TableOptions,
@@ -52,6 +49,7 @@ import {
     GetDataTableDataObjects_Result_Last_ConditionGroup
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/peptide_list__entry_for_last_condition_group__per_condition_rows/js/generatedReportedPeptideList_For_Last_ConditionGroup_PerCondition_Rows_CreateListData";
 import {CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 
 //////////////////
@@ -79,8 +77,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-    loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     dataPageStateManager : DataPageStateManager
 
     /**
@@ -98,8 +95,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             reportedPeptideIdsMap_KeyProjectSearchId,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             searchDataLookupParamsRoot,
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-            loadedDataCommonHolder,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
             dataPageStateManager
         } : {
             createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry;
@@ -112,8 +108,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             reportedPeptideIdsMap_KeyProjectSearchId : Map<number, Set<number>>
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
             searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
-            loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             dataPageStateManager : DataPageStateManager
         }) {
 
@@ -125,8 +120,7 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
         this.reportedPeptideIdsMap_KeyProjectSearchId = reportedPeptideIdsMap_KeyProjectSearchId;
         this.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
-        this.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        this.loadedDataCommonHolder = loadedDataCommonHolder;
+        this.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
         this.dataPageStateManager = dataPageStateManager;
     }
 }
@@ -174,8 +168,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
         createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
     const searchDataLookupParamsRoot = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.searchDataLookupParamsRoot
-    const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder> = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds
-    const loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.loadedDataCommonHolder
+    const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+        createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     const dataPageStateManager : DataPageStateManager = createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.dataPageStateManager;
 
     const conditionGroups = conditionGroupsContainer.conditionGroups;
@@ -388,8 +382,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
                         reportedPeptideIdsMap_KeyProjectSearchId,
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
-                        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                        loadedDataCommonHolder,
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                         dataPageStateManager
                     })
                 );
@@ -432,8 +425,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
                         reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : reportedPeptideIdsMap_KeyProjectSearchId,
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         searchDataLookupParamsRoot,
-                        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                        loadedDataCommonHolder,
+                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                         dataPageStateManager
                     })
                 );

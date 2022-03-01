@@ -5,8 +5,6 @@
  *
  */
 
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
-import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_MultipleSearches";
@@ -19,6 +17,7 @@ import {QcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded} from "pa
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded";
 import {QcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 /**
  *
@@ -47,9 +46,9 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
 
         for ( const projectSearchId of retrievalParams.projectSearchIds ) {
 
-            const loadedDataPerProjectSearchIdHolder = retrievalParams.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-            if ( ! loadedDataPerProjectSearchIdHolder ) {
-                const msg = "retrievalParams.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = retrievalParams.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                const msg = "retrievalParams.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -68,8 +67,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
             const retrievalParams_SingleSearch = new QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params({
                 projectSearchId,
                 searchDataLookupParamsRoot: retrievalParams.searchDataLookupParamsRoot,
-                loadedDataPerProjectSearchIdHolder,
-                loadedDataCommonHolder: retrievalParams.loadedDataCommonHolder,
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
                 dataPageStateManager: retrievalParams.dataPageStateManager,
                 qcPage_Flags_SingleSearch_ForProjectSearchId,
                 qcPage_Searches_Info_SingleSearch_ForProjectSearchId
@@ -406,8 +404,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_P
 
     projectSearchIds: Array<number>
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-    loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     dataPageStateManager: DataPageStateManager
 
     qcPage_Flags_MultipleSearches: DataPage_common_Searches_Flags
@@ -418,21 +415,19 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_P
      */
     constructor(
         {
-            projectSearchIds, searchDataLookupParamsRoot, loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds, loadedDataCommonHolder, dataPageStateManager,
+            projectSearchIds, searchDataLookupParamsRoot, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root, dataPageStateManager,
             qcPage_Flags_MultipleSearches, qcPage_Searches_Info_MultipleSearches
         } : {
             projectSearchIds: Array<number>
             searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-            loadedDataCommonHolder: ProteinView_LoadedDataCommonHolder
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             dataPageStateManager: DataPageStateManager
             qcPage_Flags_MultipleSearches: DataPage_common_Searches_Flags
             qcPage_Searches_Info_MultipleSearches:  DataPage_common_Searches_Info
         }) {
         this.projectSearchIds = projectSearchIds;
         this.searchDataLookupParamsRoot = searchDataLookupParamsRoot;
-        this.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        this.loadedDataCommonHolder = loadedDataCommonHolder;
+        this.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
         this.dataPageStateManager = dataPageStateManager;
         this.qcPage_Flags_MultipleSearches = qcPage_Flags_MultipleSearches;
         this.qcPage_Searches_Info_MultipleSearches = qcPage_Searches_Info_MultipleSearches;

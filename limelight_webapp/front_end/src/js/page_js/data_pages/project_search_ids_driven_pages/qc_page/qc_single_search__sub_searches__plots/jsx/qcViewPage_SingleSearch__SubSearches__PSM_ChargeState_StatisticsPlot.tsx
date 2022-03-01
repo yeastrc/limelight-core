@@ -255,7 +255,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
             }
         });
 
-        promise_get_PsmStatistics_ChargeStateStatistics_Data.then( data_Holder_SingleSearch__SubSearches => {
+        promise_get_PsmStatistics_ChargeStateStatistics_Data.then( async data_Holder_SingleSearch__SubSearches => {
             try {
                 if ( ! this._componentMounted ) {
                     //  Component no longer mounted so exit
@@ -266,8 +266,8 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
 
                 const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
-                const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
+                const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
                 const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
@@ -285,17 +285,19 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
 
                 const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
 
-                const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-                if (!loadedDataPerProjectSearchIdHolder) {
-                    const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+                if (!commonData_LoadedFromServer_PerSearch_For_ProjectSearchId) {
+                    const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
                     console.warn(msg);
                     throw Error(msg);
                 }
 
-                const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-                if ( ! subGroupIdMap_Key_PsmId ) {
-                    throw Error("loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned NOTHING for projectSearchId: " + projectSearchId);
-                }
+                const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
+                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
+                    get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
+
+                const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
 
                 //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
@@ -324,7 +326,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
 
                 for (const psmTblData_Filtered_Entry of psmTblData_Filtered) {
 
-                    const subGroupId = subGroupIdMap_Key_PsmId.get(psmTblData_Filtered_Entry.psmId);
+                    const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId(psmTblData_Filtered_Entry.psmId);
                     if ( ! subGroupId ) {
                         const msg = "( ! subGroupId ) psmId: " + psmTblData_Filtered_Entry.psmId + ", projectSearchId: " + projectSearchId;
                         console.warn(msg);

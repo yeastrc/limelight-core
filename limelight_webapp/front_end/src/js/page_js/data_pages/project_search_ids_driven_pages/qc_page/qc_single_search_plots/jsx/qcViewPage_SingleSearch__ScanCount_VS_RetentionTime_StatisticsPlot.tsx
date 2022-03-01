@@ -10,7 +10,8 @@ import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    qcPage_StandardChartLayout, qcPage_StandardChartLayout_StandardHeight,
+    qcPage_StandardChartLayout,
+    qcPage_StandardChartLayout_StandardHeight,
     qcPage_StandardChartLayout_StandardWidth
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
@@ -293,15 +294,6 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
         }
 
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing for projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg)
-        }
 
         //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
@@ -384,8 +376,6 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
                 }
 
                 const value = values[0]; // Just use first entry
-
-                this.setState({ showUpdatingMessage: false });
 
                 const psmTblData = value.psmTblData;
                 const spectralStorage_NO_Peaks_Data = value.spectralStorage_NO_Peaks_Data;
@@ -636,6 +626,8 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
                 }
 
                 const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
+
+                this.setState({ showUpdatingMessage: false });
 
                 if ( ! this.props.isInSingleChartOverlay ) {
 

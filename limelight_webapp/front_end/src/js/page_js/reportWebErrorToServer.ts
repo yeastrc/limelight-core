@@ -55,6 +55,8 @@ var reportWebErrorToServer = {
 				console.warn("Exception Stack contains dev tools string so NOT displaying error msg to user.  dev tools string: '" + react_devtools_backend_String + "'." )
 			}
 
+			console.warn("reportErrorObjectToServer: params: ", params)
+
 			try {
 
 				var userAgent = "unknown";

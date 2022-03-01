@@ -39,15 +39,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
-import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher.PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -79,9 +76,6 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
 
 	@Autowired
 	private PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcherIF psmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher;
-	
-	@Autowired
-	private PsmSearchSubGroupIdsForPsmIdsSearcher_IF psmSearchSubGroupIdsForPsmIdsSearcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -201,38 +195,13 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
     			List<PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmReporterIonMassesList = 
     					psmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher
     					.getPsmReporterIonMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
-
-    			Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmReporterIonMassesList.size() );
-    			
-    			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-    				List<Long> psmIds = new ArrayList<>( psmReporterIonMassesList.size() );
-    				for ( PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmReporterIonMassesList ) {
-    					psmIds.add( resultEntry.getPsmId() );
-    				}
-    				List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList = 
-    						psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
-    				for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem item : psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList ) {
-    					searchSubGroupIdMap_Key_PsmId.put( item.getPsmId(), item.getSearchSubGroupId() );
-    				}
-    			}
     			
     			List<WebserviceResult_Per_PsmId_Entry> perPsmIdList = new ArrayList<>( psmReporterIonMassesList.size() );
     			
     			for ( PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry dbEntry : psmReporterIonMassesList ) {
-    				Long psmId = dbEntry.getPsmId();
     				WebserviceResult_Per_PsmId_Entry resultEntry = new WebserviceResult_Per_PsmId_Entry();
     				resultEntry.psmId = dbEntry.getPsmId();
     				resultEntry.reporterIonMass = dbEntry.getReporterIonMass();
-
-        			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-        				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
-        				if ( searchSubGroupId == null ) {
-        					String msg = "No searchSubGroupId found for psmId: " + psmId + ", webserviceRequest: " + webserviceRequest;
-        					log.error( msg );
-        					throw new LimelightDatabaseException(msg);
-        				}
-        				resultEntry.searchSubGroupId = searchSubGroupId;
-        			}
     				
         			perPsmIdList.add( resultEntry );
     			}
@@ -268,14 +237,13 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
      */
     public static class WebserviceRequest {
 
-    	private Boolean getSearchSubGroupIds;
     	private Integer projectSearchId;
     	private List<Integer> reportedPeptideIds;
     	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
 
 		@Override
 		public String toString() {
-			return "WebserviceRequest [getSearchSubGroupIds=" + getSearchSubGroupIds + ", projectSearchId="
+			return "WebserviceRequest [projectSearchId="
 					+ projectSearchId + ", reportedPeptideIds=" + reportedPeptideIds
 					+ ", searchDataLookupParams_For_Single_ProjectSearchId="
 					+ searchDataLookupParams_For_Single_ProjectSearchId + "]";
@@ -290,9 +258,6 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
 		public void setSearchDataLookupParams_For_Single_ProjectSearchId(
 				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
 			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
-		}
-		public void setGetSearchSubGroupIds(Boolean getSearchSubGroupIds) {
-			this.getSearchSubGroupIds = getSearchSubGroupIds;
 		}
     }
     
@@ -334,13 +299,9 @@ public class Psm_ReporterIonMasses_PerReportedPeptide_For_ReportedPeptideIds_Sea
     	
 		private long psmId;
 		private BigDecimal reporterIonMass;
-		private Integer searchSubGroupId;
-    	
+		
 		public long getPsmId() {
 			return psmId;
-		}
-		public Integer getSearchSubGroupId() {
-			return searchSubGroupId;
 		}
 		public BigDecimal getReporterIonMass() {
 			return reporterIonMass;

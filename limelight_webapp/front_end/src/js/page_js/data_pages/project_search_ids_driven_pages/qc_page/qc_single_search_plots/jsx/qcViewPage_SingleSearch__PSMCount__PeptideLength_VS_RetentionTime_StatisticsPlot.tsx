@@ -9,9 +9,7 @@ import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    qcPage_StandardChartLayout
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
@@ -23,7 +21,8 @@ import {
     qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {open_PSMCount__PeptideLength_VS_RetentionTime_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_OverlayContainer";
-import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
+import {CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
+import {CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 
 
 const chartTitle = "Peptide Length vs/ Retention Time";
@@ -266,217 +265,241 @@ export class QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_S
     /**
      *
      */
-    private _populateChart() {
-
-        if ( ! this._componentMounted ) {
-            //  Component no longer mounted so exit
-            return; // EARLY RETURN
-        }
-
-        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        const loadedDataCommonHolder = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataCommonHolder;
-
-        const projectSearchId = projectSearchIds[0];
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing for projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg)
-        }
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        const promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data =
-            this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data();
-
-        promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.catch( reason => {
-            try {
-                console.warn( "promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.catch(...): reason: ", reason );
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
+    private async _populateChart() : Promise<void> {
+        try {
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
             }
-        });
 
-        promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.then( value => {
-            try {
-                if ( ! this._componentMounted ) {
-                    //  Component no longer mounted so exit
-                    return; // EARLY RETURN
+            const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
+
+            if ( projectSearchIds.length !== 1 ) {
+                const msg = "Single Search chart so projectSearchIds.length must be 1. projectSearchIds.length: " + projectSearchIds.length;
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const projectSearchId = projectSearchIds[0];  //  Allowed since Single Search chart
+
+            let peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
+            {
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+                if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                    throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId)
                 }
-
-                const psmTblData = value.psmTblData;
-                const spectralStorage_NO_Peaks_Data = value.spectralStorage_NO_Peaks_Data;
-
-                this.setState({ showUpdatingMessage: false });
-
-                const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
-                    qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                        projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
-                    });
-
-                const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
-
-                const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
-                const qcPage_Flags_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId
-
-                const chart_X : Array<number> = []
-                const chart_Y : Array<number> = []
-
-                if ( psmTblData_Filtered.length === 0 ) {
-                    const msg = "psmTblData_Filtered is empty";
-                    console.warn(msg);
-                    throw Error(msg);
+                {
+                    const get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result =
+                        await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters().get_PeptideIdsHolder_AllForSearch_ReturnPromise();
+                    peptideIds_For_MainFilters_Holder= get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result.peptideIds_For_MainFilters_Holder
                 }
+            }
 
-                if ( qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) {
-                    const psmTblData_Filtered_FirstEntry = psmTblData_Filtered[0];
-                    if ( psmTblData_Filtered_FirstEntry.retentionTimeSeconds === undefined || psmTblData_Filtered_FirstEntry.retentionTimeSeconds === null ) {
-                        const msg = "( psmTblData_Filtered_FirstEntry.retentionTimeSeconds === undefined || psmTblData_Filtered_FirstEntry.retentionTimeSeconds === null )";
+            let peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+            {
+                const get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result =
+                    await commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer__CommonAcrossSearches().
+                    get_commonData_LoadedFromServer_SingleSearch__PeptideSequences_For_MainFilters().
+                    get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise();
+                peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result.peptideSequences_For_MainFilters_Holder
+            }
+
+
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
+
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+            const promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data =
+                this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
+                qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data();
+
+            promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.catch( reason => {
+                try {
+                    console.warn( "promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.catch(...): reason: ", reason );
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
+
+            promise_get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data.then( value => {
+                try {
+                    if ( ! this._componentMounted ) {
+                        //  Component no longer mounted so exit
+                        return; // EARLY RETURN
+                    }
+
+                    const psmTblData = value.psmTblData;
+                    const spectralStorage_NO_Peaks_Data = value.spectralStorage_NO_Peaks_Data;
+
+                    const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
+                        qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
+                            projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                        });
+
+                    const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
+
+                    const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
+                    const qcPage_Flags_SingleSearch_ForProjectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId
+
+                    const chart_X : Array<number> = []
+                    const chart_Y : Array<number> = []
+
+                    if ( psmTblData_Filtered.length === 0 ) {
+                        const msg = "psmTblData_Filtered is empty";
                         console.warn(msg);
                         throw Error(msg);
                     }
-                }
-
-                for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
-
-                    let retentionTimeSeconds: number = null;
 
                     if ( qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) {
-
-                        retentionTimeSeconds = psmTblData_Filtered_Entry.retentionTimeSeconds;
-
-                    } else if ( qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
-
-                        const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Filtered_Entry.searchScanFileId );
-                        if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
-                            const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Filtered_Entry.searchScanFileId ); returned nothing. searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId;
+                        const psmTblData_Filtered_FirstEntry = psmTblData_Filtered[0];
+                        if ( psmTblData_Filtered_FirstEntry.retentionTimeSeconds === undefined || psmTblData_Filtered_FirstEntry.retentionTimeSeconds === null ) {
+                            const msg = "( psmTblData_Filtered_FirstEntry.retentionTimeSeconds === undefined || psmTblData_Filtered_FirstEntry.retentionTimeSeconds === null )";
                             console.warn(msg);
                             throw Error(msg);
                         }
-                        const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
-                        if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
-                            const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing. scanNumber: " + psmTblData_Filtered_Entry.scanNumber;
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
-
-                        retentionTimeSeconds = spectralStorage_NO_Peaks_DataFor_ScanNumber.retentionTime_InSeconds;
-
-                    } else {
-                        const msg = "Neither is true. qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull, qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData "
-                        console.warn(msg);
-                        throw Error(msg)
                     }
 
-                    const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId: psmTblData_Filtered_Entry.reportedPeptideId });
-                    const peptideSequenceString = loadedDataCommonHolder.get_peptideSequenceString_For_peptideId({ peptideId });
-                    const peptideSequence_Length = peptideSequenceString.length;
+                    for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
 
-                    const retentionTimeMinutes = retentionTimeSeconds / 60;
+                        let retentionTimeSeconds: number = null;
 
-                    chart_X.push( retentionTimeMinutes );
-                    chart_Y.push( peptideSequence_Length );
-                }
+                        if ( qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) {
 
-                const chart_Data = [
+                            retentionTimeSeconds = psmTblData_Filtered_Entry.retentionTimeSeconds;
+
+                        } else if ( qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
+
+                            const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Filtered_Entry.searchScanFileId );
+                            if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
+                                const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Filtered_Entry.searchScanFileId ); returned nothing. searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId;
+                                console.warn(msg);
+                                throw Error(msg);
+                            }
+                            const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
+                            if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
+                                const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing. scanNumber: " + psmTblData_Filtered_Entry.scanNumber;
+                                console.warn(msg);
+                                throw Error(msg);
+                            }
+
+                            retentionTimeSeconds = spectralStorage_NO_Peaks_DataFor_ScanNumber.retentionTime_InSeconds;
+
+                        } else {
+                            const msg = "Neither is true. qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull, qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData "
+                            console.warn(msg);
+                            throw Error(msg)
+                        }
+
+                        const peptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( psmTblData_Filtered_Entry.reportedPeptideId );
+                        const peptideSequenceString = peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId(peptideId);
+                        const peptideSequence_Length = peptideSequenceString.length;
+
+                        const retentionTimeMinutes = retentionTimeSeconds / 60;
+
+                        chart_X.push( retentionTimeMinutes );
+                        chart_Y.push( peptideSequence_Length );
+                    }
+
+                    const chart_Data = [
+                        {
+                            name: '',
+                            x: chart_X,
+                            y: chart_Y,
+                            hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
+                                '<b>Peptide Length</b>: %{y}' +
+                                '<br><b>Retention Time (minutes)</b>: %{x}' +
+                                '<br><b>PSM Count</b>: %{z}<extra></extra>',
+                            ncontours: 20,
+                            colorscale: 'Hot',
+                            reversescale: true,
+                            showscale: true,
+                            type: 'histogram2dcontour'  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram2dcontour'
+                        }
+                    ];
+
+                    const chart_Layout = qcPage_StandardChartLayout({
+                        chartTitle,
+                        chart_X_Axis_Label: "Retention Time (minutes)",
+                        //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
+                        chart_Y_Axis_Label: "Peptide Length",
+                        showlegend: false
+                    });
+
+                    try {
+                        //  First remove any existing plot, if it exists (And event listener on it)
+                        this._removeChart();
+                    } catch (e) {
+                        //  Eat Exception
+                    }
+
+                    if ( this.props.isInSingleChartOverlay ) {
+
+                        const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
+
+                        /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+
+                        // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                        // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                        // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                        // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+
+                        const chart_Width = Math.floor( targetDOMElement_domRect.width );
+                        const chart_Height = Math.floor( targetDOMElement_domRect.height );
+
+                        //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+
+                        // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+                        //
+                        // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                        // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                        //
+                        // if ()
+
+                        chart_Layout.width = chart_Width;
+                        chart_Layout.height = chart_Height;
+                    }
+
+                    const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+
                     {
-                        name: '',
-                        x: chart_X,
-                        y: chart_Y,
-                        hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
-                            '<b>Peptide Length</b>: %{y}' +
-                            '<br><b>Retention Time (minutes)</b>: %{x}' +
-                            '<br><b>PSM Count</b>: %{z}<extra></extra>',
-                        ncontours: 20,
-                        colorscale: 'Hot',
-                        reversescale: true,
-                        showscale: true,
-                        type: 'histogram2dcontour'  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram2dcontour'
+                        // const chart_Data_JSON = JSON.stringify( chart_Data );
+                        // const chart_Layout_JSON = JSON.stringify( chart_Layout );
+                        //
+                        // console.log("*********************************")
+                        // console.log("Data for Chart with Title: " + chartTitle );
+                        // console.log("chart_Data object: ", chart_Data );
+                        // console.log("chart_Data_JSON: " + chart_Data_JSON );
+                        // console.log("chart_Layout object: ", chart_Layout );
+                        // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
+                        // console.log("chart_config object: ", chart_config );
+                        // console.log("*********************************")
                     }
-                ];
 
-                const chart_Layout = qcPage_StandardChartLayout({
-                    chartTitle,
-                    chart_X_Axis_Label: "Retention Time (minutes)",
-                    //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
-                    chart_Y_Axis_Label: "Peptide Length",
-                    showlegend: false
-                });
+                    const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
 
-                try {
-                    //  First remove any existing plot, if it exists (And event listener on it)
-                    this._removeChart();
-                } catch (e) {
-                    //  Eat Exception
+                    if ( ! this.props.isInSingleChartOverlay ) {
+
+                        //  Add click handler on chart on main page to open chart in overlay
+
+                        qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+                    }
+
+                    this.setState({ showUpdatingMessage: false });
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
                 }
-
-                if ( this.props.isInSingleChartOverlay ) {
-
-                    const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-                    /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-                    // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-                    // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-                    // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-                    // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-                    const chart_Width = Math.floor( targetDOMElement_domRect.width );
-                    const chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-                    //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-                    // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-                    //
-                    // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                    // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                    //
-                    // if ()
-
-                    chart_Layout.width = chart_Width;
-                    chart_Layout.height = chart_Height;
-                }
-
-                const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
-
-                {
-                    // const chart_Data_JSON = JSON.stringify( chart_Data );
-                    // const chart_Layout_JSON = JSON.stringify( chart_Layout );
-                    //
-                    // console.log("*********************************")
-                    // console.log("Data for Chart with Title: " + chartTitle );
-                    // console.log("chart_Data object: ", chart_Data );
-                    // console.log("chart_Data_JSON: " + chart_Data_JSON );
-                    // console.log("chart_Layout object: ", chart_Layout );
-                    // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
-                    // console.log("chart_config object: ", chart_config );
-                    // console.log("*********************************")
-                }
-
-                const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
-
-                if ( ! this.props.isInSingleChartOverlay ) {
-
-                    //  Add click handler on chart on main page to open chart in overlay
-
-                    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
-                }
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        })
+            })
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**

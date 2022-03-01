@@ -20,8 +20,9 @@ import {
     qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {open_PeptideCount_VS_PeptideLength_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PeptideCount_VS_PeptideLength_OverlayContainer";
-import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
+import {CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
+import {CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters";
 
 const chartTitle = "Peptide Count vs Length";
 
@@ -114,9 +115,9 @@ export class QcViewPage_SingleSearch__PeptideCount_VS_PeptideLength_StatisticsPl
         try {
             this._componentMounted = true;
 
-            window.setTimeout( () => {
+            window.setTimeout( async () => {
                 try {
-                    this._populateChart();
+                    await this._populateChart();
 
                     if ( this.props.isInSingleChartOverlay ) {
                         this._resizeWindow_Handler_Attach();
@@ -231,209 +232,236 @@ export class QcViewPage_SingleSearch__PeptideCount_VS_PeptideLength_StatisticsPl
     /**
      *
      */
-    private _populateChart() {
+    private async _populateChart() : Promise<void> {
+        try {
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
+            }
 
-        if ( ! this._componentMounted ) {
-            //  Component no longer mounted so exit
-            return; // EARLY RETURN
-        }
+            const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-        this.setState({ showUpdatingMessage: false });
-
-        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        const loadedDataCommonHolder = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataCommonHolder;
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        const peptideLengthCounts_Map_Key_PeptideLength = new Map<number, Peptide_LengthCount_Entry>();
-
-        for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
+            const peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder> = new Map();
 
             for (const projectSearchId of projectSearchIds) {
 
-                const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
-                if (!dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
-
-                    continue; // EARLY CONTINUE
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+                if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                    throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId)
                 }
-
-                const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-                if (!loadedDataPerProjectSearchIdHolder) {
-
-                    continue; // EARLY CONTINUE
+                {
+                    const get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result =
+                        await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters().get_PeptideIdsHolder_AllForSearch_ReturnPromise();
+                    peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.set( projectSearchId, get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result.peptideIds_For_MainFilters_Holder )
                 }
+            }
 
-                const peptideId_Set = new Set<number>();  //  Expected to only contain 1 entry
+            let peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
+            {
+                const get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result =
+                    await commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer__CommonAcrossSearches().
+                    get_commonData_LoadedFromServer_SingleSearch__PeptideSequences_For_MainFilters().
+                    get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise();
+                peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result.peptideSequences_For_MainFilters_Holder
+            }
 
-                for (const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries()) {
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
-                    const dataPerReportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry[1];
-                    const reportedPeptideId = dataPerReportedPeptideId.reportedPeptideId;
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-                    const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
-                    peptideId_Set.add(peptideId);
-                }
+            const peptideLengthCounts_Map_Key_PeptideLength = new Map<number, Peptide_LengthCount_Entry>();
 
-                // if ( peptideId_Set.size > 1 ) {
-                //     console.warn( "( peptideId_Set.size > 1 ). peptideId_Set.size: " + peptideId_Set.size + ", peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString: " + peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString );
-                // }
+            for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
 
-                for ( const peptideId of peptideId_Set ) {
+                for (const projectSearchId of projectSearchIds) {
 
-                    const peptideSequenceString = loadedDataCommonHolder.get_peptideSequenceString_For_peptideId({ peptideId });
-                    const peptideSequence_Length = peptideSequenceString.length;
+                    const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
+                    if (!dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
 
-                    let peptideLengthCount_Entry = peptideLengthCounts_Map_Key_PeptideLength.get( peptideSequence_Length );
-                    if ( ! peptideLengthCount_Entry ) {
-                        peptideLengthCount_Entry = { peptideLength: peptideSequence_Length, count: 0 };
-                        peptideLengthCounts_Map_Key_PeptideLength.set( peptideSequence_Length, peptideLengthCount_Entry );
+                        continue; // EARLY CONTINUE
                     }
-                    peptideLengthCount_Entry.count++;
+
+                    const peptideIds_For_MainFilters_Holder = peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
+                    if (!peptideIds_For_MainFilters_Holder) {
+
+                        continue; // EARLY CONTINUE
+                    }
+
+                    const peptideId_Set = new Set<number>();  //  Expected to only contain 1 entry
+
+                    for (const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries()) {
+
+                        const dataPerReportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry[1];
+                        const reportedPeptideId = dataPerReportedPeptideId.reportedPeptideId;
+
+                        const peptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId );
+                        peptideId_Set.add(peptideId);
+                    }
+
+                    // if ( peptideId_Set.size > 1 ) {
+                    //     console.warn( "( peptideId_Set.size > 1 ). peptideId_Set.size: " + peptideId_Set.size + ", peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString: " + peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString );
+                    // }
+
+                    for ( const peptideId of peptideId_Set ) {
+
+                        const peptideSequenceString = peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId(peptideId);
+                        const peptideSequence_Length = peptideSequenceString.length;
+
+                        let peptideLengthCount_Entry = peptideLengthCounts_Map_Key_PeptideLength.get( peptideSequence_Length );
+                        if ( ! peptideLengthCount_Entry ) {
+                            peptideLengthCount_Entry = { peptideLength: peptideSequence_Length, count: 0 };
+                            peptideLengthCounts_Map_Key_PeptideLength.set( peptideSequence_Length, peptideLengthCount_Entry );
+                        }
+                        peptideLengthCount_Entry.count++;
+                    }
                 }
             }
-        }
 
-        const peptide_LengthCount_Array : Array<Peptide_LengthCount_Entry> = [];
-        for ( const peptideLengthCounts_Map_Entry of peptideLengthCounts_Map_Key_PeptideLength ) {
-            const peptide_LengthCount_Entry = peptideLengthCounts_Map_Entry[1];
-            peptide_LengthCount_Array.push( peptide_LengthCount_Entry );
-        }
-
-        peptide_LengthCount_Array.sort( (a,b) => {
-            if ( a.peptideLength < b.peptideLength ) {
-                return -1;
+            const peptide_LengthCount_Array : Array<Peptide_LengthCount_Entry> = [];
+            for ( const peptideLengthCounts_Map_Entry of peptideLengthCounts_Map_Key_PeptideLength ) {
+                const peptide_LengthCount_Entry = peptideLengthCounts_Map_Entry[1];
+                peptide_LengthCount_Array.push( peptide_LengthCount_Entry );
             }
-            if ( a.peptideLength > b.peptideLength ) {
-                return 1;
+
+            peptide_LengthCount_Array.sort( (a,b) => {
+                if ( a.peptideLength < b.peptideLength ) {
+                    return -1;
+                }
+                if ( a.peptideLength > b.peptideLength ) {
+                    return 1;
+                }
+                return 0;
+            })
+
+
+            const chart_X : Array<number> = []
+            const chart_Y : Array<number> = []
+            // const chart_Bars_labels: Array<string> = [];
+            const chart_Bars_Tooltips: Array<string> = [];
+
+            for ( const peptide_LengthCount_Entry of peptide_LengthCount_Array ) {
+
+                chart_X.push( peptide_LengthCount_Entry.peptideLength );
+                chart_Y.push( peptide_LengthCount_Entry.count );
+
+                // const chart_Bar_label = peptide_LengthCount_Entry.count.toLocaleString();
+                // chart_Bars_labels.push( chart_Bar_label );
+
+                const chart_Bar_Tooltip = "<b>Peptide Length</b>: " + peptide_LengthCount_Entry.peptideLength.toLocaleString() +
+                    "<br><b>Peptide Count</b>: " + peptide_LengthCount_Entry.count.toLocaleString();
+                chart_Bars_Tooltips.push( chart_Bar_Tooltip );
             }
-            return 0;
-        })
 
+            //  Colors for Bars
+            const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 1 });
 
-        const chart_X : Array<number> = []
-        const chart_Y : Array<number> = []
-        // const chart_Bars_labels: Array<string> = [];
-        const chart_Bars_Tooltips: Array<string> = [];
+            const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
 
-        for ( const peptide_LengthCount_Entry of peptide_LengthCount_Array ) {
-
-            chart_X.push( peptide_LengthCount_Entry.peptideLength );
-            chart_Y.push( peptide_LengthCount_Entry.count );
-
-            // const chart_Bar_label = peptide_LengthCount_Entry.count.toLocaleString();
-            // chart_Bars_labels.push( chart_Bar_label );
-
-            const chart_Bar_Tooltip = "<b>Peptide Length</b>: " + peptide_LengthCount_Entry.peptideLength.toLocaleString() +
-                "<br><b>Peptide Count</b>: " + peptide_LengthCount_Entry.count.toLocaleString();
-            chart_Bars_Tooltips.push( chart_Bar_Tooltip );
-        }
-
-        //  Colors for Bars
-        const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 1 });
-
-        const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
-
-        const chart_Data_Entry = {
-            type: 'bar',
+            const chart_Data_Entry = {
+                type: 'bar',
                 x: chart_X,
-            y: chart_Y,
-            // text: chart_Bars_labels, //  Text put on each bar
-            hoverinfo: "text", //  Hover contents
-            hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
-            marker: {
-                color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+                y: chart_Y,
+                // text: chart_Bars_labels, //  Text put on each bar
+                hoverinfo: "text", //  Hover contents
+                hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
+                marker: {
+                    color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
+                }
             }
-        }
 
-        const chart_Data = [
-            chart_Data_Entry
-        ];
+            const chart_Data = [
+                chart_Data_Entry
+            ];
 
 
-        // Another way to color each bar, all in one trace
-        //
-        // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
-        //     var trace1 = {
-        //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-        //         y: [20, 14, 23, 25, 22],
-        //         marker:{
-        //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
-        //         },
-        //         type: 'bar'
-        //     };
-
-        const chart_Layout = qcPage_StandardChartLayout({
-            chartTitle,
-            chart_X_Axis_Label: "Peptide Length",
-            chart_X_Axis_IsTypeCategory: false,
-            chart_Y_Axis_Label: "Peptide Count",
-            showlegend: false
-        });
-
-        try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
-
-        if ( this.props.isInSingleChartOverlay ) {
-
-            const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-            /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-            // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-            // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-            // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-            // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-            const chart_Width = Math.floor( targetDOMElement_domRect.width );
-            const chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-            //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-            // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+            // Another way to color each bar, all in one trace
             //
-            // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            //
-            // if ()
+            // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
+            //     var trace1 = {
+            //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
+            //         y: [20, 14, 23, 25, 22],
+            //         marker:{
+            //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
+            //         },
+            //         type: 'bar'
+            //     };
 
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
-        }
+            const chart_Layout = qcPage_StandardChartLayout({
+                chartTitle,
+                chart_X_Axis_Label: "Peptide Length",
+                chart_X_Axis_IsTypeCategory: false,
+                chart_Y_Axis_Label: "Peptide Count",
+                showlegend: false
+            });
 
-        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+            try {
+                //  First remove any existing plot, if it exists (And event listener on it)
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
+            }
 
-        {
-            // const chart_Data_JSON = JSON.stringify( chart_Data );
-            // const chart_Layout_JSON = JSON.stringify( chart_Layout );
-            //
-            // console.log("*********************************")
-            // console.log("Data for Chart with Title: " + chartTitle );
-            // console.log("chart_Data object: ", chart_Data );
-            // console.log("chart_Data_JSON: " + chart_Data_JSON );
-            // console.log("chart_Layout object: ", chart_Layout );
-            // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
-            // console.log("chart_config object: ", chart_config );
-            // console.log("*********************************")
-        }
+            if ( this.props.isInSingleChartOverlay ) {
 
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
+                const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
 
-        if ( ! this.props.isInSingleChartOverlay ) {
+                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
 
-            //  Add click handler on chart on main page to open chart in overlay
+                // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
 
-            qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
-        }
+                const chart_Width = Math.floor( targetDOMElement_domRect.width );
+                const chart_Height = Math.floor( targetDOMElement_domRect.height );
+
+                //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+
+                // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+                //
+                // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                //
+                // if ()
+
+                chart_Layout.width = chart_Width;
+                chart_Layout.height = chart_Height;
+            }
+
+            const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+
+            {
+                // const chart_Data_JSON = JSON.stringify( chart_Data );
+                // const chart_Layout_JSON = JSON.stringify( chart_Layout );
+                //
+                // console.log("*********************************")
+                // console.log("Data for Chart with Title: " + chartTitle );
+                // console.log("chart_Data object: ", chart_Data );
+                // console.log("chart_Data_JSON: " + chart_Data_JSON );
+                // console.log("chart_Layout object: ", chart_Layout );
+                // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
+                // console.log("chart_config object: ", chart_config );
+                // console.log("*********************************")
+            }
+
+            const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
+
+            if ( ! this.props.isInSingleChartOverlay ) {
+
+                //  Add click handler on chart on main page to open chart in overlay
+
+                qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            }
+
+            this.setState({ showUpdatingMessage: false }); // Do at end
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**

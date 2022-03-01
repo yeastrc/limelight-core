@@ -43,7 +43,6 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
-import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightDatabaseException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -52,10 +51,8 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher.PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -87,7 +84,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -118,8 +115,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Autowired
 	private PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher;
 	
-	@Autowired
-	private PsmSearchSubGroupIdsForPsmIdsSearcher_IF psmSearchSubGroupIdsForPsmIdsSearcher;
+//	@Autowired
+//	private PsmSearchSubGroupIdsForPsmIdsSearcher_IF psmSearchSubGroupIdsForPsmIdsSearcher;
 		
 	@Autowired
 	private PsmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher_IF psmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher;
@@ -279,17 +276,17 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			
     			Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
     			
-    			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-    				List<Long> psmIds = new ArrayList<>( psmOpenModificationMassesList.size() );
-    				for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
-    					psmIds.add( resultEntry.getPsmId() );
-    				}
-    				List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList = 
-    						psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
-    				for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem item : psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList ) {
-    					searchSubGroupIdMap_Key_PsmId.put( item.getPsmId(), item.getSearchSubGroupId() );
-    				}
-    			}
+//    			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
+//    				List<Long> psmIds = new ArrayList<>( psmOpenModificationMassesList.size() );
+//    				for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
+//    					psmIds.add( resultEntry.getPsmId() );
+//    				}
+//    				List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList = 
+//    						psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
+//    				for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem item : psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList ) {
+//    					searchSubGroupIdMap_Key_PsmId.put( item.getPsmId(), item.getSearchSubGroupId() );
+//    				}
+//    			}
 
     			//  Store results per PsmId and per psm_open_modification_id
     			Map<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> internalHolder_EntryMap_Key_PsmId = new HashMap<>();
@@ -313,15 +310,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				webserviceResult_Per_PsmId_OpenModMass_Entry.psmId = psmId;
     				webserviceResult_Per_PsmId_OpenModMass_Entry.openModificationMass = resultEntry.getOpenModificationMass();
     				
-        			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-        				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
-        				if ( searchSubGroupId == null ) {
-        					String msg = "No searchSubGroupId found for psmId: " + psmId + ", psmOpenModificationId: " + psmOpenModificationId;
-        					log.error( msg );
-        					throw new LimelightDatabaseException(msg);
-        				}
-        				webserviceResult_Per_PsmId_OpenModMass_Entry.searchSubGroupId = searchSubGroupId;
-        			}
+//        			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
+//        				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
+//        				if ( searchSubGroupId == null ) {
+//        					String msg = "No searchSubGroupId found for psmId: " + psmId + ", psmOpenModificationId: " + psmOpenModificationId;
+//        					log.error( msg );
+//        					throw new LimelightDatabaseException(msg);
+//        				}
+//        				webserviceResult_Per_PsmId_OpenModMass_Entry.searchSubGroupId = searchSubGroupId;
+//        			}
     				
     				InternalHolder__Per_PsmId_psm_open_modification_id_Entry internalHolder = new InternalHolder__Per_PsmId_psm_open_modification_id_Entry();
     				internalHolder.psmId = psmId;
@@ -434,7 +431,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceRequest {
 
-    	private Boolean getSearchSubGroupIds;
+//    	private Boolean getSearchSubGroupIds;
     	private Integer projectSearchId;
     	private List<Integer> reportedPeptideIds;
     	private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
@@ -449,9 +446,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
 			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
 		}
-		public void setGetSearchSubGroupIds(Boolean getSearchSubGroupIds) {
-			this.getSearchSubGroupIds = getSearchSubGroupIds;
-		}
+//		public void setGetSearchSubGroupIds(Boolean getSearchSubGroupIds) {
+//			this.getSearchSubGroupIds = getSearchSubGroupIds;
+//		}
     }
     
 
@@ -493,7 +490,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
 		private long psmId;
 		private double openModificationMass;
-		private Integer searchSubGroupId;
+//		private Integer searchSubGroupId;
     	List<WebserviceResult_OpenModMass_Position_Entry>  psmOpenModificationMassPositionsList;
     	
 		public long getPsmId() {
@@ -505,9 +502,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		public List<WebserviceResult_OpenModMass_Position_Entry> getPsmOpenModificationMassPositionsList() {
 			return psmOpenModificationMassPositionsList;
 		}
-		public Integer getSearchSubGroupId() {
-			return searchSubGroupId;
-		}
+//		public Integer getSearchSubGroupId() {
+//			return searchSubGroupId;
+//		}
     }
 
 	/**

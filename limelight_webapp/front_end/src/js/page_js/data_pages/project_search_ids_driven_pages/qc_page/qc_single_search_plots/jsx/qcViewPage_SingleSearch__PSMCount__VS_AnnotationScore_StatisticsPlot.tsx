@@ -6,11 +6,8 @@
  */
 
 
-import Handlebars = require('handlebars/runtime');
-
 import _common_template_bundle =
     require("../../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
-
 import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
@@ -350,8 +347,6 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
                 const value = values[0]; // Just use first entry
 
-                this.setState({ showUpdatingMessage: false });
-
                 const psmFilterableAnnotationData_Unfiltered = value.psmFilterableAnnotationData_Unfiltered;
 
                 let psmTblData_Unfiltered: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_Root = undefined;
@@ -657,6 +652,8 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                 }
 
                 const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
+
+                this.setState({ showUpdatingMessage: false });
 
                 if ( ! this.props.isInSingleChartOverlay ) {
 

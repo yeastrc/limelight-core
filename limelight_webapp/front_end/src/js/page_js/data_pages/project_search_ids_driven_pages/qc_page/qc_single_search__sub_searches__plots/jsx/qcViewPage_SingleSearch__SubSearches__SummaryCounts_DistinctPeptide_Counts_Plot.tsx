@@ -9,11 +9,7 @@ import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    qcPage_StandardChartLayout,
-    qcPage_StandardChartLayout_Standard_Plot_Margin_Bottom,
-    qcPage_StandardChartLayout_StandardHeight
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
@@ -242,8 +238,6 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_DistinctPeptide
             return; // EARLY RETURN
         }
 
-        this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point
-
         const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
         const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
@@ -447,6 +441,7 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_DistinctPeptide
             qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
         }
 
+        this.setState({ showUpdatingMessage: false });
     }
 
     /**

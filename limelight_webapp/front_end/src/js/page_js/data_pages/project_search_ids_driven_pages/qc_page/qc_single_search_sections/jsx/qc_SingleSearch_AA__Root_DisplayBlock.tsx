@@ -71,9 +71,9 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
 
         const projectSearchId = commonData.projectSearchIds[0];
 
-        const loadedDataPerProjectSearchIdHolder = commonData.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-        if ( ! loadedDataPerProjectSearchIdHolder ) {
-            const msg = "commonData.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ) returned nothing. projectSearchId: " + projectSearchId;
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            const msg = "commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ) returned nothing. projectSearchId: " + projectSearchId;
             console.warn(msg);
             throw Error(msg);
         }
@@ -97,8 +97,7 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
             retrievalParams: {
                 projectSearchId,
                 searchDataLookupParamsRoot: commonData.searchDataLookupParamsRoot,
-                loadedDataPerProjectSearchIdHolder,
-                loadedDataCommonHolder: commonData.loadedDataCommonHolder,
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
                 dataPageStateManager: commonData.dataPageStateManager,
                 qcPage_Flags_SingleSearch_ForProjectSearchId,
                 qcPage_Searches_Info_SingleSearch_ForProjectSearchId

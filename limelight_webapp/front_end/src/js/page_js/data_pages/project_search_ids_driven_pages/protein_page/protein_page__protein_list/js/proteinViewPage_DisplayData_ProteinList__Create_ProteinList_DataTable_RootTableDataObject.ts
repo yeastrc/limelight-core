@@ -6,31 +6,28 @@
 
 
 import {
-    DataTable_RootTableDataObject,
-    DataTable_DataRowEntry,
-    DataTable_DataGroupRowEntry,
     DataTable_Column,
+    DataTable_Column_DownloadTable,
+    DataTable_DataGroupRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
-    DataTable_RootTableDataObject_Both_ColumnArrays,
-    DataTable_Column_DownloadTable,
-    DataTable_DataRowEntry_DownloadTable_SingleColumn,
-    DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry_DownloadTable,
-    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_RootTableDataObject,
+    DataTable_RootTableDataObject_Both_ColumnArrays
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { ProteinGrouping_CentralStateManagerObjectClass } from '../../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+import {ProteinGrouping_CentralStateManagerObjectClass} from '../../protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass';
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {
     get_ProteinList_ProteinDescription_ExternalReactComponent,
     get_ProteinList_ProteinName_ExternalReactComponent
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinName_ProteinDescription_DataTable_Component";
-import {
-    ProteinNameDescriptionCacheEntry
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
+import {ProteinNameDescriptionCacheEntry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
 import {
     get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Text_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip_DataTable_Component,
@@ -45,7 +42,10 @@ import {
     get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Text_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_PeptideUnique_Count_Header_Tooltip_DataTable_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/protein_page__protein_list__single_search_code/datatable_components/proteinViewPage_DisplayData__SearchSubGroup_Peptide_Count_Header_Text_And_Tooltip_DataTable_Component";
-import {ProteinDataDisplay_ProteinList_Item, ProteinDisplayData_From_createProteinDisplayData_ProteinList } from './proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes';
+import {
+    ProteinDataDisplay_ProteinList_Item,
+    ProteinDisplayData_From_createProteinDisplayData_ProteinList
+} from './proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes';
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
 
@@ -55,11 +55,17 @@ const _TRUE__DOWNLOAD_STRING = "true";
 
 ///   Callback when row in protein list table is clicked
 
+/**
+ *
+ */
 export class ProteinViewPage_Display__singleProteinRow_ClickHandler_Params {
     proteinSequenceVersionId: number
     dataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params: DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params
 }
 
+/**
+ *
+ */
 export type ProteinViewPage_Display__singleProteinRow_ClickHandler = (params : ProteinViewPage_Display__singleProteinRow_ClickHandler_Params ) => void
 
 /**
@@ -73,7 +79,6 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
         searchSubGroupIds,
         projectSearchIds,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, dataPageStateManager_DataFrom_Server
     } : {
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
@@ -82,7 +87,6 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         searchSubGroupIds : Array<number>  //  undefined or null when not applicable
         projectSearchIds : Array<number>
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         dataPageStateManager_DataFrom_Server : DataPageStateManager
 

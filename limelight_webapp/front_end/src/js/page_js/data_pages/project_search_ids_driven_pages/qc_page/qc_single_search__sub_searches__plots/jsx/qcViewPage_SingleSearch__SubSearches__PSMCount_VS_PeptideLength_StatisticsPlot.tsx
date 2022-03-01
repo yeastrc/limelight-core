@@ -116,9 +116,9 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
         try {
             this._componentMounted = true;
 
-            window.setTimeout( () => {
+            window.setTimeout( async () => {
                 try {
-                    this._populateChart();
+                    await this._populateChart();
 
                     if ( this.props.isInSingleChartOverlay ) {
                         this._resizeWindow_Handler_Attach();
@@ -177,9 +177,9 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
 
             this.setState({ showUpdatingMessage: true });
 
-            window.setTimeout( () => {
+            window.setTimeout( async () => {
                 try {
-                    this._populateChart();
+                    await this._populateChart();
 
                 } catch( e ) {
                     console.warn("Exception caught in componentDidMount inside setTimeout");
@@ -220,7 +220,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
      */
     private _resizeWindow_Handler() : void {
         try {
-            this._populateChart()
+            this._populateChart()  //  Returns Ignored Promise
 
         } catch( e ) {
             console.log("Exception caught in _resizeWindow_Handler()");
@@ -233,350 +233,363 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_PeptideLength_Sta
     /**
      *
      */
-    private _populateChart() {
-
-        if ( ! this._componentMounted ) {
-            //  Component no longer mounted so exit
-            return; // EARLY RETURN
-        }
-
-        this.setState({ showUpdatingMessage: false });
-
-
-        const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
-
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        const loadedDataCommonHolder = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataCommonHolder;
-
-        const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
-
-        const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
-        const searchSubGroupIds_DisplayOrder: Array<number> = [];
-        const searchSubGroups_Map_Key_searchSubGroupId: Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = new Map();
-        {
-            const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
-            for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
-                searchSubGroups_DisplayOrder.push(searchSubGroup);
-                searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
-                searchSubGroups_Map_Key_searchSubGroupId.set(searchSubGroup.searchSubGroup_Id, searchSubGroup);
+    private async _populateChart() : Promise<void> {
+        try {
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
             }
-        }
 
-        const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
+            const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-        const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-        if ( ! subGroupIdMap_Key_PsmId ) {
-            throw Error("loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned NOTHING for projectSearchId: " + projectSearchId);
-        }
+            const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        const peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId = new Map<number, Map<number, Peptide_LengthCount_Entry>>();
-
-        for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
-
-            //  Expected to only contain 1 entry at root level
-            const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId = new Map<number, Map<number, Map<number, ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry>>>();
-
-            for ( const dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue of peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_reportedPeptideId.values() ) {
-
-                for ( const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue.entries() ) {
-
-                    const searchSubgroupId = dataPerReportedPeptideId_MapEntry[0];
-                    const data_PerReportedPeptideId_SearchSubGroupId_Value = dataPerReportedPeptideId_MapEntry[1];
-                    const reportedPeptideId = data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId;
-
-                    if ( ! searchSubGroup_Ids_Selected.has( searchSubgroupId ) ) {
-                        // Not Selected so skip
-                        continue; // EARLY CONTINUE
-                    }
-
-                    const peptideId = loadedDataPerProjectSearchIdHolder.get_peptideId_For_reportedPeptideId({ reportedPeptideId });
-
-                    let dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.get( peptideId );
-                    if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId ) {
-                        dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = new Map();
-                        dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.set( peptideId, dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId );
-                    }
-                    let dataPerReportedPeptideId_Map_Key_reportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.get( searchSubgroupId );
-                    if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
-                        dataPerReportedPeptideId_Map_Key_reportedPeptideId = new Map();
-                        dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.set( searchSubgroupId, dataPerReportedPeptideId_Map_Key_reportedPeptideId );
-                    }
-                    dataPerReportedPeptideId_Map_Key_reportedPeptideId.set( reportedPeptideId, data_PerReportedPeptideId_SearchSubGroupId_Value );
+            const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
+            const searchSubGroupIds_DisplayOrder: Array<number> = [];
+            const searchSubGroups_Map_Key_searchSubGroupId: Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = new Map();
+            {
+                const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+                for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+                    searchSubGroups_DisplayOrder.push(searchSubGroup);
+                    searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
+                    searchSubGroups_Map_Key_searchSubGroupId.set(searchSubGroup.searchSubGroup_Id, searchSubGroup);
                 }
             }
 
-            for ( const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.entries() ) {
+            const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
 
-                const peptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry[0];
-                const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry[1];
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+            if (!commonData_LoadedFromServer_PerSearch_For_ProjectSearchId) {
+                const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
 
-                const peptideSequenceString = loadedDataCommonHolder.get_peptideSequenceString_For_peptideId({ peptideId });
-                const peptideSequence_Length = peptideSequenceString.length;
 
-                for ( const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.entries() ) {
+            const get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters().get_PeptideIdsHolder_AllForSearch_ReturnPromise();
+            const peptideIds_For_MainFilters_Holder = get_PeptideIdsHolder_AllForSearch_ReturnPromise_Result.peptideIds_For_MainFilters_Holder;
 
-                    const searchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry[0];
-                    const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry[1];
+            const get_numPsmsForReportedPeptideIdMap_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters().
+                get_numPsmsForReportedPeptideIdMap_ReturnPromise();
+            const numPsmsForReportedPeptideIdMap = get_numPsmsForReportedPeptideIdMap_ReturnPromise_Result.numPsmsForReportedPeptideIdMap
 
-                    let peptideLengthCounts_Map_Key_PeptideLength_Map = peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.get(searchSubgroupId);
-                    if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map ) {
-                        peptideLengthCounts_Map_Key_PeptideLength_Map = new Map();
-                        peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.set( searchSubgroupId, peptideLengthCounts_Map_Key_PeptideLength_Map );
+            const get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                get__commonData_LoadedFromServer__CommonAcrossSearches().
+                get_commonData_LoadedFromServer_SingleSearch__PeptideSequences_For_MainFilters().
+                get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise();
+            const peptideSequences_For_MainFilters_Holder = get_PeptideSequencesHolder_AllForAllSearches_ReturnPromise_Result.peptideSequences_For_MainFilters_Holder
+
+
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
+
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+            const peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId = new Map<number, Map<number, Peptide_LengthCount_Entry>>();
+
+            for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
+
+                //  Expected to only contain 1 entry at root level
+                const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId = new Map<number, Map<number, Map<number, ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry>>>();
+
+                for ( const dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue of peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_reportedPeptideId.values() ) {
+
+                    for ( const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue.entries() ) {
+
+                        const searchSubgroupId = dataPerReportedPeptideId_MapEntry[0];
+                        const data_PerReportedPeptideId_SearchSubGroupId_Value = dataPerReportedPeptideId_MapEntry[1];
+                        const reportedPeptideId = data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId;
+
+                        if ( ! searchSubGroup_Ids_Selected.has( searchSubgroupId ) ) {
+                            // Not Selected so skip
+                            continue; // EARLY CONTINUE
+                        }
+
+                        const peptideId = peptideIds_For_MainFilters_Holder.get_PeptideId_For_ReportedPeptideId( reportedPeptideId );
+
+                        let dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.get( peptideId );
+                        if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId ) {
+                            dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = new Map();
+                            dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.set( peptideId, dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId );
+                        }
+                        let dataPerReportedPeptideId_Map_Key_reportedPeptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.get( searchSubgroupId );
+                        if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                            dataPerReportedPeptideId_Map_Key_reportedPeptideId = new Map();
+                            dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.set( searchSubgroupId, dataPerReportedPeptideId_Map_Key_reportedPeptideId );
+                        }
+                        dataPerReportedPeptideId_Map_Key_reportedPeptideId.set( reportedPeptideId, data_PerReportedPeptideId_SearchSubGroupId_Value );
                     }
+                }
 
-                    let peptideLengthCount_Entry = peptideLengthCounts_Map_Key_PeptideLength_Map.get( peptideSequence_Length );
-                    if ( ! peptideLengthCount_Entry ) {
-                        peptideLengthCount_Entry = new Peptide_LengthCount_Entry({ peptideLength: peptideSequence_Length });
-                        peptideLengthCounts_Map_Key_PeptideLength_Map.set( peptideSequence_Length, peptideLengthCount_Entry );
-                    }
+                for ( const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId.entries() ) {
 
-                    for ( const dataPerReportedPeptideId_Value of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map.values() ) {
+                    const peptideId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry[0];
+                    const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_PeptideId_Entry[1];
 
-                        const reportedPeptideId = dataPerReportedPeptideId_Value.reportedPeptideId;
+                    const peptideSequenceString = peptideSequences_For_MainFilters_Holder.get_PeptideSequence_For_PeptideId( peptideId );
+                    const peptideSequence_Length = peptideSequenceString.length;
 
-                        if (dataPerReportedPeptideId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
+                    for ( const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId.entries() ) {
 
-                            peptideLengthCount_Entry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds.add( reportedPeptideId )
+                        const searchSubgroupId = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry[0];
+                        const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map = dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map_Key_SearchSubgroupId_Entry[1];
 
-                        } else {
-                            if (dataPerReportedPeptideId_Value.psmIdsSet) {
+                        let peptideLengthCounts_Map_Key_PeptideLength_Map = peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.get(searchSubgroupId);
+                        if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map ) {
+                            peptideLengthCounts_Map_Key_PeptideLength_Map = new Map();
+                            peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.set( searchSubgroupId, peptideLengthCounts_Map_Key_PeptideLength_Map );
+                        }
 
-                                let psmIds = peptideLengthCount_Entry.psmIds_Map_Key_ReportedPeptideId.get( reportedPeptideId );
-                                if ( ! psmIds ) {
-                                    psmIds = new Set();
-                                    peptideLengthCount_Entry.psmIds_Map_Key_ReportedPeptideId.set( reportedPeptideId, psmIds );
-                                }
-                                for ( const psmId of dataPerReportedPeptideId_Value.psmIdsSet ) {
-                                    psmIds.add( psmId );
+                        let peptideLengthCount_Entry = peptideLengthCounts_Map_Key_PeptideLength_Map.get( peptideSequence_Length );
+                        if ( ! peptideLengthCount_Entry ) {
+                            peptideLengthCount_Entry = new Peptide_LengthCount_Entry({ peptideLength: peptideSequence_Length });
+                            peptideLengthCounts_Map_Key_PeptideLength_Map.set( peptideSequence_Length, peptideLengthCount_Entry );
+                        }
+
+                        for ( const dataPerReportedPeptideId_Value of dataPerReportedPeptideId_Map_Key_reportedPeptideId_Map.values() ) {
+
+                            const reportedPeptideId = dataPerReportedPeptideId_Value.reportedPeptideId;
+
+                            if (dataPerReportedPeptideId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
+
+                                peptideLengthCount_Entry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds.add( reportedPeptideId )
+
+                            } else {
+                                if (dataPerReportedPeptideId_Value.psmIdsSet) {
+
+                                    let psmIds = peptideLengthCount_Entry.psmIds_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+                                    if ( ! psmIds ) {
+                                        psmIds = new Set();
+                                        peptideLengthCount_Entry.psmIds_Map_Key_ReportedPeptideId.set( reportedPeptideId, psmIds );
+                                    }
+                                    for ( const psmId of dataPerReportedPeptideId_Value.psmIdsSet ) {
+                                        psmIds.add( psmId );
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        //  Must add to chart_X, chart_Y in the order they will be shown in the chart
+            //  Must add to chart_X, chart_Y in the order they will be shown in the chart
 
-        const chart_X : Array<string> = []
-        const chart_Y : Array<number> = []
+            const chart_X : Array<string> = []
+            const chart_Y : Array<number> = []
 
-        for (const searchSubGroup of searchSubGroups_DisplayOrder) {
+            for (const searchSubGroup of searchSubGroups_DisplayOrder) {
 
-            const peptideLengthCounts_Map_Key_PeptideLength_Map = peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.get( searchSubGroup.searchSubGroup_Id );
+                const peptideLengthCounts_Map_Key_PeptideLength_Map = peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.get( searchSubGroup.searchSubGroup_Id );
 
-            if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map ) {
-                //  NOT a Found searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            const x_Label = searchSubGroup.subgroupName_Display;
-
-            for ( const peptideLengthCountEntry of peptideLengthCounts_Map_Key_PeptideLength_Map.values() ) {
-
-                const peptideSequence_Length = peptideLengthCountEntry.peptideLength
-
-                //  Add in all PSM Id counts
-
-                for ( const psmIds_MapEntry of peptideLengthCountEntry.psmIds_Map_Key_ReportedPeptideId.entries() ) {
-
-                    const reportedPeptideId: number = psmIds_MapEntry[0];
-                    const psmIds = psmIds_MapEntry[1];
-
-                    if ( peptideLengthCountEntry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds.has( reportedPeptideId ) ) {
-                        //  Have entry where no filtering on PsmIds so skip this entry
-                        continue; // EARLY CONTINUE
-                    }
-
-                    for ( let psmCounter = 0; psmCounter < psmIds.size; psmCounter++ ) {
-
-                        chart_X.push( x_Label )
-                        chart_Y.push( peptideSequence_Length )
-                    }
+                if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map ) {
+                    //  NOT a Found searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
                 }
 
-                //  Add in all PSM counts for Reported Peptide Ids where no filtering on PsmIds
+                const x_Label = searchSubGroup.subgroupName_Display;
 
-                const numPsmsForReportedPeptideIdMap = loadedDataPerProjectSearchIdHolder.get_numPsmsForReportedPeptideIdMap();
+                for ( const peptideLengthCountEntry of peptideLengthCounts_Map_Key_PeptideLength_Map.values() ) {
 
-                for ( const reportedPeptideId of peptideLengthCountEntry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds ) {
-                    const numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
-                    if ( numPsms ) {
+                    const peptideSequence_Length = peptideLengthCountEntry.peptideLength
 
-                        for ( let psmCounter = 0; psmCounter < numPsms; psmCounter++ ) {
+                    //  Add in all PSM Id counts
+
+                    for ( const psmIds_MapEntry of peptideLengthCountEntry.psmIds_Map_Key_ReportedPeptideId.entries() ) {
+
+                        const reportedPeptideId: number = psmIds_MapEntry[0];
+                        const psmIds = psmIds_MapEntry[1];
+
+                        if ( peptideLengthCountEntry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds.has( reportedPeptideId ) ) {
+                            //  Have entry where no filtering on PsmIds so skip this entry
+                            continue; // EARLY CONTINUE
+                        }
+
+                        for ( let psmCounter = 0; psmCounter < psmIds.size; psmCounter++ ) {
 
                             chart_X.push( x_Label )
                             chart_Y.push( peptideSequence_Length )
                         }
                     }
+
+                    //  Add in all PSM counts for Reported Peptide Ids where no filtering on PsmIds
+
+                    for ( const reportedPeptideId of peptideLengthCountEntry.reportedPeptideIds_Where_no_SubFiltering_On_PsmIds ) {
+                        const numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
+                        if ( numPsms ) {
+
+                            for ( let psmCounter = 0; psmCounter < numPsms; psmCounter++ ) {
+
+                                chart_X.push( x_Label )
+                                chart_Y.push( peptideSequence_Length )
+                            }
+                        }
+                    }
                 }
             }
-        }
 
-        const transforms_styles: Array<any> = [];
+            const transforms_styles: Array<any> = [];
 
-        for (const searchSubGroup of searchSubGroups_DisplayOrder) {
+            for (const searchSubGroup of searchSubGroups_DisplayOrder) {
 
-            if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.has( searchSubGroup.searchSubGroup_Id ) ) {
-                //  NOT a Found searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
+                if ( ! peptideLengthCounts_Map_Key_PeptideLength_Map_Key_SearchSubGroupId.has( searchSubGroup.searchSubGroup_Id ) ) {
+                    //  NOT a Found searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
+                }
+
+                const color = qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches.get_Color_AsHexString_By_SearchSubGroupId(searchSubGroup.searchSubGroup_Id)
+
+                transforms_styles.push({target: searchSubGroup.subgroupName_Display, value: {line: {color: color}}});
             }
 
-            const color = qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches.get_Color_AsHexString_By_SearchSubGroupId(searchSubGroup.searchSubGroup_Id)
+            const chart_Data_Entry = {
+                type: 'violin',
+                x: chart_X,
+                y: chart_Y,
+                points: "outliers", // https://plotly.com/javascript/reference/violin/#violin-points
+                box: {
+                    visible: true
+                },
+                line: {
+                    color: 'green',
+                },
+                meanline: {
+                    visible: true
+                },
+                transforms: [{
+                    type: 'groupby',
+                    groups: chart_X,
+                    styles: transforms_styles
+                }]
+            }
 
-            transforms_styles.push({target: searchSubGroup.subgroupName_Display, value: {line: {color: color}}});
-        }
+            //  Single Search:
+            // const chart_Data_Entry = {
+            //     type: 'bar',
+            //         x: chart_X,
+            //     y: chart_Y,
+            //     // text: chart_Bars_labels, //  Text put on each bar
+            //     hoverinfo: "text", //  Hover contents
+            //     hovertext: chart_Bars_Tooltips  //  Hover contents per bar
+            // }
 
-        const chart_Data_Entry = {
-            type: 'violin',
-            x: chart_X,
-            y: chart_Y,
-            points: "outliers", // https://plotly.com/javascript/reference/violin/#violin-points
-            box: {
-                visible: true
-            },
-            line: {
-                color: 'green',
-            },
-            meanline: {
-                visible: true
-            },
-            transforms: [{
-                type: 'groupby',
-                groups: chart_X,
-                styles: transforms_styles
-            }]
-        }
-
-        //  Single Search:
-        // const chart_Data_Entry = {
-        //     type: 'bar',
-        //         x: chart_X,
-        //     y: chart_Y,
-        //     // text: chart_Bars_labels, //  Text put on each bar
-        //     hoverinfo: "text", //  Hover contents
-        //     hovertext: chart_Bars_Tooltips  //  Hover contents per bar
-        // }
-
-        const chart_Data = [
-            chart_Data_Entry
-        ];
+            const chart_Data = [
+                chart_Data_Entry
+            ];
 
 
-        // Another way to color each bar, all in one trace
-        //
-        // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
-        //     var trace1 = {
-        //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-        //         y: [20, 14, 23, 25, 22],
-        //         marker:{
-        //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
-        //         },
-        //         type: 'bar'
-        //     };
-
-        const xAxisTitle = "Sub Search";
-
-        const chart_Layout = qcPage_StandardChartLayout({
-            chartTitle,
-            chart_X_Axis_Label: xAxisTitle,
-            chart_X_Axis_IsTypeCategory: true,
-            chart_Y_Axis_Label: "PSM Peptide Length",
-            showlegend: false,
-            search_SubSearch_Count_SizeFor: transforms_styles.length
-        });
-
-        try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
-
-        if ( this.props.isInSingleChartOverlay ) {
-
-            const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-            /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-            // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-            // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-            // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-            // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-            const chart_Width = Math.floor( targetDOMElement_domRect.width );
-            const chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-            //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-            // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+            // Another way to color each bar, all in one trace
             //
-            // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            //
-            // if ()
+            // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
+            //     var trace1 = {
+            //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
+            //         y: [20, 14, 23, 25, 22],
+            //         marker:{
+            //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
+            //         },
+            //         type: 'bar'
+            //     };
 
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
-        }
+            const xAxisTitle = "Sub Search";
 
-        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
-
-        {
-            // const chart_Data_JSON = JSON.stringify( chart_Data );
-            // const chart_Layout_JSON = JSON.stringify( chart_Layout );
-            //
-            // console.log("*********************************")
-            // console.log("Data for Chart with Title: " + chartTitle );
-            // console.log("chart_Data object: ", chart_Data );
-            // console.log("chart_Data_JSON: " + chart_Data_JSON );
-            // console.log("chart_Layout object: ", chart_Layout );
-            // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
-            // console.log("chart_config object: ", chart_config );
-            // console.log("*********************************")
-        }
-
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
-
-        {
-            //  Adjust Plot Layout if needed so X Axis labels do not cover the X Axis title
-
-            const xAxisLabels = new Set(chart_X);
-
-            const  {
-                updateLayoutNeeded, updateLayout
-            } = qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object({
-                plotRoot_DOM_Element: this.plot_Ref.current,
-                xAxisLabels,
-                xAxisTitle,
-                adjustPlotHeight: ( ! this.props.isInSingleChartOverlay )
+            const chart_Layout = qcPage_StandardChartLayout({
+                chartTitle,
+                chart_X_Axis_Label: xAxisTitle,
+                chart_X_Axis_IsTypeCategory: true,
+                chart_Y_Axis_Label: "PSM Peptide Length",
+                showlegend: false,
+                search_SubSearch_Count_SizeFor: transforms_styles.length
             });
 
-            if ( updateLayoutNeeded ) {
-                Plotly.relayout(this.plot_Ref.current, updateLayout);
+            try {
+                //  First remove any existing plot, if it exists (And event listener on it)
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
             }
-        }
 
-        if ( ! this.props.isInSingleChartOverlay ) {
+            if ( this.props.isInSingleChartOverlay ) {
 
-            //  Add click handler on chart on main page to open chart in overlay
+                const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
 
-            qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
-        }
+                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+
+                // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+
+                const chart_Width = Math.floor( targetDOMElement_domRect.width );
+                const chart_Height = Math.floor( targetDOMElement_domRect.height );
+
+                //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+
+                // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+                //
+                // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                //
+                // if ()
+
+                chart_Layout.width = chart_Width;
+                chart_Layout.height = chart_Height;
+            }
+
+            const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+
+            {
+                // const chart_Data_JSON = JSON.stringify( chart_Data );
+                // const chart_Layout_JSON = JSON.stringify( chart_Layout );
+                //
+                // console.log("*********************************")
+                // console.log("Data for Chart with Title: " + chartTitle );
+                // console.log("chart_Data object: ", chart_Data );
+                // console.log("chart_Data_JSON: " + chart_Data_JSON );
+                // console.log("chart_Layout object: ", chart_Layout );
+                // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
+                // console.log("chart_config object: ", chart_config );
+                // console.log("*********************************")
+            }
+
+            const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
+
+            {
+                //  Adjust Plot Layout if needed so X Axis labels do not cover the X Axis title
+
+                const xAxisLabels = new Set(chart_X);
+
+                const  {
+                    updateLayoutNeeded, updateLayout
+                } = qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object({
+                    plotRoot_DOM_Element: this.plot_Ref.current,
+                    xAxisLabels,
+                    xAxisTitle,
+                    adjustPlotHeight: ( ! this.props.isInSingleChartOverlay )
+                });
+
+                if ( updateLayoutNeeded ) {
+                    Plotly.relayout(this.plot_Ref.current, updateLayout);
+                }
+            }
+
+            if ( ! this.props.isInSingleChartOverlay ) {
+
+                //  Add click handler on chart on main page to open chart in overlay
+
+                qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            }
+
+            this.setState({ showUpdatingMessage: false });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+
     }
 
     /**

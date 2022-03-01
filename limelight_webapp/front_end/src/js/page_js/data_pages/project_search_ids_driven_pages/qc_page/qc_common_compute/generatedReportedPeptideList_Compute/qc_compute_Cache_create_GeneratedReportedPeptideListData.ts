@@ -5,9 +5,9 @@ import {
 import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
-import {ProteinView_LoadedDataCommonHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataCommonHolder";
 import {ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 /**
  * qc_compute_Cache_create_GeneratedReportedPeptideListData.ts
@@ -26,9 +26,9 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
     private _reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     private _proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
     private _modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+    private _dataPageStateManager : DataPageStateManager
     private _projectSearchIds : Array<number>
-    private _loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-    private _loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+    private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     /**
      *
@@ -38,33 +38,33 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
             proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            dataPageStateManager,
             projectSearchIds,
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-            loadedDataCommonHolder
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
             proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+            dataPageStateManager : DataPageStateManager
             projectSearchIds : Array<number>
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
-            loadedDataCommonHolder : ProteinView_LoadedDataCommonHolder
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         }
     ) {
         this._reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
         this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject = proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject;
         this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass = modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass;
+        this._dataPageStateManager = dataPageStateManager;
         this._projectSearchIds = projectSearchIds;
-        this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-        this._loadedDataCommonHolder = loadedDataCommonHolder;
+        this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
     }
 
     /**
      *
      */
-    compute_And_Cache_create_GeneratedReportedPeptideListData() : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result {
+    async compute_And_Cache_create_GeneratedReportedPeptideListData() : Promise<Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result> {
 
         if ( ! this._cachedResult ) {
-            this._computeCachedResult();
+            await this._computeCachedResult();
         }
 
         return this._cachedResult;
@@ -73,7 +73,7 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
     /**
      *
      */
-    private _computeCachedResult() : void {
+    private async _computeCachedResult() : Promise<void> {
 
         //  copy from proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject to generatedPeptideContents_UserSelections_StateObject
 
@@ -100,7 +100,7 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
         generatedPeptideContents_UserSelections_StateObject.setStaticModifications_Selected(false);
 
         this._cachedResult =
-            create_GeneratedReportedPeptideListData__SingleProtein({
+            await create_GeneratedReportedPeptideListData__SingleProtein({
                 forPeptidePage: true,
 
                 //  !!!  Important:   result from create_GeneratedReportedPeptideListData__SingleProtein has updated reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds if psmMinimumCount_Filter_UserEntry > 1
@@ -111,12 +111,12 @@ export class Qc_compute_Cache_create_GeneratedReportedPeptideListData {
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: this._reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                 generatedPeptideContents_UserSelections_StateObject,
                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                dataPageStateManager: this._dataPageStateManager,
                 proteinSequenceVersionId: undefined,  // Not Populated on Peptide Page
                 projectSearchIds: this._projectSearchIds,
                 conditionGroupsContainer: undefined,     // Only populated for experiment Page
                 conditionGroupsDataContainer: undefined, // Only populated for experiment Page
-                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: this._loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                loadedDataCommonHolder: this._loadedDataCommonHolder
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             });
 
     }

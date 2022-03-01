@@ -7,12 +7,8 @@
 
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {
-    DataPage_common_Flags_SingleSearch
-} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
-import {
-    DataPage_common_Searches_Info_SingleSearch,
-} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
+import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import {DataPage_common_Searches_Info_SingleSearch,} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {Qc_SingleSearch__SubSearches_SummaryStatistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_SummaryStatistics_Section";
 import {QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches";
 import {Qc_SingleSearch__SubSearches_Digestion_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Digestion_Statistics_Section";
@@ -74,9 +70,9 @@ export class Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock extends React.Co
 
         const projectSearchId = commonData.projectSearchIds[0];
 
-        const loadedDataPerProjectSearchIdHolder = commonData.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-        if ( ! loadedDataPerProjectSearchIdHolder ) {
-            const msg = "commonData.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ) returned nothing. projectSearchId: " + projectSearchId;
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            const msg = "commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ) returned nothing. projectSearchId: " + projectSearchId;
             console.warn(msg);
             throw Error(msg);
         }
@@ -100,8 +96,7 @@ export class Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock extends React.Co
             retrievalParams: {
                 projectSearchId,
                 searchDataLookupParamsRoot: commonData.searchDataLookupParamsRoot,
-                loadedDataPerProjectSearchIdHolder,
-                loadedDataCommonHolder: commonData.loadedDataCommonHolder,
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
                 dataPageStateManager: commonData.dataPageStateManager,
                 qcPage_Flags_SingleSearch_ForProjectSearchId,
                 qcPage_Searches_Info_SingleSearch_ForProjectSearchId

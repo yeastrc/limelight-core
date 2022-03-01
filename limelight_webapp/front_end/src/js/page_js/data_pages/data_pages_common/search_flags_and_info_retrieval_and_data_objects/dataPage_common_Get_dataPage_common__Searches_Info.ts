@@ -50,7 +50,7 @@ export const dataPage_common_Get_Searches_Info = function (
 
     return new Promise<DataPage_common_Searches_Info>( (resolve, reject) => {
         try {
-            const url = "d/rws/for-page/psb/qc-page-search-info-list-from-psi";
+            const url = "d/rws/for-page/psb/search-info-list-from-psi";
 
             const requestData = { projectSearchIds };
 

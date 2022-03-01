@@ -22,7 +22,6 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {open_PSMCount_VS_M_Z_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_M_Z_OverlayContainer";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
-import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 
 
@@ -281,17 +280,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
         }
 
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
 
         const projectSearchId = projectSearchIds[0];
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing for projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg)
-        }
 
         //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
@@ -316,8 +306,6 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
             try {
                 const psmTblData = value.psmTblData;
                 const spectralStorage_NO_Peaks_Data = value.spectralStorage_NO_Peaks_Data;
-
-                this.setState({ showUpdatingMessage: false });
 
                 const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
                     qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
@@ -473,6 +461,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
 
                     qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
                 }
+
+                this.setState({ showUpdatingMessage: false });
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

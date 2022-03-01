@@ -26,12 +26,16 @@ import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_Stat
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {filter_selectionItem_Any_All_SelectionItem_Selection_Overlay_Create} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item_Selection_Overlay";
-import {
-    get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
+import {get_Filter_selectionItem_Any_All_SelectionItem_TableEntryContainer} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__TableEntryContainer";
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
-import {ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ModMasses_PSM_Counts_PerMass";
+import {
+    ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass,
+    ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ModMasses_PSM_Counts_PerMass";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {modificationMass_CommonRounding_ReturnNumber_Function} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 //  Main Dialog
 
@@ -40,6 +44,15 @@ const _Overlay_Width_Min = 800;
 const _Overlay_Width_Max = 800;
 const _Overlay_Height_Min = 400;
 const _Overlay_Height_Max = 1000;
+
+
+/**
+ *
+ */
+export enum ModificationMass_UserSelections_DisplayMassSelectionOverlay__Variable_Or_Open_Mods {
+    VARIABLE = "VARIABLE",
+    OPEN = "OPEN"
+}
 
 /**
  *
@@ -54,54 +67,24 @@ export type ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterCon
 /**
  *
  */
-export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout_LoadingMessage = function (
-    {
-        callbackOn_Cancel_Close_Clicked
-    } : {
-        callbackOn_Cancel_Close_Clicked? : () => void;
-
-    }) : JSX.Element {
-
-    return (
-        <ModalOverlay_Limelight_Component_v001_B_FlexBox
-            widthMinimum={ _Overlay_Width_Min }
-            widthMaximum={ _Overlay_Width_Max }
-            heightMinimum={ _Overlay_Height_Min }
-            heightMaximum={ _Overlay_Height_Max }
-            title={ _DIALOG_TITLE }
-            callbackOnClicked_Close={ callbackOn_Cancel_Close_Clicked }
-            close_OnBackgroundClick={ false }
-            titleBar_LeaveSpaceFor_CloseX={ true }
-        >
-
-
-            <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-            >
-                <div style={ { marginBottom: 12, fontWeight: "bold", fontSize: 24, textAlign: "center" } }>
-                    LOADING DATA
-                </div>
-                <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
-                    <Spinner_Limelight_Component/>
-                </div>
-            </div>
-
-        </ModalOverlay_Limelight_Component_v001_B_FlexBox>
-    );
-}
-
-/**
- *
- */
 export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Layout = function(
     {
+        variable_Or_Open_Mods,
         proteinName,
-        modUniqueMassesWithTheirPsmCountsArray,
+        proteinSequenceVersionId,  //  Not always populated
+        projectSearchIds,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+        modificationMass_CommonRounding_ReturnNumber,
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject,
         callbackOn_Cancel_Close_Clicked,
         callback_updateSelectedMods
     } : {
+        variable_Or_Open_Mods: ModificationMass_UserSelections_DisplayMassSelectionOverlay__Variable_Or_Open_Mods
         proteinName : string
-        modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
+        proteinSequenceVersionId : number  //  Not always populated
+        projectSearchIds : Array<number>
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
         modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject : ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject
         callbackOn_Cancel_Close_Clicked : () => void;
         callback_updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods
@@ -110,8 +93,12 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
 
     return (
         <ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component
+            variable_Or_Open_Mods={ variable_Or_Open_Mods }
             proteinName={ proteinName }
-            modUniqueMassesWithTheirPsmCountsArray={ modUniqueMassesWithTheirPsmCountsArray }
+            proteinSequenceVersionId={ proteinSequenceVersionId }
+            projectSearchIds={ projectSearchIds }
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+            modificationMass_CommonRounding_ReturnNumber={ modificationMass_CommonRounding_ReturnNumber }
             selectedModificationMasses_MapClone={ modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject.get_ModificationsSelected__ExcludingNoModification_AsMapClone() }
             callbackOn_Cancel_Close_Clicked={ callbackOn_Cancel_Close_Clicked }
             callback_updateSelectedMods={ callback_updateSelectedMods }
@@ -123,8 +110,12 @@ export const get_ModificationMass_UserSelections_DisplayMassSelectionOverlay_Lay
  *
  */
 interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props {
+    variable_Or_Open_Mods: ModificationMass_UserSelections_DisplayMassSelectionOverlay__Variable_Or_Open_Mods
     proteinName : string
-    modUniqueMassesWithTheirPsmCountsArray : ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
+    proteinSequenceVersionId : number  //  Not populated on Peptide page
+    projectSearchIds : Array<number>
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
     selectedModificationMasses_MapClone : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
     callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelectedMods : ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component__Callback_updateSelectedMods
@@ -135,6 +126,7 @@ interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterConta
  */
 interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_State {
     massDisplay_DataTable_RootTableObject? : DataTable_RootTableObject
+    loadingData?: boolean
 }
 
 /**
@@ -143,6 +135,8 @@ interface ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterConta
 class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component extends React.Component< ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_Props, ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer_Component_State > {
 
     private _updateButtonClicked_BindThis = this._updateButtonClicked.bind(this);
+
+    private _modUniqueMassesWithTheirPsmCountsArray: ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass_Result
 
     private _modificationMasses_Selected_InProgress : Map<number, SingleProtein_Filter_PerUniqueIdentifier_Entry>
 
@@ -154,19 +148,134 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
 
         this._modificationMasses_Selected_InProgress = props.selectedModificationMasses_MapClone
 
-        const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
-            modUniqueMassesWithTheirPsmCountsArray : props.modUniqueMassesWithTheirPsmCountsArray
-        })
-
-        this.state = { massDisplay_DataTable_RootTableObject };
+        this.state = { loadingData: true }
     }
 
     /**
      *
      */
-    // componentDidMount(): void {
-    //
-    // }
+    componentDidMount(): void {
+        try {
+
+            if (this.props.variable_Or_Open_Mods === ModificationMass_UserSelections_DisplayMassSelectionOverlay__Variable_Or_Open_Mods.OPEN) {
+
+                this._show_OpenMods();
+
+            } else if (this.props.variable_Or_Open_Mods === ModificationMass_UserSelections_DisplayMassSelectionOverlay__Variable_Or_Open_Mods.VARIABLE) {
+
+                this._show_VariableMods();
+
+            } else {
+                const msg = "this.props.variable_Or_Open_Mods is not Open or Variable. value is: " + this.props.variable_Or_Open_Mods;
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+        } catch( e ) {
+            console.warn("Exception caught in componentDidMount inside setTimeout");
+            console.warn( e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _show_OpenMods() : void {
+
+        const createModsAndPsmCountsList_OpenModifications_Result =
+            ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass.createModsAndPsmCountsList_OpenModifications({
+                proteinSequenceVersionId: this.props.proteinSequenceVersionId,  //  Not populated on Peptide page
+                projectSearchIds: this.props.projectSearchIds,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                modificationMass_CommonRounding_ReturnNumber: this.props.modificationMass_CommonRounding_ReturnNumber
+            });
+
+        if ( createModsAndPsmCountsList_OpenModifications_Result.data ) {
+
+            const modUniqueMassesWithTheirPsmCountsArray = createModsAndPsmCountsList_OpenModifications_Result.data
+
+            this._modUniqueMassesWithTheirPsmCountsArray = modUniqueMassesWithTheirPsmCountsArray;  //  Save off for redraw table when user selects table row
+
+            const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+                modUniqueMassesWithTheirPsmCountsArray : createModsAndPsmCountsList_OpenModifications_Result.data
+            })
+            this.setState({ massDisplay_DataTable_RootTableObject, loadingData: false });
+
+        } else if ( createModsAndPsmCountsList_OpenModifications_Result.promise ) {
+
+            createModsAndPsmCountsList_OpenModifications_Result.promise.catch(reason => {
+                console.warn("createModsAndPsmCountsList_OpenModifications_Result.promise.catch:reason: ", reason)
+                throw Error("createModsAndPsmCountsList_OpenModifications_Result.promise.catch:reason: " + reason)
+            })
+            createModsAndPsmCountsList_OpenModifications_Result.promise.then(modUniqueMassesWithTheirPsmCountsArray => {
+                try {
+                    this._modUniqueMassesWithTheirPsmCountsArray = modUniqueMassesWithTheirPsmCountsArray;  //  Save off for redraw table when user selects table row
+
+                    const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+                        modUniqueMassesWithTheirPsmCountsArray : modUniqueMassesWithTheirPsmCountsArray
+                    })
+                    this.setState({ massDisplay_DataTable_RootTableObject, loadingData: false });
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+        } else {
+            throw Error("createModsAndPsmCountsList_OpenModifications_Result no 'data' or 'promise'")
+        }
+    }
+
+    /**
+     *
+     */
+    private _show_VariableMods() : void {
+
+        const createModsAndPsmCountsList_OpenModifications_Result =
+            ModificationMass_UserSelections_ModMasses_PSM_Counts_PerMass.createModsAndPsmCountsList_VariableModifications({
+                proteinSequenceVersionId: this.props.proteinSequenceVersionId,  //  Not populated on Peptide page
+                projectSearchIds: this.props.projectSearchIds,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                modificationMass_CommonRounding_ReturnNumber: this.props.modificationMass_CommonRounding_ReturnNumber
+            });
+
+        if ( createModsAndPsmCountsList_OpenModifications_Result.data ) {
+
+            const modUniqueMassesWithTheirPsmCountsArray = createModsAndPsmCountsList_OpenModifications_Result.data
+
+            this._modUniqueMassesWithTheirPsmCountsArray = modUniqueMassesWithTheirPsmCountsArray;  //  Save off for redraw table when user selects table row
+
+            const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+                modUniqueMassesWithTheirPsmCountsArray : createModsAndPsmCountsList_OpenModifications_Result.data
+            })
+            this.setState({ massDisplay_DataTable_RootTableObject, loadingData: false });
+
+        } else if ( createModsAndPsmCountsList_OpenModifications_Result.promise ) {
+
+            createModsAndPsmCountsList_OpenModifications_Result.promise.catch(reason => {
+                console.warn("createModsAndPsmCountsList_OpenModifications_Result.promise.catch:reason: ", reason)
+                throw Error("createModsAndPsmCountsList_OpenModifications_Result.promise.catch:reason: " + reason)
+            })
+            createModsAndPsmCountsList_OpenModifications_Result.promise.then(modUniqueMassesWithTheirPsmCountsArray => {
+                try {
+                    this._modUniqueMassesWithTheirPsmCountsArray = modUniqueMassesWithTheirPsmCountsArray;  //  Save off for redraw table when user selects table row
+
+                    const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
+                        modUniqueMassesWithTheirPsmCountsArray : modUniqueMassesWithTheirPsmCountsArray
+                    })
+                    this.setState({ massDisplay_DataTable_RootTableObject, loadingData: false });
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+        } else {
+            throw Error("createModsAndPsmCountsList_OpenModifications_Result no 'data' or 'promise'")
+        }
+    }
 
     /**
      *
@@ -248,7 +357,7 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
     private _updateTable_ForChangedSelection() : void {
 
         const massDisplay_DataTable_RootTableObject : DataTable_RootTableObject = this._create_DataTableObjects({
-            modUniqueMassesWithTheirPsmCountsArray : this.props.modUniqueMassesWithTheirPsmCountsArray
+            modUniqueMassesWithTheirPsmCountsArray : this._modUniqueMassesWithTheirPsmCountsArray
         })
 
         this.setState({ massDisplay_DataTable_RootTableObject })
@@ -442,44 +551,62 @@ class ModificationMass_UserSelections_DisplayMassSelectionOverlay_OuterContainer
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
 
-                <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                     style={ { marginBottom: 12, fontWeight: "bold" } }
-                    // style={ { padding : 6 } }
-                >
+                { this.state.loadingData ? (
 
-                    { (this.props.proteinName) ? (
-                        <div style={ { fontWeight: "bold", marginBottom: 10 } }>
-                            Protein Name (from FASTA): { this.props.proteinName }
+                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                    >
+                        <div style={ { marginBottom: 12, fontWeight: "bold", fontSize: 24, textAlign: "center" } }>
+                            LOADING DATA
                         </div>
-                    ) : null }
-
-                    <div style={ { fontWeight: "bold", marginBottom: 10 } }>
-                        Select Modification Masses to filter on.
-                        (Click to select/deselect)
+                        <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
+                            <Spinner_Limelight_Component/>
+                        </div>
                     </div>
-                </div>
 
-                <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                     style={ { overflowY: "auto", overflowX: "hidden", width: mods_selection_dialog_list_bounding_box_Width } }
-                >
-                    <div  >
+                ) : (
+                    <React.Fragment>
 
-                        <DataTable_TableRoot
-                            tableObject={ this.state.massDisplay_DataTable_RootTableObject }
-                            resortTableOnUpdate={ true }
-                        />
+                        <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                             style={ { marginBottom: 12, fontWeight: "bold" } }
+                            // style={ { padding : 6 } }
+                        >
 
-                    </div>
-                </div>
-                <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                    // style={ { padding : 6 } }
-                >
-                    <div style={ { marginTop: 15 } }>
-                        <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+                            { (this.props.proteinName) ? (
+                                <div style={ { fontWeight: "bold", marginBottom: 10 } }>
+                                    Protein Name (from FASTA): { this.props.proteinName }
+                                </div>
+                            ) : null }
 
-                        <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
-                    </div>
-                </div>
+                            <div style={ { fontWeight: "bold", marginBottom: 10 } }>
+                                Select Modification Masses to filter on.
+                                (Click to select/deselect)
+                            </div>
+                        </div>
+
+                        <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                             style={ { overflowY: "auto", overflowX: "hidden", width: mods_selection_dialog_list_bounding_box_Width } }
+                        >
+                            <div  >
+
+                                <DataTable_TableRoot
+                                    tableObject={ this.state.massDisplay_DataTable_RootTableObject }
+                                    resortTableOnUpdate={ true }
+                                />
+
+                            </div>
+                        </div>
+                        <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                            // style={ { padding : 6 } }
+                        >
+                            <div style={ { marginTop: 15 } }>
+                                <input type="button" value="Update" style={ { marginRight: 5 } } onClick={ this._updateButtonClicked_BindThis } />
+
+                                <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
+                            </div>
+                        </div>
+
+                    </React.Fragment>
+                )}
 
             </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );

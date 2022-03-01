@@ -239,6 +239,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_StatisticsPlot 
      */
     private _populateChart() {
 
+
         if ( ! this._componentMounted ) {
             //  Component no longer mounted so exit
             return; // EARLY RETURN
@@ -258,14 +259,8 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_StatisticsPlot 
             return; // EARLY RETURN
         }
 
-        this.setState({ showUpdatingMessage: false });
 
         const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
-
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-
-        const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
         const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
         const searchSubGroupIds_DisplayOrder: Array<number> = [];
@@ -280,18 +275,6 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_StatisticsPlot 
         }
 
         const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-        if ( ! subGroupIdMap_Key_PsmId ) {
-            throw Error("loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned NOTHING for projectSearchId: " + projectSearchId);
-        }
 
         const chart_X : Array<string> = []
         const chart_Y : Array<number> = []

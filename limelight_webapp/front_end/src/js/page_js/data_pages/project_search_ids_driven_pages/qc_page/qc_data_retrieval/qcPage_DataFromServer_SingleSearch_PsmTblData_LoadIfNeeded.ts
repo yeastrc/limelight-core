@@ -5,16 +5,12 @@
  *
  */
 
-import {
-    QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params
-} from "./qcPage_DataFromServer_AndDerivedData_SingleSearch";
+import {QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params} from "./qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
-import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
+import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSingleReportedPeptideId,
@@ -32,7 +28,7 @@ export class QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded {
     /**
      * @returns null if no promise needed
      */
-    singleSearch_PsmTblData_LoadIfNeeded(
+    async singleSearch_PsmTblData_LoadIfNeeded(
         {
             retrievalParams, data_Holder_SingleSearch
         } : {
@@ -40,80 +36,89 @@ export class QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded {
             data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
         }
     ) : Promise<void> {
+        try {
+            if ( data_Holder_SingleSearch.psmTblData ) {
+                //  Data already loaded so return null
+                return null
+            }
 
-        if ( data_Holder_SingleSearch.psmTblData ) {
-            //  Data already loaded so return null
-            return null
-        }
+            if ( this._promiseInProgress ) {
+                return this._promiseInProgress;
+            }
 
-        if ( this._promiseInProgress ) {
+            const projectSearchId = retrievalParams.projectSearchId;
+
+            const get_reportedPeptideIds_ReturnPromise_Result =
+                await retrievalParams.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters()
+                    .get_reportedPeptideIds_ReturnPromise();
+
+            const reportedPeptideIds: Array<number> = get_reportedPeptideIds_ReturnPromise_Result.reportedPeptideIds;
+
+            let searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId = null;
+
+            for ( const entry of retrievalParams.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                if ( entry.projectSearchId === projectSearchId ) {
+                    searchDataLookupParams_For_Single_ProjectSearchId = entry;
+                    break;
+                }
+            }
+            if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+                const msg = "No entry found in retrievalParams.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            this._promiseInProgress = new Promise<void>( (resolve, reject) => {
+                try {
+                    const url = "d/rws/for-page/psb/psm-table-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
+
+                    const requestData = { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId };
+
+                    console.log( "START: getting data from URL: " + url );
+
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+
+                    const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                    promise_webserviceCallStandardPost.catch( () => {
+                        try {
+                            this._promiseInProgress = null;
+
+                            console.log( "END: REJECTED: getting data from URL: " + url );
+
+                            reject()
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }  );
+
+                    promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
+                        try {
+                            this._promiseInProgress = null;
+
+                            console.log( "END: Successful: getting data from URL: " + url );
+
+                            _populateHolder({ responseData, data_Holder_SingleSearch });
+
+                            resolve();
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    } );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+
             return this._promiseInProgress;
-        }
 
-        const projectSearchId = retrievalParams.projectSearchId;
-        const reportedPeptideIds: Array<number> = retrievalParams.loadedDataPerProjectSearchIdHolder.get_reportedPeptideIds();
-        let searchDataLookupParams_For_Single_ProjectSearchId : SearchDataLookupParams_For_Single_ProjectSearchId = null;
-
-        for ( const entry of retrievalParams.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
-            if ( entry.projectSearchId === projectSearchId ) {
-                searchDataLookupParams_For_Single_ProjectSearchId = entry;
-                break;
-            }
-        }
-        if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
-            const msg = "No entry found in retrievalParams.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        this._promiseInProgress = new Promise<void>( (resolve, reject) => {
-            try {
-                const url = "d/rws/for-page/psb/psm-table-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
-
-                const requestData = { projectSearchId, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId };
-
-                console.log( "START: getting data from URL: " + url );
-
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
-
-                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-                promise_webserviceCallStandardPost.catch( () => {
-                    try {
-                        this._promiseInProgress = null;
-
-                        console.log( "END: REJECTED: getting data from URL: " + url );
-
-                        reject()
-
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                }  );
-
-                promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
-                    try {
-                        this._promiseInProgress = null;
-
-                        console.log( "END: Successful: getting data from URL: " + url );
-
-                        _populateHolder({ responseData, data_Holder_SingleSearch });
-
-                        resolve();
-
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                } );
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        })
-
-        return this._promiseInProgress;
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 }
 

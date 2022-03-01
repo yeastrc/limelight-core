@@ -9,9 +9,7 @@ import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    qcPage_StandardChartLayout
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
@@ -239,10 +237,6 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
         }
 
         const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-
-        this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point
 
         //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
@@ -407,6 +401,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_P
             qcViewPage_MultipleSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
         }
 
+        this.setState({ showUpdatingMessage: false });
     }
 
     /**

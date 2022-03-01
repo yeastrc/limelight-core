@@ -9,7 +9,6 @@ import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
-import {load_PsmOpenModificationMasses_IfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/load_PsmOpenModificationMasses_IfNeeded_To_loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds";
 import {QcViewPage_SingleSearch__MissedCleavages_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MissedCleavages_MainPageContainer";
 import {Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result";
 import {qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data";
@@ -34,6 +33,8 @@ export interface Qc_SingleSearch_Digestion_Statistics_Section_Props {
 interface Qc_SingleSearch_Digestion_Statistics_Section_State {
 
     sectionExpanded?: boolean
+    show_LoadingData_Message?: boolean
+
     compute_MissedCleavages_Data_Result_Root?: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result
 }
 
@@ -59,8 +60,6 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
      */
     private _compute_MissedCleavages_Initial_Data_Result_Root__CURRENT: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root
 
-    private _load_PsmOpenModificationMasses_IfNeeded_DataLoadInProgress = false
-
     /**
      *
      */
@@ -73,7 +72,7 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
             throw Error(msg);
         }
 
-        this.state =  {sectionExpanded: this._sectionExpanded };
+        this.state =  {sectionExpanded: this._sectionExpanded, show_LoadingData_Message: true };
     }
 
     /**
@@ -104,6 +103,7 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
             || nextProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
             || nextState.compute_MissedCleavages_Data_Result_Root !== this.state.compute_MissedCleavages_Data_Result_Root
             || nextState.sectionExpanded !== this.state.sectionExpanded
+            || nextState.show_LoadingData_Message !== this.state.show_LoadingData_Message
         ) {
             return true;
         }
@@ -141,72 +141,8 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
             return; // No changes need to be processed
         }
 
-        {
-            const peptideDistinct_Array =
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-            if ( peptideDistinct_Array.length === 0 ) {
-
-                //  NO DATA
-
-                this.setState({ compute_MissedCleavages_Data_Result_Root: null });
-
-                return;  // EARLY RETURN
-            }
-        }
-
-        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
-
-            if ( ! this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue ) {
-
-                //  NOT Selection_CurrentlyShownValue 'true' so update
-
-                this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = true;
-
-                if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE ) {
-
-                    this._loadData_IfNeeded();
-                } else {
-
-                    this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE;
-
-                    this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
-                }
-            } else {
-                if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT ) {
-
-                    this._compute_MissedCleavages_InitialData(); // Compute Initial Data Which calls compute main data
-                } else {
-                    this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
-                }
-            }
-        } else {
-
-            if ( this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue ) {
-
-                //  NOT Selection_CurrentlyShownValue 'false' so update
-
-                this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = false;
-
-                if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE ) {
-
-                    this._loadData_IfNeeded();
-                } else {
-
-                    this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE;
-
-                    this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
-                }
-            } else {
-                if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT ) {
-
-                    this._compute_MissedCleavages_InitialData(); // Compute Initial Data Which calls compute main data
-                } else {
-                    this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
-                }
-            }
-        }
+        //  Returns Promise which is ignored
+        this._call__compute_MissedCleavages_InitialData_OR__compute_MissedCleavages_MainData__Handle_Empty_peptideDistinct_Array()
     }
 
     /**
@@ -240,179 +176,168 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
     /**
      *
      */
-    private _sectionExpanded_Toggle() {
+    private async _sectionExpanded_Toggle() {
+        try {
+            this._sectionExpanded = ! this._sectionExpanded;
 
-        this._sectionExpanded = ! this._sectionExpanded;
+            if ( this._sectionExpanded && ( ! this._sectionEverExpanded ) ) {
+                // first time expanded so load data
 
-        if ( this._sectionExpanded && ( ! this._sectionEverExpanded ) ) {
-            // first time expanded so load data
+                window.setTimeout( async () =>{ try {
 
-            this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue =
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection();
+                        this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue =
+                            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection();
 
-            this._loadData_IfNeeded();
-        }
+                        await this._call__compute_MissedCleavages_InitialData_OR__compute_MissedCleavages_MainData__Handle_Empty_peptideDistinct_Array();
 
-        this._sectionEverExpanded = true;
+                        this.setState({ show_LoadingData_Message: false });
 
-        this.setState({ sectionExpanded: this._sectionExpanded });
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+                    , 60 )
+            }
+
+            this._sectionEverExpanded = true;
+
+            this.setState({ sectionExpanded: this._sectionExpanded });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
-     *
+     * 'async' function so can have await
      */
-    private _loadData_IfNeeded() {
+    private async _call__compute_MissedCleavages_InitialData_OR__compute_MissedCleavages_MainData__Handle_Empty_peptideDistinct_Array () {
+        try {
+            {
+                const peptideDistinct_Array =
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-        {
-            const peptideDistinct_Array =
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+                if ( peptideDistinct_Array.length === 0 ) {
 
-            if ( peptideDistinct_Array.length === 0 ) {
+                    //  NO DATA
 
-                //  NO DATA
+                    this.setState({ compute_MissedCleavages_Data_Result_Root: null });
 
-                this.setState({ compute_MissedCleavages_Data_Result_Root: null });
-
-                return;  // EARLY RETURN
-            }
-        }
-
-        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
-
-        const qcPage_Flags = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags
-
-        if ( ! qcPage_Flags ) {
-            const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags holds  nothing.";
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        let anyPsmHas_OpenModifications = false;
-
-        for ( const projectSearchId of projectSearchIds ) {
-            const qcPage_Flags_SingleSearch = qcPage_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
-            if ( ! qcPage_Flags_SingleSearch ) {
-                const msg = "qcPage_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( qcPage_Flags_SingleSearch.anyPsmHas_OpenModifications ) {
-                anyPsmHas_OpenModifications = true;
-                break;
-            }
-        }
-
-        if ( anyPsmHas_OpenModifications ) {
-
-            if ( this._load_PsmOpenModificationMasses_IfNeeded_DataLoadInProgress ) {
-                //  When the existing promise completes, the data will be computed so just exit
-                return;
+                    return;  // EARLY RETURN
+                }
             }
 
-            let promise = load_PsmOpenModificationMasses_IfNeeded({
-                getSearchSubGroupIds: false,
-                proteinSequenceVersionId : undefined,
-                projectSearchIds : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds,
-                loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-                searchDataLookupParamsRoot : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchDataLookupParamsRoot
-            });
+            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
 
-            if ( promise ) {
+                if ( ! this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue ) {
 
-                this._load_PsmOpenModificationMasses_IfNeeded_DataLoadInProgress = true;
+                    //  NOT Selection_CurrentlyShownValue 'true' so update
 
-                promise.catch( reason => {
-                    this._load_PsmOpenModificationMasses_IfNeeded_DataLoadInProgress = false;
-                })
+                    this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = true;
 
-                promise.then( result => {
+                    if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE ) {
 
-                    this._load_PsmOpenModificationMasses_IfNeeded_DataLoadInProgress = false;
+                        await this._compute_MissedCleavages_InitialData();
+                    } else {
 
-                    window.setTimeout(() => {
-                        try {
-                            //  Open Mod data loaded
-                            this._compute_MissedCleavages_InitialData();
+                        this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE;
 
-                        } catch( e ) {
-                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                            throw e;
-                        }
-                    }, 10);
-                })
+                        await this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
+                    }
+                } else {
+                    if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT ) {
 
+                        await this._compute_MissedCleavages_InitialData(); // Compute Initial Data Which calls compute main data
+                    } else {
+                        await this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
+                    }
+                }
             } else {
 
-                window.setTimeout(() => {
-                    try {
-                        //  Open Mod data Already loaded
-                        this._compute_MissedCleavages_InitialData();
+                if ( this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue ) {
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
+                    //  NOT Selection_CurrentlyShownValue 'false' so update
+
+                    this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = false;
+
+                    if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE ) {
+
+                        await this._compute_MissedCleavages_InitialData();
+                    } else {
+
+                        this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE;
+
+                        await this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
                     }
-                }, 10);
+                } else {
+                    if ( ! this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT ) {
+
+                        await this._compute_MissedCleavages_InitialData(); // Compute Initial Data Which calls compute main data
+                    } else {
+                        await this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
+                    }
+                }
             }
 
-        } else {
-
-            window.setTimeout(() => {
-                try {
-                    //  No Open Mod data so no loading needed
-                    this._compute_MissedCleavages_InitialData();
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 10);
-        }
-
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
      *
      */
-    private _compute_MissedCleavages_InitialData() {
+    private async _compute_MissedCleavages_InitialData() {
+        try {
+            {
+                const peptideDistinct_Array =
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-        //  Compute common data that the charts in this section will use.  Compute for all Reported Peptide Ids that meet cutoffs so no need to recompute for "Filter On"
+                if ( peptideDistinct_Array.length === 0 ) {
 
-        const compute_MissedCleavages_Initial_Data_Result_Root : Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root =
-            qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data({
-                qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
-            });
+                    //  NO DATA
 
-        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
+                    this.setState({ compute_MissedCleavages_Data_Result_Root: null });
 
-            this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = true;
+                    return;  // EARLY RETURN
+                }
+            }
 
-            this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE = compute_MissedCleavages_Initial_Data_Result_Root;
+            //  Compute common data that the charts in this section will use.  Compute for all Reported Peptide Ids that meet cutoffs so no need to recompute for "Filter On"
 
-        } else {
-            this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = false;
+            const compute_MissedCleavages_Initial_Data_Result_Root : Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root =
+                await qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data({
+                    qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+                });
 
-            this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE = compute_MissedCleavages_Initial_Data_Result_Root;
-        }
+            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass.getTreatOpenModMassZeroAsUnmodified_Selection() ) {
 
-        this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = compute_MissedCleavages_Initial_Data_Result_Root
+                this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = true;
 
-        this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
+                this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__TRUE = compute_MissedCleavages_Initial_Data_Result_Root;
+
+            } else {
+                this._TreatOpenModMassZeroAsUnmodified_Selection_CurrentlyShownValue = false;
+
+                this._compute_MissedCleavages_Initial_Data_Result_Root__treatOpenModMassZeroAsUnmodified_Selection__FALSE = compute_MissedCleavages_Initial_Data_Result_Root;
+            }
+
+            this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT = compute_MissedCleavages_Initial_Data_Result_Root
+
+            this._compute_MissedCleavages_MainData(); // Compute Main Data to pass down to Plots
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
      *  Compute Main Data to pass down to Plots
      */
-    private _compute_MissedCleavages_MainData() {
+    private async _compute_MissedCleavages_MainData() {
+        try {
+            const compute_MissedCleavages_Data_Result_Root =
+                await qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data({
+                    compute_MissedCleavages_Initial_Data_Result_Root: this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT,
+                    qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+                });
 
-        const compute_MissedCleavages_Data_Result_Root =
-            qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data({
-                compute_MissedCleavages_Initial_Data_Result_Root: this._compute_MissedCleavages_Initial_Data_Result_Root__CURRENT,
-                qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
-            });
+            this.setState({ compute_MissedCleavages_Data_Result_Root });
 
-        this.setState({ compute_MissedCleavages_Data_Result_Root });
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
@@ -446,15 +371,24 @@ export class Qc_SingleSearch_Digestion_Statistics_Section extends React.Componen
 
                         <div className=" section--chart-container-block ">
 
-                            <div className=" section--chart-block--single-chart-no-margin-bottom-container ">
+                            { ( this.state.show_LoadingData_Message ) ? (
 
-                                <QcViewPage_SingleSearch__MissedCleavages_MainPageContainer
-                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
-                                    compute_MissedCleavages_Data_Result_Root={ this.state.compute_MissedCleavages_Data_Result_Root }
-                                />
+                                <div style={ { marginBottom: 20 } }>
+                                    Loading Data
+                                </div>
+                            ) : (
+                                <React.Fragment>
+                                    <div className=" section--chart-block--single-chart-no-margin-bottom-container ">
 
-                            </div>
+                                        <QcViewPage_SingleSearch__MissedCleavages_MainPageContainer
+                                            qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                            qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                            compute_MissedCleavages_Data_Result_Root={ this.state.compute_MissedCleavages_Data_Result_Root }
+                                        />
+
+                                    </div>
+                                </React.Fragment>
+                            )}
 
                         </div>
 

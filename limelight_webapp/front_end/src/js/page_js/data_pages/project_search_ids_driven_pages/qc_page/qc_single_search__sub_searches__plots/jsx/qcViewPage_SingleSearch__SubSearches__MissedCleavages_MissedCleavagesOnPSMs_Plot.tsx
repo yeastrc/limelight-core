@@ -249,9 +249,6 @@ export class QcViewPage_SingleSearch__SubSearches__MissedCleavages_MissedCleavag
             //  Component no longer mounted so exit
             return; // EARLY RETURN
         }
-
-        this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point
-
         const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
         const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
@@ -454,6 +451,8 @@ export class QcViewPage_SingleSearch__SubSearches__MissedCleavages_MissedCleavag
 
             qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
         }
+
+        this.setState({ showUpdatingMessage: false });
     }
 
     /**

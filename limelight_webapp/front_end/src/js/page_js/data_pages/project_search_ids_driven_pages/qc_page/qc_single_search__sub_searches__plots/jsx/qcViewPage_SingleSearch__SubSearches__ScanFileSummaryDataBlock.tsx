@@ -180,7 +180,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
             promise_2.catch( reason => {
 
             })
-            promise_2.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => {
+            promise_2.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => { try {
 
                 this.setState((prevState: Readonly<QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State>, props: Readonly<QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_Props>) : QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State =>  {
                     if ( prevState.showUpdatingMessage ) {
@@ -190,7 +190,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                 });
 
                 this._compute_Data({ qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches });
-            })
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         });
 
     }
@@ -198,194 +199,206 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
     /**
      *
      */
-    private _compute_Data (
+    private async _compute_Data (
         {
             qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches
         } : {
             qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches
         }
-    ) {
+    ) : Promise<void> {
 
-        const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
-
-        const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
-
-        const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
-        const searchSubGroupIds_DisplayOrder: Array<number> = [];
-        {
-            const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
-            for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
-                searchSubGroups_DisplayOrder.push(searchSubGroup);
-                searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
+        try {
+            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 ) {
+                const msg = "( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 )"
+                console.warn(msg)
             }
-        }
+            const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
-        const dataPerSubSearchArray: Array<DataPerSubSearch> = [];
+            const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
-        const peptideDistinct_Array: ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry[] =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-        const loadedDataPerProjectSearchIdHolder = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if ( ! loadedDataPerProjectSearchIdHolder ) {
-            throw Error("loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId);
-        }
-        const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-        if ( ! subGroupIdMap_Key_PsmId ) {
-            throw Error("loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned NOTHING for projectSearchId: " + projectSearchId);
-        }
-
-        let largest_ScanLevel = 0;
-
-        const qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch();
-
-        const psmTblData = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData;
-
-        const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
-            qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                projectSearchId,
-                peptideDistinct_Array,
-                qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
-            });
-
-        const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
-
-        const scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId : Map<number,Map<number,Set<number>>> = new Map();
-
-        for ( const psmTblData_Entry of psmTblData_Filtered ) {
-
-            if ( ! psmTblData_Entry.searchScanFileId ) {
-                const msg = "( ! psmTblData_Entry.searchScanFileId ) projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! psmTblData_Entry.scanNumber ) {
-                const msg = "( ! psmTblData_Entry.scanNumber ) projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId);
             }
 
-            const psmId = psmTblData_Entry.psmId
-            const searchScanFileId = psmTblData_Entry.searchScanFileId;
-            const scanNumber = psmTblData_Entry.scanNumber;
+            const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
+                get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
 
-            const subGroupId = subGroupIdMap_Key_PsmId.get(psmId);
-            if ( ! subGroupId ) {
-                const msg = "( ! subGroupId ) psmId: " + psmId + ", projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
+            const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
 
-            let scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(subGroupId);
-            if ( ! scanNumbers_Map_Key_searchScanFileId_Map ) {
-                scanNumbers_Map_Key_searchScanFileId_Map = new Map();
-                scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.set(subGroupId, scanNumbers_Map_Key_searchScanFileId_Map);
-            }
-            let scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_Map.get(searchScanFileId);
-            if ( ! scanNumbers_For_searchScanFileId ) {
-                scanNumbers_For_searchScanFileId = new Set();
-                scanNumbers_Map_Key_searchScanFileId_Map.set(searchScanFileId, scanNumbers_For_searchScanFileId);
-            }
-            scanNumbers_For_searchScanFileId.add( scanNumber );
-        }
-
-        //  Get Scan Count
-
-        for (const searchSubGroup of searchSubGroups_DisplayOrder) {
-
-            if ( ! searchSubGroup_Ids_Selected.has( searchSubGroup.searchSubGroup_Id ) ) {
-                //  NOT a Selected searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            let scanCount_PSM_MeetsCutoff = 0;
-            const searchScanFileIds_For_SearchSubGroupId = new Set<number>();
+            const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
+            const searchSubGroupIds_DisplayOrder: Array<number> = [];
             {
-                const scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(searchSubGroup.searchSubGroup_Id);
-                if ( ! scanNumbers_Map_Key_searchScanFileId_Map) {
-                    //  no data so skip
-                    continue;  // EARLY CONTINUE
-                }
-                for ( const scanNumbers_Map_Key_searchScanFileId_MapEntry of scanNumbers_Map_Key_searchScanFileId_Map.entries() ) {
-                    const searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[0];
-                    const scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[1];
-                    scanCount_PSM_MeetsCutoff += scanNumbers_For_searchScanFileId.size;
-                    searchScanFileIds_For_SearchSubGroupId.add(searchScanFileId);
+                const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+                for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+                    searchSubGroups_DisplayOrder.push(searchSubGroup);
+                    searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
                 }
             }
 
-            //  Get Per Scan Level data and totalIonCurrent_ForSearch
+            const dataPerSubSearchArray: Array<DataPerSubSearch> = [];
 
-            let totalIonCurrent_ForSearch = 0;
+            const peptideDistinct_Array: ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry[] =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-            const dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel: Map<number,DataPerSubSearch_PerScanLevel> = new Map();
+            let largest_ScanLevel = 0;
 
-            for ( const searchScanFileId of searchScanFileIds_For_SearchSubGroupId ) {
+            const qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch();
 
-                const summaryPerLevelData_Entry = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId);
-                if ( ! summaryPerLevelData_Entry ) {
-                    throw Error("qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId); returned NOTHING. searchScanFileId: " + searchScanFileId);
+            const psmTblData = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData;
+
+            const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
+                qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
+                    projectSearchId,
+                    peptideDistinct_Array,
+                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                });
+
+            const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
+
+            const scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId : Map<number,Map<number,Set<number>>> = new Map();
+
+            for ( const psmTblData_Entry of psmTblData_Filtered ) {
+
+                if ( ! psmTblData_Entry.searchScanFileId ) {
+                    const msg = "( ! psmTblData_Entry.searchScanFileId ) projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( ! psmTblData_Entry.scanNumber ) {
+                    const msg = "( ! psmTblData_Entry.scanNumber ) projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
                 }
 
-                for ( const summaryPerLevelData of summaryPerLevelData_Entry.get_ScanLevel_IterableIterator() ) {
+                const psmId = psmTblData_Entry.psmId
+                const searchScanFileId = psmTblData_Entry.searchScanFileId;
+                const scanNumber = psmTblData_Entry.scanNumber;
 
-                    let dataPerSubSearch_ForScanLevel = dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.get(summaryPerLevelData.scanLevel);
-                    if ( ! dataPerSubSearch_ForScanLevel ) {
-                        dataPerSubSearch_ForScanLevel = {
-                            scanLevel: summaryPerLevelData.scanLevel,
-                            scanCount: 0,
-                            totalIonCurrent: 0
-                        };
-                        dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.set(summaryPerLevelData.scanLevel, dataPerSubSearch_ForScanLevel);
+                const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId(psmId);
+                if ( ! subGroupId ) {
+                    const msg = "( ! subGroupId ) psmId: " + psmId + ", projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                let scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(subGroupId);
+                if ( ! scanNumbers_Map_Key_searchScanFileId_Map ) {
+                    scanNumbers_Map_Key_searchScanFileId_Map = new Map();
+                    scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.set(subGroupId, scanNumbers_Map_Key_searchScanFileId_Map);
+                }
+                let scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_Map.get(searchScanFileId);
+                if ( ! scanNumbers_For_searchScanFileId ) {
+                    scanNumbers_For_searchScanFileId = new Set();
+                    scanNumbers_Map_Key_searchScanFileId_Map.set(searchScanFileId, scanNumbers_For_searchScanFileId);
+                }
+                scanNumbers_For_searchScanFileId.add( scanNumber );
+            }
+
+            //  Get Scan Count
+
+            for (const searchSubGroup of searchSubGroups_DisplayOrder) {
+
+                if ( ! searchSubGroup_Ids_Selected.has( searchSubGroup.searchSubGroup_Id ) ) {
+                    //  NOT a Selected searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
+                }
+
+                let scanCount_PSM_MeetsCutoff = 0;
+                const searchScanFileIds_For_SearchSubGroupId = new Set<number>();
+                {
+                    const scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(searchSubGroup.searchSubGroup_Id);
+                    if ( ! scanNumbers_Map_Key_searchScanFileId_Map) {
+                        //  no data so skip
+                        continue;  // EARLY CONTINUE
                     }
-                    dataPerSubSearch_ForScanLevel.scanCount += summaryPerLevelData.numberOfScans;
-                    dataPerSubSearch_ForScanLevel.totalIonCurrent += summaryPerLevelData.totalIonCurrent;
-
-                    totalIonCurrent_ForSearch += summaryPerLevelData.totalIonCurrent;
+                    for ( const scanNumbers_Map_Key_searchScanFileId_MapEntry of scanNumbers_Map_Key_searchScanFileId_Map.entries() ) {
+                        const searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[0];
+                        const scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[1];
+                        scanCount_PSM_MeetsCutoff += scanNumbers_For_searchScanFileId.size;
+                        searchScanFileIds_For_SearchSubGroupId.add(searchScanFileId);
+                    }
                 }
+
+                //  Get Per Scan Level data and totalIonCurrent_ForSearch
+
+                let totalIonCurrent_ForSearch = 0;
+
+                const dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel: Map<number,DataPerSubSearch_PerScanLevel> = new Map();
+
+                for ( const searchScanFileId of searchScanFileIds_For_SearchSubGroupId ) {
+
+                    const summaryPerLevelData_Entry = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId);
+                    if ( ! summaryPerLevelData_Entry ) {
+                        throw Error("qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId); returned NOTHING. searchScanFileId: " + searchScanFileId);
+                    }
+
+                    for ( const summaryPerLevelData of summaryPerLevelData_Entry.get_ScanLevel_IterableIterator() ) {
+
+                        let dataPerSubSearch_ForScanLevel = dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.get(summaryPerLevelData.scanLevel);
+                        if ( ! dataPerSubSearch_ForScanLevel ) {
+                            dataPerSubSearch_ForScanLevel = {
+                                scanLevel: summaryPerLevelData.scanLevel,
+                                scanCount: 0,
+                                totalIonCurrent: 0
+                            };
+                            dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.set(summaryPerLevelData.scanLevel, dataPerSubSearch_ForScanLevel);
+                        }
+                        dataPerSubSearch_ForScanLevel.scanCount += summaryPerLevelData.numberOfScans;
+                        dataPerSubSearch_ForScanLevel.totalIonCurrent += summaryPerLevelData.totalIonCurrent;
+
+                        totalIonCurrent_ForSearch += summaryPerLevelData.totalIonCurrent;
+                    }
+                }
+
+                const dataPerSubSearch_PerScanLevel_Array = Array.from( dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.values() );
+                dataPerSubSearch_PerScanLevel_Array.sort( (a,b) => {
+                    if ( a.scanLevel < b.scanLevel ) {
+                        return -1;
+                    }
+                    if ( a.scanLevel > b.scanLevel ) {
+                        return 1;
+                    }
+                    return 0
+                });
+
+                let totalScanCount_AtHighestLevelNumber = 0;
+
+                {
+                    const lastEntry = dataPerSubSearch_PerScanLevel_Array[dataPerSubSearch_PerScanLevel_Array.length - 1];
+                    if (largest_ScanLevel < lastEntry.scanLevel) {
+                        largest_ScanLevel = lastEntry.scanLevel;
+                    }
+                    totalScanCount_AtHighestLevelNumber = lastEntry.scanCount;
+                }
+
+                const dataPerSubSearch: DataPerSubSearch = {
+
+                    searchSubGroup_Id: searchSubGroup.searchSubGroup_Id,
+                    subgroupName_Display: searchSubGroup.subgroupName_Display,
+
+                    scanCount_PSM_MeetsCutoff: scanCount_PSM_MeetsCutoff,
+                    totalIonCurrent_ForSearch,
+                    totalScanCount_AtHighestLevelNumber,
+
+                    dataPerScanLevel: dataPerSubSearch_PerScanLevel_Array
+                }
+
+                dataPerSubSearchArray.push( dataPerSubSearch );
             }
 
-            const dataPerSubSearch_PerScanLevel_Array = Array.from( dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel.values() );
-            dataPerSubSearch_PerScanLevel_Array.sort( (a,b) => {
-                if ( a.scanLevel < b.scanLevel ) {
-                    return -1;
-                }
-                if ( a.scanLevel > b.scanLevel ) {
-                    return 1;
-                }
-                return 0
-            });
-
-            let totalScanCount_AtHighestLevelNumber = 0;
-
-            {
-                const lastEntry = dataPerSubSearch_PerScanLevel_Array[dataPerSubSearch_PerScanLevel_Array.length - 1];
-                if (largest_ScanLevel < lastEntry.scanLevel) {
-                    largest_ScanLevel = lastEntry.scanLevel;
-                }
-                totalScanCount_AtHighestLevelNumber = lastEntry.scanCount;
+            const dataComputed: DataComputed = {
+                dataPerSubSearchArray, largest_ScanLevel
             }
 
-            const dataPerSubSearch: DataPerSubSearch = {
+            this.setState({ dataComputed });
 
-                searchSubGroup_Id: searchSubGroup.searchSubGroup_Id,
-                subgroupName_Display: searchSubGroup.subgroupName_Display,
-
-                scanCount_PSM_MeetsCutoff: scanCount_PSM_MeetsCutoff,
-                totalIonCurrent_ForSearch,
-                totalScanCount_AtHighestLevelNumber,
-
-                dataPerScanLevel: dataPerSubSearch_PerScanLevel_Array
-            }
-
-            dataPerSubSearchArray.push( dataPerSubSearch );
-        }
-
-        const dataComputed: DataComputed = {
-            dataPerSubSearchArray, largest_ScanLevel
-        }
-
-        this.setState({ dataComputed });
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**

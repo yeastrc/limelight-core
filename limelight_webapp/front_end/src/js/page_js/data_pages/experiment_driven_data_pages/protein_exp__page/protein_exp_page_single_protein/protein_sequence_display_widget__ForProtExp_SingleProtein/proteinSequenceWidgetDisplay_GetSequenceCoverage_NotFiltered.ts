@@ -8,51 +8,62 @@
  * Display Object used in: proteinSequenceWidgetDisplay_Component_React.tsx
  */
 
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
 
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 /**
  * Get coverageArrayOfBoolean for Protein Sequence Coverage Based on cutoffs / main filters
  * 
  */
-export const getSequenceCoverageBooleanArray_NotFiltered = function({ 
+export const getSequenceCoverageBooleanArray_NotFiltered = async function({
     
     proteinSequenceVersionId,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
     projectSearchIds
 } : { 
     proteinSequenceVersionId : number,
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>,
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     projectSearchIds : Array<number>
     
-}) : Array<boolean> {
+}) : Promise<Array<boolean>> {
+    try {
+        const coverageArrayOfBoolean : Array<boolean> = [];
 
-    const coverageArrayOfBoolean : Array<boolean> = [];
+        //  Modification or Protein Sequence Positions Selected so compute sequence coverage
 
-    //  Modification or Protein Sequence Positions Selected so compute sequence coverage
+        for ( const projectSearchId of projectSearchIds ) {
 
-    for ( const projectSearchId of projectSearchIds ) {
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
 
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
+            //  Sequence Coverage Data
 
-        //  Sequence Coverage Data
-        const proteinCoverage_KeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
+            const get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters().
+                get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_ReturnPromise()
 
-        //  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
-        const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get( proteinSequenceVersionId );
-        if ( ! proteinCoverageObject ) {
-            // No proteinCoverageObject for proteinSequenceVersionId for this projectSearchId so skip to next projectSearchId
-            continue; //  EARLY CONTINUE
-        }
+            const proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder =
+                get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_ReturnPromise_Result.proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder
 
-        const coverageArrayOfBooleanThisProjectSearchId = proteinCoverageObject.getBooleanArrayOfProteinCoverage();
-        
-        for ( let index = 0; index < coverageArrayOfBooleanThisProjectSearchId.length; index++ ) {
-            if ( coverageArrayOfBooleanThisProjectSearchId[ index ] ) {
-                coverageArrayOfBoolean[ index ] = true;
+            //  proteinCoverageObject is class ProteinSequenceCoverageData_For_ProteinSequenceVersionId
+            const proteinCoverageObject = proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder.get_ProteinSequenceCoverageData_For_ProteinSequenceVersionId( proteinSequenceVersionId );
+            if ( ! proteinCoverageObject ) {
+                // No proteinCoverageObject for proteinSequenceVersionId for this projectSearchId so skip to next projectSearchId
+                continue; //  EARLY CONTINUE
+            }
+
+            const coverageArrayOfBooleanThisProjectSearchId = proteinCoverageObject.getBooleanArrayOfProteinCoverage();
+
+            for ( let index = 0; index < coverageArrayOfBooleanThisProjectSearchId.length; index++ ) {
+                if ( coverageArrayOfBooleanThisProjectSearchId[ index ] ) {
+                    coverageArrayOfBoolean[ index ] = true;
+                }
             }
         }
-    }
 
-    return coverageArrayOfBoolean;
+        return coverageArrayOfBoolean;
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 }

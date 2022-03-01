@@ -6,7 +6,6 @@
  * Display Data used in: ProteinPositionFilter_UserSelectionsRoot....tsx
  */
 
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 import {
     ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
@@ -15,21 +14,22 @@ import {
     ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein,
     ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein__SingleProteinNameDescription
 } from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 
 /**
  * 
  * 
  */
-export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent = function(
+export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent = async function(
     {
         projectSearchIds,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 } : {
         projectSearchIds : Array<number>,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
-    }) : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data {
+    }) : Promise<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data> {
 
 
     const proteinLengths_Map_Key_ProteinSequenceVersionId : Map<number, number> = new Map();
@@ -40,22 +40,25 @@ export const proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data
 
     for ( const projectSearchId of projectSearchIds ) {
 
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId );
-        if ( ! loadedDataPerProjectSearchIdHolder ) {
-            const msg = "proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent: loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get( projectSearchId ) return nothing. projectSearchId: " + projectSearchId;
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            const msg = "proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent: commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ) return nothing. projectSearchId: " + projectSearchId;
             console.warn( msg )
             throw Error( msg )
         }
 
-        const proteinInfoMapKeyProteinSequenceVersionId = loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
+        const get_ProteinInfoHolder_AllForSearch_ReturnPromise = await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters().get_ProteinInfoHolder_AllForSearch_ReturnPromise()
+        const proteinInfo_For_MainFilters_Holder = get_ProteinInfoHolder_AllForSearch_ReturnPromise.proteinInfo_For_MainFilters_Holder
 
-        const proteinSequenceVersionIdsUnique = loadedDataPerProjectSearchIdHolder.get_proteinSequenceVersionIdsUnique();
+        const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
+            await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise()
+        const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
 
-        for ( const proteinSequenceVersionId of proteinSequenceVersionIdsUnique ) {
+        for ( const proteinSequenceVersionId of proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIdsUnique() ) {
 
-            const proteinInfo = proteinInfoMapKeyProteinSequenceVersionId.get( proteinSequenceVersionId );
+            const proteinInfo = proteinInfo_For_MainFilters_Holder.get_ProteinInfo_For_ProteinSequenceVersionId( proteinSequenceVersionId );
             if ( ! proteinInfo ) {
-                const msg = "No value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId().get( proteinSequenceVersionId ). proteinSequenceVersionId: " + proteinSequenceVersionId;
+                const msg = "No value from proteinInfo_For_MainFilters_Holder.get_ProteinInfo_For_ProteinSequenceVersionId( proteinSequenceVersionId ). proteinSequenceVersionId: " + proteinSequenceVersionId;
                 console.warn( msg );
                 throw Error( msg );
             }

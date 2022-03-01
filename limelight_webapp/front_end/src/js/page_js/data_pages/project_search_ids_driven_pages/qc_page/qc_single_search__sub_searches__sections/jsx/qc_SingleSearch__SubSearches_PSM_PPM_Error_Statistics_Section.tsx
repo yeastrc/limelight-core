@@ -8,7 +8,7 @@
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {mean, deviation} from "d3";
+import {deviation, mean} from "d3";
 import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_Root
@@ -112,7 +112,7 @@ export class Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section exten
                     if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== prevProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent
                         || this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent !== prevProps.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent ) {
 
-                        this._filterPSMs();
+                        this._filterPSMs();  //  returns ignored  Promise<void>
                     }
                 }
             }
@@ -255,7 +255,7 @@ export class Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section exten
 
                     this._psm_PPM_Error_Data = psm_PPM_Error_Data;
 
-                    this._filterPSMs();
+                    this._filterPSMs();  //  returns ignored  Promise<void>
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -266,153 +266,156 @@ export class Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section exten
     }
 
     /**
-     *
+     *  'async'
      */
-    private _filterPSMs() {
-
-        const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
-
-
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-
-        const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-        if (!subGroupIdMap_Key_PsmId) {
-            const msg = "loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned nothing. projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+    private async _filterPSMs(): Promise<void>  {
+        try {
+            const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
 
-        const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId: Map<number, Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>> = new Map();
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-        for (const peptideDistinct_Entry of peptideDistinct_Array) {
+            const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
-            for ( const dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue of peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_reportedPeptideId.values() ) {
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+            if (!commonData_LoadedFromServer_PerSearch_For_ProjectSearchId) {
+                const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
 
-                for ( const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue.entries() ) {
+            const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
+                get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
 
-                    const searchSubgroupId = dataPerReportedPeptideId_MapEntry[0];
-                    const data_PerReportedPeptideId_SearchSubGroupId_Value = dataPerReportedPeptideId_MapEntry[1];
-                    const reportedPeptideId = data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId;
+            const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
 
-                    if ( ! searchSubGroup_Ids_Selected.has( searchSubgroupId ) ) {
-                        // Not Selected so skip
-                        continue; // EARLY CONTINUE
-                    }
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
-                    if (data_PerReportedPeptideId_SearchSubGroupId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-                        const psmTblData_For_ReportedPeptideId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId);
-                        if ( ! psmTblData_For_ReportedPeptideId ) {
-                            const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId); returned nothing: reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
-                            console.warn(msg);
-                            throw Error(msg);
+
+            const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId: Map<number, Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>> = new Map();
+
+            for (const peptideDistinct_Entry of peptideDistinct_Array) {
+
+                for ( const dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue of peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_SearchSubgroupId_Map_Key_reportedPeptideId.values() ) {
+
+                    for ( const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_SearchSubgroupId_MapValue.entries() ) {
+
+                        const searchSubgroupId = dataPerReportedPeptideId_MapEntry[0];
+                        const data_PerReportedPeptideId_SearchSubGroupId_Value = dataPerReportedPeptideId_MapEntry[1];
+                        const reportedPeptideId = data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId;
+
+                        if ( ! searchSubGroup_Ids_Selected.has( searchSubgroupId ) ) {
+                            // Not Selected so skip
+                            continue; // EARLY CONTINUE
                         }
 
-                        for ( const psm_PPM_Error_DataEntry of psmTblData_For_ReportedPeptideId.get_Psm_PPM_Error_Data_Entries_IterableIterator() ) {
+                        if (data_PerReportedPeptideId_SearchSubGroupId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
 
-                            const searchSubgroupId_For_PSM = subGroupIdMap_Key_PsmId.get( psm_PPM_Error_DataEntry.psmId );
-                            if ( ! searchSubgroupId_For_PSM ) {
-                                const msg = "subGroupIdMap_Key_PsmId.get( psm_PPM_Error_DataEntry.psmId ); returned nothing: psm_PPM_Error_DataEntry.psmId: + " + psm_PPM_Error_DataEntry.psmId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                            const psmTblData_For_ReportedPeptideId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId);
+                            if ( ! psmTblData_For_ReportedPeptideId ) {
+                                const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId); returned nothing: reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
                                 console.warn(msg);
                                 throw Error(msg);
                             }
 
-                            if ( searchSubgroupId != searchSubgroupId_For_PSM ) {
-                                // Not searchSubgroupId being processed so SKIP
-                                continue;  // EARLY CONINTUE
-                            }
+                            for ( const psm_PPM_Error_DataEntry of psmTblData_For_ReportedPeptideId.get_Psm_PPM_Error_Data_Entries_IterableIterator() ) {
 
-                            let psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.get( searchSubgroupId_For_PSM );
-
-                            if ( ! psm_PPM_Error_List_Filtered_Array ) {
-                                psm_PPM_Error_List_Filtered_Array = []
-                                psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.set(searchSubgroupId_For_PSM, psm_PPM_Error_List_Filtered_Array)
-                            }
-
-                            psm_PPM_Error_List_Filtered_Array.push( psm_PPM_Error_DataEntry );
-                        }
-
-                    } else {
-                        if (data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet) {
-
-                            for ( const psmId of data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet ) {
-
-                                const psm_PPM_Error_Data_For_PsmId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId);
-                                if ( ! psm_PPM_Error_Data_For_PsmId ) {
-                                    const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId); returned nothing: psmId: " + psmId + ", projectSearchId: " + projectSearchId;
+                                const searchSubgroupId_For_PSM = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psm_PPM_Error_DataEntry.psmId );
+                                if ( ! searchSubgroupId_For_PSM ) {
+                                    const msg = "searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId( psm_PPM_Error_DataEntry.psmId ); returned nothing: psm_PPM_Error_DataEntry.psmId: + " + psm_PPM_Error_DataEntry.psmId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
                                     console.warn(msg);
                                     throw Error(msg);
                                 }
 
-                                let psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.get( searchSubgroupId );
+                                if ( searchSubgroupId != searchSubgroupId_For_PSM ) {
+                                    // Not searchSubgroupId being processed so SKIP
+                                    continue;  // EARLY CONINTUE
+                                }
+
+                                let psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.get( searchSubgroupId_For_PSM );
 
                                 if ( ! psm_PPM_Error_List_Filtered_Array ) {
                                     psm_PPM_Error_List_Filtered_Array = []
-                                    psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.set(searchSubgroupId, psm_PPM_Error_List_Filtered_Array)
+                                    psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.set(searchSubgroupId_For_PSM, psm_PPM_Error_List_Filtered_Array)
                                 }
 
-                                psm_PPM_Error_List_Filtered_Array.push( psm_PPM_Error_Data_For_PsmId );
+                                psm_PPM_Error_List_Filtered_Array.push( psm_PPM_Error_DataEntry );
+                            }
+
+                        } else {
+                            if (data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet) {
+
+                                for ( const psmId of data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet ) {
+
+                                    const psm_PPM_Error_Data_For_PsmId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId);
+                                    if ( ! psm_PPM_Error_Data_For_PsmId ) {
+                                        const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId); returned nothing: psmId: " + psmId + ", projectSearchId: " + projectSearchId;
+                                        console.warn(msg);
+                                        throw Error(msg);
+                                    }
+
+                                    let psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.get( searchSubgroupId );
+
+                                    if ( ! psm_PPM_Error_List_Filtered_Array ) {
+                                        psm_PPM_Error_List_Filtered_Array = []
+                                        psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.set(searchSubgroupId, psm_PPM_Error_List_Filtered_Array)
+                                    }
+
+                                    psm_PPM_Error_List_Filtered_Array.push( psm_PPM_Error_Data_For_PsmId );
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        //  Next remove outliers before first quartile and after 3rd quartile
+            //  Next remove outliers before first quartile and after 3rd quartile
 
-        const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers: Map<number, Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>> = new Map();
+            const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers: Map<number, Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>> = new Map();
 
-        {
-            for ( const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry of psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.entries() ) {
+            {
+                for ( const psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry of psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId.entries() ) {
 
-                const searchSubGroupId = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry[0];
-                const psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry[1];
+                    const searchSubGroupId = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry[0];
+                    const psm_PPM_Error_List_Filtered_Array = psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId_MapEntry[1];
 
-                const data_array_ForQuartile : Array<number> = [];
-                for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered_Array ) {
+                    const data_array_ForQuartile : Array<number> = [];
+                    for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered_Array ) {
 
-                    data_array_ForQuartile.push( psm_PPM_Error.ppmError );
-                }
-
-                const psm_PPM_Error_Mean = mean(data_array_ForQuartile);
-                const psm_PPM_Error_StandardDeviation = deviation(data_array_ForQuartile);
-
-                const psm_PPM_Error_List_Filtered_Array___RemovedOutliers: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId> = [];
-
-                for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered_Array ) {
-
-                    //  Keep everything within 2
-
-                    const psmDeviation = Math.abs( psm_PPM_Error.ppmError - psm_PPM_Error_Mean )
-
-                    if ( psmDeviation < ( 2 * psm_PPM_Error_StandardDeviation ) ) {
-                        psm_PPM_Error_List_Filtered_Array___RemovedOutliers.push( psm_PPM_Error );
+                        data_array_ForQuartile.push( psm_PPM_Error.ppmError );
                     }
+
+                    const psm_PPM_Error_Mean = mean(data_array_ForQuartile);
+                    const psm_PPM_Error_StandardDeviation = deviation(data_array_ForQuartile);
+
+                    const psm_PPM_Error_List_Filtered_Array___RemovedOutliers: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId> = [];
+
+                    for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered_Array ) {
+
+                        //  Keep everything within 2
+
+                        const psmDeviation = Math.abs( psm_PPM_Error.ppmError - psm_PPM_Error_Mean )
+
+                        if ( psmDeviation < ( 2 * psm_PPM_Error_StandardDeviation ) ) {
+                            psm_PPM_Error_List_Filtered_Array___RemovedOutliers.push( psm_PPM_Error );
+                        }
+                    }
+
+                    psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers.set( searchSubGroupId, psm_PPM_Error_List_Filtered_Array___RemovedOutliers);
                 }
-
-                psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers.set( searchSubGroupId, psm_PPM_Error_List_Filtered_Array___RemovedOutliers);
             }
-        }
 
-        this.setState({ loadingData: false, psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId: psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers })
+            this.setState({ loadingData: false, psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId: psm_PPM_Error_List_Filtered_Array__Map_Key_SearchSubGroupId__RemovedOutliers })
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+
     }
 
     /**

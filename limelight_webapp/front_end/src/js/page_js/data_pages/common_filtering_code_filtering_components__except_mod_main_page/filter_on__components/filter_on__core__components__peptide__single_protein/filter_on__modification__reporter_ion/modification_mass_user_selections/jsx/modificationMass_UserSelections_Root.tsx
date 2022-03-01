@@ -7,20 +7,14 @@
  */
 
 import React from 'react'
-
 //   Modification Mass Rounding to provide some level of commonality between searches
-import { 
-    modificationMass_CommonRounding_ReturnNumber_Function
-} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
+import {modificationMass_CommonRounding_ReturnNumber_Function} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
-import { ProteinViewPage_LoadedDataPerProjectSearchIdHolder } from 'page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder';
+import {ModificationMass_UserSelections_StateObject} from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
+import {ModificationMass_UserSelections_ComponentData} from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData';
 
-import { ModificationMass_UserSelections_StateObject } from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject';
-import { ModificationMass_UserSelections_ComponentData } from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData';
-
-import { ModificationMass_UserSelections_StaticModifications } from './modificationMass_UserSelections_StaticModifications';
-import { ModificationMass_UserSelections_Variable_or_Open_Modifications } from './modificationMass_UserSelections_Variable_or_Open_Modifications';
-import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/jsx/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component";
+import {ModificationMass_UserSelections_StaticModifications} from './modificationMass_UserSelections_StaticModifications';
+import {ModificationMass_UserSelections_Variable_or_Open_Modifications} from './modificationMass_UserSelections_Variable_or_Open_Modifications';
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
@@ -48,7 +42,6 @@ export interface ModificationMass_UserSelections_Root_Props {
     projectSearchIds : Array<number>,
     proteinNames : string
     proteinDescriptions : string
-    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds : Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>, 
     modificationMass_CommonRounding_ReturnNumber : modificationMass_CommonRounding_ReturnNumber_Function
     updateMadeTo_modificationMass_UserSelections_StateObject_Callback : () => void;
     update_modificationMass_UserSelections_ComponentData_Callback : () => void;
@@ -165,7 +158,6 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     projectSearchIds={ this.props.projectSearchIds }
                     proteinNames={ this.props.proteinNames }
                     proteinDescriptions={ this.props.proteinDescriptions }
-                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
                     //  For Enclosed <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component>
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ null }
@@ -189,7 +181,6 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     projectSearchIds={ this.props.projectSearchIds }
                     proteinNames={ this.props.proteinNames }
                     proteinDescriptions={ this.props.proteinDescriptions }
-                    loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds={ this.props.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds }
                     modificationMass_CommonRounding_ReturnNumber={ this.props.modificationMass_CommonRounding_ReturnNumber }
                     //  For Enclosed <ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component>
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.props.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData }

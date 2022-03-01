@@ -10,9 +10,7 @@ import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    qcPage_StandardChartLayout
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
@@ -24,7 +22,6 @@ import {
     qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {open_PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_OverlayContainer";
-import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 
 
 const chartTitle = "PPM Error vs/ Retention Time";
@@ -284,8 +281,6 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
             return; // EARLY RETURN
         }
 
-        this.setState({ showUpdatingMessage: false });
-
         const chart_X : Array<number> = []
         const chart_Y : Array<number> = []
 
@@ -379,6 +374,8 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_
         }
 
         const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
+
+        this.setState({ showUpdatingMessage: false });
 
         if ( ! this.props.isInSingleChartOverlay ) {
 

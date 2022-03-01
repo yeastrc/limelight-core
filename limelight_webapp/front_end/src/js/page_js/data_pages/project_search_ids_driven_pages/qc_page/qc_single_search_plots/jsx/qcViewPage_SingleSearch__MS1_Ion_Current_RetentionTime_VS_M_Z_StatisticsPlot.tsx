@@ -9,9 +9,7 @@ import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    qcPage_StandardChartLayout
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
@@ -25,6 +23,7 @@ import {open_MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayContainer} from "page_j
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
+    Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
     CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData";
@@ -36,9 +35,6 @@ import {PeptidePageRoot_CentralStateManagerObjectClass} from "page_js/data_pages
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {ControllerPaths_forDataPages_FromDOM} from "page_js/data_pages/data_pages_common/controllerPaths_forDataPages_FromDOM";
-import {ProteinList_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinList_CentralStateManagerObjectClass";
-
-
 
 
 const _MainPage_Chart_Width = 1000; // + 200 for y axis label, tick marks
@@ -329,8 +325,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                                 return; // EARLY RETURN
                             }
 
-                            this.setState({ showUpdatingMessage: false });
-
                             //  Update chart
 
                             //  Set plot container div back to height 100%
@@ -382,46 +376,44 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
     /**
      *
      */
-    private _populateChart() {
-
-        if ( ! this._componentMounted ) {
-            //  Component no longer mounted so exit
-            return; // EARLY RETURN
-        }
-
-        const promise =
-            this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileMS1_RetentionTime_VS_M_Z_Data();
-
-        promise.catch(reason => {
-
-        })
-        promise.then(qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => {
-            try {
-                if ( ! this._componentMounted ) {
-                    //  Component no longer mounted so exit
-                    return; // EARLY RETURN
-                }
-
-                this._populateChart_Actual(qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch);
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
+    private async _populateChart() {
+        try {
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
             }
-        });
+
+            const qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch =
+                await this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileMS1_RetentionTime_VS_M_Z_Data();
+
+
+            const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result =
+                await this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                qc_compute_Cache_create_GeneratedReportedPeptideListData.compute_And_Cache_create_GeneratedReportedPeptideListData();
+
+
+            this._populateChart_Actual({qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch, create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result});
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
      *
      */
-    private _populateChart_Actual(qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch) {
+    private _populateChart_Actual(
+        {
+            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch, create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+        } : {
+            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+            create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result: Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+        }) {
 
-        if ( ! this._componentMounted ) {
+        if (!this._componentMounted) {
             //  Component no longer mounted so exit
             return; // EARLY RETURN
         }
 
-        if ( ! this.plot_Ref.current ) {
+        if (!this.plot_Ref.current) {
 
             //  NO DOM element to put the chart into at this.plot_Ref.current
 
@@ -430,20 +422,20 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             return;  // EARLY RETURN
         }
 
-        if ( this.props.isInSingleChartOverlay ) {
+        if (this.props.isInSingleChartOverlay) {
 
             this._plot_Container_Ref_Set_Height_100Percent();
         }
 
-        this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State =>  {
+        this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>): QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State => {
 
-            if ( prevState.showUpdatingMessage ) {
-                return { showUpdatingMessage: false };
+            if (prevState.showUpdatingMessage) {
+                return {showUpdatingMessage: false};
             }
             return null;
         });
 
-        if ( this._cached_MS1_ChartData__ProjectSearchId !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId ) {
+        if (this._cached_MS1_ChartData__ProjectSearchId !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId) {
             this._cached_MS1_ChartData_Map_Key_SearchScanFileId.clear();
         }
 
@@ -512,13 +504,9 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
         {  //  Populate peptideEntry_Map_Key_PSM_ID
 
-            const create_GeneratedReportedPeptideListData__SingleProtein_Result =
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                qc_compute_Cache_create_GeneratedReportedPeptideListData.compute_And_Cache_create_GeneratedReportedPeptideListData();
-
             const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
 
-            for ( const peptideEntry of create_GeneratedReportedPeptideListData__SingleProtein_Result.peptideList ) {
+            for ( const peptideEntry of create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result.peptideList ) {
                 const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
                 if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
                     const msg = "peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
@@ -705,7 +693,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 MS_2_Plus_PrecursorData_ScanLevel = spectralStorage_NO_Peaks_DataFor_ScanNumber.level;
             }
 
-            console.warn( "MS2+ retentionTime_InMinutes_Min: " + retentionTime_InMinutes_Min +
+            console.log( "MS2+ retentionTime_InMinutes_Min: " + retentionTime_InMinutes_Min +
                 ", MS2+ retentionTime_InMinutes_Max: " + retentionTime_InMinutes_Max +
                 ", MS2+ precursor_M_Over_Z_Min: " + precursor_M_Over_Z_Min +
                 ", MS2+ precursor_M_Over_Z_Max: " + precursor_M_Over_Z_Max
@@ -843,6 +831,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         }
 
         const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
+
+        this.setState({ showUpdatingMessage: false });
 
         //  Register callback on user selects zoom area in chart
         {

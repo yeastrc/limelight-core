@@ -6,42 +6,39 @@
 
 
 import {
-    DataTable_RootTableDataObject,
-    DataTable_DataRowEntry,
-    DataTable_DataGroupRowEntry,
     DataTable_Column,
+    DataTable_Column_DownloadTable,
+    DataTable_DataGroupRowEntry,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough,
     DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough_Params,
-    DataTable_RootTableDataObject_Both_ColumnArrays,
-    DataTable_Column_DownloadTable,
-    DataTable_DataRowEntry_DownloadTable_SingleColumn,
-    DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry_DownloadTable,
-    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_RootTableDataObject,
+    DataTable_RootTableDataObject_Both_ColumnArrays
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { DataPageStateManager } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
+import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {
     get_ProteinList_ProteinDescription_ExternalReactComponent,
     get_ProteinList_ProteinName_ExternalReactComponent
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinName_ProteinDescription_DataTable_Component";
+import {ProteinNameDescriptionCacheEntry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
 import {
-    ProteinNameDescriptionCacheEntry
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
-import {
+    ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition,
     ProteinDataDisplay_ProteinList_Item,
     ProteinDisplayData_From_createProteinDisplayData_ProteinList
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
-import {
-    Experiment_Condition,
-    Experiment_ConditionGroupsContainer
-} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
 import {ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_group";
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
+import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 //  Strings used in the download of the table
 const _FALSE__DOWNLOAD_STRING = "false";
@@ -60,76 +57,89 @@ export type ProteinExperimentPage_Display__singleProteinRow_ClickHandler = (para
 /**
  * Create tableObject object  for DataTable
  */
-export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_RootTableDataObject = function(
+export const proteinExperimentPage_renderToPageProteinList__Create_DataTable_RootTableDataObject = async function(
     {
         singleProteinRowClickHandler_Callback,
         proteinDisplayData,
+        projectSearchIds,
         proteinGrouping_CentralStateManagerObjectClass,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
         conditions_with_their_project_search_ids_for_First_condition_group,
-        conditionGroupsContainer,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, dataPageStateManager_DataFrom_Server
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+        dataPageStateManager_DataFrom_Server,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
     } : {
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
+        projectSearchIds: Array<number>
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
-        conditionGroupsContainer : Experiment_ConditionGroupsContainer
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         dataPageStateManager_DataFrom_Server : DataPageStateManager
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
-    }) : DataTable_RootTableDataObject {
+    }) : Promise<DataTable_RootTableDataObject> {
+    try {
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() ) {
 
-    // the columns for the data being shown on the page
-    const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getProteinDataTableColumns( {
-        conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
-        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
-    } );
+            //  User has selected Display Sequence Coverage so compute it (and will be cached on proteinList sub objects)
+            await _add_SequenceCoverage_To__experiment_SubData_PerCondition_Map_Key_ConditionId_Entry__AllOf_ProteinList({
+                proteinList: proteinDisplayData.proteinList,
+                projectSearchIds,
+                conditions_with_their_project_search_ids_for_First_condition_group,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            })
+        }
 
-    let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
-    let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;
-
-    if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
-
-        //  YES Proteins ARE Grouped
-
-        dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({
-            proteinGrouping_CentralStateManagerObjectClass,
-            proteinDisplayData,
-            conditions_with_their_project_search_ids_for_First_condition_group,
-            loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
-            proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
-            singleProteinRowClickHandler_Callback,
+        // the columns for the data being shown on the page
+        const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getProteinDataTableColumns( {
+            conditions_with_their_project_search_ids_for_First_condition_group, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
             proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+        } );
+
+        let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
+        let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;
+
+        if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
+
+            //  YES Proteins ARE Grouped
+
+            dataTable_DataGroupRowEntries = _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups({
+                proteinGrouping_CentralStateManagerObjectClass,
+                proteinDisplayData,
+                conditions_with_their_project_search_ids_for_First_condition_group,
+                proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+                singleProteinRowClickHandler_Callback,
+                proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+            });
+
+        } else {
+
+            //  Proteins are NOT Grouped
+
+            const greyOutRow = false;  //  Not pass for not grouped
+
+            dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
+                groupNumber: undefined, greyOutRow, isSubsetGroup: undefined,
+                proteinList: proteinDisplayData.proteinList,
+                conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+                singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+            });
+        }
+
+        const tableObject = new DataTable_RootTableDataObject({
+            columns: dataTable_RootTableDataObject_Both_ColumnArrays.columns,
+            columns_tableDownload: dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
+            dataTable_DataRowEntries,
+            dataTable_DataGroupRowEntries
         });
 
-    } else {
+        return tableObject;
 
-        //  Proteins are NOT Grouped
-
-        const greyOutRow = false;  //  Not pass for not grouped
-
-        dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
-            groupNumber: undefined, greyOutRow, isSubsetGroup: undefined,
-            proteinList: proteinDisplayData.proteinList,
-            conditions_with_their_project_search_ids_for_First_condition_group, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
-            singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
-        });
-    }
-
-    const tableObject = new DataTable_RootTableDataObject({
-        columns: dataTable_RootTableDataObject_Both_ColumnArrays.columns,
-        columns_tableDownload: dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
-        dataTable_DataRowEntries,
-        dataTable_DataGroupRowEntries
-    });
-
-    return tableObject;
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 }
-
 
 /**
  * Create Table Columns
@@ -349,7 +359,6 @@ const _getProteinDataTableColumns = function(
 const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function(
     {
         proteinGrouping_CentralStateManagerObjectClass, proteinDisplayData, conditions_with_their_project_search_ids_for_First_condition_group,
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds,
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
@@ -357,7 +366,6 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
         conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
-        loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds: Map<number, ProteinViewPage_LoadedDataPerProjectSearchIdHolder>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinExperimentPage_Display__singleProteinRow_ClickHandler
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -590,9 +598,16 @@ const _createProteinItem_DataTableEntry = function(
 
             const proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );
             if ( proteinItemRecord ) {
-                const compute_SequenceCoverage_Result = proteinItemRecord.compute_SequenceCoverage();
-                proteinCoverageRatio = compute_SequenceCoverage_Result.proteinCoverageRatio;
-                proteinCoverageRatioDisplay = compute_SequenceCoverage_Result.proteinCoverageRatioDisplay;
+
+                const cachedData__ProteinCoverageData = proteinItemRecord.get_From_CachedData__ProteinCoverageData()
+                if ( ! cachedData__ProteinCoverageData ) {
+                    const msg = "proteinItemRecord.get_From_CachedData__ProteinCoverageData() returned nothing.  proteinItemRecord = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get( condition.id );: condition.id: " + condition.id;
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                proteinCoverageRatio = cachedData__ProteinCoverageData.proteinCoverageRatio;
+                proteinCoverageRatioDisplay = cachedData__ProteinCoverageData.proteinCoverageRatioDisplay;
             }
 
             const valueDisplay = proteinCoverageRatioDisplay;
@@ -787,4 +802,262 @@ const _createProteinItem_DataTableEntry = function(
     })
 
     return dataTable_DataRowEntry;
+}
+
+/**
+ *
+ * @param proteinList
+ * @param projectSearchIds
+ * @param conditions_with_their_project_search_ids_for_First_condition_group
+ * @param commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+ * @private
+ */
+const _add_SequenceCoverage_To__experiment_SubData_PerCondition_Map_Key_ConditionId_Entry__AllOf_ProteinList = async function (
+    {
+        proteinList,
+        projectSearchIds,
+        conditions_with_their_project_search_ids_for_First_condition_group,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    } : {
+        proteinList: Array<ProteinDataDisplay_ProteinList_Item>
+        projectSearchIds: Array<number>
+        conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry>
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    }
+) {
+    try {
+        const proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder> =
+            await _get_proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId({
+                projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            })
+
+
+        for (const proteinListItem of proteinList) {
+
+            for (const conditionsEntry of conditions_with_their_project_search_ids_for_First_condition_group) {
+
+                const condition = conditionsEntry.condition;
+
+                const experiment_SubData_PerCondition_Map_Key_ConditionId_Entry = proteinListItem.experiment_SubData.experiment_SubData_PerCondition_Map_Key_ConditionId.get(condition.id);
+                if (experiment_SubData_PerCondition_Map_Key_ConditionId_Entry) {
+
+                    _add_SequenceCoverage_To__experiment_SubData_PerCondition_Map_Key_ConditionId_Entry({
+                        experiment_SubData_PerCondition_Map_Key_ConditionId_Entry, proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+                    })
+
+                }
+
+            }
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+}
+
+
+/**
+ * Compute Sequence coverage and add to experiment_SubData_PerCondition_Map_Key_ConditionId_Entry
+ */
+const _add_SequenceCoverage_To__experiment_SubData_PerCondition_Map_Key_ConditionId_Entry = function(
+    {
+        experiment_SubData_PerCondition_Map_Key_ConditionId_Entry, proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+    } : {
+        experiment_SubData_PerCondition_Map_Key_ConditionId_Entry: ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition
+        proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder>
+    }
+) : {
+    proteinCoverageRatio: number
+    proteinCoverageRatioDisplay : string
+} {
+
+    {
+        const cached_ProteinCoverageData = experiment_SubData_PerCondition_Map_Key_ConditionId_Entry.get_From_CachedData__ProteinCoverageData()
+        if ( cached_ProteinCoverageData ) {
+            //  Already computed so return it
+            return {  //  EARLY RETURN
+                proteinCoverageRatio: cached_ProteinCoverageData.proteinCoverageRatio,
+                proteinCoverageRatioDisplay: cached_ProteinCoverageData.proteinCoverageRatioDisplay
+            }
+        }
+    }
+
+    let proteinLength: number = undefined;
+
+    const proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches : Array<boolean> = [];
+
+    for ( const protein_SubItem_For_ProjectSearchId of experiment_SubData_PerCondition_Map_Key_ConditionId_Entry.protein_SubItem_Record_Map_Key_ProjectSearchId.values() ) {
+
+        const proteinSequenceVersionId = protein_SubItem_For_ProjectSearchId.proteinSequenceVersionId
+        const projectSearchId = protein_SubItem_For_ProjectSearchId.projectSearchId
+
+        const proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder =
+            proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId);
+        if ( ! proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder ) {
+            //  No data for projectSearchId so skip
+            continue; // EARLY CONTINUE
+        }
+
+        const proteinSequenceCoverageData_For_ProteinSequenceVersionId =
+            proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder.get_ProteinSequenceCoverageData_For_ProteinSequenceVersionId(proteinSequenceVersionId);
+        if ( ! proteinSequenceCoverageData_For_ProteinSequenceVersionId ) {
+            //  No data for proteinSequenceVersionId so skip
+            continue; // EARLY CONTINUE
+        }
+
+        const reportedPeptideIds_For_Protein = new Set<number>();
+
+        if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
+            for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.keys() ) {
+                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+            }
+        }
+        if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters.size > 0 ) {
+            for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters ) {
+                reportedPeptideIds_For_Protein.add( reportedPeptideId );
+            }
+        }
+
+        proteinLength = proteinSequenceCoverageData_For_ProteinSequenceVersionId.getProteinLength();
+
+        const proteinCoverage_BooleanArrayOfProteinCoverage = proteinSequenceCoverageData_For_ProteinSequenceVersionId.getBooleanArrayOfProteinCoverage_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
+
+        //  Copy ProteinCoverage for Search to ProteinCoverage for All
+
+        const proteinCoverage_BooleanArrayOfProteinCoverage_Length = proteinCoverage_BooleanArrayOfProteinCoverage.length;
+        for ( let index = 0; index < proteinCoverage_BooleanArrayOfProteinCoverage_Length; index++ ) {
+            if ( proteinCoverage_BooleanArrayOfProteinCoverage[ index ] ) {
+                proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches[ index ] = true;
+            }
+        }
+    }
+
+    ///  Compute proteinCoverageRatio for Condition
+
+    let proteinCoverageRatio: number = undefined;
+    let proteinCoverageRatioDisplay: string = undefined
+
+    if ( proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches.length === 0 ) {
+        //  No Coverage entries
+
+        proteinCoverageRatio = 0;
+        proteinCoverageRatioDisplay = "0";
+
+    } else {
+
+        let proteinCoverage_Count = 0;
+
+        const proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches_Length = proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches.length;
+        for ( let index = 0; index < proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches_Length; index++ ) {
+            if (proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches[index]) {
+                proteinCoverage_Count++;
+            }
+        }
+
+        proteinCoverageRatio = proteinCoverage_Count / proteinLength;
+
+        proteinCoverageRatioDisplay = proteinCoverageRatio.toFixed(3);;
+    }
+
+    experiment_SubData_PerCondition_Map_Key_ConditionId_Entry.save_To_CachedData__ProteinCoverageData({ proteinCoverageRatio, proteinCoverageRatioDisplay })
+}
+
+
+/**
+ * Get CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder for the projectSearchIds
+ * @private
+ */
+const _get_proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId = function(
+    {
+        projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    } : {
+        projectSearchIds: Array<number>
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    }
+) : Promise<Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder>> {
+
+    const promises: Array<Promise<void>> = [];
+
+    const proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder> = new Map()
+
+    for ( const projectSearchId of projectSearchIds ) {
+
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); return nothing for projectSearchId: " + projectSearchId;
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        const get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result =
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+            get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters().
+            get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch()
+        if ( get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.data ) {
+            get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.data.proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder
+            proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(
+                projectSearchId,
+                get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.data.proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder
+            );
+
+        } else if ( get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.promise ) {
+
+            const promise = new Promise<void>( (resolve, reject) => {
+
+                get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.promise.catch(reason => {
+                    reject(reason)
+                });
+                get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result.promise.then( value => {
+                    try {
+                        proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(
+                            projectSearchId,
+                            value.proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder
+                        );
+                        resolve();
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            });
+            promises.push(promise);
+
+        } else {
+            const msg = "get_ProteinSequenceCoverageData_For_ProteinSequenceVersionIdHolder_AllForSearch_Result  'data' and 'promise' are both not populated for projectSearchId: " + projectSearchId;
+            console.warn(msg)
+            throw Error(msg)
+        }
+    }
+
+    if ( promises.length === 0 ) {
+
+        //  Data all loaded
+
+        return Promise.resolve(proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId);  //  EARLY RETURN
+    }
+
+///  Have to wait for data to load
+
+    const promisesAll = Promise.all(promises);
+
+    return new Promise<Map<number, CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder>>((resolve, reject) => {
+        try {
+            promisesAll.catch(reason => {
+                reject(reason);
+            })
+            promisesAll.then(value => {
+                try {
+                    resolve(proteinSequenceCoverageData_For_ProteinSequenceVersionId_For_MainFilters_Holder_Map_Key_ProjectSearchId);
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    })
 }

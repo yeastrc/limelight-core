@@ -266,7 +266,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_M_Z_StatisticsPlo
                     return; // EARLY RETURN
                 }
 
-                this._populateChart({ data_Holder_SingleSearch__SubSearches });
+                this._populateChart({ data_Holder_SingleSearch__SubSearches }); // returns ignored  Promise<void>
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -278,333 +278,337 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_M_Z_StatisticsPlo
     /**
      *
      */
-    private _populateChart(
+    private async _populateChart(
         {
             data_Holder_SingleSearch__SubSearches
         } : {
             data_Holder_SingleSearch__SubSearches: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches
         }
-    ) : void {
-
-        if ( ! this._componentMounted ) {
-            //  Component no longer mounted so exit
-            return; // EARLY RETURN
-        }
-
-        this.setState({showUpdatingMessage: false});
-
-        const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
-
-        const loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds;
-
-        const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
-
-        const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
-        const searchSubGroupIds_DisplayOrder: Array<number> = [];
-        const searchSubGroups_Map_Key_searchSubGroupId: Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = new Map();
-        {
-            const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
-            for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
-                searchSubGroups_DisplayOrder.push(searchSubGroup);
-                searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
-                searchSubGroups_Map_Key_searchSubGroupId.set(searchSubGroup.searchSubGroup_Id, searchSubGroup);
-            }
-        }
-
-        const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
-
-        const loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId);
-        if (!loadedDataPerProjectSearchIdHolder) {
-            const msg = "loadedDataPerProjectSearchIdHolder_ForAllProjectSearchIds.get(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-        const subGroupIdMap_Key_PsmId = loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId();
-        if ( ! subGroupIdMap_Key_PsmId ) {
-            throw Error("loadedDataPerProjectSearchIdHolder.get_subGroupIdMap_Key_PsmId(); returned NOTHING for projectSearchId: " + projectSearchId);
-        }
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        const data_Holder_SingleSearch = data_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch();
-
-        let search__PSMS_precursor_m_z__NotNull = false;
-        {
-            const qcPage_Searches_Info_SingleSearch = this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
-            if (qcPage_Searches_Info_SingleSearch.precursor_m_z__NotNull) {
-                //  PSM M/Z data for search IS SET
-                search__PSMS_precursor_m_z__NotNull = true;
-            }
-        }
-
-        let spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root = undefined;
-        if ( ! search__PSMS_precursor_m_z__NotNull ) {
-            spectralStorage_NO_Peaks_Data = data_Holder_SingleSearch.spectralStorage_NO_Peaks_Data
-            if (!spectralStorage_NO_Peaks_Data) {
-                const msg = " ( ! search__PSMS_precursor_m_z__NotNull ) AND (!spectralStorage_NO_Peaks_Data) for projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-        }
-
-        const psmTblData = data_Holder_SingleSearch.psmTblData
-
-        const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
-            qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                projectSearchId,
-                peptideDistinct_Array,
-                qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
-            });
-
-        const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
-
-        const searchSubGroup_Ids_Found = new Set<number>()
-
-        //  Collect values by subgroupName_Display in a map
-        const subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display : Map<string, Array<{
-
-            subgroupName_Display: string
-            precursor_M_Over_Z: number
-        }>> = new Map();
-
-        for (const psmTblData_Filtered_Entry of psmTblData_Filtered) {
-
-            let precursor_M_Over_Z: number = undefined;
-
-            if ( search__PSMS_precursor_m_z__NotNull ) {
-                // get from PSM
-                precursor_M_Over_Z = psmTblData_Filtered_Entry.precursor_M_Over_Z;
-            } else {
-                // Get from Scan
-                if ( ! psmTblData_Filtered_Entry.searchScanFileId ) {
-                    const msg = "( ! psmTblData_Filtered_Entry.searchScanFileId )  projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! psmTblData_Filtered_Entry.scanNumber ) {
-                    const msg = "( ! psmTblData_Filtered_Entry.scanNumber )  projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId);
-                if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
-                    const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId); returned nothing for searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
-                if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
-                    const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing for scanNumber: " + psmTblData_Filtered_Entry.scanNumber + ", searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                precursor_M_Over_Z = spectralStorage_NO_Peaks_DataFor_ScanNumber.precursor_M_Over_Z;
-            }
-
-            const searchSubGroup_Id = subGroupIdMap_Key_PsmId.get(psmTblData_Filtered_Entry.psmId);
-            if ( ! searchSubGroup_Id ) {
-                const msg = "( ! searchSubGroup_Id ). psmId: " + psmTblData_Filtered_Entry.psmId + ", projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            if ( ! searchSubGroup_Ids_Selected.has( searchSubGroup_Id ) ) {
-                //  NOT a Selected searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            const searchSubGroup = searchSubGroups_Map_Key_searchSubGroupId.get(searchSubGroup_Id);
-            if ( ! searchSubGroup ) {
-                const msg = "( ! searchSubGroup ). searchSubGroup_Id: " + searchSubGroup_Id + ", psmId: " + psmTblData_Filtered_Entry.psmId + ", projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            searchSubGroup_Ids_Found.add(searchSubGroup_Id);
-
-            const subgroupName_Display = searchSubGroup.subgroupName_Display;
-
-            let subgroupName_Display__precursor_M_Over_Z__EntryArray = subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.get( subgroupName_Display );
-            if ( ! subgroupName_Display__precursor_M_Over_Z__EntryArray ) {
-                subgroupName_Display__precursor_M_Over_Z__EntryArray = [];
-                subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.set( subgroupName_Display, subgroupName_Display__precursor_M_Over_Z__EntryArray );
-            }
-
-            const subgroupName_Display__precursor_M_Over_Z__Entry = { subgroupName_Display, precursor_M_Over_Z };
-
-            subgroupName_Display__precursor_M_Over_Z__EntryArray.push( subgroupName_Display__precursor_M_Over_Z__Entry );
-        }
-
-        //  Must add to chart_X, chart_Y in the order they will be shown in the chart
-
-        const chart_X : Array<string> = []
-        const chart_Y : Array<number> = []
-
-        for (const searchSubGroup of searchSubGroups_DisplayOrder) {
-
-            if ( ! searchSubGroup_Ids_Found.has( searchSubGroup.searchSubGroup_Id ) ) {
-                //  NOT a Found searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            const subgroupName_Display__precursor_M_Over_Z__EntryArray = subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.get( searchSubGroup.subgroupName_Display );
-
-            for ( const subgroupName_Display__precursor_M_Over_Z__Entry of subgroupName_Display__precursor_M_Over_Z__EntryArray ) {
-
-                chart_X.push( subgroupName_Display__precursor_M_Over_Z__Entry.subgroupName_Display );
-                chart_Y.push( subgroupName_Display__precursor_M_Over_Z__Entry.precursor_M_Over_Z );
-            }
-        }
-
-
-
-        const transforms_styles: Array<any> = [];
-
-        for (const searchSubGroup of searchSubGroups_DisplayOrder) {
-
-            if ( ! searchSubGroup_Ids_Found.has( searchSubGroup.searchSubGroup_Id ) ) {
-                //  NOT a Found searchSubGroup_Id so SKIP
-                continue; // EARLY CONTINUE
-            }
-
-            const color = qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches.get_Color_AsHexString_By_SearchSubGroupId(searchSubGroup.searchSubGroup_Id)
-
-            const x_Label = searchSubGroup.subgroupName_Display;
-
-            transforms_styles.push({target: x_Label, value: {line: {color: color}}});
-        }
-
-        const chart_Data_Entry = {
-            type: 'violin',
-            x: chart_X,
-            y: chart_Y,
-            points: "outliers", // https://plotly.com/javascript/reference/violin/#violin-points
-            box: {
-                visible: true
-            },
-            line: {
-                color: 'green',
-            },
-            meanline: {
-                visible: true
-            },
-            transforms: [{
-                type: 'groupby',
-                groups: chart_X,
-                styles: transforms_styles
-            }]
-        }
-
-        const chart_Data = [
-            chart_Data_Entry
-        ];
-
-
-        // Another way to color each bar, all in one trace
-        //
-        // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
-        //     var trace1 = {
-        //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
-        //         y: [20, 14, 23, 25, 22],
-        //         marker:{
-        //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
-        //         },
-        //         type: 'bar'
-        //     };
-
-        const xAxisTitle = "Sub Search";
-
-        const chart_Layout = qcPage_StandardChartLayout({
-            chartTitle,
-            chart_X_Axis_Label: xAxisTitle,
-            chart_X_Axis_IsTypeCategory: true,
-            chart_Y_Axis_Label: "M/Z",
-            showlegend: false,
-            search_SubSearch_Count_SizeFor: transforms_styles.length
-        });
-
+    ) : Promise<void> {
         try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
+            }
 
-        if ( this.props.isInSingleChartOverlay ) {
+            const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
 
-            const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
+            const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-            /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+            const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
 
-            // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-            // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-            // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-            // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+            const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
+            const searchSubGroupIds_DisplayOrder: Array<number> = [];
+            const searchSubGroups_Map_Key_searchSubGroupId: Map<number, SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = new Map();
+            {
+                const searchSubGroups = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_SearchSubGroups_Root().get_searchSubGroups_ForProjectSearchId(projectSearchId);
+                for ( const searchSubGroup of searchSubGroups.get_searchSubGroups_Array_OrderByDisplayOrder_OR_SortedOn_subgroupName_Display_ByServerCode() ) {
+                    searchSubGroups_DisplayOrder.push(searchSubGroup);
+                    searchSubGroupIds_DisplayOrder.push(searchSubGroup.searchSubGroup_Id);
+                    searchSubGroups_Map_Key_searchSubGroupId.set(searchSubGroup.searchSubGroup_Id, searchSubGroup);
+                }
+            }
 
-            const chart_Width = Math.floor( targetDOMElement_domRect.width );
-            const chart_Height = Math.floor( targetDOMElement_domRect.height );
+            const qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches = new QcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches({searchSubGroupIds: searchSubGroupIds_DisplayOrder});
 
-            //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+            if (!commonData_LoadedFromServer_PerSearch_For_ProjectSearchId) {
+                const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+                console.warn(msg);
+                throw Error(msg);
+            }
 
-            // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+            const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
+                get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
+
+            const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
+
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
+
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+            const data_Holder_SingleSearch = data_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch();
+
+            let search__PSMS_precursor_m_z__NotNull = false;
+            {
+                const qcPage_Searches_Info_SingleSearch = this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
+                if (qcPage_Searches_Info_SingleSearch.precursor_m_z__NotNull) {
+                    //  PSM M/Z data for search IS SET
+                    search__PSMS_precursor_m_z__NotNull = true;
+                }
+            }
+
+            let spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root = undefined;
+            if ( ! search__PSMS_precursor_m_z__NotNull ) {
+                spectralStorage_NO_Peaks_Data = data_Holder_SingleSearch.spectralStorage_NO_Peaks_Data
+                if (!spectralStorage_NO_Peaks_Data) {
+                    const msg = " ( ! search__PSMS_precursor_m_z__NotNull ) AND (!spectralStorage_NO_Peaks_Data) for projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+            }
+
+            const psmTblData = data_Holder_SingleSearch.psmTblData
+
+            const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
+                qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
+                    projectSearchId,
+                    peptideDistinct_Array,
+                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                });
+
+            const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
+
+            const searchSubGroup_Ids_Found = new Set<number>()
+
+            //  Collect values by subgroupName_Display in a map
+            const subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display : Map<string, Array<{
+
+                subgroupName_Display: string
+                precursor_M_Over_Z: number
+            }>> = new Map();
+
+            for (const psmTblData_Filtered_Entry of psmTblData_Filtered) {
+
+                let precursor_M_Over_Z: number = undefined;
+
+                if ( search__PSMS_precursor_m_z__NotNull ) {
+                    // get from PSM
+                    precursor_M_Over_Z = psmTblData_Filtered_Entry.precursor_M_Over_Z;
+                } else {
+                    // Get from Scan
+                    if ( ! psmTblData_Filtered_Entry.searchScanFileId ) {
+                        const msg = "( ! psmTblData_Filtered_Entry.searchScanFileId )  projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    if ( ! psmTblData_Filtered_Entry.scanNumber ) {
+                        const msg = "( ! psmTblData_Filtered_Entry.scanNumber )  projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId);
+                    if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
+                        const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId); returned nothing for searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
+                    if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
+                        const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing for scanNumber: " + psmTblData_Filtered_Entry.scanNumber + ", searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    precursor_M_Over_Z = spectralStorage_NO_Peaks_DataFor_ScanNumber.precursor_M_Over_Z;
+                }
+
+                const searchSubGroup_Id = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId(psmTblData_Filtered_Entry.psmId);
+                if ( ! searchSubGroup_Id ) {
+                    const msg = "( ! searchSubGroup_Id ). psmId: " + psmTblData_Filtered_Entry.psmId + ", projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                if ( ! searchSubGroup_Ids_Selected.has( searchSubGroup_Id ) ) {
+                    //  NOT a Selected searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
+                }
+
+                const searchSubGroup = searchSubGroups_Map_Key_searchSubGroupId.get(searchSubGroup_Id);
+                if ( ! searchSubGroup ) {
+                    const msg = "( ! searchSubGroup ). searchSubGroup_Id: " + searchSubGroup_Id + ", psmId: " + psmTblData_Filtered_Entry.psmId + ", projectSearchId: " + projectSearchId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                searchSubGroup_Ids_Found.add(searchSubGroup_Id);
+
+                const subgroupName_Display = searchSubGroup.subgroupName_Display;
+
+                let subgroupName_Display__precursor_M_Over_Z__EntryArray = subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.get( subgroupName_Display );
+                if ( ! subgroupName_Display__precursor_M_Over_Z__EntryArray ) {
+                    subgroupName_Display__precursor_M_Over_Z__EntryArray = [];
+                    subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.set( subgroupName_Display, subgroupName_Display__precursor_M_Over_Z__EntryArray );
+                }
+
+                const subgroupName_Display__precursor_M_Over_Z__Entry = { subgroupName_Display, precursor_M_Over_Z };
+
+                subgroupName_Display__precursor_M_Over_Z__EntryArray.push( subgroupName_Display__precursor_M_Over_Z__Entry );
+            }
+
+            //  Must add to chart_X, chart_Y in the order they will be shown in the chart
+
+            const chart_X : Array<string> = []
+            const chart_Y : Array<number> = []
+
+            for (const searchSubGroup of searchSubGroups_DisplayOrder) {
+
+                if ( ! searchSubGroup_Ids_Found.has( searchSubGroup.searchSubGroup_Id ) ) {
+                    //  NOT a Found searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
+                }
+
+                const subgroupName_Display__precursor_M_Over_Z__EntryArray = subgroupName_Display__precursor_M_Over_Z__EntryArray_Map_Key_subgroupName_Display.get( searchSubGroup.subgroupName_Display );
+
+                for ( const subgroupName_Display__precursor_M_Over_Z__Entry of subgroupName_Display__precursor_M_Over_Z__EntryArray ) {
+
+                    chart_X.push( subgroupName_Display__precursor_M_Over_Z__Entry.subgroupName_Display );
+                    chart_Y.push( subgroupName_Display__precursor_M_Over_Z__Entry.precursor_M_Over_Z );
+                }
+            }
+
+
+
+            const transforms_styles: Array<any> = [];
+
+            for (const searchSubGroup of searchSubGroups_DisplayOrder) {
+
+                if ( ! searchSubGroup_Ids_Found.has( searchSubGroup.searchSubGroup_Id ) ) {
+                    //  NOT a Found searchSubGroup_Id so SKIP
+                    continue; // EARLY CONTINUE
+                }
+
+                const color = qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches.get_Color_AsHexString_By_SearchSubGroupId(searchSubGroup.searchSubGroup_Id)
+
+                const x_Label = searchSubGroup.subgroupName_Display;
+
+                transforms_styles.push({target: x_Label, value: {line: {color: color}}});
+            }
+
+            const chart_Data_Entry = {
+                type: 'violin',
+                x: chart_X,
+                y: chart_Y,
+                points: "outliers", // https://plotly.com/javascript/reference/violin/#violin-points
+                box: {
+                    visible: true
+                },
+                line: {
+                    color: 'green',
+                },
+                meanline: {
+                    visible: true
+                },
+                transforms: [{
+                    type: 'groupby',
+                    groups: chart_X,
+                    styles: transforms_styles
+                }]
+            }
+
+            const chart_Data = [
+                chart_Data_Entry
+            ];
+
+
+            // Another way to color each bar, all in one trace
             //
-            // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            //
-            // if ()
+            // https://plotly.com/javascript/bar-charts/#customizing-individual-bar-colors
+            //     var trace1 = {
+            //         x: ['Feature A', 'Feature B', 'Feature C', 'Feature D', 'Feature E'],
+            //         y: [20, 14, 23, 25, 22],
+            //         marker:{
+            //             color: ['rgba(204,204,204,1)', 'rgba(222,45,38,0.8)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)']
+            //         },
+            //         type: 'bar'
+            //     };
 
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
-        }
+            const xAxisTitle = "Sub Search";
 
-        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
-
-        {
-            // const chart_Data_JSON = JSON.stringify( chart_Data );
-            // const chart_Layout_JSON = JSON.stringify( chart_Layout );
-            //
-            // console.log("*********************************")
-            // console.log("Data for Chart with Title: " + chartTitle );
-            // console.log("chart_Data object: ", chart_Data );
-            // console.log("chart_Data_JSON: " + chart_Data_JSON );
-            // console.log("chart_Layout object: ", chart_Layout );
-            // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
-            // console.log("chart_config object: ", chart_config );
-            // console.log("*********************************")
-        }
-
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
-
-        {
-            //  Adjust Plot Layout if needed so X Axis labels do not cover the X Axis title
-
-            const xAxisLabels = new Set(chart_X);
-
-            const  {
-                updateLayoutNeeded, updateLayout
-            } = qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object({
-                plotRoot_DOM_Element: this.plot_Ref.current,
-                xAxisLabels,
-                xAxisTitle,
-                adjustPlotHeight: ( ! this.props.isInSingleChartOverlay )
+            const chart_Layout = qcPage_StandardChartLayout({
+                chartTitle,
+                chart_X_Axis_Label: xAxisTitle,
+                chart_X_Axis_IsTypeCategory: true,
+                chart_Y_Axis_Label: "M/Z",
+                showlegend: false,
+                search_SubSearch_Count_SizeFor: transforms_styles.length
             });
 
-            if ( updateLayoutNeeded ) {
-                Plotly.relayout(this.plot_Ref.current, updateLayout);
+            try {
+                //  First remove any existing plot, if it exists (And event listener on it)
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
             }
-        }
 
-        if ( ! this.props.isInSingleChartOverlay ) {
+            if ( this.props.isInSingleChartOverlay ) {
 
-            //  Add click handler on chart on main page to open chart in overlay
+                const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
 
-            qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
-        }
+                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
+
+                // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
+                // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
+                // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
+                // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
+
+                const chart_Width = Math.floor( targetDOMElement_domRect.width );
+                const chart_Height = Math.floor( targetDOMElement_domRect.height );
+
+                //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+
+                // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
+                //
+                // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
+                //
+                // if ()
+
+                chart_Layout.width = chart_Width;
+                chart_Layout.height = chart_Height;
+            }
+
+            const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+
+            {
+                // const chart_Data_JSON = JSON.stringify( chart_Data );
+                // const chart_Layout_JSON = JSON.stringify( chart_Layout );
+                //
+                // console.log("*********************************")
+                // console.log("Data for Chart with Title: " + chartTitle );
+                // console.log("chart_Data object: ", chart_Data );
+                // console.log("chart_Data_JSON: " + chart_Data_JSON );
+                // console.log("chart_Layout object: ", chart_Layout );
+                // console.log("chart_Layout_JSON: " + chart_Layout_JSON );
+                // console.log("chart_config object: ", chart_config );
+                // console.log("*********************************")
+            }
+
+            const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
+
+            {
+                //  Adjust Plot Layout if needed so X Axis labels do not cover the X Axis title
+
+                const xAxisLabels = new Set(chart_X);
+
+                const  {
+                    updateLayoutNeeded, updateLayout
+                } = qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object({
+                    plotRoot_DOM_Element: this.plot_Ref.current,
+                    xAxisLabels,
+                    xAxisTitle,
+                    adjustPlotHeight: ( ! this.props.isInSingleChartOverlay )
+                });
+
+                if ( updateLayoutNeeded ) {
+                    Plotly.relayout(this.plot_Ref.current, updateLayout);
+                }
+            }
+
+            if ( ! this.props.isInSingleChartOverlay ) {
+
+                //  Add click handler on chart on main page to open chart in overlay
+
+                qcViewPage_SingleSearch__SubSearches__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            }
+
+            this.setState({ showUpdatingMessage: false });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 
     }
 

@@ -251,9 +251,6 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
 
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
 
-        this.setState({ showUpdatingMessage: false }); // Can do here since no Promise .then .catch after this point
-
-
         const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result = this.props.compute_MissedCleavages_Data_Result_Root;
 
         let  missedCleavages_Data: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result_PerSearch = undefined;
@@ -466,6 +463,8 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
 
             qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
         }
+
+        this.setState({ showUpdatingMessage: false });
     }
 
     /**

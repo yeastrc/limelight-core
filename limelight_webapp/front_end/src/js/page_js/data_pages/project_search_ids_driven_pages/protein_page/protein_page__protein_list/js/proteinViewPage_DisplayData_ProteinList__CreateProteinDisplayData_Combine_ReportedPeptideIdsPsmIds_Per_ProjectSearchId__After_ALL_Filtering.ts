@@ -184,9 +184,8 @@ const _processProteinSubItem = function (
 
             let data_For_ReportedPeptideId = data_For_ProjectSearchId.data_Per_ReportedPeptideId_Map_Key_ReportedPeptideId.get(reportedPeptideId);
             if ( ! data_For_ReportedPeptideId ) {
-                data_For_ReportedPeptideId = new ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_SingleReportedPeptideId({ reportedPeptideId });
+                data_For_ReportedPeptideId = new ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_SingleReportedPeptideId({ reportedPeptideId, all_PsmIds_BasedOnFilterCutoffs: true });
                 data_For_ProjectSearchId.data_Per_ReportedPeptideId_Map_Key_ReportedPeptideId.set(reportedPeptideId, data_For_ReportedPeptideId);
-                data_For_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs = true;
             } else {
                 data_For_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs = true;
                 data_For_ReportedPeptideId.psmIds = undefined;
@@ -203,7 +202,7 @@ const _processProteinSubItem = function (
 
             let data_For_ReportedPeptideId = data_For_ProjectSearchId.data_Per_ReportedPeptideId_Map_Key_ReportedPeptideId.get(reportedPeptideId);
             if ( ! data_For_ReportedPeptideId ) {
-                data_For_ReportedPeptideId = new ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_SingleReportedPeptideId({ reportedPeptideId });
+                data_For_ReportedPeptideId = new ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_SingleReportedPeptideId({ reportedPeptideId, all_PsmIds_BasedOnFilterCutoffs: false });
                 data_For_ProjectSearchId.data_Per_ReportedPeptideId_Map_Key_ReportedPeptideId.set(reportedPeptideId, data_For_ReportedPeptideId);
             }
             if ( ! data_For_ReportedPeptideId.all_PsmIds_BasedOnFilterCutoffs ) {

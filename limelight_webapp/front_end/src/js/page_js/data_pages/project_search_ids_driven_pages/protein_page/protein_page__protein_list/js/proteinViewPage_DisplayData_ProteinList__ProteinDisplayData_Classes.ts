@@ -5,11 +5,8 @@
  */
 
 
-
-
 import {ProteinGroup} from "page_js/data_pages/protein_inference/ProteinGroup";
 import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
-import {ProteinViewPage_LoadedDataPerProjectSearchIdHolder} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_LoadedDataPerProjectSearchIdHolder";
 
 /**
  * returned from function
@@ -255,6 +252,8 @@ export class ProteinDataDisplay_ProteinList_Experiment_SubData {
 
     experiment_SubData_PerCondition_Map_Key_ConditionId : Map<number, ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition> = new Map()
 
+
+
     private _DoNotCall_JustForceUseConstructor() {}
 }
 
@@ -274,98 +273,40 @@ export class ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition {
     protein_SubItem_Record_Map_Key_ProjectSearchId: Map<number, ProteinDataDisplay_ProteinList_Sub_Item>
 
     //  Cache computed values
-    private _proteinCoverageRatio: number
-    private _proteinCoverageRatioDisplay : string
 
+    private _proteinCoverageData : {
+        proteinCoverageRatio: number
+        proteinCoverageRatioDisplay : string
+    }
+
+    /**
+     * Save the proteinCoverageData to this object for future retrieval
+     * @param proteinCoverageData
+     */
+    save_To_CachedData__ProteinCoverageData(
+        proteinCoverageData : {
+            proteinCoverageRatio: number
+            proteinCoverageRatioDisplay : string
+        }
+    ) : void {
+        this._proteinCoverageData = proteinCoverageData
+    }
+
+    /**
+     * returns object saved to this object by calling save_To_CachedData__ProteinCoverageData(...)
+     */
+    get_From_CachedData__ProteinCoverageData()  {
+        return this._proteinCoverageData
+    }
+
+    /**
+     *
+     */
     get peptideCount() {
         if ( ! this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set ) {
             return 0;
         }
         return this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set.size;
-    }
-
-    /**
-     * Compute Sequence coverage and return it
-     */
-    compute_SequenceCoverage() : {
-        proteinCoverageRatio: number
-        proteinCoverageRatioDisplay : string
-    } {
-        if ( this._proteinCoverageRatio !== undefined ) {
-            //  Already computed so return it
-            return {  //  EARLY RETURN
-                proteinCoverageRatio: this._proteinCoverageRatio,
-                proteinCoverageRatioDisplay: this._proteinCoverageRatioDisplay
-            }
-        }
-
-        let proteinLength: number = undefined;
-
-        const proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches : Array<boolean> = [];
-
-        for ( const protein_SubItem_For_ProjectSearchId of this.protein_SubItem_Record_Map_Key_ProjectSearchId.values() ) {
-
-            const proteinCoverage_KeyProteinSequenceVersionId = protein_SubItem_For_ProjectSearchId.loadedDataPerProjectSearchIdHolder.get_proteinCoverage_KeyProteinSequenceVersionId();
-
-            const reportedPeptideIds_For_Protein = new Set<number>();
-
-            if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.size > 0 ) {
-                for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_AndTheirPsmIds.keys() ) {
-                    reportedPeptideIds_For_Protein.add( reportedPeptideId );
-                }
-            }
-            if ( protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters && protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters.size > 0 ) {
-                for ( const reportedPeptideId of protein_SubItem_For_ProjectSearchId.reportedPeptideIds_NoPsmFilters ) {
-                    reportedPeptideIds_For_Protein.add( reportedPeptideId );
-                }
-            }
-
-            const proteinCoverageObject = proteinCoverage_KeyProteinSequenceVersionId.get(protein_SubItem_For_ProjectSearchId.proteinSequenceVersionId);
-            if (proteinCoverageObject === undefined) {
-                throw Error("No proteinCoverageObject found.  proteinSequenceVersionId: " + protein_SubItem_For_ProjectSearchId.proteinSequenceVersionId);
-            }
-
-            proteinLength = proteinCoverageObject.getProteinLength();
-
-            const proteinCoverage_BooleanArrayOfProteinCoverage = proteinCoverageObject.getBooleanArrayOfProteinCoverage_FilteringOnReportedPeptideIds({ reportedPeptideIds_For_Protein });
-
-            //  Copy ProteinCoverage for Search to ProteinCoverage for All
-
-            const proteinCoverage_BooleanArrayOfProteinCoverage_Length = proteinCoverage_BooleanArrayOfProteinCoverage.length;
-            for ( let index = 0; index < proteinCoverage_BooleanArrayOfProteinCoverage_Length; index++ ) {
-                if ( proteinCoverage_BooleanArrayOfProteinCoverage[ index ] ) {
-                    proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches[ index ] = true;
-                }
-            }
-        }
-
-        if ( proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches.length === 0 ) {
-            //  No Coverage entries
-
-            this._proteinCoverageRatio = 0;
-            this._proteinCoverageRatioDisplay = "0";
-
-        } else {
-
-            let proteinCoverage_Count = 0;
-
-            const proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches_Length = proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches.length;
-            for ( let index = 0; index < proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches_Length; index++ ) {
-                if (proteinCoverage_BooleanArrayOfProteinCoverage_AllSearches[index]) {
-                    proteinCoverage_Count++;
-                }
-            }
-
-            const proteinCoverageRatio = proteinCoverage_Count / proteinLength;
-
-            this._proteinCoverageRatio = proteinCoverageRatio;
-            this._proteinCoverageRatioDisplay = proteinCoverageRatio.toFixed(3);;
-        }
-
-        return {
-            proteinCoverageRatio: this._proteinCoverageRatio,
-            proteinCoverageRatioDisplay: this._proteinCoverageRatioDisplay
-        }
     }
 
     private _DoNotCall_JustForceUseConstructor() {}
@@ -378,31 +319,31 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
 
     constructor(
         {
-            proteinSequenceVersionId, proteinInfo, reportedPeptide_CommonValue_EncodedString_ForProtein_Set,
+            proteinSequenceVersionId, projectSearchId, proteinInfo, reportedPeptide_CommonValue_EncodedString_ForProtein_Set,
             uniquePeptideCount, numPsms, reportedPeptideIds_NoPsmFilters, reportedPeptideIds_AndTheirPsmIds,
-            loadedDataPerProjectSearchIdHolder
         } : {
             proteinSequenceVersionId: number,
+            projectSearchId: number
             proteinInfo: ProteinDataDisplay_ProteinList_Item_ProteinInfo,
             reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string>,
             uniquePeptideCount?: number,
             numPsms: number,
             reportedPeptideIds_NoPsmFilters: Set<number>,
             reportedPeptideIds_AndTheirPsmIds: Map<number, Set<number>>
-            loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
         }) {
         this.proteinSequenceVersionId = proteinSequenceVersionId;
+        this.projectSearchId = projectSearchId;
         this.proteinInfo = proteinInfo;
         this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set = reportedPeptide_CommonValue_EncodedString_ForProtein_Set;
         this.uniquePeptideCount = uniquePeptideCount;
         this.numPsms = numPsms;
         this.reportedPeptideIds_NoPsmFilters = reportedPeptideIds_NoPsmFilters;
         this.reportedPeptideIds_AndTheirPsmIds = reportedPeptideIds_AndTheirPsmIds;
-        this.loadedDataPerProjectSearchIdHolder = loadedDataPerProjectSearchIdHolder;
     }
 
     proteinSequenceVersionId: number
-    proteinInfo: ProteinDataDisplay_ProteinList_Item_ProteinInfo // Map Value from loadedDataPerProjectSearchIdHolder.get_proteinInfoMapKeyProteinSequenceVersionId()
+    projectSearchId: number  //  Only really useful if per projectSearchId
+    proteinInfo: ProteinDataDisplay_ProteinList_Item_ProteinInfo
     reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string> = new Set()
     //  Computed: peptideCount: number // (length of Set),
     uniquePeptideCount?: number //  Computed last across the protein items
@@ -415,8 +356,6 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
     reportedPeptideIds_NoPsmFilters: Set<number>
 
     reportedPeptideIds_AndTheirPsmIds: Map<number, Set<number>>
-
-    loadedDataPerProjectSearchIdHolder: ProteinViewPage_LoadedDataPerProjectSearchIdHolder
 
     proteinCoverageRatio : number
     proteinCoverageRatioDisplay : string
@@ -479,8 +418,16 @@ export class ProteinDataDisplay__ReportedPeptideIds_AndTheir_PsmIds_PerSearch_Si
     all_PsmIds_BasedOnFilterCutoffs: boolean
     psmIds: Set<number>  //  undefined or null if all_PsmIds_BasedOnFilterCutoffs is true
 
-    constructor({ reportedPeptideId } : { reportedPeptideId : number }) {
+    constructor(
+        {
+            reportedPeptideId, all_PsmIds_BasedOnFilterCutoffs
+        } : {
+            reportedPeptideId : number
+            //  Initial Values
+            all_PsmIds_BasedOnFilterCutoffs: boolean
+        }) {
         this.reportedPeptideId = reportedPeptideId;
+        this.all_PsmIds_BasedOnFilterCutoffs = all_PsmIds_BasedOnFilterCutoffs;
     }
 
     private _onlyForceUseConstructor() {}

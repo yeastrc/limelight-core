@@ -448,8 +448,8 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id";
 
-	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
-			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
+	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
+			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
 	public static final String PSM_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-list";
 	
@@ -504,11 +504,6 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String MOD_PAGE_SPECIAL__PROTEIN_POSITIONS_VAR_MODS_FOR_REPORTED_PEPTIDES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
 			"d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id-version-0001";
 
-
-	//  !! SPECIAL !!  for QC PAGE  General Search Info
-	public static final String QC_PAGE_SEARCH_INFO_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/qc-page-search-info-list-from-psi";
-
 	
 	//  Reported Peptide Modifications for each Reported Peptide Id in request
 	public static final String DYNAMIC_MODIFICATIONS_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = 
@@ -528,8 +523,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String SEARCH_ANNOTATION_TYPE_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-annotation-type-list-from-psi";
 
-	//  Currently only QC Page
-	
 	public static final String SEARCH_FLAGS_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/search-flags-list-from-psi";
+
+	//  General Search Info
+	public static final String SEARCH_INFO_LIST_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/search-info-list-from-psi";
+
 
 }
