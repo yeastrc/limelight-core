@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -47,7 +45,6 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimelightXML_Statistics;
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
-import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateAnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatchedProteinSection;
@@ -55,6 +52,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModific
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReporterIons_OnPSMs;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
@@ -283,6 +281,8 @@ public class ImporterCoreEntryPoint {
 
 			//   Throws LimelightImporterDataException if data error found
 			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ(limelightInputForImport);
+			
+			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed(limelightInputForImport);
 			
 			//  Process Limelight Input
 			processLimelightInput = ProcessLimelightInput.getInstance();
