@@ -50,6 +50,7 @@ import {CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters_Ho
 import {proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModPage_ModMass";
 import {modificationMass_CommonRounding_ReturnNumber} from "page_js/data_pages/modification_mass_common/modification_mass_rounding";
 import {GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
+import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 
 
 /**
@@ -115,6 +116,8 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
 	private _scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+
+	private _psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
 
 	//     In ProteinViewPage_RootClass_Common, the data in private _proteinSequenceWidget_StateObject is transferred to object of class SingleProtein_CentralStateManagerObjectClass which interfaces with centralPageStateManager
 	
@@ -392,6 +395,23 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.get_scan_RetentionTime_MZ_UserSelection_EncodedStateData();
 			if ( encodedStateData ) {
 				this._scan_RetentionTime_MZ_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
+
+		{ // this._psm_Charge_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const psm_Charge_Filter_UserSelection_EncodedStateData = this._psm_Charge_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._singleProtein_ExpPage_CentralStateManagerObjectClass.set_psm_Charge_Filter_UserSelection_EncodedStateData({ psm_Charge_Filter_UserSelection_EncodedStateData });
+			}
+			this._psm_Charge_Filter_UserSelection_StateObject = new Psm_Charge_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._singleProtein_ExpPage_CentralStateManagerObjectClass.get_psm_Charge_Filter_UserSelection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._psm_Charge_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
 
@@ -847,6 +867,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this._peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
 				scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
 				scan_RetentionTime_MZ_UserSelection_StateObject : this._scan_RetentionTime_MZ_UserSelection_StateObject,
+				psm_Charge_Filter_UserSelection_StateObject : this._psm_Charge_Filter_UserSelection_StateObject,
 
 				experiment_DataPages_LoggedInUser_CommonObjectsFactory : this._experiment_DataPages_LoggedInUser_CommonObjectsFactory
 			};

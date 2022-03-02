@@ -14,6 +14,7 @@
 
 import { PEPTIDE_LIST__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
 import {CentralPageStateManager} from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
+import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 
 
 
@@ -40,6 +41,7 @@ const _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STA
 const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 const _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'j';
 const _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
+const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'l';
 
 
 class PeptidePageRoot_CentralStateManagerObjectClass__InitializeMethod_OptionalParam {
@@ -61,6 +63,7 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData?: any // PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
 		scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any  // ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
 		scan_RetentionTime_MZ_UserSelections_EncodedStateData?: any // Scan_RetentionTime_MZ_UserSelections_StateObject
+		psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
 		generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay? : any
 	}
 
@@ -107,7 +110,8 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 					encodedStateData[ _GENERATED_PEPTIDE_CONTENTS_SELECTION__SINGLE_PROTEIN_OVERLAY__ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData : encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData : encodedStateData[ _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				psm_Charge_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -296,6 +300,29 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		return this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_psm_Charge_Filter_UserSelection_EncodedStateData(
+		{
+			psm_Charge_Filter_UserSelection_EncodedStateData
+		} :{
+			psm_Charge_Filter_UserSelection_EncodedStateData: any
+		} ) {
+		this._value.psm_Charge_Filter_UserSelection_EncodedStateData = psm_Charge_Filter_UserSelection_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * psm_Charge_Filter_UserSelection_EncodedStateData
+	 */
+	get_psm_Charge_Filter_UserSelection_EncodedStateData() {
+		return this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+	}
+
 
 	/////////////////////
 
@@ -344,6 +371,9 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		}
 		if ( this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData !== undefined ) {
 			dataForEncoding[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData;
+		}
+		if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
 		}
 
 		return dataForEncoding;

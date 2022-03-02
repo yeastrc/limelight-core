@@ -15,6 +15,7 @@ import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/da
 import {
 	DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
 } from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 
 
 /**
@@ -31,6 +32,7 @@ export interface QC_Page_FiltersDisplay_ComponentData {
 	dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root //  Use with scanFilenameId_On_PSM_Filter_UserSelection_StateObject
 	scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
 	scan_RetentionTime_MZ_UserSelections_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+	psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
 	searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean;
 	searchSubGroup_PropValue : SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData;  // Use to determine which Search Sub Groups Selected along with the display name
 }

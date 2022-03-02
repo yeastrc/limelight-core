@@ -42,6 +42,7 @@ const _PROTEIN_LIST_COLUMNS_DISPLAY_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODI
 const _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'h';
 const _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 const _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'j';
+const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
 
 
 class ProteinList_CentralStateManagerObjectClass__InitializeMethod_OptionalParam {
@@ -63,6 +64,7 @@ export class ProteinList_CentralStateManagerObjectClass {
 		reporterIonMassesSelectedEncodedStateData? : any
 		scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any  // ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
 		scan_RetentionTime_MZ_UserSelections_EncodedStateData?: any // Scan_RetentionTime_MZ_UserSelections_StateObject
+		psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
 	};
 
 	private _centralPageStateManager : CentralPageStateManager;
@@ -105,7 +107,8 @@ export class ProteinList_CentralStateManagerObjectClass {
 				proteinListColumnsDisplayContents_For_ProteinList_Selection_EncodedStateData : encodedStateData[ _PROTEIN_LIST_COLUMNS_DISPLAY_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				reporterIonMassesSelectedEncodedStateData : encodedStateData[ _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData : encodedStateData[ _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				psm_Charge_Filter_UserSelection_EncodedStateData : encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -261,6 +264,30 @@ export class ProteinList_CentralStateManagerObjectClass {
 		return this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_psm_Charge_Filter_UserSelection_EncodedStateData(
+		{
+			psm_Charge_Filter_UserSelection_EncodedStateData
+		} :{
+			psm_Charge_Filter_UserSelection_EncodedStateData: any
+		} ) {
+		this._value.psm_Charge_Filter_UserSelection_EncodedStateData = psm_Charge_Filter_UserSelection_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * psm_Charge_Filter_UserSelection_EncodedStateData
+	 */
+	get_psm_Charge_Filter_UserSelection_EncodedStateData() {
+		return this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+	}
+
+
 
 	/**
      * Called by Central State Manager and maybe other code
@@ -307,6 +334,10 @@ export class ProteinList_CentralStateManagerObjectClass {
 		if ( this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData !== undefined ) {
 			dataForEncoding[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.scan_RetentionTime_MZ_UserSelections_EncodedStateData;
 		}
+		if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+		}
+
 
 		return dataForEncoding;
 	}

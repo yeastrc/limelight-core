@@ -87,6 +87,8 @@ import {QC_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/common_fi
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {Peptide_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/peptide_page/peptide_Page_FiltersDisplay_ComponentData";
 import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_DisplayMassSelectionOverlay";
+import {Psm_Charge_Filter_UserSelection_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_Container_Component";
+import {purge_FilterSelections_NotIn_CurrentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/purge_filter_selections_not_in_current_data/purge_FilterSelections_NotIn_CurrentData";
 
 
 /**
@@ -165,6 +167,7 @@ interface QcViewPage_DisplayData__Main_Component_State {
     proteinPositionFilter_UserSelections_Component_Force_ReRender_Object? : object;
     scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject? : object
     scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject? : object;
+    psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject?: object;
 
     qc_Page_FiltersDisplay_ComponentData? : QC_Page_FiltersDisplay_ComponentData;
 
@@ -230,6 +233,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     private _updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis : () => void = this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback.bind(this);
     private _updateMadeTo_Scan_RetentionTime_MZ_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_Scan_RetentionTime_MZ_UserSelections_StateObject_Callback.bind(this);
+    private _updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback_BindThis : () => void = this._updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback.bind(this);
 
     private _div_MainGridAtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Main <div> containing grid of left and on right the boxes Summary ...
     private _div_MainContent_LeftGridEntry_AtTop_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for Left <div> inside this._div_MainGridAtTop_Ref
@@ -401,7 +405,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
             proteinPositionFilter_UserSelections_Component_Force_ReRender_Object: {},
             scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
-            scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject: {}
+            scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject: {},
+            psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject: {}
         };
     }
 
@@ -551,6 +556,20 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                     throw Error("get_reportedPeptideIds_AnyPsmHas_OpenModifications_Result. neither of 'data' or 'promise' set ");
                 }
             }
+        }
+
+        {  //  remove from selection state objects values that are not in the loaded data. (Values that have been for: searches removed, or for values that don't meet new filter cutoffs)
+
+            const promise = purge_FilterSelections_NotIn_CurrentData({
+                projectSearchIds : this.props.propsValue.projectSearchIds,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
+                reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
+                proteinPositionFilter_UserSelections_StateObject: this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
+                psm_Charge_Filter_UserSelection_StateObject:  this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject
+            });
+
+            promises.push( promise );
         }
 
         if ( promises.length === 0 ) {
@@ -723,19 +742,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
         }
     ) : Promise<void> {
         try {
-            if ( initialPageLoad ) {  // Always true currently but will keep
-
-                //  remove from selection state objects values that are not in the loaded data. (Values that have been for: searches removed, or for values that don't meet new filter cutoffs)
-
-                PeptidePage_Display_MainContent_Component_nonClass_Functions.purge_Selections_OfValues_NotInCurrentLoadedData({
-                    projectSearchIds : this.props.propsValue.projectSearchIds,
-                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                    modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
-                    reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                    proteinPositionFilter_UserSelections_StateObject: this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
-                });
-            }
-
             const {
                 searchSubGroup_Ids_Selected,
                 searchSubGroup_Are_All_SearchSubGroupIds_Selected,
@@ -773,23 +779,9 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 scan_RetentionTime_MZ_UserSelection_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
-                proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
-            });
-
-            const peptide_Page_FiltersDisplay_ComponentData : Peptide_Page_FiltersDisplay_ComponentData = {
-                modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
-                reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
-                peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
-                peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
-                peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
-                scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
-                scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
-                searchSubGroup_Are_All_SearchSubGroupIds_Selected,
-                searchSubGroup_PropValue
-            };
+                psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject
+            });
 
             const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result =
                 await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides({
@@ -838,6 +830,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
                 scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+                psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 searchSubGroup_Are_All_SearchSubGroupIds_Selected,
                 searchSubGroup_PropValue
             };
@@ -987,6 +980,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.clearAll();
 
             this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject.clearAll();
+            this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject.clearAll();
 
             //  Update URL and Page
 
@@ -1017,6 +1011,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             this._peptideSequence_Update_peptideSequence_UserSelections_ComponentData();
 
                             this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
+
+                            this._update__psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject();
 
                             this._update__scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject();
 
@@ -1454,6 +1450,14 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
     }
 
     /**
+     * create new this.state.psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject
+     */
+    private _update__psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject() {
+
+        this.setState( { psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject: {} } );
+    }
+
+    /**
      * create new this.state.scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject
      */
     private _update__scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject() {
@@ -1544,6 +1548,23 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
      */
     private _updateMadeTo_ScanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR__Scan_RetentionTime_MZ_UserSelections_StateObject__Callback() {
 
+        window.setTimeout( () => {
+            try {
+                //  Now update dependent page parts
+
+                this._updateRestOfPage_ForUserInteraction();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        }, 10 );
+    }
+
+    /**
+     *
+     */
+    private _updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback() {
         window.setTimeout( () => {
             try {
                 //  Now update dependent page parts
@@ -1662,7 +1683,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                     userSearchString_LocationsOn_ProteinSequence_Root : null,
                     proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    scan_RetentionTime_MZ_UserSelection_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject
+                    scan_RetentionTime_MZ_UserSelection_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+                    psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject
                 });
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1756,6 +1778,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+            psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
             searchSubGroup_Are_All_SearchSubGroupIds_Selected : this.state.searchSubGroup_Are_All_SearchSubGroupIds_Selected,
             searchSubGroup_PropValue : this.state.searchSubGroup_PropValue
         };
@@ -2161,6 +2184,15 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                         />
 
                                     ): null}
+
+                                    <Psm_Charge_Filter_UserSelection_Container_Component
+                                        projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                        psm_Charge_Filter_UserSelection_StateObject={ this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject }
+                                        psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject }
+                                        updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_psm_Charge_Filter_UserSelection_StateObject_Callback_BindThis }
+                                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                    />
+
                                 </React.Fragment>
                             ) : null}
 

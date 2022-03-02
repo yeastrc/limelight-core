@@ -63,6 +63,7 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ProteinSequenceVersionId_Level_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ProteinSequenceVersionId_Level_For_MainFilters";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 
 
 /**
@@ -89,6 +90,7 @@ const initialPopulate = async function(
         reporterIonMass_UserSelections_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
         scan_RetentionTime_MZ_UserSelection_StateObject,
+        psm_Charge_Filter_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
@@ -104,6 +106,7 @@ const initialPopulate = async function(
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+        psm_Charge_Filter_UserSelection_StateObject: Psm_Charge_Filter_UserSelection_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
@@ -184,6 +187,7 @@ Promise<{
             reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
+            psm_Charge_Filter_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root,

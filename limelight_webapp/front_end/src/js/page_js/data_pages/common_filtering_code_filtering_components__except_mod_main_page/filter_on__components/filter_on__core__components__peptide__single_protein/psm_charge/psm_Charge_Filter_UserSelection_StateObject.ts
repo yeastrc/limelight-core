@@ -1,5 +1,5 @@
 /**
- * scanFilename_On_PSM_Filter_UserSelection_StateObject.ts
+ * psm_Charge_Filter_UserSelection_StateObject.ts
  *
  * Filter on Scan Filename on PSM - State Object
  *
@@ -8,7 +8,6 @@
  *
  */
 
-import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 ////////////////////
@@ -17,14 +16,14 @@ import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_al
 
 // VERSION 1 ENCODING STRING:
 
-//  Selected SCAN_FILENAME_IDS are sorted and stored in an Array
+//  Selected Charge Values are sorted and stored in an Array
 
 const _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION = 1;
 
 
 const _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
-const _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME = 'b';
+const _ENCODED_DATA__PSM_CHARGE_VALUES_SELECTED_ENCODING_PROPERTY_NAME = 'b';
 
 
 ///////
@@ -32,9 +31,9 @@ const _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME = 'b';
 /**
  *
  */
-export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
+export class Psm_Charge_Filter_UserSelection_StateObject {
 
-    private _scanFilenameIds_Selected : Set<number> = undefined;
+    private _chargeValues_OnPSMs_Selected : Set<number> = undefined;
 
     private _valueChangedCallback: () => void;
 
@@ -47,17 +46,16 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
         } : {
             valueChangedCallback: () => void
         }) {
-
         this._valueChangedCallback = valueChangedCallback;
     }
 
     /**
      * @returns
      */
-    areAllSelected__scanFilenameIds() {
+    areAllSelected__chargeValues_OnPSMs() {
 
         let areAllSelected = true;
-        if ( this._scanFilenameIds_Selected ) {
+        if ( this._chargeValues_OnPSMs_Selected ) {
             areAllSelected = false;
         }
         return areAllSelected;
@@ -66,19 +64,19 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
     /**
      * @returns undefined if default
      */
-    get__scanFilenameIds_Selected() {
+    get__chargeValues_OnPSMs_Selected() {
 
-        return this._scanFilenameIds_Selected;
+        return this._chargeValues_OnPSMs_Selected;
     }
     /**
      *
      */
-    set__scanFilenameIds_Selected( scanFilenameIds_Selected : Set<number> ) : void {
+    set__chargeValues_OnPSMs_Selected( chargeValues_OnPSMs_Selected : Set<number> ) : void {
 
-        this._scanFilenameIds_Selected = scanFilenameIds_Selected;
+        this._chargeValues_OnPSMs_Selected = chargeValues_OnPSMs_Selected;
 
         if ( ! this._valueChangedCallback ) {
-            throw Error("set__scanFilenameIds_Selected::( ! this._valueChangedCallback )")
+            throw Error("set__chargeValues_OnPSMs_Selected::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();
@@ -88,44 +86,47 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
      *
      * @param dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
      */
-    remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root(
+    remove_chargeValues_OnPSMs_Selected_NOT_in_All_ChargesSet(
         {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            all_Charges
         } : {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            all_Charges: Set<number>
         }
     ) : void {
 
-        if ( ! this._scanFilenameIds_Selected ) {
+        if ( ! this._chargeValues_OnPSMs_Selected ) {
             // No selection so exit
             return;  // EARLY EXIT
         }
 
-        if ( ! dataPage_common_Data_Holder_Holder_SearchScanFileData_Root ) {
-            // No SearchScanFileData loaded
-            const msg = "No value in dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.  remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root(...)";
+        if ( ! all_Charges ) {
+            // No all_Charges
+            const msg = "No value in all_Charges.  remove_chargeValues_OnPSMs_Selected_NOT_in_All_ChargesSet(...)";
             console.warn(msg);
             throw Error(msg);
         }
 
-        const loaded_All_SearchScanFileIds = dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_All_SearchScanFileIds()
-
         let deletedEntries = false;
 
-        const scanFilenameIds_Selected_Copy = Array.from( this._scanFilenameIds_Selected );
-        for ( const scanFilenameIds_Selected_Copy_Entry of scanFilenameIds_Selected_Copy ) {
-            if ( ! loaded_All_SearchScanFileIds.has( scanFilenameIds_Selected_Copy_Entry ) ) {
-                this._scanFilenameIds_Selected.delete( scanFilenameIds_Selected_Copy_Entry );
+        const chargeValues_OnPSMs_Selected_Copy = Array.from( this._chargeValues_OnPSMs_Selected );
+        for ( const chargeValues_OnPSMs_Selected_Copy_Entry of chargeValues_OnPSMs_Selected_Copy ) {
+            if ( ! all_Charges.has( chargeValues_OnPSMs_Selected_Copy_Entry ) ) {
+                this._chargeValues_OnPSMs_Selected.delete( chargeValues_OnPSMs_Selected_Copy_Entry );
                 deletedEntries = true;
             }
         }
 
-        if ( deletedEntries && this._scanFilenameIds_Selected.size === 0 ) {
-            this._scanFilenameIds_Selected = undefined;  // None selected so change to all selected
+        if ( deletedEntries && this._chargeValues_OnPSMs_Selected.size === 0 ) {
+            this._chargeValues_OnPSMs_Selected = undefined;  // None selected so change to all selected
+        }
+
+        if ( ! deletedEntries ) {
+            //  No changes so return
+            return;  // EARLY RETURN
         }
 
         if ( ! this._valueChangedCallback ) {
-            throw Error("remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root::( ! this._valueChangedCallback )")
+            throw Error("remove_chargeValues_OnPSMs_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();
@@ -137,7 +138,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
      */
     clearAll() {
 
-        this._scanFilenameIds_Selected = undefined;
+        this._chargeValues_OnPSMs_Selected = undefined;
 
         if ( ! this._valueChangedCallback ) {
             throw Error("clearAll::( ! this._valueChangedCallback )")
@@ -160,10 +161,10 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
 
         const result = {}
 
-        if ( this._scanFilenameIds_Selected !== undefined ) {
-            const scanFilenameIds_Selected = Array.from( this._scanFilenameIds_Selected );
-            limelight__Sort_ArrayOfNumbers_SortArrayInPlace(scanFilenameIds_Selected);
-            result[ _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME ] = scanFilenameIds_Selected;
+        if ( this._chargeValues_OnPSMs_Selected !== undefined ) {
+            const chargeValues = Array.from( this._chargeValues_OnPSMs_Selected );
+            limelight__Sort_ArrayOfNumbers_SortArrayInPlace(chargeValues)
+            result[ _ENCODED_DATA__PSM_CHARGE_VALUES_SELECTED_ENCODING_PROPERTY_NAME ] = chargeValues;
         }
 
         if ( Object.keys(result).length === 0 ) {
@@ -195,9 +196,9 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
             throw Error( msg );
         }
 
-        if ( encodedStateData[ _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME ] ) {
-            const scanFilenameIds_Selected_Array = encodedStateData[ _ENCODED_DATA__SCAN_FILENAME_IDS_SELECTED_ENCODING_PROPERTY_NAME ];
-            this._scanFilenameIds_Selected = new Set( scanFilenameIds_Selected_Array );
+        if ( encodedStateData[ _ENCODED_DATA__PSM_CHARGE_VALUES_SELECTED_ENCODING_PROPERTY_NAME ] ) {
+            const chargeValues_OnPSMs_Selected_Array = encodedStateData[ _ENCODED_DATA__PSM_CHARGE_VALUES_SELECTED_ENCODING_PROPERTY_NAME ];
+            this._chargeValues_OnPSMs_Selected = new Set( chargeValues_OnPSMs_Selected_Array );
         }
     }
 }

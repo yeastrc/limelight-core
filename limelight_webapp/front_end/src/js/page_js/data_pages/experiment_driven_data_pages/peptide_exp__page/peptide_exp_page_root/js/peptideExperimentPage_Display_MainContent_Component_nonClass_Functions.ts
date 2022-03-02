@@ -45,6 +45,7 @@ import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/da
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 
 /**
  * 'async' function
@@ -61,6 +62,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
         reporterIonMass_UserSelections_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
         scan_RetentionTime_MZ_UserSelection_StateObject,
+        psm_Charge_Filter_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject
@@ -75,6 +77,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+        psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
@@ -141,6 +144,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
             reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
+            psm_Charge_Filter_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : null,

@@ -295,7 +295,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                             let scanFilenameIds_Selected_InOnChange = this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected();
                                             if ( ! scanFilenameIds_Selected_InOnChange ) {
                                                 all_SearchScanFileIds = this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_All_SearchScanFileIds();
-                                                scanFilenameIds_Selected_InOnChange = all_SearchScanFileIds;
+                                                scanFilenameIds_Selected_InOnChange = new Set( all_SearchScanFileIds );
                                             }
 
                                             if ( event.target.checked ) {
