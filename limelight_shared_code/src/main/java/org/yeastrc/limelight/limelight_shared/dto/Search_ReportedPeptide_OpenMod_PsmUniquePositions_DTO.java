@@ -30,7 +30,14 @@ public class Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO {
 	private boolean is_C_Terminal;
 	private String peptideResidueLetter;
 	private String proteinResidueLetterIfAllSame; // null if values not all same 
-	
+
+	@Override
+	public String toString() {
+		return "Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO [searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", positionUnique=" + positionUnique + ", is_N_Terminal=" + is_N_Terminal
+				+ ", is_C_Terminal=" + is_C_Terminal + ", peptideResidueLetter=" + peptideResidueLetter
+				+ ", proteinResidueLetterIfAllSame=" + proteinResidueLetterIfAllSame + "]";
+	}
 	public int getSearchId() {
 		return searchId;
 	}

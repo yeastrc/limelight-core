@@ -28,7 +28,11 @@ public class PsmReporterIonMassDTO {
 	private long id;
 	private long psmId;
 	private BigDecimal reporterIonMass;
-	
+
+	@Override
+	public String toString() {
+		return "PsmReporterIonMassDTO [id=" + id + ", psmId=" + psmId + ", reporterIonMass=" + reporterIonMass + "]";
+	}
 	public long getId() {
 		return id;
 	}

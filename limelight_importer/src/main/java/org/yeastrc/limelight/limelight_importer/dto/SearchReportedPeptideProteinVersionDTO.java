@@ -26,7 +26,12 @@ public class SearchReportedPeptideProteinVersionDTO {
 	private int searchId;
 	private int reportedPeptideId;
 	private int proteinSequenceVersionId;
-	
+
+	@Override
+	public String toString() {
+		return "SearchReportedPeptideProteinVersionDTO [searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", proteinSequenceVersionId=" + proteinSequenceVersionId + "]";
+	}
 	
 	public int getSearchId() {
 		return searchId;

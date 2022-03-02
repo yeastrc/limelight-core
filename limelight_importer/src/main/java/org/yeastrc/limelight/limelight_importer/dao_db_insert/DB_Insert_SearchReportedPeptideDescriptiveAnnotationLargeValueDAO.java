@@ -66,7 +66,8 @@ public class DB_Insert_SearchReportedPeptideDescriptiveAnnotationLargeValueDAO {
 		} catch ( Exception e ) {
 			
 			log.error( "ERROR: saveToDatabase(...) sql: " + sql
-					+ ".  srchReportedPeptideAnnotationId: " + srchReportedPeptideDescriptiveAnnotationId, e );
+					+ ".  srchReportedPeptideAnnotationId: " + srchReportedPeptideDescriptiveAnnotationId
+					+ ", valueString: " + valueString, e );
 			
 			throw e;
 		}

@@ -71,7 +71,7 @@ public class DB_Insert_SearchProteinVersionDAO {
 			}
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: item: " + item + ", sql: " + sql, e );
+			log.error( "ERROR: item: " + item + ", sql: " + sql + "\nData to save: " + item, e );
 			throw e;
 		} finally {
 			

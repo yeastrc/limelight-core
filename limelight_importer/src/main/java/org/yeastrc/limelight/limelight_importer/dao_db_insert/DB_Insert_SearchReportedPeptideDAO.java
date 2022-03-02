@@ -79,7 +79,7 @@ public class DB_Insert_SearchReportedPeptideDAO {
 				pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			String msg = "Failed to insert SearchReportedPeptideDTO: " + item + ".  SQL: " + sql;
+			String msg = "Failed to insert SearchReportedPeptideDTO: " + item + ".  SQL: " + sql + "\nData to save: " + item;
 			log.error( msg );
 			throw e;
 		}

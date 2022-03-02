@@ -57,7 +57,7 @@ public class DB_Insert_SearchDynamicModMassDAO {
 					pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearchDynamicModMass(...), sql: " + SQL, e );
+			log.error( "ERROR: saveSearchDynamicModMass(...), sql: " + SQL + "\nData to save: searchId: " + searchId + ", dynamicModMass: " + dynamicModMass, e );
 			throw e;
 		}
 		

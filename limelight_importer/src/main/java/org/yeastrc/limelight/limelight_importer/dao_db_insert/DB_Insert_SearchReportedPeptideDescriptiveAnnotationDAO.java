@@ -117,7 +117,10 @@ public class DB_Insert_SearchReportedPeptideDescriptiveAnnotationDAO {
 				} else
 					throw new LimelightImporterDatabaseException( "Failed to insert for " + item.getSearchId() + ", " + item.getReportedPeptideId() );
 			}
-		}
+		} catch ( Exception e ) {
+			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			throw e;
+		} 
 		
 
 		if ( annotationValueLocation == AnnotationValueLocation.LARGE_VALUE_TABLE ) {

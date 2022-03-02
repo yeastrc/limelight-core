@@ -58,7 +58,7 @@ public class DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO {
 					pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearchOpenModMass(...), sql: " + SQL, e );
+			log.error( "ERROR: saveSearchOpenModMass(...), sql: " + SQL + "\nData to save: searchId: " + searchId + ", openModMassRounded: " + openModMassRounded, e );
 			throw e;
 		}
 		

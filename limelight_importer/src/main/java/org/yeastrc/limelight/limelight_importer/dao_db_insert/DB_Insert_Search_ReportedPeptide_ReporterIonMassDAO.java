@@ -58,7 +58,7 @@ public class DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO {
 					pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearch_ReportedPeptide_ReporterIonMass(...), sql: " + SQL, e );
+			log.error( "ERROR: saveSearch_ReportedPeptide_ReporterIonMass(...), sql: " + SQL + "\nData to save: " + item, e );
 			throw e;
 		}
 		

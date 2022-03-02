@@ -30,6 +30,12 @@ public class PsmDynamicModificationDTO {
 	private boolean is_N_Terminal;
 	private boolean is_C_Terminal;
 	
+	@Override
+	public String toString() {
+		return "PsmDynamicModificationDTO [id=" + id + ", psmId=" + psmId + ", position=" + position + ", mass=" + mass
+				+ ", is_N_Terminal=" + is_N_Terminal + ", is_C_Terminal=" + is_C_Terminal + "]";
+	}
+	
 	public int getPosition() {
 		return position;
 	}
@@ -66,4 +72,5 @@ public class PsmDynamicModificationDTO {
 	public void setIs_C_Terminal(boolean is_C_Terminal) {
 		this.is_C_Terminal = is_C_Terminal;
 	}
+
 }

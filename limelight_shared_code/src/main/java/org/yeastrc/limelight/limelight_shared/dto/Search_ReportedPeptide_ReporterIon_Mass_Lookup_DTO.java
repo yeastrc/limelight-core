@@ -11,7 +11,12 @@ public class Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO {
 	private int searchId;
 	private int reportedPeptideId;
 	private BigDecimal reporterIonMass;
-	
+
+	@Override
+	public String toString() {
+		return "Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO [searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", reporterIonMass=" + reporterIonMass + "]";
+	}
 	public int getSearchId() {
 		return searchId;
 	}

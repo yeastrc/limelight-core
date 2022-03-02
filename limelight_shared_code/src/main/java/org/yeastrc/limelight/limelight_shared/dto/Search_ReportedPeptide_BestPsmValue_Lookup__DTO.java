@@ -50,7 +50,16 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 		this.hasIsotopeLabels = search_ReportedPeptide__Lookup__DTO.isHasIsotopeLabels();
 		this.anyPsmHasReporterIons = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasReporterIons();
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Search_ReportedPeptide_BestPsmValue_Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", annotationTypeId=" + annotationTypeId + ", hasDynamicModifications="
+				+ hasDynamicModifications + ", hasIsotopeLabels=" + hasIsotopeLabels + ", anyPsmHasOpenModifications="
+				+ anyPsmHasOpenModifications + ", anyPsmHasReporterIons=" + anyPsmHasReporterIons
+				+ ", bestPsmValueForAnnTypeId=" + bestPsmValueForAnnTypeId + ", psmIdForBestValue=" + psmIdForBestValue
+				+ "]";
+	}
 	public int getSearchId() {
 		return searchId;
 	}
@@ -105,4 +114,5 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	public void setAnyPsmHasOpenModifications(boolean anyPsmHasOpenModifications) {
 		this.anyPsmHasOpenModifications = anyPsmHasOpenModifications;
 	}
+
 }

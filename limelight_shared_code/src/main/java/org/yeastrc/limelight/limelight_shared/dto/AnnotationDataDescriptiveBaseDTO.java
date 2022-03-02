@@ -33,5 +33,10 @@ public class AnnotationDataDescriptiveBaseDTO extends AnnotationDataBaseDTO {
 		this.valueString = valueString;
 	}
 
+	@Override
+	public String toString() {
+		return "AnnotationDataDescriptiveBaseDTO [valueString=" + valueString + "]";
+	}
+
 
 }

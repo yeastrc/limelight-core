@@ -27,7 +27,12 @@ public class SrchRepPept_PsmOpenModRounded_Lookup_DTO {
 	private int searchId;
 	private int reportedPeptideId;
 	private int mass;
-	
+
+	@Override
+	public String toString() {
+		return "SrchRepPept_PsmOpenModRounded_Lookup_DTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", mass=" + mass + "]";
+	}
 	public int getId() {
 		return id;
 	}

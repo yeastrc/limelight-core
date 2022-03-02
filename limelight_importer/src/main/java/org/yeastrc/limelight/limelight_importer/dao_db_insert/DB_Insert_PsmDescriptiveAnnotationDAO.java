@@ -86,40 +86,47 @@ public class DB_Insert_PsmDescriptiveAnnotationDAO {
 		}
 
 		final String sql = INSERT_SQL;
-		
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
-			
-			int counter = 0;
-			
-			counter++;
-			pstmt.setLong( counter, item.getPsmId() );
-			counter++;
-			pstmt.setInt( counter, item.getAnnotationTypeId() );
+		try {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 
-			counter++;
-			pstmt.setString( counter, annotationValueLocation.value() );
+				int counter = 0;
 
-			counter++;
-			if ( annotationValueLocation == AnnotationValueLocation.LOCAL ) {
-				pstmt.setString( counter, item.getValueString() );
-			} else {
-				
-				pstmt.setString( counter, "" ); // store empty string since value stored in .._large_value table
-			}	
-			
-			pstmt.executeUpdate();
-			
-			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-				if( rs.next() ) {
-					item.setId( rs.getInt( 1 ) );
-				} else
-					throw new LimelightImporterDatabaseException( "Failed to insert for " + item );
+				counter++;
+				pstmt.setLong( counter, item.getPsmId() );
+				counter++;
+				pstmt.setInt( counter, item.getAnnotationTypeId() );
+
+				counter++;
+				pstmt.setString( counter, annotationValueLocation.value() );
+
+				counter++;
+				if ( annotationValueLocation == AnnotationValueLocation.LOCAL ) {
+					pstmt.setString( counter, item.getValueString() );
+				} else {
+
+					pstmt.setString( counter, "" ); // store empty string since value stored in .._large_value table
+				}	
+
+				pstmt.executeUpdate();
+
+				try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
+					if( rs.next() ) {
+						item.setId( rs.getInt( 1 ) );
+					} else
+						throw new LimelightImporterDatabaseException( "Failed to insert for " + item );
+				}
 			}
-		}
-		
 
-		if ( annotationValueLocation == AnnotationValueLocation.LARGE_VALUE_TABLE ) {
-			DB_Insert_PsmDescriptiveAnnotationLargeValueDAO.getInstance().saveToDatabase( item.getId(), item.getValueString(), dbConnection );
+
+			if ( annotationValueLocation == AnnotationValueLocation.LARGE_VALUE_TABLE ) {
+				DB_Insert_PsmDescriptiveAnnotationLargeValueDAO.getInstance().saveToDatabase( item.getId(), item.getValueString(), dbConnection );
+			}
+
+		} catch ( Exception e ) {
+			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			throw e;
+		} finally {
+			
 		}
 	}
 	

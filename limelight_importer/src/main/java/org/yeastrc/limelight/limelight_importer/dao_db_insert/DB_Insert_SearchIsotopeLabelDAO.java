@@ -60,7 +60,7 @@ public class DB_Insert_SearchIsotopeLabelDAO {
 					pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearchIsotopeLabelId(...), sql: " + SQL, e );
+			log.error( "ERROR: saveSearchIsotopeLabelId(...), sql: " + SQL + "\nData to save: searchId: " + searchId + ", isotopeLabelId: " + isotopeLabelId, e );
 			throw e;
 		}
 		

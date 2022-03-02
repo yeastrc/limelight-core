@@ -27,6 +27,12 @@ public class AnnotationDataBaseDTO {
 	protected int annotationTypeId;
 	protected String valueString;
 	protected Double valueDouble;
+
+	@Override
+	public String toString() {
+		return "AnnotationDataBaseDTO [id=" + id + ", annotationTypeId=" + annotationTypeId + ", valueString="
+				+ valueString + ", valueDouble=" + valueDouble + "]";
+	}
 	
 	public long getId() {
 		return id;

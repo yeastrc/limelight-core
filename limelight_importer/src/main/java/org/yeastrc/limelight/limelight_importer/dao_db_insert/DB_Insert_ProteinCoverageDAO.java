@@ -100,7 +100,7 @@ public class DB_Insert_ProteinCoverageDAO {
 			}
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: sql: " + sql, e );
+			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
 			throw e;
 		} finally {
 			

@@ -33,7 +33,14 @@ public class SrchRepPeptDynamicModDTO {
 	private String peptideResidueLetter;
 	private String proteinResidueLetterIfAllSame; // null if values not all same  
 
-	
+
+	@Override
+	public String toString() {
+		return "SrchRepPeptDynamicModDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId="
+				+ reportedPeptideId + ", position=" + position + ", mass=" + mass + ", is_N_Terminal=" + is_N_Terminal
+				+ ", is_C_Terminal=" + is_C_Terminal + ", peptideResidueLetter=" + peptideResidueLetter
+				+ ", proteinResidueLetterIfAllSame=" + proteinResidueLetterIfAllSame + "]";
+	}
 	public int getId() {
 		return id;
 	}

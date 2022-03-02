@@ -88,6 +88,10 @@ public class DB_Insert_SearchRepPeptSubGroup_DAO {
 			pstmt.setInt( counter, item.getSearchSubGroupId() );
 
 			pstmt.executeUpdate();
+			
+		} catch ( Exception e ) {
+			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			throw e;
 		}
 	}
 	

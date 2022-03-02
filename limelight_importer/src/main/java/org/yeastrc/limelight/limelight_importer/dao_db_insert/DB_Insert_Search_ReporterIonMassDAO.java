@@ -58,7 +58,7 @@ public class DB_Insert_Search_ReporterIonMassDAO {
 					pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearch_ReporterIonMass(...), sql: " + SQL, e );
+			log.error( "ERROR: saveSearch_ReporterIonMass(...), sql: " + SQL + "\nData to save: searchId: " + searchId + ", reporterIonMass: " + reporterIonMass, e );
 			throw e;
 		}
 		

@@ -87,7 +87,7 @@ public class DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO {
 				pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveToDatabase(...), sql: " + SQL, e );
+			log.error( "ERROR: saveToDatabase(...), sql: " + SQL + "\nData to save: " + item, e );
 			throw e;
 		}
 

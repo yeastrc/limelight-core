@@ -97,7 +97,7 @@ public class DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO {
 			
 		} catch ( Exception e ) {
 			
-			log.error( "ERROR: sql: " + sql, e );
+			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
 			
 			throw e;
 			

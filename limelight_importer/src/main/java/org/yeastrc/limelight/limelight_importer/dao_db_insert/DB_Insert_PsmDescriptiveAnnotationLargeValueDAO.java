@@ -66,7 +66,8 @@ public class DB_Insert_PsmDescriptiveAnnotationLargeValueDAO {
 		} catch ( Exception e ) {
 			
 			log.error( "ERROR: saveToDatabase(...) sql: " + sql
-					+ ".  psmDescriptiveAnnotationId: " + psmDescriptiveAnnotationId, e );
+					+ ".  psmDescriptiveAnnotationId: " + psmDescriptiveAnnotationId
+					+ ", valueString: " + valueString , e );
 			
 			throw e;
 		}

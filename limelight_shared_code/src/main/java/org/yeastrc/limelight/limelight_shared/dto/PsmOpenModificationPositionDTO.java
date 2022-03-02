@@ -28,7 +28,13 @@ public class PsmOpenModificationPositionDTO {
 	private int position;
 	private boolean is_N_Terminal;
 	private boolean is_C_Terminal;
-	
+
+	@Override
+	public String toString() {
+		return "PsmOpenModificationPositionDTO [id=" + id + ", psmOpenModificationId=" + psmOpenModificationId
+				+ ", position=" + position + ", is_N_Terminal=" + is_N_Terminal + ", is_C_Terminal=" + is_C_Terminal
+				+ "]";
+	}
 	public int getPosition() {
 		return position;
 	}

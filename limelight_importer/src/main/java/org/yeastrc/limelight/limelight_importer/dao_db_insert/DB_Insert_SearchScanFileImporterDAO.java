@@ -106,7 +106,7 @@ public class DB_Insert_SearchScanFileImporterDAO {
 			}
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveToDatabase(...) sql: " + sql, e );
+			log.error( "ERROR: saveToDatabase(...) sql: " + sql + "\nData to save: " + item, e );
 			throw e;
 		}
 	}

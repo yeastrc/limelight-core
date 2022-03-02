@@ -26,6 +26,11 @@ public class PsmSearchSubGroupDTO {
 	
 	private long psmId;
 	private int searchSubGroupId;
+
+	@Override
+	public String toString() {
+		return "PsmSearchSubGroupDTO [psmId=" + psmId + ", searchSubGroupId=" + searchSubGroupId + "]";
+	}
 	
 	public long getPsmId() {
 		return psmId;
@@ -39,5 +44,4 @@ public class PsmSearchSubGroupDTO {
 	public void setSearchSubGroupId(int searchSubGroupId) {
 		this.searchSubGroupId = searchSubGroupId;
 	}
-	
 }

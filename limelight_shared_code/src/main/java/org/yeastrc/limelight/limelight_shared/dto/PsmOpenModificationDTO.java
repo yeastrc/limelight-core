@@ -26,7 +26,11 @@ public class PsmOpenModificationDTO {
 	private long id;
 	private long psmId;
 	private double mass;
-	
+
+	@Override
+	public String toString() {
+		return "PsmOpenModificationDTO [id=" + id + ", psmId=" + psmId + ", mass=" + mass + "]";
+	}
 	public double getMass() {
 		return mass;
 	}
