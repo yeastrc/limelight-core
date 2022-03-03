@@ -543,6 +543,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                                     <div style={ { marginBottom: 0 } }>
                                         <div style={ {
                                             width : subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth, maxWidth: subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth,
+                                            overflow: "hidden", textOverflow: "ellipsis",
                                             paddingTop : 3
                                         } }
                                             title={ subGroup_Display_Object.importedName }
