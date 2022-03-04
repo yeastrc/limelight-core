@@ -2,9 +2,6 @@
 
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 
-import _common_template_bundle =
-    require("../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
-
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
@@ -21,6 +18,7 @@ import {
 import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
 import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
+import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -1306,7 +1304,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 if(projectSearchId) {
                     const searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ dataPageStateManager_DataFrom_Server, projectSearchId });
-                    const searchName_HTMLEncoded = _common_template_bundle.genericSingleValueOnly({ value: searchName });
+                    const searchName_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( searchName );
                     txt += "<p>Search: " + searchName_HTMLEncoded + "</p>";
                 }
 

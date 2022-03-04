@@ -42,16 +42,16 @@ import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './proje
 import { ProjectPage_SearchesAdmin } from './project_page_main_page_react_based/js/projectPage_SearchesAdmin';
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './projectPage_SavedViews_Section_LoggedInUsersInteraction';
 
-import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
+import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
 import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
 import { ProjectPage_SearchesSection_AllUsersInteraction } from './project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction';
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
-import { ProjectPage_ProjectUserAccessAdminSection } from './projectPage_ProjectUserAccessAdminSection';
-import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './projectPage_ProjectSection_ProjectOwnerInteraction';
-import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './projectPage_ProjectSection_LoggedInUsersInteraction';
+import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
+import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './project_page_project_section/js/projectPage_ProjectSection_ProjectOwnerInteraction';
+import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import { ProjectPage_UploadData } from './projectPage_UploadData';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
@@ -117,6 +117,11 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
 
+		this._projectPage_ProjectSection_ProjectOwnerInteraction =
+			new ProjectPage_ProjectSection_ProjectOwnerInteraction( {
+				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked
+			} );
+
 		this._projectPage_ProjectSection_LoggedInUsersInteraction = new ProjectPage_ProjectSection_LoggedInUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked });
 
 		this._projectPage_ExperimentsSection_LoggedInUsersInteraction = new ProjectPage_ExperimentsSection_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
@@ -125,7 +130,8 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction = new ProjectPage_SavedViews_Section_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
 
 		this._projectPage_ProjectSection_AllUsersInteraction = new ProjectPage_ProjectSection_AllUsersInteraction( { 
-			projectIdentifierFromURL : this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction : this._projectPage_ProjectSection_LoggedInUsersInteraction 
+			projectIdentifierFromURL : this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction : this._projectPage_ProjectSection_LoggedInUsersInteraction,
+			projectPage_ProjectSection_ProjectOwnerInteraction : this._projectPage_ProjectSection_ProjectOwnerInteraction
 		} );
 
 		this._projectPage_ExperimentsSection_AllUsersInteraction = new ProjectPage_ExperimentsSection_AllUsersInteraction( {
@@ -145,12 +151,7 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			new ProjectPage_SavedViews_Section_AllUsersInteraction({ 
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
 				projectPage_SavedViews_Section_LoggedInUsersInteraction : this._projectPage_SavedViews_Section_LoggedInUsersInteraction });
-		
-		this._projectPage_ProjectSection_ProjectOwnerInteraction =
-			new ProjectPage_ProjectSection_ProjectOwnerInteraction( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked
-			} );
-		
+
 		this._projectPage_ProjectUserAccessAdminSection =
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );

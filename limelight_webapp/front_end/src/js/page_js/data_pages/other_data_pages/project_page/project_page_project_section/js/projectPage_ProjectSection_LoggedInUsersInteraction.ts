@@ -18,7 +18,7 @@
 //  Import Handlebars templates
 
 // @ts-ignore
-import { _project_page__project_info_section_logged_in_users_interaction,_project_page__project_info_section_all_users_interaction_template  } from './projectPage__Common__ImportHandlebarsTemplates'
+import { _project_page__project_info_section_logged_in_users_interaction,_project_page__project_info_section_all_users_interaction_template  } from '../../projectPage__Common__ImportHandlebarsTemplates'
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -27,7 +27,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_all_pages/genericToolTip';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-import {ProjectPage_ProjectSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/projectPage_ProjectSection_AllUsersInteraction";
+import {ProjectPage_ProjectSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction";
 
 //  Local imports
 

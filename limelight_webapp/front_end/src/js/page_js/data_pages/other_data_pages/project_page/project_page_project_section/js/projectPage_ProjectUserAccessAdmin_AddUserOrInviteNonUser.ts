@@ -17,7 +17,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-import {ProjectPage_ProjectUserAccessAdminSection} from "page_js/data_pages/other_data_pages/project_page/projectPage_ProjectUserAccessAdminSection";
+import {ProjectPage_ProjectUserAccessAdminSection} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectUserAccessAdminSection";
 
 /**
  * 

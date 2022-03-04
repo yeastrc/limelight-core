@@ -5,9 +5,6 @@
  *
  */
 
-import _common_template_bundle =
-    require("../../../../../../../../handlebars_templates_precompiled/common/common_template-bundle.js" );
-
 import React from "react";
 import Plotly from 'plotly.js-dist/plotly'
 
@@ -33,6 +30,7 @@ import {
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered__PSM_Entry_Holder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
+import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 
 /**
  *
@@ -476,9 +474,9 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         }
 
 
-        const annotationType_Name_Score_X_HTMLEncoded = _common_template_bundle.genericSingleValueOnly({ value: annotationType_Name_Score_X });
+        const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
 
-        const annotationType_Name_Score_Y_HTMLEncoded = _common_template_bundle.genericSingleValueOnly({ value: annotationType_Name_Score_Y });
+        const annotationType_Name_Score_Y_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_Y );
 
 
         let chart_Data = undefined;

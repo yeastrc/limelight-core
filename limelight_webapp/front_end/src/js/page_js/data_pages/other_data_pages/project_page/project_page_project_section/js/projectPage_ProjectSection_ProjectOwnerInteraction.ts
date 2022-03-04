@@ -25,6 +25,7 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay} from "page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_PopulateProjects";
+import {ProjectPage_ProjectSection_Abstract_ProjectOwnerInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_Abstract_ProjectOwnerInteraction";
 
 //  Local imports
 
@@ -39,6 +40,8 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	private _projectIdentifierFromURL : string
 	private _projectLocked : boolean
 
+	private _projectPage_ProjectSection_Abstract_ProjectOwnerInteraction: ProjectPage_ProjectSection_Abstract_ProjectOwnerInteraction
+
 	/**
 	 * 
 	 */
@@ -48,6 +51,15 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 		this._projectLocked = projectLocked;
+
+		this._projectPage_ProjectSection_Abstract_ProjectOwnerInteraction = new ProjectPage_ProjectSection_Abstract_ProjectOwnerInteraction({ projectIdentifierFromURL, projectLocked })
+	}
+
+	/**
+	 *
+	 */
+	get_projectPage_ProjectSection_Abstract_ProjectOwnerInteraction() {
+		return this._projectPage_ProjectSection_Abstract_ProjectOwnerInteraction
 	}
 
 	/**
@@ -63,6 +75,8 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		} else {
 			this._initialize_ProjectNotLocked();
 		}
+
+		this._projectPage_ProjectSection_Abstract_ProjectOwnerInteraction.initialize()
 		
 		this._initializeCalled = true;
 	}
@@ -118,48 +132,6 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		});
 		
 
-		let $change_project_abstract_button = $("#change_project_abstract_button");
-		if ($change_project_abstract_button.length === 0) {
-			throw Error( "Unable to find '#change_project_abstract_button'" );
-		}
-		$change_project_abstract_button.click(function(eventObject) {
-			try {
-				event.preventDefault(); // to stop the 
-				let clickThis = this;
-				objectThis._openChangeProjectAbstract( { clickThis } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-		let $change_project_abstract_save = $("#change_project_abstract_save");
-		if ($change_project_abstract_save.length === 0) {
-			throw Error( "Unable to find '#change_project_abstract_save'" );
-		}
-		$change_project_abstract_save.click(function(eventObject) {
-			try {
-				event.preventDefault(); // to stop the 
-				let clickThis = this;
-				objectThis._saveProjectAbstract( { clickThis } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-		let $change_project_abstract_cancel = $("#change_project_abstract_cancel");
-		if ($change_project_abstract_cancel.length === 0) {
-			throw Error( "Unable to find '#change_project_abstract_cancel'" );
-		}
-		$change_project_abstract_cancel.click(function(eventObject) {
-			try {
-				event.preventDefault(); // to stop the 
-				let clickThis = this;
-				objectThis._cancelChangeProjectAbstract( { clickThis } );
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
 
 		let $project_unlocked_icon = $("#project_unlocked_icon");
 		if ($project_unlocked_icon.length === 0) {
@@ -295,91 +267,6 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		const $title_container_div = $("#title_container_div")
 		$title_container_div.show()
-	}
-
-
-	/**
-	 * 
-	 */
-	_openChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
-		
-		let $project_abstract_display = $("#project_abstract_display");
-		let project_abstract_display = $project_abstract_display.text();
-		let $change_project_abstract_input = $("#change_project_abstract_input");
-		$change_project_abstract_input.val( project_abstract_display );
-		
-		let $change_project_abstract_container = $("#change_project_abstract_container");
-		$change_project_abstract_container.show();
-		
-		let $abstract_display_container = $("#abstract_display_container");
-		$abstract_display_container.hide();
-	}
-
-	/**
-	 * 
-	 */
-	_saveProjectAbstract( { clickThis } : { clickThis: any } ) {
-		
-		let objectThis = this;
-		
-		let $change_project_abstract_input = $("#change_project_abstract_input");
-		let newProjectAbstract = $change_project_abstract_input.val();
-
-		let requestObj = { projectId : this._projectIdentifierFromURL, projectAbstract : newProjectAbstract };
-
-		const url = "d/rws/for-page/project-update-abstract";
-
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
-		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-		promise_webserviceCallStandardPost.catch( () => { }  );
-
-		promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
-			try {
-				objectThis._saveProjectAbstractResponse( { requestObj, responseData, clickThis } );
-
-			} catch( e ) {
-				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-				throw e;
-			}
-		});
-	}
-
-	/**
-	 * 
-	 */
-	_saveProjectAbstractResponse( { requestObj, responseData, clickThis } : { requestObj: any, responseData: any, clickThis: any } ) {
-		if ( ! responseData.status ) {
-			throw Error("responseData.status not true");
-		}
-		
-		let $project_abstract_display = $("#project_abstract_display");
-		$project_abstract_display.text( requestObj.projectAbstract );
-		
-		let $header_project_abstract = $("#header_project_abstract");
-		$header_project_abstract.text( requestObj.projectAbstract );
-		
-		this._closeChangeProjectAbstract( { clickThis } );
-	}
-	
-	/**
-	 * 
-	 */
-	_cancelChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
-		this._closeChangeProjectAbstract( { clickThis } );
-	}
-
-	/**
-	 * 
-	 */
-	_closeChangeProjectAbstract( { clickThis } : { clickThis: any } ) {
-
-		let $change_project_abstract_container = $("#change_project_abstract_container");
-		$change_project_abstract_container.hide();
-
-		let $abstract_display_container = $("#abstract_display_container");
-		$abstract_display_container.show();
 	}
 
 	/////////////////////////

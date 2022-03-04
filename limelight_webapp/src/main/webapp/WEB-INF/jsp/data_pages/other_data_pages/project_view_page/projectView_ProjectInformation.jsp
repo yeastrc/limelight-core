@@ -118,13 +118,21 @@
 	  
 	  <%--  Project Abstract --%>
 	  
-	  <c:if test="${ not empty project.abstractText or webSessionAuthAccessLevel.assistantProjectOwnerAllowed }" >	
-		    
-		    <div class="project-info-single-block" >
+			
+	  <c:if test="${ not empty project.abstractText or webSessionAuthAccessLevel.projectOwnerAllowed }" >	
+		      
+		<script type="text/text" id="project_abstract_contents_from_server"
+		><html><body><c:out value="${ project.abstractText }"/></body><html></script>
+			  
+		<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
+			<script type="text/text" id="project_abstract_can_edit">true</script>
+		</c:if>
+		
+		    <div id="abstract_display_outer_container" class="project-info-single-block" style="display: none;">
 			  <div class="second-level-label project-info-label">Abstract:</div>
 
 			  <div id="abstract_display_container"  class="second-level-text project-info-text" >
-				<span id="project_abstract_display" ><c:out value="${ project.abstractText }" ></c:out></span>
+				<span id="project_abstract_display" >Loading Data...</span>
 				
 				<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
 				<%-- 

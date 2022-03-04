@@ -37,7 +37,7 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
-import { ProjectPage_ProjectSection_AllUsersInteraction } from './projectPage_ProjectSection_AllUsersInteraction';
+import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
 import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
