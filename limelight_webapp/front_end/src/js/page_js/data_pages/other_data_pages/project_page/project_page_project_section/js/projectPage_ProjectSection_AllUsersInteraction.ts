@@ -105,7 +105,8 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 		this._project_abstract_contents_from_server_NotEncoded = _getDOMElementContents_UnEncode_HTML_To_Text( "project_abstract_contents_from_server" );
 		if ( this._project_abstract_contents_from_server_NotEncoded === undefined || this._project_abstract_contents_from_server_NotEncoded === null ) {
-			throw Error("No DOM element with ID 'project_abstract_contents_from_server' or contents failed to parse as HTML");
+			// NO project_abstract_contents_from_server so skip (No value and not project owner)
+			return; // EARLY RETURN
 		}
 
 		this.put_Abstract_NotEncoded_Onto_Page({ abstract_NotEncoded_Onto_Page: this._project_abstract_contents_from_server_NotEncoded })
