@@ -28,6 +28,7 @@ import { addToolTips, addSingleGenericAppSpecificToolTip } from 'page_js/common_
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {ProjectPage_ProjectSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction";
+import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 
 //  Local imports
 
@@ -44,7 +45,6 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
     private _project_notes_entry_edit = _project_page__project_info_section_logged_in_users_interaction.project_notes_entry_edit;
     private _project_notes_add_note_container_and_link = _project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_container_and_link;
     private _project_notes_add_note_add_note_input = _project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_add_note_input;
-    private _project_notes_entry = _project_page__project_info_section_all_users_interaction_template.project_notes_entry;
 
     private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
@@ -310,7 +310,8 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                     canDelete : true
                 };
 
-                const noteHTML = this._project_notes_entry( note );
+                const noteHTML = this._projectPage_ProjectSection_AllUsersInteraction.noteObject_For_Template__To__NoteHTML( note );
+
                 const $noteDOM = $( noteHTML );
                 $noteDOM.appendTo( $notes_list_container_div );
 
@@ -551,7 +552,12 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                 if ( $notes_text_jq.length === 0 ) {
                     throw Error("No DOM element found with class 'notes_text_jq'");
                 }
-                $notes_text_jq.text( noteText );
+
+                const noteText_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( noteText )
+
+                const noteText_Escaping_HTML__Apply__Urlify = this._projectPage_ProjectSection_AllUsersInteraction.update_NOTE_String__Input_escapedHTML__Apply__Urlify( noteText_Escaping_HTML );
+
+                $notes_text_jq.html( noteText_Escaping_HTML__Apply__Urlify );
 
                 this._editNote_RemoveEditInputAndShowNote( { $selector_note_root_container_div } );
             } catch( e ) {

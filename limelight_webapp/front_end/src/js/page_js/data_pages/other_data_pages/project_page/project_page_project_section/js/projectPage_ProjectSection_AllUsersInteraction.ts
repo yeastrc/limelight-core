@@ -143,7 +143,9 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 		}
 	) : void {
 
-		const abstract_Final = this.textString_Unencoded__To_EscapedHTML_Urlify__NewLineToBR( abstract_NotEncoded_Onto_Page );
+		const abstract_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( abstract_NotEncoded_Onto_Page )
+
+		const abstract_Final = this._updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( abstract_Escaping_HTML );
 
 		const project_abstract_displayDOM = document.getElementById("project_abstract_display");
 		if ( ! project_abstract_displayDOM ) {
@@ -283,8 +285,9 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 		for ( const note of notesList ) {
 
-			const noteHTML = this._project_notes_entry( note );
-			const $noteDOM = $( noteHTML );
+			const noteHTML__Apply__Urlify__NewLineToBR = this.noteObject_For_Template__To__NoteHTML(note)
+
+			const $noteDOM = $( noteHTML__Apply__Urlify__NewLineToBR );
 			$noteDOM.appendTo( $notes_list_container_div );
 
 			addToolTips( $noteDOM );  // External Function
@@ -296,15 +299,26 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 		}
 	}
 
+	/**
+	 *
+	 * @param noteObject
+	 */
+	noteObject_For_Template__To__NoteHTML( noteObject: any ) : string {
+
+		const noteHTML = this._project_notes_entry( noteObject );
+
+		const noteHTML__Apply__Urlify__NewLineToBR = this.update_NOTE_String__Input_escapedHTML__Apply__Urlify( noteHTML )
+
+		return noteHTML__Apply__Urlify__NewLineToBR;
+	}
+
 
 	/////////////////
 
 
-	textString_Unencoded__To_EscapedHTML_Urlify__NewLineToBR( textString_Unencoded: string ) : string {
+	private _updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR(textString_After_Escaping_HTML: string ) : string {
 
-		const textString_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( textString_Unencoded )
-
-		const textString_After_Urlify = urlify(textString_Escaping_HTML);
+		const textString_After_Urlify = urlify(textString_After_Escaping_HTML);
 
 		let textString_After_Remove_NewLine_AtEnd = textString_After_Urlify;
 		while ( textString_After_Remove_NewLine_AtEnd.endsWith("\n") ) {
@@ -318,6 +332,34 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 		return textString_Final;
 	}
 
+	/**
+	 * Separate version for NOTE since CANNOT change \n to <br> since template has a number of '\n' in it.
+	 *
+	 * @param textString_After_Escaping_HTML
+	 * @private
+	 */
+	update_NOTE_String__Input_escapedHTML__Apply__Urlify(textString_After_Escaping_HTML: string ) : string {
+
+		const textString_After_Urlify = urlify(textString_After_Escaping_HTML);
+
+		const textString_Final = textString_After_Urlify;
+
+		//  CANNOT change \n to <br> since template has a number of '\n' in it.
+
+		// let textString_After_Remove_NewLine_AtEnd = textString_After_Urlify;
+		//
+		// while ( textString_After_Remove_NewLine_AtEnd.endsWith("\n") ) {
+		// 	textString_After_Remove_NewLine_AtEnd = textString_After_Remove_NewLine_AtEnd.substring(0, textString_After_Remove_NewLine_AtEnd.length - 1 );
+		// }
+		//
+		// const textString_After_NewLine = textString_After_Remove_NewLine_AtEnd.replaceAll("\n", "<br/>")
+		//
+		// const textString_Final = textString_After_NewLine;
+
+		return textString_Final;
+	}
+
+
 
 };
 
@@ -328,7 +370,7 @@ const urlify = (text) => {
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 	return text.replace(urlRegex, (url) => {
 		console.log("In 'text.replace(...)': url: " + url )
-		return `<a href="${url}" target="_blank" without rel="noreferrer" and rel="noopener" >${url}</a>`;
+		return `<a href="${url}" target="_blank" rel="noreferrer" rel="noopener" >${url}</a>`;
 	})
 }
 
