@@ -72,17 +72,13 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         if ( ! _project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_add_note_input ) {
             throw Error("_project_page__project_info_section_logged_in_users_interaction.project_notes_add_note_add_note_input")
         }
-        if ( ! _project_page__project_info_section_all_users_interaction_template.project_notes_entry ) {
-            throw Error("_project_page__project_info_section_all_users_interaction_template.project_notes_entry")
-        }
 	}
 
 	/**
 	 * 
 	 */
 	initialize({ projectPage_ProjectSection_AllUsersInteraction } : { projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction }) {
-        let objectThis = this;
-        
+
         this._projectPage_ProjectSection_AllUsersInteraction = projectPage_ProjectSection_AllUsersInteraction;
 		
         this._initializeCalled = true;
@@ -270,7 +266,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
         if ( $selector_add_note_field.length === 0 ) {
             throw Error("Failed to find DOM element with class 'selector_add_note_field'");
         }
-        const noteText = $selector_add_note_field.val();
+        const noteText = $selector_add_note_field.val() as string;
         if (noteText === undefined || noteText === null || noteText === "") {
     //		alert("Note cannot be empty");
             
@@ -295,6 +291,10 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                 }
 
                 const addNote_SaveToServer_AjaxResponse = result.addNote_SaveToServer_AjaxResponse;
+
+                //  Add Note to variable in this._projectPage_ProjectSection_AllUsersInteraction
+
+                this._projectPage_ProjectSection_AllUsersInteraction.insert__noteTextContent_Map_Key_NoteId__Entry({ noteId: addNote_SaveToServer_AjaxResponse.insertedId, noteTextContent: noteText })
 
                 //  Add Note to Notes
 
@@ -344,8 +344,6 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 	 * 
 	 */	
 	_addNote_SaveToServer({ noteText }: { noteText: any } ) : Promise<any> {
-
-        const objectThis = this;
 
         return new Promise((resolve,reject) => {
             try {
@@ -401,13 +399,15 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
             throw Error("No DOM element found with class 'selector_note_root_container_div'");
         }
 
+        const noteText = this._projectPage_ProjectSection_AllUsersInteraction.get__noteTextContent_For_NoteId(id)
+
         //  Get existing note value
 
-        const $notes_text_jq = $selector_note_root_container_div.find(".notes_text_jq");
-        if ( $notes_text_jq.length === 0 ) {
-            throw Error("No DOM element found with class 'notes_text_jq'");
-        }
-        const noteText = $notes_text_jq.text();
+        // const $notes_text_jq = $selector_note_root_container_div.find(".notes_text_jq");
+        // if ( $notes_text_jq.length === 0 ) {
+        //     throw Error("No DOM element found with class 'notes_text_jq'");
+        // }
+        // const noteText = $notes_text_jq.text();
        
         //  Add Edit HTML to DOM
         
@@ -548,6 +548,11 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
                     throw Error("No DOM element found with class 'selector_note_root_container_div'");
                 }
 
+                //  Save Stored text to Note in Memory in this._projectPage_ProjectSection_AllUsersInteraction
+
+                this._projectPage_ProjectSection_AllUsersInteraction.insert__noteTextContent_Map_Key_NoteId__Entry({ noteId: id, noteTextContent: noteText })
+
+
                 const $notes_text_jq = $selector_note_root_container_div.find(".notes_text_jq");
                 if ( $notes_text_jq.length === 0 ) {
                     throw Error("No DOM element found with class 'notes_text_jq'");
@@ -555,7 +560,7 @@ export class ProjectPage_ProjectSection_LoggedInUsersInteraction {
 
                 const noteText_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( noteText )
 
-                const noteText_Escaping_HTML__Apply__Urlify = this._projectPage_ProjectSection_AllUsersInteraction.update_NOTE_String__Input_escapedHTML__Apply__Urlify( noteText_Escaping_HTML );
+                const noteText_Escaping_HTML__Apply__Urlify = this._projectPage_ProjectSection_AllUsersInteraction.updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( noteText_Escaping_HTML );
 
                 $notes_text_jq.html( noteText_Escaping_HTML__Apply__Urlify );
 

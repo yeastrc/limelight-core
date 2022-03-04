@@ -45,7 +45,8 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	private _project_abstract_contents_from_server_NotEncoded: string
 
 	private _project_notes_outer_container = _project_page__project_info_section_all_users_interaction_template.project_notes_outer_container;
-	private _project_notes_entry = _project_page__project_info_section_all_users_interaction_template.project_notes_entry;
+
+	private _noteTextContent_Map_Key_NoteId = new Map<number,string>()
 
 	/**
 	 * 
@@ -65,9 +66,6 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
         if ( ! _project_page__project_info_section_all_users_interaction_template.project_notes_outer_container ) {
             throw Error("_project_page__project_info_section_all_users_interaction_template.project_notes_outer_container")
-        }
-        if ( ! _project_page__project_info_section_all_users_interaction_template.project_notes_entry ) {
-            throw Error("_project_page__project_info_section_all_users_interaction_template.project_notes_entry")
         }
 	}
 
@@ -145,7 +143,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 		const abstract_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( abstract_NotEncoded_Onto_Page )
 
-		const abstract_Final = this._updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( abstract_Escaping_HTML );
+		const abstract_Final = this.updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( abstract_Escaping_HTML );
 
 		const project_abstract_displayDOM = document.getElementById("project_abstract_display");
 		if ( ! project_abstract_displayDOM ) {
@@ -285,6 +283,9 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 		for ( const note of notesList ) {
 
+			//  Store Notes in Map so have for edit
+			this.insert__noteTextContent_Map_Key_NoteId__Entry({ noteId: note.id, noteTextContent: note.noteText })
+
 			const noteHTML__Apply__Urlify__NewLineToBR = this.noteObject_For_Template__To__NoteHTML(note)
 
 			const $noteDOM = $( noteHTML__Apply__Urlify__NewLineToBR );
@@ -305,9 +306,37 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	 */
 	noteObject_For_Template__To__NoteHTML( noteObject: any ) : string {
 
-		const noteHTML = this._project_notes_entry( noteObject );
+		//  Replaced:   const noteHTML = this._project_notes_entry( noteObject );
 
-		const noteHTML__Apply__Urlify__NewLineToBR = this.update_NOTE_String__Input_escapedHTML__Apply__Urlify( noteHTML )
+		//  Replaced this Template:   {{!-- project_notes_entry.handlebars --}}
+
+
+		const noteText_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( noteObject.noteText )
+
+		let noteHTML = "";
+
+		noteHTML += '<div class=" selector_note_root_container_div " style="" data-note_id="{{ id }}">'
+		noteHTML += '<div class="note-display-div  selector_note_display_container " >'
+		noteHTML += '<span class="notes_text_jq" >'
+
+		noteHTML += noteText_Escaping_HTML
+		noteHTML += '</span> '
+
+		if ( noteObject.canEdit ) {
+			noteHTML += ' <img class=" icon-small clickable selector_note_update selector_tool_tip_attached" data-tooltip="Edit note" src="static/images/icon-edit.png"> '
+		}
+		if ( noteObject.canDelete ) {
+			noteHTML += ' <img class=" icon-small clickable selector_note_remove selector_tool_tip_attached" data-tooltip="Remove note" src="static/images/icon-circle-delete.png"> '
+		}
+
+		noteHTML += '</div>'
+		if ( noteObject.canEdit ) {
+			noteHTML += '<div class=" selector_note_update_container " style=" position: relative; " ></div>'
+		}
+		noteHTML += '</div>'
+
+
+		const noteHTML__Apply__Urlify__NewLineToBR = this.updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( noteHTML )
 
 		return noteHTML__Apply__Urlify__NewLineToBR;
 	}
@@ -316,7 +345,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	/////////////////
 
 
-	private _updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR(textString_After_Escaping_HTML: string ) : string {
+	updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR(textString_After_Escaping_HTML: string ) : string {
 
 		const textString_After_Urlify = urlify(textString_After_Escaping_HTML);
 
@@ -338,28 +367,41 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 	 * @param textString_After_Escaping_HTML
 	 * @private
 	 */
-	update_NOTE_String__Input_escapedHTML__Apply__Urlify(textString_After_Escaping_HTML: string ) : string {
+	// update_NOTE_String__Input_escapedHTML__Apply__Urlify(textString_After_Escaping_HTML: string ) : string {
+	//
+	// 	const textString_After_Urlify = urlify(textString_After_Escaping_HTML);
+	//
+	// 	const textString_Final = textString_After_Urlify;
+	//
+	// 	//  CANNOT change \n to <br> since template has a number of '\n' in it.
+	//
+	// 	// let textString_After_Remove_NewLine_AtEnd = textString_After_Urlify;
+	// 	//
+	// 	// while ( textString_After_Remove_NewLine_AtEnd.endsWith("\n") ) {
+	// 	// 	textString_After_Remove_NewLine_AtEnd = textString_After_Remove_NewLine_AtEnd.substring(0, textString_After_Remove_NewLine_AtEnd.length - 1 );
+	// 	// }
+	// 	//
+	// 	// const textString_After_NewLine = textString_After_Remove_NewLine_AtEnd.replaceAll("\n", "<br/>")
+	// 	//
+	// 	// const textString_Final = textString_After_NewLine;
+	//
+	// 	return textString_Final;
+	// }
 
-		const textString_After_Urlify = urlify(textString_After_Escaping_HTML);
 
-		const textString_Final = textString_After_Urlify;
-
-		//  CANNOT change \n to <br> since template has a number of '\n' in it.
-
-		// let textString_After_Remove_NewLine_AtEnd = textString_After_Urlify;
-		//
-		// while ( textString_After_Remove_NewLine_AtEnd.endsWith("\n") ) {
-		// 	textString_After_Remove_NewLine_AtEnd = textString_After_Remove_NewLine_AtEnd.substring(0, textString_After_Remove_NewLine_AtEnd.length - 1 );
-		// }
-		//
-		// const textString_After_NewLine = textString_After_Remove_NewLine_AtEnd.replaceAll("\n", "<br/>")
-		//
-		// const textString_Final = textString_After_NewLine;
-
-		return textString_Final;
+	insert__noteTextContent_Map_Key_NoteId__Entry(
+		{
+			noteTextContent, noteId
+		} : {
+			noteTextContent: string
+			noteId: number
+		}) {
+		this._noteTextContent_Map_Key_NoteId.set( noteId, noteTextContent )
 	}
 
-
+	get__noteTextContent_For_NoteId( noteId: number ) : string {
+		return this._noteTextContent_Map_Key_NoteId.get( noteId );
+	}
 
 };
 
