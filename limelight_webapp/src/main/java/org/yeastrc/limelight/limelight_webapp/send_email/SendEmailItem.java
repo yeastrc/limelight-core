@@ -36,6 +36,15 @@ public class SendEmailItem {
 	private String smtpAuthUsername_Override_NORMALLY_NOT_SET;
 	private String smtpAuthPassword_Override_NORMALLY_NOT_SET;
 	
+	@Override
+	public String toString() {
+		return "SendEmailItem [toEmailAddress=" + toEmailAddress + ", fromEmailAddress=" + fromEmailAddress
+				+ ", emailSubject=" + emailSubject + ", emailBody=" + emailBody
+				+ ", smtpServerHost_Override_NORMALLY_NOT_SET=" + smtpServerHost_Override_NORMALLY_NOT_SET
+				+ ", smtpServerPort_Override_NORMALLY_NOT_SET=" + smtpServerPort_Override_NORMALLY_NOT_SET
+				+ ", smtpAuthUsername_Override_NORMALLY_NOT_SET=" + smtpAuthUsername_Override_NORMALLY_NOT_SET
+				+ ", smtpAuthPassword_Override_NORMALLY_NOT_SET=" + smtpAuthPassword_Override_NORMALLY_NOT_SET + "]";
+	}
 	
 	public String getSmtpAuthUsername_Override_NORMALLY_NOT_SET() {
 		return smtpAuthUsername_Override_NORMALLY_NOT_SET;
@@ -85,9 +94,5 @@ public class SendEmailItem {
 	public void setEmailBody(String emailBody) {
 		this.emailBody = emailBody;
 	}
-	@Override
-	public String toString() {
-		return "SendEmailItem [toEmailAddress=" + toEmailAddress + ", fromEmailAddress=" + fromEmailAddress
-				+ ", emailSubject=" + emailSubject + ", emailBody=" + emailBody + "]";
-	}
+
 }

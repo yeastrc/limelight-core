@@ -245,7 +245,7 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 					+ "', '"
 					+ SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER__PROPERTY_FILE_KEY		
 					+ "'.";
-			log.info( msg );
+			log.warn( msg );
 			
 			return null;
 		}
@@ -254,7 +254,7 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 			
 			if ( to_emailAddresses == null || from_emailAddress == null || serverIdentifier == null ) {
 			
-				String msg = "If any of properties have a value, ALL properties must have a value.  Config file: "
+				String msg = "If any of properties have a value, ALL properties must have a value so NOT configured.  Config file: "
 						+ CONFIG_FILENAME
 						+ ".  Property names: '"
 						+ SERVER_OR_JAVASCRIPT_ERROR_EMAILS_TO_SEND_TO__PROPERTY_FILE_KEY
@@ -264,6 +264,8 @@ public class SendEmailOnServerOrJsError_ToConfiguredEmail_ReadConfig implements 
 						+ SERVER_OR_JAVASCRIPT_ERROR_EMAILS_SERVER_IDENTIFIER__PROPERTY_FILE_KEY		
 						+ "'.";
 				log.error( msg );
+
+				return null;
 			}
 		}
 		
