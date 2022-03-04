@@ -49,9 +49,7 @@ import {
     downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
 } from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
 import {
-    ProteinPageSearchesSummarySectionData_Component,
-    ProteinPageSearchesSummarySectionData_PerSearchEntry,
-    ProteinPageSearchesSummarySectionData_Root
+    ProteinPageSearchesSummarySectionData_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/protein_page__protein_list__multiple_searches_code/react_components/proteinPageSearchesSummarySection";
 import {ProteinViewPage_DisplayData_ProteinList__Main_Component_nonClass_Functions} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__Main_Component_nonClass_Functions.ts";
 import {
@@ -230,11 +228,11 @@ interface ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearc
 
     protein_Page_FiltersDisplay_ComponentData? : Protein_Page_FiltersDisplay_ComponentData
 
-    proteinPageSearchesSummarySectionData_Root?: ProteinPageSearchesSummarySectionData_Root
     show_proteinPageSearchesSummarySectionData_Root?: boolean
 
     tableObject_CurrentlyRendered_ProteinList? : DataTable_RootTableObject
     proteinList_DataCounts? : ProteinList_DataCounts
+    proteinDisplayData?: ProteinDisplayData_From_createProteinDisplayData_ProteinList
 
     show_UpdatingProteinList_Message?: boolean
 
@@ -1914,45 +1912,6 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 }
             }
 
-            let proteinPageSearchesSummarySectionData_Root: ProteinPageSearchesSummarySectionData_Root = undefined;
-
-            if ( proteinDisplayData.summaryMap_Key_ProjectSearchId ) {
-
-                const summaryMap_Key_ProjectSearchId = proteinDisplayData.summaryMap_Key_ProjectSearchId;
-
-                proteinPageSearchesSummarySectionData_Root = new ProteinPageSearchesSummarySectionData_Root();
-
-                const searchNames_AsMap = this.props.propsValue.dataPageStateManager.get_searchNames_AsMap()
-
-                proteinPageSearchesSummarySectionData_Root.perSearchEntries = [];
-
-                for (const projectSearchId of this.props.propsValue.projectSearchIds) {
-
-                    const searchNameEntry = searchNames_AsMap.get(projectSearchId);
-                    if (!searchNameEntry) {
-                        const msg = "Building ProteinPageSearchesSummarySectionData_Root: searchNames_AsMap.get( projectSearchId ); return nothing. projectSearchId: " + projectSearchId;
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-
-                    const summarySectionData_PerSearchEntry = new ProteinPageSearchesSummarySectionData_PerSearchEntry()
-                    summarySectionData_PerSearchEntry.searchId = searchNameEntry.searchId;
-                    summarySectionData_PerSearchEntry.searchName = searchNameEntry.name;
-
-                    const summary_For_ProjectSearchId = summaryMap_Key_ProjectSearchId.get(projectSearchId);
-
-                    if (summary_For_ProjectSearchId) {
-                        summarySectionData_PerSearchEntry.proteinCount_TotalForSearch = summary_For_ProjectSearchId.proteinCount_TotalForSearch;
-                        summarySectionData_PerSearchEntry.reportedPeptideCount_TotalForSearch = summary_For_ProjectSearchId.distinctPeptideCount_TotalForSearch;
-                        summarySectionData_PerSearchEntry.psmCount_TotalForSearch = summary_For_ProjectSearchId.psmCount_TotalForSearch;
-                    } else {
-                        console.warn("No value returned from summaryMap_Key_ProjectSearchId.get( projectSearchId ) projectSearchId: " + projectSearchId)
-                    }
-
-                    proteinPageSearchesSummarySectionData_Root.perSearchEntries.push(summarySectionData_PerSearchEntry);
-                }
-            }
-
             {
                 const searchSubGroup_PropValue: SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData =
                     ProteinViewPage_DisplayData_ProteinList__Main_Component_nonClass_Functions.compute_searchSubGroup_PropValue({propsValue: this.props.propsValue});
@@ -1982,7 +1941,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                 mainDisplayData_Loaded : true,
                 tableObject_CurrentlyRendered_ProteinList,
                 proteinList_DataCounts,
-                proteinPageSearchesSummarySectionData_Root,
+                proteinDisplayData,
                 //  Created above the await usage above but set here to limit number of render() calls
                 modificationMass_UserSelections_ComponentData,
                 reporterIons_UserSelections_ComponentData
@@ -2788,9 +2747,12 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                             ): null }
 
                             {/*  Container for PSM Counts Per Search Only displayed for Combined/Merged Searches  */}
-                            { ( this.state.show_proteinPageSearchesSummarySectionData_Root && this.state.proteinPageSearchesSummarySectionData_Root ) ? (
+                            { ( this.state.show_proteinPageSearchesSummarySectionData_Root ) ? (
                                 <ProteinPageSearchesSummarySectionData_Component
-                                    summarySectionData={ this.state.proteinPageSearchesSummarySectionData_Root }
+                                    proteinDisplayData={ this.state.proteinDisplayData }
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
                                 />
                             ) : null }
 

@@ -14,6 +14,11 @@ import {
     DataTable_RootTableObject, DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {DataTable_TableRoot} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
+import {ProteinDisplayData_From_createProteinDisplayData_ProteinList} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
+import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {proteinPageSearchesSummarySection__Compute_DisplayData} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/protein_page__protein_list__multiple_searches_code/react_components/proteinPageSearchesSummarySection__Compute_DisplayData";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 
 
@@ -33,20 +38,31 @@ export class ProteinPageSearchesSummarySectionData_PerSearchEntry {
     searchId : number
     searchName : string
     proteinCount_TotalForSearch : number = 0;
-    reportedPeptideCount_TotalForSearch : number = 0;
+    distinct_PeptideCount_TotalForSearch : number = 0;
     psmCount_TotalForSearch : number = 0;
+    distinct_ScanCount_TotalForSearch : number = 0;
 }
 
 
 export interface ProteinPageSearchesSummarySectionData_Component_Props {
 
-    summarySectionData : ProteinPageSearchesSummarySectionData_Root
+    proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
+    projectSearchIds : Array<number>
+    dataPageStateManager : DataPageStateManager
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root?: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
+}
+
+
+interface ProteinPageSearchesSummarySectionData_Component_State {
+
+    dataTable_RootTableObject? : DataTable_RootTableObject
 }
 
 /**
  *
  */
-export class ProteinPageSearchesSummarySectionData_Component extends React.Component< ProteinPageSearchesSummarySectionData_Component_Props, {} > {
+export class ProteinPageSearchesSummarySectionData_Component extends React.Component< ProteinPageSearchesSummarySectionData_Component_Props, ProteinPageSearchesSummarySectionData_Component_State > {
 
     constructor(props : ProteinPageSearchesSummarySectionData_Component_Props) {
         super(props);
@@ -58,7 +74,87 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
     /**
      *
      */
-    private _getDataTable_RootTableObject() : DataTable_RootTableObject {
+    componentDidMount() {
+
+        this._get_Data_CallToGet_dataTable_RootTableObject();
+    }
+
+    /**
+     *
+     */
+    shouldComponentUpdate(nextProps: Readonly<ProteinPageSearchesSummarySectionData_Component_Props>, nextState: Readonly<ProteinPageSearchesSummarySectionData_Component_State>, nextContext: any): boolean {
+
+        if (
+            nextProps.proteinDisplayData !== this.props.proteinDisplayData
+            || nextState.dataTable_RootTableObject !== this.state.dataTable_RootTableObject
+        ) {
+            return true;
+        }
+        return false
+    }
+
+    /**
+     *
+     */
+    componentDidUpdate(prevProps: Readonly<ProteinPageSearchesSummarySectionData_Component_Props>, prevState: Readonly<ProteinPageSearchesSummarySectionData_Component_State>, snapshot?: any) {
+        if (
+            prevProps.proteinDisplayData !== this.props.proteinDisplayData
+        ) {
+            this._get_Data_CallToGet_dataTable_RootTableObject();
+        }
+    }
+
+    /**
+     *
+     */
+    private _get_Data_CallToGet_dataTable_RootTableObject() {
+
+        if ( ! this.props.proteinDisplayData.summaryMap_Key_ProjectSearchId ) {
+            //  Summary data not populated yet so skip
+            return; // EARLY RETURN
+        }
+
+        const proteinPageSearchesSummarySection__Compute_DisplayData__Result = proteinPageSearchesSummarySection__Compute_DisplayData({
+            proteinDisplayData: this.props.proteinDisplayData,
+            projectSearchIds: this.props.projectSearchIds,
+            dataPageStateManager: this.props.dataPageStateManager,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        })
+
+        if ( proteinPageSearchesSummarySection__Compute_DisplayData__Result.data ) {
+
+            const summarySectionData = proteinPageSearchesSummarySection__Compute_DisplayData__Result.data
+
+            const dataTable_RootTableObject = this._getDataTable_RootTableObject({ summarySectionData });
+            this.setState({ dataTable_RootTableObject })
+
+        } else if ( proteinPageSearchesSummarySection__Compute_DisplayData__Result.promise ) {
+
+            proteinPageSearchesSummarySection__Compute_DisplayData__Result.promise.catch(reason => {  });
+            proteinPageSearchesSummarySection__Compute_DisplayData__Result.promise.then(value => { try {
+
+                const summarySectionData = value
+
+                const dataTable_RootTableObject = this._getDataTable_RootTableObject({ summarySectionData });
+                this.setState({ dataTable_RootTableObject })
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } else {
+            throw Error("proteinPageSearchesSummarySection__Compute_DisplayData__Result no data or promise")
+        }
+    }
+
+    /**
+     *
+     */
+    private _getDataTable_RootTableObject(
+        {
+            summarySectionData
+        } : {
+            summarySectionData: ProteinPageSearchesSummarySectionData_Root
+        }
+    ) : DataTable_RootTableObject {
 
         const dataTable_Columns : Array<DataTable_Column> = [];
         const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -125,12 +221,27 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                 const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
                 dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
+            { // Distinct Scan Count for a single search
+
+                const displayName = "Distinct Scan Count";
+
+                const dataTable_Column = new DataTable_Column({
+                    id : "scanNum", // Used for tracking sort order. Keep short
+                    displayName,
+                    width : 60,
+                    sortable : true
+                });
+                dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
         }
 
         const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
         {
             let index = 0;
-            for ( const perSearchEntry of this.props.summarySectionData.perSearchEntries ) {
+            for ( const perSearchEntry of summarySectionData.perSearchEntries ) {
 
                 const columnEntries: DataTable_DataRow_ColumnEntry[] = [];
                 const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
@@ -167,13 +278,13 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
                     { // perSearchEntry.reportedPeptideCount_TotalForSearch
-                        const valueDisplay = perSearchEntry.reportedPeptideCount_TotalForSearch.toLocaleString();
+                        const valueDisplay = perSearchEntry.distinct_PeptideCount_TotalForSearch.toLocaleString();
                         const searchEntriesForColumn : Array<string> = [ valueDisplay ]
                         const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
                         const columnEntry = new DataTable_DataRow_ColumnEntry({
                             searchTableData,
                             valueDisplay,
-                            valueSort: perSearchEntry.reportedPeptideCount_TotalForSearch
+                            valueSort: perSearchEntry.distinct_PeptideCount_TotalForSearch
                         })
                         columnEntries.push(columnEntry);
 
@@ -188,6 +299,20 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
                             searchTableData,
                             valueDisplay,
                             valueSort: perSearchEntry.psmCount_TotalForSearch
+                        });
+                        columnEntries.push(columnEntry);
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+                    { // perSearchEntry.distinct_ScanCount_TotalForSearch
+                        const valueDisplay = perSearchEntry.distinct_ScanCount_TotalForSearch.toLocaleString();
+                        const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                        const columnEntry = new DataTable_DataRow_ColumnEntry({
+                            searchTableData,
+                            valueDisplay,
+                            valueSort: perSearchEntry.distinct_ScanCount_TotalForSearch
                         });
                         columnEntries.push(columnEntry);
 
@@ -234,19 +359,24 @@ export class ProteinPageSearchesSummarySectionData_Component extends React.Compo
      */
     render () {
 
-        const dataTable_RootTableObject = this._getDataTable_RootTableObject();
-
         return (
             <div style={ { marginBottom: 10 } }>
                 <div style={ { fontWeight: "bold", marginBottom: 5 } }>
                     Summary Data Per Search
                 </div>
-                <DataTable_TableRoot
-                    tableObject={ dataTable_RootTableObject }
-                />
+                { ( ! this.state.dataTable_RootTableObject ) ? (
+                    <div>
+                        Loading Data...
+                    </div>
+                ) : (
+                    <DataTable_TableRoot
+                        tableObject={ this.state.dataTable_RootTableObject }
+                    />
+                )}
             </div>
         );
 
     }
 
 }
+
