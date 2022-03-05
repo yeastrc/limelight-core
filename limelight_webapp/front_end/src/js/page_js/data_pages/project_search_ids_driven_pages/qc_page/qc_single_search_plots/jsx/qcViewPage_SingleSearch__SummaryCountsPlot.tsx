@@ -22,6 +22,7 @@ import {
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
+import {CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 
 
 const chartTitle = "Summary Counts";
@@ -242,6 +243,14 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
             const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
 
+            if ( projectSearchIds.length !== 1 ) {
+                const msg = "Single Search chart.  ( projectSearchIds.length !== 1 )"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const projectSearchId = projectSearchIds[0]
+
             const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
                 this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
@@ -254,6 +263,7 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
             const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder> = new Map();
             const numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType> = new Map();
+            const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
 
             for (const projectSearchId of projectSearchIds) {
 
@@ -273,12 +283,22 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(projectSearchId, proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder);
                 }
                 {
-                    const get_numPsmsForReportedPeptideIdMap_ReturnPromise =
+                    const get_numPsmsForReportedPeptideIdMap_ReturnPromise_Result =
                         await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                        get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters()
-                            .get_numPsmsForReportedPeptideIdMap_ReturnPromise();
-                    const numPsmsForReportedPeptideIdMap = get_numPsmsForReportedPeptideIdMap_ReturnPromise.numPsmsForReportedPeptideIdMap
+                        get_commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters().
+                            get_numPsmsForReportedPeptideIdMap_ReturnPromise();
+                    const numPsmsForReportedPeptideIdMap = get_numPsmsForReportedPeptideIdMap_ReturnPromise_Result.numPsmsForReportedPeptideIdMap
                     numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.set(projectSearchId, numPsmsForReportedPeptideIdMap);
+                }
+                {
+                    const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
+                        await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                        get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().
+                        get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
+
+                    const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder;
+
+                    psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.set( projectSearchId, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder );
                 }
             }
 
@@ -362,44 +382,138 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
             let psmCountForSearch = 0;
 
-            //  Add in all PSM Id counts
+            let distinct_ScanCount_TotalForSearch = 0;
 
-            for ( const psmIds_Map_Key_ReportedPeptideId_MapEntry of psmIds_Map_Key_ReportedPeptideId_Map_Key_ProjectSearchId.entries() ) {
-                const projectSearchId: number = psmIds_Map_Key_ReportedPeptideId_MapEntry[0];
-                const psmIds_Map_Key_ReportedPeptideId = psmIds_Map_Key_ReportedPeptideId_MapEntry[1];
+            {
+                //  Add in all PSM Id counts
 
-                const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map_Key_ProjectSearchId.get( projectSearchId );
+                for ( const psmIds_Map_Key_ReportedPeptideId_MapEntry of psmIds_Map_Key_ReportedPeptideId_Map_Key_ProjectSearchId.entries() ) {
 
-                for ( const psmIds_MapEntry of psmIds_Map_Key_ReportedPeptideId.entries() ) {
+                    const projectSearchId: number = psmIds_Map_Key_ReportedPeptideId_MapEntry[0];
+                    const psmIds_Map_Key_ReportedPeptideId = psmIds_Map_Key_ReportedPeptideId_MapEntry[1];
 
-                    const reportedPeptideId: number = psmIds_MapEntry[0];
-                    const psmIds = psmIds_MapEntry[1];
+                    const scanNumber_Set_When_NO_SearchScanFileId = new Set<number>()
+                    const scanNumber_Set_Map_Key_SearchScanFileId = new Map<number, Set<number>>()
 
-                    if ( reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map.has( reportedPeptideId ) ) {
-                        //  Have entry where no filtering on PsmIds so skip this entry
+                    const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
+                        throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.get(projectSearchId) returned Nothing. projectSearchId: " + projectSearchId )
+                    }
+
+                    const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map_Key_ProjectSearchId.get( projectSearchId );
+
+                    if ( ! reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map ) {
+                        continue;
+                    }
+
+                    for ( const psmIds_MapEntry of psmIds_Map_Key_ReportedPeptideId.entries() ) {
+
+                        const reportedPeptideId: number = psmIds_MapEntry[0];
+                        const psmIds = psmIds_MapEntry[1];
+
+                        const psmTblData_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId);
+                        if ( ! psmTblData_For_ReportedPeptideId ) {
+                            throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId) returned Nothing. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId )
+                        }
+
+                        if ( reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map.has( reportedPeptideId ) ) {
+                            //  Have entry where no filtering on PsmIds so skip this entry
+                            continue; // EARLY CONTINUE
+                        }
+
+                        psmCountForSearch += psmIds.size
+
+                        for ( const psmId of psmIds ) {
+                            const psmTblData_For_PsmId = psmTblData_For_ReportedPeptideId.get_PsmTblData_For_PsmId(psmId)
+                            if ( ! psmTblData_For_PsmId ) {
+                                throw Error("psmTblData_For_ReportedPeptideId.get_PsmTblData_For_PsmId(psmId) returned Nothing. psmId: " + psmId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId )
+                            }
+                            const scanNumber = psmTblData_For_PsmId.scanNumber
+                            const searchScanFileId = psmTblData_For_PsmId.searchScanFileId
+
+                            if ( searchScanFileId === undefined || searchScanFileId === null ) {
+                                //  Handle when No searchScanFileId
+                                scanNumber_Set_When_NO_SearchScanFileId.add(scanNumber)
+
+                            } else {
+
+                                let scanNumber_Set = scanNumber_Set_Map_Key_SearchScanFileId.get(searchScanFileId)
+                                if ( ! scanNumber_Set ) {
+                                    scanNumber_Set = new Set()
+                                    scanNumber_Set_Map_Key_SearchScanFileId.set(searchScanFileId, scanNumber_Set)
+                                }
+                                scanNumber_Set.add(scanNumber)
+                            }
+                        }
+                    }
+
+                    distinct_ScanCount_TotalForSearch += scanNumber_Set_When_NO_SearchScanFileId.size;
+
+                    for ( const scanNumber_Set of scanNumber_Set_Map_Key_SearchScanFileId.values() ) {
+                        distinct_ScanCount_TotalForSearch += scanNumber_Set.size
+                    }
+                }
+
+                //  Add in all PSM counts for Reported Peptide Ids where no filtering on PsmIds
+
+                for ( const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry of reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map_Key_ProjectSearchId.entries() ) {
+
+                    const projectSearchId: number = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry[0];
+                    const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry[1];
+
+                    const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
+                        throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.get(projectSearchId) returned Nothing. projectSearchId: " + projectSearchId )
+                    }
+
+                    const scanNumber_Set_When_NO_SearchScanFileId = new Set<number>()
+                    const scanNumber_Set_Map_Key_SearchScanFileId = new Map<number, Set<number>>()
+
+                    const numPsmsForReportedPeptideIdMap = numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.get(projectSearchId);
+                    if (!numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId) {
+
                         continue; // EARLY CONTINUE
                     }
 
-                    psmCountForSearch += psmIds.size
-                }
-            }
+                    for ( const reportedPeptideId of reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map ) {
 
-            //  Add in all PSM counts for Reported Peptide Ids where no filtering on PsmIds
+                        const psmTblData_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId);
+                        if ( ! psmTblData_For_ReportedPeptideId ) {
+                            throw Error("psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId) returned Nothing. reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId )
+                        }
 
-            for ( const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry of reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map_Key_ProjectSearchId.entries() ) {
-                const projectSearchId: number = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry[0];
-                const reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map = reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_MapEntry[1];
+                        const numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
+                        if ( numPsms ) {
+                            psmCountForSearch += numPsms;
 
-                const numPsmsForReportedPeptideIdMap = numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId.get(projectSearchId);
-                if (!numPsmsForReportedPeptideIdMap_Map_Key_ProjectSearchId) {
+                            //  Process all in psmTblData_For_ReportedPeptideId for main filters
+                            for ( const psmTblData_Entry of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
 
-                    continue; // EARLY CONTINUE
-                }
+                                const scanNumber = psmTblData_Entry.scanNumber
+                                const searchScanFileId = psmTblData_Entry.searchScanFileId
 
-                for ( const reportedPeptideId of reportedPeptideIds_Where_no_SubFiltering_On_PsmIds_Map ) {
-                    const numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
-                    if ( numPsms ) {
-                        psmCountForSearch += numPsms;
+                                if ( searchScanFileId === undefined || searchScanFileId === null ) {
+                                    //  Handle when No searchScanFileId
+                                    scanNumber_Set_When_NO_SearchScanFileId.add(scanNumber)
+
+                                } else {
+
+                                    let scanNumber_Set = scanNumber_Set_Map_Key_SearchScanFileId.get(searchScanFileId)
+                                    if ( ! scanNumber_Set ) {
+                                        scanNumber_Set = new Set()
+                                        scanNumber_Set_Map_Key_SearchScanFileId.set(searchScanFileId, scanNumber_Set)
+                                    }
+                                    scanNumber_Set.add(scanNumber)
+                                }
+
+                            }
+                        }
+                    }
+
+                    distinct_ScanCount_TotalForSearch += scanNumber_Set_When_NO_SearchScanFileId.size;
+
+                    for ( const scanNumber_Set of scanNumber_Set_Map_Key_SearchScanFileId.values() ) {
+                        distinct_ScanCount_TotalForSearch += scanNumber_Set.size
                     }
                 }
             }
@@ -408,7 +522,7 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
 
             //  Colors for Bars
-            const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 3 });
+            const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 4 });
 
             const chart_X : Array<string> = []
             const chart_Y : Array<number> = []
@@ -417,6 +531,16 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
             const chart_Colors : Array<any> = []
 
             {
+                const x_Label = "Scan Count";
+                chart_X.push(x_Label);
+                chart_Y.push(distinct_ScanCount_TotalForSearch);
+
+                chart_Bars_labels.push( distinct_ScanCount_TotalForSearch.toLocaleString() );
+                chart_Bars_Tooltips.push( x_Label + ": " + distinct_ScanCount_TotalForSearch.toLocaleString() );
+                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 0 );
+                chart_Colors.push('rgb(' + colorEntry.rgb_Color.red + "," + colorEntry.rgb_Color.green + "," + colorEntry.rgb_Color.blue + ')');
+            }
+            {
                 const x_Label = "PSM Count";
                 chart_X.push(x_Label);
                 chart_Y.push(psmCountForSearch);
@@ -424,17 +548,17 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
                 chart_Bars_labels.push( psmCountForSearch.toLocaleString() );
                 chart_Bars_Tooltips.push( x_Label + ": " + psmCountForSearch.toLocaleString() );
 
-                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 0 );
+                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 1 );
                 chart_Colors.push('rgb(' + colorEntry.rgb_Color.red + "," + colorEntry.rgb_Color.green + "," + colorEntry.rgb_Color.blue + ')');
             }
             {
-                const x_Label = "Distinct Peptide Count";
+                const x_Label = "Peptide Count";
                 chart_X.push(x_Label);
                 chart_Y.push(peptideDistinct_Count);
 
                 chart_Bars_labels.push( peptideDistinct_Count.toLocaleString() );
                 chart_Bars_Tooltips.push( x_Label + ": " + peptideDistinct_Count.toLocaleString() );
-                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 1 );
+                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 2 );
                 chart_Colors.push('rgb(' + colorEntry.rgb_Color.red + "," + colorEntry.rgb_Color.green + "," + colorEntry.rgb_Color.blue + ')');
             }
             {
@@ -444,7 +568,7 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
 
                 chart_Bars_labels.push( proteinSequenceVersionId_DistinctValues.size.toLocaleString() );
                 chart_Bars_Tooltips.push( x_Label + ": " + proteinSequenceVersionId_DistinctValues.size.toLocaleString() );
-                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 2 );
+                const colorEntry = qcViewPage__ComputeColorsForCategories.get_Color_By_Index( 3 );
                 chart_Colors.push('rgb(' + colorEntry.rgb_Color.red + "," + colorEntry.rgb_Color.green + "," + colorEntry.rgb_Color.blue + ')');
             }
 

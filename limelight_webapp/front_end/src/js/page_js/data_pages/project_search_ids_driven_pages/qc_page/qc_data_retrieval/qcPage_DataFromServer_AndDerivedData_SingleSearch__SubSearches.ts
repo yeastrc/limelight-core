@@ -95,6 +95,38 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches {
     /**
      *
      */
+    get_PsmTblData_Data() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches> {
+
+        const promises : Array<Promise<any>> = []
+        {
+            const promise = this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded.singleSearch_PsmTblData_LoadIfNeeded({
+                retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch()
+            });
+            if ( promise ) {
+                promises.push(promise);
+            }
+        }
+
+        if ( promises.length === 0 ) {
+            //  No wait so immediately return resolved promise
+            return Promise.resolve( this._data_Holder_SingleSearch__SubSearches );
+        }
+
+        const promiseAll = Promise.all(promises );
+
+        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches>( (resolve, reject) => {
+            promiseAll.catch( reason => {
+                reject( reason );
+            });
+            promiseAll.then( value => {
+                resolve( this._data_Holder_SingleSearch__SubSearches );
+            });
+        })
+    }
+
+    /**
+     *
+     */
     get_ScanFileSummaryPerLevelData() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches> {
 
         const promises : Array<Promise<any>> = []

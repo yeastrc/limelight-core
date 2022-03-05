@@ -120,6 +120,7 @@ export class Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock extends React.Co
                 <div >
                     <Qc_SingleSearch__SubSearches_SummaryStatistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                        qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this._qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
                     />
                 </div>
                 <div>

@@ -11,6 +11,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/jsx/qcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_MainPageContainer";
 import {QcViewPage_MultipleSearches__SummaryCounts_Protein_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/jsx/qcViewPage_MultipleSearches__SummaryCounts_Protein_Counts_MainPageContainer";
 import {QcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/jsx/qcViewPage_MultipleSearches__SummaryCounts_DistinctPeptide_Counts_MainPageContainer";
+import {QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/jsx/qcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer";
 
 
 /**
@@ -137,6 +138,11 @@ export class Qc_MultipleSearches_SummaryStatistics_Section extends React.Compone
 
                         <div className=" chart-container-multiple-on-same-row-block ">
 
+                            <div className=" chart-container-multiple-on-same-row ">
+                                <QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer
+                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                />
+                            </div>
                             <div className=" chart-container-multiple-on-same-row ">
                                 <QcViewPage_MultipleSearches__SummaryCounts_PSM_Counts_MainPageContainer
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }

@@ -11,6 +11,8 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_SingleSearch__SubSearches__SummaryCounts_PSM_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__SummaryCounts_PSM_Counts_MainPageContainer";
 import {QcViewPage_SingleSearch__SubSearches__SummaryCounts_DistinctPeptide_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__SummaryCounts_DistinctPeptide_Counts_MainPageContainer";
 import {QcViewPage_SingleSearch__SubSearches__SummaryCounts_Protein_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__SummaryCounts_Protein_Counts_MainPageContainer";
+import {QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer";
+import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 
 
 /**
@@ -19,6 +21,7 @@ import {QcViewPage_SingleSearch__SubSearches__SummaryCounts_Protein_Counts_MainP
 export interface Qc_SingleSearch__SubSearches_SummaryStatistics_Section_Props {
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
+    qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent: QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent
 }
 
 /**
@@ -136,6 +139,13 @@ export class Qc_SingleSearch__SubSearches_SummaryStatistics_Section extends Reac
                     <div className=" section--chart-container-block ">
 
                         <div className=" chart-container-multiple-on-same-row-block ">
+
+                            <div className=" chart-container-multiple-on-same-row ">
+                                <QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_Counts_MainPageContainer
+                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                    qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
+                                />
+                            </div>
 
                             <div className=" chart-container-multiple-on-same-row ">
                                 <QcViewPage_SingleSearch__SubSearches__SummaryCounts_PSM_Counts_MainPageContainer
