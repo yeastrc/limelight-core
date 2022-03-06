@@ -314,13 +314,15 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 
 		const noteText_Escaping_HTML = limelight__Encode_TextString_Escaping_HTML( noteObject.noteText )
 
+		const noteText_Escaping_HTML_Apply__Urlify__NewLineToBR = this.updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( noteText_Escaping_HTML )
+
 		let noteHTML = "";
 
 		noteHTML += '<div class=" selector_note_root_container_div " style="" data-note_id="{{ id }}">'
 		noteHTML += '<div class="note-display-div  selector_note_display_container " >'
 		noteHTML += '<span class="notes_text_jq" >'
 
-		noteHTML += noteText_Escaping_HTML
+		noteHTML += noteText_Escaping_HTML_Apply__Urlify__NewLineToBR
 		noteHTML += '</span> '
 
 		if ( noteObject.canEdit ) {
@@ -336,10 +338,7 @@ export class ProjectPage_ProjectSection_AllUsersInteraction {
 		}
 		noteHTML += '</div>'
 
-
-		const noteHTML__Apply__Urlify__NewLineToBR = this.updateString__Input_escapedHTML__Apply__Urlify__NewLineToBR( noteHTML )
-
-		return noteHTML__Apply__Urlify__NewLineToBR;
+		return noteHTML;
 	}
 
 
