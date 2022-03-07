@@ -309,15 +309,13 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
 
         const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
 
-        const scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId : Map<number,Map<number,Set<number>>> = new Map();
+        let scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId : Map<number,Map<number,Set<number>>>
+
+        //  When No searchScanFileId
+        let scanNumbers_Map_Key_SearchSubGroupId : Map<number,Set<number>>
 
         for ( const psmTblData_Entry of psmTblData_Filtered ) {
 
-            if ( ! psmTblData_Entry.searchScanFileId ) {
-                const msg = "( ! psmTblData_Entry.searchScanFileId ) projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
             if ( ! psmTblData_Entry.scanNumber ) {
                 const msg = "( ! psmTblData_Entry.scanNumber ) projectSearchId: " + projectSearchId;
                 console.warn(msg);
@@ -325,7 +323,7 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
             }
 
             const psmId = psmTblData_Entry.psmId
-            const searchScanFileId = psmTblData_Entry.searchScanFileId;
+            const searchScanFileId = psmTblData_Entry.searchScanFileId; //  Optional
             const scanNumber = psmTblData_Entry.scanNumber;
 
             const subGroupId = searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder.get_subGroupId_For_PsmId(psmId);
@@ -335,17 +333,38 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
                 throw Error(msg);
             }
 
-            let scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(subGroupId);
-            if ( ! scanNumbers_Map_Key_searchScanFileId_Map ) {
-                scanNumbers_Map_Key_searchScanFileId_Map = new Map();
-                scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.set(subGroupId, scanNumbers_Map_Key_searchScanFileId_Map);
+            if ( searchScanFileId ) {
+
+                if ( ! scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId ) {
+                    scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId = new Map()
+                }
+
+                let scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(subGroupId);
+                if ( ! scanNumbers_Map_Key_searchScanFileId_Map ) {
+                    scanNumbers_Map_Key_searchScanFileId_Map = new Map();
+                    scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.set(subGroupId, scanNumbers_Map_Key_searchScanFileId_Map);
+                }
+                let scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_Map.get(searchScanFileId);
+                if ( ! scanNumbers_For_searchScanFileId ) {
+                    scanNumbers_For_searchScanFileId = new Set();
+                    scanNumbers_Map_Key_searchScanFileId_Map.set(searchScanFileId, scanNumbers_For_searchScanFileId);
+                }
+                scanNumbers_For_searchScanFileId.add( scanNumber );
+
+            } else {
+
+                //  When No searchScanFileId
+                if ( ! scanNumbers_Map_Key_SearchSubGroupId ) {
+                    scanNumbers_Map_Key_SearchSubGroupId = new Map()
+                }
+
+                let scanNumbers = scanNumbers_Map_Key_SearchSubGroupId.get(subGroupId)
+                if ( ! scanNumbers ) {
+                    scanNumbers = new Set();
+                    scanNumbers_Map_Key_SearchSubGroupId.set(subGroupId, scanNumbers)
+                }
+                scanNumbers.add(scanNumber);
             }
-            let scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_Map.get(searchScanFileId);
-            if ( ! scanNumbers_For_searchScanFileId ) {
-                scanNumbers_For_searchScanFileId = new Set();
-                scanNumbers_Map_Key_searchScanFileId_Map.set(searchScanFileId, scanNumbers_For_searchScanFileId);
-            }
-            scanNumbers_For_searchScanFileId.add( scanNumber );
         }
 
         //  Get Scan Count
@@ -359,7 +378,8 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
 
             let scanCount_PSM_MeetsCutoff = 0;
             const searchScanFileIds_For_SearchSubGroupId = new Set<number>();
-            {
+
+            if ( scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId ) {
                 const scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(searchSubGroup.searchSubGroup_Id);
                 if ( ! scanNumbers_Map_Key_searchScanFileId_Map) {
                     //  no data so skip
@@ -370,6 +390,13 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
                     const scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[1];
                     scanCount_PSM_MeetsCutoff += scanNumbers_For_searchScanFileId.size;
                     searchScanFileIds_For_SearchSubGroupId.add(searchScanFileId);
+                }
+            } else if ( scanNumbers_Map_Key_SearchSubGroupId ) {
+                //  When No searchScanFileId
+
+                const scanNumbers = scanNumbers_Map_Key_SearchSubGroupId.get(searchSubGroup.searchSubGroup_Id);
+                if ( scanNumbers ) {
+                    scanCount_PSM_MeetsCutoff += scanNumbers.size;
                 }
             }
 
