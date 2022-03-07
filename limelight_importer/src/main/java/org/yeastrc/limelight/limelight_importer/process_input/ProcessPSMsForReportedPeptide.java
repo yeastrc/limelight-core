@@ -267,7 +267,7 @@ public class ProcessPSMsForReportedPeptide {
 							psmHasReporterIons,
 							searchScanFileEntry_AllEntries );
 			
-			DB_Insert_PsmDAO.getInstance().saveToDatabase( psmDTO );
+			DB_Insert_PsmDAO.getSingletonInstance().saveToDatabase( psmDTO );
 			
 			if ( processing_SearchSubGroups && StringUtils.isNotEmpty( psm.getSubgroupName() ) ) {
 			

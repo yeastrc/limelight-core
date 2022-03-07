@@ -183,6 +183,13 @@ public class ProcessLimelightInput {
 			log.warn( "INFO:  First Insert to Database for Search Successful.  Continuing to process import and insert into database.");
 			log.warn( "!!!!!!!!!!!!!!!!!!" );
 			
+			//
+			
+			//  Compute # PSMs and initialize PSM Insert object
+			
+			Initialize_DB_Insert_PsmDAO_With_PSM_Count.getSingletonInstance().initialize_DB_Insert_PsmDAO_With_PSM_Count(limelightInput);
+			
+			
 			//  Insert Conversion Program data
 			ProcessSaveConversionProgram.getInstance().processComments( limelightInput, searchDTO, userIdInsertingSearch );
 			
