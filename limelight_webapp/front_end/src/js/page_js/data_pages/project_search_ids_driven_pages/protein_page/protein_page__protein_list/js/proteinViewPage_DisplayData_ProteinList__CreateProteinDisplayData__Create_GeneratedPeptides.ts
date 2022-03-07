@@ -273,9 +273,9 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__
                         }
                     }
                 }
-                {  //
-                    if ( searchSubGroup_Ids_Selected ) {
 
+                if ( searchSubGroup_Ids_Selected ) {  //  When have Search Sub Groups Selection ( Have Single Search which has Sub Groups )
+                    {
                         {  //  searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
 
                             if ( ! searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId ) {
@@ -339,7 +339,7 @@ export const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__
                         }
                     }
                 }
-            }
+            }  //  END:  if ( searchSubGroup_Ids_Selected )
 
             if ( promises.length === 0 ) {
                 const result = internal_TopLevel_Function_AfterDataLoad({
