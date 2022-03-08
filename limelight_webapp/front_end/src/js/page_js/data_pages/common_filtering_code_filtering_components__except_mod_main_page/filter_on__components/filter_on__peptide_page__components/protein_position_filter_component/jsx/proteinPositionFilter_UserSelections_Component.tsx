@@ -31,8 +31,16 @@ import {
     ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_SingleRange
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 
-
 export type ProteinPositionFilter_UserSelections_Component__UpdateMadeTo_proteinPositionFilter_UserSelections_StateObject = () => void;
+
+
+// export class ProteinPositionFilter_UserSelections_Component_GetData_Callback_ReturnedValue {
+//     proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+//     promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : Promise<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data>
+// }
+//
+// export type ProteinPositionFilter_UserSelections_Component_GetData_Callback =
+//     () => ProteinPositionFilter_UserSelections_Component_GetData_Callback_ReturnedValue
 
 
 /**
@@ -40,9 +48,11 @@ export type ProteinPositionFilter_UserSelections_Component__UpdateMadeTo_protein
  */
 export interface ProteinPositionFilter_UserSelections_Props {
 
-    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
     proteinPositionFilter_UserSelections_Component_Force_ReRender_Object : object
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+    // one of next 2 is required
+    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+    // proteinPositionFilter_UserSelections_Component_GetData_Callback: ProteinPositionFilter_UserSelections_Component_GetData_Callback
 
     updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback : ProteinPositionFilter_UserSelections_Component__UpdateMadeTo_proteinPositionFilter_UserSelections_StateObject
 }
@@ -90,8 +100,10 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
      */
     static getDerivedStateFromProps(props: ProteinPositionFilter_UserSelections_Props, state: ProteinPositionFilter_UserSelections_State): ProteinPositionFilter_UserSelections_State {
 
-        if ( props.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object !== state.prev_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object
-            || props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data !== state.prev_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+        if ( props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+            && ( props.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object !== state.prev_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object
+                || props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data !== state.prev_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data )
+        ) {
 
             //  One of the Props objects changed so create new versions of derived objects
 
@@ -148,7 +160,9 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
      */
     shouldComponentUpdate(nextProps: Readonly<ProteinPositionFilter_UserSelections_Props>, nextState: Readonly<ProteinPositionFilter_UserSelections_State>, nextContext: any): boolean {
 
-        if ( this.state.proteinPositionFilter_UserInput__Component__ProteinData !== nextState.proteinPositionFilter_UserInput__Component__ProteinData
+        if (
+            this.props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data !== nextProps.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+            || this.state.proteinPositionFilter_UserInput__Component__ProteinData !== nextState.proteinPositionFilter_UserInput__Component__ProteinData
             || this.state.proteinPositionFilter_UserInput__Component__Existing_userSelections !== nextState.proteinPositionFilter_UserInput__Component__Existing_userSelections ) {
             return true;
         }
@@ -231,6 +245,13 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
 
                             {/*   ProteinPositionFilter_UserInputOverlay__MainOverlay_Component   */}
 
+                            { ( ! this.state.proteinPositionFilter_UserInput__Component__ProteinData ) ? (
+
+                                <div>
+                                    Loading Data...
+                                </div>
+                            ) : (
+
                             <div >
                                 <ProteinPositionFilter_UserInput__Component
                                     proteinData={ this.state.proteinPositionFilter_UserInput__Component__ProteinData }
@@ -238,6 +259,8 @@ export class ProteinPositionFilter_UserSelections extends React.Component< Prote
                                     callbackOn_Save_Clicked={ this._update_PageState_FromChildComponent_SaveCall_BindThis }
                                 />
                             </div>
+
+                            )}
                         </div>
                     </div>
                 </div>

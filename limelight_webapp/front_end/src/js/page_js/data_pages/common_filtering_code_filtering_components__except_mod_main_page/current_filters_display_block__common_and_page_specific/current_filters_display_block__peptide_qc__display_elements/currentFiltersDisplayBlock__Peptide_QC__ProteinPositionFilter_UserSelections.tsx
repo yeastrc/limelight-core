@@ -12,11 +12,21 @@ import React from "react";
 import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
 import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 //  Set since what is returned is put into an Array.  Simply set to root function name.
 const _ROOT_REACT_ELEMENT_RETURNED__KEY = "currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections";
 
 const _PROTEIN_NAME_TRUNCATION = 20;
+
+
+export class CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_ReturnedValue {
+    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+    promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : Promise<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data>
+}
+
+export type CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback =
+    () => CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_ReturnedValue
 
 /**
  *
@@ -25,10 +35,16 @@ const _PROTEIN_NAME_TRUNCATION = 20;
  */
 export const currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections = function (
     {
-        proteinPositionFilter_UserSelections_StateObject, proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+        proteinPositionFilter_UserSelections_StateObject,
+        proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object, //  Change reference when proteinPositionFilter_UserSelections_StateObject changes
+        proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
+        currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback
     } : {
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+        proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object: object //  Change reference when proteinPositionFilter_UserSelections_StateObject changes
+        // one of next 2 is required
         proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+        currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback: CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback
     }
 ) : JSX.Element {
 
@@ -48,7 +64,9 @@ export const currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserS
         <React.Fragment key={ _ROOT_REACT_ELEMENT_RETURNED__KEY }>
             <CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections
                 proteinPositionFilter_UserSelections_StateObject={ proteinPositionFilter_UserSelections_StateObject }
+                proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object={ proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object }
                 proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data }
+                currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback={ currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback }
             />
         </React.Fragment>
     );
@@ -57,22 +75,212 @@ export const currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserS
 /**
  *
  */
-const CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections = function(
+export interface CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Props {
+
+    proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+    proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object: object
+
+    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+    currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback: CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback
+}
+
+/**
+ *
+ */
+interface CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_State {
+
+    proteinPosition_SelectionDisplay_Entries? : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry>
+}
+
+/**
+ *
+ */
+export class CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections extends React.Component< CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Props, CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_State > {
+
+    //  bind to 'this' for passing as parameters
+
+    private _proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data: ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+
+
+    /**
+     *
+     */
+    constructor(props: CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Props) {
+        super(props);
+
+        this._proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
+
+        let proteinPosition_SelectionDisplay_Entries : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry> = undefined;
+
+        if ( props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+            proteinPosition_SelectionDisplay_Entries = _create__proteinPosition_SelectionDisplay_Entries({
+                proteinPositionFilter_UserSelections_StateObject: props.proteinPositionFilter_UserSelections_StateObject,
+                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data: props.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+            })
+        }
+
+        this.state = {
+            proteinPosition_SelectionDisplay_Entries  // Conditionally populated at construction time
+        };
+    }
+
+    /**
+     *
+     */
+    componentDidMount() { try {
+
+        if ( ! this.state.proteinPosition_SelectionDisplay_Entries ) {
+
+            if ( ! this.props.currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback ) {
+                const msg = "componentDidMount(): ( ! this.state.proteinPosition_SelectionDisplay_Entries ) and ( ! this.props.currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback )"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            this._get_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data__then___create__proteinPosition_SelectionDisplay_Entries();
+        }
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
+
+    /**
+     *
+     */
+    shouldComponentUpdate(nextProps: Readonly<CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Props>, nextState: Readonly<CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_State>, nextContext: any): boolean {
+
+        if (
+            nextProps.proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object !== this.props.proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object
+            || nextState.proteinPosition_SelectionDisplay_Entries !== this.state.proteinPosition_SelectionDisplay_Entries
+         ) {
+            return  true;
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     */
+    componentDidUpdate(prevProps: Readonly<CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Props>, prevState: Readonly<CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_State>, snapshot?: any) {
+        try {
+            if ( prevProps.proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object !== this.props.proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object ) {
+
+                this._get_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data__then___create__proteinPosition_SelectionDisplay_Entries()
+            }
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _get_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data__then___create__proteinPosition_SelectionDisplay_Entries() {
+
+        if ( this._proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+
+            this._create__proteinPosition_SelectionDisplay_Entries_ThenSetState()
+
+            return;  // EARLY RETURN
+        }
+
+        const currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result =
+            this.props.currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback()
+
+        if ( currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+
+
+            this._proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
+
+            this._create__proteinPosition_SelectionDisplay_Entries_ThenSetState()
+
+        } else if ( currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result.promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+
+            currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result.promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.catch(reason => {
+
+            })
+            currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result.
+            promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.then(proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data => { try {
+
+                this._proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
+
+                this._create__proteinPosition_SelectionDisplay_Entries_ThenSetState()
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } else {
+            throw Error("currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_GetData_Callback_Result no 'proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data' or 'promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data'")
+        }
+
+    }
+
+    /**
+     *
+     */
+    private _create__proteinPosition_SelectionDisplay_Entries_ThenSetState() {
+
+        const proteinPosition_SelectionDisplay_Entries = _create__proteinPosition_SelectionDisplay_Entries({
+            proteinPositionFilter_UserSelections_StateObject: this.props.proteinPositionFilter_UserSelections_StateObject,
+            proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data: this._proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+        })
+
+        this.setState({ proteinPosition_SelectionDisplay_Entries })
+    }
+
+    /**
+     *
+     */
+    render() {
+
+        let proteinPositionFilter_JSX_Entries : Array<JSX.Element> = null;
+        let loadingMessage: JSX.Element = null;
+
+        if ( this.state.proteinPosition_SelectionDisplay_Entries ) {
+            proteinPositionFilter_JSX_Entries = _create_RenderElements({proteinPosition_SelectionDisplay_Entries: this.state.proteinPosition_SelectionDisplay_Entries});
+        } else {
+            loadingMessage = (
+                <span>Loading Data...</span>
+            )
+        }
+
+        return (
+            <div >
+                All peptides must cover: { proteinPositionFilter_JSX_Entries } { loadingMessage }
+            </div>
+        )
+    }
+
+}
+
+
+
+/**
+ *
+ */
+class ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry {
+
+    proteinSequenceVersionId : number
+    proteinName : string
+    proteinName_Truncated : string
+    proteinDescription : string
+    proteinPosition_Start : number
+    proteinPosition_End : number
+    proteinFullLengthSelected : boolean
+}
+
+
+/////  NON Class Functions
+
+
+/**
+ *
+ */
+const _create__proteinPosition_SelectionDisplay_Entries = function(
     {
         proteinPositionFilter_UserSelections_StateObject, proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
     } : {
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
         proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
     }
-) : JSX.Element {
-
-    //  CANNOT return null since wrapped in <React.Fragment>
-
-    if ( ! proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
-        const msg = "peptide_Page_FiltersDisplay_ComponentDatapeptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data not populated when peptide_Page_FiltersDisplay_ComponentDatapeptideFiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject is populated";
-        console.warn( msg )
-        throw Error( msg );
-    }
+) : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry> {
 
     const proteinPosition_SelectionDisplay_Entries : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry> = [];
 
@@ -154,6 +362,22 @@ const CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelectio
         return 0;
     });
 
+    return proteinPosition_SelectionDisplay_Entries;
+}
+
+/**
+ *
+ * @param proteinPosition_SelectionDisplay_Entries
+ * @private
+ */
+const _create_RenderElements = function(
+    {
+        proteinPosition_SelectionDisplay_Entries
+    } : {
+        proteinPosition_SelectionDisplay_Entries? : Array<ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry>
+    }
+) : Array<JSX.Element> {
+
     const proteinPositionFilter_JSX_Entries : Array<JSX.Element> = [];
     {
         let index = 0;
@@ -227,26 +451,5 @@ const CurrentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelectio
         }
     }
 
-    return (
-        <div >
-            All peptides must cover: { proteinPositionFilter_JSX_Entries }
-        </div>
-    )
-}
-
-
-
-
-/**
- *
- */
-class ProteinPositionFilter_UserSelections_Component_SelectionDisplay_Entry {
-
-    proteinSequenceVersionId : number
-    proteinName : string
-    proteinName_Truncated : string
-    proteinDescription : string
-    proteinPosition_Start : number
-    proteinPosition_End : number
-    proteinFullLengthSelected : boolean
+    return proteinPositionFilter_JSX_Entries;
 }

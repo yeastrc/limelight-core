@@ -81,8 +81,6 @@ import {
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {ProteinPositionFilter_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {ProteinPositionFilter_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/jsx/proteinPositionFilter_UserSelections_Component";
-import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {
     createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein,
     CreateReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_proteinName_Clicked_Callback_Function,
@@ -130,6 +128,7 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {Psm_Charge_Filter_UserSelection_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_Container_Component";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {purge_FilterSelections_NotIn_CurrentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/purge_filter_selections_not_in_current_data/purge_FilterSelections_NotIn_CurrentData";
+import {ProteinPositionFilter_UserSelections__GetsProteinData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/jsx/proteinPositionFilter_UserSelections_Component__Container__GetsProteinData";
 
 
 ////
@@ -206,7 +205,6 @@ interface PeptidePage_Display_MainContent_Component_State {
     reporterIons_UserSelections_ComponentData? : ReporterIonMass_UserSelections_ComponentData;
     peptideUnique_UserSelection_ComponentData? : PeptideUnique_UserSelection_ComponentData;
     peptideSequence_UserSelections_ComponentData? : PeptideSequence_UserSelections_ComponentData;
-    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data? : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
     proteinPositionFilter_UserSelections_Component_Force_ReRender_Object? : object;
     peptideList_SingleProtein_FilterOnCounts_psm_UserSelections_Object_Force_ResetToStateObject? : object;
     scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject? : object
@@ -869,7 +867,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 reporterIons_UserSelections_ComponentData,
                 peptideUnique_UserSelection_ComponentData,
                 peptideSequence_UserSelections_ComponentData,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 
             } :  {
@@ -881,7 +878,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
                 peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData;
                 peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
 
             }  = await PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_FullPage_Except_SearchDetails({
@@ -902,12 +898,13 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
             });
 
             const peptide_Page_FiltersDisplay_ComponentData : Peptide_Page_FiltersDisplay_ComponentData = {
+                projectSearchIds: this.props.propsValue.projectSearchIds,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
                 peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
@@ -950,7 +947,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                 reporterIons_UserSelections_ComponentData,
                 peptideUnique_UserSelection_ComponentData,
                 peptideSequence_UserSelections_ComponentData,
-                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
                 peptide_Page_FiltersDisplay_ComponentData,
 
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds__FINAL,
@@ -2268,12 +2264,13 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
     _updateCurrentPeptideFiltersSection() {
 
         const peptide_Page_FiltersDisplay_ComponentData : Peptide_Page_FiltersDisplay_ComponentData = {
+            projectSearchIds: this.props.propsValue.projectSearchIds,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
             modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
             reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
-            proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
             peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
             dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -2739,11 +2736,12 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 updateMadeTo_peptideSequence_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_UserSelections_StateObject_Callback_BindThis }
                             />
 
-                            <ProteinPositionFilter_UserSelections
-                                proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data }
+                            <ProteinPositionFilter_UserSelections__GetsProteinData
                                 proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
                                 proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
                                 updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }
+                                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                projectSearchIds={ this.props.propsValue.projectSearchIds }
                             />
 
                             <GeneratedPeptideContents_UserSelections_Root_Component

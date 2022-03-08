@@ -19,6 +19,7 @@ import {currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelect
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QC_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/qc_page/qc_Page_FiltersDisplay_ComponentData";
 import {currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection";
+import {currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Container_GetsDataForDisplay} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__peptide_qc__display_elements/currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Container_GetsDataForDisplay";
 
 
 
@@ -174,10 +175,13 @@ export class QC_Page_FiltersDisplay extends React.Component< QC_Page_FiltersDisp
 
             {  //  Protein Position Filter UserSelections
 
-                const currentFilter = currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections({
+                const currentFilter = currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelections_Container_GetsDataForDisplay({
                     proteinPositionFilter_UserSelections_StateObject: this.props.qc_Page_FiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_StateObject,
-                    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data: this.props.qc_Page_FiltersDisplay_ComponentData.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
+                    proteinPositionFilter_UserSelections_StateObject_Changed_ForceRebuildRender_Object: this.props.qc_Page_FiltersDisplay_ComponentData,
+                    projectSearchIds: this.props.qc_Page_FiltersDisplay_ComponentData.projectSearchIds,
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.qc_Page_FiltersDisplay_ComponentData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 });
+
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );
                 }

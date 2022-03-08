@@ -44,11 +44,7 @@ import {PeptidePage_Display_MainContent_Component_Props_Prop} from "page_js/data
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
 import {
     ProteinPositionFilter_UserSelections_StateObject,
-    ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root,
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import {ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
-import {proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
-import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData";
@@ -104,7 +100,6 @@ const compute_FullPage_Except_SearchDetails = async function(
         reporterIons_UserSelections_ComponentData : ReporterIonMass_UserSelections_ComponentData,
         peptideUnique_UserSelection_ComponentData : PeptideUnique_UserSelection_ComponentData;
         peptideSequence_UserSelections_ComponentData : PeptideSequence_UserSelections_ComponentData,
-        proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data
         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
     }>
 {
@@ -143,11 +138,6 @@ const compute_FullPage_Except_SearchDetails = async function(
             peptideSequence_UserSelections_StateObject
         });
 
-        const proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = await create_ProteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent({
-
-            projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-        })
-
         //  Create initial instance.  Updated instance will be created in peptideSequence_UserSelections.tsx when user changes the input field value
 
         //  await
@@ -182,7 +172,6 @@ const compute_FullPage_Except_SearchDetails = async function(
             reporterIons_UserSelections_ComponentData,
             peptideUnique_UserSelection_ComponentData,
             peptideSequence_UserSelections_ComponentData,
-            proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
         }
 
@@ -435,28 +424,6 @@ const create_PeptideSequence_UserSelections_ComponentData = function( {
     });
 
     return peptideSequence_UserSelections_ComponentData;
-}
-
-/**
- *
- *
- */
-const create_ProteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent = async function(
-    {
-        projectSearchIds,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-    } : {
-        projectSearchIds : Array<number>,
-        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-
-    }) : Promise<ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data> {
-    try {
-        const proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data =
-            await proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent({ projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root});
-
-        return proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data;
-
-    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 }
 
 ////////////////////////////////////////////////////////
