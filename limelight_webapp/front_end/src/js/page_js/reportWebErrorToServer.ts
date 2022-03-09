@@ -18,6 +18,8 @@
 
 import {errorDisplay_WhenHave_Javascript_Typescript_Error} from "page_js/common_all_pages/errorDisplay_WhenHave_Javascript_Typescript_Error";
 
+let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
+
 /**
  * 
  */
@@ -29,6 +31,15 @@ var reportWebErrorToServer = {
 		reportErrorObjectToServer : function( params ) {
 
 			const errorException = params.errorException;
+
+			if ( _pageHide_Event_Triggered ) {
+
+				// 'pagehide' event called on page unload
+
+				console.warn("'pagehide' event triggered so NOT report error to server")
+
+				return; // EARLY RETURN
+			}
 
 			const react_devtools_backend_String = "react_devtools_backend";
 			
@@ -117,6 +128,18 @@ var reportWebErrorToServer = {
 
 
 };
+
+
+//  https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event
+
+window.addEventListener("pagehide", event => {
+	if (event.persisted) {
+		/* the page isn't being discarded, so it can be reused later */
+	}
+
+	_pageHide_Event_Triggered = true;
+
+}, false);
 
 
 export { reportWebErrorToServer }
