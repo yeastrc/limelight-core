@@ -57,14 +57,14 @@ export const proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModP
             _process_Variable_OR_Open_Modifications({ modMass_Rounded_From_ModPage_ForInitialSelection, modificationMass_UserSelections_StateObject_Variable_OR_Open, modMasses_PSM_Counts });
         } else if ( createModsAndPsmCountsList_VariableModifications_Result.promise ) {
             const promise = new Promise<void>((resolve, reject) => { try {
-            createModsAndPsmCountsList_VariableModifications_Result.promise.catch(reason => { reject(reason)})
-            createModsAndPsmCountsList_VariableModifications_Result.promise.then( value => { try {
+                createModsAndPsmCountsList_VariableModifications_Result.promise.catch(reason => { reject(reason)})
+                createModsAndPsmCountsList_VariableModifications_Result.promise.then( value => { try {
                     const modMasses_PSM_Counts = value;
                     _process_Variable_OR_Open_Modifications({ modMass_Rounded_From_ModPage_ForInitialSelection, modificationMass_UserSelections_StateObject_Variable_OR_Open, modMasses_PSM_Counts });
                     resolve();
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise)
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            promises.push(promise)
         } else {
             throw Error("createModsAndPsmCountsList_VariableModifications_Result no data or promise")
         }
@@ -92,8 +92,8 @@ export const proteinPage_Display__SingleProtein_Populate_ModSelections_From_ModP
                     _process_Variable_OR_Open_Modifications({ modMass_Rounded_From_ModPage_ForInitialSelection, modificationMass_UserSelections_StateObject_Variable_OR_Open, modMasses_PSM_Counts });
                     resolve();
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise)
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            promises.push(promise)
         } else {
             throw Error("createModsAndPsmCountsList_VariableModifications_Result no data or promise")
         }

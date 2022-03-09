@@ -85,7 +85,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_O
     private _promise_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data__AlsoLoading_ReportedOpenModification_RollUp_On_ReportedPeptideLevel_InProgress: Promise<CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_On_ReportedPeptideLevel_For_MainFilters__get_OpenModification_RollUp_On_ReportedPeptideLevelHolder__FunctionResult>
 
     private _promise_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data_InProgress: Promise<CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_On_ReportedPeptideLevel_For_MainFilters__get_OpenModification_RollUp_On_ReportedPeptideLevelHolder__FunctionResult>
-    private _reportedPeptideIds_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data_InProgress: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+    private _reportedPeptideIds_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data_InProgress: Set<number>
 
     /**
      *
@@ -180,7 +180,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_O
 
             return {                // EARLY RETURN
                 data: undefined,
-                promise: this._load_OpenModification_RollUp_On_ReportedPeptideLevel_Data({ reportedPeptideIds: Array.from( get_reportedPeptideIds_Result.data.reportedPeptideIds ) })
+                promise: this._load_OpenModification_RollUp_On_ReportedPeptideLevel_Data({ reportedPeptideIds: get_reportedPeptideIds_Result.data.reportedPeptideIds })
             }
         }
 
@@ -202,7 +202,7 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_O
                     })
                     get_reportedPeptideIds_Result.promise.then( get_reportedPeptideIds_Result_Value => {
                         const promise_load_OpenModification_RollUp_On_ReportedPeptideLevel_Data =
-                            this._load_OpenModification_RollUp_On_ReportedPeptideLevel_Data({ reportedPeptideIds: Array.from( get_reportedPeptideIds_Result_Value.reportedPeptideIds ) });
+                            this._load_OpenModification_RollUp_On_ReportedPeptideLevel_Data({ reportedPeptideIds: get_reportedPeptideIds_Result_Value.reportedPeptideIds });
                         promise_load_OpenModification_RollUp_On_ReportedPeptideLevel_Data.catch( reason => {
                             reject(reason)
                         })
@@ -227,11 +227,11 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_O
         {
             reportedPeptideIds
         } : {
-            reportedPeptideIds: Array<number>
+            reportedPeptideIds: Set<number>
         }
     ) : Promise<CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_On_ReportedPeptideLevel_For_MainFilters__get_OpenModification_RollUp_On_ReportedPeptideLevelHolder__FunctionResult> {
         try {
-            if ( reportedPeptideIds.length === 0 ) {
+            if ( reportedPeptideIds.size === 0 ) {
                 this._create_For_No_ReportedPeptideIds();
 
                 return Promise.resolve(this._get_OpenModification_RollUp_On_ReportedPeptideLevelHolder__FunctionResult)
@@ -250,12 +250,14 @@ export class CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_O
 
             this._reportedPeptideIds_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data_InProgress = reportedPeptideIds;
 
+            const reportedPeptideIds_AsArray = Array.from( reportedPeptideIds )
+
             this._promise_LoadOpenModification_RollUp_On_ReportedPeptideLevel_Data_InProgress =
                 new Promise<CommonData_LoadedFromServer_SingleSearch__OpenModification_RollUp_On_ReportedPeptideLevel_For_MainFilters__get_OpenModification_RollUp_On_ReportedPeptideLevelHolder__FunctionResult>(
                     ( resolve, reject ) => { try {
                         const requestObject = {
                             projectSearchId : this._projectSearchId,
-                            reportedPeptideIds : reportedPeptideIds,
+                            reportedPeptideIds : reportedPeptideIds_AsArray,
                         };
 
                         console.log("AJAX Call to get open-modifications-per-reported-peptide-id START, Now: " + new Date() );
