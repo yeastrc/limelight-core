@@ -7,7 +7,7 @@ results processed by any software pipeline.
 ## Citing Limelight
 If you use Limelight in your work, please cite:
 
-> Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Riffle M, Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. Submitted
+> Discovery and Visualization of Uncharacterized Drug-Protein Adducts Using Mass Spectrometry. Riffle M, Hoopmann MR, Jaschob D, Zhong G, Moritz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. Anal Chem. 2022 Mar 1;94(8):3501-3509. doi: 10.1021/acs.analchem.1c04101.
 
 ## User Documentation
 Please see our [documentation site](https://limelight-ms.readthedocs.io/) for guides on how to use Limelight.
