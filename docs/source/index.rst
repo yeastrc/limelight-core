@@ -9,7 +9,7 @@ Citing
 If you use Limelight in your work, please cite:
 
   .. epigraph::
-   `Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Michael Riffle, Michael R. Hoopmann, Daniel Jaschob, Guo Zhong, Robert L. Moritz, Michael J. MacCoss, Trisha N. Davis, Nina Isoherranen, Alex Zelter bioRxiv 2021.06.24.449838; doi: https://doi.org/10.1101/2021.06.24.449838 <https://www.biorxiv.org/content/10.1101/2021.06.24.449838v1>`_
+   `Discovery and Visualization of Uncharacterized Drug-Protein Adducts Using Mass Spectrometry. Riffle M, Hoopmann MR, Jaschob D, Zhong G, Moritz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. Anal Chem. 2022 Mar 1;94(8):3501-3509. doi: 10.1021/acs.analchem.1c04101 <https://pubmed.ncbi.nlm.nih.gov/35184559/>`_
 
 
 Getting Help, Providing Feedback, or Reporting Problems
@@ -34,7 +34,7 @@ pipelines.
 
 Tutorials for Running Pipeline
 ==================================
-We have developed tutorials to accompany Riffle M, Hoopmann M, et al. (2021) that describe the process for
+We have developed tutorials to accompany Riffle M, Hoopmann M, et al. (2022) that describe the process for
 running the Magnum, Percolator, Limelight pipeline; and how to then perform the statistical test for finding
 mods of interest in Limelight. Please see our :ref:`Tutorials Page <Tutorials>`
 

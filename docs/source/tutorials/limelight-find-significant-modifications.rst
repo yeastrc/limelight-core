@@ -7,8 +7,8 @@ the modifications with the most statistically significant differences (in terms 
 the two conditions. This is the method employed in the following publication:
 
   .. epigraph::
-   Discovery and visualization of uncharacterized drug-protein adducts using mass spectrometry. Riffle M,
-   Hoopmann MR, Jaschob D, Zhong G, Mortiz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. 2021. *Submitted*
+   `Discovery and Visualization of Uncharacterized Drug-Protein Adducts Using Mass Spectrometry. Riffle M, Hoopmann MR, Jaschob D, Zhong G, Moritz RL, MacCoss MJ, Davis TN, Isoherranen N, Zelter A. Anal Chem. 2022 Mar 1;94(8):3501-3509. doi: 10.1021/acs.analchem.1c04101 <https://pubmed.ncbi.nlm.nih.gov/35184559/>`_
+
 
 This tutorial will assume the user has completed our :ref:`Magnum Pipeline Tutorial <Magnum Protein Adduct Pipeline>`
 to generate a ``treated.limelight.xml`` file, and has completed the optional step to produce the
