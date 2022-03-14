@@ -5,5 +5,5 @@ category: Features
 title: Quality Control (QC) Tools
 description: |
 ---
- Limelight contains summary statistics and quality control (QC) tools to help diagnose problems and aid in cross-linking method refinement.
+ Limelight contains summary statistics and quality control (QC) tools to compare different searches and find and diagnose any issues.
  
