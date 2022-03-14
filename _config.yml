@@ -23,6 +23,9 @@ permalink: pretty
 # ----------------------- #
 
 social:
+  - icon: external-link
+    text: Use Limelight
+    url: https://use.limelight-ms.org/
   - icon: question-circle
     text: Documentation
     url: https://limelight-ms.readthedocs.org/
