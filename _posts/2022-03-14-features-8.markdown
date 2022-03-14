@@ -1,0 +1,9 @@
+---
+layout: default
+img: qc-plots.png
+category: Features
+title: Quality Control (QC) Tools
+description: |
+---
+ Limelight contains summary statistics and quality control (QC) tools to help diagnose problems and aid in cross-linking method refinement.
+ 
