@@ -761,6 +761,11 @@ const _createModsAndPsmCountsList_OpenModifications__AfterDataLoad = function (
             const openModificationsOnReportedPeptide =
                 openModification_RollUp_On_ReportedPeptideLevel_For_MainFilters_Holder.get_openModificationsOnReportedPeptide_For_ReportedPeptideId(reportedPeptideId)
 
+            if ( ! openModificationsOnReportedPeptide ) {
+                //  No data for reportedPeptideId so skip
+                continue;  // EARLY CONTINUE
+            }
+
             for ( const openModificationEntry of openModificationsOnReportedPeptide ) {
 
                 const mass = openModificationEntry.mass
