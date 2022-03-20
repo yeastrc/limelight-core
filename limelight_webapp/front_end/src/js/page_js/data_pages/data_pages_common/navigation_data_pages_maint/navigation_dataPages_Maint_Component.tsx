@@ -6,30 +6,26 @@
  */
 
 import React from 'react'
+import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
+import {_REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR} from "page_js/data_pages/data_pages_common/a_dataPagesCommonConstants";
+import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
-export class Navigation_dataPages_Maint_Entry {
-    label : string
-    href : string  //  Only populated if not current page
-    constructor({ label, href } : {
-        label : string
-        href : string  //  Only populated if not current page
-    }) {
-        this.label = label
-        this.href = href
-    }
+export enum Navigation_dataPages_Maint__NavigationType_Enum {
+    SINGLE_SEARCH = "SINGLE_SEARCH",
+    MULTIPLE_SEARCHES = "MULTIPLE_SEARCHES",
+    EXPERIMENT = "EXPERIMENT"
 }
-
 /**
  *
  */
 export class Navigation_dataPages_Maint_Root_Component_Props_PropsValue {
 
-    navEntries : Array<Navigation_dataPages_Maint_Entry>
+    navigationType: Navigation_dataPages_Maint__NavigationType_Enum
 
-    constructor({ navEntries } : {
-        navEntries : Array<Navigation_dataPages_Maint_Entry>
+    constructor({ navigationType } : {
+        navigationType: Navigation_dataPages_Maint__NavigationType_Enum
     }) {
-        this.navEntries = navEntries
+        this.navigationType = navigationType
     }
 }
 
@@ -54,13 +50,63 @@ interface Navigation_dataPages_Maint_Root_Component_State {
  */
 export class Navigation_dataPages_Maint_Root_Component extends React.Component< Navigation_dataPages_Maint_Root_Component_Props, Navigation_dataPages_Maint_Root_Component_State > {
 
+    private _navigation_Entries_From_DOM: any //  Load in Constructor
+    private _controllerPath_forCurrentPage: string //  Load in Constructor
+
     /**
      *
      */
     constructor(props: Navigation_dataPages_Maint_Root_Component_Props) {
         super(props);
 
+        try {
+            let page_navigation_links_data: any;
+            {
+                const page_navigation_links_data_jsonDOM = document.getElementById("page_navigation_links_data_json")
+                if ( ! page_navigation_links_data_jsonDOM ) {
+                    const msg = "No DOM element with id 'page_navigation_links_data_json'"
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+                const page_navigation_links_data_jsonText = page_navigation_links_data_jsonDOM.innerText;
+                try {
+                    page_navigation_links_data = JSON.parse( page_navigation_links_data_jsonText );
+                } catch (e) {
+                    const msg = "Failed to parse JSON in DOM element with id 'page_navigation_links_data_json'.  JSON: " +
+                        page_navigation_links_data_jsonText +
+                        ".  Error msg: " + e;
+                    console.warn( msg, e );
+                    throw Error( msg )
+                }
+            }
+
+            this._controllerPath_forCurrentPage = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+
+            let perSearchExperimentType; // per single search, multiple search, or experiment type
+
+            if ( props.propsValue.navigationType == Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
+                || props.propsValue.navigationType === Navigation_dataPages_Maint__NavigationType_Enum.MULTIPLE_SEARCHES ) {
+
+                perSearchExperimentType = page_navigation_links_data.single_search
+
+            } else if ( props.propsValue.navigationType === Navigation_dataPages_Maint__NavigationType_Enum.EXPERIMENT ) {
+
+                perSearchExperimentType = page_navigation_links_data.experiment
+
+            } else {
+                const msg = "NOT Single Search or Multiple Searches or Experiment. Should NOT get here.";
+                console.warn( msg );
+                throw Error( msg )
+            }
+
+            this._navigation_Entries_From_DOM = perSearchExperimentType.nav_entries; // entries per single search, multiple search, or experiment
+
         this.state = {};
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 
     /**
@@ -104,11 +150,12 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
 
             const navEntries : Array<JSX.Element> = [];
 
-            for ( const navEntryObj of this.props.propsValue.navEntries ) {
+            for ( const navEntryObj of this._navigation_Entries_From_DOM ) {
                 const navEntry = (
                     <Navigation_dataPages_SingleNavItem
                         key={ navEntryObj.label }
-                        navEntry={ navEntryObj }
+                        navigation_Entry_From_DOM={ navEntryObj }
+                        controllerPath_forCurrentPage={ this._controllerPath_forCurrentPage }
                     />
                 )
                 navEntries.push( navEntry )
@@ -141,7 +188,8 @@ export class Navigation_dataPages_Maint_Root_Component extends React.Component< 
  */
 interface Navigation_dataPages_SingleNavItem_Props {
 
-    navEntry : Navigation_dataPages_Maint_Entry
+    navigation_Entry_From_DOM: any
+    controllerPath_forCurrentPage: string
 }
 
 /**
@@ -157,6 +205,8 @@ interface Navigation_dataPages_SingleNavItem_State {
  */
 class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dataPages_SingleNavItem_Props, Navigation_dataPages_SingleNavItem_State > {
 
+    private _navLinkClicked_BindThis = this._navLinkClicked.bind(this);
+
     /**
      *
      */
@@ -171,19 +221,57 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
     /**
      *
      */
+    private _navLinkClicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        //  Create URL Path to append to base page controller paths for links
+
+        const windowPath = window.location.pathname;
+
+        const windowPath_controllerPathIndex = windowPath.indexOf( this.props.controllerPath_forCurrentPage );
+        const windowPath_after_controllerPathIndex = windowPath_controllerPathIndex + this.props.controllerPath_forCurrentPage.length;
+
+        const windowPathAfterControllerPath = windowPath.substring( windowPath_after_controllerPathIndex );
+
+        let pathAddition = windowPathAfterControllerPath;
+
+        if ( ! windowPath.endsWith( _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR ) ) {
+
+            pathAddition += _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR;
+        }
+
+        const nav_link_base_url = this.props.navigation_Entry_From_DOM.nav_link_base_url;
+
+        const href = nav_link_base_url + pathAddition;
+
+        if ( event.metaKey || event.ctrlKey ) {
+
+            window.open( href, "_blank" )
+        } else {
+            window.location.href = href;
+        }
+    }
+
+    /**
+     *
+     */
     render() {
 
-        if ( this.props.navEntry.href ) {
+        if ( this.props.navigation_Entry_From_DOM.nav_link_base_url !== this.props.controllerPath_forCurrentPage ) {
 
-            //  Have href so render as link
+            //  Not current page so render as link
 
             return (
                 <React.Fragment>
                     <span>
                         [
-                        <a href={this.props.navEntry.href}>
-                            {this.props.navEntry.label}
-                        </a>
+                        <span className=" fake-link "
+                            onClick={ this._navLinkClicked_BindThis }
+                        >
+                            {this.props.navigation_Entry_From_DOM.label}
+                        </span>
                         ]
                     </span>
                     <span> </span>
@@ -198,7 +286,7 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
                     <span title="Current page" className=" gray-text ">
                         [
                         <span>
-                            { this.props.navEntry.label }
+                            { this.props.navigation_Entry_From_DOM.label }
                         </span>
                         ]
                     </span>

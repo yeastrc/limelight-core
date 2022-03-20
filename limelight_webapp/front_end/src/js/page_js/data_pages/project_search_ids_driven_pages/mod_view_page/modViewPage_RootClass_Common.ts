@@ -47,6 +47,7 @@ import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
 import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
+import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 
 //  From data_pages_common
 
@@ -173,21 +174,16 @@ export class ModViewPage_RootClass_Common {
 		
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
-		let isSingleSearch = false
-		let isMultipleSearches = false
+		let navigationType = Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
 		if ( projectSearchIds.length > 1 ) {
-			isMultipleSearches = true
-		} else {
-			isSingleSearch = true
+			navigationType = Navigation_dataPages_Maint__NavigationType_Enum.MULTIPLE_SEARCHES
 		}
-
-		navigation_dataPages_Maint_Instance.initializePageOnLoad({ isManageNavigationOnPage : true, navigationChange_Callback : undefined, isSingleSearch, isMultipleSearches, isExperimentPage : false }); // Initialize
-
+		navigation_dataPages_Maint_Instance.initializePageOnLoad({ navigationType }); // Initialize
 
 		if ( this._saveView_dataPages ) {
 			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, experimentId : undefined });
 		}
-		if ( isSingleSearch && this._setDefaultView_dataPages ) {
+		if ( projectSearchIds.length === 1 && this._setDefaultView_dataPages ) {
 			const projectSearchId = projectSearchIds[ 0 ]
 			this._setDefaultView_dataPages.initialize({ projectSearchId, container_DOM_Element : undefined, experimentId : undefined });
 		}

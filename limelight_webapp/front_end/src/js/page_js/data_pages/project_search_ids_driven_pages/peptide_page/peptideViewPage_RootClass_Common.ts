@@ -62,6 +62,7 @@ import {PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
+import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 
 /**
  * 
@@ -321,15 +322,12 @@ export class PeptideViewPage_RootClass_Common {
 
 		//////////////////
 
-		let isSingleSearch = false
-		let isMultipleSearches = false
+		let navigationType = Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
 		if ( projectSearchIds.length > 1 ) {
-			isMultipleSearches = true
-		} else {
-			isSingleSearch = true
+			navigationType = Navigation_dataPages_Maint__NavigationType_Enum.MULTIPLE_SEARCHES
 		}
 
-		navigation_dataPages_Maint_Instance.initializePageOnLoad({ isManageNavigationOnPage : true, navigationChange_Callback : undefined, isSingleSearch, isMultipleSearches, isExperimentPage : false }); // Initialize
+		navigation_dataPages_Maint_Instance.initializePageOnLoad({ navigationType }); // Initialize
 
 		//  Save centralPageStateManager to URL '/q/...' on page load
 		this._centralPageStateManager._updateURL();
