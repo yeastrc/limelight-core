@@ -20,6 +20,17 @@ import {errorDisplay_WhenHave_Javascript_Typescript_Error} from "page_js/common_
 
 let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
 
+let _page_beforeunload_Event_Triggered = false; //  true when 'beforeunload' event called on page unload
+
+let _page_beforeunload_Event_Triggered__At__Milliseconds: number;
+
+let _page_visibilitychange__hidden_Event_Triggered = false;
+
+let _page_visibilitychange__hidden_Event_Triggered__At__Milliseconds: number;
+
+
+
+
 /**
  * 
  */
@@ -39,6 +50,34 @@ var reportWebErrorToServer = {
 				console.warn("'pagehide' event triggered so NOT report error to server")
 
 				return; // EARLY RETURN
+			}
+
+			if ( _page_beforeunload_Event_Triggered && _page_beforeunload_Event_Triggered__At__Milliseconds ) {
+
+				const now = new Date().getMilliseconds();
+
+				if ( ( now - _page_beforeunload_Event_Triggered__At__Milliseconds ) < 5000 ) {
+
+					// 'beforeunload' event called on page unload
+
+					console.warn("'beforeunload' event triggered and now is within 5 seconds so NOT report error to server")
+
+					return;  //  EARLY RETURN
+				}
+			}
+
+			if ( _page_visibilitychange__hidden_Event_Triggered && _page_visibilitychange__hidden_Event_Triggered__At__Milliseconds ) {
+
+				const now = new Date().getMilliseconds();
+
+				if ( ( now - _page_visibilitychange__hidden_Event_Triggered__At__Milliseconds ) < 5000 ) {
+
+					// 'pagehide' event called on page unload
+
+					console.warn("'visibilitychange' event triggered and document.visibilityState === 'hidden' and now is within 5 seconds so NOT report error to server")
+
+					return;  //  EARLY RETURN
+				}
 			}
 
 			const react_devtools_backend_String = "react_devtools_backend";
@@ -141,7 +180,35 @@ window.addEventListener("pagehide", event => {
 
 }, false);
 
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event
+
+document.addEventListener("beforeunload", event => {
+
+	//  This function will NOT return anything or call anything to prevent navigation away from this page
+
+	_page_beforeunload_Event_Triggered = true;
+
+	_page_beforeunload_Event_Triggered__At__Milliseconds = new Date().getMilliseconds();
+
+}, {passive: true});
+
+//  https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilitychange_event
+
+document.addEventListener("visibilitychange", function() {
+	if (document.visibilityState === 'hidden') {
+
+		_page_visibilitychange__hidden_Event_Triggered = true;
+
+		_page_visibilitychange__hidden_Event_Triggered__At__Milliseconds = new Date().getMilliseconds();
+
+	} else {
+
+		_page_visibilitychange__hidden_Event_Triggered = false;
+		_page_visibilitychange__hidden_Event_Triggered__At__Milliseconds = undefined;
+	}
+});
 
 export { reportWebErrorToServer }
+
 
 

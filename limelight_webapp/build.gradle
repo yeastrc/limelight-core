@@ -27,8 +27,8 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.1.5.RELEASE"
-	id "io.spring.dependency-management" version "1.0.7.RELEASE"
+	id "org.springframework.boot" version "2.6.6"
+	id "io.spring.dependency-management" version "1.0.11.RELEASE"
 	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
@@ -67,7 +67,7 @@ configurations.all {
 
  String limelight_import_version = project.file('../Gradle_limelight-import-api_version_for_Gradle.txt').getText('UTF-8');
 
-// String limelight_import_version = "0.9.0";
+//   Prev used: String limelight_import_version = "#.#.#";
  
 println("limelight_import_version: " + limelight_import_version);
 
@@ -105,25 +105,25 @@ dependencies {
 //	compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.1'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-dbcp2
-	compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.2.0'
+	implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.9.0'
 	
 	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 //	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.45'
 	
 	//  Logging
 	
-	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.0'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.0'	
-	compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.0' //  Needed for Web app
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.0'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
 	
 	//  Jakarta Commons Logging to SLF4J
-	compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
+	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
 		
 	
 	
@@ -133,16 +133,15 @@ dependencies {
 	
 	// Used by included yeastrc jar password management
 	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto
-	compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.1.5.RELEASE'
-	
+	implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.6.2'
+
 		
 	// Used by included yeastrc jars
 	// https://mvnrepository.com/artifact/com.google.guava/guava
 	//  compile group: 'com.google.guava', name: 'guava', version: '24.0-jre'
 	
 	// https://mvnrepository.com/artifact/com.google.guava/guava
-	compile group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
-	
+	implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 	
 	// https://mvnrepository.com/artifact/javax.servlet/jstl
 	compile group: 'javax.servlet', name: 'jstl', version: '1.2'
@@ -156,10 +155,10 @@ dependencies {
 
 	//  New StringUtils
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 	
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-math3
 	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
@@ -167,19 +166,17 @@ dependencies {
 	//   Apache HTPP Client
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.8' // Was using 4.1.2
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
-	compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.11' // Was using 4.1.2
- 	
-	
+	implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.15'
+
 	
 	// JAXB dependencies (Required for Java 11+)
 	// https://mvnrepository.com/artifact/jakarta.xml.bind/jakarta.xml.bind-api
-	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.2'
+	implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
-	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
-	
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
 	
 	//  Other Limelight Jars
 		
@@ -198,24 +195,37 @@ dependencies {
 	
 	
     // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
-    providedCompile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.29'
+    providedCompile group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.5.77'
 
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
 	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	
-    compile('org.springframework.boot:spring-boot-starter-web')
-	
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.6'
+
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
-	compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.1.5.RELEASE'
-	
+	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.6.6'
+
 	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
-	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.4.RELEASE'
-    
+	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.18'
+  
     //  Mark provided since creating a war
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+
+//  Moved to ant file 'ant_create_war.xml':  
+
+//			execute  front_end:frontEndBuild
+
+//  		delete   build/libs
+
+
+//  These two things are moved to  ant file 'ant_create_war.xml'
+
+//		since they no longer work as is in gradle with switch from version 5.4 to 6.9
 
 /*
 	Before the Gradle WAR processing creates the war, it runs task 'frontEndBuild' in front_end sub directory. 
@@ -224,27 +234,28 @@ dependencies {
 	
 	(have 'include "front_end"' in settings.gradle)
 */
-processResources.dependsOn 'front_end:frontEndBuild'
+//  processResources.dependsOn 'front_end:frontEndBuild'
 
 
 /*
  * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
  */
-processResources.dependsOn 'deleteExistingBuiltWar'
+// processResources.dependsOn 'deleteExistingBuiltWar'
 
 
 /*
  * Before the Gradle WAR processing creates the war, it deletes the output .war file to ensure it is always re-created 
  */
-
+/*
 task deleteExistingBuiltWar(type: GradleBuild) {
-  	doLast {
+ 	doLast {
 	  	println("Webapp Gradle build deleteExistingBuiltWar called - Before WAR created. Deletes the output .war file to ensure it is always re-created")
 	  	
 		delete "build/libs/"
 	}
 }
-
+ */
+ 
 /*
  * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
  */
@@ -258,7 +269,6 @@ processResources.dependsOn 'copy_limelight_submit_import_ToWebapp'
 /*
  * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
  */
-// processResources.dependsOn 'build_copy_limelight_submit_import_ToWebapp'
 
 
 task build_copy_limelight_submit_import_ToWebapp(type: GradleBuild) {

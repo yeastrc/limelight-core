@@ -13,6 +13,27 @@
 	<!-- Clean the build directory -->
 	<!-- ================================================================================== -->
     <target name="create_war" description="Do build">
+
+    	<!-- Delete existing war file  -->
+    	
+    	<delete dir="build/libs" />
+    	
+    	<!-- Build front end  -->
+    	
+		<exec executable="${executableToRun_CreateWar}" dir="front_end" failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
+			<arg value="frontEndBuild" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+    	
+    	<!-- Build war file  -->
     	
 		<exec executable="${executableToRun_CreateWar}" dir="." failonerror="true" 
 		    resolveexecutable="true" >
