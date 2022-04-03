@@ -24,33 +24,31 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__DirectoryNames__Constants;
 
 /**
  * The "Current" Root Subdir under the Root Subdir
  * 
  *    Either based on current time stamp or on webapp build GIT Hash
- *    
- *    
- *    Java class 'CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__StartCleanupThread'
- *    launches cleanup thread class 'CachedDataInFileMgmt_Remove_Old_CurrentSubdirs'.
  *
  */
 @Component
-public class CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn 
+public class CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__StartCleanupThread
 
 implements 
 InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
-, CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn_IF
+
 {
 
-	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn.class );
-	
+	private static final Logger log = LoggerFactory.getLogger( CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__StartCleanupThread.class );
+
 	@Autowired
 	private CachedDataInFileMgmt_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF cachedDataInFileMgmt_Read_ConfigFile_OnStartup;
-	
-	private File current_Root_Subdir_ToStoreFilesIn;
-	
+
+	@Autowired
+	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management; 
+
 	/* 
 	 * Spring LifeCycle Method
 	 * 
@@ -68,16 +66,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			throw e;
 		}
 	}
-	
-	/**
-	 * @return null if not configured or subdir not found
-	 */
-	@Override
-	public File get_current_Root_Subdir_ToStoreFilesIn() {
-		
-		return this.current_Root_Subdir_ToStoreFilesIn;
-	}
-	
+
 
 	//////////
 
@@ -89,6 +78,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	 */
 	private void initializeObject_AfterPropertiesSetBySpring() throws Exception {
 		
+		//  Launch 'Cleanup Thread' 
+		
+
 		//  Load Config file for:
 		//		directory to use for storing cached data
 		//      flag to indicate use the build GIT hash for creating the sub dir to use.
@@ -118,50 +110,55 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		File subDir_Cache_For_Versioned_Webservices_ROOT = new File( root_Subdirectory_ToStoreFilesIn, 
 				CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__DirectoryNames__Constants.SUBDIR_CACHE_FOR_VERSIONED_WEBSERVICES_ROOT );
 		
-		subDir_Cache_For_Versioned_Webservices_ROOT.mkdir();
-		
 		if ( ! subDir_Cache_For_Versioned_Webservices_ROOT.exists() ) {
 
-			String canonicalPath = "";
-			try {
-				canonicalPath = ".  canonical path: " + subDir_Cache_For_Versioned_Webservices_ROOT.getCanonicalPath();
-			} catch (Throwable t) {
-				log.error( "Failed to get canonical path for subDir_Cache_For_Versioned_Webservices_ROOT", t);
-				// Swallow Exception
-			}
-			log.warn("No Caching of webservice responses.  Subdir for caching, after attempt to create, versioned root dir not exist: "
-					+ subDir_Cache_For_Versioned_Webservices_ROOT.getAbsolutePath()
-					+ canonicalPath );
+			//  No directory exists to clean up so exit
 			
-			return;
+			return; // EARLY RETURN
 		}
 
 		File subDir_Cache_For_Versioned_Webservices_CURRENT = new File( subDir_Cache_For_Versioned_Webservices_ROOT, 
 				CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__DirectoryNames__Constants.SUBDIR_CACHE_FOR_VERSIONED_WEBSERVICES_CURRENT );
 		
-		subDir_Cache_For_Versioned_Webservices_CURRENT.mkdir();
-		
 		if ( ! subDir_Cache_For_Versioned_Webservices_CURRENT.exists() ) {
+
+			//  No directory exists to clean up so exit
+			
+			return; // EARLY RETURN
+		}
+
+		File subDir_Cache_For_Versioned_Webservices_TO_DELETE = new File( subDir_Cache_For_Versioned_Webservices_ROOT, 
+				CachedDataInFileMgmt_Current_Root_Subdir_ToStoreFilesIn__DirectoryNames__Constants.SUBDIR_CACHE_FOR_VERSIONED_WEBSERVICES_TO_DELETE );
+
+		subDir_Cache_For_Versioned_Webservices_TO_DELETE.mkdir();
+		
+		if ( ! subDir_Cache_For_Versioned_Webservices_TO_DELETE.exists() ) {
 
 			String canonicalPath = "";
 			try {
-				canonicalPath = ".  canonical path: " + subDir_Cache_For_Versioned_Webservices_CURRENT.getCanonicalPath();
+				canonicalPath = ".  canonical path: " + subDir_Cache_For_Versioned_Webservices_TO_DELETE.getCanonicalPath();
 			} catch (Throwable t) {
-				log.error( "Failed to get canonical path for subDir_Cache_For_Versioned_Webservices_CURRENT", t);
+				log.error( "Failed to get canonical path for subDir_Cache_For_Versioned_Webservices_TO_DELETE", t);
 				// Swallow Exception
 			}
-			log.warn("No Caching of webservice responses.  Subdir for caching, after attempt to create, versioned CURRENT dir not exist: " 
-					+ subDir_Cache_For_Versioned_Webservices_CURRENT.getAbsolutePath()
+			log.warn("No cleanup of Cached of webservice responses.  Subdir for caching, after attempt to create, versioned TO DELETE dir not exist: " 
+					+ subDir_Cache_For_Versioned_Webservices_TO_DELETE.getAbsolutePath() 
 					+ canonicalPath );
 			
-			return;
+			return;  //  EARLY RETURN
 		}
-			
-		//  'Current' subdir now exists
 		
-		// Store in class Object
-		this.current_Root_Subdir_ToStoreFilesIn = subDir_Cache_For_Versioned_Webservices_CURRENT;
-
+		//  Create and start thread to remove all subdirs in  root_Subdirectory_ToStoreFilesIn
+		//     other than current_SubDir_String
+		
+		CachedDataInFileMgmt_Remove_Old_CurrentSubdirs cachedDataInFileMgmt_Remove_Old_CurrentSubdirs = new CachedDataInFileMgmt_Remove_Old_CurrentSubdirs();
+		
+		cachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setSubDir_Cache_For_Versioned_Webservices_CURRENT( subDir_Cache_For_Versioned_Webservices_CURRENT );
+		cachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setSubDir_Cache_For_Versioned_Webservices_TO_DELETE(subDir_Cache_For_Versioned_Webservices_TO_DELETE);
+		
+		cachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setCached_WebserviceResponse_Management( cached_WebserviceResponse_Management );
+		
+		cachedDataInFileMgmt_Remove_Old_CurrentSubdirs.startThread();
 	}
 
 }
