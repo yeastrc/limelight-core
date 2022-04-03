@@ -39,7 +39,6 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.ru
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.services.SendEmailForRunImportFinishServiceIF;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_XML_ToObject;
 
@@ -64,7 +63,7 @@ public class RunImporter_ImporterFinish_RestWebserviceController {
 	
 	@PostMapping( 
 			path = { 
-					AA_RestWSControllerPaths_Constants.PATH_START_ALL
+					AA_OtherRestControllerPaths_Constants.PATH_START_ALL
 					+ AA_OtherRestControllerPaths_Constants.RUN_IMPORTER_IMPORT_FINISH_REST_WEBSERVICE_CONTROLLER
 			},
 			consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
