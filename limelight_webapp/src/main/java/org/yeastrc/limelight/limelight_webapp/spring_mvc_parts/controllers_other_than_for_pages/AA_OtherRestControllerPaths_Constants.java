@@ -24,9 +24,16 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controllers_othe
 public class AA_OtherRestControllerPaths_Constants {
 
 	//  All start with "/o/rws/" for other/rest web service
+	
+
+	/**
+	 * Place before path on all controllers.   This way the path listed for controllers can be used directly on the page or in Javascript AJAX.
+	 */
+	public static final String PATH_START_ALL = "/";
+
 
 	public static final String RUN_IMPORTER_IMPORT_FINISH_REST_WEBSERVICE_CONTROLLER = 
-			"/o/rws/run-importer-import-finish";
+			"o/rws/run-importer-import-finish";
 	
 
 }
