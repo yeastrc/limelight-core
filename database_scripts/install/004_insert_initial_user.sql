@@ -1,7 +1,7 @@
 
 
 --  This will create an initial user in the "" database
---  The initial user will have user id "initial_user"
+--  The initial user will have user id "admin"
 --  The initial user will have password "changeme"
 
 --  This is required to have an 'id' of 1.  There is hard coding in the app for this id of 1.
