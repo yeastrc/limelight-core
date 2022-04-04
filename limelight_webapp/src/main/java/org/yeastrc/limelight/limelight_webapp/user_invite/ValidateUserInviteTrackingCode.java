@@ -53,6 +53,14 @@ public class ValidateUserInviteTrackingCode implements ValidateUserInviteTrackin
 		private boolean inviteCodeReplacedByNewer;
 		private boolean inviteCodeRevoked;
 		private boolean projectNotExist;
+
+		@Override
+		public String toString() {
+			return "ValidateUserInviteTrackingCodeResult_NotValidReason [invalidInviteCode=" + invalidInviteCode
+					+ ", inviteCodeAlreadyUsed=" + inviteCodeAlreadyUsed + ", inviteCodeReplacedByNewer="
+					+ inviteCodeReplacedByNewer + ", inviteCodeRevoked=" + inviteCodeRevoked + ", projectNotExist="
+					+ projectNotExist + "]";
+		}
 		
 		public boolean isInvalidInviteCode() {
 			return invalidInviteCode;
@@ -95,6 +103,12 @@ public class ValidateUserInviteTrackingCode implements ValidateUserInviteTrackin
 		private boolean codeIsValid = false;
 		private UserInviteTrackingDTO userInviteTrackingDTO;
 		private ValidateUserInviteTrackingCodeResult_NotValidReason notValidReason;
+
+		@Override
+		public String toString() {
+			return "ValidateUserInviteTrackingCodeResult [codeIsValid=" + codeIsValid + ", userInviteTrackingDTO="
+					+ userInviteTrackingDTO + ", notValidReason=" + notValidReason + "]";
+		}
 		
 		public boolean isCodeIsValid() {
 			return codeIsValid;
