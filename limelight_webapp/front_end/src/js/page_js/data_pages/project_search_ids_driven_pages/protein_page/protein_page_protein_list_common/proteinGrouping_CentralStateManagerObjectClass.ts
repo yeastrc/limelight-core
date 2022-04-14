@@ -72,7 +72,9 @@ export class ProteinGrouping_CentralStateManagerObjectClass {
 		centralPageStateManager : CentralPageStateManager, proteinList_CentralStateManagerObjectClass : ProteinList_CentralStateManagerObjectClass
 	} ) {
 
-		this._value = {};
+		this._value = {
+			showHiddenProteins: true  /// Default to True
+		};
 
 		//  No centralPageStateManager value if used for an override
 
