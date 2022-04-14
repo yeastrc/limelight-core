@@ -2060,6 +2060,13 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
             }
         }
 
+        if ( psmIds_Include_Result.size === 0 ) {
+
+            //  None of the PSM Ids were found in all filters so skip entry
+
+            continue; // EARLY CONTINUE
+        }
+
         const newEntry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
             reportedPeptideId : reportedPeptideId,
             psmIds_Include : psmIds_Include_Result
