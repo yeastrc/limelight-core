@@ -24,6 +24,9 @@ aa_ant__build_all_limelight_config.properties
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# intellij project files
+*.iml
+
 # Package Files #
 # *.jar
 *.war
