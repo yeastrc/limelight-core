@@ -28,7 +28,10 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum;
+import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_PerTable_DTO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceDTO;
+import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 
@@ -44,24 +47,37 @@ public class ProteinSequenceDAO {
 	public static ProteinSequenceDAO getInstance() { return new ProteinSequenceDAO(); }
 
 	private static long totalElapsedTime_getProteinIdForSequence_InMilliSeconds = 0;
-	private static long totalCallCount_getPeptideIdForSequence = 0;
+	private static int totalCallCount_getProteinIdForSequence = 0;
 
 	private static long totalElapsedTime_saveToDatabase_InMilliSeconds = 0;
-	private static long totalCallCount_saveToDatabase = 0;
+	private static int totalCallCount_saveToDatabase = 0;
 
 	private static long totalElapsedTime_delete_InMilliSeconds = 0;
-	private static long totalCallCount_delete = 0;
+	private static int totalCallCount_delete = 0;
 
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	public static void logTotalElapsedTimeAndCallCounts() {
+	public static void logTotalElapsedTimeAndCallCounts(SearchDTO_Importer search) throws Exception {
 		{
 			double elapsedTimeSeconds = totalElapsedTime_getProteinIdForSequence_InMilliSeconds / 1000.0;
 			double elapsedTimeMinutes = ( elapsedTimeSeconds ) / 60.0;
 			log.warn( "Total Elapsed Time: Search protein_sequence_tbl for protein sequence: "
 					+ elapsedTimeSeconds + " seconds, or "
-					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_getPeptideIdForSequence);
+					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_getProteinIdForSequence);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.SELECT );
+			importer_Stats_PerTable_DTO.setTable_names( "protein_sequence_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_getProteinIdForSequence_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_getProteinIdForSequence );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_getProteinIdForSequence );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 		{
 			double elapsedTimeSeconds = totalElapsedTime_saveToDatabase_InMilliSeconds / 1000.0;
@@ -69,6 +85,18 @@ public class ProteinSequenceDAO {
 			log.warn( "Total Elapsed Time: Save to protein_sequence_tbl: "
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_saveToDatabase);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.INSERT );
+			importer_Stats_PerTable_DTO.setTable_names( "protein_sequence_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_saveToDatabase );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_saveToDatabase );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 		{
 			double elapsedTimeSeconds = totalElapsedTime_delete_InMilliSeconds / 1000.0;
@@ -76,6 +104,18 @@ public class ProteinSequenceDAO {
 			log.warn( "Total Elapsed Time: Delete from protein_sequence_tbl of duplicate protein sequence: "
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_delete);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.DELETE );
+			importer_Stats_PerTable_DTO.setTable_names( "protein_sequence_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_delete );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_delete );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 	}
 	
@@ -171,7 +211,7 @@ public class ProteinSequenceDAO {
 		long elapsedTimeNanoSeconds = endTimeNanoSeconds - startTimeNanoSeconds;
 		totalElapsedTime_getProteinIdForSequence_InMilliSeconds += ( elapsedTimeNanoSeconds / 1000000 );
 		
-		totalCallCount_getPeptideIdForSequence++;
+		totalCallCount_getProteinIdForSequence++;
 		
 		return results;
 	}

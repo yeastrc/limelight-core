@@ -27,26 +27,33 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
- * 
+ * !!!  Exclude Decoy PSMs  !!!
  *
  */
 @Component
 public class SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher extends Limelight_JDBC_Base implements SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_IF   {
 
 	private static final Logger log = LoggerFactory.getLogger( SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	/**
 	 * 
-	 *
+	 * !!!  Exclude Decoy PSMs  !!!
 	 */
 	public static class SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem {
 		
@@ -77,9 +84,12 @@ public class SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReported
 	
 	getSearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffs(
 			
-			List<Integer> reportedPeptideIds, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
+			List<Integer> reportedPeptideIds, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 		
 		List<SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem> results = new ArrayList<>();
+
+		
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 		
 		
 		//  Create reversed version of list
@@ -115,6 +125,11 @@ public class SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReported
 			sqlSB.append( "?" );
 		}
 		sqlSB.append( " ) " ); //  close " reported_peptide_id IN ( "
+
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			// Exclude  records where is_decoy = 'true'
+			sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+		}
 
 		sqlSB.append( " ) " ); //  close " ( SELECT id AS psm_id, "
 

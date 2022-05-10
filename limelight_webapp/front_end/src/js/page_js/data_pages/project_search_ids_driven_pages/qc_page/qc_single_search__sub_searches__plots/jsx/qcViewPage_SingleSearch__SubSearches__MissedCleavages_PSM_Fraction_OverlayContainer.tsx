@@ -125,7 +125,7 @@ class QcViewPage_SingleSearch__SubSearches__MissedCleavages_PSM_Fraction_Overlay
                 title={ _Overlay_Title }
                 set_CSS_Position_Fixed={ false }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ true } >
+                close_OnBackgroundClick={ false } >
 
                 <React.Fragment>
                     <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "

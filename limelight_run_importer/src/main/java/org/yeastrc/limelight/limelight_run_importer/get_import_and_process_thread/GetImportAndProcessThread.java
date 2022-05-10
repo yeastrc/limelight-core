@@ -23,15 +23,20 @@ import java.io.PrintWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.constants.GetImportStatus_FileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_update_with_transaction_services.GetNextTrackingToProcessDBTransaction;
 import org.yeastrc.limelight.limelight_run_importer.process_submitted_import.ProcessSubmittedImport;
+import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 
 /**
  * Get the next import and process it thread
+ * 
+ * Pause running imports if DB Schema Version Number in DB  NOT  match DB Schema Version Number in Code. 
  *
  */
 public class GetImportAndProcessThread extends Thread {
@@ -39,6 +44,9 @@ public class GetImportAndProcessThread extends Thread {
 	private static final String className = GetImportAndProcessThread.class.getSimpleName();
 	private static final int WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT = 5; // in seconds
 	private static final int WAIT_TIME_WHEN_GET_EXCEPTION = 5 * 60; // in seconds
+	
+	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = 24 * 60 * 60 * 1000;  // Only show some error messages every 24 hours
+	
 	
 	private static final Logger log = LoggerFactory.getLogger( GetImportAndProcessThread.class );
 	
@@ -49,21 +57,31 @@ public class GetImportAndProcessThread extends Thread {
 
 	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
 	
+	//  For CURRENT DB Version Number
+	
+	private boolean db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = false;
+	private long db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = 0;
+
+	//  For DB Upgrade In Progress DB Version Number
+	
+	private boolean db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = false;
+	private long db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = 0;
+	
 	private int waitTimeForNextCheckForImportToProcess_InSeconds = WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT;
 	
 	private int maxTrackingRecordPriorityToRetrieve;
 	
-//	public static GetImportAndProcessThread getInstance( String s ) {
-//		
-//		GetImportAndProcessThread instance = new GetImportAndProcessThread();
-//		instance.init();
-//		return instance;
-//	}
+	public static GetImportAndProcessThread getNewInstance( String s ) {
+		
+		GetImportAndProcessThread instance = new GetImportAndProcessThread(s);
+		instance.init();
+		return instance;
+	}
 	
 	/**
 	 * default Constructor
 	 */
-	public GetImportAndProcessThread() {
+	private GetImportAndProcessThread() {
 		//  Set a name for the thread
 		String threadName = className;
 		setName( threadName );
@@ -72,7 +90,7 @@ public class GetImportAndProcessThread extends Thread {
 	 * Constructor
 	 * @param s
 	 */
-	public GetImportAndProcessThread( String s ) {
+	private GetImportAndProcessThread( String s ) {
 		super(s);
 	}
 	
@@ -133,8 +151,210 @@ public class GetImportAndProcessThread extends Thread {
 	 */
 	@Override
 	public void run() {
+		
 		log.info( "run() entered" );
+		
+		//  Top level loop until keepRunning is false
+		
 		while ( keepRunning ) {
+
+			//  Save instance variable values to local values since the instance variable values are updated in the following code
+
+			boolean localBeforeUpdates__db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code =
+					this.db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code;
+			
+			boolean localBeforeUpdates__db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code =
+					this.db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code;
+
+			
+			//  Check DB Version Number
+
+			{ //  Validate Code And Database Schema Versions match
+				
+				//  CURRENT Version
+				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
+				try {
+					limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+					getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+				} catch (Exception e) {
+
+					int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
+					synchronized (this) {
+						try {
+							wait( ( (long) waitTimeInSeconds ) * 1000 ); //  wait for notify() call or timeout, in milliseconds
+						} catch (InterruptedException e2) {
+							log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+						}
+					}
+					
+					continue;  // EARLY CONTINUE
+				}
+				
+				if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+
+					//  CURRENT version mismatch
+					
+					//  Code And Database Schema Version do NOT match
+					
+					if ( db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code ) {
+
+						//  Same state as previous check
+						
+						if ( db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten 
+								< ( System.currentTimeMillis() - TWENTY_FOUR_HOURS__IN_MILLISECONDS ) ) {
+						
+							//  It has been X time so print message again
+							
+							String errorMessage = null;
+
+							if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result == LimelightDatabaseSchemaVersion_Comparison_Result.CODE_GREATER_THAN_DATABASE ) {
+
+								errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_GREATER_THAN_DATABASE__RUN_IMPORTER__ERROR_MESSAGE;
+
+							} else {
+
+								errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_LESS_THAN_DATABASE__RUN_IMPORTER__ERROR_MESSAGE;
+							}
+							
+							System.out.println( "**************************" );
+							System.out.println( "Currently NOT running Limelight Imports.  " + errorMessage );
+							System.out.println( "**************************" );
+						
+							db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = System.currentTimeMillis();
+						}
+						
+					} else {
+					
+						//  State change.  Display message
+
+						String errorMessage = null;
+
+						if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result == LimelightDatabaseSchemaVersion_Comparison_Result.CODE_GREATER_THAN_DATABASE ) {
+
+							errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_GREATER_THAN_DATABASE__RUN_IMPORTER__ERROR_MESSAGE;
+
+						} else {
+
+							errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_LESS_THAN_DATABASE__RUN_IMPORTER__ERROR_MESSAGE;
+						}
+						
+						System.out.println( "**************************" );
+						System.out.println( "Currently NOT running Limelight Imports.  " + errorMessage );
+						System.out.println( "**************************" );
+						
+						db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = System.currentTimeMillis();
+					}
+					
+					db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = true;
+					
+				} else {
+					
+					//  NO mismatch
+					db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = false;
+					
+				}
+				
+				if ( ! db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code ) {
+					
+					//  Only check since CURRENT is NO Mismatch
+
+					//  DB Update in Progress Version
+					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
+					try {
+						limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+					} catch (Exception e) {
+
+						int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
+						synchronized (this) {
+							try {
+								wait( ( (long) waitTimeInSeconds ) * 1000 ); //  wait for notify() call or timeout, in milliseconds
+							} catch (InterruptedException e2) {
+								log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+							}
+						}
+						
+						continue;  // EARLY CONTINUE
+					}
+
+					if ( limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+
+						//  Update In Progress: version mismatch
+						
+						//  Code And Database Schema Version do NOT match
+						
+						if ( db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code ) {
+
+							//  Same state as previous check
+							
+							if ( db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten 
+									< ( System.currentTimeMillis() - TWENTY_FOUR_HOURS__IN_MILLISECONDS ) ) {
+							
+								//  It has been X time so print message again
+								
+								String errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_UPGRADE_IN_PROGRESS_VERSION__MISMATCH_VERSION_NUMBERS__ERROR_MESSAGE;
+								
+								System.out.println( "**************************" );
+								System.out.println( "Currently NOT running Limelight Imports.  " + errorMessage );
+								System.out.println( "**************************" );
+							
+								db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = System.currentTimeMillis();
+							}
+							
+							
+						} else {
+
+							//  State change.  Display message
+
+							String errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_UPGRADE_IN_PROGRESS_VERSION__MISMATCH_VERSION_NUMBERS__ERROR_MESSAGE;
+							
+							System.out.println( "**************************" );
+							System.out.println( "Currently NOT running Limelight Imports.  " + errorMessage );
+							System.out.println( "**************************" );
+						
+							db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code__LastMessageWritten = System.currentTimeMillis();
+						}
+						
+						
+						db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = true;
+						
+					} else {
+						
+						//  NO mismatch
+						db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = false;
+					}
+				}
+			}
+			
+			if ( db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code 
+					|| db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code ) {
+				
+				//  CURRENT or UpgradeInProgress Version Number mismatch so do NOT process imports
+				
+				int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
+				synchronized (this) {
+					try {
+						wait( ( (long) waitTimeInSeconds ) * 1000 ); //  wait for notify() call or timeout, in milliseconds
+					} catch (InterruptedException e) {
+						log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+					}
+				}
+				
+				continue;  //  EARLY CONTINUE
+			}
+			
+
+			if ( localBeforeUpdates__db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code
+					|| localBeforeUpdates__db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code ) {
+
+				System.out.println( "**************************" );
+				System.out.println( "Returning to running Limelight Imports.  " );
+				System.out.println( "**************************" );
+			}
+			
+			
+			//  Get Next Import to process
+			
 			TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair = null;
 			try {
 				try {

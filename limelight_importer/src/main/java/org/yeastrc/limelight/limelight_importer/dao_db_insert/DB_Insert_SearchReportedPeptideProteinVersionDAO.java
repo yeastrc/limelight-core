@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_importer.dto.SearchReportedPeptideProteinVersionDTO;
 
 
@@ -42,9 +43,9 @@ public class DB_Insert_SearchReportedPeptideProteinVersionDAO {
 
 	private static final String INSERT_SQL = "INSERT INTO srch_rep_pept__prot_seq_v_id_tbl "
 
-			+ " ( search_id, reported_peptide_id, protein_sequence_version_id )"
+			+ " ( search_id, reported_peptide_id, protein_sequence_version_id, protein_is_decoy, protein_is_independent_decoy )"
 
-			+ " VALUES ( ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ? )";
 	
 	/**
 	 * Save the associated data to the database
@@ -68,6 +69,19 @@ public class DB_Insert_SearchReportedPeptideProteinVersionDAO {
 				pstmt.setInt( counter,  item.getReportedPeptideId() );
 				counter++;
 				pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
+
+				counter++;
+				if ( item.isProtein_IsDecoy() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isProtein_IsIndependentDecoy() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
 
 				pstmt.executeUpdate();
 			}

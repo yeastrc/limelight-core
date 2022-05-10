@@ -129,7 +129,7 @@ class QcViewPage_SingleSearch__SummaryCounts_OverlayContainer extends React.Comp
                 title={ _Overlay_Title }
                 set_CSS_Position_Fixed={ false }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ true } >
+                close_OnBackgroundClick={ false } >
 
                 <React.Fragment>
 

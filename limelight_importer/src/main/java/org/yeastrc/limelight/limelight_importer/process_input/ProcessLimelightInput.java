@@ -39,11 +39,12 @@ import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
+import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
+import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
-import org.yeastrc.limelight.limelight_importer.post_insert_search_processing.PerformPostInsertSearchProcessing;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_UpdateForSpectralStorageService_API_Key;
@@ -53,6 +54,7 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
 /**
@@ -95,13 +97,21 @@ public class ProcessLimelightInput {
 			LimelightInput limelightInput,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
-			Boolean skipPopulatingPathOnSearchLineOptChosen
+			Boolean skipPopulatingPathOnSearchLineOptChosen,
+			
+			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
 			) throws Exception {
 		
 		searchDTOInserted = null;
 		projectSearchDTOInserted = null;
 		
 		try {
+			
+			//  Create Internal Holder Object Root that holds LimelightInput limelightInput object
+			
+			Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object = new Input_LimelightXMLFile_InternalHolder_Root_Object(limelightInput);
+			
+			
 			Set<String> scanFilenamesLimelightXMLInputSet =
 					PreprocessValidate_ScanFiles_ScanFilenames.getInstance()
 					.preprocessValidate_ScanFiles_ScanFilenames( limelightInput, scanFileFileContainer_AllEntries );
@@ -160,10 +170,10 @@ public class ProcessLimelightInput {
 			} else {
 				searchDTO.setHasSearchSubGroups( true );
 			}
-				
-			searchDTO.setHasIsotopeLabel( peptideContainsIsotopeLabel( limelightInput ) );
-			searchDTO.setAnyPsmHasOpenModificationMasses( peptideContainsPSMWithOpenModificationMass( limelightInput ) );
-			searchDTO.setReportedPeptideMatchedProteinMappingProvided( reportedPeptides_Any_Contain_MatchedProteinForPeptide( limelightInput ) );
+			
+			update_SearchDTO_Importer__SetFlags_BasedOn_LimelightInput_Contents( searchDTO, limelightInput );
+			
+			searchDTO.setPsmIds_AreSequential(true);  // Always true now with updated PSM Id assignment via reserved block for the search
 				
 			SearchDAO.getInstance().saveToDatabase( searchDTO );
 			searchDTOInserted = searchDTO;
@@ -183,11 +193,16 @@ public class ProcessLimelightInput {
 			log.warn( "INFO:  First Insert to Database for Search Successful.  Continuing to process import and insert into database.");
 			log.warn( "!!!!!!!!!!!!!!!!!!" );
 			
+			
+			//  Insert of Importer 'heart beat'
+			
+			Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(searchId);
+			
 			//
 			
 			//  Compute # PSMs and initialize PSM Insert object
 			
-			Initialize_DB_Insert_PsmDAO_With_PSM_Count.getSingletonInstance().initialize_DB_Insert_PsmDAO_With_PSM_Count(limelightInput);
+			Initialize_DB_Insert_PsmDAO_With_PSM_Count.getSingletonInstance().initialize_DB_Insert_PsmDAO_With_PSM_Count(limelightInput, searchDTO);
 			
 			
 			//  Insert Conversion Program data
@@ -213,7 +228,7 @@ public class ProcessLimelightInput {
 					
 			Map<String, SearchProgramEntry> searchProgramEntryMap =
 					ProcessSearchProgramEntries.getInstance()
-					.processSearchProgramEntries( limelightInput, searchDTO.getId() );
+					.processSearchProgramEntries( input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO.getId() );
 			
 			//  Throw error if have MatchedProteinAnnotation Types
 			
@@ -246,38 +261,52 @@ public class ProcessLimelightInput {
 			}
 			
 			
-			ProcessStaticModifications.getInstance().processStaticModifications( limelightInput, searchDTO.getId() );
+			ProcessStaticModifications.getInstance().processStaticModifications( input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO.getId() );
+			
 			ProcessConfigurationFiles.getInstance().processConfigurationFiles( 
 					limelightInput, 
 					searchDTO.getId(), 
 					projectSearchDTOInserted.getId(),
 					searchProgramEntryMap );
 
-
-			log.warn( "INFO:  !!  Starting to process Reported Peptides and PSMs");
-
-			ProcessReportedPeptidesAndPSMs.getInstance().processReportedPeptides( 
-					limelightInput, 
-					searchDTO, 
-					skip_SubGroup_Processing,
-					searchSubGroupDTOMap_Key_searchSubGroupLabel,
-					searchProgramEntryMap,
-					reportedPeptideAndPsmFilterableAnnotationTypesOnId,
-					searchScanFileEntry_AllEntries
-					);
-			
-
 			//  Commit all inserts executed to this point
 			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
 			
-			if ( log.isWarnEnabled() ) {
-				log.warn( "INFO:  !!  Primary insert of search complete.  Now performing Updates to the search" );
+			Process_FastaFileStatistics.getInstance().process_FastaFileStatistics(input_LimelightXMLFile_InternalHolder_Root_Object, searchId, projectSearchDTO.getId() );
+
+			if ( input_LimelightXMLFile_InternalHolder_Root_Object.is_Any_InternalHolder_ReportedPeptide_Objects() ) {
+
+
+				log.warn( "INFO:  !!  Starting to process Proteins, Reported Peptides and PSMs");
+				
+
+				//  Query and Insert to DB if needed: Reported Peptide String, Peptide String
+				
+				Process_ReportedPeptideString_PeptideString_Query_InsertIfNeeded__All_ReportedPeptideObjects.getInstance().
+				reportedPeptideString_PeptideString_Query_InsertIfNeeded__All_ReportedPeptideObjects(input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO);
+
+				//  Perform Peptides to Proteins Mapping (Protein Interference).  Insert Proteins and Proteins to Peptide Mapping records
+				
+				Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins.getInstance().
+				process_PeptidesToProteinsMapping_ProteinInference_InsertProteins( 
+						input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO,
+						searchProgramEntryMap, reportedPeptideAndPsmFilterableAnnotationTypesOnId, searchScanFileEntry_AllEntries
+						);
+
+				// Process Reported Peptides and their children PSMs etc and insert to DB
+
+				ProcessReportedPeptidesAndPSMs.getInstance().processReportedPeptides( 
+						input_LimelightXMLFile_InternalHolder_Root_Object, 
+						searchDTO, 
+						skip_SubGroup_Processing,
+						searchSubGroupDTOMap_Key_searchSubGroupLabel,
+						searchProgramEntryMap,
+						reportedPeptideAndPsmFilterableAnnotationTypesOnId,
+						searchScanFileEntry_AllEntries
+						);
+
 			}
 			
-			//  After primary insert search processing, perform other required updates to search
-			PerformPostInsertSearchProcessing.getInstance()
-			.performPostInsertSearchProcessing( searchDTOInserted, reportedPeptideAndPsmFilterableAnnotationTypesOnId );
-
 			//  Commit all inserts executed to this point
 			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
 			
@@ -292,12 +321,25 @@ public class ProcessLimelightInput {
 				throw e;
 		    }
 			
-			ScanFiles_UpdateForSpectralStorageService_API_Key.getInstance()
-			.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
-			
-			PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles.getInstance()
-			.validateAllScanNumbersOnPSMsInScanFiles( searchScanFileEntry_AllEntries );
-			
+			if ( ! searchDTO.isHasScanData() ) {
+				
+				searchStatistics_General_SavedToDB.setImporter_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds( 0 );
+			} else {
+
+				long time_Before_WaitFor_Spectr = System.currentTimeMillis();
+
+				ScanFiles_UpdateForSpectralStorageService_API_Key.getInstance()
+				.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
+
+				PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles.getInstance()
+				.validateAllScanNumbersOnPSMsInScanFiles( searchScanFileEntry_AllEntries );
+
+				long time_After_WaitFor_Spectr = System.currentTimeMillis();
+
+				long importer_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds = time_After_WaitFor_Spectr - time_Before_WaitFor_Spectr;
+
+				searchStatistics_General_SavedToDB.setImporter_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds(importer_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds);
+			}
 		} catch ( Exception e ) {
 			throw e;
 		}
@@ -349,13 +391,131 @@ public class ProcessLimelightInput {
 		}
 		return filterableAnnotationTypesOnId;
 	}
+	
+	//////////////////////////////
+	
+	/**
+	 * @param searchDTO
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException
+	 */
+	private void update_SearchDTO_Importer__SetFlags_BasedOn_LimelightInput_Contents(
+			SearchDTO_Importer searchDTO,
+			LimelightInput limelightInput
+			) throws LimelightImporterDataException {
+		
+		searchDTO.setHasIsotopeLabel( searchContains_peptideContainsIsotopeLabel( limelightInput ) );
+		searchDTO.setAnyPsmHasOpenModificationMasses( searchContains_PSM_WithOpenModificationMass( limelightInput ) );
+		searchDTO.setReportedPeptideMatchedProteinMappingProvided( reportedPeptides_Any_Contain_MatchedProteinForPeptide( limelightInput ) );
+
+		update_SearchDTO_Importer__Set_IsDecoy_IsIndependentDecoy_BasedOn_LimelightInput_Contents( searchDTO, limelightInput );
+		
+		update_SearchDTO_Importer__Set_allPsmHave_Precursor_RetentionTime_allPsmHave_Precursor_M_Over_Z_BasedOn_LimelightInput_Contents( searchDTO, limelightInput );
+	}
+	
+	/**
+	 * @param searchDTO
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException
+	 */
+	private void update_SearchDTO_Importer__Set_IsDecoy_IsIndependentDecoy_BasedOn_LimelightInput_Contents(
+			SearchDTO_Importer searchDTO,
+			LimelightInput limelightInput
+			) throws LimelightImporterDataException {
+		
+		boolean anyPsmHas_IsDecoy_True = false;
+		boolean anyPsmHas_IsIndependentDecoy_True = false;
+		
+		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
+		if ( reportedPeptides != null ) {
+			List<ReportedPeptide> reportedPeptideList =
+					reportedPeptides.getReportedPeptide();
+			if ( reportedPeptideList != null && ( ! reportedPeptideList.isEmpty() ) ) {
+				for ( ReportedPeptide reportedPeptide : reportedPeptideList ) {
+					
+					if ( reportedPeptide.getPsms() != null && ( ! ( reportedPeptide.getPsms().getPsm().isEmpty() ) ) ) {
+						
+						for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+							
+							if ( psm.isIsDecoy() != null && psm.isIsDecoy() ) {
+								anyPsmHas_IsDecoy_True = true;
+							}
+							if ( psm.isIsIndependentDecoy() != null && psm.isIsIndependentDecoy() ) {
+								anyPsmHas_IsIndependentDecoy_True = true;
+							}
+							
+							if ( anyPsmHas_IsDecoy_True && anyPsmHas_IsIndependentDecoy_True ) {
+								break;
+							}
+						}
+					}
+
+					if ( anyPsmHas_IsDecoy_True && anyPsmHas_IsIndependentDecoy_True ) {
+						break;
+					}
+				}
+			}
+		}
+		
+		searchDTO.setAnyPsmHas_IsDecoy_True(anyPsmHas_IsDecoy_True);
+		searchDTO.setAnyPsmHas_IsIndependentDecoy_True(anyPsmHas_IsIndependentDecoy_True);
+	}
+
+	/**
+	 * @param searchDTO
+	 * @param limelightInput
+	 * @throws LimelightImporterDataException
+	 */
+	private void update_SearchDTO_Importer__Set_allPsmHave_Precursor_RetentionTime_allPsmHave_Precursor_M_Over_Z_BasedOn_LimelightInput_Contents(
+			SearchDTO_Importer searchDTO,
+			LimelightInput limelightInput
+			) throws LimelightImporterDataException {
+		
+		boolean allPsmHave_Precursor_RetentionTime = true;
+		boolean allPsmHave_Precursor_M_Over_Z = true;
+
+		
+		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
+		if ( reportedPeptides != null ) {
+			List<ReportedPeptide> reportedPeptideList =
+					reportedPeptides.getReportedPeptide();
+			if ( reportedPeptideList != null && ( ! reportedPeptideList.isEmpty() ) ) {
+				for ( ReportedPeptide reportedPeptide : reportedPeptideList ) {
+					
+					if ( reportedPeptide.getPsms() != null && ( ! ( reportedPeptide.getPsms().getPsm().isEmpty() ) ) ) {
+						
+						for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
+							
+							if ( psm.getPrecursorRetentionTime() == null ) {
+								allPsmHave_Precursor_RetentionTime = false;
+							}
+							if ( psm.getPrecursorMZ() == null ) {
+								allPsmHave_Precursor_M_Over_Z = false;
+							}
+							
+							if ( ( ! allPsmHave_Precursor_RetentionTime )  && ( ! allPsmHave_Precursor_M_Over_Z ) ) {
+								break;
+							}
+						}
+					}
+
+					if ( ( ! allPsmHave_Precursor_RetentionTime )  && ( ! allPsmHave_Precursor_M_Over_Z ) ) {
+						break;
+					}
+				}
+			}
+		}
+		
+		searchDTO.setAllPsmHave_Precursor_RetentionTime(allPsmHave_Precursor_RetentionTime);
+		searchDTO.setAllPsmHave_Precursor_M_Over_Z(allPsmHave_Precursor_M_Over_Z);
+	}
 
 	/**
 	 * At least one "peptide" under a "reported_peptide" contains "peptide_isotope_label"
 	 * @param limelightInput
 	 * @throws LimelightImporterDataException for data errors
 	 */
-	private boolean peptideContainsIsotopeLabel( LimelightInput limelightInput ) throws LimelightImporterDataException {
+	private boolean searchContains_peptideContainsIsotopeLabel( LimelightInput limelightInput ) throws LimelightImporterDataException {
 		
 		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
 		if ( reportedPeptides != null ) {
@@ -397,7 +557,7 @@ public class ProcessLimelightInput {
 	 * @param limelightInput
 	 * @throws LimelightImporterDataException for data errors
 	 */
-	private boolean peptideContainsPSMWithOpenModificationMass( LimelightInput limelightInput ) throws LimelightImporterDataException {
+	private boolean searchContains_PSM_WithOpenModificationMass( LimelightInput limelightInput ) throws LimelightImporterDataException {
 		
 		ReportedPeptides reportedPeptides = limelightInput.getReportedPeptides();
 		if ( reportedPeptides != null ) {
@@ -410,10 +570,11 @@ public class ProcessLimelightInput {
 						
 						for ( Psm psm : reportedPeptide.getPsms().getPsm() ) {
 							
-							if ( psm.getPsmOpenModification() != null && psm.getPsmOpenModification().getMass() != null )
+							if ( psm.getPsmOpenModification() != null && psm.getPsmOpenModification().getMass() != null ) {
 								//  This PSM contains "psm_open_modification"
 								 //  May also be PSMs that do NOT have Open Modifications
 								return true;  //  EARLY RETURN 
+							}
 						}
 					}
 				}

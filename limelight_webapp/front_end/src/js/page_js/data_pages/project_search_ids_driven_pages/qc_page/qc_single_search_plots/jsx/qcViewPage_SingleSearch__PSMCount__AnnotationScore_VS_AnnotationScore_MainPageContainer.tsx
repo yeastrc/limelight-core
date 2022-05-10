@@ -11,7 +11,8 @@ import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSear
 import {QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_StatisticsPlot";
 import {
     open_PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer,
-    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType,
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
@@ -110,6 +111,10 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                         searchScanFileId_Selection={ QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES }
                         annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
                         annotationTypeId_Score_Y={ this.state.annotationTypeId_Score_Y }
+                        transform_Score_X={ QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE }
+                        transform_Score_Y={ QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE }
+                        score_X_Contains_NegativeValues_Callback={ undefined }
+                        score_Y_Contains_NegativeValues_Callback={ undefined }
                         isInSingleChartOverlay={ false }
                         chartType={ QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_SCATTER_PLOT }
                     />

@@ -19,6 +19,8 @@ import {
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__CommonAcrossSearches} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__CommonAcrossSearches";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__MultipleProjectSearches";
+import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch__NO_PSM_Peptide_Protein_Filtering";
 
 /**
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
@@ -44,6 +46,10 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
     //  Instantiated in this class
 
     private _commonData_LoadedFromServer_PerSearch_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId> = new Map();
+
+    private _commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering> = new Map();
+
+    private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds;
 
     private _commonData_LoadedFromServer__CommonAcrossSearches: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__CommonAcrossSearches;
 
@@ -72,6 +78,17 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
                 projectSearchIds,
                 commonData_LoadedFromServer__Root: this  //  Pass this object to child object for CommonAcrossSearches
             });
+
+        //  Create Multiple Searches Instance
+
+        this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds =
+            CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds.getNewInstance({
+                projectSearchIds,
+                searchDataLookupParameters_Root,
+                dataPageStateManager,
+                parentObject_CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this
+            });
+
 
         //  Create Per Project Search Id Instances
 
@@ -105,13 +122,24 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
                 throw Error(msg);
             }
 
-            const forProjectSearchId = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.getNewInstance({
-                projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId,
-                common_Flags_SingleSearch_ForProjectSearchId, common_Searches_Info_SingleSearch_ForProjectSearchId,
-                parentObject_CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this
-            });
+            {
+                const forProjectSearchId = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.getNewInstance({
+                    projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId,
+                    common_Flags_SingleSearch_ForProjectSearchId, common_Searches_Info_SingleSearch_ForProjectSearchId,
+                    parentObject_CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this
+                });
 
-            this._commonData_LoadedFromServer_PerSearch_Map_Key_ProjectSearchId.set( projectSearchId, forProjectSearchId );
+                this._commonData_LoadedFromServer_PerSearch_Map_Key_ProjectSearchId.set( projectSearchId, forProjectSearchId );
+            }
+            {
+                const forProjectSearchId = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering.getNewInstance({
+                    projectSearchId,
+                    common_Flags_SingleSearch_ForProjectSearchId, common_Searches_Info_SingleSearch_ForProjectSearchId,
+                    parentObject_CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this
+                });
+
+                this._commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_Map_Key_ProjectSearchId.set( projectSearchId, forProjectSearchId )
+            }
         }
 
     }
@@ -145,9 +173,23 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
     }
 
     /**
+     * NO_PSM_Peptide_Protein_Filtering
+     *
+     * @param projectSearchId
+     */
+    get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId( projectSearchId: number ) {
+        return  this._commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_Map_Key_ProjectSearchId.get(projectSearchId);
+    }
+
+    /**
      *
      */
     get__commonData_LoadedFromServer__CommonAcrossSearches() {
         return this._commonData_LoadedFromServer__CommonAcrossSearches;
     }
+
+    get__commonData_LoadedFromServer__Multiple_ProjectSearchIds() {
+        return this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds;
+    }
+
 }

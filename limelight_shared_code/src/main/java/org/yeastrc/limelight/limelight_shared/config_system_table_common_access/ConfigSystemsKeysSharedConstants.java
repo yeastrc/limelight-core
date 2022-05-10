@@ -19,6 +19,22 @@ public class ConfigSystemsKeysSharedConstants {
 	
 	public static final String SPECTRAL_STORAGE_SERVICE_GET_DATA_BASE_URL = 
 			"spectral_storage_service_get_data_base_url";
+
+	////  Limelight Blib Spectal Library File Creation
+	
+	////       Web Service Base URL - 
+	////             URL used to communicate to Spectral Storage Service using Class CallSpectralStorageWebservice
+	
+	public static final String BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL = 
+			"blib_spectral_library_file_creation_web_service_base_url";
+
+	////       Directory Base Path Result Files are written to ('BLIB_DIR' variable used by Blib service):  
+	
+	public static final String BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH = 
+			"blib_spectral_library_file_result_file_base_path";
+	
+	
+	
 	
 	////  Limelight XML File Import Set Up keys
 
@@ -46,6 +62,7 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( SPECTRAL_STORAGE_SERVICE_GET_DATA_BASE_URL );
 		textConfigKeys.add( file_import_limelight_xml_scans_TEMP_DIR_KEY );
 		textConfigKeys.add( SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY );
-		
+		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL );
+		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH );
 	}
 }

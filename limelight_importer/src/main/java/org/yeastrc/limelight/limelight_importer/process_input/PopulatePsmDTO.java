@@ -83,6 +83,13 @@ public class PopulatePsmDTO {
 		psmDTO.setHasOpenModifications( psmHasOpenModifications );
 		psmDTO.setHasReporterIons( psmHasReporterIons );
 		
+		if ( psm.isIsDecoy() != null && psm.isIsDecoy() ) {
+			psmDTO.setDecoy(true);
+		}
+		if ( psm.isIsIndependentDecoy() != null && psm.isIsIndependentDecoy() ) {
+			psmDTO.setIndependentDecoy(true);
+		}
+		
 		if ( psm.getScanNumber() != null ) {
 			psmDTO.setScanNumber( psm.getScanNumber().intValue() );
 		}

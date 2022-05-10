@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.constants.RunImporterToImporterParameterNamesConstants;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.database_update_with_transaction_services.UpdateTrackingTrackingRunRecordsDBTransaction;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
@@ -115,6 +117,8 @@ public class ProcessSubmittedImport {
 			log.info( "Processing import for tracking id: " + fileImportTrackingDTO.getId() );
 		}
 		FileImportTrackingRunDTO fileImportTrackingRunDTO = trackingDTOTrackingRunDTOPair.getFileImportTrackingRunDTO();
+		
+		
 		File limelight_XML_Importer_Work_Directory =
 				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
 		File importerBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
@@ -125,7 +129,9 @@ public class ProcessSubmittedImport {
 			String msg = "subdirForThisTrackingId does not exist: " + subdirForThisTrackingId.getCanonicalPath();
 			log.error( msg );
 			
-			markImportTrackingAsFailed( fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
+			markImportTrackingAsFailed( 
+					null /* errorText (use default in variable ERROR_MSG_SYSTEM_ERROR ) */, 
+					fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
 			
 			throw new LimelightRunImporterInternalException(msg);
 		}
@@ -141,7 +147,9 @@ public class ProcessSubmittedImport {
 					+ importJarWithPath;
 			log.error( errorMsg ) ;
 			
-			markImportTrackingAsFailed( fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR);
+			markImportTrackingAsFailed( 
+					null /* errorText (use default in variable ERROR_MSG_SYSTEM_ERROR ) */, 
+					fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR);
 			
 			throw new LimelightRunImporterInternalException(errorMsg);
 		}
@@ -258,14 +266,18 @@ public class ProcessSubmittedImport {
 							+ commandAndItsArgumentsAsList
 							+ ", subdirForThisTrackingId:  " + subdirForThisTrackingId.getCanonicalPath() );
 					
-					markImportTrackingAsFailed( fileImportTrackingDTO_AfterImporterRun, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
+					markImportTrackingAsFailed( 
+							null /* errorText (use default in variable ERROR_MSG_SYSTEM_ERROR ) */, 
+							fileImportTrackingDTO_AfterImporterRun, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
 				}				
 			}
 		} catch (Throwable e) {
 			log.error( "command failed: " + commandAndItsArgumentsAsList
 					+ ", subdirForThisTrackingId:  " + subdirForThisTrackingId.getCanonicalPath() );
 
-			markImportTrackingAsFailed( fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
+			markImportTrackingAsFailed( 
+					null /* errorText (use default in variable ERROR_MSG_SYSTEM_ERROR ) */, 
+					fileImportTrackingDTO, fileImportTrackingRunDTO, FileImportRunSubStatus.SYSTEM_ERROR );
 
 			fileImportTrackingRunDTO.setRunStatus( FileImportStatus.FAILED );
 			fileImportTrackingRunDTO.setDataErrorText( ERROR_MSG_SYSTEM_ERROR );
@@ -277,6 +289,45 @@ public class ProcessSubmittedImport {
 					fileImportTrackingRunDTO );
 			throw new Exception( e );
 		} finally {
+
+			{  //  Clean up Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter, removing entry for searchId
+				
+				Integer searchId_Inserted = null;
+
+				try {
+					searchId_Inserted = FileImportTrackingRun_Importer_RunImporter_DAO.getInstance().getSearchId_ForId(fileImportTrackingRunDTO.getId());
+
+				} catch ( Throwable t ) {
+					String msgDelete = "Exception getting Inserted Search Id, Importer Run id: " + fileImportTrackingRunDTO.getId() ;
+					log.error( msgDelete, t );
+
+					//  Eat Exception
+				}
+
+				if ( searchId_Inserted != null ) {
+					try {
+						Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().delete_ForSearchId( searchId_Inserted );
+
+					} catch ( Throwable t ) {
+						String msgDelete = "Failed to Delete Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter record, search id: " + searchId_Inserted;
+						log.error( msgDelete, t );
+
+						//  Eat Exception
+					}
+				}
+			}
+			{  //  Clean up Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter, removing entries last updated a while ago
+				
+				try {
+					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().delete_Entries_LastUpdatedAWhileAgo();
+				} catch ( Throwable t ) {
+					String msgDelete = "Exception calling: Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().delete_Entries_LastUpdatedAWhileAgo()";
+					log.error( msgDelete, t );
+
+					//  Eat Exception
+				}
+			}
+			
 			runSystemCommand = null;
 			
 			int retryCount = 0;
@@ -400,14 +451,21 @@ public class ProcessSubmittedImport {
 	 * @throws Exception
 	 */
 	public void markImportTrackingAsFailed(
+			String errorText,  //  use ERROR_MSG_SYSTEM_ERROR if null
 			FileImportTrackingDTO fileImportTrackingDTO,
 			FileImportTrackingRunDTO fileImportTrackingRunDTO,
 			FileImportRunSubStatus fileImportRunSubStatus ) throws Exception {
 		
+		String errorText_Local = errorText;
+		
+		if ( errorText_Local == null ) {
+			errorText_Local = ERROR_MSG_SYSTEM_ERROR;
+		}
+		
 		fileImportTrackingRunDTO.setRunStatus( FileImportStatus.FAILED );
 		fileImportTrackingRunDTO.setRunSubStatus( fileImportRunSubStatus );
-		fileImportTrackingRunDTO.setDataErrorText( ERROR_MSG_SYSTEM_ERROR );
-		fileImportTrackingRunDTO.setImportResultText( ERROR_MSG_SYSTEM_ERROR );
+		fileImportTrackingRunDTO.setDataErrorText( errorText_Local );
+		fileImportTrackingRunDTO.setImportResultText( errorText_Local );
 		
 		boolean updatedDBCompleted = false;
 		int retryCount = 0;

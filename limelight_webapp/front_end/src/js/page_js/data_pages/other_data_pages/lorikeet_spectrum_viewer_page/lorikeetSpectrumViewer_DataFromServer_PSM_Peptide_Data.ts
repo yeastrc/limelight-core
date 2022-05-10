@@ -36,6 +36,8 @@ export class LorikeetSpectrumViewer_DataFromServer_PSM_Peptide_Data_Entry {  // 
     openModificationMassAndPositionsList: Array<LorikeetSpectrumViewer_DataFromServer_OpenModificationDataItem_Data>;
     hasOpenModifications: boolean;
 
+    psmIs_IndependentDecoy: boolean;
+
 
     /**
      * Variable Mods / Dynamic Mods

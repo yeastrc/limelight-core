@@ -152,6 +152,11 @@ CREATE TABLE  search_tbl (
   any_psm_has_dynamic_modifications TINYINT NOT NULL DEFAULT 0,
   any_psm_has_open_modificaton_masses TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has__is_decoy_true TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  any_psm_has__is_independent_decoy_true TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  all_psms_have_precursor_retention_time TINYINT UNSIGNED NULL,
+  all_psms_have_precursor_m_z TINYINT UNSIGNED NULL,
+  psm_ids_are_sequential TINYINT UNSIGNED NULL COMMENT 'All PSM Ids for the search are sequential - can use PSM Id ranges',
   reported_peptide_matched_protein_mapping_provided TINYINT NOT NULL DEFAULT 0,
   import_end_timestamp TIMESTAMP NULL,
   created_by_user_id INT UNSIGNED NULL,
@@ -289,6 +294,8 @@ CREATE TABLE  psm_tbl (
   has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   precursor_retention_time DECIMAL(9,4) NULL,
   precursor_m_z DECIMAL(10,4) NULL,
+  is_decoy TINYINT NOT NULL DEFAULT 0,
+  is_independent_decoy TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT psm_tbl_srch_id_fk
     FOREIGN KEY (search_id)
@@ -825,12 +832,15 @@ CREATE TABLE  search__rep_pept__lookup_tbl (
   any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
-  psm_num_at_default_cutoff INT(10) UNSIGNED NOT NULL,
+  psm_num_targets_only_at_default_cutoff INT(10) UNSIGNED NOT NULL COMMENT 'count only target PSMs',
+  psm_num_indpendent_decoys_only_at_default_cutoff INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'count only independent decoy PSMs',
+  psm_num_decoys_only_at_default_cutoff INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'count only decoy PSMs',
   peptide_meets_default_cutoffs ENUM('yes','no','not_applicable') NOT NULL,
   related_peptide_unique_for_search TINYINT(1) NOT NULL DEFAULT 0,
-  psm_id_sequential_start BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  psm_id_sequential_start__start_target BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  psm_id_sequential_start__start_independent_decoy BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Start of- Independent Decoys',
+  psm_id_sequential_start__start_decoy BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Start of- Decoys',
   psm_id_sequential_end BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
-  num_unique_psm_at_default_cutoff INT(10) UNSIGNED NULL COMMENT 'Allow num_unique_psm_at_default_cutoff since do not have value at record insert.',
   PRIMARY KEY (search_id, reported_peptide_id),
   CONSTRAINT search__rep_pept__gnrc_lkp_reported_peptide_id_fk
     FOREIGN KEY (reported_peptide_id)
@@ -854,16 +864,12 @@ CREATE INDEX search__rep_pept__generic_lookup_search__srch_type_mts_dflt_idx ON 
 
 
 -- -----------------------------------------------------
--- Table search__rep_pept__best_psm_value_lookup_tbl
+-- Table search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl
 -- -----------------------------------------------------
-CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
+CREATE TABLE  search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
   annotation_type_id INT(10) UNSIGNED NOT NULL,
-  has_dynamic_modifictions TINYINT(3) UNSIGNED NOT NULL,
-  has_isotope_labels TINYINT(3) NOT NULL DEFAULT 0,
-  any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
-  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
   best_psm_value_for_ann_type_id DOUBLE NOT NULL,
   psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
@@ -880,9 +886,9 @@ CREATE TABLE  search__rep_pept__best_psm_value_lookup_tbl (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
-CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__best_psm_value_lookup_tbl (reported_peptide_id ASC) VISIBLE;
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl (reported_peptide_id ASC) VISIBLE;
 
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1231,6 +1237,8 @@ CREATE TABLE  protein_coverage_tbl (
   protein_start_position INT UNSIGNED NOT NULL,
   protein_end_position INT UNSIGNED NOT NULL,
   peptide_protein_match_not_exact_match TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Caused by I L equiv and other',
+  protein_is_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  protein_is_independent_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
   CONSTRAINT protein_coverage__search_id_fk
     FOREIGN KEY (search_id)
@@ -1468,6 +1476,8 @@ CREATE TABLE  srch_rep_pept__prot_seq_v_id_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   reported_peptide_id INT UNSIGNED NOT NULL,
   protein_sequence_version_id INT UNSIGNED NOT NULL,
+  protein_is_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  protein_is_independent_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (search_id, reported_peptide_id, protein_sequence_version_id),
   CONSTRAINT srch_rppt_prtsqv_srch_id_fk
     FOREIGN KEY (search_id)
@@ -1710,6 +1720,8 @@ CREATE INDEX search_data_lookup_parameters_assoc_project_search_id_fk_idx ON sea
 CREATE TABLE  srch__prot_seq_v_id_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   protein_sequence_version_id INT UNSIGNED NOT NULL,
+  protein_is_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  protein_is_independent_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (search_id, protein_sequence_version_id),
   CONSTRAINT srch_rppt_prtsqv_srch_id_fk0
     FOREIGN KEY (search_id)
@@ -2365,12 +2377,9 @@ CREATE TABLE  search__rep_pept_sub_group_lookup_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   reported_peptide_id INT(10) UNSIGNED NOT NULL,
   search_sub_group_id SMALLINT UNSIGNED NOT NULL,
-  any_psm_has_dynamic_modifications TINYINT UNSIGNED NOT NULL DEFAULT 0,
-  any_psm_has_open_modifictions TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
-  any_psm_has_reporter_ions TINYINT UNSIGNED NOT NULL DEFAULT 0,
-  psm_num_at_default_cutoff INT(10) UNSIGNED NOT NULL,
-  psm_id_sequential_start BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
-  psm_id_sequential_end BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Not Zero if PSM IDs sequential for this search id/reported peptide id',
+  psm_num_targets_only_at_default_cutoff INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'count only target PSMs',
+  psm_num_indpendent_decoys_only_at_default_cutoff INT UNSIGNED NOT NULL DEFAULT 0,
+  psm_num_decoys_only_at_default_cutoff INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'count only decoy PSMs',
   PRIMARY KEY (search_id, reported_peptide_id, search_sub_group_id),
   CONSTRAINT search__rep_pept_sg__gnrc_lkp_reported_peptide_id_fk
     FOREIGN KEY (reported_peptide_id)
@@ -2387,35 +2396,6 @@ DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
 CREATE INDEX search__rep_pept_sg__generic_lookup__reported_peptide_id_f_idx ON search__rep_pept_sub_group_lookup_tbl (reported_peptide_id ASC) VISIBLE;
-
-
--- -----------------------------------------------------
--- Table search__rep_pept_sub_group__best_psm_value_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  search__rep_pept_sub_group__best_psm_value_lookup_tbl (
-  search_id MEDIUMINT UNSIGNED NOT NULL,
-  reported_peptide_id INT(10) UNSIGNED NOT NULL,
-  search_sub_group_id SMALLINT UNSIGNED NOT NULL,
-  annotation_type_id INT(10) UNSIGNED NOT NULL,
-  best_psm_value_for_ann_type_id DOUBLE NOT NULL,
-  psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
-  PRIMARY KEY (search_id, reported_peptide_id, search_sub_group_id, annotation_type_id),
-  CONSTRAINT srch_rp_ppt_sg_bst_psm_vl_gnrc_lkp_rep_pept_id_fk
-    FOREIGN KEY (reported_peptide_id)
-    REFERENCES reported_peptide_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT,
-  CONSTRAINT srch_rp_ppt_sg_bst_psm_vl_gnrc_lkp_search_id_fk
-    FOREIGN KEY (search_id)
-    REFERENCES search_tbl (id)
-    ON DELETE CASCADE
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
-
-CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (reported_peptide_id ASC) VISIBLE;
-
-CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept_sub_group__best_psm_value_lookup_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -2563,6 +2543,277 @@ CREATE TABLE  project_search_id_code_tbl (
 ENGINE = InnoDB;
 
 CREATE UNIQUE INDEX project_search_id_code_UNIQUE ON project_search_id_code_tbl (project_search_id_code ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs__store_as_json__tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs__store_as_json__tbl (
+  project_id INT UNSIGNED NOT NULL,
+  json MEDIUMTEXT NOT NULL,
+  json_contents_format_version INT NOT NULL,
+  table_record_version INT NOT NULL DEFAULT 1,
+  created_user_id INT UNSIGNED NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_user_id INT UNSIGNED NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (project_id),
+  CONSTRAINT fk_project_level_default_fltr_ann_cutoffs__store_as_json__tbl_fk
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
+
+
+-- -----------------------------------------------------
+-- Table project_level_default_fltr_ann_cutoffs__store_as_json__prev__tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_level_default_fltr_ann_cutoffs__store_as_json__prev__tbl (
+  project_id INT UNSIGNED NOT NULL,
+  json MEDIUMTEXT NOT NULL,
+  json_contents_format_version INT NOT NULL,
+  table_record_version INT NOT NULL DEFAULT 1,
+  created_user_id INT UNSIGNED NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_user_id INT UNSIGNED NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id_prev_record INT NOT NULL,
+  copy_create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_prev_record),
+  CONSTRAINT fk_prjct_lvl_deflt_fltr_ann_cutffs__str_as_json__prev__tbl_1
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'User Entered Annotation Cutoffs that apply to all searches in the project';
+
+CREATE INDEX fk_project_level_default_fltr_ann_cutoffs__store_as_json__p_idx ON project_level_default_fltr_ann_cutoffs__store_as_json__prev__tbl (project_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table aa_limelight_database_version_tbl
+-- -----------------------------------------------------
+CREATE TABLE  aa_limelight_database_version_tbl (
+  row_label ENUM('DB Version Current', 'DB Version In Progress') NOT NULL,
+  limelight_database_version_number INT NOT NULL,
+  created DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  last_modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (row_label))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table fasta_file_statistics_tbl
+-- -----------------------------------------------------
+CREATE TABLE  fasta_file_statistics_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  sha_384_sum VARBINARY(50) NOT NULL,
+  num_targets INT NOT NULL,
+  num_decoys INT NOT NULL,
+  num_independent_decoys INT NOT NULL,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX all_data_Fields ON fasta_file_statistics_tbl (sha_384_sum ASC, num_targets ASC, num_decoys ASC, num_independent_decoys ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table search_to_fasta_file_statistics_mapping_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_to_fasta_file_statistics_mapping_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  fasta_file_statistics_mapping_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (search_id, fasta_file_statistics_mapping_id),
+  CONSTRAINT fk_search_to_fasta_file_statistics_mapping_tbl_1
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_search_to_fasta_file_statistics_mapping_tbl_2
+    FOREIGN KEY (fasta_file_statistics_mapping_id)
+    REFERENCES fasta_file_statistics_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_search_to_fasta_file_statistics_mapping_tbl_2_idx ON search_to_fasta_file_statistics_mapping_tbl (fasta_file_statistics_mapping_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  best_psm_value_for_ann_type_id DOUBLE NOT NULL,
+  psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
+  CONSTRAINT srch_rp_bst_psm_vl_t_id_rp_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT srch_rp_bst_psm_vl_t_id_sh_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COMMENT = 'For PSMs that are Target or Independent Decoy ';
+
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl (reported_peptide_id ASC) VISIBLE;
+
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  reported_peptide_id INT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  best_psm_value_for_ann_type_id DOUBLE NOT NULL,
+  psm_id_for_best_value__non_fk BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (search_id, reported_peptide_id, annotation_type_id),
+  CONSTRAINT srch_rp_bst_psm_vl_t_id_d_rp_fk
+    FOREIGN KEY (reported_peptide_id)
+    REFERENCES reported_peptide_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT,
+  CONSTRAINT srch_rp_bst_psm_vl_t_id_d_sh_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COMMENT = 'For PSMs that are Target or Independent Decoy or Decoy';
+
+CREATE INDEX reported_peptide_id_f_idx ON search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (reported_peptide_id ASC) VISIBLE;
+
+CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl (search_id ASC, best_psm_value_for_ann_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table search_details_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_details_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  psm_count INT UNSIGNED NOT NULL,
+  reported_peptide_count INT UNSIGNED NOT NULL,
+  matched_proteins_count INT UNSIGNED NOT NULL,
+  import_elapsed_time__milliseconds BIGINT UNSIGNED NOT NULL,
+  importer_read_limelight_xml_file_elapsed_time__milliseconds BIGINT UNSIGNED NOT NULL,
+  importer_protns_for_pptdes_ttal_procsng_elpsd_tm__milliscnds BIGINT UNSIGNED NOT NULL COMMENT 'importer_proteins_for_peptides_total_processing_elapsed_time__milliseconds',
+  search_inserted__wait_for_spectr_time_milliscnds BIGINT UNSIGNED NULL COMMENT 'Wait time after the Search is inserted to DB until Spectr is complete',
+  limelight_xml_file__file_size_bytes BIGINT UNSIGNED NULL,
+  scan_files__total_files_size_bytes BIGINT UNSIGNED NULL,
+  created DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  last_modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (search_id),
+  CONSTRAINT search_details_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table importer_stats_general_data_tbl
+-- -----------------------------------------------------
+CREATE TABLE  importer_stats_general_data_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  label VARCHAR(255) CHARACTER SET 'latin1' NOT NULL,
+  total_elapsed_time__milliseconds BIGINT UNSIGNED NOT NULL,
+  created DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  last_modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_importer_stats_general_data_tbl_1
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX fk_importer_stats_general_data_tbl_1_idx ON importer_stats_general_data_tbl (search_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table importer_stats_per_table_tbl
+-- -----------------------------------------------------
+CREATE TABLE  importer_stats_per_table_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  table_names VARCHAR(4000) CHARACTER SET 'latin1' NOT NULL COMMENT 'Plural tables since may be time for multiple tables',
+  table_manipulation_type ENUM('insert', 'update', 'delete', 'select') NOT NULL,
+  sql_calls_total_elapsed_time__milliseconds BIGINT UNSIGNED NOT NULL,
+  sql_call_count INT UNSIGNED NOT NULL,
+  total_records INT UNSIGNED NOT NULL,
+  created DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  last_modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_importer_stats_per_table_tbl_1
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX fk_importer_stats_per_table_tbl_1_idx ON importer_stats_per_table_tbl (search_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table search_psm_id_range_tbl
+-- -----------------------------------------------------
+CREATE TABLE  search_psm_id_range_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  psm_id_range_start BIGINT UNSIGNED NOT NULL,
+  psm_id_range_end BIGINT NOT NULL,
+  PRIMARY KEY (search_id),
+  CONSTRAINT search_psm_id_range_fk
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'PSM Id range in psm_tbl. Only populated if PSM Ids for search are sequential.';
+
+
+-- -----------------------------------------------------
+-- Table aa_limelight_db_updates_in_webapp_thread_tbl
+-- -----------------------------------------------------
+CREATE TABLE  aa_limelight_db_updates_in_webapp_thread_tbl (
+  label VARCHAR(400) NOT NULL,
+  status ENUM('started', 'complete', 'error') NOT NULL COMMENT 'label assigned to specific update',
+  error_message VARCHAR(2000) NULL,
+  processing_heartbeat DATETIME NOT NULL COMMENT 'Used to detect concurrent updates to prevent multiple Webapp instances from executing same update',
+  created DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  last_modified DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (label))
+ENGINE = InnoDB
+COMMENT = 'Updates to DB run in Webapp Thread';
+
+
+-- -----------------------------------------------------
+-- Table importer__search_import_in_progress_tracking_tbl
+-- -----------------------------------------------------
+CREATE TABLE  importer__search_import_in_progress_tracking_tbl (
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  importer_running_heart_beat_last_update DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (search_id))
+ENGINE = InnoDB;
+
+CREATE INDEX heart_beat_idx ON importer__search_import_in_progress_tracking_tbl (importer_running_heart_beat_last_update ASC) VISIBLE;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

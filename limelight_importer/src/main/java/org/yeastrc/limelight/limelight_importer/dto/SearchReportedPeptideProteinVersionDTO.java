@@ -26,13 +26,17 @@ public class SearchReportedPeptideProteinVersionDTO {
 	private int searchId;
 	private int reportedPeptideId;
 	private int proteinSequenceVersionId;
+	private boolean protein_IsDecoy;
+	private boolean protein_IsIndependentDecoy;
 
 	@Override
 	public String toString() {
 		return "SearchReportedPeptideProteinVersionDTO [searchId=" + searchId + ", reportedPeptideId="
-				+ reportedPeptideId + ", proteinSequenceVersionId=" + proteinSequenceVersionId + "]";
+				+ reportedPeptideId + ", proteinSequenceVersionId=" + proteinSequenceVersionId + ", protein_IsDecoy="
+				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy + "]";
 	}
-	
+
+
 	public int getSearchId() {
 		return searchId;
 	}
@@ -52,6 +56,17 @@ public class SearchReportedPeptideProteinVersionDTO {
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
 	}
-
+	public boolean isProtein_IsDecoy() {
+		return protein_IsDecoy;
+	}
+	public void setProtein_IsDecoy(boolean protein_IsDecoy) {
+		this.protein_IsDecoy = protein_IsDecoy;
+	}
+	public boolean isProtein_IsIndependentDecoy() {
+		return protein_IsIndependentDecoy;
+	}
+	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
+		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
+	}
 	
 }

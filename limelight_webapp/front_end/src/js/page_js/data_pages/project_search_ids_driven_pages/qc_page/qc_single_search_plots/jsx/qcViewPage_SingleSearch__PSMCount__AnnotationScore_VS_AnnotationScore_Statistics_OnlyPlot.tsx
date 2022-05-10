@@ -6,7 +6,6 @@
  */
 
 import React from "react";
-import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
@@ -18,19 +17,24 @@ import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSear
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
     open_PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer,
-    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType,
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer";
-import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_Root} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
-import {
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM,
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
-    qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
-import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered__PSM_Entry_Holder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
+import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
+import {
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
+import {
+    CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_For_PSM_Holder__ForSinglePsmId,
+    CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData";
+import {QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
 
 /**
  *
@@ -41,9 +45,15 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
     qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
 
+    psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
+    psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder
+
     searchScanFileId_Selection: number
     annotationTypeId_Score_X: number
     annotationTypeId_Score_Y: number
+
+    transform_Score_X: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+    transform_Score_Y: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
 
     isInSingleChartOverlay: boolean
 
@@ -77,14 +87,13 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
     private _openChartInOverlay_BindThis = this._openChartInOverlay.bind(this);
     private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
-    private _DONOTCALL() {
-
-        const openChartInOverlay: qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn = this._openChartInOverlay;
-    }
-
     private _renderChart = true; // Never changes
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
+    private image_Ref : React.RefObject<HTMLImageElement>
+
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
 
     /**
      *
@@ -99,6 +108,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         }
 
         this.plot_Ref = React.createRef();
+        this.image_Ref = React.createRef();
 
         this.state = {};
     }
@@ -107,6 +117,21 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
      *
      */
     componentWillUnmount() {
+
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             this._resizeWindow_Handler_Remove();
@@ -173,6 +198,21 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         try {
             if ( this._renderChart ) {
 
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
+                }
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
+                }
+
                 window.setTimeout(() => {
                     try {
                         this._populateChart();
@@ -233,14 +273,10 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
      */
     private _removeChart() : void {
         try {
-            qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({
-                plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis
-            });
-        } catch (e) {
-            //  Eat Exception
-        }
-        try {
-            Plotly.purge(this.plot_Ref.current)
+            if ( this.plot_Ref.current ) {
+                this.props.propsValue.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -253,15 +289,15 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
         const projectSearchId = this.props.propsValue.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
 
-        const psmFilterableAnnotationData_Unfiltered = this.props.propsValue.qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmFilterableAnnotationData_Unfiltered;
+        const psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder = this.props.propsValue.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder;
 
-        console.log( "psmFilterableAnnotationData_Unfiltered: Number of Entries (Number of PSMs): " + psmFilterableAnnotationData_Unfiltered.get_Per_Psm_Holder_Entries_Size() );
+        console.log( "psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder: Number of Entries (Number of PSMs): " + psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder.get_Per_Psm_Holder_Entries_Size() );
 
-        let psmTblData_Unfiltered: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_Root = undefined;
+        let psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder = undefined;
 
         if ( this.props.propsValue.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
 
-            psmTblData_Unfiltered = this.props.propsValue.qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData_Unfiltered
+            psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = this.props.propsValue.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder
         }
 
         const psmIds_Filtered = new Set<number>();
@@ -299,16 +335,16 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         let min_Score_Y = undefined;
         let max_Score_Y = undefined;
 
-        const psmFilterableAnnotationData_Entries_Meet_Filters: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered__PSM_Entry_Holder> = [];
-        const psmFilterableAnnotationData_Entries_NOT_Meet_Filters: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmFilterableAnnotationData_Unfiltered__PSM_Entry_Holder> = [];
+        const psmFilterableAnnotationData_Entries_Meet_Filters: Array< CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_For_PSM_Holder__ForSinglePsmId> = [];
+        const psmFilterableAnnotationData_Entries_NOT_Meet_Filters: Array< CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_For_PSM_Holder__ForSinglePsmId> = [];
 
-        for ( const psmFilterableAnnotationData_Unfiltered_Entry of psmFilterableAnnotationData_Unfiltered.get_Per_Psm_Holder_Entries_IterableIterator() ) {
+        for ( const psmFilterableAnnotationData_Unfiltered_Entry of psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder.get_Per_Psm_Holder_Entries_IterableIterator() ) {
 
             if ( this.props.propsValue.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
 
-                const psmData = psmTblData_Unfiltered.get_PsmTblData_Unfiltered_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId );
+                const psmData = psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId );
                 if ( ! psmData ) {
-                    const msg = "psmTblData.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId ); returned nothing for psmFilterableAnnotationData_Unfiltered_Entry.psmId: " + psmFilterableAnnotationData_Unfiltered_Entry.psmId +
+                    const msg = "psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId ); returned nothing for psmFilterableAnnotationData_Unfiltered_Entry.psmId: " + psmFilterableAnnotationData_Unfiltered_Entry.psmId +
                         ", projectSearchId: " + this.props.propsValue.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
                     console.warn(msg);
                     throw Error(msg);
@@ -341,6 +377,65 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         const chart_X_ALL__ScatterPlot : Array<number> = []
         const chart_Y_ALL__ScatterPlot : Array<number> = []
 
+        const log10_Number_Min_Value = Math.log10( Number.MIN_VALUE )
+        const negative_log10_Number_Min_Value = -Math.log10( Number.MIN_VALUE )
+
+        const transform_ScoreValue_BasedOn_UserInput = (
+            {
+                score_X, score_Y
+            } : {
+                score_X: number
+                score_Y: number
+            }
+        ) : {
+            score_PossiblyTransformed__X: number
+            score_PossiblyTransformed__Y: number
+        } => {
+
+            let score_PossiblyTransformed__X = score_X
+            let score_PossiblyTransformed__Y = score_Y
+
+            //  Transform Score values as requested
+
+            if ( this.props.propsValue.transform_Score_X === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+
+                if ( score_PossiblyTransformed__X === 0 ) {
+                    score_PossiblyTransformed__X = log10_Number_Min_Value
+                } else {
+                    score_PossiblyTransformed__X = Math.log10( score_PossiblyTransformed__X )
+                }
+
+            } else if ( this.props.propsValue.transform_Score_X === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                if ( score_PossiblyTransformed__X === 0 ) {
+                    score_PossiblyTransformed__X = negative_log10_Number_Min_Value
+                } else {
+                    score_PossiblyTransformed__X = -Math.log10( score_PossiblyTransformed__X )
+                }
+            }
+
+            if ( this.props.propsValue.transform_Score_Y === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+
+                if ( score_PossiblyTransformed__Y === 0 ) {
+                    score_PossiblyTransformed__Y = log10_Number_Min_Value
+                } else {
+                    score_PossiblyTransformed__Y = Math.log10( score_PossiblyTransformed__Y )
+                }
+
+            } else if ( this.props.propsValue.transform_Score_Y === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                if ( score_PossiblyTransformed__Y === 0 ) {
+                    score_PossiblyTransformed__Y = negative_log10_Number_Min_Value
+                } else {
+                    score_PossiblyTransformed__Y = -Math.log10( score_PossiblyTransformed__Y )
+                }
+            }
+
+            return { score_PossiblyTransformed__X, score_PossiblyTransformed__Y }
+        }
+
+        //
+
         for ( const psmFilterableAnnotationData_Entry of psmFilterableAnnotationData_Entries_NOT_Meet_Filters ) {
 
             const psmFilterableAnnotationData_For_annotationTypeId_Score_X =
@@ -359,15 +454,27 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                 throw Error(msg);
             }
 
+            let score_X: number = undefined;
+            let score_Y: number = undefined;
+            {
+                const {score_PossiblyTransformed__X, score_PossiblyTransformed__Y} = transform_ScoreValue_BasedOn_UserInput({
+                    score_X: psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber,
+                    score_Y: psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber
+                })
+
+                score_X = score_PossiblyTransformed__X;
+                score_Y = score_PossiblyTransformed__Y;
+            }
+
             if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_2D_DENSITY_PLOT ) {
 
-                chart_X_2D_DensityPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber);
-                chart_Y_2D_DensityPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber);
+                chart_X_2D_DensityPlot.push(score_X);
+                chart_Y_2D_DensityPlot.push(score_Y);
 
             } else if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_SCATTER_PLOT ) {
 
-                chart_X_ALL__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber);
-                chart_Y_ALL__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber);
+                chart_X_ALL__ScatterPlot.push(score_X);
+                chart_Y_ALL__ScatterPlot.push(score_Y);
             } else {
                 const msg = "Unknown value for this.props.propsValue.chartType: " + this.props.propsValue.chartType;
                 console.warn(msg);
@@ -375,9 +482,6 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             }
 
             {
-                const score_X = psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber;
-                const score_Y = psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber;
-
                 if (min_Score_X === undefined) {
                     min_Score_X = score_X;
                     max_Score_X = score_X;
@@ -398,73 +502,82 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     }
                 }
             }
-
         }
 
-        for ( const psmFilterableAnnotationData_Entry of psmFilterableAnnotationData_Entries_Meet_Filters ) {
+        {
+            for ( const psmFilterableAnnotationData_Entry of psmFilterableAnnotationData_Entries_Meet_Filters ) {
 
-            const psmFilterableAnnotationData_For_annotationTypeId_Score_X =
-                psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_X );
-            const psmFilterableAnnotationData_For_annotationTypeId_Score_Y =
-                psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_Y );
+                const psmFilterableAnnotationData_For_annotationTypeId_Score_X =
+                    psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_X );
+                const psmFilterableAnnotationData_For_annotationTypeId_Score_Y =
+                    psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_Y );
 
-            if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_X ) {
-                const msg = "psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_X ); returned nothing. this.props.propsValue.annotationTypeId_Score_X: " + this.props.propsValue.annotationTypeId_Score_X;
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_Y ) {
-                const msg = "psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_Y ); returned nothing. this.props.propsValue.annotationTypeId_Score_Y: " + this.props.propsValue.annotationTypeId_Score_Y;
-                console.warn(msg);
-                throw Error(msg);
-            }
+                if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_X ) {
+                    const msg = "psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_X ); returned nothing. this.props.propsValue.annotationTypeId_Score_X: " + this.props.propsValue.annotationTypeId_Score_X;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_Y ) {
+                    const msg = "psmFilterableAnnotationData_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_Y ); returned nothing. this.props.propsValue.annotationTypeId_Score_Y: " + this.props.propsValue.annotationTypeId_Score_Y;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
 
-            if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_2D_DENSITY_PLOT ) {
+                let score_X: number = undefined;
+                let score_Y: number = undefined;
+                {
+                    const {score_PossiblyTransformed__X, score_PossiblyTransformed__Y} = transform_ScoreValue_BasedOn_UserInput({
+                        score_X: psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber,
+                        score_Y: psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber
+                    })
 
-                chart_X_2D_DensityPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber);
-                chart_Y_2D_DensityPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber);
+                    score_X = score_PossiblyTransformed__X;
+                    score_Y = score_PossiblyTransformed__Y;
+                }
 
-            } else if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_SCATTER_PLOT ) {
+                if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_2D_DENSITY_PLOT ) {
 
-                chart_X_Meet_PSM_Filters__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber);
-                chart_Y_Meet_PSM_Filters__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber);
+                    chart_X_2D_DensityPlot.push(score_X);
+                    chart_Y_2D_DensityPlot.push(score_Y);
 
-                //  Also put in "All"
+                } else if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_SCATTER_PLOT ) {
 
-                chart_X_ALL__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber);
-                chart_Y_ALL__ScatterPlot.push(psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber);
+                    chart_X_Meet_PSM_Filters__ScatterPlot.push(score_X);
+                    chart_Y_Meet_PSM_Filters__ScatterPlot.push(score_Y);
 
-            } else {
-                const msg = "Unknown value for this.props.propsValue.chartType: " + this.props.propsValue.chartType;
-                console.warn(msg);
-                throw Error(msg);
-            }
+                    //  Also put in "All"
 
-            {
-                const score_X = psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber;
-                const score_Y = psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber;
+                    chart_X_ALL__ScatterPlot.push(score_X);
+                    chart_Y_ALL__ScatterPlot.push(score_Y);
 
-                if (min_Score_X === undefined) {
-                    min_Score_X = score_X;
-                    max_Score_X = score_X;
-                    min_Score_Y = score_Y;
-                    max_Score_Y = score_Y;
                 } else {
-                    if ( min_Score_X > score_X ) {
+                    const msg = "Unknown value for this.props.propsValue.chartType: " + this.props.propsValue.chartType;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                {
+                    if (min_Score_X === undefined) {
                         min_Score_X = score_X;
-                    }
-                    if ( max_Score_X < score_X ) {
                         max_Score_X = score_X;
-                    }
-                    if ( min_Score_Y > score_Y ) {
                         min_Score_Y = score_Y;
-                    }
-                    if ( max_Score_Y < score_Y ) {
                         max_Score_Y = score_Y;
+                    } else {
+                        if ( min_Score_X > score_X ) {
+                            min_Score_X = score_X;
+                        }
+                        if ( max_Score_X < score_X ) {
+                            max_Score_X = score_X;
+                        }
+                        if ( min_Score_Y > score_Y ) {
+                            min_Score_Y = score_Y;
+                        }
+                        if ( max_Score_Y < score_Y ) {
+                            max_Score_Y = score_Y;
+                        }
                     }
                 }
             }
-
         }
 
         {
@@ -512,6 +625,12 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                 '<b>" + annotationType_Name_Score_Y_HTMLEncoded + "</b>: %{y}' +
                 '<br><b>" + annotationType_Name_Score_X_HTMLEncoded + "</b>: %{x}<extra></extra>';
 
+            //  Marker Size
+            let marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__MAIN_PAGE;
+            if ( this.props.propsValue.isInSingleChartOverlay ) {
+                marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
+            }
+
             chart_Data = [
                 {
                     name: "Unfiltered",
@@ -522,7 +641,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     type: 'scattergl',
                     mode: 'markers',
                     marker: {
-                        size: 2,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                        size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                         color: chart_Color_All  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                     }
                 },
@@ -535,7 +654,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     type: 'scattergl',
                     mode: 'markers',
                     marker: {
-                        size: 2,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                        size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                         color: chart_Color_Filtered,  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         symbol: "diamond"
                     }
@@ -556,54 +675,54 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             showlegend_Chart = true;
         }
 
+        let chart_X_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
+        let chart_Y_Axis_Label = annotationType_Name_Score_Y_HTMLEncoded
+
+        if ( this.props.propsValue.transform_Score_X === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+            chart_X_Axis_Label = "Log10(" + chart_X_Axis_Label + ")";
+
+        } else if ( this.props.propsValue.transform_Score_X === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+            chart_X_Axis_Label = "-Log10(" + chart_X_Axis_Label + ")";
+        }
+
+        if ( this.props.propsValue.transform_Score_Y === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+            chart_Y_Axis_Label = "Log10(" + chart_Y_Axis_Label + ")";
+
+        } else if ( this.props.propsValue.transform_Score_Y === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+            chart_Y_Axis_Label = "-Log10(" + chart_Y_Axis_Label + ")";
+        }
+
+        chart_X_Axis_Label = "PSM Score: " + chart_X_Axis_Label;
+        chart_Y_Axis_Label = "PSM Score: " + chart_Y_Axis_Label;
 
         const chartTitle = "PSM " + annotationType_Name_Score_Y_HTMLEncoded + " vs " + annotationType_Name_Score_X_HTMLEncoded;
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
-            chart_X_Axis_Label: "PSM Score: " + annotationType_Name_Score_X_HTMLEncoded,
+            chart_X_Axis_Label,
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
-            chart_Y_Axis_Label: "PSM Score: " + annotationType_Name_Score_Y_HTMLEncoded,
+            chart_Y_Axis_Label,
             showlegend: showlegend_Chart
         });
 
         if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_SCATTER_PLOT ) {
 
-            chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points
+            chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
         }
 
-        try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
+        ////////////
+
+        //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
+
+        //  Have existing chart in overlay when re-populate chart when have window resize
 
         if ( this.props.propsValue.isInSingleChartOverlay ) {
-
-            const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-            /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-            // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-            // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-            // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-            // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-            let chart_Width = Math.floor( targetDOMElement_domRect.width );
-            let chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-            //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-            // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-            //
-            // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            //
-            // if ()
-
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
+            try {
+                //  First remove any existing plot, if it exists
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
+            }
         }
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current, chartLayout: chart_Layout });
@@ -622,13 +741,51 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             // console.log("*********************************")
         }
 
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
-
         if ( ! this.props.propsValue.isInSingleChartOverlay ) {
 
-            //  Add click handler on chart on main page to open chart in overlay
+            //  Main Page Plot
 
-            qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                image_DOM_Element: this.image_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    // this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    // this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.propsValue.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
+                qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+            });
+
+        } else {
+
+            //  Overlay Plot
+
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                plot_Div_DOM_Element: this.plot_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    // this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    // this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.propsValue.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
+                qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+            });
         }
 
     }
@@ -636,9 +793,8 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
     /**
      *
      */
-    private _openChartInOverlay( event ) {
+    private _openChartInOverlay() {
         try {
-            event.stopPropagation()
             open_PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer({
                 params: {
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.propsValue.qcViewPage_CommonData_To_AllComponents_From_MainComponent,
@@ -705,16 +861,41 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             return null; // EARLY RETURN
         }
 
-        const style : React.CSSProperties = {};
-
-        if ( this.props.propsValue.isInSingleChartOverlay ) {
-            style.height = "100%";
-        }
-
         return (
-            <div style={ style }>
-                <div ref={this.plot_Ref} style={ style }></div>
-            </div>
+
+            <React.Fragment>
+
+                {( this.props.propsValue.isInSingleChartOverlay ) ? (
+                    //  For Single Chart Overlay: div the chart will be rendered into
+                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                ) : (
+                    //  For Main Page: img the chart will be inserted into
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                )}
+
+                {
+                    /*
+                    ( this.state.showCreatingMessage ) ? (
+
+                    <QcPage_CreatingPlot_BlockCover/>
+
+                ): ( this.state.showUpdatingMessage ) ? (
+
+                    <QcPage_UpdatingData_BlockCover/>
+
+                ):
+                */
+
+                    ( ! this.props.propsValue.isInSingleChartOverlay ) ? (
+
+                        //  Component on main page that goes on top of <img> to show message on hover and call clickHandler_Callback on click
+                        <QcPage_ClickPlot_ForInteractivePlot_BlockCover
+                            clickHandler_Callback={ this._openChartInOverlay_BindThis }
+                        />
+
+                    ) : null }
+
+            </React.Fragment>
         );
     }
 }

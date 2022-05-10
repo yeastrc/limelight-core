@@ -27,23 +27,30 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
- *
+ * !!!  Excludes psm_tbl with is_decoy = 1
  */
 @Component
 public class PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher extends Limelight_JDBC_Base implements PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher_IF {
 
 	private static final Logger log = LoggerFactory.getLogger( PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	/**
 	 * 
 	 *
@@ -66,18 +73,17 @@ public class PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher extends
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF#getPsmIdsForSearchIdReportedPeptideIdCutoffs(int, int, org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel)
-	 */
-	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher_IF#getPsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffs(int, int, org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel)
 	 */
 	@Override
 	public List<PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> getPsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffs(
 			
-			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
+			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 		
 		List<PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> psm_Entries = new ArrayList<>();
 
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		
 		//  Create reversed version of list
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList_Reversed = 
 				new ArrayList<>( searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList() );
@@ -92,6 +98,12 @@ public class PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher extends
 		if ( psmCutoffValuesList_Reversed.isEmpty() ) {
 
 			sqlSB.append( "SELECT id AS psm_id, scan_number, search_scan_file_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ?" ); 
+			
+			if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+				// Exclude  records where is_decoy = 'true'
+				sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			}
+
 		} else {
 			
 			sqlSB.append( "SELECT id AS psm_id, scan_number, search_scan_file_id FROM psm_tbl " );
@@ -112,7 +124,14 @@ public class PsmIds_ScanInfo_ForSearchIdReportedPeptideIdCutoffsSearcher extends
 				
 				//  Add innermost subselect on psm_tbl to get psm ids
 				
-				sqlSB.append( " ( SELECT id AS psm_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? ) " );
+				sqlSB.append( " ( SELECT id AS psm_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? " );
+
+				if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+					// Exclude  records where is_decoy = 'true'
+					sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				}
+				
+				sqlSB.append( " ) " );
 	
 				//  Close sub-selects from inner most to outer most 
 		

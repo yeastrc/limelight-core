@@ -87,6 +87,13 @@ export class FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component 
                     )}
                 </div>
 
+                {/*  Cannot surround 'this.props.children' and use <div display: none>  to show/hide since this is a 2 column CSS Grid,
+
+                     Cannot move the 2 column CSS Grid inside this since it is used for formatting of "Current filters:" before this component
+                     so that that component's data aligns with the data for each filter component.
+
+                  */}
+
                 { ( this.state.showChildren ) ? (
                     this.props.children
                 ) : null }

@@ -26,6 +26,7 @@ import {
 import {AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component} from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {Blib_SpectralLibrary_File_Download__MainPage_Link_Component} from "page_js/data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__MainPage_Link_Component";
 
 
 export type ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback = () => void;
@@ -56,6 +57,7 @@ export interface ProteinPage_Display__SingleProtein_GeneratedReportedPeptideList
     // For Peptide Page
     downloadPeptides_Shown_ClickHandler? : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
     downloadPsms_Shown_ClickHandler? : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
+    download_Blib_Spectral_Library_ClickHandler?: () => void
 }
 
 /**
@@ -234,6 +236,7 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
                         proteinName_Clicked_Callback_Function={ this.props.proteinName_Clicked_Callback_Function }
                         downloadPeptides_Shown_ClickHandler={ this.props.downloadPeptides_Shown_ClickHandler }
                         downloadPsms_Shown_ClickHandler={ this.props.downloadPsms_Shown_ClickHandler }
+                        download_Blib_Spectral_Library_ClickHandler={ this.props.download_Blib_Spectral_Library_ClickHandler }
                     />
                 </div>
                 { updatingMessage }
@@ -268,6 +271,7 @@ export interface ReportedPeptideList_Component_Props {
 
     downloadPeptides_Shown_ClickHandler : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPeptides_Shown_ClickHandler_Callback
     downloadPsms_Shown_ClickHandler : ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component__downloadPSMs_Shown_ClickHandler_Callback
+    download_Blib_Spectral_Library_ClickHandler: () => void
 }
 
 /**
@@ -417,6 +421,14 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
                                   onClick={ this.props.downloadPsms_Shown_ClickHandler }
                             >Download All PSMs</span>
                         ) : null }
+
+                        { ( ( peptideListTable || havePeptideDataTableContentsForDownload ) && this.props.download_Blib_Spectral_Library_ClickHandler ) ? (
+                            <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
+                                dataPageStateManager={ this.props.dataPageStateManager }
+                                download_Blib_Spectral_Library_Callback={ this.props.download_Blib_Spectral_Library_ClickHandler }
+                            />
+                        ) : null }
+
                     </div>
                 </div>
 

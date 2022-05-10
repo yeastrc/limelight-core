@@ -61,7 +61,9 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * 
  * 
- * Retrieve PSM data from psm_tbl (all fields) for Project Search ID
+ * Retrieve PSM data from psm_tbl (all fields) for Project Search ID - 
+ * 
+ *   !!!   Excludes PSM with is_decoy = 1 UNLESS request property include_DecoyPSMs is true  !!! 
  *
  */
 @RestController
@@ -76,7 +78,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_TABLE_DATA_UNFILTERED_FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_TABLE_DATA_UNFILTERED_FOR_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -231,10 +233,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
-    			
+    		
     		List<PsmTblData_ForSearchIdSearcher_ResultEntry> psmTblData_List = 
     				psmTblData_ForSearchIdSearcher
-    				.getPsmTblData_ForSearchId( searchId );
+    				.getPsmTblData_ForSearchId( searchId, webserviceRequest.include_DecoyPSM );
 
     		List<WebserviceResult_PerPSM_Entry> psms = new ArrayList<>( psmTblData_List.size() );
 
@@ -250,6 +252,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			resultEntry.hasModifications = dbEntry.isHasModifications();
     			resultEntry.hasOpenModifications = dbEntry.isHasOpenModifications();
     			resultEntry.hasReporterIons = dbEntry.isHasReporterIons();
+    			resultEntry.independentDecoyPSM = dbEntry.isIndependentDecoyPSM();
+    			resultEntry.decoyPSM = dbEntry.isDecoyPSM();
 
     			psms.add(resultEntry);
     		}
@@ -303,9 +307,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     public static class WebserviceRequest {
 
     	private Integer projectSearchId;
+    	private boolean include_DecoyPSM = false; //  Return PSM with 'is_decoy' true.  Default to false
 
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
+		}
+		public void setInclude_DecoyPSM(boolean include_DecoyPSM) {
+			this.include_DecoyPSM = include_DecoyPSM;
 		}
     }
     
@@ -338,6 +346,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	boolean hasModifications;
     	boolean hasOpenModifications;
     	boolean hasReporterIons;
+     	boolean independentDecoyPSM;
+     	boolean decoyPSM;  
 
 		public boolean isHasModifications() {
 			return hasModifications;
@@ -368,6 +378,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public int getReportedPeptideId() {
 			return reportedPeptideId;
+		}
+		public boolean isIndependentDecoyPSM() {
+			return independentDecoyPSM;
+		}
+		public boolean isDecoyPSM() {
+			return decoyPSM;
 		}
     }
 

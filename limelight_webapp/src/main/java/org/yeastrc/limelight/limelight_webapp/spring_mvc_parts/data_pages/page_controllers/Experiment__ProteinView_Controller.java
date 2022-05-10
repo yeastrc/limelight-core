@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.Validate_Access_Page_ExperimentDataPage.Validate_Access_Page_ExperimentDataPage_Result;
 import org.yeastrc.limelight.limelight_webapp.experiment.main.Experiment_Set_HTTPRequest_ForJSP_IF;
 import org.yeastrc.limelight.limelight_webapp.send_email_on_server_or_js_error.SendEmailOnServerOrJsError_ToConfiguredEmail_IF;
+import org.yeastrc.limelight.limelight_webapp.services.Blib_Spectral_Library_Webservice_Configured__SetForJSP_IF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.Validate_Access_Page_ExperimentDataPageIF;
 
 @Controller
@@ -46,6 +47,9 @@ public class Experiment__ProteinView_Controller {
 	@Autowired
 	private Experiment_Set_HTTPRequest_ForJSP_IF experiment_Set_HTTPRequest_ForJSP;
 
+	@Autowired
+	private Blib_Spectral_Library_Webservice_Configured__SetForJSP_IF blib_Spectral_Library_Webservice_Configured__SetForJSP;
+	
 	@Autowired
 	private SendEmailOnServerOrJsError_ToConfiguredEmail_IF sendEmailOnServerOrJsError_ToConfiguredEmail;
 	
@@ -347,6 +351,15 @@ public class Experiment__ProteinView_Controller {
 			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
 			
 			throw new RuntimeException( e );
+		}
+
+		try {
+			blib_Spectral_Library_Webservice_Configured__SetForJSP.blib_Spectral_Library_Webservice_Configured__SetForJSP( httpServletRequest );
+		}  catch (Exception e) {
+
+			log.error( "Error in controller", e );
+			
+			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();
 		}
 		
 		//  TODO  Need to create version of page_UserDefault_SetForJSP for Experiment and update table data_page_saved_view_tbl

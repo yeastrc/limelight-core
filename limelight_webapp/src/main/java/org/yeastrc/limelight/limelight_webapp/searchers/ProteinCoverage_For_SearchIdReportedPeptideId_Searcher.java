@@ -20,15 +20,18 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -38,7 +41,10 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 public class ProteinCoverage_For_SearchIdReportedPeptideId_Searcher extends Limelight_JDBC_Base implements ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( ProteinCoverage_For_SearchIdReportedPeptideId_Searcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	private static final String QUERY_SQL = 
 			"SELECT * "
 			+ " FROM "
@@ -49,12 +55,19 @@ public class ProteinCoverage_For_SearchIdReportedPeptideId_Searcher extends Lime
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF#getProteinCoverage_For_SearchIdReportedPeptideId(int, int)
 	 */
 	@Override
-	public List<ProteinCoverageDTO>  getProteinCoverage_For_SearchIdReportedPeptideId( int searchId, int reportedPeptideId ) throws SQLException {
+	public List<ProteinCoverageDTO>  getProteinCoverage_For_SearchIdReportedPeptideId( int searchId, int reportedPeptideId ) throws Exception {
 
 		List<ProteinCoverageDTO> resultList = new ArrayList<>();
 
-		final String querySQL = QUERY_SQL;
-				
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		
+		String querySQL = QUERY_SQL;
+
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			// Exclude  records where is_decoy = 'true'
+			querySQL += " AND protein_is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
+		}
+		
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
 			
@@ -75,7 +88,7 @@ public class ProteinCoverage_For_SearchIdReportedPeptideId_Searcher extends Lime
 				}
 
 			}
-		} catch ( SQLException e ) {
+		} catch ( Exception e ) {
 			log.error( "error running SQL: " + querySQL, e );
 			throw e;
 		}

@@ -41,6 +41,8 @@ public class ImporterProgramExitCodes {
 
 	public static final int PROGRAM_EXIT_CODE_SYSTEM_ERROR = 10;
 	
+	public static final int PROGRAM_EXIT_CODE_IMPORTER_DATABASE_SCHEMA_VERSION_NUMBER_NOT_MATCH_DATABASE_DATABASE_SCHEMA_VERSION_NUMBER = 14;
+	
 
 	/**
 	 * The importer process received a TERM or other signal that triggered the thread

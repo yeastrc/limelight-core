@@ -25,13 +25,52 @@ public class SearchProteinVersionDTO {
 
 	private int searchId;
 	private int proteinSequenceVersionId;
+	private boolean protein_IsDecoy;
+	private boolean protein_IsIndependentDecoy;
 
+	
+	//  Put in a Set so hashCode/equals used for unique values
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + proteinSequenceVersionId;
+		result = prime * result + (protein_IsDecoy ? 1231 : 1237);
+		result = prime * result + (protein_IsIndependentDecoy ? 1231 : 1237);
+		result = prime * result + searchId;
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SearchProteinVersionDTO other = (SearchProteinVersionDTO) obj;
+		if (proteinSequenceVersionId != other.proteinSequenceVersionId)
+			return false;
+		if (protein_IsDecoy != other.protein_IsDecoy)
+			return false;
+		if (protein_IsIndependentDecoy != other.protein_IsIndependentDecoy)
+			return false;
+		if (searchId != other.searchId)
+			return false;
+		return true;
+	}
+	
 	@Override
 	public String toString() {
 		return "SearchProteinVersionDTO [searchId=" + searchId + ", proteinSequenceVersionId="
-				+ proteinSequenceVersionId + "]";
+				+ proteinSequenceVersionId + ", protein_IsDecoy=" + protein_IsDecoy + ", protein_IsIndependentDecoy="
+				+ protein_IsIndependentDecoy + "]";
 	}
-	
+
+
 	public int getSearchId() {
 		return searchId;
 	}
@@ -46,5 +85,20 @@ public class SearchProteinVersionDTO {
 		this.proteinSequenceVersionId = proteinSequenceVersionId;
 	}
 
-	
+	public boolean isProtein_IsDecoy() {
+		return protein_IsDecoy;
+	}
+
+	public void setProtein_IsDecoy(boolean protein_IsDecoy) {
+		this.protein_IsDecoy = protein_IsDecoy;
+	}
+
+	public boolean isProtein_IsIndependentDecoy() {
+		return protein_IsIndependentDecoy;
+	}
+
+	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
+		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
+	}
+
 }

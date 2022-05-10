@@ -23,7 +23,6 @@ import java.sql.PreparedStatement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup__Lookup__DTO;
 
 /**
@@ -56,10 +55,9 @@ public class DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO {
 	private static final String SAVE_SQL =
 			"INSERT INTO search__rep_pept_sub_group_lookup_tbl "
 			+ 	"( search_id, reported_peptide_id, search_sub_group_id, "
-			+ 		" any_psm_has_dynamic_modifications, any_psm_has_open_modifictions, any_psm_has_reporter_ions, "
-			+ 		" psm_num_at_default_cutoff, "
-			+ 		" psm_id_sequential_start, psm_id_sequential_end ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 		" psm_num_targets_only_at_default_cutoff, psm_num_indpendent_decoys_only_at_default_cutoff, psm_num_decoys_only_at_default_cutoff "
+			+ 		" ) "
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
@@ -80,32 +78,11 @@ public class DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO {
 			pstmt.setInt( counter, item.getSearchSubGroupId() );
 
 			counter++;
-			if ( item.isAnyPsmHasDynamicModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}			
+			pstmt.setInt( counter, item.getPsmNum_Targets_Only_AtDefaultCutoff() );
 			counter++;
-			if ( item.isAnyPsmHasOpenModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
+			pstmt.setInt( counter, item.getPsmNum_IndependentDecoys_Only_AtDefaultCutoff() );
 			counter++;
-			if ( item.isAnyPsmHasReporterIons() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			
-			counter++;
-			pstmt.setInt( counter, item.getPsmNumAtDefaultCutoff() );
-			
-			//  Only not zero if PSM Ids are sequential
-			counter++;
-			pstmt.setLong( counter, item.getPsmIdSequentialStart() );
-			counter++;
-			pstmt.setLong( counter, item.getPsmIdSequentialEnd() );
+			pstmt.setInt( counter, item.getPsmNum_Decoys_Only_AtDefaultCutoff() );
 			
 			pstmt.executeUpdate();
 			

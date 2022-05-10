@@ -241,7 +241,32 @@
 				>
 		</div>
 	</div>
-	<div >
+	
+	
+	<div style="margin-bottom: 10px;margin-top: 20px; ">
+	  <div style="margin-bottom: 3px;">
+	  	<div>
+			Blib Sepctral Library File Creation Web Service (Not used if either not configured):
+		</div>
+		<div style="margin-left: 20px;">
+		
+			<div style="margin-bottom: 3px;">
+				Web Service Base URL (Including Port): 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+			<div>
+				Result File Base Directory Path ('BLIB_DIR' variable used by Blib service): 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+		</div>
+	  </div> 
+	</div>
+	
+	<div style="margin-bottom: 20px; ">
 		<input type="button" value="Save" id="save_button">
 		<input type="button" value="Reset" id="reset_button">
 	</div>

@@ -7,31 +7,32 @@
 
 
 import React from "react";
-import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    qcPage_StandardChartLayout,
-    qcPage_StandardChartLayout_ActualChartArea_Width,
-    qcPage_StandardChartLayout_StandardHeight,
-    qcPage_StandardChartLayout_StandardWidth
+    qcPage_StandardChartLayout
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartConfig";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_Root} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
-import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM,
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
-    qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
-import {open_PSMCount_VS_AnnotationScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
+    open_PSMCount_VS_AnnotationScore_OverlayContainer,
+    QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
+import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
+import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
+import {
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData";
+import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
+import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
 const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
@@ -51,7 +52,10 @@ export interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_Statistic
 
     searchScanFileId_Selection: number
     annotationTypeId_Score_X: number
-    // rawCounts_Percentage_Choice: QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM
+    transform_Score: QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+
+    score_Contains_NegativeValues_Callback: ( score_Contains_NegativeValues: boolean ) => void
+
 
     isInSingleChartOverlay: boolean
 }
@@ -63,6 +67,7 @@ interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_S
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
+    showCreatingMessage?: boolean
     showUpdatingMessage?: boolean
 }
 
@@ -76,14 +81,13 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
     private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
     private _openChartInOverlay_BindThis = this._openChartInOverlay.bind(this);
 
-    private _DONOTCALL() {
-
-        const openChartInOverlay: qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn = this._openChartInOverlay;
-    }
-
     private _renderChart = true;
 
     private plot_Ref :  React.RefObject<HTMLDivElement>
+    private image_Ref : React.RefObject<HTMLImageElement>
+
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
 
     private _componentMounted = false;
 
@@ -121,14 +125,30 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
         }
 
         this.plot_Ref = React.createRef();
+        this.image_Ref = React.createRef();
 
-        this.state = {};
+        this.state = { showCreatingMessage: true, showUpdatingMessage: false };
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             this._resizeWindow_Handler_Remove();
@@ -191,8 +211,9 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
             || this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== nextProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
             || this.props.searchScanFileId_Selection !== nextProps.searchScanFileId_Selection
             || this.props.annotationTypeId_Score_X !== nextProps.annotationTypeId_Score_X
-            // || this.props.rawCounts_Percentage_Choice !== nextProps.rawCounts_Percentage_Choice
+            || this.props.transform_Score !== nextProps.transform_Score
             || this.props.isInSingleChartOverlay !== nextProps.isInSingleChartOverlay
+            || this.state.showCreatingMessage !== nextState.showCreatingMessage
             || this.state.showUpdatingMessage !== nextState.showUpdatingMessage
         ) {
             return true;
@@ -215,14 +236,30 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     || this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== prevProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
                     || this.props.searchScanFileId_Selection !== prevProps.searchScanFileId_Selection
                     || this.props.annotationTypeId_Score_X !== prevProps.annotationTypeId_Score_X
-                    // || this.props.rawCounts_Percentage_Choice !== prevProps.rawCounts_Percentage_Choice
+                    || this.props.transform_Score !== prevProps.transform_Score
                     || this.props.isInSingleChartOverlay !== prevProps.isInSingleChartOverlay
+                    // || this.state.showCreatingMessage !== prevState.showCreatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
                     // || this.state.showUpdatingMessage !== prevState.showUpdatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
                 ) {
                 } else {
                     //  Nothing changed so return
 
                     return;  // EARLY RETURN
+                }
+
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
+                }
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
                 }
 
                 this.setState({ showUpdatingMessage: true });
@@ -293,30 +330,81 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
         }
 
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
+        const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
+        if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
+            const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
 
         const psmFilterableAnnotationTypeIds_Requested: Set<number> = new Set();
 
         psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_X );
 
-        const promises: Array<Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>> = []
+        const promises: Array<Promise<void>> = []
+
+        let psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
 
         {
-            const promise =
-                this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered({ psmFilterableAnnotationTypeIds_Requested });
+            const psmFilterableAnnotationTypeIds_Requested: Set<number> = new Set();
 
-            promises.push(promise);
+            psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_X )
+
+            const get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result =
+                commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData().
+                get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder({ psmFilterableAnnotationTypeIds_Requested });
+
+            if ( get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data ) {
+                psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder = get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder;
+            } else if ( get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise ) {
+                const promise = new Promise<void>( (resolve, reject) => { try {
+                    get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
+                    get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.then(value => { try {
+                        psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder = value.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            } else {
+                const msg = "get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result no data or promise";
+                console.warn(msg);
+                throw Error(msg);
+            }
         }
+
+        let psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder;
+
         {
             if ( this.props.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
 
-                const promise =
-                    this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                    qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered__PsmTblData();
+                const get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result =
+                    commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData().
+                    get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder();
 
-                promises.push(promise);
+                if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data ) {
+                    psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                } else if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise ) {
+                    const promise = new Promise<void>( (resolve, reject) => { try {
+                        get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
+                        get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.then(value => { try {
+                            psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = value.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    const msg = "get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result no data or promise";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
             }
         }
+
 
         const promisesAll = Promise.all( promises );
 
@@ -342,17 +430,6 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                 if ( ! this._componentMounted ) {
                     //  Component no longer mounted so exit
                     return; // EARLY RETURN
-                }
-
-                const value = values[0]; // Just use first entry
-
-                const psmFilterableAnnotationData_Unfiltered = value.psmFilterableAnnotationData_Unfiltered;
-
-                let psmTblData_Unfiltered: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_Root = undefined;
-
-                if ( this.props.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
-
-                    psmTblData_Unfiltered = value.psmTblData_Unfiltered
                 }
 
                 let  annotationTypeItem_ForDisplayScore: AnnotationTypeItem = undefined;
@@ -383,55 +460,32 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     throw Error(msg);
                 }
 
-                let chart_Width : number = undefined
-                let chart_Height : number = undefined
+                ////////////
 
-                try {
-                    //  First remove any existing plot, if it exists (And event listener on it)
-                    this._removeChart();
-                } catch (e) {
-                    //  Eat Exception
-                }
+                //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
+
+                //  Have existing chart in overlay when re-populate chart when have window resize
 
                 if ( this.props.isInSingleChartOverlay ) {
-
-                    const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-                    /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-                    // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-                    // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-                    // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-                    // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-                    chart_Width = Math.floor( targetDOMElement_domRect.width );
-                    chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-                    //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-                    // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-                    //
-                    // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                    // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                    //
-                    // if ()
-                } else {
-
-                    chart_Width = qcPage_StandardChartLayout_StandardWidth();
-                    chart_Height = qcPage_StandardChartLayout_StandardHeight();
+                    try {
+                        //  First remove any existing plot, if it exists
+                        this._removeChart();
+                    } catch (e) {
+                        //  Eat Exception
+                    }
                 }
 
                 let psmFilterableAnnotation_Scores : Array<number> = [];
                 let psmFilterableAnnotation_Score_Min : number = undefined
                 let psmFilterableAnnotation_Score_Max : number = undefined
 
-                for ( const psmFilterableAnnotationData_Unfiltered_Entry of psmFilterableAnnotationData_Unfiltered.get_Per_Psm_Holder_Entries_IterableIterator() ) {
+                for ( const psmFilterableAnnotationData_Unfiltered_Entry of psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder.get_Per_Psm_Holder_Entries_IterableIterator() ) {
 
                     if ( this.props.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
 
-                        const psmData = psmTblData_Unfiltered.get_PsmTblData_Unfiltered_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId );
+                        const psmData = psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId );
                         if ( ! psmData ) {
-                            const msg = "psmTblData.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId ); returned nothing for psmFilterableAnnotationData_Unfiltered_Entry.psmId: " + psmFilterableAnnotationData_Unfiltered_Entry.psmId +
+                            const msg = "psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId( psmFilterableAnnotationData_Unfiltered_Entry.psmId ); returned nothing for psmFilterableAnnotationData_Unfiltered_Entry.psmId: " + psmFilterableAnnotationData_Unfiltered_Entry.psmId +
                                 ", projectSearchId: " + this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
                             console.warn(msg);
                             throw Error(msg);
@@ -472,126 +526,170 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     }
                 }
 
-                //  Change Min/Max to include Zero if needed
-                if ( psmFilterableAnnotation_Score_Min > 0 ) {
-                    psmFilterableAnnotation_Score_Min = 0;
-                }
-                if ( psmFilterableAnnotation_Score_Max < 0 ) {
-                    psmFilterableAnnotation_Score_Max = 0;
-                }
+                if ( psmFilterableAnnotation_Score_Min < 0 ) {
 
-                //  Bin the values into buckets
+                    //  Found Score < 0
 
-                const binCount = Math.floor( ( chart_Width - ( qcPage_StandardChartLayout_StandardWidth() - qcPage_StandardChartLayout_ActualChartArea_Width() ) ) * 2 );
-                const binSize = ( psmFilterableAnnotation_Score_Max - psmFilterableAnnotation_Score_Min ) / binCount;
+                    const transform_Score_Local = this.props.transform_Score;  //  Save off since calling callback changes this.props.transform_Score
 
-                //  Process data into bins
-
-                let scoreValueMinValueCount = 0;
-                const scoreValueCounts = new Array<number>();
-                for ( const scoreValue of psmFilterableAnnotation_Scores ) {
-                    const scoreValueFraction = ( scoreValue - psmFilterableAnnotation_Score_Min ) / ( psmFilterableAnnotation_Score_Max - psmFilterableAnnotation_Score_Min );
-                    let bin = Math.floor( ( scoreValueFraction ) * binCount );
-                    if ( bin < 0 ) {
-                        bin = 0;
-                    } else if ( bin >= binCount ) {
-                        bin = binCount - 1;
+                    if ( this.props.score_Contains_NegativeValues_Callback ) {
+                        this.props.score_Contains_NegativeValues_Callback(true)
                     }
-                    if ( scoreValueCounts[ bin ] ) {
-                        scoreValueCounts[bin]++;
-                    } else {
-                        scoreValueCounts[bin] = 1;
+
+                    if ( transform_Score_Local === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
+                        || transform_Score_Local === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                        //  Cannot create chart with Score < 0 and Transform Score to Log so return.  Parent component will change to not transform
+                        return;  // EARLY RETURN
                     }
-                    if ( scoreValue === psmFilterableAnnotation_Score_Min ) {
-                        scoreValueMinValueCount++;
+
+                } else {
+                    //  NOT found Score < 0
+
+                    if ( this.props.score_Contains_NegativeValues_Callback ) {
+                        this.props.score_Contains_NegativeValues_Callback(false)
                     }
                 }
 
-                const chartBucketArray = new Array<{ binStart: number, binEnd: number, totalScoreValueCount: number}>()
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
 
-                if ( annotationTypeItem_ForDisplayScore.filterDirectionBelow && psmFilterableAnnotation_Score_Min == 0 ) {
-                    //  Special case bucket for left edge, originally for Q-Value value of zero
-                    //  Only create if FilterDirectionType.BELOW and min value is zero
-                    const chartBucket = { binStart: psmFilterableAnnotation_Score_Min, binEnd: psmFilterableAnnotation_Score_Min, totalScoreValueCount: scoreValueMinValueCount };
-                    chartBucketArray.push( chartBucket );
+                    const psmFilterableAnnotation_Scores_Original = psmFilterableAnnotation_Scores; // Save off original scores
+
+                    // reset to empty array
+                    psmFilterableAnnotation_Scores = [];
+
+                    //  reset min/max
+                    psmFilterableAnnotation_Score_Min = undefined
+                    psmFilterableAnnotation_Score_Max = undefined
+
+                    const log10_Number_Min_Value = Math.log10( Number.MIN_VALUE )
+
+                    for ( const psmFilterableAnnotation_Score_Original of psmFilterableAnnotation_Scores_Original ) {
+
+                        let psmFilterableAnnotation_Score_Transformed: number = undefined;
+
+                        if ( psmFilterableAnnotation_Score_Original === 0 ) {
+                            psmFilterableAnnotation_Score_Transformed = log10_Number_Min_Value
+                        } else {
+                            psmFilterableAnnotation_Score_Transformed = Math.log10( psmFilterableAnnotation_Score_Original )
+                        }
+
+                        psmFilterableAnnotation_Scores.push( psmFilterableAnnotation_Score_Transformed )
+
+                        //  compute min/max for transformed score
+
+                        if ( psmFilterableAnnotation_Score_Min === undefined ) {
+                            psmFilterableAnnotation_Score_Min = psmFilterableAnnotation_Score_Transformed;
+                            psmFilterableAnnotation_Score_Max = psmFilterableAnnotation_Score_Transformed;
+                        } else {
+                            if ( psmFilterableAnnotation_Score_Min > psmFilterableAnnotation_Score_Transformed ) {
+                                psmFilterableAnnotation_Score_Min = psmFilterableAnnotation_Score_Transformed
+                            }
+                            if ( psmFilterableAnnotation_Score_Max < psmFilterableAnnotation_Score_Transformed ) {
+                                psmFilterableAnnotation_Score_Max = psmFilterableAnnotation_Score_Transformed
+                            }
+                        }
+                    }
+
+                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                    const psmFilterableAnnotation_Scores_Original = psmFilterableAnnotation_Scores; // Save off original scores
+
+                    // reset to empty array
+                    psmFilterableAnnotation_Scores = [];
+
+                    //  reset min/max
+                    psmFilterableAnnotation_Score_Min = undefined
+                    psmFilterableAnnotation_Score_Max = undefined
+
+                    const negative_log10_Number_Min_Value = -Math.log10( Number.MIN_VALUE )
+
+                    for ( const psmFilterableAnnotation_Score_Original of psmFilterableAnnotation_Scores_Original ) {
+
+                        let psmFilterableAnnotation_Score_Transformed: number = undefined;
+
+                        if ( psmFilterableAnnotation_Score_Original === 0 ) {
+                            psmFilterableAnnotation_Score_Transformed = negative_log10_Number_Min_Value
+                        } else {
+                            psmFilterableAnnotation_Score_Transformed = -Math.log10( psmFilterableAnnotation_Score_Original )
+                        }
+
+                        psmFilterableAnnotation_Scores.push( psmFilterableAnnotation_Score_Transformed )
+
+                        //  compute min/max for transformed score
+
+                        if ( psmFilterableAnnotation_Score_Min === undefined ) {
+                            psmFilterableAnnotation_Score_Min = psmFilterableAnnotation_Score_Transformed;
+                            psmFilterableAnnotation_Score_Max = psmFilterableAnnotation_Score_Transformed;
+                        } else {
+                            if ( psmFilterableAnnotation_Score_Min > psmFilterableAnnotation_Score_Transformed ) {
+                                psmFilterableAnnotation_Score_Min = psmFilterableAnnotation_Score_Transformed
+                            }
+                            if ( psmFilterableAnnotation_Score_Max < psmFilterableAnnotation_Score_Transformed ) {
+                                psmFilterableAnnotation_Score_Max = psmFilterableAnnotation_Score_Transformed
+                            }
+                        }
+                    }
+
+
                 }
 
-                //  Take the data in the bins and  create "buckets" in the format required for the charting API
-                let totalScoreValueCount = 0;
-                // TODO
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+
+                    // ONLY if NO Transform
+
+                    //  Change Min/Max to include Zero if needed
+                    if ( psmFilterableAnnotation_Score_Min > 0 ) {
+                        psmFilterableAnnotation_Score_Min = 0;
+                    }
+                    if ( psmFilterableAnnotation_Score_Max < 0 ) {
+                        psmFilterableAnnotation_Score_Max = 0;
+                    }
+                }
+
+                //  totalScoreValueCount: should it start at zero OR start at count of scores
+
+                let totalScoreValueCount__StartAt_Zero = true;
+
                 if ( annotationTypeItem_ForDisplayScore.filterDirectionAbove ) {
-                    totalScoreValueCount = psmFilterableAnnotation_Scores.length;
-                }
-                for ( let binIndex = 0; binIndex < binCount; binIndex++ ) {
-                    const scoreValueCount = scoreValueCounts[ binIndex ];
-                    if ( scoreValueCount === undefined ) {
-                        //  !!  NO Value at binIndex
-                        continue; // EARLY CONTINUE
-                    }
-                    if ( annotationTypeItem_ForDisplayScore.filterDirectionBelow ) {
-                        //  Increment it before taking the value
-                        totalScoreValueCount += scoreValueCount;
-                    }
 
-                    const binStart_Calculated = ( ( binIndex * binSize ) + psmFilterableAnnotation_Score_Min );
-                    let binStart = binStart_Calculated;
-                    if ( binIndex === 0 && binStart_Calculated < psmFilterableAnnotation_Score_Min ) {
-                        binStart =  psmFilterableAnnotation_Score_Min;
-                    }
-                    const binEnd = ( binIndex + 1 ) * binSize + psmFilterableAnnotation_Score_Min ;
-                    const chartBucket = { binStart, binEnd, totalScoreValueCount };
-                    chartBucketArray.push( chartBucket );
+                    if ( this.props.transform_Score !== QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
-                    if ( annotationTypeItem_ForDisplayScore.filterDirectionAbove ) {
-                        //  Decrement it after taking the value
-                        totalScoreValueCount -= scoreValueCount;
+                        totalScoreValueCount__StartAt_Zero = false;
+                    }
+                } else {
+                    if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                        totalScoreValueCount__StartAt_Zero = false;
                     }
                 }
 
-
-                let comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW;
-                if ( annotationTypeItem_ForDisplayScore.filterDirectionAbove ) {
-                    comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE;
-                }
 
                 const chart_X : Array<number> = []
                 const chart_Y : Array<number> = []
-                const chart_Bars_Tooltips : Array<string> = []
-
-                const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
-
-                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
 
                 {
-                    const psmFilterableAnnotation_Scores_Length = psmFilterableAnnotation_Scores.length;
+                    limelight__Sort_ArrayOfNumbers_SortArrayInPlace(psmFilterableAnnotation_Scores);
 
-                    for ( const chartBucket of chartBucketArray ) {
+                    let totalScoreValueCount = 0;
 
-                        let chartDataValue = chartBucket.totalScoreValueCount;
-                        // if ( this.props.rawCounts_Percentage_Choice === QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM.PERCENTAGE ) {
-                        //     chartDataValue = chartDataValue / psmFilterableAnnotation_Scores_Length * 100;
-                        // }
-                        //  For "above" display the left edge of the bucket, otherwise the right edge
-                        let bucketStartOrEndForDisplayNumber;
-                        if ( annotationTypeItem_ForDisplayScore.filterDirectionAbove ) {
-                            bucketStartOrEndForDisplayNumber = chartBucket.binStart;
-                        } else {
-                            bucketStartOrEndForDisplayNumber = chartBucket.binEnd;
+                    if ( ! totalScoreValueCount__StartAt_Zero ) {
+                        totalScoreValueCount = psmFilterableAnnotation_Scores.length;
+                    }
+                    for ( const scoreValue of psmFilterableAnnotation_Scores ) {
+
+                        if ( totalScoreValueCount__StartAt_Zero ) {
+                            //  Increment it before taking the value
+                            totalScoreValueCount++;
                         }
 
-                        chart_X.push( bucketStartOrEndForDisplayNumber );
-                        chart_Y.push( chartDataValue );
+                        chart_X.push( scoreValue );
+                        chart_Y.push( totalScoreValueCount );
 
-                        // let tooltipContent = '<b>Raw Count</b>: ' + chartBucket.totalScoreValueCount.toLocaleString();
-                        // if ( this.props.rawCounts_Percentage_Choice === QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM.PERCENTAGE ) {
-                        //     tooltipContent += '<br><b>Percentage of Max</b>: ' + chartDataValue.toFixed( 4 );
-                        // }
-                        // tooltipContent += '<br>' + annotationType_Name_Score_X_HTMLEncoded + ' ' + comparisonDirectionString + ' ' + bucketStartOrEndForDisplayNumber.toFixed( 4 );
-
-                        const tooltipContent = '<b>PSM Count</b>: ' + chartBucket.totalScoreValueCount.toLocaleString() +
-                            '<br>' + annotationType_Name_Score_X_HTMLEncoded + ' ' + comparisonDirectionString + ' ' + bucketStartOrEndForDisplayNumber.toFixed( 4 );
-
-                        chart_Bars_Tooltips.push( tooltipContent );
+                        if ( ! totalScoreValueCount__StartAt_Zero ) {
+                            //  Decrement it after taking the value
+                            totalScoreValueCount--;
+                        }
                     }
                 }
 
@@ -600,25 +698,52 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
                 const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
 
+                //  Marker Size
+                let marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__MAIN_PAGE;
+                if ( this.props.isInSingleChartOverlay ) {
+                    marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
+                }
+
                 const chart_Data = [
                     {
                         x: chart_X,
                         y: chart_Y,
-                        type: 'scatter',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
-                        hoverinfo: "text", //  Hover contents
-                        hovertext: chart_Bars_Tooltips,  //  Hover contents per bar
+                        type: 'scattergl',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
+                        mode: 'lines',
                         marker: {
+                            size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         }
                     }
                 ];
 
+                let comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW;
+                if ( ! totalScoreValueCount__StartAt_Zero ) {
+                    comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE;
+                }
+
+                const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
+
+                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
+
+
                 const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X_HTMLEncoded + "<br><sup>Note: Data in plot are not filtered.</sup>";
-                const chart_X_Axis_Label = "PSM Score: " + annotationType_Name_Score_X_HTMLEncoded;
-                let chart_Y_Axis_Label = "# PSM " + comparisonDirectionString + " " + annotationType_Name_Score_X_HTMLEncoded;
-                // if ( this.props.rawCounts_Percentage_Choice === QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM.PERCENTAGE ) {
-                //     chart_Y_Axis_Label = "# PSM " + comparisonDirectionString + " " + annotationType_Name_Score_X_HTMLEncoded + " (% of max)";
-                // }
+                let chart_X_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
+                let chart_Y_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
+
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+
+                    chart_X_Axis_Label = "Log10(" + chart_X_Axis_Label + ")";
+                    chart_Y_Axis_Label = "Log10(" + chart_Y_Axis_Label + ")";
+
+                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                    chart_X_Axis_Label = "-Log10(" + chart_X_Axis_Label + ")";
+                    chart_Y_Axis_Label = "-Log10(" + chart_Y_Axis_Label + ")";
+                }
+
+                chart_X_Axis_Label = "PSM Score: " + chart_X_Axis_Label
+                chart_Y_Axis_Label = "# PSM " + comparisonDirectionString + " " + chart_Y_Axis_Label
 
                 const chart_Layout = qcPage_StandardChartLayout({
                     chartTitle,
@@ -628,11 +753,10 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     showlegend: false
                 });
 
-                if ( this.props.isInSingleChartOverlay ) {
+                chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
 
-                    chart_Layout.width = chart_Width;
-                    chart_Layout.height = chart_Height;
-                }
+                //    Positioned Above create chart since width used in chart creation/computation
+                // const chart_Layout = qcPage_StandardChartLayout(...)
 
                 const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 
@@ -650,15 +774,51 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     // console.log("*********************************")
                 }
 
-                const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
-
-                this.setState({ showUpdatingMessage: false });
-
                 if ( ! this.props.isInSingleChartOverlay ) {
 
-                    //  Add click handler on chart on main page to open chart in overlay
+                    //  Main Page Plot
 
-                    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params({
+                        plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                        chart_Width: chart_Layout.width,
+                        chart_Height: chart_Layout.height,
+                        image_DOM_Element: this.image_Ref.current,
+                        changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                        plotRendered_Success_Callback: () : void => {
+                            this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                        },
+                        plotRendered_Fail_Callback:  () : void => {
+                            this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                        }
+                    });
+
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                    qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
+                        qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+                    });
+
+                } else {
+
+                    //  Overlay Plot
+
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params({
+                        plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                        chart_Width: chart_Layout.width,
+                        chart_Height: chart_Layout.height,
+                        plot_Div_DOM_Element: this.plot_Ref.current,
+                        changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                        plotRendered_Success_Callback: () : void => {
+                            this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                        },
+                        plotRendered_Fail_Callback:  () : void => {
+                            this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                        }
+                    });
+
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                    qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
+                        qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+                    });
                 }
 
             } catch( e ) {
@@ -672,15 +832,12 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
      *
      */
     private _removeChart() : void {
+
         try {
-            qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({
-                plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis
-            });
-        } catch (e) {
-            //  Eat Exception
-        }
-        try {
-            Plotly.purge(this.plot_Ref.current)
+            if ( this.plot_Ref.current ) {
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -689,9 +846,8 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
     /**
      *
      */
-    private _openChartInOverlay( event ) {
+    private _openChartInOverlay() {
         try {
-            event.stopPropagation()
             open_PSMCount_VS_AnnotationScore_OverlayContainer({
                 params: {
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent,
@@ -757,21 +913,36 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
             return null; // EARLY RETURN
         }
 
-        const style : React.CSSProperties = { position: "relative" };
-
-        if ( this.props.isInSingleChartOverlay ) {
-            style.height = "100%";
-        }
-
         return (
-            <div style={ style }>
-                <div ref={this.plot_Ref} style={ style }></div>
-                {( this.state.showUpdatingMessage ) ? (
+
+            <React.Fragment>
+
+                {( this.props.isInSingleChartOverlay ) ? (
+                    //  For Single Chart Overlay: div the chart will be rendered into
+                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                ) : (
+                    //  For Main Page: img the chart will be inserted into
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                )}
+
+                {( this.state.showCreatingMessage ) ? (
+
+                    <QcPage_CreatingPlot_BlockCover/>
+
+                ): ( this.state.showUpdatingMessage ) ? (
 
                     <QcPage_UpdatingData_BlockCover/>
 
-                ): null }
-            </div>
+                ): ( ! this.props.isInSingleChartOverlay ) ? (
+
+                    //  Component on main page that goes on top of <img> to show message on hover and call clickHandler_Callback on click
+                    <QcPage_ClickPlot_ForInteractivePlot_BlockCover
+                        clickHandler_Callback={ this._openChartInOverlay_BindThis }
+                    />
+
+                ) : null }
+
+            </React.Fragment>
         );
     }
 

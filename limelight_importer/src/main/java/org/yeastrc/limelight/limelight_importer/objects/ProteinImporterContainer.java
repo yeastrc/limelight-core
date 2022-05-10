@@ -221,4 +221,9 @@ public class ProteinImporterContainer {
 		this.proteinSequenceVersionDTO = proteinSequenceVersionDTO;
 	}
 
+
+	public MatchedProtein getMatchedProteinFromLimelightXMLFile() {
+		return matchedProteinFromLimelightXMLFile;
+	}
+
 }

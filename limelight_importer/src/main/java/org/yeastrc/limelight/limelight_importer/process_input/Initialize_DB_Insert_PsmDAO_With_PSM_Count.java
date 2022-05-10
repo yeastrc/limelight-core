@@ -8,6 +8,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
+import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 
 /**
  * 
@@ -27,7 +28,7 @@ public class Initialize_DB_Insert_PsmDAO_With_PSM_Count {
 	 * @param limelightInput
 	 * @throws Exception 
 	 */
-	public void initialize_DB_Insert_PsmDAO_With_PSM_Count(LimelightInput limelightInput) throws Exception {
+	public void initialize_DB_Insert_PsmDAO_With_PSM_Count(LimelightInput limelightInput, SearchDTO_Importer searchDTO) throws Exception {
 		
 		//  Compute total PSM count and pass to DB_Insert_PsmDAO.initialize...
 		
@@ -50,7 +51,7 @@ public class Initialize_DB_Insert_PsmDAO_With_PSM_Count {
 			}
 		}
 		
-		DB_Insert_PsmDAO.getSingletonInstance().initialize_Pass_PsmCount(psmCount_ForSearch);
+		DB_Insert_PsmDAO.getSingletonInstance().initialize_Pass_PsmCount(psmCount_ForSearch, searchDTO);
 	}
 			
 }

@@ -8,6 +8,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 public interface Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_IF {
 
 	/**
+	 * @param include_DecoyPSMs TODO
 	 * @param psmIds
 	 * @param srchPgmFilterableReportedPeptideAnnotationTypeDTOList
 	 * @return
@@ -15,6 +16,6 @@ public interface Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_IF {
 	 */
 
 	List<Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem> getPsmFilterableAnnotationDataList(
-			int searchId, Collection<Integer> annotationTypeIds) throws Exception;
+			int searchId, Collection<Integer> annotationTypeIds, boolean include_DecoyPSMs) throws Exception;
 
 }

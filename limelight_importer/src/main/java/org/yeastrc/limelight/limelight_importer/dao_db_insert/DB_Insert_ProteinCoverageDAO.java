@@ -47,9 +47,9 @@ public class DB_Insert_ProteinCoverageDAO {
 
 			+ " ( search_id, reported_peptide_id, peptide_id_info_only, "
 			+   " protein_sequence_version_id, protein_start_position, protein_end_position,"
-			+   " peptide_protein_match_not_exact_match )"
+			+   " peptide_protein_match_not_exact_match, protein_is_decoy, protein_is_independent_decoy )"
 
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * Save the associated data to the database
@@ -87,6 +87,19 @@ public class DB_Insert_ProteinCoverageDAO {
 					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
 				} else {
 					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+
+				counter++;
+				if ( item.isProtein_IsDecoy() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isProtein_IsIndependentDecoy() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 				}
 
 				pstmt.executeUpdate();

@@ -20,20 +20,20 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT = "webservice_sync_tracking_code_mismatch_text";
 const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE = 400;
 
-var AJAX_RESPONSE_NO_SESSION_TEXT = "no_session";
-var AJAX_RESPONSE_NO_SESSION_STATUS_CODE = 401;
+const AJAX_RESPONSE_NO_SESSION_TEXT = "no_session";
+const AJAX_RESPONSE_NO_SESSION_STATUS_CODE = 401;
 
-var AJAX_RESPONSE_FORBIDDEN_TEXT = "forbidden";
-var AJAX_RESPONSE_FORBIDDEN_STATUS_CODE = 403;
+const AJAX_RESPONSE_FORBIDDEN_TEXT = "forbidden";
+const AJAX_RESPONSE_FORBIDDEN_STATUS_CODE = 403;
 
-var AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_TEXT = "invalid_search_list_across_projects_text";
-var AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_STATUS_CODE = 403;
+const AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_TEXT = "invalid_search_list_across_projects_text";
+const AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_STATUS_CODE = 403;
 
-var INVALID_SEARCH_LIST_NOT_IN_DB_TEXT = "invalid_search_list_not_in_db_text";
-var INVALID_SEARCH_LIST_NOT_IN_DB_STATUS_CODE = 400;
+const INVALID_SEARCH_LIST_NOT_IN_DB_TEXT = "invalid_search_list_not_in_db_text";
+const INVALID_SEARCH_LIST_NOT_IN_DB_STATUS_CODE = 400;
 
-var AJAX_RESPONSE_INVALID_PARAMETER_TEXT = "invalid_parameter";
-var AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE = 400;
+const AJAX_RESPONSE_INVALID_PARAMETER_TEXT = "invalid_parameter";
+const AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE = 400;
 
 
 let beforeUnloadEvent_Triggered = false;
@@ -129,7 +129,12 @@ function handleRawAJAXError( xhr ) {
 
 //  Handle when AJAX call gets error
 
-function handleAJAXError( jqXHR, textStatus, errorThrown ) {
+function handleAJAXError(
+	{
+		jqXHR, textStatus, errorThrown, url, requestData
+	} : {
+		jqXHR, textStatus, errorThrown, url, requestData
+	}) {
 
 	if ( beforeUnloadEvent_Triggered ) {
 
@@ -245,6 +250,7 @@ function handleAJAXError( jqXHR, textStatus, errorThrown ) {
 
 			//  Create error to send to server
 			throw Error( msg );
+
 		} catch( e ) {
 			try {
 				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );

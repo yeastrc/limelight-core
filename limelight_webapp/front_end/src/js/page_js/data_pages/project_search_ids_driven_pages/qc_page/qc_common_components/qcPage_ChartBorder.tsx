@@ -60,7 +60,7 @@ export class QcPage_ChartBorder extends React.Component< QcPage_ChartBorder_Prop
         return (
 
             <div style={ { display: "inline-block" } }>
-                <div style={ { minWidth, minHeight, borderWidth: 1, borderStyle: "solid" } } className=" standard-border-color-gray ">
+                <div style={ { position: "relative", minWidth, minHeight, borderWidth: 1, borderStyle: "solid" } } className=" standard-border-color-gray ">
                     { this.props.children }
                 </div>
             </div>

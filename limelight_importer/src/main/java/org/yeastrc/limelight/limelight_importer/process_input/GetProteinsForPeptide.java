@@ -32,6 +32,10 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinForPepti
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinsForPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
+import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
+import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
+import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_GeneralData_DTO;
+import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.ProteinImporterContainer;
@@ -52,7 +56,7 @@ public class GetProteinsForPeptide {
 	/**
 	 * @return Singleton instance
 	 */
-	public static GetProteinsForPeptide getInstance() { return instance; }
+	public static GetProteinsForPeptide getSingletonInstance() { return instance; }
 	
 	private long totalElapsedTimeInTheseMethodsInMilliSeconds = 0;
 	
@@ -96,22 +100,53 @@ public class GetProteinsForPeptide {
 
 	
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	public void logTotalElapsedTime() {
-		double elapsedTotalTimeSeconds = totalElapsedTimeInTheseMethodsInMilliSeconds / 1000.0;
-		double elapsedTotalTimeMinutes = ( elapsedTotalTimeSeconds ) / 60.0;
-		log.warn( "Total Elapsed Time: Peptides to Proteins: prep time and time looking up proteins: "
-				+ elapsedTotalTimeSeconds + " seconds, or "
-				+ elapsedTotalTimeMinutes + " minutes.");
+	public void logTotalElapsedTime_SaveToImporterStatsTable(
+			
+			SearchDTO_Importer search
+			) throws Exception {
 		
-		double elapsedGetProteinsTimeSeconds = totalElapsedTimeInTheseMethodsInMilliSeconds / 1000.0;
-		double elapsedGetProteinsTimeMinutes = ( elapsedTotalTimeSeconds ) / 60.0;
+		
+		{
+			double elapsedTotalTimeSeconds = totalElapsedTimeInTheseMethodsInMilliSeconds / 1000.0;
+			double elapsedTotalTimeMinutes = ( elapsedTotalTimeSeconds ) / 60.0;
+			
+			log.warn( "Total Elapsed Time: Peptides to Proteins: prep time and time looking up proteins: "
+					+ elapsedTotalTimeSeconds + " seconds, or "
+					+ elapsedTotalTimeMinutes + " minutes.");
+			
+			Importer_Stats_GeneralData_DTO importer_Stats_GeneralData_DTO = new Importer_Stats_GeneralData_DTO();
+			
+			importer_Stats_GeneralData_DTO.setLabel( Importer_Stats_GeneralData_Table__Label_Values_Enum.PROTEIN_INFERENCE__PEPTIDES_TO_PROTEINS__PREP_TIME_AND_TIME_LOOKING_UP_PROTEINS );
+			
+			importer_Stats_GeneralData_DTO.setTotal_elapsedTime_Milliseconds(totalElapsedTimeInTheseMethodsInMilliSeconds);
+			
+			importer_Stats_GeneralData_DTO.setSearchId( search.getId() );
+			
+			Importer_Stats_GeneralData_DAO.getInstance().save(importer_Stats_GeneralData_DTO);
+		}
 
-		log.warn( "Get Proteins for Proteins Total Elapsed Time: Peptides to Proteins: time looking up proteins: "
-				+ elapsedGetProteinsTimeSeconds + " seconds, or "
-				+ elapsedGetProteinsTimeMinutes + " minutes.");
-		
+		{
+			double elapsedGetProteinsTimeSeconds = getProteinsForPeptide_totalElapsedTimeInMilliSeconds / 1000.0;
+			double elapsedGetProteinsTimeMinutes = ( elapsedGetProteinsTimeSeconds ) / 60.0;
+
+			log.warn( "Get Proteins for Proteins Total Elapsed Time: Peptides to Proteins: time looking up proteins: "
+					+ elapsedGetProteinsTimeSeconds + " seconds, or "
+					+ elapsedGetProteinsTimeMinutes + " minutes.");
+			
+			Importer_Stats_GeneralData_DTO importer_Stats_GeneralData_DTO = new Importer_Stats_GeneralData_DTO();
+			
+			importer_Stats_GeneralData_DTO.setLabel( Importer_Stats_GeneralData_Table__Label_Values_Enum.PROTEIN_INFERENCE__PEPTIDES_TO_PROTEINS__TIME_LOOKING_UP_PROTEINS );
+			
+			importer_Stats_GeneralData_DTO.setTotal_elapsedTime_Milliseconds(getProteinsForPeptide_totalElapsedTimeInMilliSeconds);
+			
+			importer_Stats_GeneralData_DTO.setSearchId( search.getId() );
+			
+			Importer_Stats_GeneralData_DAO.getInstance().save(importer_Stats_GeneralData_DTO);
+		}
+					
 	}
 	
 	/**

@@ -64,47 +64,53 @@ export class ProjectPage_ProjectSection_Abstract_ProjectOwnerInteraction {
 
 
         let $change_project_abstract_button = $("#change_project_abstract_button");
-        if ($change_project_abstract_button.length === 0) {
-            throw Error( "Unable to find '#change_project_abstract_button'" );
+        // if ($change_project_abstract_button.length === 0) {
+        //     throw Error( "Unable to find '#change_project_abstract_button'" );
+        // }
+        if ($change_project_abstract_button.length !== 0) {
+            $change_project_abstract_button.click(function(eventObject) {
+                try {
+                    event.preventDefault(); // to stop the
+                    let clickThis = this;
+                    objectThis._openChangeProjectAbstract( { clickThis } );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
         }
-        $change_project_abstract_button.click(function(eventObject) {
-            try {
-                event.preventDefault(); // to stop the
-                let clickThis = this;
-                objectThis._openChangeProjectAbstract( { clickThis } );
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
         let $change_project_abstract_save = $("#change_project_abstract_save");
-        if ($change_project_abstract_save.length === 0) {
-            throw Error( "Unable to find '#change_project_abstract_save'" );
+        // if ($change_project_abstract_save.length === 0) {
+        //     throw Error( "Unable to find '#change_project_abstract_save'" );
+        // }
+        if ($change_project_abstract_save.length !== 0) {
+            $change_project_abstract_save.click(function(eventObject) {
+                try {
+                    event.preventDefault(); // to stop the
+                    let clickThis = this;
+                    objectThis._saveProjectAbstract( { clickThis } );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
         }
-        $change_project_abstract_save.click(function(eventObject) {
-            try {
-                event.preventDefault(); // to stop the
-                let clickThis = this;
-                objectThis._saveProjectAbstract( { clickThis } );
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
         let $change_project_abstract_cancel = $("#change_project_abstract_cancel");
-        if ($change_project_abstract_cancel.length === 0) {
-            throw Error( "Unable to find '#change_project_abstract_cancel'" );
+        // if ($change_project_abstract_cancel.length === 0) {
+        //     throw Error( "Unable to find '#change_project_abstract_cancel'" );
+        // }
+        if ($change_project_abstract_cancel.length !== 0) {
+            $change_project_abstract_cancel.click(function(eventObject) {
+                try {
+                    event.preventDefault(); // to stop the
+                    let clickThis = this;
+                    objectThis._cancelChangeProjectAbstract( { clickThis } );
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            });
         }
-        $change_project_abstract_cancel.click(function(eventObject) {
-            try {
-                event.preventDefault(); // to stop the
-                let clickThis = this;
-                objectThis._cancelChangeProjectAbstract( { clickThis } );
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        });
     }
 
 

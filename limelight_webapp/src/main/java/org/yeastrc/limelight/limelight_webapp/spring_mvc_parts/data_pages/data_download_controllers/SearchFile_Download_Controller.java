@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.yeastrc.limelight.limelight_shared.dto.SearchFileDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchFileProjectSearchDTO;
@@ -49,7 +48,7 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
  * 
  * A Search File is part of the imported Limelight XML file
  * 
- * See class PostRequestParameters below for Form Field Name
+ * Form Field Name: 'requestJSONString'
  */
 @Controller
 public class SearchFile_Download_Controller {
@@ -79,22 +78,19 @@ public class SearchFile_Download_Controller {
 	 */
 	@PostMapping( CONTROLLER_PATH )
 	public void controllerMainMethod(
-			@ModelAttribute PostRequestParameters postRequestParameters, // Form Field Data In Request.  Parsed by Spring MVC into this object
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse ) {
-		
-		if ( postRequestParameters == null ) {
-			
-			throw new LimelightInternalErrorException( "postRequestParameters == null" );
-		}
-		if ( StringUtils.isEmpty( postRequestParameters.requestJSONString ) ) {
+
+		String requestJSONString = httpServletRequest.getParameter( "requestJSONString" ); // From Form POST fields
+
+		if ( StringUtils.isEmpty( requestJSONString ) ) {
 			
 			//  TODO Maybe do something different
-			throw new LimelightInternalErrorException( "postRequestParameters.requestJSONString is empty" );
+			throw new LimelightInternalErrorException( "'requestJSONString' is not populated field in form POST" );
 		}
 
 		try {
-			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( postRequestParameters.requestJSONString, RequestJSONParsed.class );
+			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
 
 			Integer projectSearchId = webserviceRequest.getProjectSearchId();
 
@@ -225,24 +221,6 @@ public class SearchFile_Download_Controller {
 			throw new RuntimeException();
 		}
 	}
-
-	////////////////
-
-	/**
-	 * Form Field Data In Request.  Parsed by Spring MVC into this object
-	 */
-	public static class PostRequestParameters {
-		
-		private String requestJSONString; //  Form Parameter Name.  JSON encoded data
-
-		public String getRequestJSONString() {
-			return requestJSONString;
-		}
-		public void setRequestJSONString(String requestJSONString) {
-			this.requestJSONString = requestJSONString;
-		}
-	}
-	
 
 	/**
 	 * Request JSON Parsed representation

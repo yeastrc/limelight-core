@@ -274,7 +274,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     					psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
     					.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
     			
-    			Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
+//    			Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
     			
 //    			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
 //    				List<Long> psmIds = new ArrayList<>( psmOpenModificationMassesList.size() );

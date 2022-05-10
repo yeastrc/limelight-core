@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 
 public interface SearchFlagsForSearchIdSearcherIF {
 
@@ -13,5 +14,4 @@ public interface SearchFlagsForSearchIdSearcherIF {
 	 * @throws SQLException
 	 */
 	SearchFlagsForSearchIdSearcher_Result getSearchFlags_ForSearchIds(List<Integer> searchIds) throws SQLException;
-
 }

@@ -233,7 +233,7 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 
 				if ( eventObject.ctrlKey || eventObject.metaKey ) {
 
-					window.open(savedViewItem.url, "_blank");
+					window.open(savedViewItem.url, "_blank", "noopener");
 				} else {
 					window.location.href = savedViewItem.url
 				}

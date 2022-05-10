@@ -42,7 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchSubGroupDTO;
@@ -114,7 +113,7 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
  * 
  * Optional Experiment Data for Mapping of Search Id to Condition Group label / Condition label information 
  * 
- * See class PostRequestParameters below for Form Field Name
+ * Form Field Name: 'requestJSONString'
  */
 @Controller
 public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Optional__ReportedPeptideIds_Optional_ProtSeqVIds_Download_Controller {
@@ -158,7 +157,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
-	
+
 	@Autowired
 	private AnnotationTypeListForSearchIdSearcherIF annotationTypeListForSearchIdSearcher;
 
@@ -214,22 +213,21 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 */
 	@PostMapping( CONTROLLER_PATH )
 	public void controllerMainMethod(
-			@ModelAttribute PostRequestParameters postRequestParameters, // Form Field Data In Request.  Parsed by Spring MVC into this object
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse ) {
 		
-		if ( postRequestParameters == null ) {
-			
-			throw new LimelightInternalErrorException( "postRequestParameters == null" );
-		}
-		if ( StringUtils.isEmpty( postRequestParameters.requestJSONString ) ) {
+
+		String requestJSONString = httpServletRequest.getParameter( "requestJSONString" ); // From Form POST fields
+
+		if ( StringUtils.isEmpty( requestJSONString ) ) {
 			
 			//  TODO Maybe do something different
-			throw new LimelightInternalErrorException( "postRequestParameters.requestJSONString is empty" );
+			throw new LimelightInternalErrorException( "'requestJSONString' is not populated field in form POST" );
 		}
 
+
 		try {
-			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( postRequestParameters.requestJSONString, RequestJSONParsed.class );
+			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
 
 			List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds = webserviceRequest.projectSearchIdsReportedPeptideIdsPsmIds;
 
@@ -672,7 +670,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				searchSubGroupData_KeyedOn_SearchSubGroupId.put( name_Display_Computation_Entry.getSearchSubGroupId(), response_Per_SearchSubGroupId );
 			}
 		}
-		
+
 		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
 		
 		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = null;
@@ -1489,7 +1487,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -1518,8 +1516,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				int searchId = writeOutputToResponse_For_SearchId.searchId;
 				int projectSearchId = writeOutputToResponse_For_SearchId.projectSearchId;
 				Boolean searchHasScanData = writeOutputToResponse_For_SearchId.searchHasScanData; 
-				Boolean searchHasSubgroups = writeOutputToResponse_For_SearchId.searchHasSubgroups;
-				Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = writeOutputToResponse_For_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId;
+//				Boolean searchHasSubgroups = writeOutputToResponse_For_SearchId.searchHasSubgroups;
+//				Map<Integer, WriteOutputToResponse_Per_SearchSubGroupId> searchSubGroupData_KeyedOn_SearchSubGroupId = writeOutputToResponse_For_SearchId.searchSubGroupData_KeyedOn_SearchSubGroupId;
 
 				Map<Integer, AnnotationTypeDTO> annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId = writeOutputToResponse_For_SearchId.annotationTypeDTO_ForDisplay_Map_Key_annotationTypeId;
 				List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds = writeOutputToResponse_For_SearchId.psmWebDisplayListForReportedPeptideIds;
@@ -1729,6 +1727,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							if ( psmWebDisplay.getScanFilename() != null ) {
 								writer.write( psmWebDisplay.getScanFilename() );
 							}
+
+							writer.write( "\t" );
+							if ( psmWebDisplay.isPsmIs_IndependentDecoy() ) {
+								writer.write( "true" );
+							} else {
+								writer.write( "false" );
+							}
 							
 							List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
 							if ( experimentDataForSearch != null ) {
@@ -1907,22 +1912,6 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	}
 	
 	////////////////
-
-	/**
-	 * Form Field Data In Request.  Parsed by Spring MVC into this object
-	 */
-	public static class PostRequestParameters {
-		
-		private String requestJSONString; //  Form Parameter Name.  JSON encoded data
-
-		public String getRequestJSONString() {
-			return requestJSONString;
-		}
-		public void setRequestJSONString(String requestJSONString) {
-			this.requestJSONString = requestJSONString;
-		}
-	}
-	
 
 	/**
 	 * Request JSON Parsed representation

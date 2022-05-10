@@ -25,6 +25,48 @@ export class DataPage_common_Searches_Flags {
         return this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.get( projectSearchId );
     }
 
+    /**
+     * @returns - true if dataPage_common_Flags_SingleSearch.anyPsmHas_IsIndependentDecoy_True is true for any search
+     */
+    is__anyPsmHas_IsIndependentDecoy_True__TrueForAnySearch() : boolean {
+        for ( const dataPage_common_Flags_SingleSearch of this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values() ) {
+            if ( dataPage_common_Flags_SingleSearch.anyPsmHas_IsIndependentDecoy_True ) {
+
+                return true; // EARLY RETURN
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @returns - true if dataPage_common_Flags_SingleSearch.anyPsmHas_IsDecoy_True is true for any search
+     */
+    is__anyPsmHas_IsDecoy_True__TrueForAnySearch() : boolean {
+        for ( const dataPage_common_Flags_SingleSearch of this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values() ) {
+            if ( dataPage_common_Flags_SingleSearch.anyPsmHas_IsDecoy_True ) {
+
+                return true; // EARLY RETURN
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @returns - true if dataPage_common_Flags_SingleSearch.hasScanData is true for ALL Searches
+     */
+    is__All_Searches_Have_ScanData() : boolean {
+        for ( const dataPage_common_Flags_SingleSearch of this._dataPage_common_Flags_SingleSearch_Map_Key_ProjectSearchId.values() ) {
+            if ( ! dataPage_common_Flags_SingleSearch.hasScanData ) {
+
+                return false; // EARLY RETURN
+            }
+        }
+
+        return true;
+    }
+
     private _ForceUseConstructor() {}
 }
 
@@ -41,6 +83,14 @@ export class DataPage_common_Flags_SingleSearch {
     anyPsmHas_DynamicModifications: boolean;
     anyPsmHas_OpenModifications: boolean;
     anyPsmHas_ReporterIons: boolean;
+
+    anyPsmHas_IsDecoy_True: boolean;
+    anyPsmHas_IsIndependentDecoy_True: boolean;
+
+    allPsmHave_Precursor_RetentionTime_PossiblyNull: boolean;		//  null if not populated	//  NOT Populated Yet for Existing Searches
+    allPsmHave_Precursor_M_Over_Z_PossiblyNull: boolean;			//  null if not populated	//  NOT Populated Yet for Existing Searches
+
+    psmIds_AreSequential_PossiblyNull: boolean; //  null if not populated  // All PSM Ids for the search are sequential - can use PSM Id ranges  	//  NOT Populated Yet for Existing Searches
 }
 
 /**
@@ -164,6 +214,17 @@ const _populateResult = function(
             searchFlagsEntry.anyPsmHas_ReporterIons = true;
         } else {
             searchFlagsEntry.anyPsmHas_ReporterIons = false;
+        }
+
+        if ( searchFlagsEntry.anyPsmHas_IsDecoy_True ) {
+            searchFlagsEntry.anyPsmHas_IsDecoy_True = true;
+        } else {
+            searchFlagsEntry.anyPsmHas_IsDecoy_True = false;
+        }
+        if ( searchFlagsEntry.anyPsmHas_IsIndependentDecoy_True ) {
+            searchFlagsEntry.anyPsmHas_IsIndependentDecoy_True = true;
+        } else {
+            searchFlagsEntry.anyPsmHas_IsIndependentDecoy_True = false;
         }
 
         qcPage_Searches_Flags.add_DataPage_common_Flags_SingleSearch( searchFlagsEntry );

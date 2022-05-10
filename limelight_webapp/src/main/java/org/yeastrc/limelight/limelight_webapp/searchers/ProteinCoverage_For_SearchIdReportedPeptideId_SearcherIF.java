@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
@@ -32,9 +31,9 @@ public interface ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF {
 	 * @param searchId
 	 * @param reportedPeptideId
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	List<ProteinCoverageDTO> getProteinCoverage_For_SearchIdReportedPeptideId(int searchId, int reportedPeptideId)
-			throws SQLException;
+			throws Exception;
 
 }

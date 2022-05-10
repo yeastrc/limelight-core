@@ -17,6 +17,8 @@ import {Qc_SingleSearch_PSM_PPM_Error_Statistics_Section} from "page_js/data_pag
 import {Qc_SingleSearch_ScanFile_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_ScanFile_Statistics_Section";
 import {Qc_SingleSearch_Digestion_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_Digestion_Statistics_Section";
 import {Qc_SingleSearch_ScanFile_Chromatography_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_ScanFile_Chromatography_Section";
+import {Qc_SingleSearch_ErrorEstimation_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_ErrorEstimation_Section";
+import {Qc_SingleSearch_Target_Decoy_Analysis_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_Target_Decoy_Analysis_Section";
 
 /**
  *
@@ -118,42 +120,54 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
         return (
 
             <React.Fragment>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_SummaryStatistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                     />
                 </div>
-                <div>
+                <div style={ { clear: "both" } }>
+                    <Qc_SingleSearch_ErrorEstimation_Section
+                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                        qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                    />
+                </div>
+                <div style={ { clear: "both" } }>
+                <Qc_SingleSearch_Target_Decoy_Analysis_Section
+                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                    />
+                </div>
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_Digestion_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_ScanFile_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_ScanFile_Chromatography_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_PSM_Level_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_PSM_PPM_Error_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                <div >
+                <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_Peptide_Level_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }

@@ -20,10 +20,10 @@ package org.yeastrc.limelight.limelight_importer.process_input;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.StaticModification;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.StaticModifications;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_StaticModDAO;
+import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.utils.RoundDecimalFieldsIfNecessary;
 import org.yeastrc.limelight.limelight_shared.dto.StaticModDTO;
 
@@ -46,10 +46,13 @@ public class ProcessStaticModifications {
 	 * @param searchId
 	 * @throws Exception 
 	 */
-	public void processStaticModifications( LimelightInput limelightInput, int searchId ) throws Exception {
+	public void processStaticModifications( 
+			
+			Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object, 
+			int searchId ) throws Exception {
 		
 		StaticModifications staticModifications =
-				limelightInput.getStaticModifications();
+				input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getStaticModifications();
 		
 		if ( staticModifications != null ) {
 

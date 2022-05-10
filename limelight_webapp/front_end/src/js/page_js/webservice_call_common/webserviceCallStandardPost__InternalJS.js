@@ -56,14 +56,12 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
         const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
         const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 
-        const _URL = url;
-
         const requestData = JSON.stringify( dataToSend );
 
         const request =
             $.ajax({
                 type : "POST",
-                url : _URL,
+                url,
                 data : requestData,
                 contentType: _AJAX_POST_JSON_CONTENT_TYPE,
                 dataType : "text", // "json",
@@ -168,7 +166,7 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
                         //  Abort not called so report error
                         try {
                             if ( ! doNotHandleErrorResponse ) {
-                                handleAJAXError(jqXHR, textStatus, errorThrown);  //  Sometimes throws exception so rest of processing won't always happen
+                                handleAJAXError({ jqXHR, textStatus, errorThrown, url, requestData });  //  Sometimes throws exception so rest of processing won't always happen
                             }
 
                             const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();

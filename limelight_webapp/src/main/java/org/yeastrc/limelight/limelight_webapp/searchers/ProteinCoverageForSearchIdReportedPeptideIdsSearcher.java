@@ -20,7 +20,6 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +27,13 @@ import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -40,9 +43,12 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinCoverageF
 public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limelight_JDBC_Base implements ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( ProteinCoverageForSearchIdReportedPeptideIdsSearcher.class );
-		
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	private static final String QUERY_SQL = 
-			"SELECT reported_peptide_id, protein_sequence_version_id, protein_start_position, protein_end_position "
+			"SELECT reported_peptide_id, protein_sequence_version_id, protein_start_position, protein_end_position, protein_is_independent_decoy "
 			+ " FROM "
 			+ " protein_coverage_tbl "
 			+ " WHERE search_id = ? AND reported_peptide_id IN ( "; //  Add closing ")" in code
@@ -68,11 +74,11 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 	 * @param searchId
 	 * @param reportedPeptideIds
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	@Override
 	public ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result getProteinCoverageForSearchIdReportedPeptideIds(
-			int searchId, List<Integer> reportedPeptideIds ) throws SQLException {
+			int searchId, List<Integer> reportedPeptideIds ) throws Exception {
 
 		if ( reportedPeptideIds == null ) {
 			final String msg = "reportedPeptideIds == null";
@@ -81,6 +87,8 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 		}
 
 		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId = new HashMap<>();
+
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 		
 		int itemCount = 0;
 
@@ -106,6 +114,11 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 			sqlSB.append( "?" );
 		}
 		sqlSB.append( ")" ); // closing IN
+
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			// Exclude  records where is_decoy = 'true'
+			sqlSB.append( " AND protein_is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+		}
 		
 		final String querySQL = sqlSB.toString();
 				
@@ -132,6 +145,12 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 					item.setProteinSequenceVersionId( rs.getInt( "protein_sequence_version_id" ) );
 					item.setProteinStartPosition( rs.getInt( "protein_start_position" ) );
 					item.setProteinEndPosition( rs.getInt( "protein_end_position" ) );
+					{
+						int fieldInt = rs.getInt( "protein_is_independent_decoy" );
+						if ( fieldInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setProteinIsIndependentDecoy(true);
+						}
+					}
 					
 					List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item> resultList = results_Key_ReportedPeptideId.get( reportedPeptideId );
 					if ( resultList == null ) {
@@ -141,7 +160,7 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 					resultList.add( item );
 				}
 			}
-		} catch ( SQLException e ) {
+		} catch ( Exception e ) {
 			log.error( "error running SQL: " + querySQL, e );
 			throw e;
 		}

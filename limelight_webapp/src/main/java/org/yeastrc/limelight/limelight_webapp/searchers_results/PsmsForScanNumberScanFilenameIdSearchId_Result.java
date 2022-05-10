@@ -32,6 +32,8 @@ public class PsmsForScanNumberScanFilenameIdSearchId_Result {
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
 	
+	private boolean psmIs_IndependentDecoy;     //  NOT return 'is_decoy' since Excluded in SQL
+	
 	public long getPsmId() {
 		return psmId;
 	}
@@ -67,6 +69,12 @@ public class PsmsForScanNumberScanFilenameIdSearchId_Result {
 	}
 	public void setPrecursor_MZ(BigDecimal precursor_MZ) {
 		this.precursor_MZ = precursor_MZ;
+	}
+	public boolean isPsmIs_IndependentDecoy() {
+		return psmIs_IndependentDecoy;
+	}
+	public void setPsmIs_IndependentDecoy(boolean psmIs_IndependentDecoy) {
+		this.psmIs_IndependentDecoy = psmIs_IndependentDecoy;
 	}
 	
 }

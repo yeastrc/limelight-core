@@ -6,7 +6,6 @@
  */
 
 import React from "react";
-import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -14,17 +13,18 @@ import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM,
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
-    qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {open_MissedCleavages_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MissedCleavages_OverlayContainer";
 import {
     Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result,
     Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result_PerSearch
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
+import {
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
+import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 
 
 const chartTitle = "Missed Cleavages (MC) Values";
@@ -52,6 +52,7 @@ interface QcViewPage_SingleSearch__MissedCleavages_Plot_State {
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
+    showCreatingMessage?: boolean
     showUpdatingMessage?: boolean
 }
 
@@ -68,12 +69,11 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
     private _openChartInOverlay_BindThis = this._openChartInOverlay.bind(this);
     private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
-    private _DONOTCALL() {
-
-        const openChartInOverlay: qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn = this._openChartInOverlay;
-    }
-
     private plot_Ref :  React.RefObject<HTMLDivElement>
+    private image_Ref : React.RefObject<HTMLImageElement>
+
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
 
     private _componentMounted = false;
 
@@ -90,14 +90,30 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
         }
 
         this.plot_Ref = React.createRef();
+        this.image_Ref = React.createRef();
 
-        this.state = {};
+        this.state = { showCreatingMessage: true, showUpdatingMessage: false };
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             this._resizeWindow_Handler_Remove();
@@ -156,6 +172,7 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
             nextProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
             || nextProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
             || nextProps.compute_MissedCleavages_Data_Result_Root !== this.props.compute_MissedCleavages_Data_Result_Root
+            || this.state.showCreatingMessage !== nextState.showCreatingMessage
             || nextState.showUpdatingMessage !== this.state.showUpdatingMessage
         ) {
             //  Something changed so return true
@@ -176,12 +193,28 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
                 prevProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
                 || prevProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
                 || prevProps.compute_MissedCleavages_Data_Result_Root !== this.props.compute_MissedCleavages_Data_Result_Root
-                // || prevState.showUpdatingMessage !== this.state.showUpdatingMessage
+                // || this.state.showCreatingMessage !== prevState.showCreatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
+                // || this.state.showUpdatingMessage !== prevState.showUpdatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
             ) {
             } else {
                 //  Nothing changed so return
 
                 return;  // EARLY RETURN
+            }
+
+            try {
+                if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+                }
+            } catch (e) {
+                //  Eat Exception
+            }
+            try {
+                if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+                }
+            } catch (e) {
+                //  Eat Exception
             }
 
             this.setState({ showUpdatingMessage: true });
@@ -397,44 +430,19 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
             showlegend: false
         });
 
-        try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
+        ////////////
+
+        //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
+
+        //  Have existing chart in overlay when re-populate chart when have window resize
 
         if ( this.props.isInSingleChartOverlay ) {
-
-            const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-            /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-            // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-            // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-            // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-            // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-            const chart_Width = Math.floor( targetDOMElement_domRect.width );
-            const chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-            //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-            // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-            //
-            // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-            //
-            // if ()
-
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
-        }
-
-        if ( ! this.plot_Ref.current ) {
-            const msg = "( ! this.plot_Ref.current )";
-            console.warn(msg);
-            throw Error(msg);
+            try {
+                //  First remove any existing plot, if it exists
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
+            }
         }
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
@@ -455,16 +463,52 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
             // console.log("*********************************")
         }
 
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
-
         if ( ! this.props.isInSingleChartOverlay ) {
 
-            //  Add click handler on chart on main page to open chart in overlay
+            //  Main Page Plot
 
-            qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                image_DOM_Element: this.image_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
+                qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+            });
+
+        } else {
+
+            //  Overlay Plot
+
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                plot_Div_DOM_Element: this.plot_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
+                qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+            });
         }
-
-        this.setState({ showUpdatingMessage: false });
     }
 
     /**
@@ -472,14 +516,10 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
      */
     private _removeChart() : void {
         try {
-            qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({
-                plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis
-            });
-        } catch (e) {
-            //  Eat Exception
-        }
-        try {
-            Plotly.purge(this.plot_Ref.current)
+            if ( this.plot_Ref.current ) {
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -488,9 +528,8 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
     /**
      *
      */
-    private _openChartInOverlay( event ) {
+    private _openChartInOverlay() {
         try {
-            event.stopPropagation()
             open_MissedCleavages_OverlayContainer({
                 params: {
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent,
@@ -510,22 +549,36 @@ export class QcViewPage_SingleSearch__MissedCleavages_Plot extends React.Compone
      */
     render() {
 
-        const style : React.CSSProperties = { position: "relative" };
-
-        if ( this.props.isInSingleChartOverlay ) {
-            style.height = "100%";
-        }
-
         return (
-            <div style={ style }>
-                <div ref={this.plot_Ref} style={ style }></div>
-                {( this.state.showUpdatingMessage ) ? (
+
+            <React.Fragment>
+
+                {( this.props.isInSingleChartOverlay ) ? (
+                    //  For Single Chart Overlay: div the chart will be rendered into
+                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                ) : (
+                    //  For Main Page: img the chart will be inserted into
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                )}
+
+                {( this.state.showCreatingMessage ) ? (
+
+                    <QcPage_CreatingPlot_BlockCover/>
+
+                ): ( this.state.showUpdatingMessage ) ? (
 
                     <QcPage_UpdatingData_BlockCover/>
 
-                ): null }
+                ): ( ! this.props.isInSingleChartOverlay ) ? (
 
-            </div>
+                    //  Component on main page that goes on top of <img> to show message on hover and call clickHandler_Callback on click
+                    <QcPage_ClickPlot_ForInteractivePlot_BlockCover
+                        clickHandler_Callback={ this._openChartInOverlay_BindThis }
+                    />
+
+                ) : null }
+
+            </React.Fragment>
         );
     }
 }

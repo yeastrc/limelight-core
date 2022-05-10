@@ -45,6 +45,10 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 	private boolean anyPsmHas_ReporterIons;
 	
 	private int numPsms_IfComputedOrInDB = INTEGER_VALUE_NOT_SET;
+
+	private int numPsms_Targets_IfComputedOrInDB = INTEGER_VALUE_NOT_SET;
+	private int numPsms_IndependentDecoys_IfComputedOrInDB = INTEGER_VALUE_NOT_SET;
+	private int numPsms_Decoys_IfComputedOrInDB = INTEGER_VALUE_NOT_SET;
 	
 
 	/**
@@ -69,6 +73,74 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 		}
 		this.numPsms_IfComputedOrInDB = numPsms_IfComputedOrInDB;
 	}
+	/**
+	 * @return null if not set (was not computed)
+	 */
+	public Integer getNumPsms_Targets_IfComputedOrInDB() {
+		if ( numPsms_Targets_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			return null;
+		}
+		return numPsms_Targets_IfComputedOrInDB;
+	}
+	/**
+	 * Throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 * @param numPsms_Targets_IfComputedOrInDB
+	 * @throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 */
+	public void setNumPsms_Targets_IfComputedOrInDB(int numPsms_Targets_IfComputedOrInDB) {
+		if ( numPsms_Targets_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			String msg = "setNumPsms_Targets_IfComputedOrInDB(...) called with value for numPsms_Targets_IfComputedOrInDB that is used for 'NOT SET' of: " + INTEGER_VALUE_NOT_SET;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		this.numPsms_Targets_IfComputedOrInDB = numPsms_Targets_IfComputedOrInDB;
+	}
+	/**
+	 * @return null if not set (was not computed)
+	 */
+	public Integer getNumPsms_IndependentDecoys_IfComputedOrInDB() {
+		if ( numPsms_IndependentDecoys_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			return null;
+		}
+		return numPsms_IndependentDecoys_IfComputedOrInDB;
+	}
+	/**
+	 * Throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 * @param numPsms_IndependentDecoys_IfComputedOrInDB
+	 * @throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 */
+	public void setNumPsms_IndependentDecoys_IfComputedOrInDB(int numPsms_IndependentDecoys_IfComputedOrInDB) {
+		if ( numPsms_IndependentDecoys_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			String msg = "setNumPsms_IndependentDecoys_IfComputedOrInDB(...) called with value for numPsms_IndependentDecoys_IfComputedOrInDB that is used for 'NOT SET' of: " + INTEGER_VALUE_NOT_SET;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		this.numPsms_IndependentDecoys_IfComputedOrInDB = numPsms_IndependentDecoys_IfComputedOrInDB;
+	}
+	/**
+	 * @return null if not set (was not computed)
+	 */
+	public Integer getNumPsms_Decoys_IfComputedOrInDB() {
+		if ( numPsms_Decoys_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			return null;
+		}
+		return numPsms_Decoys_IfComputedOrInDB;
+	}
+	/**
+	 * Throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 * @param numPsms_Decoys_IfComputedOrInDB
+	 * @throws LimelightInternalErrorException if passed Integer.MIN_VALUE
+	 */
+	public void setNumPsms_Decoys_IfComputedOrInDB(int numPsms_Decoys_IfComputedOrInDB) {
+		if ( numPsms_Decoys_IfComputedOrInDB == INTEGER_VALUE_NOT_SET ) {
+			String msg = "setNumPsms_Decoys_IfComputedOrInDB(...) called with value for numPsms_Decoys_IfComputedOrInDB that is used for 'NOT SET' of: " + INTEGER_VALUE_NOT_SET;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		this.numPsms_Decoys_IfComputedOrInDB = numPsms_Decoys_IfComputedOrInDB;
+	}
+	
+	/////////////////////////////
 	
 	public int getReportedPeptideId() {
 		return reportedPeptideId;
@@ -100,4 +172,5 @@ public class ReportedPeptide_MinimalData_List_FromSearcher_Entry {
 	public void setAnyPsmHas_OpenModifications(boolean anyPsmHas_OpenModifications) {
 		this.anyPsmHas_OpenModifications = anyPsmHas_OpenModifications;
 	}
+
 }

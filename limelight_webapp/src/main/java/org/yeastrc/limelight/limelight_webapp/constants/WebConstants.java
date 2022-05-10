@@ -126,6 +126,11 @@ public class WebConstants {
 	public static final String REQUEST_EXPERIMENT_DATA_MAIN_JSON = "experimentJSONMainDataJSON";
 	public static final String REQUEST_EXPERIMENT_PROJECT_SEARCH_IDS_JSON = "experimentProjectSearchIdsJSON";
 	
+
+	//  Is Blib Spectral Library Webservice Fully Configured - for Project Search Id Based Pages.
+	//  From Blib_Spectral_Library_Webservice_Configured__SetForJSP
+
+	public static final String Blib_Spectral_Library_Webservice_IS_Fully_Configured__SetForJSP = "Blib_Spectral_Library_Webservice_IS_Fully_Configured";
 	
 	//  Default URL for Project Search Id Based Pages.
 	//  From Page_UserDefault_SetForJSP

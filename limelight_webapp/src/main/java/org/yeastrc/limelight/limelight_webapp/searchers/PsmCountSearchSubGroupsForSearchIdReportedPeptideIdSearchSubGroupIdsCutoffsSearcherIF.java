@@ -42,6 +42,6 @@ public interface PsmCountSearchSubGroupsForSearchIdReportedPeptideIdSearchSubGro
 			getPsmCountSearchSubGroupsForSearchIdReportedPeptideIdSearchSubGroupIdsCutoffs(
 
 					int reportedPeptideId, int searchId, List<Integer> searchSubGroupIds,
-					SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws SQLException;
+					SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

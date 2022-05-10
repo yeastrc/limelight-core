@@ -43,6 +43,7 @@ import {Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For_
 import {Peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_ANY_OR_Selections";
 import {Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
+import {Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject";
 
 
 /////////   Returned Classes
@@ -298,6 +299,7 @@ class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Pa
     scan_RetentionTime_MZ_UserSelection_StateObject: Scan_RetentionTime_MZ_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject: PeptideUnique_UserSelection_StateObject;
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
+    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
     peptideSequence_UserSelections_StateObject: PeptideSequence_UserSelections_StateObject
     proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
     proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
@@ -651,6 +653,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject: mainfunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                     scan_RetentionTime_MZ_UserSelection_StateObject: mainfunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
                     psm_Charge_Filter_UserSelection_StateObject: mainfunctionParams.psm_Charge_Filter_UserSelection_StateObject,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: mainfunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
                     peptideUnique_UserSelection_StateObject: mainfunctionParams.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: mainfunctionParams.peptideSequence_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: mainfunctionParams.proteinSequenceWidget_StateObject,
@@ -1106,6 +1109,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     if (numPsms === undefined || numPsms === null) {
                         throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === undefined || numPsms === null: reportedPeptideId: " + reportedPeptideId)
                     }
+                    if (numPsms === 0) {
+                        throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === 0: reportedPeptideId: " + reportedPeptideId)
+                    }
 
                     const result_For_ReportedPeptideId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
                         reportedPeptideId,
@@ -1131,10 +1137,17 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
                         numPsms = psmIds_Include.size;
 
+                        if (numPsms === 0) {
+                            throw Error("numPsms = psmIds_Include.size: numPsms === 0: reportedPeptideId: " + reportedPeptideId)
+                        }
+
                     } else {
                         numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
                         if (numPsms === undefined || numPsms === null) {
                             throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === undefined || numPsms === null: reportedPeptideId: " + reportedPeptideId)
+                        }
+                        if (numPsms === 0) {
+                            throw Error("numPsms = numPsmsForReportedPeptideIdMap.get( reportedPeptideId ): numPsms === 0: reportedPeptideId: " + reportedPeptideId)
                         }
                     }
 

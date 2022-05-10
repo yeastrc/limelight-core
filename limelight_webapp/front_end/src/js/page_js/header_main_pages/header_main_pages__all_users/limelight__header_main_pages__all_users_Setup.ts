@@ -23,7 +23,7 @@ const limelight__header_main_pages__AllUsers_Setup = function () {
 
                     if ( event.metaKey || event.ctrlKey ) {
 
-                        window.open( signIn_URL, "_blank" );
+                        window.open( signIn_URL, "_blank", "noopener" );
 
                     } else {
                         window.location.href = signIn_URL;

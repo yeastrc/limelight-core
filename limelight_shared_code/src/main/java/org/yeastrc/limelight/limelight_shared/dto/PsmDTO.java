@@ -36,7 +36,8 @@ public class PsmDTO {
 	private boolean hasReporterIons;
 	private BigDecimal precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal precursor_MZ;            // precursor_m_z
-
+	private boolean isDecoy;					// is a PSM for Decoy protein
+	private boolean isIndependentDecoy;			// is a PSM for Independent Decoy protein
 
 	@Override
 	public String toString() {
@@ -44,9 +45,9 @@ public class PsmDTO {
 				+ charge + ", scanNumber=" + scanNumber + ", searchScanFileId=" + searchScanFileId
 				+ ", hasModifications=" + hasModifications + ", hasOpenModifications=" + hasOpenModifications
 				+ ", hasReporterIons=" + hasReporterIons + ", precursor_RetentionTime=" + precursor_RetentionTime
-				+ ", precursor_MZ=" + precursor_MZ + "]";
+				+ ", precursor_MZ=" + precursor_MZ + ", isDecoy=" + isDecoy + ", isIndependentDecoy="
+				+ isIndependentDecoy + "]";
 	}
-
 
 	public long getId() {
 		return id;
@@ -113,5 +114,17 @@ public class PsmDTO {
 	}
 	public void setHasOpenModifications(boolean hasOpenModifications) {
 		this.hasOpenModifications = hasOpenModifications;
+	}
+	public boolean isDecoy() {
+		return isDecoy;
+	}
+	public void setDecoy(boolean isDecoy) {
+		this.isDecoy = isDecoy;
+	}
+	public boolean isIndependentDecoy() {
+		return isIndependentDecoy;
+	}
+	public void setIndependentDecoy(boolean isIndependentDecoy) {
+		this.isIndependentDecoy = isIndependentDecoy;
 	}
 }

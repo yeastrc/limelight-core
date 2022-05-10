@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -39,11 +38,11 @@ public interface ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsS
 	 * @param searcherCutoffValuesSearchLevel
 	 * @param minimumNumberOfPSMsPerReportedPeptide - Must be >= 1
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> getPeptideDataList(
 			int searchId,
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel,
-			int minimumNumberOfPSMsPerReportedPeptide) throws SQLException;
+			int minimumNumberOfPSMsPerReportedPeptide) throws Exception;
 
 }

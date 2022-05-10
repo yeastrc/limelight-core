@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
@@ -35,6 +36,8 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -44,7 +47,14 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 public class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher extends Limelight_JDBC_Base implements PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_IF {
 
 	private static final Logger log = LoggerFactory.getLogger( PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
+	/**
+	 * 
+	 *
+	 */
 	public static class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry {
 		
 		private long psmId;
@@ -76,10 +86,12 @@ public class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCu
 	@Override
 	public List<PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs(
 			
-			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws SQLException {
+			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 		
 		List<PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> resultList = new ArrayList<>();
 
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		
 		//  Create reversed version of list
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList_Reversed = 
 				new ArrayList<>( searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList() );
@@ -99,7 +111,12 @@ public class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCu
 			sqlSB.append( " INNER JOIN psm_open_modification_tbl ON psm_tbl.id = psm_open_modification_tbl.psm_id " );
 			sqlSB.append( " LEFT OUTER JOIN psm_open_modification_position_tbl ON psm_open_modification_tbl.id = psm_open_modification_position_tbl.psm_open_modification_id " );
 			sqlSB.append( " WHERE psm_tbl.search_id = ? AND psm_tbl.reported_peptide_id = ? " );
-			
+
+			if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+				// Exclude  records where is_decoy = 'true'
+				sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			}
+
 		} else {
 			{
 				//  Main Select
@@ -117,9 +134,18 @@ public class PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCu
 					}
 					
 					//  Add innermost subselect on psm_tbl to get psm ids
-					
-					sqlSB.append( " ( SELECT id AS psm_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? ) " );
 
+					sqlSB.append( " ( SELECT id AS psm_id FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? " );
+					
+					// Include  records where is_independent_decoy = 'true'
+					
+					if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+						// Exclude  records where is_decoy = 'true'
+						sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+					}
+
+					sqlSB.append( " ) " );
+					
 					//  Close sub-selects from inner most to outer most 
 			
 					for ( SearcherCutoffValuesAnnotationLevel entry : psmCutoffValuesList_Reversed ) {

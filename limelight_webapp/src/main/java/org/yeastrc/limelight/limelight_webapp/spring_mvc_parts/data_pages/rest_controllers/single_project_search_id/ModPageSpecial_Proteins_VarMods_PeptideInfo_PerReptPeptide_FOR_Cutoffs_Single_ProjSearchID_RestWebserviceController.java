@@ -63,7 +63,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideS
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
-import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id.ReportedPeptideStringList_From_ReportedPeptideIds_RestWebserviceController.WebserviceResultPer_ReportedPeptideId;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.Gzip_ByteArray_To_ByteArray_IF;
@@ -325,7 +324,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	    				reportedPeptideStrings_For_ReportedPeptideIds_SearchIds_Searcher
 	    				.getReportedPeptideStrings_For_ReportedPeptideIds_SearchIds( reportedPeptideIds, searchIds );
 				
-	    		Map<Integer, WebserviceResultPer_ReportedPeptideId> reportedPeptideStringResult = new HashMap<>();
+//	    		Map<Integer, WebserviceResultPer_ReportedPeptideId> reportedPeptideStringResult = new HashMap<>();
 
 	    		//  Validate all ReportedPeptideId found in DB
 	    		Set<Integer> reportedPeptideIdsRequestedAsSet = new HashSet<>( reportedPeptideIds );

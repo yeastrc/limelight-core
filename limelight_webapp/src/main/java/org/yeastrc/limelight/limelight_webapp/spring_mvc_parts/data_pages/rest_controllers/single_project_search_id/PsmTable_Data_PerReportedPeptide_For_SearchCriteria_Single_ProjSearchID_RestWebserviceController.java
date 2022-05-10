@@ -67,6 +67,9 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * 
  * Retrieve PSM data from psm_tbl (all fields) Per Reported Peptide Id for Project Search ID, and Search Criteria
+ * 
+ * Excludes Decoy PSMs
+ * Includes Independent Decoy PSMs
  *
  */
 @RestController
@@ -304,6 +307,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				resultEntry.hasModifications = dbEntry.isHasModifications();
     				resultEntry.hasOpenModifications = dbEntry.isHasOpenModifications();
     				resultEntry.hasReporterIons = dbEntry.isHasReporterIons();
+    				resultEntry.independentDecoyPSM = dbEntry.isIndependentDecoyPSM();
     				
     				psms.add(resultEntry);
     			}
@@ -424,7 +428,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	boolean hasModifications;
     	boolean hasOpenModifications;
     	boolean hasReporterIons;
-
+    	boolean independentDecoyPSM;   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
+    	
 		public boolean isHasModifications() {
 			return hasModifications;
 		}
@@ -451,6 +456,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public Integer getSearchScanFileId() {
 			return searchScanFileId;
+		}
+		public boolean isIndependentDecoyPSM() {
+			return independentDecoyPSM;
 		}
     }
 

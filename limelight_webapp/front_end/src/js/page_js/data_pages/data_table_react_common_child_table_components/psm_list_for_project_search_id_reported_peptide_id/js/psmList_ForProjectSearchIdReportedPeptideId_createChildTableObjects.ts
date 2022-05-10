@@ -218,7 +218,8 @@ const _create_DataTable_RootTableObject = function({
         anyPsmsHave_precursor_M_Over_Z : get_DataTable_DataRowEntries_Result.anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime : get_DataTable_DataRowEntries_Result.anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_reporterIonMassesDisplay,
-        anyPsmsHave_openModificationMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_openModificationMassesDisplay
+        anyPsmsHave_openModificationMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_openModificationMassesDisplay,
+        anyPsmIs_IndependentDecoy: get_DataTable_DataRowEntries_Result.anyPsmIs_IndependentDecoy
     });
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
@@ -254,7 +255,8 @@ const _getDataTableColumns = function({
     anyPsmsHave_precursor_M_Over_Z,
     anyPsmsHave_retentionTime,
     anyPsmsHave_reporterIonMassesDisplay,
-    anyPsmsHave_openModificationMassesDisplay
+    anyPsmsHave_openModificationMassesDisplay,
+    anyPsmIs_IndependentDecoy
 
 } : { 
     
@@ -267,6 +269,7 @@ const _getDataTableColumns = function({
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
     anyPsmsHave_openModificationMassesDisplay? : boolean
+    anyPsmIs_IndependentDecoy? : boolean
 
 }) : {
     dataTable_Columns : Array<DataTable_Column>
@@ -409,6 +412,7 @@ interface Get_DataTable_DataRowEntries_Result {
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
     anyPsmsHave_openModificationMassesDisplay? : boolean
+    anyPsmIs_IndependentDecoy?: boolean
 }
 
 /**
@@ -455,6 +459,8 @@ const _get_DataTable_DataRowEntries = function({
     let anyPsmsHave_reporterIonMassesDisplay : boolean = false;
     let anyPsmsHave_openModificationMassesDisplay = false;
 
+    let anyPsmIs_IndependentDecoy = false;
+
     for ( const psmListItem of psmList ) {
 
         if ( psmListItem.precursor_M_Over_Z !== undefined && psmListItem.precursor_M_Over_Z !== null ) {
@@ -468,6 +474,10 @@ const _get_DataTable_DataRowEntries = function({
         }
         if ( psmListItem.openModificationMassAndPositionsList ) {
             anyPsmsHave_openModificationMassesDisplay = true;
+        }
+
+        if ( psmListItem.psmIs_IndependentDecoy ) {
+            anyPsmIs_IndependentDecoy = true;
         }
     }
 
@@ -741,6 +751,12 @@ const _get_DataTable_DataRowEntries = function({
             }
         }
 
+        let row_CSS_Additions: string = undefined;
+
+        if (  psmListItem.psmIs_IndependentDecoy ) {
+            row_CSS_Additions = " psm-table-addition--psm-is--independent-decoy--data-table-data-rows-inner-containing-div "
+        }
+
         //  Add the data row
 
         const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
@@ -749,7 +765,8 @@ const _get_DataTable_DataRowEntries = function({
             uniqueId : psmListItem.psmId,
             sortOrder_OnEquals : psmCounter, // Original Sort Order
             columnEntries,
-            dataTable_DataRowEntry_DownloadTable
+            dataTable_DataRowEntry_DownloadTable,
+            row_CSS_Additions
         })
         dataTable_DataRowEntries.push( dataTable_DataRowEntry );
     }
@@ -759,7 +776,8 @@ const _get_DataTable_DataRowEntries = function({
         anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay,
-        anyPsmsHave_openModificationMassesDisplay
+        anyPsmsHave_openModificationMassesDisplay,
+        anyPsmIs_IndependentDecoy
     }
 }
 

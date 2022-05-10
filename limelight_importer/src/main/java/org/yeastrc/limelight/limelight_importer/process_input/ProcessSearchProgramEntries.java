@@ -30,7 +30,6 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProt
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationTypes;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationType;
@@ -43,6 +42,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgramInfo;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchPrograms;
 import org.yeastrc.limelight.limelight_importer.dao.AnnotationTypeDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchProgramsPerSearchDAO;
+import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
@@ -74,10 +74,13 @@ public class ProcessSearchProgramEntries {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, SearchProgramEntry> processSearchProgramEntries( LimelightInput limelightInput, int searchId ) throws Exception {
+	public Map<String, SearchProgramEntry> processSearchProgramEntries( 
+			
+			Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object,
+			int searchId ) throws Exception {
 		
 		Map<String, SearchProgramEntry> searchProgramEntryMap = new HashMap<>();
-		SearchProgramInfo searchProgramInfo = limelightInput.getSearchProgramInfo(); 
+		SearchProgramInfo searchProgramInfo = input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getSearchProgramInfo(); 
 		SearchPrograms limelightInputSearchPrograms = searchProgramInfo.getSearchPrograms();
 		List<SearchProgram> searchProgramList =
 				limelightInputSearchPrograms.getSearchProgram();

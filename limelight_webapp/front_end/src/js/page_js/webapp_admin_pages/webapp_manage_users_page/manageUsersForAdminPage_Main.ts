@@ -343,7 +343,7 @@ const revokePersonInviteConfirmed = function(clickThis) {
         	handleAJAXFailure( errMsg );
         },
         error : function(jqXHR, textStatus, errorThrown) {
-			handleAJAXError(jqXHR, textStatus, errorThrown);
+			handleAJAXError({ jqXHR, textStatus, errorThrown, url: _URL, requestData: ajaxParams });
 //			alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
 //			textStatus: " + textStatus );
 		}
@@ -676,7 +676,7 @@ const invitePerson = function() {
 			showErrorMsg( $element );
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
-			handleAJAXError(jqXHR, textStatus, errorThrown);
+			handleAJAXError({ jqXHR, textStatus, errorThrown, url: _URL, requestData });
 			// alert( "exception: " + errorThrown + ", jqXHR: " + jqXHR + ",
 			// textStatus: " + textStatus );
 		}

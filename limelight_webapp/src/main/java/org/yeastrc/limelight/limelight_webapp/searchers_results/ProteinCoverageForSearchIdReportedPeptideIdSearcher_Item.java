@@ -27,6 +27,7 @@ public class ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item {
 	private int proteinSequenceVersionId;
 	private int proteinStartPosition;
 	private int proteinEndPosition;
+	private boolean proteinIsIndependentDecoy;
 	
 	public int getProteinSequenceVersionId() {
 		return proteinSequenceVersionId;
@@ -51,5 +52,11 @@ public class ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item {
 	}
 	public void setReportedPeptideId(int reportedPeptideId) {
 		this.reportedPeptideId = reportedPeptideId;
+	}
+	public boolean isProteinIsIndependentDecoy() {
+		return proteinIsIndependentDecoy;
+	}
+	public void setProteinIsIndependentDecoy(boolean proteinIsIndependentDecoy) {
+		this.proteinIsIndependentDecoy = proteinIsIndependentDecoy;
 	}
 }

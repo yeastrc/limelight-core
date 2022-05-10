@@ -26,13 +26,16 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.Yes_No__NOT_APPLICABLE_Enum;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -56,6 +59,11 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_
 public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcher extends Limelight_JDBC_Base implements ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearcher.class );
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
+	
 	
 	private final String SQL = 
 			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
@@ -63,12 +71,22 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_open_modifictions, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions, "
-					+ " search__rep_pept__lookup_tbl.psm_num_at_default_cutoff "
-//			+ " search__rep_pept__lookup_tbl.num_unique_psm_at_default_cutoff "
+					+ " search__rep_pept__lookup_tbl.psm_num_targets_only_at_default_cutoff, "
+					+ " search__rep_pept__lookup_tbl.psm_num_indpendent_decoys_only_at_default_cutoff, "
+					+ " search__rep_pept__lookup_tbl.psm_num_decoys_only_at_default_cutoff "
+					
 			+ " FROM search__rep_pept__lookup_tbl "
 
-			+ " WHERE search__rep_pept__lookup_tbl.search_id = ? "
-			+ " AND search__rep_pept__lookup_tbl.psm_num_at_default_cutoff >= ? ";
+			+ " WHERE search__rep_pept__lookup_tbl.search_id = ? ";
+
+	private final String SQL_PSM_NUM_CHECK__TARGET_COUNTS = 
+			//  # targets >= minimumNumberOfPSMsPerReportedPeptide
+			" AND ( search__rep_pept__lookup_tbl.psm_num_targets_only_at_default_cutoff >= ? ) ";
+	
+
+	private final String SQL_PSM_NUM_CHECK__TARGET_AND_INDEPENDENT_DECOY_COUNTS = 
+			//  # targets + # independent decoys >= minimumNumberOfPSMsPerReportedPeptide
+			" AND ( ( search__rep_pept__lookup_tbl.psm_num_targets_only_at_default_cutoff + search__rep_pept__lookup_tbl.psm_num_indpendent_decoys_only_at_default_cutoff ) >= ? ) ";
 	
 	/**
 	 * !!!  WARNING  !!!!
@@ -87,7 +105,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 	public List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  getPeptideDataList( 
 			int searchId, 
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel,
-			int minimumNumberOfPSMsPerReportedPeptide ) throws SQLException {
+			int minimumNumberOfPSMsPerReportedPeptide ) throws Exception {
 		
 		if ( minimumNumberOfPSMsPerReportedPeptide < 1 ) {
 			String msg = "minimumNumberOfPSMsPerReportedPeptide must be >= 1";
@@ -102,6 +120,20 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		
 		sqlSB.append( SQL );
+
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsIndependentDecoy_True() ) {
+			
+			// Have psm_tbl.is_independent_decoy is true so use condition
+
+			sqlSB.append( SQL_PSM_NUM_CHECK__TARGET_AND_INDEPENDENT_DECOY_COUNTS );
+
+		} else {
+
+			sqlSB.append( SQL_PSM_NUM_CHECK__TARGET_COUNTS );
+
+		}
+		
 		
 		sqlSB.append( " AND " );
 		sqlSB.append( " search__rep_pept__lookup_tbl.peptide_meets_default_cutoffs = '" );
@@ -152,15 +184,18 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 							item.setAnyPsmHas_ReporterIons(true);
 						}
 					}
-					int numPsmsForDefaultCutoffs = rs.getInt( "psm_num_at_default_cutoff" );
-					if ( ! rs.wasNull() ) {
-						item.setNumPsms_IfComputedOrInDB( numPsmsForDefaultCutoffs );
-					}
+					
+					item.setNumPsms_Targets_IfComputedOrInDB( rs.getInt( "psm_num_targets_only_at_default_cutoff" ) );  
+					item.setNumPsms_IndependentDecoys_IfComputedOrInDB( rs.getInt( "psm_num_indpendent_decoys_only_at_default_cutoff" ) );  
+					item.setNumPsms_Decoys_IfComputedOrInDB( rs.getInt( "psm_num_decoys_only_at_default_cutoff" ) );  
+					
+					//  TODO  For now assign to this the # targets + # Independent Decoys
+					item.setNumPsms_IfComputedOrInDB( item.getNumPsms_Targets_IfComputedOrInDB() + item.getNumPsms_IndependentDecoys_IfComputedOrInDB() );
 					
 					resultList.add( item );
 				}
 			}
-		} catch ( SQLException e ) {
+		} catch ( Exception e ) {
 			log.error( "error running SQL: " + querySQL, e );
 			throw e;
 		}

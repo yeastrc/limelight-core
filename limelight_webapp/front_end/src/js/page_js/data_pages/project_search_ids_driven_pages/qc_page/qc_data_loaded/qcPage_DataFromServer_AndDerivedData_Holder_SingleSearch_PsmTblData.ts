@@ -95,6 +95,8 @@ export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData
     readonly hasModifications: boolean;
     readonly hasOpenModifications: boolean;
     readonly hasReporterIons: boolean;
+
+    readonly independentDecoyPSM: boolean;   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
 }
 
 

@@ -14,10 +14,15 @@ import {
     QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Statistics_OnlyPlot,
     QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Statistics_OnlyPlot_Props_PropsValue
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Statistics_OnlyPlot";
-import {QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer";
+import {
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType,
+    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
+import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData";
+import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
 
 
 /**
@@ -34,6 +39,12 @@ export interface QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_Annotatio
     annotationTypeId_Score_X: number
     annotationTypeId_Score_Y: number
 
+    transform_Score_X: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+    transform_Score_Y: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+
+    score_X_Contains_NegativeValues_Callback: ( score_Contains_NegativeValues: boolean ) => void
+    score_Y_Contains_NegativeValues_Callback: ( score_Contains_NegativeValues: boolean ) => void
+
     isInSingleChartOverlay: boolean
 
     chartType: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType
@@ -46,6 +57,7 @@ interface QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_
 
     //  Update shouldComponentUpdate(...)
 
+    showCreatingMessage?: boolean
     showUpdatingMessage?: boolean
     onlyPlot_PropsValue?: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Statistics_OnlyPlot_Props_PropsValue
 }
@@ -101,7 +113,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
         this._prevProps = props;
 
-        this.state = { };
+        this.state = { showCreatingMessage: true, showUpdatingMessage: false };
     }
 
     /**
@@ -152,7 +164,10 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             || this.props.searchScanFileId_Selection !== nextProps.searchScanFileId_Selection
             || this.props.annotationTypeId_Score_X !== nextProps.annotationTypeId_Score_X
             || this.props.annotationTypeId_Score_Y !== nextProps.annotationTypeId_Score_Y
+            || this.props.transform_Score_X !== nextProps.transform_Score_X
+            || this.props.transform_Score_Y !== nextProps.transform_Score_Y
             || this.props.chartType !== nextProps.chartType
+            || this.state.showCreatingMessage !== nextState.showCreatingMessage
             || this.state.showUpdatingMessage !== nextState.showUpdatingMessage
             || this.state.onlyPlot_PropsValue !== nextState.onlyPlot_PropsValue
         ) {
@@ -175,8 +190,11 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     || this.props.searchScanFileId_Selection !== prevProps.searchScanFileId_Selection
                     || this.props.annotationTypeId_Score_X !== prevProps.annotationTypeId_Score_X
                     || this.props.annotationTypeId_Score_Y !== prevProps.annotationTypeId_Score_Y
+                    || this.props.transform_Score_X !== prevProps.transform_Score_X
+                    || this.props.transform_Score_Y !== prevProps.transform_Score_Y
                     || this.props.chartType !== prevProps.chartType
                     // || this.state.onlyPlot_PropsValue !== prevState.onlyPlot_PropsValue  //   REMOVE ALL State property checks in componentDidUpdate
+                    // || this.state.showCreatingMessage !== prevState.showCreatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
                     // || this.state.showUpdatingMessage !== nextState.showUpdatingMessage  //   REMOVE ALL State property checks in componentDidUpdate
                 ) {
                 } else {
@@ -219,34 +237,83 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             return; // EARLY RETURN
         }
 
+        const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
+
+        const commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId =
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId);
+        if (!commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId) {
+            const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering_For_ProjectSearchId(projectSearchId); returned nothing. projectSearchId: " + projectSearchId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
         const promises: Array<Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>> = []
         {
-            const psmFilterableAnnotationTypeIds_Requested: Set<number> = new Set();
-
-            psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_X )
-            psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_Y );
-
-            const promise =
-                this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered({ psmFilterableAnnotationTypeIds_Requested });
-
-            promises.push(promise);
-        }
-        {
+            //  Loads PSM Filtered data
+            //  calls this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded.singleSearch_PsmTblData_LoadIfNeeded(...)
             const promise =
                 this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
                 qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PerScore_Statistics_PsmTblData();
 
             promises.push(promise);
         }
+
+        let psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
+        {
+            const psmFilterableAnnotationTypeIds_Requested: Set<number> = new Set();
+
+            psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_X )
+            psmFilterableAnnotationTypeIds_Requested.add( this.props.annotationTypeId_Score_Y );
+
+            const get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result =
+                commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData().
+                get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder({ psmFilterableAnnotationTypeIds_Requested });
+
+            if ( get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data ) {
+                psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder = get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder;
+            } else if ( get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise ) {
+                const promise = new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => { try {
+                    get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
+                    get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.then(value => { try {
+                        psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder = value.psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                        resolve(null);
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            } else {
+                const msg = "get_PSM_FilterableAnnotationData_Unfiltered__Exclude_DecoyPSMs__Holder_Result no data or promise";
+                console.warn(msg);
+                throw Error(msg);
+            }
+        }
+
+        let psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder;
         {
             if ( this.props.searchScanFileId_Selection !== QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES ) {
 
-                const promise =
-                    this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                        qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered__PsmTblData();
+                const get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result =
+                    commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData().
+                    get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder();
 
-                promises.push(promise);
+                if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data ) {
+                    psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                } else if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise ) {
+                    const promise = new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => { try {
+                        get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
+                        get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.then(value => { try {
+                            psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = value.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                            resolve(null);
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    const msg = "get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result no data or promise";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
             }
         }
 
@@ -259,7 +326,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     return; // EARLY RETURN
                 }
 
-                this.setState({ showUpdatingMessage: false });
+                this.setState({ showCreatingMessage: false, showUpdatingMessage: false });
 
                 console.warn( "promise.catch(...): reason: ", reason );
 
@@ -278,7 +345,82 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
 
                 const value = values[0]; // Just use first entry
 
-                this.setState({ showUpdatingMessage: false });
+                if ( this.props.score_X_Contains_NegativeValues_Callback && this.props.score_Y_Contains_NegativeValues_Callback ) {
+
+                    // Check for Negative Scores
+
+                    let min_Score_X = undefined;
+                    let min_Score_Y = undefined;
+
+                    for ( const psmFilterableAnnotationData_Unfiltered_Entry of psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder.get_Per_Psm_Holder_Entries_IterableIterator() ) {
+
+                        const psmFilterableAnnotationData_For_annotationTypeId_Score_X =
+                            psmFilterableAnnotationData_Unfiltered_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.annotationTypeId_Score_X );
+                        const psmFilterableAnnotationData_For_annotationTypeId_Score_Y =
+                            psmFilterableAnnotationData_Unfiltered_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.annotationTypeId_Score_Y );
+
+                        if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_X ) {
+                            const msg = "psmFilterableAnnotationData_Unfiltered_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_X ); returned nothing. this.props.annotationTypeId_Score_X: " + this.props.annotationTypeId_Score_X;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+                        if ( ! psmFilterableAnnotationData_For_annotationTypeId_Score_Y ) {
+                            const msg = "psmFilterableAnnotationData_Unfiltered_Entry.get_PsmFilterableAnnotationData_For_AnnotationTypeId( this.props.propsValue.annotationTypeId_Score_Y ); returned nothing. this.props.annotationTypeId_Score_Y: " + this.props.annotationTypeId_Score_Y;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        {
+                            const score_X = psmFilterableAnnotationData_For_annotationTypeId_Score_X.annotationValueNumber;
+                            const score_Y = psmFilterableAnnotationData_For_annotationTypeId_Score_Y.annotationValueNumber;
+
+                            if (min_Score_X === undefined) {
+                                min_Score_X = score_X;
+                                min_Score_Y = score_Y;
+                            } else {
+                                if ( min_Score_X > score_X ) {
+                                    min_Score_X = score_X;
+                                }
+                                if ( min_Score_Y > score_Y ) {
+                                    min_Score_Y = score_Y;
+                                }
+                            }
+                        }
+                    }
+
+                    const transform_Score_X_Local = this.props.transform_Score_X;  //  Save off since calling callback changes this.props.transform_Score_X
+                    const transform_Score_Y_Local = this.props.transform_Score_Y;  //  Save off since calling callback changes this.props.transform_Score_Y
+
+                    if ( min_Score_X < 0 ) {
+                        this.props.score_X_Contains_NegativeValues_Callback( true )
+                    } else {
+                        this.props.score_X_Contains_NegativeValues_Callback( false )
+                    }
+                    if ( min_Score_Y < 0 ) {
+                        this.props.score_Y_Contains_NegativeValues_Callback( true )
+                    } else {
+                        this.props.score_Y_Contains_NegativeValues_Callback( false )
+                    }
+
+                    if ( min_Score_X < 0
+                        && transform_Score_X_Local !== QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+
+                        //  HAVE score X < 0 AND selection X of transform log10 or -log10 so return instead of showing chart
+
+                        return;
+                    }
+
+                    if ( min_Score_Y < 0
+                        && transform_Score_Y_Local !== QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+
+                        //  HAVE score Y < 0 AND selection Y of transform log10 or -log10 so return instead of showing chart
+
+                        return;
+                    }
+
+                }
+
+                this.setState({ showCreatingMessage: false, showUpdatingMessage: false });
 
                 const onlyPlot_PropsValue : QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Statistics_OnlyPlot_Props_PropsValue = {
 
@@ -286,9 +428,15 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent,
                     qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: value,
 
+                    psmFilterableAnnotationData__NO_PSM_Peptide_Protein_Filtering__Holder,
+                    psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder,
+
                     searchScanFileId_Selection: this.props.searchScanFileId_Selection,
                     annotationTypeId_Score_X: this.props.annotationTypeId_Score_X,
                     annotationTypeId_Score_Y: this.props.annotationTypeId_Score_Y,
+
+                    transform_Score_X: this.props.transform_Score_X,
+                    transform_Score_Y: this.props.transform_Score_Y,
 
                     isInSingleChartOverlay: this.props.isInSingleChartOverlay,
 

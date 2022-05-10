@@ -31,6 +31,9 @@ public class PsmWebDisplayWebServiceResult {
 	private boolean hasOpenModifications;
 	private boolean hasReporterIons;
 	
+	private boolean psmIs_IndependentDecoy;
+//	private boolean psmIs_decoy;  //  Remove since NOT returned from PsmWebDisplaySearcher 
+	
 	private int charge;
 	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal psm_precursor_MZ;            // precursor_m_z
@@ -120,5 +123,11 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setSearchScanFileId(Integer searchScanFileId) {
 		this.searchScanFileId = searchScanFileId;
+	}
+	public boolean isPsmIs_IndependentDecoy() {
+		return psmIs_IndependentDecoy;
+	}
+	public void setPsmIs_IndependentDecoy(boolean psmIs_IndependentDecoy) {
+		this.psmIs_IndependentDecoy = psmIs_IndependentDecoy;
 	}
 }

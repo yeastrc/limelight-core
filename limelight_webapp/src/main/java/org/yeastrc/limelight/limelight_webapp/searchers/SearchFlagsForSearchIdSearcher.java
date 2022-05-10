@@ -66,7 +66,17 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		private boolean anyPsmHas_DynamicModifications;
 		private boolean anyPsmHas_OpenModifications;
 		private boolean anyPsmHas_ReporterIons;
+
+		private boolean anyPsmHas_IsDecoy_True;
+		private boolean anyPsmHas_IsIndependentDecoy_True;
+
+		private Boolean allPsmHave_Precursor_RetentionTime;		//  null if not populated	//  NOT Populated Yet for Existing Searches
+		private Boolean allPsmHave_Precursor_M_Over_Z;			//  null if not populated	//  NOT Populated Yet for Existing Searches
+		
+		private Boolean psmIds_AreSequential; //  null if not populated  // All PSM Ids for the search are sequential - can use PSM Id ranges  	//  NOT Populated Yet for Existing Searches
+		
 		private boolean reportedPeptideMatchedProteinMappingProvided;
+		
 		
 		public boolean isHasScanFilenames() {
 			return hasScanFilenames;
@@ -92,6 +102,27 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public int getSearchId() {
 			return searchId;
 		}
+		public boolean isAnyPsmHas_IsDecoy_True() {
+			return anyPsmHas_IsDecoy_True;
+		}
+		public boolean isAnyPsmHas_IsIndependentDecoy_True() {
+			return anyPsmHas_IsIndependentDecoy_True;
+		}
+		/**
+		 * @return - null if not populated
+		 */
+		public Boolean getAllPsmHave_Precursor_RetentionTime() {
+			return allPsmHave_Precursor_RetentionTime;
+		}
+		public Boolean getAllPsmHave_Precursor_M_Over_Z() {
+			return allPsmHave_Precursor_M_Over_Z;
+		}
+		/**
+		 * @return - null if not populated
+		 */
+		public Boolean getPsmIds_AreSequential() {
+			return psmIds_AreSequential;
+		}
 		
 	}
 		
@@ -103,6 +134,11 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 			+ " any_psm_has_dynamic_modifications, "
 			+ " any_psm_has_open_modificaton_masses, "
 			+ " any_psm_has_reporter_ions,"
+			+ " any_psm_has__is_decoy_true,"
+			+ " any_psm_has__is_independent_decoy_true,"
+			+ " all_psms_have_precursor_retention_time,"	//  NOT Populated Yet for Existing Searches
+			+ " all_psms_have_precursor_m_z,"				//  NOT Populated Yet for Existing Searches
+			+ " psm_ids_are_sequential,"					//  NOT Populated Yet for Existing Searches
 			+ " reported_peptide_matched_protein_mapping_provided "
 			+ " FROM "
 			+ " search_tbl  "
@@ -178,6 +214,50 @@ public class SearchFlagsForSearchIdSearcher extends Limelight_JDBC_Base implemen
 					if ( anyPsmHas_ReporterIons == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						resultItem.anyPsmHas_ReporterIons = true;
 					}
+					{
+						int fieldIntValue = rs.getInt( "any_psm_has__is_decoy_true" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.anyPsmHas_IsDecoy_True = true;
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "any_psm_has__is_independent_decoy_true" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							resultItem.anyPsmHas_IsIndependentDecoy_True = true;
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "all_psms_have_precursor_retention_time" );
+						if ( ! rs.wasNull() ) {
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								resultItem.allPsmHave_Precursor_RetentionTime = true;
+							} else {
+								resultItem.allPsmHave_Precursor_RetentionTime = false;
+							}
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "all_psms_have_precursor_m_z" );
+						if ( ! rs.wasNull() ) {
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								resultItem.allPsmHave_Precursor_M_Over_Z = true;
+							} else {
+								resultItem.allPsmHave_Precursor_M_Over_Z = false;
+							}
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "psm_ids_are_sequential" );
+						if ( ! rs.wasNull() ) {
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								resultItem.psmIds_AreSequential = true;
+							} else {
+								resultItem.psmIds_AreSequential = false;
+							}
+						}
+					}
+					
+
 					int reportedPeptideMatchedProteinMappingProvided = rs.getInt( "reported_peptide_matched_protein_mapping_provided" );
 					if ( reportedPeptideMatchedProteinMappingProvided == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 						resultItem.reportedPeptideMatchedProteinMappingProvided = true;

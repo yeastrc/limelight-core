@@ -62,6 +62,8 @@ class PsmPeptideEntryAfterProcessing {
 /**
  * Create PSM Peptide Table Data
  *
+ * Called on Initial Page load and when User clicks on a Table row to change to display data for that table row
+ *
  */
 export const lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData = function (
 	{
@@ -1124,9 +1126,20 @@ const _create_Single_DataTable_Row = function (
 			}
 		}
 
+		let row_CSS_Additions: string = undefined;
 		let highlightRow = false
+
+		if (  psmPeptideEntryAfterProcessingEntry.psmObject.psmIs_IndependentDecoy ) {
+			row_CSS_Additions = " psm-table-addition--psm-is--independent-decoy--data-table-data-rows-inner-containing-div "
+		}
+
 		if ( psmId_Selection === psmId && openModPosition_Selection === openModPosition_ForRow_SelectionFormatted ) {
-			highlightRow = true
+
+			if (  psmPeptideEntryAfterProcessingEntry.psmObject.psmIs_IndependentDecoy ) {
+				row_CSS_Additions = " psm-table-addition--psm-is--independent-decoy--psm-is-selected--data-table-data-rows-inner-containing-div "
+			} else {
+				highlightRow = true
+			}
 		}
 
 		let uniqueId : number | string = psmId;
@@ -1160,6 +1173,7 @@ const _create_Single_DataTable_Row = function (
 			sortOrder_OnEquals,
 			columnEntries,
 			dataTable_DataRowEntry_DownloadTable,
+			row_CSS_Additions,
 			highlightRowWithBackgroundColor: highlightRow,
 			tableRowClickHandler_Callback_NoDataPassThrough
 		})

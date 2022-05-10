@@ -152,7 +152,7 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
 
     if ( ctrlKeyOrMetaKey ) {
 
-        window.open(url, "_blank", "");
+        window.open(url, "_blank", "noopener");
 
         return;  // EARLY RETURN
     }
@@ -176,7 +176,7 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
     //     // Open URL in new window
     //
     //     //  Open Empty window to set the URL below in call to _goToURL_DataPage(...)
-    //      newWindow = window.open( "", "_blank", "" );
+    //      newWindow = window.open( "", "_blank", "noopener" );
     // }
 
 

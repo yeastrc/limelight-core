@@ -268,8 +268,35 @@
 
     //  Data Table React: End
 
+    ////////////////
 
-    //  Data Table: Start
+    //   PSM List Table additions
+
+
+   div.psm-table-addition--psm-is--independent-decoy--data-table-data-rows-inner-containing-div {
+
+     background-color: #FBF6FF !important;
+
+     &:hover {
+       background-color: #F3E7FF !important;
+     }
+   }
+
+   div.psm-table-addition--psm-is--independent-decoy--psm-is-selected--data-table-data-rows-inner-containing-div {
+
+     background-color: #F3E7FF !important;
+
+     &:hover {
+       background-color: #EAD6FD !important;
+     }
+   }
+
+
+
+
+   ////////////////
+
+    //  OLD, Likely UNUSED:   Data Table: Start
 
     div.hoveredTableRow {
         background-color:$site-color-medium;
@@ -425,26 +452,6 @@
         border-bottom-color: $site-color-medium;;
         @include opacity(0.6);
     }
-
-
-	/* background colors for the searches.  
-	
-	This number of colors must match the calculation in /WebRoot/WEB-INF/jsp-includes/mergedSearch_SearchIndexToSearchColorCSSClassName.jsp
-	
-	There is a copy of these colors altered to compensate for fill-opacity: 0.3 in the venn diagram in js/mergedSearchesVennDiagramCreator.js
-	
-        */
-    .merged-search-search-background-color-1 { background-color: #FFDFDF }
-    .merged-search-search-background-color-2 { background-color: #DFFFDF }
-    .merged-search-search-background-color-3 { background-color: #DFDFFF }
-    .merged-search-search-background-color-4 { background-color: #FFDFFF }
-    .merged-search-search-background-color-5 { background-color: #FFEBC1 }
-    .merged-search-search-background-color-6 { background-color: #DFFFFF }
-    .merged-search-search-background-color-7 { background-color: #FFFDC1 }
-    .merged-search-search-background-color-8 { background-color: #EBF2FF }
-    .merged-search-search-background-color-9 { background-color: #F5FFDE }
-
-
 
     .search-cutoffs-user-input-search-bounding-box { border-width: 1px; border-style: solid; border-color: $site-color-medium; }
     
@@ -1892,4 +1899,4 @@
 		background-color:$site-color-medium;
 	}
  }
- 
+

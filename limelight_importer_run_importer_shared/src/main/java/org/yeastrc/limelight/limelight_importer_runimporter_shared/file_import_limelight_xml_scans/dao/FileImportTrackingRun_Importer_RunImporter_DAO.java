@@ -24,11 +24,11 @@ import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.populate_dto_from_result.FileImportTrackingRun_PopulateDTO;
 
 /**
  * Do NOT use in Web App
@@ -308,5 +308,43 @@ public class FileImportTrackingRun_Importer_RunImporter_DAO {
 			}
 		}
 	}
+	
+
+	/**
+	 * Get the search id for the supplied id from the database. 
+	 * @param id
+	 * @return null if not found
+	 * @throws Exception
+	 */
+	public Integer getSearchId_ForId( int id ) throws Exception {
+
+		Integer searchId = null;
+		
+		final String sql = "SELECT inserted_search_id FROM file_import_tracking_run_tbl WHERE id = ? ORDER BY id LIMIT 1";
+		
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				pstmt.setInt( 1, id );
+
+				try ( ResultSet rs = pstmt.executeQuery() ) {
+					if( rs.next() ) {
+						
+						int fieldValue = rs.getInt( 1 );
+						
+						if ( ! rs.wasNull() ) {
+							searchId = fieldValue;
+						}
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: getSearchId_ForId(...) sql: " + sql, e );
+			throw e;
+		}
+		
+		return searchId;
+	}
+
 	
 }

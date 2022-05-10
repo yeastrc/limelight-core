@@ -74,7 +74,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -234,7 +234,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			}
     			
 			List<Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem> resultItemList =
-					psm_FilterableAnnotationData_AllFor_SearchId_Searcher.getPsmFilterableAnnotationDataList( searchId, psmFilterableAnnotationTypeIds);
+					psm_FilterableAnnotationData_AllFor_SearchId_Searcher.getPsmFilterableAnnotationDataList( searchId, psmFilterableAnnotationTypeIds, webserviceRequest.include_DecoyPSM );
 
 			List<WebserviceResult_PerPSM_FilterableAnnotation_Entry> psmFilterableAnnotationDataList_List = new ArrayList<>( resultItemList.size() );
 
@@ -245,6 +245,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				entry.psmId = resultItem.getPsmId();
 				entry.annTpId = resultItem.getAnnotationTypeId();
 				entry.annVlNbr = resultItem.getAnnotationValueDouble();
+				entry.indDecoyPSM = resultItem.isIndependentDecoyPSM();
+				entry.decoyPSM = resultItem.isDecoyPSM();
 				psmFilterableAnnotationDataList_List.add( entry );
 			}
 			    		
@@ -298,12 +300,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     	private Integer projectSearchId;
     	private List<Integer> psmFilterableAnnotationTypeIds;
+    	private boolean include_DecoyPSM = false; //  Return PSM with 'is_decoy' true.  Default to false
     	
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}
 		public void setPsmFilterableAnnotationTypeIds(List<Integer> psmFilterableAnnotationTypeIds) {
 			this.psmFilterableAnnotationTypeIds = psmFilterableAnnotationTypeIds;
+		}
+		public void setInclude_DecoyPSM(boolean include_DecoyPSM) {
+			this.include_DecoyPSM = include_DecoyPSM;
 		}
     }
     
@@ -326,9 +332,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult_PerPSM_FilterableAnnotation_Entry {
 
-    	long psmId;
+    	private long psmId;
     	private int annTpId;
     	private double annVlNbr;
+    	private boolean indDecoyPSM;
+    	private boolean decoyPSM;
     	
 		public long getPsmId() {
 			return psmId;
@@ -338,6 +346,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public double getAnnVlNbr() {
 			return annVlNbr;
+		}
+		public boolean isIndDecoyPSM() {
+			return indDecoyPSM;
+		}
+		public boolean isDecoyPSM() {
+			return decoyPSM;
 		}
     }
 }

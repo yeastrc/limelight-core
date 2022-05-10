@@ -137,7 +137,7 @@ class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_OverlayContainer extends R
                 title={ _Overlay_Title }
                 set_CSS_Position_Fixed={ false }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ true } >
+                close_OnBackgroundClick={ false } >
 
                 <React.Fragment>
 

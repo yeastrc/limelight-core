@@ -63,9 +63,12 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
     readonly searchScanFileId: number; // Can be null
     readonly retentionTimeSeconds: number; // Float, Can be null
     readonly precursor_M_Over_Z: number; // Double, Can be null
+
     readonly hasModifications: boolean;
     readonly hasOpenModifications: boolean;
     readonly hasReporterIons: boolean;
+
+    readonly independentDecoyPSM: boolean;   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
 }
 
 /**
@@ -410,6 +413,14 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
                     //  Copy in from Parent reportedPeptideId_psmTblDataList_Entry
                     psmEntry.reportedPeptideId = reportedPeptideId;
 
+                    //  independentDecoyPSM may be not set and thus 'undefined'.  convert that to false.
+
+                    if ( psmEntry.independentDecoyPSM ) {
+                        psmEntry.independentDecoyPSM = true
+                    } else {
+                        psmEntry.independentDecoyPSM = false;
+                    }
+
                     const psm : CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId = psmEntry;
 
                     if ( psm.psmId === undefined || psm.psmId === null ) {
@@ -487,6 +498,11 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
                     }
                     if ( psm.hasReporterIons === undefined || psm.hasReporterIons === null ) {
                         const msg = "( psm.hasReporterIons === undefined || psm.hasReporterIons === null )";
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    if ( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null ) {
+                        const msg = "( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null )";
                         console.warn(msg);
                         throw Error(msg);
                     }

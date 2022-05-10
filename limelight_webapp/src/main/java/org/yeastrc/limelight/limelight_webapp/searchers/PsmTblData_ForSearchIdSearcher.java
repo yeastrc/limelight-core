@@ -20,15 +20,17 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -38,7 +40,10 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 public class PsmTblData_ForSearchIdSearcher extends Limelight_JDBC_Base implements PsmTblData_ForSearchIdSearcher_IF {
 
 	private static final Logger log = LoggerFactory.getLogger( PsmTblData_ForSearchIdSearcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	/**
 	 * 
 	 *
@@ -55,6 +60,8 @@ public class PsmTblData_ForSearchIdSearcher extends Limelight_JDBC_Base implemen
     	boolean hasModifications;
     	boolean hasOpenModifications;
     	boolean hasReporterIons;
+    	boolean independentDecoyPSM;
+    	boolean decoyPSM;
     	
 		public long getPsmId() {
 			return psmId;
@@ -86,21 +93,42 @@ public class PsmTblData_ForSearchIdSearcher extends Limelight_JDBC_Base implemen
 		public int getReportedPeptideId() {
 			return reportedPeptideId;
 		}
+		public boolean isIndependentDecoyPSM() {
+			return independentDecoyPSM;
+		}
+		public boolean isDecoyPSM() {
+			return decoyPSM;
+		}
 	}
 	
 	private static final String SELECT_SQL = 
-			" SELECT id AS psm_id, reported_peptide_id, charge, scan_number, search_scan_file_id, has_modifications, has_open_modifications, has_reporter_ions, precursor_retention_time, precursor_m_z "
-			+ " FROM psm_tbl WHERE search_id = ? ";
-	
-	
+			" SELECT id AS psm_id, reported_peptide_id, charge, scan_number, search_scan_file_id, has_modifications, has_open_modifications, has_reporter_ions, "
+					+ " is_independent_decoy, is_decoy, "
+					+ "precursor_retention_time, precursor_m_z "
+					+ " FROM psm_tbl WHERE search_id = ? "; //  Conditionally add to WHERE  clause
+
+	/**
+	 * !!!  Excludes psm_tbl with is_decoy = 1 unless param 'include_DecoyPSMs' is true
+	 * 
+	 * @param searchId
+	 * @return
+	 * @throws Exception 
+	 */
 	@Override
 	public List<PsmTblData_ForSearchIdSearcher_ResultEntry> getPsmTblData_ForSearchId(
 			
-			int searchId ) throws SQLException {
+			int searchId, boolean include_DecoyPSMs ) throws Exception {
 		
 		List<PsmTblData_ForSearchIdSearcher_ResultEntry> psm_Entries = new ArrayList<>();
 
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		
 		String sql = SELECT_SQL;
+				
+		if ( ( ! include_DecoyPSMs ) && searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			// Exclude  records where is_decoy = 'true'
+			sql += " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
+		}
 		
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
@@ -142,6 +170,20 @@ public class PsmTblData_ForSearchIdSearcher extends Limelight_JDBC_Base implemen
 							psm_Entry.hasReporterIons = true;
 						}
 					}
+
+					{
+						int value = rs.getInt( "is_decoy" );
+						if ( value == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psm_Entry.decoyPSM = true;
+						}
+					}
+					{
+						int value = rs.getInt( "is_independent_decoy" );
+						if ( value == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psm_Entry.independentDecoyPSM = true;
+						}
+					}
+					
 					{
 						float value = rs.getFloat( "precursor_retention_time" );
 						if ( ! rs.wasNull() ) {
@@ -158,10 +200,7 @@ public class PsmTblData_ForSearchIdSearcher extends Limelight_JDBC_Base implemen
 					psm_Entries.add(psm_Entry);
 				}
 			}
-		} catch ( RuntimeException e ) {
-			log.error( "ERROR :  SQL: " + sql, e );
-			throw e;
-		} catch ( SQLException e ) {
+		} catch ( Exception e ) {
 			log.error( "ERROR :  SQL: " + sql, e );
 			throw e;
 		}

@@ -202,7 +202,7 @@ class QcViewPage_SingleSearch__PSMCount_VS_RetentionTime_OverlayContainer extend
                 title={ _Overlay_Title }
                 set_CSS_Position_Fixed={ false }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ true } >
+                close_OnBackgroundClick={ false } >
 
                 <React.Fragment>
 

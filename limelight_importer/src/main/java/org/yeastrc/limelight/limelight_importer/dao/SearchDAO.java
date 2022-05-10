@@ -152,11 +152,17 @@ public class SearchDAO {
 
 	private static final String INSERT_SQL =
 			"INSERT INTO search_tbl "
-			+ " ( id, path, directory_name, fasta_filename, "
+			+ " ( "
+			+ 	" id, path, directory_name, fasta_filename, "
 			+   " has_scan_filenames, has_scan_data, has_isotope_label, has_search_sub_groups, any_psm_has_open_modificaton_masses,"
+			+   " any_psm_has__is_decoy_true, any_psm_has__is_independent_decoy_true, all_psms_have_precursor_retention_time, all_psms_have_precursor_m_z, "
+			+   " psm_ids_are_sequential, "
 			+   " reported_peptide_matched_protein_mapping_provided, "
-			+   " status_id, created_by_user_id ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
+			+   " status_id, created_by_user_id"
+			+ 	" ) "
+			+ " VALUES "
+			+ " ("
+			+ 		" ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
 			+ " )";
 	/**
 	 * This will INSERT the given SearchDTO into the database... even if an id is already set.
@@ -207,6 +213,34 @@ public class SearchDAO {
 			} else {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
+			
+			counter++;
+			if ( item.isAnyPsmHas_IsDecoy_True() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}	counter++;
+			if ( item.isAnyPsmHas_IsIndependentDecoy_True() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}	counter++;
+			if ( item.isAllPsmHave_Precursor_RetentionTime() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}	counter++;
+			if ( item.isAllPsmHave_Precursor_M_Over_Z() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}	counter++;
+			if ( item.isPsmIds_AreSequential() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+		
 			counter++;
 			if ( item.isReportedPeptideMatchedProteinMappingProvided() ) {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );

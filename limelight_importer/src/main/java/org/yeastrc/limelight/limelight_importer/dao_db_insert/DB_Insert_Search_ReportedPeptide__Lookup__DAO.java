@@ -58,11 +58,13 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 			+ 	"( reported_peptide_id, search_id, "
 			+  		" has_dynamic_modifictions, has_isotope_labels, "
 			+ 		" any_psm_has_dynamic_modifications, any_psm_has_open_modifictions, any_psm_has_reporter_ions, "
-			+ 		" psm_num_at_default_cutoff, "
+			+ 		" psm_num_targets_only_at_default_cutoff, psm_num_indpendent_decoys_only_at_default_cutoff, psm_num_decoys_only_at_default_cutoff, "
 			+ 		" peptide_meets_default_cutoffs, related_peptide_unique_for_search,"
-			+ 		" psm_id_sequential_start, psm_id_sequential_end ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-
+			+ 		" psm_id_sequential_start__start_target, psm_id_sequential_start__start_independent_decoy, psm_id_sequential_start__start_decoy, "
+			+ 		" psm_id_sequential_end "
+			+ 	" ) "
+			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+	
 	/**
 	 * @param item
 	 * @param conn
@@ -111,7 +113,11 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 			}
 			
 			counter++;
-			pstmt.setInt( counter, item.getPsmNumAtDefaultCutoff() );
+			pstmt.setInt( counter, item.getPsmNum_Targets_Only_AtDefaultCutoff() );
+			counter++;
+			pstmt.setInt( counter, item.getPsmNum_IndependentDecoys_Only_AtDefaultCutoff() );
+			counter++;
+			pstmt.setInt( counter, item.getPsmNum_Decoys_Only_AtDefaultCutoff() );
 			
 			counter++;
 			pstmt.setString( counter, item.getPeptideMeetsDefaultCutoffs().value() );
@@ -123,9 +129,24 @@ public class DB_Insert_Search_ReportedPeptide__Lookup__DAO {
 				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 			}
 
-			//  Only not zero if PSM Ids are sequential
+			//  PSM Ids are now always sequential
 			counter++;
-			pstmt.setLong( counter, item.getPsmIdSequentialStart() );
+			pstmt.setLong( counter, item.getPsmIdSequentialStart__StartOf_Target_Psms() );
+			
+			counter++;
+			if ( item.getPsmIdSequentialStart__StartOf_IndependentDecoy_Psms() != null ) {
+				pstmt.setLong( counter, item.getPsmIdSequentialStart__StartOf_IndependentDecoy_Psms() );	
+			} else {
+				pstmt.setNull(counter, java.sql.Types.INTEGER );
+			}
+
+			counter++;
+			if ( item.getPsmIdSequentialStart__StartOf_Decoy_Psms() != null ) {
+				pstmt.setLong( counter, item.getPsmIdSequentialStart__StartOf_Decoy_Psms() );	
+			} else {
+				pstmt.setNull(counter, java.sql.Types.INTEGER );
+			}
+			
 			counter++;
 			pstmt.setLong( counter, item.getPsmIdSequentialEnd() );
 			

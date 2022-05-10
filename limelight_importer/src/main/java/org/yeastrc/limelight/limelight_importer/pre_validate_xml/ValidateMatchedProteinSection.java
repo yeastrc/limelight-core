@@ -81,6 +81,12 @@ public class ValidateMatchedProteinSection {
 		}
 		for ( MatchedProtein matchedProtein : matchedProteinList ) {
 			
+			if ( matchedProtein.isIsDecoy() != null && matchedProtein.isIsDecoy().booleanValue() && matchedProtein.isIsIndependentDecoy() != null && matchedProtein.isIsIndependentDecoy().booleanValue() ) {
+				String msg = "<matched_protein> entry cannot have is_decoy=\"true\" and is_independent_decoy=\"true\". 'sequence': " + matchedProtein.getSequence();
+				log.error( msg );
+				throw new LimelightImporterDataException(msg);
+			}
+			
 			String proteinSequence = matchedProtein.getSequence();
 			
 			if ( ! proteinSequences.add( proteinSequence ) ) {

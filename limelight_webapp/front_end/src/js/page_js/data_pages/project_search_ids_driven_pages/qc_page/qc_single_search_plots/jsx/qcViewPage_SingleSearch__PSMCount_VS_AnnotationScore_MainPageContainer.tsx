@@ -13,6 +13,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
+import {QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
 
 
 /**
@@ -108,7 +109,8 @@ export class QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_MainPageContai
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                         searchScanFileId_Selection={ QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES }
                         annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
-                        // rawCounts_Percentage_Choice={ QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_RawCounts_Percentage_Choice_ENUM.RAW_COUNTS }
+                        transform_Score={ QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE }
+                        score_Contains_NegativeValues_Callback={ undefined }
                         isInSingleChartOverlay={ false }
                     />
                 </QcPage_ChartBorder>

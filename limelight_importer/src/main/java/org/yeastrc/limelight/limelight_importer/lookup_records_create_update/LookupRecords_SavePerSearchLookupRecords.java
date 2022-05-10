@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide__Lookup__DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType;
 import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords.CreateSearchReportedPeptideLevelLookupRecords_Result;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
 
@@ -52,14 +53,30 @@ class LookupRecords_SavePerSearchLookupRecords {
 
 		DB_Insert_Search_ReportedPeptide__Lookup__DAO.getInstance()
 		.saveToDatabase( createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide__Lookup__DTO() );
+
+		DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO dao = DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.getInstance();
 		
-		if ( createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List() != null 
-				&& ( ! createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List().isEmpty() ) ) {
+		if ( createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets() != null 
+				&& ( ! createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets().isEmpty() ) ) {
 			
-			DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO dao = DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO.getInstance();
+			for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item : createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets() ) {
+				dao.saveToDatabase( item, DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET );
+			}
+		}
+
+		if ( createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys() != null 
+				&& ( ! createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys().isEmpty() ) ) {
 			
-			for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item : createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List() ) {
-				dao.saveToDatabase( item );
+			for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item : createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys() ) {
+				dao.saveToDatabase( item, DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY );
+			}
+		}
+
+		if ( createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() != null 
+				&& ( ! createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys().isEmpty() ) ) {
+			
+			for ( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item : createSearchReportedPeptideLevelLookupRecords_Result.getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() ) {
+				dao.saveToDatabase( item, DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY );
 			}
 		}
 	}

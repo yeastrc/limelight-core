@@ -35,7 +35,9 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJa
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -75,6 +77,14 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_
  *       there needs to be a check for each Reported Peptide Id 
  *       that the PSM table contains at least 1 PSM (Or a minimum number of PSMs) 
  *       that meets all the PSM cutoffs.
+ *       
+ *  ----------------------
+ *       
+ *  Tables
+ * 
+ *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
+ *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
+ *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
  */
 @Component
 public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher extends Limelight_JDBC_Base implements ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcherIF {
@@ -83,7 +93,12 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	
 	@Autowired
 	private PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF psmCountForSearchIdReportedPeptideIdSearcher;
-		
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
+	
+	
 	private final String PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS = "psm_fltrbl_tbl_";
 	private final String PEPTIDE_VALUE_FILTER_TABLE_ALIAS = "srch__rep_pept_fltrbl_tbl_";
 	
@@ -95,6 +110,16 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 					+ " search__rep_pept__lookup_tbl.any_psm_has_reporter_ions "
 					+ " FROM search__rep_pept__lookup_tbl ";
 
+
+	//  search__rep_pept__psm_... tables
+
+	private static final String TABLE_NAME_TARGET = "search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl";
+
+	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY = "search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl";
+
+//	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
+
+	
 	private final String SQL_MAIN_WHERE_START = 
 			" WHERE search__rep_pept__lookup_tbl.search_id = ? ";
 
@@ -131,6 +156,20 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 
 		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList = new ArrayList<>();
 		
+		////
+		
+		String bestPsmValueLookup_TableName = null;
+
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsIndependentDecoy_True() ) {
+			// Have psm_tbl.is_independent_decoy is true so use table
+			bestPsmValueLookup_TableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY;
+		} else {
+			bestPsmValueLookup_TableName = TABLE_NAME_TARGET;
+		}
+		
+		//////
+		
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesList = searcherCutoffValuesSearchLevel.getPeptidePerAnnotationCutoffsList();
 		//  If null, create empty lists
@@ -153,7 +192,8 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			//  Add inner join for each PSM cutoff
 			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
 				sqlSB.append( " INNER JOIN " );
-				sqlSB.append( " search__rep_pept__best_psm_value_lookup_tbl AS " );
+				sqlSB.append( bestPsmValueLookup_TableName );
+				sqlSB.append( " AS " );
 				sqlSB.append( PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS );
 				sqlSB.append( Integer.toString( counter ) );
 				sqlSB.append( " ON "  );

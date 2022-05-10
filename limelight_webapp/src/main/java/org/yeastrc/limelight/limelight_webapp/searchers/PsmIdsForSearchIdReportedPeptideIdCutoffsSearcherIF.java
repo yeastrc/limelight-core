@@ -17,6 +17,6 @@ public interface PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF {
 	List<Long> getPsmIdsForSearchIdReportedPeptideIdCutoffs(
 
 			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel)
-			throws SQLException;
+			throws Exception;
 
 }

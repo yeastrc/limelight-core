@@ -26,9 +26,13 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -38,7 +42,10 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_
 public class ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher extends Limelight_JDBC_Base implements ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_SearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher.class );
-	
+
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	//  Added index hint 'USE INDEX (PRIMARY)' since 
 	//  otherwise MySQL uses the index reported_peptide_id_fk_idx (reported_peptide_id)
 	//  which results in a much slower query
@@ -49,15 +56,12 @@ public class ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher extend
 			+ " WHERE "
 			+ "  search_id = ? AND reported_peptide_id IN ( ";
 	
-	/* (non-Javadoc)
-	 * @see org.yeastrc.emozi.emozi_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_SearcherIF#getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher(int, java.util.List)
-	 */
 	@Override
 	public List<ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher>  getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher( 
 			
 			int searchId,
 			List<Integer> reportedPeptideIdList
-			) throws SQLException {
+			) throws Exception {
 
 		if ( reportedPeptideIdList.isEmpty() ) {
 			//  No Reported Peptide Ids so return empty list
@@ -65,6 +69,8 @@ public class ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher extend
 		}
 
 		List<ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher> resultList = new ArrayList<>();
+
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 		
 		StringBuilder querySQLSB = new StringBuilder( 10000 );
 		
@@ -79,7 +85,11 @@ public class ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher extend
 			querySQLSB.append( "?" );
 		}
 		querySQLSB.append( ")" ); // close "IN"
-		
+
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			// Exclude  records where is_decoy = 'true'
+			querySQLSB.append( " AND protein_is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+		}
 		
 		final String querySQL = querySQLSB.toString();
 		

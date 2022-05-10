@@ -64,12 +64,11 @@ import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_P
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -102,7 +101,7 @@ public class PSM_List_RestWebserviceController {
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 	
 	@Autowired
-	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
@@ -243,17 +242,9 @@ public class PSM_List_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			List<Integer> searchIds = new ArrayList<>( 1 );
-			searchIds.add(searchId);
-			
-			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
-			if ( searchFlagsForSearchIdSearcher_Result == null || searchFlagsForSearchIdSearcher_Result.getResultItems().isEmpty() ) {
-				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			
-			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result.getResultItems().get(0);
+
+			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = 
+					searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
@@ -373,6 +364,10 @@ public class PSM_List_RestWebserviceController {
     			
     			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
     			result.setHasOpenModifications( psmWebDisplay.isHasOpenModifications() );
+    			
+    			//  Not return 'is_decoy' since excluded in Searcher
+    			
+    			result.psmIs_IndependentDecoy = psmWebDisplay.isPsmIs_IndependentDecoy();
     			
     			if ( ! ( psmWebDisplay.getPsm_precursor_RetentionTime() != null && psmWebDisplay.getPsm_precursor_MZ() != null ) ) {
     				
@@ -811,6 +806,8 @@ public class PSM_List_RestWebserviceController {
 
     	private boolean hasReporterIons;
     	private boolean hasOpenModifications;
+
+    	private boolean psmIs_IndependentDecoy;
     	
     	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
     	
@@ -886,6 +883,12 @@ public class PSM_List_RestWebserviceController {
 		public void setOpenModificationMassAndPositionsList(
 				List<WebserviceResponse_PSM_OpenModItem> openModificationMassAndPositionsList) {
 			this.openModificationMassAndPositionsList = openModificationMassAndPositionsList;
+		}
+		public boolean isPsmIs_IndependentDecoy() {
+			return psmIs_IndependentDecoy;
+		}
+		public void setPsmIs_IndependentDecoy(boolean psmIs_IndependentDecoy) {
+			this.psmIs_IndependentDecoy = psmIs_IndependentDecoy;
 		}
     }
     

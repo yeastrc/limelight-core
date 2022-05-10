@@ -976,7 +976,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                                 onClick={ (event => {
                                     event.stopPropagation();
                                     if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( peptideLink, "_blank" )
+                                        window.open( peptideLink, "_blank", "noopener" )
                                     } else {
                                         window.location.href = peptideLink
                                     }
@@ -991,7 +991,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                                 onClick={ (event => {
                                     event.stopPropagation();
                                     if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( proteinLink, "_blank" )
+                                        window.open( proteinLink, "_blank", "noopener" )
                                     } else {
                                         window.location.href = proteinLink
                                     }
@@ -1008,7 +1008,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                                 onClick={ (event => {
                                     event.stopPropagation();
                                     if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( modViewLink, "_blank" )
+                                        window.open( modViewLink, "_blank", "noopener" )
                                     } else {
                                         window.location.href = modViewLink
                                     }

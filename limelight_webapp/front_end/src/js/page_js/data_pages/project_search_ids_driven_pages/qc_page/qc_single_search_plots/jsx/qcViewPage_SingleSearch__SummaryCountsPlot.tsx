@@ -6,7 +6,6 @@
  */
 
 import React from "react";
-import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -14,15 +13,16 @@ import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {open_SummaryCounts_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__SummaryCounts_OverlayContainer";
-import {
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM,
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
-    qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
 import {CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
+import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
+import {
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 
 
 const chartTitle = "Summary Counts";
@@ -47,6 +47,7 @@ interface QcViewPage_SingleSearch__SummaryCountsPlot_State {
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
+    showCreatingMessage?: boolean
     showUpdatingMessage?: boolean
 }
 
@@ -62,12 +63,11 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
     private _openChartInOverlay_BindThis = this._openChartInOverlay.bind(this);
     private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
-    private _DONOTCALL() {
-
-        const openChartInOverlay: qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn = this._openChartInOverlay;
-    }
-
     private plot_Ref :  React.RefObject<HTMLDivElement>
+    private image_Ref : React.RefObject<HTMLImageElement>
+
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
 
     private _componentMounted = false;
 
@@ -84,14 +84,30 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
         }
 
         this.plot_Ref = React.createRef();
+        this.image_Ref = React.createRef();
 
-        this.state = { showUpdatingMessage: false };
+        this.state = { showCreatingMessage: true, showUpdatingMessage: false };
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             this._resizeWindow_Handler_Remove();
@@ -148,6 +164,7 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
         if (
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== nextProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent
             || this.props.isInSingleChartOverlay !== nextProps.isInSingleChartOverlay
+            || this.state.showCreatingMessage !== nextState.showCreatingMessage
             || this.state.showUpdatingMessage !== nextState.showUpdatingMessage
         ) {
             return true;
@@ -167,12 +184,28 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
             if (
                 this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== prevProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent
                 || this.props.isInSingleChartOverlay !== prevProps.isInSingleChartOverlay
+                // || this.state.showCreatingMessage !== prevState.showCreatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
                 // || this.state.showUpdatingMessage !== prevState.showUpdatingMessage  //  ALWAYS remove check of state properties in 'componentDidUpdate'
             ) {
             } else {
                 //  Nothing changed so return
 
                 return;  // EARLY RETURN
+            }
+
+            try {
+                if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+                }
+            } catch (e) {
+                //  Eat Exception
+            }
+            try {
+                if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                    this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+                }
+            } catch (e) {
+                //  Eat Exception
             }
 
             this.setState({ showUpdatingMessage: true });
@@ -249,16 +282,24 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
                 throw Error(msg)
             }
 
-            const projectSearchId = projectSearchIds[0]
+            // const projectSearchId = projectSearchIds[0]
 
             const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root =
                 this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
-            try {
-                //  First remove any existing plot, if it exists (And event listener on it)
-                this._removeChart();
-            } catch (e) {
-                //  Eat Exception
+            ////////////
+
+            //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
+
+            //  Have existing chart in overlay when re-populate chart when have window resize
+
+            if ( this.props.isInSingleChartOverlay ) {
+                try {
+                    //  First remove any existing plot, if it exists
+                    this._removeChart();
+                } catch (e) {
+                    //  Eat Exception
+                }
             }
 
             const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder> = new Map();
@@ -607,33 +648,6 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
                 showlegend: false
             });
 
-            if ( this.props.isInSingleChartOverlay ) {
-
-                const targetDOMElement_domRect = this.plot_Ref.current.getBoundingClientRect();
-
-                /// targetDOMElement_domRect properties: left, top, right, bottom, x, y, width, and height
-
-                // const targetDOMElement_domRect_Left = targetDOMElement_domRect.left;
-                // const targetDOMElement_domRect_Right = targetDOMElement_domRect.right;
-                // const targetDOMElement_domRect_Top = targetDOMElement_domRect.top;
-                // const targetDOMElement_domRect_Bottom = targetDOMElement_domRect.bottom;
-
-                const chart_Width = Math.floor( targetDOMElement_domRect.width );
-                const chart_Height = Math.floor( targetDOMElement_domRect.height );
-
-                //  Lock Aspect Ratio to returned from qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-
-                // const chart_Standard_AspectRatio = qcPage_StandardChartLayout_ActualChartArea_AspectRatio();
-                //
-                // const chart_Width_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                // const chart_Height_FromAspectRatio = chart_Height * chart_Standard_AspectRatio;
-                //
-                // if ()
-
-                chart_Layout.width = chart_Width;
-                chart_Layout.height = chart_Height;
-            }
-
             const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 
             {
@@ -652,16 +666,52 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
                 // console.log("*********************************")
             }
 
-            const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config);
-
             if ( ! this.props.isInSingleChartOverlay ) {
 
-                //  Add click handler on chart on main page to open chart in overlay
+                //  Main Page Plot
 
-                qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params({
+                    plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                    chart_Width: chart_Layout.width,
+                    chart_Height: chart_Layout.height,
+                    image_DOM_Element: this.image_Ref.current,
+                    changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                    plotRendered_Success_Callback: () : void => {
+                        this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                    },
+                    plotRendered_Fail_Callback:  () : void => {
+                        this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                    }
+                });
+
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
+                    qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+                });
+
+            } else {
+
+                //  Overlay Plot
+
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params({
+                    plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                    chart_Width: chart_Layout.width,
+                    chart_Height: chart_Layout.height,
+                    plot_Div_DOM_Element: this.plot_Ref.current,
+                    changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                    plotRendered_Success_Callback: () : void => {
+                        this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                    },
+                    plotRendered_Fail_Callback:  () : void => {
+                        this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                    }
+                });
+
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
+                    qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+                });
             }
-
-            this.setState({ showUpdatingMessage: false }); // Do at end
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -670,15 +720,12 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
      *
      */
     private _removeChart() : void {
+
         try {
-            qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({
-                plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis
-            });
-        } catch (e) {
-            //  Eat Exception
-        }
-        try {
-            Plotly.purge(this.plot_Ref.current)
+            if ( this.plot_Ref.current ) {
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -687,9 +734,8 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
     /**
      *
      */
-    private _openChartInOverlay( event ) {
+    private _openChartInOverlay() {
         try {
-            event.stopPropagation()
             open_SummaryCounts_OverlayContainer({
                 params: {
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
@@ -707,21 +753,36 @@ export class QcViewPage_SingleSearch__SummaryCountsPlot extends React.Component<
      */
     render() {
 
-        const style : React.CSSProperties = { position: "relative" };
-
-        if ( this.props.isInSingleChartOverlay ) {
-            style.height = "100%";
-        }
-
         return (
-            <div style={ style }>
-                <div ref={this.plot_Ref} style={ style }></div>
-                {( this.state.showUpdatingMessage ) ? (
+
+            <React.Fragment>
+
+                {( this.props.isInSingleChartOverlay ) ? (
+                    //  For Single Chart Overlay: div the chart will be rendered into
+                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                ) : (
+                    //  For Main Page: img the chart will be inserted into
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                )}
+
+                {( this.state.showCreatingMessage ) ? (
+
+                    <QcPage_CreatingPlot_BlockCover/>
+
+                ): ( this.state.showUpdatingMessage ) ? (
 
                     <QcPage_UpdatingData_BlockCover/>
 
-                ): null }
-            </div>
+                ): ( ! this.props.isInSingleChartOverlay ) ? (
+
+                    //  Component on main page that goes on top of <img> to show message on hover and call clickHandler_Callback on click
+                    <QcPage_ClickPlot_ForInteractivePlot_BlockCover
+                        clickHandler_Callback={ this._openChartInOverlay_BindThis }
+                    />
+
+                ) : null }
+
+            </React.Fragment>
         );
     }
 }

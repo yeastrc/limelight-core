@@ -165,6 +165,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * @param searchId
 	 * @param searcherCutoffValuesSearchLevel
+	 * @param searchFlagsForSearchIdSearcher_Result_Item TODO
 	 * @param minimumNumberOfPSMsPerReportedPeptide
 	 * @return
 	 * @throws SQLException
@@ -346,7 +347,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 								int minimumNumberOfPSMsPerReportedPeptide = localCacheKey.minimumNumberOfPSMsPerReportedPeptide;
 
 								//  value is NOT in cache so get it and return it
-								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  resultsFromDB = getPeptideDataList_FromDB_CalledByCache( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
+								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  resultsFromDB = getPeptideDataList_FromDB_CalledByCache( searchId, searcherCutoffValuesSearchLevel
+										, minimumNumberOfPSMsPerReportedPeptide );
 								
 								//  Create new ArrayList sized to the results
 								List<ReportedPeptide_MinimalData_List_FromSearcher_Entry>  results = new ArrayList<>( resultsFromDB.size() + 1 );

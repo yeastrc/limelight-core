@@ -42,6 +42,7 @@ const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 const _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'j';
 const _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
 const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'l';
+const _PSM_HIDE_INDEPENDENT_DECOY_PSMS__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'm';
 
 
 class PeptidePageRoot_CentralStateManagerObjectClass__InitializeMethod_OptionalParam {
@@ -64,6 +65,7 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any  // ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
 		scan_RetentionTime_MZ_UserSelections_EncodedStateData?: any // Scan_RetentionTime_MZ_UserSelections_StateObject
 		psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
+		psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData? : any //  Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
 		generatedPeptideContentsSelectedEncodedStateData__FOR__SingleProteinOverlay? : any
 	}
 
@@ -111,7 +113,8 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData : encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData : encodedStateData[ _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				psm_Charge_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				psm_Charge_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_HIDE_INDEPENDENT_DECOY_PSMS__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -323,6 +326,28 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		return this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData(
+		{
+			psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData
+		} :{
+			psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData: any
+		} ) {
+		this._value.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData = psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData
+	 */
+	get_psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData() {
+		return this._value.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData;
+	}
 
 	/////////////////////
 
@@ -374,6 +399,9 @@ export class PeptidePageRoot_CentralStateManagerObjectClass {
 		}
 		if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
 			dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+		}
+		if ( this._value.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PSM_HIDE_INDEPENDENT_DECOY_PSMS__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_EncodedStateData;
 		}
 
 		return dataForEncoding;

@@ -26,8 +26,8 @@ import {modificationMass_CommonRounding_ReturnNumber} from 'page_js/data_pages/m
 
 import {
     DownloadPSMs_PerProjectSearchId_Entry,
-    downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
-} from 'page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds';
+    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
+} from 'page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds';
 import {
     Experiment_SingleExperiment_ConditionsGraphicRepresentation,
     ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params,
@@ -136,6 +136,12 @@ import {GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class} from "page_js
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {Psm_Charge_Filter_UserSelection_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_Container_Component";
 import {purge_FilterSelections_NotIn_CurrentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/purge_filter_selections_not_in_current_data/purge_FilterSelections_NotIn_CurrentData";
+import {searchSubGroup_Get_Selected_SearchSubGroupIds} from "page_js/data_pages/search_sub_group/js/searchSubGroup_Get_Selected_SearchSubGroupIds";
+import {
+    blib_File_Download__Initiate,
+    Blib_File_Download_Root
+} from "page_js/data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__Overlay_Component_And_SendRequest_Code";
+import {Blib_SpectralLibrary_File_Download__MainPage_Link_Component} from "page_js/data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__MainPage_Link_Component";
 
 
 ////
@@ -292,6 +298,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
     private _downloadProteinsClickHandler_BindThis = this._downloadProteinsClickHandler.bind(this);
     private _downloadPSMsClickHandler_BindThis = this._downloadPSMsClickHandler.bind(this);
+    private _download_Blib_Spectral_Library_BindThis = this._download_Blib_Spectral_Library.bind(this);
 
     private _DO_NOT_CALL_CastTestOnly () {
         //  Test function cast
@@ -1613,10 +1620,6 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
      */
     private async _re_renderPage_Actually() {
         try {
-            this.setState({ show_UpdatingProteinList_Message: false });
-
-            this.setState({ show_InitialLoadingData_Message: false });
-
             const projectSearchIds = this.state.projectSearchIds_PossiblyFiltered;
 
             let modificationMass_UserSelections_ComponentData: ModificationMass_UserSelections_ComponentData = undefined;
@@ -1666,6 +1669,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 peptideSequence_UserSelections_StateObject : undefined, // this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 userSearchString_LocationsOn_ProteinSequence_Root : undefined, // null,
                 proteinPositionFilter_UserSelections_StateObject : undefined, // this.state.proteinPositionFilter_UserSelections_StateObject
+                psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
             });
 
             //   !!!  using 'await'
@@ -1857,6 +1861,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                     dataPage_common_Data_Holder_Holder_SearchScanFileData_Root : this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
                     scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
                     psm_Charge_Filter_UserSelection_StateObject : this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined,
                     proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject : this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
                     searchSubGroup_Are_All_SearchSubGroupIds_Selected: undefined,
                     searchSubGroup_PropValue: undefined
@@ -1964,7 +1969,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 proteinDisplayData: this._proteinDisplayData_Final_ForDisplayTable
             });
 
-            downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {
+            download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {
                 projectSearchIdsReportedPeptideIdsPsmIds,
                 searchDataLookupParamsRoot : searchDataLookupParamsRoot,
                 proteinSequenceVersionIds : undefined,
@@ -1978,6 +1983,56 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             throw e;
         }
     }
+
+    /**
+     *
+     */
+    private _download_Blib_Spectral_Library() {
+        try {
+
+            if ( ! this._proteinDisplayData_Final_ForDisplayTable ) {
+
+                //  No value to use to create download
+                return;
+            }
+
+            if (this._proteinDisplayData_Final_ForDisplayTable.proteinList.length === 0) {
+                //  No data so nothing to download
+
+                window.alert("No data to download since no proteins");
+
+                return; // EARLY RETURN
+            }
+
+            const searchDataLookupParamsRoot : SearchDataLookupParameters_Root = this.state.searchDataLookupParamsRoot;
+
+            if ( ! searchDataLookupParamsRoot ) {
+                throw Error( "searchDataLookupParamsRoot not found" );
+            }
+
+            //  for downloads
+            const projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry> = proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_PSM_Download_Create_PerProjectSearchId_Data({
+                proteinDisplayData: this._proteinDisplayData_Final_ForDisplayTable
+            });
+
+            const blib_File_Download_Root: Blib_File_Download_Root = {
+                projectSearchIdsReportedPeptideIdsPsmIds, searchDataLookupParamsRoot
+            }
+
+
+            blib_File_Download__Initiate( {
+                blib_File_Download_Root
+            } );
+
+        } catch( e ) {
+            console.warn("Exception caught in _download_Blib_Spectral_Library inside setTimeout");
+            console.warn( e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    //////////
 
     /**
      *
@@ -2080,7 +2135,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         // MUST open window before make AJAX Call.  This is a Browser Security requirement
         //  window.open(...): Must run in code directly triggered by click event
 
-        const newWindow = window.open(newWindowURL, "_blank");
+        const newWindow = window.open(newWindowURL, "_blank", "noopener");
     }
 
     /**
@@ -2453,7 +2508,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 { ( this.state.show_InitialLoadingData_Message ) ? (
 
                     <div >
-                        <div >
+                        <div style={ { fontSize: 24, fontWeight: "bold" } }>
                             Loading Data
                         </div>
                         <div style={ { paddingTop: 40, paddingBottom: 80 } }>
@@ -2511,14 +2566,19 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                                 <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
                                       onClick={ this._downloadProteinsClickHandler_BindThis }
                                 >
-                                        Download Proteins
-                                    </span>
+                                    Download Proteins
+                                </span>
 
                                 <span style={ { paddingLeft: 10, whiteSpace: "nowrap" } } className=" fake-link "
                                       onClick={ this._downloadPSMsClickHandler_BindThis }
                                 >
-                                        Download PSMs
-                                    </span>
+                                    Download PSMs
+                                </span>
+
+                                <Blib_SpectralLibrary_File_Download__MainPage_Link_Component
+                                    dataPageStateManager={ this.props.propsValue.dataPageStateManager }
+                                    download_Blib_Spectral_Library_Callback={ this._download_Blib_Spectral_Library_BindThis }
+                                />
 
                             </div>
                         ): null }

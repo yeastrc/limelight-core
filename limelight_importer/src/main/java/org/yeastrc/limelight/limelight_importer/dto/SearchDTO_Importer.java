@@ -34,9 +34,35 @@ public class SearchDTO_Importer {
 	private boolean hasIsotopeLabel;
 	private boolean hasSearchSubGroups;
 	private boolean anyPsmHasOpenModificationMasses;
+	
+	private boolean anyPsmHas_IsDecoy_True;
+	private boolean anyPsmHas_IsIndependentDecoy_True;
+
+	private boolean allPsmHave_Precursor_RetentionTime;
+	private boolean allPsmHave_Precursor_M_Over_Z;
+	
+	private boolean psmIds_AreSequential; // All PSM Ids for the search are sequential - can use PSM Id ranges
+	
 	private boolean reportedPeptideMatchedProteinMappingProvided;
 	
 	private Integer createdByUserId;
+	
+
+	/**
+	 * All PSM Ids for the search are sequential - can use PSM Id ranges
+	 * @return
+	 */
+	public boolean isPsmIds_AreSequential() {
+		return psmIds_AreSequential;
+	}
+	/**
+	 * All PSM Ids for the search are sequential - can use PSM Id ranges
+	 * @param psmIds_AreSequential
+	 */
+	public void setPsmIds_AreSequential(boolean psmIds_AreSequential) {
+		this.psmIds_AreSequential = psmIds_AreSequential;
+	}
+
 	
 	
 	public int getId() {
@@ -105,5 +131,28 @@ public class SearchDTO_Importer {
 	public void setHasSearchSubGroups(boolean hasSearchSubGroups) {
 		this.hasSearchSubGroups = hasSearchSubGroups;
 	}
-
+	public boolean isAnyPsmHas_IsDecoy_True() {
+		return anyPsmHas_IsDecoy_True;
+	}
+	public void setAnyPsmHas_IsDecoy_True(boolean anyPsmHas_IsDecoy_True) {
+		this.anyPsmHas_IsDecoy_True = anyPsmHas_IsDecoy_True;
+	}
+	public boolean isAnyPsmHas_IsIndependentDecoy_True() {
+		return anyPsmHas_IsIndependentDecoy_True;
+	}
+	public void setAnyPsmHas_IsIndependentDecoy_True(boolean anyPsmHas_IsIndependentDecoy_True) {
+		this.anyPsmHas_IsIndependentDecoy_True = anyPsmHas_IsIndependentDecoy_True;
+	}
+	public boolean isAllPsmHave_Precursor_RetentionTime() {
+		return allPsmHave_Precursor_RetentionTime;
+	}
+	public void setAllPsmHave_Precursor_RetentionTime(boolean allPsmHave_Precursor_RetentionTime) {
+		this.allPsmHave_Precursor_RetentionTime = allPsmHave_Precursor_RetentionTime;
+	}
+	public boolean isAllPsmHave_Precursor_M_Over_Z() {
+		return allPsmHave_Precursor_M_Over_Z;
+	}
+	public void setAllPsmHave_Precursor_M_Over_Z(boolean allPsmHave_Precursor_M_Over_Z) {
+		this.allPsmHave_Precursor_M_Over_Z = allPsmHave_Precursor_M_Over_Z;
+	}
 }

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
@@ -34,7 +35,9 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -45,9 +48,13 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
 
+	@Autowired
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+
 	private static final String SQL_MAIN = 
 			"SELECT psm_tbl.id AS psm_id, "
 			+ 		" psm_tbl.has_modifications, psm_tbl.has_open_modifications, psm_tbl.has_reporter_ions, "
+			+ 		" is_independent_decoy, "  //  Not return 'is_decoy' since excluded in SQL
 			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
 			+ 		 " psm_tbl.scan_number AS scan_number, psm_tbl.search_scan_file_id, "
 			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
@@ -102,6 +109,8 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		
 		List<PsmWebDisplayWebServiceResult> psms = new ArrayList<PsmWebDisplayWebServiceResult>();
 		
+		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
+
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = 
 				searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
 		StringBuilder sqlSB = new StringBuilder( 1000 );
@@ -135,6 +144,17 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 		if ( reportedPeptideId != null ) {
 			sqlSB.append( " AND psm_tbl.reported_peptide_id = ?  " );
 		}
+		
+
+		// Include  records where is_independent_decoy = 'true'
+		
+		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+			
+			// Exclude  records where is_decoy = 'true'
+			
+			sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+		}
+
 		
 		if ( searchSubGroupId != null ) {
 			
@@ -276,6 +296,15 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 						int intValue = rs.getInt("has_reporter_ions" );
 						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
 							psmWebDisplay.setHasReporterIons( true );
+						}
+					}
+					
+					//  NOT return 'is_decoy' since Excluded in SQL
+
+					{
+						int intValue = rs.getInt("is_independent_decoy" );
+						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							psmWebDisplay.setPsmIs_IndependentDecoy( true );
 						}
 					}
 

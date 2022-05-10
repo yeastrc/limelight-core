@@ -14,6 +14,10 @@ body.qc-page {
 
     div.section--chart-container-block {
 
+      img.chart-main-page-image {
+        display: block;  // change to block so don't have space below the image
+      }
+
       $single-chart-margin-bottom: 20px; //  Also value / 2 used for margin-right of charts on same row
 
       div.section--chart-block--single-chart-no-margin-bottom-container {
@@ -29,6 +33,8 @@ body.qc-page {
       }
 
       div.chart-container-multiple-on-same-row-block {
+
+        clear: both;  //  Reset Float Left
 
         // Split $single-chart-margin-bottom between this div and child div
         margin-bottom: $single-chart-margin-bottom / 2;
@@ -47,4 +53,76 @@ body.qc-page {
       }
     }
   }
+
+  div.qc-click-plot-for-interactive--msg--cover-overlay-container-1 {
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    &:hover > div.qc-click-plot-for-interactive--msg--cover-overlay-container-2 {
+      visibility: visible;  // Make child visible on parent hover
+    }
+
+    div.qc-click-plot-for-interactive--msg--cover-overlay-container-2 {
+      position: relative;
+      height: 100%;
+
+      visibility: hidden;  // Made visible on parent hover
+
+      div.qc-click-plot-for-interactive--msg--cover-background {
+
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: #000;
+        opacity: 0.5;
+      }
+
+      div.qc-click-plot-for-interactive--msg--cover-overlay-container-3 {
+        position: absolute;
+        //  left, ..., bottom:  not used since 'inset' is applied in the code
+        //left: 0;
+        //right: 0;
+        //top: 0;
+        //bottom: 0;
+        //  Center text in block
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        //  Set in the code
+        //inset: 10px;
+        //height: calc(100% - 20px);
+
+        div.qc-click-plot-for-interactive--msg--cover-overlay-container-4 {
+
+          font-size: 24px;
+          padding: 10px;
+          background-color: $site-standard-background-color;
+        }
+      }
+    }
+  }
+
+  div.create--update--chart--msg--cover-overlay {
+    font-size: 24px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    //  Center text in block
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: $site-standard-background-color;
+  }
+
 }

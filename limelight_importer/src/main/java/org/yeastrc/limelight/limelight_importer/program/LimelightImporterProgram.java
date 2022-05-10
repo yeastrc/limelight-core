@@ -22,11 +22,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.io.FilenameUtils;
@@ -41,17 +37,25 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLimelightXMLDeserializeFailException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
+import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.process_file_import_submission.ProcessFileImportSubmission;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
+import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportRunSubStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.constants.RunImporterToImporterParameterNamesConstants;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileContentsErrorException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileErrorException;
@@ -493,10 +497,129 @@ public class LimelightImporterProgram {
 				ConfigSystemTableGetValueCommon.getInstance().setIConfigSystemTableGetValue( configSystemDAO );
 			}
 			
-			//  TODO  Update this
+
+			{ //  Validate Code And Database Schema Versions match
+				
+				//  CURRENT Version
+				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result =
+						Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+
+				//  DB Update in Progress Version
+				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result =
+						Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+				
+				if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME
+						|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+					
+					//  Code And Database Schema Version do NOT match
+					
+					String errorMessage = null;
+					
+					if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+
+						//  CURRENT version mismatch
+
+						if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result == LimelightDatabaseSchemaVersion_Comparison_Result.CODE_GREATER_THAN_DATABASE ) {
+
+							errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_GREATER_THAN_DATABASE__IMPORTER__ERROR_MESSAGE;
+
+						} else {
+
+							errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_CURRENT_VERSION__CODE_LESS_THAN_DATABASE__IMPORTER__ERROR_MESSAGE;
+						}
+					} else {
+						
+						errorMessage = LimelightDatabaseSchemaVersion_Constants.DATABASE_UPGRADE_IN_PROGRESS_VERSION__MISMATCH_VERSION_NUMBERS__ERROR_MESSAGE;
+					}
+
+					System.out.println();
+					System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+					System.out.println();
+
+					System.out.println( "ERROR: Unable to perform Import.");
+
+					System.out.println( errorMessage );
+					
+					System.out.println();
+					System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+					System.out.println();
+
+					System.err.println();
+					System.err.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+					System.err.println();
+
+					System.err.println( "ERROR: Unable to perform Import.");
+
+					System.err.println( errorMessage );
+					
+					System.err.println();
+					System.err.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
+					System.err.println();
+
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					
+					
+					if ( fileImportRunIdToProcess != null ) {
+						
+						//  Have Submitted Import
+
+						//  Add Error message to Submitted Import to make visible in the web app
+
+						FileImportTrackingRunDTO fileImportTrackingRunDTO =
+								FileImportTrackingRun_Shared_Get_DAO.getInstance()
+								.getItem( fileImportRunIdToProcess );
+
+						if ( fileImportTrackingRunDTO == null ) {
+							final String msg = "No FileImportTrackingRunDTO Record found for fileImportRunIdToProcess: " + fileImportRunIdToProcess;
+							System.err.println( msg );
+						} else {
+
+							FileImportTrackingDTO fileImportTrackingDTO =
+									FileImportTracking_Shared_Get_DAO.getInstance()
+									.getItem( fileImportTrackingRunDTO.getFileImportTrackingId() );
+
+							if ( fileImportTrackingDTO == null ) {
+								final String msg = "No FileImportTrackingDTO Record found for fileImportRunIdToProcess: " + fileImportRunIdToProcess
+										+ ", FileImportTrackingDTO record id: " + fileImportTrackingRunDTO.getFileImportTrackingId();
+								System.err.println( msg );
+							} else {
+								
+								System.out.println( "Updating Submitted Import. Set to Failed and with Error Message: " + errorMessage );
+
+								fileImportTrackingRunDTO.setRunStatus( FileImportStatus.FAILED );
+								fileImportTrackingRunDTO.setRunSubStatus( FileImportRunSubStatus.SYSTEM_ERROR );
+								fileImportTrackingRunDTO.setDataErrorText( errorMessage );
+								// TODO   Maybe populate this with something else
+								fileImportTrackingRunDTO.setImportResultText( errorMessage );
+								UpdateTrackingTrackingRunRecordsDBTransaction.getInstance()
+								.updateTrackingStatusAtImportEndupdateTrackingRunStatusResultTexts(
+										FileImportStatus.FAILED, 
+										fileImportTrackingDTO.getId(), 
+										fileImportTrackingRunDTO );
+							}
+						}
+					}
+					
+					importResults.setImportSuccessStatus( false) ;
+					
+					//  Set Specific program exit code
+					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_IMPORTER_DATABASE_SCHEMA_VERSION_NUMBER_NOT_MATCH_DATABASE_DATABASE_SCHEMA_VERSION_NUMBER );
+					
+					return importResults;  //  EARLY EXIT
+				}
+			}
+			
 			
 			//////////////////////////////////////
 			//////////   Do the import
+			
+
+			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB_ToDB = SearchStatistics_General_SavedToDB.getInstance();
+			
+			
 
 			importerCoreEntryPoint = ImporterCoreEntryPoint.getInstance();
 			
@@ -507,7 +630,9 @@ public class LimelightImporterProgram {
 				insertedSearchId = 	
 						ProcessFileImportSubmission.getInstance()
 						.processFileImportSubmission(
-								fileImportRunIdToProcess, trackingDTOTrackingRunDTOPair, importerCoreEntryPoint, importResults );
+								fileImportRunIdToProcess, trackingDTOTrackingRunDTOPair, importerCoreEntryPoint, importResults, 
+								searchStatistics_General_SavedToDB_ToDB
+								);
 			} else {
 				insertedSearchId = 
 						importerCoreEntryPoint.doImport(
@@ -518,7 +643,8 @@ public class LimelightImporterProgram {
 								mainXMLFileToImport, 
 								limelightInputForImportParam, 
 								scanFileFileContainer_AllEntries,
-								skipPopulatingPathOnSearchLineOptChosen
+								skipPopulatingPathOnSearchLineOptChosen,
+								searchStatistics_General_SavedToDB_ToDB
 								);
 				
 				System.out.println( "" );

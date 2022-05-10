@@ -141,7 +141,8 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : null,
-            proteinPositionFilter_UserSelections_StateObject
+            proteinPositionFilter_UserSelections_StateObject,
+            psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
         });
 
         const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =

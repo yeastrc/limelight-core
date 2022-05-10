@@ -32,7 +32,9 @@ public class ProteinCoverageDTO {
 	private int proteinStartPosition;
 	private int proteinEndPosition;
 	private boolean peptideProteinMatchNotExactMatch; //  Caused by "I" "L" equivalent and other causes
-	
+	private boolean protein_IsDecoy;
+	private boolean protein_IsIndependentDecoy;
+
 	//  id is not part of equals or hashCode
 
 	@Override
@@ -44,10 +46,13 @@ public class ProteinCoverageDTO {
 		result = prime * result + proteinEndPosition;
 		result = prime * result + proteinSequenceVersionId;
 		result = prime * result + proteinStartPosition;
+		result = prime * result + (protein_IsDecoy ? 1231 : 1237);
+		result = prime * result + (protein_IsIndependentDecoy ? 1231 : 1237);
 		result = prime * result + reportedPeptideId;
 		result = prime * result + searchId;
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -67,6 +72,10 @@ public class ProteinCoverageDTO {
 			return false;
 		if (proteinStartPosition != other.proteinStartPosition)
 			return false;
+		if (protein_IsDecoy != other.protein_IsDecoy)
+			return false;
+		if (protein_IsIndependentDecoy != other.protein_IsIndependentDecoy)
+			return false;
 		if (reportedPeptideId != other.reportedPeptideId)
 			return false;
 		if (searchId != other.searchId)
@@ -81,11 +90,10 @@ public class ProteinCoverageDTO {
 		return "ProteinCoverageDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
 				+ ", peptideIdInfoOnly=" + peptideIdInfoOnly + ", proteinSequenceVersionId=" + proteinSequenceVersionId
 				+ ", proteinStartPosition=" + proteinStartPosition + ", proteinEndPosition=" + proteinEndPosition
-				+ ", peptideProteinMatchNotExactMatch=" + peptideProteinMatchNotExactMatch + "]";
+				+ ", peptideProteinMatchNotExactMatch=" + peptideProteinMatchNotExactMatch + ", protein_IsDecoy="
+				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy + "]";
 	}
 
-	
-	
 	/////
 	
 	public int getId() {
@@ -136,5 +144,18 @@ public class ProteinCoverageDTO {
 	public void setPeptideProteinMatchNotExactMatch(boolean peptideProteinMatchNotExactMatch) {
 		this.peptideProteinMatchNotExactMatch = peptideProteinMatchNotExactMatch;
 	}
+	public boolean isProtein_IsDecoy() {
+		return protein_IsDecoy;
+	}
+	public void setProtein_IsDecoy(boolean protein_IsDecoy) {
+		this.protein_IsDecoy = protein_IsDecoy;
+	}
+	public boolean isProtein_IsIndependentDecoy() {
+		return protein_IsIndependentDecoy;
+	}
+	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
+		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
+	}
+
 	
 }

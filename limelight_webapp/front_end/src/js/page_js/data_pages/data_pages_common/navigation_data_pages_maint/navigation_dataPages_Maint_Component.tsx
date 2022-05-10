@@ -248,7 +248,7 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
 
         if ( event.metaKey || event.ctrlKey ) {
 
-            window.open( href, "_blank" )
+            window.open( href, "_blank", "noopener" )
         } else {
             window.location.href = href;
         }

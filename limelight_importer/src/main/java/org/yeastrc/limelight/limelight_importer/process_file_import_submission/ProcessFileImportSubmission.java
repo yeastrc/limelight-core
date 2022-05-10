@@ -34,6 +34,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
+import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
@@ -74,7 +75,11 @@ public class ProcessFileImportSubmission {
 			int fileImportRunIdToProcess, 
 			TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair,
 			ImporterCoreEntryPoint importerCoreEntryPoint,
-			ImportResults importResults ) throws Exception {
+			ImportResults importResults,
+
+			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB_ToDB
+			
+			) throws Exception {
 
 		FileImportTrackingRunDTO fileImportTrackingRunDTO =
 				FileImportTrackingRun_Shared_Get_DAO.getInstance()
@@ -275,7 +280,6 @@ public class ProcessFileImportSubmission {
 
 		}
 		
-		
 		int insertedSearchId = 
 				importerCoreEntryPoint.doImport(
 						projectId, 
@@ -285,7 +289,8 @@ public class ProcessFileImportSubmission {
 						mainXMLFileToImport, 
 						null, // LimelightInputForImportParam, 
 						scanFileFileContainer_AllEntries,
-						skipPopulatingPathOnSearchLineOptChosen
+						skipPopulatingPathOnSearchLineOptChosen,
+						searchStatistics_General_SavedToDB_ToDB
 						);
 		
 //		if ( StringUtils.isNotEmpty( filenameWithSearchIdToCreateOnSuccessInsert ) ) {

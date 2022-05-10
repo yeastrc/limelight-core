@@ -55,11 +55,11 @@ import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificat
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PeptideSequenceStringsForSearchIdReportedPeptideId_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
+import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers.Psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher.Psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_Searcher.SpectralStorageAPIKeyForSearchId_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_Searcher.SpectralStorageAPIKeyForSearchId_Searcher_Result_Item;
@@ -69,7 +69,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PeptideSequenceStringsFo
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmIdList_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.StaticModDTOForSearchIdSearcherIF;
@@ -138,7 +137,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 
 	@Autowired
-	private SearchFlagsForSearchIdSearcherIF searchFlagsForSearchIdSearcher;
+	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
 	@Autowired
 	private Psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher_IF psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher;
@@ -292,7 +291,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
     		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
     		
-    		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
+//    		List<Integer> projectIdsForProjectSearchIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
     		
     		////////////////
 
@@ -319,17 +318,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 
-			List<Integer> searchIds = new ArrayList<>( 1 );
-			searchIds.add(searchId);
-			
-			SearchFlagsForSearchIdSearcher_Result searchFlagsForSearchIdSearcher_Result = searchFlagsForSearchIdSearcher.getSearchFlags_ForSearchIds(searchIds);
-			if ( searchFlagsForSearchIdSearcher_Result == null || searchFlagsForSearchIdSearcher_Result.getResultItems().isEmpty() ) {
-				String msg = "No searchFlagsForSearchIdSearcher_Result for searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			
-			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSearchIdSearcher_Result.getResultItems().get(0);
+			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = 
+					searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 			
 			Psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher_Result psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher_Result =
 					psm_RandomRecordForSearchId_ContainsSpecificValues_Searcher.get_Psm_RandomRecordForSearchId_ContainsSpecificValues(searchId);

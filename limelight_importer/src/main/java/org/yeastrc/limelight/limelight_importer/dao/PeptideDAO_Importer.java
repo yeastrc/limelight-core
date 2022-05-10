@@ -25,6 +25,9 @@ import java.sql.Statement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum;
+import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_PerTable_DTO;
+import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
@@ -41,24 +44,37 @@ public class PeptideDAO_Importer {
 	public static PeptideDAO_Importer getInstance() { return new PeptideDAO_Importer(); }
 
 	private static long totalElapsedTime_getPeptideIdForSequence_InMilliSeconds = 0;
-	private static long totalCallCount_getPeptideIdForSequence = 0;
+	private static int totalCallCount_getPeptideIdForSequence = 0;
 
 	private static long totalElapsedTime_saveToDatabase_InMilliSeconds = 0;
-	private static long totalCallCount_saveToDatabase = 0;
+	private static int totalCallCount_saveToDatabase = 0;
 
 	private static long totalElapsedTime_delete_InMilliSeconds = 0;
-	private static long totalCallCount_delete = 0;
+	private static int totalCallCount_delete = 0;
 	
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	public static void logTotalElapsedTimeAndCallCounts() {
+	public static void logTotalElapsedTimeAndCallCounts(SearchDTO_Importer search) throws Exception {
 		{
 			double elapsedTimeSeconds = totalElapsedTime_getPeptideIdForSequence_InMilliSeconds / 1000.0;
 			double elapsedTimeMinutes = ( elapsedTimeSeconds ) / 60.0;
 			log.warn( "Total Elapsed Time: Search peptide_tbl for peptide sequence: "
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_getPeptideIdForSequence);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.SELECT );
+			importer_Stats_PerTable_DTO.setTable_names( "peptide_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_getPeptideIdForSequence_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_getPeptideIdForSequence );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_getPeptideIdForSequence );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 		{
 			double elapsedTimeSeconds = totalElapsedTime_saveToDatabase_InMilliSeconds / 1000.0;
@@ -66,6 +82,18 @@ public class PeptideDAO_Importer {
 			log.warn( "Total Elapsed Time: Save to peptide_tbl: "
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_saveToDatabase);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.INSERT );
+			importer_Stats_PerTable_DTO.setTable_names( "peptide_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_saveToDatabase );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_saveToDatabase );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 		{
 			double elapsedTimeSeconds = totalElapsedTime_delete_InMilliSeconds / 1000.0;
@@ -73,6 +101,18 @@ public class PeptideDAO_Importer {
 			log.warn( "Total Elapsed Time: Delete from peptide_tbl of duplicate peptide sequence: "
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_delete);
+
+			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
+			
+			importer_Stats_PerTable_DTO.setSearchId( search.getId() );
+			
+			importer_Stats_PerTable_DTO.setTableManipulationType( Importer_Stats_PerTable_Table__SqlManipulationType_Values_Enum.DELETE );
+			importer_Stats_PerTable_DTO.setTable_names( "peptide_tbl" );
+			importer_Stats_PerTable_DTO.setSqlCalls_TotalElapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
+			importer_Stats_PerTable_DTO.setSqlCallCount( totalCallCount_delete );
+			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_delete );
+			
+			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
 		}
 	}
 

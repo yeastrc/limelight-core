@@ -19,6 +19,8 @@ import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_al
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {qcPage_ChartOverlayDimensions} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+import {QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
+import {QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot";
 
 
 const _Overlay_Title = "QC Plot: PSM Score Vs Score"
@@ -30,6 +32,15 @@ const _Overlay_Width_Max = qcPage_ChartOverlayDimensions_Value.max_Width;
 
 const _Overlay_Height_Min = qcPage_ChartOverlayDimensions_Value.min_Height;
 const _Overlay_Height_Max = qcPage_ChartOverlayDimensions_Value.max_Height;
+
+/**
+ *
+ */
+export enum QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice {
+    NONE = "NONE",
+    LOG_10 = "LOG_10",
+    NEGATIVE_LOG_10 = "NEGATIVE_LOG_10"
+}
 
 /**
  *
@@ -106,6 +117,11 @@ interface QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_
     annotationTypeId_Score_X?: number
     annotationTypeId_Score_Y?: number
 
+    transform_Score_X?: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+    transform_Score_Y?: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+
+    show_Message_CannotShow_Log_For_NegativeValues?: boolean
+
     forceRerender?: object
 
     chartType?: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType
@@ -121,10 +137,17 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
     private _X_Score_AnnotationTypeId_Changed_BindThis = this._X_Score_AnnotationTypeId_Changed.bind(this);
     private _Y_Score_AnnotationTypeId_Changed_BindThis = this._Y_Score_AnnotationTypeId_Changed.bind(this);
 
+    //  Called from child Plot component
+    private _score_X_Contains_NegativeValues_Callback_BindThis = this._score_X_Contains_NegativeValues_Callback.bind(this);
+    private _score_Y_Contains_NegativeValues_Callback_BindThis = this._score_Y_Contains_NegativeValues_Callback.bind(this);
+
     private _inputFieldChanged_TimeoutId : number;
 
     private _select_X_Ref : React.RefObject<HTMLSelectElement>
     private _select_Y_Ref : React.RefObject<HTMLSelectElement>
+
+    private _score_X_Contains_NegativeValues = false;
+    private _score_Y_Contains_NegativeValues = false;
 
     private _renderChart = true;
 
@@ -150,6 +173,8 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
             loadingData: true,
             annotationTypeId_Score_X,
             annotationTypeId_Score_Y,
+            transform_Score_X: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE,
+            transform_Score_Y: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE,
             chartType: _initial_ChartType
         };
     }
@@ -194,6 +219,56 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
+    }
+
+    /**
+     *  Called from child Plot component
+     *
+     * @param score_Contains_NegativeValues
+     * @private
+     */
+    private _score_X_Contains_NegativeValues_Callback( score_Contains_NegativeValues: boolean ) {
+
+        if ( this._score_X_Contains_NegativeValues === score_Contains_NegativeValues ) {
+            // No change so exit
+            return; // EARLY RETURN
+        }
+
+        this._score_X_Contains_NegativeValues = score_Contains_NegativeValues;
+
+        if ( this.state.transform_Score_X !== QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+            this.setState({
+                show_Message_CannotShow_Log_For_NegativeValues: true,
+                transform_Score_X: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+            })
+        }
+
+        this.setState({ forceRerender: {} })
+    }
+
+    /**
+     *  Called from child Plot component
+     *
+     * @param score_Contains_NegativeValues
+     * @private
+     */
+    private _score_Y_Contains_NegativeValues_Callback( score_Contains_NegativeValues: boolean ) {
+
+        if ( this._score_Y_Contains_NegativeValues === score_Contains_NegativeValues ) {
+            // No change so exit
+            return; // EARLY RETURN
+        }
+
+        this._score_Y_Contains_NegativeValues = score_Contains_NegativeValues;
+
+        if ( this.state.transform_Score_Y !== QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+            this.setState({
+                show_Message_CannotShow_Log_For_NegativeValues: true,
+                transform_Score_Y: QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+            })
+        }
+
+        this.setState({ forceRerender: {} })
     }
 
     /**
@@ -376,7 +451,7 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
                 title={ _Overlay_Title }
                 set_CSS_Position_Fixed={ false }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ true } >
+                close_OnBackgroundClick={ false } >
 
                 <React.Fragment>
 
@@ -428,8 +503,8 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
                                             <span>File: </span>
                                             {( this.state.searchScanFileData_OnlyOne ) ? (
                                                 <span>
-                                                        { this.state.searchScanFileData_OnlyOne.filename }
-                                                    </span>
+                                                    { this.state.searchScanFileData_OnlyOne.filename }
+                                                </span>
                                             ) : (
                                                 <select
                                                     value={ this.state.searchScanFileId_Selection }
@@ -462,6 +537,90 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
                                         >
                                             { annotationNames_SelectOptionEntries }
                                         </select>
+                                        <span> </span>
+                                        <span style={ { marginLeft: 20, whiteSpace: "nowrap" } }>
+
+                                            { this._score_X_Contains_NegativeValues ? (
+
+                                                <span>
+                                                    Score contains negative values so no log10 transform allowed
+                                                </span>
+
+                                            ) : (
+
+                                                <React.Fragment>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_X_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_X ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_X:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                No transformation
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_X_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_X ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_X:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                Log10
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_X_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_X ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_X:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                -Log10
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                </React.Fragment>
+                                            )}
+                                        </span>
                                     </div>
                                     <div style={ { marginBottom: 5 } }>
                                         <span>Y-Axis Score:</span>
@@ -473,18 +632,132 @@ class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_Over
                                         >
                                             { annotationNames_SelectOptionEntries }
                                         </select>
+
+                                        <span> </span>
+                                        <span style={ { marginLeft: 20, whiteSpace: "nowrap" } }>
+
+                                            { this._score_Y_Contains_NegativeValues ? (
+
+                                                <span>
+                                                    Score contains negative values so no log10 transform allowed
+                                                </span>
+
+                                            ) : (
+
+                                                <React.Fragment>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_Y_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_Y ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_Y:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                No transformation
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_Y_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_Y ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_Y:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                Log10
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                    <span>
+                                                        <label>
+                                                            <input
+                                                                type="radio"
+                                                                name="QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer_State__TransformScore_Y_Choice"
+                                                                checked={
+                                                                    this.state.transform_Score_Y ===
+                                                                    QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10
+                                                                }
+                                                                onChange={ event => {
+                                                                    window.setTimeout( () => {
+                                                                        this.setState({
+                                                                            transform_Score_Y:
+                                                                            QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10
+                                                                        });
+                                                                    }, 10 );
+                                                                }}
+                                                            />
+                                                            <span>
+                                                                -Log10
+                                                            </span>
+                                                        </label>
+                                                    </span>
+                                                </React.Fragment>
+                                            )}
+                                        </span>
                                     </div>
                                 </div>
-                                <div style={ { height: "100%" } }>
+                                <div style={ { height: "100%", position: "relative" } }>
                                     <QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_StatisticsPlot
                                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                         searchScanFileId_Selection={ this.state.searchScanFileId_Selection }
                                         annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
                                         annotationTypeId_Score_Y={ this.state.annotationTypeId_Score_Y }
+                                        transform_Score_X={ this.state.transform_Score_X }
+                                        transform_Score_Y={ this.state.transform_Score_Y }
+                                        score_X_Contains_NegativeValues_Callback={ this._score_X_Contains_NegativeValues_Callback_BindThis }
+                                        score_Y_Contains_NegativeValues_Callback={ this._score_Y_Contains_NegativeValues_Callback_BindThis }
                                         isInSingleChartOverlay={ true }
                                         chartType={ this.state.chartType }
                                     />
+                                    { this.state.show_Message_CannotShow_Log_For_NegativeValues ? (
+
+                                        <div
+                                            className=" create--update--chart--msg--cover-overlay "
+                                        >
+                                            <div>
+                                                <div>
+                                                    One of the scores chosen contains negative values so unable to transform the values using log10.
+                                                </div>
+                                                <div>
+                                                    The transform has been removed.
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    onClick={ event => {
+                                                        this.setState({ show_Message_CannotShow_Log_For_NegativeValues: false })
+                                                    }}
+                                                >
+                                                    Continue
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    ) : null }
                                 </div>
                             </div>
                         )}

@@ -109,7 +109,7 @@ public class ManagerThread extends Thread {
 //			clientStatusUpdateThread = new ClientStatusUpdateThread();
 //
 //			clientStatusUpdateThread.start();
-			getImportAndProcessThread = new GetImportAndProcessThread( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
+			getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
@@ -207,7 +207,7 @@ public class ManagerThread extends Thread {
 			//  check health of getImportAndProcessThread, replace thread if dead
 			if ( ! getImportAndProcessThread.isAlive() ) {
 				GetImportAndProcessThread oldGetImportAndProcessThread = getImportAndProcessThread;
-				getImportAndProcessThread = new GetImportAndProcessThread(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */  );
+				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */  );
 				getImportAndProcessThreadCounter += 1;
 //				ThreadsHolderSingleton.getInstance().setGetJobThread( getJobThread );
 				log.error( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );

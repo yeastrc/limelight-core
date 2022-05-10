@@ -35,10 +35,17 @@ public class Search_ReportedPeptide__Lookup__DTO {
 	private boolean anyPsmHasOpenModifications;
 	private boolean anyPsmHasReporterIons;
 	private boolean relatedPeptideUniqueForSearch;
-	private long psmIdSequentialStart;  // Only not zero if PSM Ids are sequential
+	
+	private long psmIdSequentialStart__StartOf_Target_Psms;  // Only not zero if PSM Ids are sequential
+	
+	private Long psmIdSequentialStart__StartOf_IndependentDecoy_Psms; 	 // Only not null if have Independent Decoy PSMs 
+	private Long psmIdSequentialStart__StartOf_Decoy_Psms;				 // Only not null if have Decoy PSMs
+	
 	private long psmIdSequentialEnd;    // Only not zero if PSM Ids are sequential
 	
-	private int psmNumAtDefaultCutoff;
+	private int psmNum_Targets_Only_AtDefaultCutoff;
+	private int psmNum_IndependentDecoys_Only_AtDefaultCutoff;
+	private int psmNum_Decoys_Only_AtDefaultCutoff;
 
 	/**
 	 * Not applicable if there are no Peptide filterable annotations
@@ -52,26 +59,35 @@ public class Search_ReportedPeptide__Lookup__DTO {
 
 
 
-	@Override
-	public String toString() {
-		return "Search_ReportedPeptide__Lookup__DTO [searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
-				+ ", hasDynamicModifications=" + hasDynamicModifications + ", hasOpenModifications="
-				+ anyPsmHasOpenModifications + ", hasIsotopeLabels=" + hasIsotopeLabels + ", anyPsmHasDynamicModifications="
-				+ anyPsmHasDynamicModifications + ", anyPsmHasReporterIons=" + anyPsmHasReporterIons
-				+ ", relatedPeptideUniqueForSearch=" + relatedPeptideUniqueForSearch + ", psmIdSequentialStart="
-				+ psmIdSequentialStart + ", psmIdSequentialEnd=" + psmIdSequentialEnd + ", psmNumAtDefaultCutoff="
-				+ psmNumAtDefaultCutoff + ", peptideMeetsDefaultCutoffs=" + peptideMeetsDefaultCutoffs
-				+ ", numUniquePsmAtDefaultCutoff=" + numUniquePsmAtDefaultCutoff + "]";
+	/**
+	 * Only not null if have Independent Decoy PSMs
+	 * @return
+	 */
+	public Long getPsmIdSequentialStart__StartOf_IndependentDecoy_Psms() {
+		return psmIdSequentialStart__StartOf_IndependentDecoy_Psms;
+	}
+	public void setPsmIdSequentialStart__StartOf_IndependentDecoy_Psms(
+			Long psmIdSequentialStart__StartOf_IndependentDecoy_Psms) {
+		this.psmIdSequentialStart__StartOf_IndependentDecoy_Psms = psmIdSequentialStart__StartOf_IndependentDecoy_Psms;
+	}
+	/**
+	 * Only not null if have Decoy PSMs
+	 * @return
+	 */
+	public Long getPsmIdSequentialStart__StartOf_Decoy_Psms() {
+		return psmIdSequentialStart__StartOf_Decoy_Psms;
+	}
+	
+	public void setPsmIdSequentialStart__StartOf_Decoy_Psms(Long psmIdSequentialStart__StartOf_Decoy_Psms) {
+		this.psmIdSequentialStart__StartOf_Decoy_Psms = psmIdSequentialStart__StartOf_Decoy_Psms;
+	}
+	public long getPsmIdSequentialStart__StartOf_Target_Psms() {
+		return psmIdSequentialStart__StartOf_Target_Psms;
 	}
 
 
-	public long getPsmIdSequentialStart() {
-		return psmIdSequentialStart;
-	}
-
-
-	public void setPsmIdSequentialStart(long psmIdSequentialStart) {
-		this.psmIdSequentialStart = psmIdSequentialStart;
+	public void setPsmIdSequentialStart__StartOf_Target_Psms(long psmIdSequentialStart__StartOf_Target_Psms) {
+		this.psmIdSequentialStart__StartOf_Target_Psms = psmIdSequentialStart__StartOf_Target_Psms;
 	}
 
 
@@ -125,14 +141,6 @@ public class Search_ReportedPeptide__Lookup__DTO {
 		this.relatedPeptideUniqueForSearch = relatedPeptideUniqueForSearch;
 	}
 
-	public int getPsmNumAtDefaultCutoff() {
-		return psmNumAtDefaultCutoff;
-	}
-
-	public void setPsmNumAtDefaultCutoff(int psmNumAtDefaultCutoff) {
-		this.psmNumAtDefaultCutoff = psmNumAtDefaultCutoff;
-	}
-
 	public Yes_No__NOT_APPLICABLE_Enum getPeptideMeetsDefaultCutoffs() {
 		return peptideMeetsDefaultCutoffs;
 	}
@@ -180,4 +188,25 @@ public class Search_ReportedPeptide__Lookup__DTO {
 	public void setAnyPsmHasOpenModifications(boolean anyPsmHasOpenModifications) {
 		this.anyPsmHasOpenModifications = anyPsmHasOpenModifications;
 	}
+	public int getPsmNum_Targets_Only_AtDefaultCutoff() {
+		return psmNum_Targets_Only_AtDefaultCutoff;
+	}
+	public void setPsmNum_Targets_Only_AtDefaultCutoff(int psmNum_Targets_Only_AtDefaultCutoff) {
+		this.psmNum_Targets_Only_AtDefaultCutoff = psmNum_Targets_Only_AtDefaultCutoff;
+	}
+	public int getPsmNum_IndependentDecoys_Only_AtDefaultCutoff() {
+		return psmNum_IndependentDecoys_Only_AtDefaultCutoff;
+	}
+	public void setPsmNum_IndependentDecoys_Only_AtDefaultCutoff(int psmNum_IndependentDecoys_Only_AtDefaultCutoff) {
+		this.psmNum_IndependentDecoys_Only_AtDefaultCutoff = psmNum_IndependentDecoys_Only_AtDefaultCutoff;
+	}
+	public int getPsmNum_Decoys_Only_AtDefaultCutoff() {
+		return psmNum_Decoys_Only_AtDefaultCutoff;
+	}
+	public void setPsmNum_Decoys_Only_AtDefaultCutoff(int psmNum_Decoys_Only_AtDefaultCutoff) {
+		this.psmNum_Decoys_Only_AtDefaultCutoff = psmNum_Decoys_Only_AtDefaultCutoff;
+	}
+
+
+
 }

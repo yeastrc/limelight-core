@@ -18,7 +18,11 @@
 package org.yeastrc.limelight.limelight_shared.dto;
 
 /**
- * Table search__rep_pept__best_psm_value_lookup_tbl
+ * Tables
+ * 
+ *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
+ *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
+ *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
  *
  */
 public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
@@ -27,11 +31,6 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	private int searchId;
 	private int reportedPeptideId;
 	private int annotationTypeId;
-	
-	private boolean hasDynamicModifications;
-	private boolean hasIsotopeLabels;
-	private boolean anyPsmHasOpenModifications;
-	private boolean anyPsmHasReporterIons;
 	
 	private double bestPsmValueForAnnTypeId;
 	private long psmIdForBestValue;
@@ -44,22 +43,15 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 
 		this.reportedPeptideId = search_ReportedPeptide__Lookup__DTO.getReportedPeptideId();
 		this.searchId = search_ReportedPeptide__Lookup__DTO.getSearchId();
-		
-		this.hasDynamicModifications = search_ReportedPeptide__Lookup__DTO.isHasDynamicModifications();
-		this.anyPsmHasOpenModifications = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasOpenModifications();
-		this.hasIsotopeLabels = search_ReportedPeptide__Lookup__DTO.isHasIsotopeLabels();
-		this.anyPsmHasReporterIons = search_ReportedPeptide__Lookup__DTO.isAnyPsmHasReporterIons();
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Search_ReportedPeptide_BestPsmValue_Lookup__DTO [searchId=" + searchId + ", reportedPeptideId="
-				+ reportedPeptideId + ", annotationTypeId=" + annotationTypeId + ", hasDynamicModifications="
-				+ hasDynamicModifications + ", hasIsotopeLabels=" + hasIsotopeLabels + ", anyPsmHasOpenModifications="
-				+ anyPsmHasOpenModifications + ", anyPsmHasReporterIons=" + anyPsmHasReporterIons
-				+ ", bestPsmValueForAnnTypeId=" + bestPsmValueForAnnTypeId + ", psmIdForBestValue=" + psmIdForBestValue
-				+ "]";
+				+ reportedPeptideId + ", annotationTypeId=" + annotationTypeId + ", bestPsmValueForAnnTypeId="
+				+ bestPsmValueForAnnTypeId + ", psmIdForBestValue=" + psmIdForBestValue + "]";
 	}
+
 	public int getSearchId() {
 		return searchId;
 	}
@@ -78,18 +70,6 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	public void setAnnotationTypeId(int annotationTypeId) {
 		this.annotationTypeId = annotationTypeId;
 	}
-	public boolean isHasDynamicModifications() {
-		return hasDynamicModifications;
-	}
-	public void setHasDynamicModifications(boolean hasDynamicModifications) {
-		this.hasDynamicModifications = hasDynamicModifications;
-	}
-	public boolean isHasIsotopeLabels() {
-		return hasIsotopeLabels;
-	}
-	public void setHasIsotopeLabels(boolean hasIsotopeLabels) {
-		this.hasIsotopeLabels = hasIsotopeLabels;
-	}
 	public double getBestPsmValueForAnnTypeId() {
 		return bestPsmValueForAnnTypeId;
 	}
@@ -101,18 +81,6 @@ public class Search_ReportedPeptide_BestPsmValue_Lookup__DTO {
 	}
 	public void setPsmIdForBestValue(long psmIdForBestValue) {
 		this.psmIdForBestValue = psmIdForBestValue;
-	}
-	public boolean isAnyPsmHasReporterIons() {
-		return anyPsmHasReporterIons;
-	}
-	public void setAnyPsmHasReporterIons(boolean anyPsmHasReporterIons) {
-		this.anyPsmHasReporterIons = anyPsmHasReporterIons;
-	}
-	public boolean isAnyPsmHasOpenModifications() {
-		return anyPsmHasOpenModifications;
-	}
-	public void setAnyPsmHasOpenModifications(boolean anyPsmHasOpenModifications) {
-		this.anyPsmHasOpenModifications = anyPsmHasOpenModifications;
 	}
 
 }

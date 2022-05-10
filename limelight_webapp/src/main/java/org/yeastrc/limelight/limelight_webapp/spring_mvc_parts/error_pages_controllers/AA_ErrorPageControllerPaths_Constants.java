@@ -55,4 +55,9 @@ public class AA_ErrorPageControllerPaths_Constants {
 	 */
 	public static final String INTERNET_EXPLORER_NOT_SUPPORTED_ERROR_PAGE_CONTROLLER = "internet-explorer-not-supported";
 	
+	
+	/**
+	 * 
+	 */
+	public static final String WEBAPP_AND_DATABASE_SCHEMA_VERSION_NUMBER__NOT_MATCH__ERROR_PAGE_CONTROLLER = "Webapp_And_Database_Schema_Version_Number__NOT_MATCH_ErrorPage_Controller";
 }

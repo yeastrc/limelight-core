@@ -116,7 +116,7 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 		
 		const windowWidthHeight = "width=" + lorikeetNewWindowWidth + ", height=" + lorikeetNewWindowHeight;
 		
-		const strWindowFeatures = "toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes," + windowWidthHeight;
+		const strWindowFeatures = "toolbar=no,status=no,menubar=no,resizable=yes,scrollbars=yes,noopener," + windowWidthHeight;
 
 		const newWindowURL = lorikeetSpectrumViewer_newWindowURL;
 		

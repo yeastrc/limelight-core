@@ -22,13 +22,16 @@ import java.sql.PreparedStatement;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDBInternalException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_BestPsmValue_Lookup__DTO;
 
 /**
- * table search__rep_pept__best_psm_value_lookup_tbl
- *
+ * Tables
+ * 
+ *   search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl		- For PSMs that are Target
+ *   search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl - For PSMs that are Target or Independent Decoy
+ *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
  */
 public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 
@@ -37,39 +40,73 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 	private DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO() { }
 	public static DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO getInstance() { return new DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO(); }
 	
+	
+	public enum DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType {
+		TARGET, TARGET_INDEPENDENT_DECOY, TARGET_INDEPENDENT_DECOY_DECOY
+	}
 
 	/**
 	 * @param Search_ReportedPeptide_BestPsmValue_Lookup__DTO
 	 * @throws Exception
 	 */
-	public void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item ) throws Exception {
+	public void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item, DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType tableType ) throws Exception {
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
 			
-			saveToDatabase( item, dbConnection );
+			saveToDatabase( item, tableType, dbConnection );
 
 		} finally {
 		}
 	}
 
-	private static final String SAVE_SQL =
-			"INSERT INTO search__rep_pept__best_psm_value_lookup_tbl "
-			+ 	"( reported_peptide_id, search_id, "
+	private static final String START_SAVE_SQL = "INSERT INTO ";
+	
+	private static final String TABLE_NAME_TARGET = "search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl";
+
+	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY = "search__rep_pept__psm_target_ind_decoy_psm_best_psm_vl_lkp_tbl";
+
+	private static final String TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY = "search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl";
+
+
+	private static final String MAIN_SAVE_SQL =
+			 	" ( "
+			+ 		" reported_peptide_id, "
+			+ 		" search_id, "
 			+ 		" annotation_type_id, "
-			+  		" has_dynamic_modifictions, has_isotope_labels, "
-			+ 		" any_psm_has_open_modifictions, any_psm_has_reporter_ions, "
-			+ 		" best_psm_value_for_ann_type_id, psm_id_for_best_value__non_fk ) "
-			+ 	" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ 		" best_psm_value_for_ann_type_id, "
+			+ 		" psm_id_for_best_value__non_fk "
+			+ 	") "
+			+ 	" VALUES ( ?, ?, ?, ?, ? )";
 
 	/**
 	 * @param item
 	 * @param conn
 	 * @throws Exception
 	 */
-	public void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item, Connection dbConnection ) throws Exception {
+	private void saveToDatabase( Search_ReportedPeptide_BestPsmValue_Lookup__DTO item, DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType tableType, Connection dbConnection ) throws Exception {
 		
-		final String sql = SAVE_SQL;
+		String tableName = null;
+		
+		if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET ) {
+			
+			tableName = TABLE_NAME_TARGET;
+			
+		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY ) {
+			
+			tableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY;
+			
+		} else if ( tableType == DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO__TableType.TARGET_INDEPENDENT_DECOY_DECOY ) {
+			
+			tableName = TABLE_NAME_TARGET_INDEPENDENT_DECOY_DECOY;
+			 
+		} else {
+			String msg = "tableType is not an expected value.  is: " + tableType;
+			log.error(msg);
+			throw new LimelightImporterDBInternalException(msg);
+		}
+		
+		final String sql = START_SAVE_SQL + tableName + MAIN_SAVE_SQL;
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 			int counter = 0;
 			
@@ -79,31 +116,6 @@ public class DB_Insert_Search_ReportedPeptide_BestPsmValue_Generic_Lookup__DAO {
 			pstmt.setInt( counter, item.getSearchId() );
 			counter++;
 			pstmt.setInt( counter, item.getAnnotationTypeId() );
-			counter++;
-			if ( item.isHasDynamicModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			counter++;
-			if ( item.isHasIsotopeLabels() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-
-			counter++;
-			if ( item.isAnyPsmHasOpenModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			counter++;
-			if ( item.isAnyPsmHasReporterIons() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
 			
 			counter++;
 			pstmt.setDouble( counter, item.getBestPsmValueForAnnTypeId() );

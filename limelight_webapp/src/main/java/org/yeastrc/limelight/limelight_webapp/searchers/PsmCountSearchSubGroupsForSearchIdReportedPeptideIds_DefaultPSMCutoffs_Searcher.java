@@ -44,7 +44,12 @@ public class PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCuto
 	 */
 	public static class PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCutoffs_Searcher_ResultItem {
 		
-		int numPsms;
+		int numPsms; // numPsms_Targets + numPsms_IndependentDecoys
+
+		int numPsms_Targets;
+		int numPsms_IndependentDecoys;
+		int numPsms_Decoys;
+		
 		int searchSubGroupId;
 		int reportedPeptideId;
 		
@@ -57,12 +62,24 @@ public class PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCuto
 		public int getReportedPeptideId() {
 			return reportedPeptideId;
 		}
+		public int getNumPsms_Targets() {
+			return numPsms_Targets;
+		}
+		public int getNumPsms_IndependentDecoys() {
+			return numPsms_IndependentDecoys;
+		}
+		public int getNumPsms_Decoys() {
+			return numPsms_Decoys;
+		}
 	}
 	
 	private static final String SQL_START = 
-			"SELECT psm_num_at_default_cutoff, search_sub_group_id, reported_peptide_id FROM search__rep_pept_sub_group_lookup_tbl WHERE search_id = ? and reported_peptide_id IN ( ";
+			"SELECT "
+			+ " psm_num_targets_only_at_default_cutoff, psm_num_indpendent_decoys_only_at_default_cutoff, psm_num_decoys_only_at_default_cutoff, "
+			+ " search_sub_group_id, reported_peptide_id "
+			+ " FROM search__rep_pept_sub_group_lookup_tbl "
+			+ " WHERE search_id = ? and reported_peptide_id IN ( ";
 			
-	
 	@Override
 	public List<PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCutoffs_Searcher_ResultItem> 
 	
@@ -90,7 +107,7 @@ public class PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCuto
 			     PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 
 			int counter = 0;
-			//  psm_tbl fields
+
 			counter++;
 			preparedStatement.setInt( counter, searchId );
 
@@ -102,12 +119,17 @@ public class PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCuto
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
 					PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCutoffs_Searcher_ResultItem result = new PsmCountSearchSubGroupsForSearchIdReportedPeptideIds_DefaultPSMCutoffs_Searcher_ResultItem();
-					result.searchSubGroupId = rs.getInt( "search_sub_group_id" );
-					result.numPsms = rs.getInt( "psm_num_at_default_cutoff" );
 					result.reportedPeptideId = rs.getInt( "reported_peptide_id" );
+					result.searchSubGroupId = rs.getInt( "search_sub_group_id" );
+
+					result.numPsms_Targets = rs.getInt( "psm_num_targets_only_at_default_cutoff" );
+					result.numPsms_IndependentDecoys = rs.getInt( "psm_num_indpendent_decoys_only_at_default_cutoff" );
+					result.numPsms_Decoys = rs.getInt( "psm_num_decoys_only_at_default_cutoff" );
+
+					result.numPsms = result.numPsms_Targets + result.numPsms_IndependentDecoys;
+					
 					results.add( result );
 				}
-
 			}
 		} catch ( RuntimeException e ) {
 			log.error( "ERROR getting psm count:  SQL: " + sql, e );

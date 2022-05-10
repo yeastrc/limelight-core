@@ -6,7 +6,6 @@
  */
 
 import React from "react";
-import Plotly from 'plotly.js-dist/plotly'
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {qcPage_StandardChartLayout} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
@@ -14,11 +13,13 @@ import {qcPage_StandardChartConfig} from "page_js/data_pages/project_search_ids_
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
+import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
+import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM,
-    qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
-    qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+
 import {open_MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayContainer";
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
@@ -75,6 +76,7 @@ interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Statisti
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
+    showCreatingMessage?: boolean
     showUpdatingMessage?: boolean
 }
 
@@ -91,14 +93,15 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
     private _openChartInOverlay_BindThis = this._openChartInOverlay.bind(this);
     private _resizeWindow_Handler_BindThis = this._resizeWindow_Handler.bind(this);
 
-    private _DONOTCALL() {
-
-        const openChartInOverlay: qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn = this._openChartInOverlay;
-    }
-
     private plot_Container_Ref :  React.RefObject<HTMLDivElement>
     private plot_Ref :  React.RefObject<HTMLDivElement>
     private linksUnderPlot_Container_Ref :  React.RefObject<HTMLDivElement>
+
+    private image_Ref : React.RefObject<HTMLImageElement>
+
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+    private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+
 
     private scanLevel_1_Ref :  React.RefObject<HTMLSpanElement>
     private scanLevel_2_Ref :  React.RefObject<HTMLSpanElement>
@@ -135,16 +138,33 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         this.plot_Ref = React.createRef();
         this.linksUnderPlot_Container_Ref = React.createRef();
 
+        this.image_Ref = React.createRef();
+
         this.scanLevel_1_Ref = React.createRef();
         this.scanLevel_2_Ref = React.createRef();
 
-        this.state = { showUpdatingMessage: true };
+        this.state = { showCreatingMessage: true, showUpdatingMessage: false };
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
+        try {
+            if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+            }
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             this._resizeWindow_Handler_Remove();
@@ -214,6 +234,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             || nextProps.searchScanFileName_Selected !== this.props.searchScanFileName_Selected
             || nextProps.searchScanFileId_Selected !== this.props.searchScanFileId_Selected
             || nextProps.isInSingleChartOverlay !== this.props.isInSingleChartOverlay
+            || nextState.showCreatingMessage !== this.state.showCreatingMessage
             || nextState.showUpdatingMessage !== this.state.showUpdatingMessage
         ) {
             //  Something changed so return true
@@ -244,13 +265,30 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     || prevProps.searchScanFileName_Selected !== this.props.searchScanFileName_Selected
                     || prevProps.searchScanFileId_Selected !== this.props.searchScanFileId_Selected
                     || prevProps.isInSingleChartOverlay !== this.props.isInSingleChartOverlay
+                    //  ALWAYS remove check of state properties in 'componentDidUpdate'
                     // || nextState.no_MS1_Data !== this.state.no_MS1_Data
+                    // || nextState.showCreatingMessage !== this.state.showCreatingMessage
                     // || nextState.showUpdatingMessage !== this.state.showUpdatingMessage
                 ) {
                 } else {
                     //  No Change to inputs so Don't re-populate Block
 
                     return; // EARLY RETURN
+                }
+
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
+                }
+                try {
+                    if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params ) {
+                        this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params.abort();
+                    }
+                } catch (e) {
+                    //  Eat Exception
                 }
 
                 this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State =>  {
@@ -347,11 +385,27 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                             this.plot_Ref.current.style.maxWidth = "";
                             this.plot_Ref.current.style.maxHeight = "";
 
-                            Plotly.relayout(this.plot_Ref.current, updateLayout);
+                            const relayoutComplete_Success_Callback = () : void => {
+                                console.warn("relayoutComplete_Success_Callback() called")
+                                this.setState({ showUpdatingMessage: false });
+                            }
+
+                            const relayoutComplete_Fail_Callback = () : void => {
+                                console.warn("relayoutComplete_Fail_Callback() called")
+                                this.setState({ showUpdatingMessage: false });
+                            }
+
+                            console.warn( "plot_Div_DOM_Element: this.plot_Ref.current: ", this.plot_Ref.current )
+                            console.warn( " updateLayout: ", updateLayout )
+                            console.warn( " updateLayout.width: ", updateLayout.width )
+                            console.warn( " updateLayout.height: ", updateLayout.height )
+
+                            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                            relayoutChart({ plot_Div_DOM_Element: this.plot_Ref.current, updateLayout_Properties: updateLayout, relayoutComplete_Success_Callback, relayoutComplete_Fail_Callback });
 
                         } catch( e ) {
-                            console.log("Exception caught in _resizeWindow_Handler()");
-                            console.log( e );
+                            console.warn("Exception caught in _resizeWindow_Handler()");
+                            console.warn( e );
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
@@ -413,27 +467,18 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             return; // EARLY RETURN
         }
 
-        if (!this.plot_Ref.current) {
-
-            //  NO DOM element to put the chart into at this.plot_Ref.current
-
-            console.warn("( ! this.plot_Ref.current ).  Exit _populateChart_Actual early")
-
-            return;  // EARLY RETURN
-        }
-
         if (this.props.isInSingleChartOverlay) {
 
             this._plot_Container_Ref_Set_Height_100Percent();
         }
 
-        this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>): QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State => {
-
-            if (prevState.showUpdatingMessage) {
-                return {showUpdatingMessage: false};
-            }
-            return null;
-        });
+        // this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>): QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State => {
+        //
+        //     if (prevState.showUpdatingMessage) {
+        //         return {showUpdatingMessage: false};
+        //     }
+        //     return null;
+        // });
 
         if (this._cached_MS1_ChartData__ProjectSearchId !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId) {
             this._cached_MS1_ChartData_Map_Key_SearchScanFileId.clear();
@@ -485,19 +530,19 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         chart_Layout.width = _MainPage_Chart_Width; // + 200 for y axis label, tick marks
         chart_Layout.height = _MainPage_Chart_Height; // + 200 for x axis label, tick marks
 
-        try {
-            //  First remove any existing plot, if it exists (And event listener on it)
-            this._removeChart();
-        } catch (e) {
-            //  Eat Exception
-        }
+        ////////////
+
+        //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
+
+        //  Have existing chart in overlay when re-populate chart when have window resize
 
         if ( this.props.isInSingleChartOverlay ) {
-
-            const { chart_Width, chart_Height } = this._compute_ChartSize_InOverlay()
-
-            chart_Layout.width = chart_Width;
-            chart_Layout.height = chart_Height;
+            try {
+                //  First remove any existing plot, if it exists
+                this._removeChart();
+            } catch (e) {
+                //  Eat Exception
+            }
         }
 
         const peptideEntry_Map_Key_PSM_ID: Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = new Map();
@@ -830,67 +875,104 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             //  ignore exception
         }
 
-        const newPlotResult = Plotly.newPlot( this.plot_Ref.current, chart_Data, chart_Layout, chart_config );
-
-        this.setState({ showUpdatingMessage: false });
-
-        //  Register callback on user selects zoom area in chart
-        {
-            const chart_DOM_Root = this.plot_Ref.current
-
-            //   @ts-ignore
-            chart_DOM_Root.on("plotly_relayout", (eventdata) => {
-                try {
-                    const plot_width = chart_Layout.width;
-
-                    let newMarkerSize: number = undefined;
-
-                    if (eventdata["xaxis.range[1]"] !== undefined) {
-
-                        //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is M/Z
-
-                        const xaxis_range_0 = eventdata["xaxis.range[0]"];
-                        const xaxis_range_1 = eventdata["xaxis.range[1]"];
-
-                        const yaxis_range_0 = eventdata["yaxis.range[0]"];
-                        const yaxis_range_1 = eventdata["yaxis.range[1]"];
-
-                        this._selectedChartArea = {
-                            x_Axis_Start: xaxis_range_0,
-                            x_Axis_End: xaxis_range_1,
-                            y_Axis_Start: yaxis_range_0,
-                            y_Axis_End: yaxis_range_1
-                        }
-
-                        newMarkerSize = this._computeMarkerSize({ chart_X_Max: xaxis_range_1, chart_X_Min: xaxis_range_0, plot_width });
-
-                    } else {
-                        //  NO Selected Range
-                        newMarkerSize = this._computeMarkerSize({ chart_X_Max: ms1_ChartData.chart_X_Max, chart_X_Min: ms1_ChartData.chart_X_Min, plot_width });
-
-                        this._selectedChartArea = undefined;
-                    }
-
-                    const chartUpdate_Properties: any = {
-                        "marker.size": newMarkerSize
-                    };
-
-                    Plotly.restyle(this.plot_Ref.current, chartUpdate_Properties);
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-        }
 
         if ( ! this.props.isInSingleChartOverlay ) {
 
-            //  Add click handler on chart on main page to open chart in overlay
+            //  Main Page Plot
 
-            qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({ plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis });
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                image_DOM_Element: this.image_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
+                qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
+            });
+
+        } else {
+
+            //  Overlay Plot
+
+            this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params = new QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params({
+                plotly_CreatePlot_Params: { chart_Data, chart_Layout, chart_config },
+                chart_Width: chart_Layout.width,
+                chart_Height: chart_Layout.height,
+                plot_Div_DOM_Element: this.plot_Ref.current,
+                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                plotRendered_Success_Callback: () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                },
+                plotRendered_Fail_Callback:  () : void => {
+                    this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
+                }
+            });
+
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
+                qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+            });
+
+            //  Register callback on user selects zoom area in chart
+            {
+                const chart_DOM_Root = this.plot_Ref.current
+
+                //   @ts-ignore
+                chart_DOM_Root.on("plotly_relayout", (eventdata) => {
+                    try {
+                        const plot_width = chart_Layout.width;
+
+                        let newMarkerSize: number = undefined;
+
+                        if (eventdata["xaxis.range[1]"] !== undefined) {
+
+                            //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is M/Z
+
+                            const xaxis_range_0 = eventdata["xaxis.range[0]"];
+                            const xaxis_range_1 = eventdata["xaxis.range[1]"];
+
+                            const yaxis_range_0 = eventdata["yaxis.range[0]"];
+                            const yaxis_range_1 = eventdata["yaxis.range[1]"];
+
+                            this._selectedChartArea = {
+                                x_Axis_Start: xaxis_range_0,
+                                x_Axis_End: xaxis_range_1,
+                                y_Axis_Start: yaxis_range_0,
+                                y_Axis_End: yaxis_range_1
+                            }
+
+                            newMarkerSize = this._computeMarkerSize({ chart_X_Max: xaxis_range_1, chart_X_Min: xaxis_range_0, plot_width });
+
+                        } else {
+                            //  NO Selected Range
+                            newMarkerSize = this._computeMarkerSize({ chart_X_Max: ms1_ChartData.chart_X_Max, chart_X_Min: ms1_ChartData.chart_X_Min, plot_width });
+
+                            this._selectedChartArea = undefined;
+                        }
+
+                        const restyle_chartUpdate_Properties: any = {
+                            "marker.size": newMarkerSize
+                        };
+
+                        this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                        restyleChart({ restyle_chartUpdate_Properties, plot_Div_DOM_Element: this.plot_Ref.current, restyleComplete_Success_Callback: undefined, restyleComplete_Fail_Callback: undefined })
+
+                    } catch( e ) {
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        throw e;
+                    }
+                });
+            }
         }
-
 
         if ( this.props.isInSingleChartOverlay ) {
 
@@ -969,14 +1051,10 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
      */
     private _removeChart() : void {
         try {
-            qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM({
-                plotContaining_DOM_Element: this.plot_Ref.current, callbackFcn_WhenClicked: this._openChartInOverlay_BindThis
-            });
-        } catch (e) {
-            //  Eat Exception
-        }
-        try {
-            Plotly.purge(this.plot_Ref.current)
+            if ( this.plot_Ref.current ) {
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+                removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -985,9 +1063,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
     /**
      *
      */
-    private _openChartInOverlay( event ) {
+    private _openChartInOverlay() {
         try {
-            event.stopPropagation()
             open_MS1_Ion_Current_RetentionTime_VS_M_Z_OverlayContainer({
                 params: {
                     ms1_PeakIntensityBinnedOn_RT_MZ_OverallData: this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData,
@@ -1130,7 +1207,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             // MUST open window before make AJAX Call.  This is a Browser Security requirement
             //  window.open(...): Must run in code directly triggered by click event
 
-            const newWindow = window.open(newWindowURL, "_blank");
+            const newWindow = window.open(newWindowURL, "_blank", "noopener");
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1215,7 +1292,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
     //         // MUST open window before make AJAX Call.  This is a Browser Security requirement
     //         //  window.open(...): Must run in code directly triggered by click event
     //
-    //         const newWindow = window.open(newWindowURL, "_blank");
+    //         const newWindow = window.open(newWindowURL, "_blank", "noopener");
     //
     //     } catch( e ) {
     //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1265,50 +1342,77 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         }
 
         return (
-            <div style={ style }>
-                <div ref={this.plot_Container_Ref} style={ style }>
-                    <div ref={this.plot_Ref}></div>
-                </div>
-                <div style={ { position: "relative"} }>
-                    <div ref={this.linksUnderPlot_Container_Ref} style={ linksUnderPlot_Container_Style } >
-                        <div>
-                            <span
-                                className=" fake-link "
-                                onClick={ event =>  {
-                                    this._update_ThisPage_WithSelection();
-                                }}
-                                title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
-                                    "Clicking this link will update this page's filters to the shown m/z range, retention time range, and scan file"
-                                ) : (
-                                    "Clicking this link will update this page's filters to the shown m/z range and retention time range"
-                                )}
-                            >
-                                Add Displayed Ranges to Page Filters
-                            </span>
-                        </div>
-                        <div>
-                            <span
-                                className=" fake-link "
-                                onClick={ event =>  {
-                                    this._open_Peptide_Page_WithSelection();
-                                }}
-                                title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
-                                    "Open the peptide view page using the selected scan file, m/z range, and retention time range currently visible in this plot."
-                                ) : (
-                                    "Open the peptide view page using the m/z range and retention time range currently visible in this plot."
-                                )}
-                            >
-                                Show Peptide Page for Selection
-                            </span>
+            <React.Fragment>
+
+                {( ! this.props.isInSingleChartOverlay ) ? (
+                    //  For Main Page: img the chart will be inserted into
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                ) : null }
+
+                { ( this.props.isInSingleChartOverlay ) ? (
+
+                    //  In Overlay
+
+                    <div ref={this.plot_Container_Ref} style={ { height: "100%" } }>
+
+                        {/*  For Single Chart Overlay: div the chart will be rendered into  */}
+                        <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+
+                        <div style={ { position: "relative"} }>
+                            <div ref={this.linksUnderPlot_Container_Ref} style={ linksUnderPlot_Container_Style } >
+                                <div>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ event =>  {
+                                            this._update_ThisPage_WithSelection();
+                                        }}
+                                        title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                            "Clicking this link will update this page's filters to the shown m/z range, retention time range, and scan file"
+                                        ) : (
+                                            "Clicking this link will update this page's filters to the shown m/z range and retention time range"
+                                        )}
+                                    >
+                                        Add Displayed Ranges to Page Filters
+                                    </span>
+                                </div>
+                                <div>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ event =>  {
+                                            this._open_Peptide_Page_WithSelection();
+                                        }}
+                                        title={ ( this.props.searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds ) ? (
+                                            "Open the peptide view page using the selected scan file, m/z range, and retention time range currently visible in this plot."
+                                        ) : (
+                                            "Open the peptide view page using the m/z range and retention time range currently visible in this plot."
+                                        )}
+                                    >
+                                        Show Peptide Page for Selection
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {( this.state.showUpdatingMessage ) ? (
+                ) : null }
+
+                {( this.state.showCreatingMessage ) ? (
+
+                    <QcPage_CreatingPlot_BlockCover/>
+
+                ): ( this.state.showUpdatingMessage ) ? (
 
                     <QcPage_UpdatingData_BlockCover/>
 
-                ): null }
-            </div>
+                ): ( ! this.props.isInSingleChartOverlay ) ? (
+
+                    //  Component on main page that goes on top of <img> to show message on hover and call clickHandler_Callback on click
+                    <QcPage_ClickPlot_ForInteractivePlot_BlockCover
+                        clickHandler_Callback={ this._openChartInOverlay_BindThis }
+                    />
+
+                ) : null }
+
+            </React.Fragment>
         );
     }
 

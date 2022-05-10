@@ -38,6 +38,7 @@ import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/da
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
+import {Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject";
 
 /**
  * object of this class is returned from function 'getReportedPeptideIdsForDisplay_AllProjectSearchIds' which is in this file
@@ -91,8 +92,8 @@ class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_Requ
     userSearchString_LocationsOn_ProteinSequence_Root : UserSearchString_LocationsOn_ProteinSequence_Root
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
+    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
 }
-
 
 //  Class for contents of returned from main method on main class
 
@@ -232,6 +233,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                     scan_RetentionTime_MZ_UserSelection_StateObject: requestParams.scan_RetentionTime_MZ_UserSelection_StateObject,
                     peptideUnique_UserSelection_StateObject: requestParams.peptideUnique_UserSelection_StateObject,
                     psm_Charge_Filter_UserSelection_StateObject: requestParams.psm_Charge_Filter_UserSelection_StateObject,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: requestParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: requestParams.peptideSequence_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: requestParams.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: requestParams.proteinPositionFilter_UserSelections_StateObject,

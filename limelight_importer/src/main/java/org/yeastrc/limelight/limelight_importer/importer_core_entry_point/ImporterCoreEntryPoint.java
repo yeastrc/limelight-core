@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
+
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -43,14 +45,18 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLimelightXMLDeserializeFailException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
+import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimelightXML_Statistics;
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
+import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateAnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatchedProteinSection;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReporterIons_OnPSMs;
@@ -58,6 +64,7 @@ import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightIn
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
 /**
@@ -78,6 +85,21 @@ public class ImporterCoreEntryPoint {
 	
 	private volatile boolean shutdownRequested = false;
 	
+	/**
+	 * @param projectId
+	 * @param userIdInsertingSearch
+	 * @param searchNameOverrideValue
+	 * @param importDirectoryOverrideValue
+	 * @param mainXMLFileToImport
+	 * @param limelightInputForImportParam
+	 * @param scanFileFileContainer_AllEntries
+	 * @param skipPopulatingPathOnSearchLineOptChosen
+	 * @param searchStatistics_General_SavedToDB
+	 * @return
+	 * @throws Exception
+	 * @throws LimelightImporterProjectNotAllowImportException
+	 * @throws LimelightImporterLimelightXMLDeserializeFailException
+	 */
 	public int doImport( 
 			int projectId,
 			Integer userIdInsertingSearch,
@@ -86,7 +108,8 @@ public class ImporterCoreEntryPoint {
 			File mainXMLFileToImport,
 			LimelightInput limelightInputForImportParam,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
-			Boolean skipPopulatingPathOnSearchLineOptChosen
+			Boolean skipPopulatingPathOnSearchLineOptChosen,
+			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
 			) throws Exception, LimelightImporterProjectNotAllowImportException, LimelightImporterLimelightXMLDeserializeFailException {
 		
 		LimelightInput limelightInputForImport = null;
@@ -128,6 +151,34 @@ public class ImporterCoreEntryPoint {
 			} finally {
 			}
 		}
+		
+		try {
+			long limelightXMLFileToImport_Size = 0;
+			if ( mainXMLFileToImport != null ) {
+				limelightXMLFileToImport_Size = mainXMLFileToImport.length();
+			}
+
+			searchStatistics_General_SavedToDB.set_limelightXMLFileToImport_Size(limelightXMLFileToImport_Size);
+			
+			 List<ScanFileFileContainer> scanFileFileContainer_List = scanFileFileContainer_AllEntries.get_ScanFileFileContainer_List();
+			 
+			 if ( scanFileFileContainer_List != null && ( ! scanFileFileContainer_List.isEmpty() ) ) {
+				 
+				 long scanFiles_TotalFilesSize_Bytes = 0;
+				 
+				 for ( ScanFileFileContainer scanFileFileContainer : scanFileFileContainer_List ) {
+					 scanFiles_TotalFilesSize_Bytes += scanFileFileContainer.getScanFile().length();
+				 }
+
+				 searchStatistics_General_SavedToDB.setScanFiles_TotalFilesSize_Bytes(scanFiles_TotalFilesSize_Bytes);
+			 }
+			 
+		} catch ( Exception e ) {
+			// swallow exception
+		}
+		
+		searchStatistics_General_SavedToDB.read_LimelightXMLFile_Done();
+		
 		//  If a searchName is provided, override the one in the Limelight XML file
 		if ( StringUtils.isNotEmpty( searchNameOverrideValue ) ) {
 			limelightInputForImport.setName( searchNameOverrideValue );
@@ -141,7 +192,8 @@ public class ImporterCoreEntryPoint {
 				limelightInputObjectContainer, 
 				scanFileFileContainer_AllEntries, 
 				importDirectory, 
-				skipPopulatingPathOnSearchLineOptChosen );
+				skipPopulatingPathOnSearchLineOptChosen,
+				searchStatistics_General_SavedToDB );
 		
 		return insertedSearchId;
 	}
@@ -231,8 +283,10 @@ public class ImporterCoreEntryPoint {
 			LimelightInputObjectContainer limelightInputObjectContainer,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
-			Boolean skipPopulatingPathOnSearchLineOptChosen
+			Boolean skipPopulatingPathOnSearchLineOptChosen,
+			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB_ToDB
 			) throws Exception, LimelightImporterProjectNotAllowImportException {
+		
 		
 		LimelightInput limelightInputForImport = limelightInputObjectContainer.getLimelightInput();
 		if ( limelightInputForImport.getMatchedProteins() == null ) {
@@ -281,8 +335,19 @@ public class ImporterCoreEntryPoint {
 
 			//   Throws LimelightImporterDataException if data error found
 			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ(limelightInputForImport);
-			
+
+			//   Throws LimelightImporterDataException if data error found
 			Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed.getInstance().validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed(limelightInputForImport);
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue.getInstance().validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue(limelightInputForImport);
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics.getInstance().validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics(limelightInputForImport);
+			
+			////////  End Validation
+			
+			
 			
 			//  Process Limelight Input
 			processLimelightInput = ProcessLimelightInput.getInstance();
@@ -292,17 +357,26 @@ public class ImporterCoreEntryPoint {
 					limelightInputForImport, 
 					scanFileFileContainer_AllEntries,
 					importDirectory, 
-					skipPopulatingPathOnSearchLineOptChosen
+					skipPopulatingPathOnSearchLineOptChosen,
+					searchStatistics_General_SavedToDB_ToDB
 					);
 			
 			SearchDTO_Importer searchDTOInserted = processLimelightInput.getSearchDTOInserted();
 			ProjectSearchDTO projectSearchDTOInserted = processLimelightInput.getProjectSearchDTOInserted();
+			
+			
+			//  Commit all inserts executed to this point
+			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			
+			//  Save Search Statistics, including processing time
+			
+			searchStatistics_General_SavedToDB_ToDB.searchStatistics_General_SavedToDB(limelightInputForImport, searchDTOInserted);
+
+			
 			//  Set limelightInputForImport to null to release memory needed later, but right now no other code to run
 			limelightInputForImport = null;
 			limelightInputObjectContainer.setLimelightInput( null );
 			
-			//  Commit all inserts executed to this point
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
 			
 			try {
 				SearchDAO.getInstance().updateStatus( searchDTOInserted.getId(), SearchRecordStatus.IMPORT_COMPLETE_VIEW );
@@ -328,6 +402,17 @@ public class ImporterCoreEntryPoint {
 				System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				System.out.println( "!!!!");
 			}
+			
+			try {
+				Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().delete_ForSearchId( searchDTOInserted.getId() );
+				
+			} catch ( Throwable t ) {
+				String msg = "Failed to Delete Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter record, search id: " + searchDTOInserted.getId() ;
+				log.error( msg, t );
+				
+				//  Eat Exception
+			}
+			
 			System.out.println( );
 			System.out.println( );
 			System.out.println( );
@@ -379,7 +464,20 @@ public class ImporterCoreEntryPoint {
 							System.err.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 							System.err.println( msgeUpd );
 							System.err.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+							//  Eat Exception
 					    }
+
+						try {
+							Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().delete_ForSearchId( search.getId() );
+							
+						} catch ( Throwable t ) {
+							String msgDelete = "Failed to Delete Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter record, search id: " + search.getId() ;
+							log.error( msgDelete, t );
+							
+							//  Eat Exception
+						}
+						
 						ProjectSearchDTO projectSearchDTOInserted = processLimelightInput.getProjectSearchDTOInserted();
 						try {
 							ProjectSearchDAO.getInstance().updateStatus( projectSearchDTOInserted.getId(),  SearchRecordStatus.IMPORT_FAIL );

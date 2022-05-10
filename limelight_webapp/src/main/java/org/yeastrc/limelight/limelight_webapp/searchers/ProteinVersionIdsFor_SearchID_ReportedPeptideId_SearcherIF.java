@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_webapp.searchers;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -30,10 +29,10 @@ public interface ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF {
 	 * @param searchId
 	 * @param reportedPeptideId
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception
 	 */
 	List<Integer> getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher(
 
-			int searchId, int reportedPeptideId) throws SQLException;
+			int searchId, int reportedPeptideId) throws Exception;
 
 }

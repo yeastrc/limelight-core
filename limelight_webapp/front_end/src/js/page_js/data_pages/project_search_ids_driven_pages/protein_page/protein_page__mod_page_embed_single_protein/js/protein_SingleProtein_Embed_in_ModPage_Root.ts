@@ -279,7 +279,7 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
         // MUST open window before make AJAX Call.  This is a Browser Security requirement
         //  window.open(...): Must run in code directly triggered by click event
 
-        const newWindow = window.open(newWindowURL, "_blank");
+        const newWindow = window.open(newWindowURL, "_blank", "noopener");
     }
 
     /**

@@ -14,11 +14,9 @@ import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_
 import {DataPage_common_Searches_Info_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded";
-import {QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded";
-import {QcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 
 /**
@@ -32,9 +30,7 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
 
     private _qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded
-    private _qcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded
-    private _qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded
@@ -52,9 +48,7 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
 
         this._qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded();
-        this._qcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded()
         this._qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded();
-        this._qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded();
 
         this._qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded();
@@ -252,62 +246,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
                 reject( reason );
             });
             promiseAll.then( value => {
-                resolve( this._data_Holder_SingleSearch );
-            });
-        })
-    }
-
-    /**
-     * Load UN-Filtered
-     *
-     */
-    get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered(
-        {
-            psmFilterableAnnotationTypeIds_Requested
-        } : {
-            psmFilterableAnnotationTypeIds_Requested: Set<number>
-        }
-    ) : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch> {
-
-        const promise = this._qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_Unfiltered_LoadIfNeeded.singleSearch_PsmFilterableAnnotationData_LoadIfNeeded({
-            psmFilterableAnnotationTypeIds_Requested, retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
-        });
-
-        if ( ! promise ) {
-            //  No wait so immediately return resolved promise
-            return Promise.resolve( this._data_Holder_SingleSearch );
-        }
-
-        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => {
-            promise.catch( reason => {
-                reject( reason );
-            });
-            promise.then( value => {
-                resolve( this._data_Holder_SingleSearch );
-            });
-        })
-    }
-
-    /**
-     * Load PsmTblData - Unfiltered for separating by scan file
-     *
-     */
-    get_PsmStatistics_PerScore_Statistics_PsmFilterableAnnotationData_Unfiltered__PsmTblData() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch> {
-
-        const promise = this._qcPage_DataFromServer_SingleSearch_PsmTblData_Unfiltered_LoadIfNeeded.singleSearch_PsmTblData_Unfiltered_LoadIfNeeded({
-            retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
-        });
-
-        if ( ! promise ) {
-            //  No wait so immediately return resolved promise
-            return Promise.resolve( this._data_Holder_SingleSearch );
-        }
-
-        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => {
-            promise.catch( reason => {
-                reject( reason );
-            });
-            promise.then( value => {
                 resolve( this._data_Holder_SingleSearch );
             });
         })

@@ -61,13 +61,22 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 	public static class CreateSearchReportedPeptideLevelLookupRecords_Result {
 		
 		private Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO;
-		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
 		
+		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets;
+		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys;
+		private List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
+
 		public Search_ReportedPeptide__Lookup__DTO getSearch_ReportedPeptide__Lookup__DTO() {
 			return search_ReportedPeptide__Lookup__DTO;
 		}
-		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List() {
-			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List;
+		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets() {
+			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets;
+		}
+		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys() {
+			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys;
+		}
+		public List<Search_ReportedPeptide_BestPsmValue_Lookup__DTO> getSearch_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys() {
+			return search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys;
 		}
 	}
 
@@ -217,19 +226,28 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasDynamicModifications( anyPsmHasDynamicModifications );
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasOpenModifications( anyPsmHasOpenModifications );
 		search_ReportedPeptide__Lookup__DTO.setAnyPsmHasReporterIons( anyPsmHasReporterIons );
-		search_ReportedPeptide__Lookup__DTO.setPsmNumAtDefaultCutoff( psmStatisticsAndBestValues.getPsmCountPassDefaultCutoffs() );
+		search_ReportedPeptide__Lookup__DTO.setPsmNum_Targets_Only_AtDefaultCutoff( psmStatisticsAndBestValues.getPsmNum_Targets_Only_AtDefaultCutoff() );
+		search_ReportedPeptide__Lookup__DTO.setPsmNum_IndependentDecoys_Only_AtDefaultCutoff( psmStatisticsAndBestValues.getPsmNum_IndependentDecoys_Only_AtDefaultCutoff() );
+		search_ReportedPeptide__Lookup__DTO.setPsmNum_Decoys_Only_AtDefaultCutoff( psmStatisticsAndBestValues.getPsmNum_Decoys_Only_AtDefaultCutoff() );
 		search_ReportedPeptide__Lookup__DTO.setPeptideMeetsDefaultCutoffs( peptideMeetsDefaultCutoffs );
-		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialStart( psmStatisticsAndBestValues.getFirstSavedPsmId() );
+		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialStart__StartOf_Target_Psms( psmStatisticsAndBestValues.getFirstSavedPsmId_Is_Target() );
+		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialStart__StartOf_IndependentDecoy_Psms( psmStatisticsAndBestValues.getFirstSavedPsmId_Is_IndependentDecoy() );
+		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialStart__StartOf_Decoy_Psms( psmStatisticsAndBestValues.getFirstSavedPsmId_Is_Decoy() );
 		search_ReportedPeptide__Lookup__DTO.setPsmIdSequentialEnd( psmStatisticsAndBestValues.getLastSavedPsmId());
 		
 		methodResult.search_ReportedPeptide__Lookup__DTO = search_ReportedPeptide__Lookup__DTO;
 		
 		//  Best PSM Annotation Values
-		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing = psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing();
 		
-		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List =
-				bestPsmFilterableAnnotationProcessing.getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
-		
+		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets =
+				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
+
+		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys =
+				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
+
+		methodResult.search_ReportedPeptide_BestPsmValue_Lookup__DTO_List_PSM_Targets_IndependentDecoys_Decoys =
+				psmStatisticsAndBestValues.getBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys().getBestPsmValues( search_ReportedPeptide__Lookup__DTO );
+
 		return methodResult;
 	}
 	

@@ -18,6 +18,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Protein_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/protein_page/protein_Page_FiltersDisplay_ComponentData";
 import {currentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide_UniquePeptide_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__protein__display_elements/currentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide_UniquePeptide_UserSelections";
 import {currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection";
+import {currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections";
 
 
 
@@ -144,6 +145,16 @@ export class Protein_Page_FiltersDisplay extends React.Component< Protein_Page_F
 
                 const currentFilter = currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection({
                     psm_Charge_Filter_UserSelection_StateObject: this.props.protein_Page_FiltersDisplay_ComponentData.psm_Charge_Filter_UserSelection_StateObject
+                });
+                if ( currentFilter ) {
+                    currentFiltersArray.push( currentFilter );
+                }
+            }
+
+            {  //  PSM Hide Independent Decoy PSMs Filter
+
+                const currentFilter = currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections({
+                    psm_Exclude_IndependentDecoy_PSMs_UserSelections_StateObject: this.props.protein_Page_FiltersDisplay_ComponentData.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
                 });
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );

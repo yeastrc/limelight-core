@@ -33,6 +33,12 @@
 <c:if test="${ singleSearchHasSubGroups }">
   <script type="text/text" id="single_search_has_sub_groups">x</script>
 </c:if>
+
+<c:if test="${ Blib_Spectral_Library_Webservice_IS_Fully_Configured }">
+  <script type="text/text" id="blib_spectral_library_webservice_is_fully_configured">x</script>
+</c:if>
+
+
 	
 
 	<%-- Experiment - from Java class Experiment_Set_HTTPRequest_ForJSP --%>

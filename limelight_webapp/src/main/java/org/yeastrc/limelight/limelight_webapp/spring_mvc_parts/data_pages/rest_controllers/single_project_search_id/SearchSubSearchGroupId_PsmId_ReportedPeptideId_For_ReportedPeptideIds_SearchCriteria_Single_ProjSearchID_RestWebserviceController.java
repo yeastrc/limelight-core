@@ -264,12 +264,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		List<WebserviceResultItem> webserviceResults = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() * 10 );
-
 			List<SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem> dbResults = 
 					searchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher
 					.getSearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffs(
 							webserviceRequest.reportedPeptideIds, searchId, searcherCutoffValuesSearchLevel );
+
+    		List<WebserviceResultItem> webserviceResults = new ArrayList<>( dbResults.size() );
 
 			for ( SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem dbResult : dbResults ) {
 

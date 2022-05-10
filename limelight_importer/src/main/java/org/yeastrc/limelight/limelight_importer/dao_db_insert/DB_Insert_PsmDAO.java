@@ -25,10 +25,13 @@ import java.sql.Statement;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_importer.dao.SearchPsmIdRangeDAO;
+import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchPsmIdRangeDTO;
 
 /**
  * table psm_tbl
@@ -50,16 +53,37 @@ public class DB_Insert_PsmDAO {
 	private long next_PsmId;
 	
 	private long psmId_InsertMax;
+
+	////
+	
+	private static long totalElapsedTime_saveToDatabase_InMilliSeconds = 0;
+	private static long totalCallCount_saveToDatabase = 0;
+
+	//  Comment out since time does NOT include calls to 'commit' which is where the actual writing to DB occurs
+
+	/**
+	 * 
+	 */
+//	public static void logTotalElapsedTimeAndCallCounts() {
+//		{
+//			double elapsedTimeSeconds = totalElapsedTime_saveToDatabase_InMilliSeconds / 1000.0;
+//			double elapsedTimeMinutes = ( elapsedTimeSeconds ) / 60.0;
+//			log.warn( "Total Elapsed Time: Save to psm_tbl: "
+//					+ elapsedTimeSeconds + " seconds, or "
+//					+ elapsedTimeMinutes + " minutes.  # method calls: " + totalCallCount_saveToDatabase);
+//		}
+//		
+//	}
 	
 	/**
 	 * @param psmCount_ForSearch
 	 * @throws Exception 
 	 */
-	public void initialize_Pass_PsmCount(int psmCount_ForSearch) throws Exception {
+	public void initialize_Pass_PsmCount(int psmCount_ForSearch, SearchDTO_Importer searchDTO ) throws Exception {
 		
 		this.psmCount_ForSearch = psmCount_ForSearch;
 		
-		this.initialize__Internal();  //  Code at bottom of class
+		this.initialize__Internal(searchDTO);  //  Code at bottom of class
 		
 		initializeCalled = true;
 	}
@@ -122,8 +146,10 @@ public class DB_Insert_PsmDAO {
 			"INSERT INTO psm_tbl "
 			+ "( id, search_id, reported_peptide_id, charge, "
 			+ " scan_number, search_scan_file_id, has_modifications, has_open_modifications, has_reporter_ions, "
-			+ " precursor_retention_time, precursor_m_z ) "
-			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ " precursor_retention_time, precursor_m_z,"
+			+ " is_decoy, is_independent_decoy "
+			+ " ) "
+			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * @param psm
@@ -135,6 +161,9 @@ public class DB_Insert_PsmDAO {
 		final String sql = INSERT_SQL;
 		
 
+		long startTimeNanoSeconds = System.nanoTime();
+		
+		
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 			
 			int counter = 0;
@@ -185,7 +214,20 @@ public class DB_Insert_PsmDAO {
 			pstmt.setBigDecimal( counter, psm.getPrecursor_RetentionTime() );
 			counter++;
 			pstmt.setBigDecimal( counter, psm.getPrecursor_MZ() );
-			
+
+			counter++;
+			if ( psm.isDecoy() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+			counter++;
+			if ( psm.isIndependentDecoy() ) {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+			} else {
+				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+			}
+
 			pstmt.executeUpdate();
 			
 			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
@@ -201,6 +243,12 @@ public class DB_Insert_PsmDAO {
 			
 			throw e;
 		}
+		
+
+		long endTimeNanoSeconds = System.nanoTime();
+		long elapsedTimeNanoSeconds = endTimeNanoSeconds - startTimeNanoSeconds;
+		totalElapsedTime_saveToDatabase_InMilliSeconds += ( elapsedTimeNanoSeconds / 1000000 );
+		totalCallCount_saveToDatabase++;
 	}
 	
 //	
@@ -296,7 +344,7 @@ public class DB_Insert_PsmDAO {
 	 * @throws Exception 
 	 * 
 	 */
-	private void initialize__Internal() throws Exception {
+	private void initialize__Internal(SearchDTO_Importer searchDTO) throws Exception {
 		
 		boolean successful_Initialize = false;
 		
@@ -364,6 +412,19 @@ public class DB_Insert_PsmDAO {
 				Thread.sleep(1005);  // wait before retry
 			}
 		}
+		
+		
+		long psmIdRange_Start = this.next_PsmId;
+		
+		long psmIdRange_End =  this.next_PsmId + psmCount_ForSearch - 1;
+		
+		SearchPsmIdRangeDTO searchPsmIdRangeDTO = new SearchPsmIdRangeDTO();
+		
+		searchPsmIdRangeDTO.setSearchId(searchDTO.getId());
+		searchPsmIdRangeDTO.setPsmIdRange_Start(psmIdRange_Start);
+		searchPsmIdRangeDTO.setPsmIdRange_End(psmIdRange_End);
+		
+		SearchPsmIdRangeDAO.getInstance().save(searchPsmIdRangeDTO);
 	}
 	
 

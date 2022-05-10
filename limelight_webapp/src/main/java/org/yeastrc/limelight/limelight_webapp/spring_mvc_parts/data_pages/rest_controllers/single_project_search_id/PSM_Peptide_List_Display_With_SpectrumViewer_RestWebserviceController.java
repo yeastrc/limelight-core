@@ -294,7 +294,7 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 			
 			List<PsmsForScanNumberScanFilenameIdSearchId_Result> psmsFromDBList = 
 					psmsWithSameScanNumberScanFilenameIdSearchIdSearcher
-					.getPsmsWithSameScanNumberScanFilenameIdSearchId( psmIdFromWebserviceRequest );
+					.getPsmsWithSameScanNumberScanFilenameIdSearchId( psmIdFromWebserviceRequest, searchId );
 			
     		List<WebserviceResult_Item> resultList = new ArrayList<>( psmsFromDBList.size() );
     		
@@ -311,6 +311,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			
     			result.psm_precursor_RetentionTime = psmFromDBItem.getPrecursor_RetentionTime();
     			result.psm_precursor_MZ = psmFromDBItem.getPrecursor_MZ();
+    			
+    			result.psmIs_IndependentDecoy = psmFromDBItem.isPsmIs_IndependentDecoy();
     			
     			result.scanNumber = psmFromDBItem.getScanNumber();
 
@@ -741,7 +743,9 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     	private int charge;
     	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
     	private BigDecimal psm_precursor_MZ;            // precursor_m_z
-
+    	
+    	private boolean psmIs_IndependentDecoy;     //  NOT return 'is_decoy' since Excluded in SQL
+    	
     	private int scanNumber;
 
     	private List<AnnotationDataItem_ForPage> psmAnnotationList;
@@ -818,6 +822,9 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 		}
 		public List<AnnotationDataItem_ForPage> getPsmAnnotationList() {
 			return psmAnnotationList;
+		}
+		public boolean isPsmIs_IndependentDecoy() {
+			return psmIs_IndependentDecoy;
 		}
 
     }

@@ -1,0 +1,126 @@
+/*
+* Original author: Daniel Jaschob <djaschob .at. uw.edu>
+*                  
+* Copyright 2018 University of Washington - Seattle, WA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+package org.yeastrc.limelight.limelight_importer.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_PerTable_DTO;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+
+/**
+ * importer_stats_per_table_tbl table
+ * 
+ * Stats per Table(s)
+ */
+public class Importer_Stats_PerTable_DAO {
+	
+	private static final Logger log = LoggerFactory.getLogger( Importer_Stats_PerTable_DAO.class );
+
+	/**
+	 *  !!!  Current Max Length of field 'table_names'
+	 */
+	public static final int TABLE_NAMES_FIELD_MAX_LENGTH = 4000;
+	
+	private Importer_Stats_PerTable_DAO() { }
+	public static Importer_Stats_PerTable_DAO getInstance() { return new Importer_Stats_PerTable_DAO(); }
+	
+	
+
+	/**
+	 * @param item
+	 * @throws Exception
+	 */
+	public void save( Importer_Stats_PerTable_DTO item ) throws Exception {
+		
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+			
+			//  Insert into main table
+			save( item, dbConnection );
+		}
+	}
+
+	private final String INSERT_SQL = 
+			"INSERT INTO importer_stats_per_table_tbl ( "
+			+ " search_id, table_names, table_manipulation_type, "
+			+ " sql_calls_total_elapsed_time__milliseconds, sql_call_count, total_records"
+			+ " ) "
+			+ "VALUES ( ?, ?, ?, ?, ?, ? )";
+	/**
+	 * @param item
+	 * @param conn
+	 * @throws Exception
+	 */
+	public void save( Importer_Stats_PerTable_DTO item, Connection dbConnection ) throws Exception {
+
+		if ( item.getTable_names() == null ) {
+			throw new IllegalArgumentException( "item.getTable_names() cannot return null" );
+		}
+		if ( item.getTableManipulationType() == null ) {
+			throw new IllegalArgumentException( "item.getTableManipulationType() cannot return null" );
+		}
+		
+		final String sql = INSERT_SQL;
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+
+			int counter = 0;
+
+			counter++;
+			pstmt.setInt( counter, item.getSearchId() );
+
+			counter++;
+			pstmt.setString( counter, item.getTable_names() );
+			counter++;
+			pstmt.setString( counter, item.getTableManipulationType().value() );
+
+			counter++;
+			pstmt.setLong( counter, item.getSqlCalls_TotalElapsedTime_Milliseconds() );
+			counter++;
+			pstmt.setInt( counter, item.getSqlCallCount() );
+			counter++;
+			pstmt.setInt( counter, item.getTotalRecords() );
+
+			pstmt.executeUpdate();
+			
+			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
+				if( rs.next() ) {
+					int id =  rs.getInt( 1 );
+
+					item.setId(id);;
+				} else
+					throw new LimelightImporterDatabaseException( "Failed to insert annotation_type__insert_id_tbl " );
+			}
+
+		} catch ( Exception e ) {
+			String msg = "ERROR save(...) item: " + item;
+			log.error( msg, e );
+			throw e;
+		}
+		
+	}
+	
+	
+
+	
+}
+

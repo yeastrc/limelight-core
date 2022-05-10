@@ -10,7 +10,7 @@ import {
 import {
     DownloadPSMs_PerProjectSearchId_Entry,
     DownloadPSMs_PerReportedPeptideId
-} from "page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds";
+} from "page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds";
 
 /**
  *

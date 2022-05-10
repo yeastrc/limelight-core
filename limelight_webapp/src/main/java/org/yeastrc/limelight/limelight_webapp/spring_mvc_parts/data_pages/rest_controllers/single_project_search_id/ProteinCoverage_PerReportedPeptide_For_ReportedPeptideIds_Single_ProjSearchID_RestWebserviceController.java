@@ -341,6 +341,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	private int pSVId;
     	private int pSPs;
     	private int pEPs;
+    	private boolean iipdc;
     	
     	public WebserviceResult_Item() {}
     	
@@ -349,6 +350,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		this.pSVId = item.getProteinSequenceVersionId();
     		this.pSPs = item.getProteinStartPosition();
     		this.pEPs = item.getProteinEndPosition();
+    		this.iipdc = item.isProteinIsIndependentDecoy();
     	}
     	
 		public int getrPId() {
@@ -362,6 +364,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public int getpEPs() {
 			return pEPs;
+		}
+
+		public boolean isIipdc() {
+			return iipdc;
 		}
 
     	

@@ -634,6 +634,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                         throw Error(msg);
                     }
 
+                    let psmCount_Total_Across_SearchSubGroups = 0;
 
                     for (const searchSubGroup_Id_Selected of searchSubGroup_Ids_Selected) {
 
@@ -641,6 +642,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                         if (psmCount === undefined) {
                             psmCount = 0;
                         }
+
+                        psmCount_Total_Across_SearchSubGroups += psmCount;
 
                         const psmCountDisplay = psmCount.toLocaleString();
 
@@ -658,19 +661,39 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                     }
 
+                    if ( psmCount_Total_Across_SearchSubGroups === 0 ) {
+                        const msg = (
+                            "( psmCount_Total_Across_SearchSubGroups === 0 ): peptideEntry.peptideSequenceDisplay: "
+                            + peptideEntry.peptideSequenceDisplay
+                            + ", projectSearchId: " + projectSearchId
+                        );
+                        console.warn(msg);
+                        throw new Error(msg);
+                    }
+
                 } else {
+
+                    let psmCount_Total_Across_Searches = 0;
+
                     for (const projectSearchId of projectSearchIds) {
 
                         let psmCount = peptideEntry.psmCountsMap_KeyProjectSearchId.get(projectSearchId);
-                        if (!psmCount) {
-                            psmCount = 0;
+
+                        if ( psmCount === undefined || psmCount === null ) {
+
+                            // Compute psmCount from peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId
+
+                            psmCount = 0;   //  initialize to zero before adding to it
+
+                            const reportedPeptideIds: Array<number> = [];
+
                             const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get(projectSearchId);
                             if (dataPerReportedPeptideId_Map_Key_reportedPeptideId) {
-                                for (const dataPerReportedPeptideId_MapEntry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries()) {
-                                    const dataPerReportedPeptideId_MapEntry_Value = dataPerReportedPeptideId_MapEntry[1];
+                                for (const dataPerReportedPeptideId_MapEntry_Value of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values()) {
+                                    reportedPeptideIds.push(dataPerReportedPeptideId_MapEntry_Value.reportedPeptideId)
                                     const psmIdsSet = dataPerReportedPeptideId_MapEntry_Value.psmIdsSet;
                                     if (psmIdsSet) {
-                                        psmCount += psmIdsSet.size;
+                                        psmCount += psmIdsSet.size;  // add to psmCount
                                     } else {
                                         const msg = (
                                             "No Value in dataPerReportedPeptideId_MapEntry_Value.psmIdsSet: reportedPeptideId: "
@@ -683,6 +706,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                                 }
                             }
                         }
+
+                        psmCount_Total_Across_Searches += psmCount;
 
                         const psmCountDisplay = psmCount.toLocaleString();
 
@@ -698,6 +723,17 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
                         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+
+
+                    if ( psmCount_Total_Across_Searches === 0 ) {
+                        const msg = (
+                            "( psmCount_Total_Across_Searches === 0 ): peptideEntry.peptideSequenceDisplay: "
+                            + peptideEntry.peptideSequenceDisplay
+                            + ", projectSearchIds: " + projectSearchIds.join(",")
+                        );
+                        console.warn(msg);
+                        throw new Error(msg);
                     }
                 }
 

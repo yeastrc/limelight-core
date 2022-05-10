@@ -223,7 +223,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 		const dataTable_TableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
 
-		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List", tableOptions : dataTable_TableOptions })
+		const dataTable_RootTableObject = new DataTable_RootTableObject({ tableDataObject : dataTable_RootTableDataObject, dataTableId : "PSM List Under Lorikeet Spectrum Viewer", tableOptions : dataTable_TableOptions })
 
 		create_dataTable_Root_React({ tableObject : dataTable_RootTableObject, containerDOMElement, renderCompleteCallbackFcn : undefined })
 	}

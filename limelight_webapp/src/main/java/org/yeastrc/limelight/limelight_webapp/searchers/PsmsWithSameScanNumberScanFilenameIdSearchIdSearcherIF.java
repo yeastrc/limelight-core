@@ -29,10 +29,11 @@ public interface PsmsWithSameScanNumberScanFilenameIdSearchIdSearcherIF {
 
 	/**
 	 * @param psmId
+	 * @param searchId TODO
 	 * @return
 	 * @throws Exception
 	 */
-	List<PsmsForScanNumberScanFilenameIdSearchId_Result> getPsmsWithSameScanNumberScanFilenameIdSearchId(long psmId)
+	List<PsmsForScanNumberScanFilenameIdSearchId_Result> getPsmsWithSameScanNumberScanFilenameIdSearchId(long psmId, int searchId)
 			throws Exception;
 
 }

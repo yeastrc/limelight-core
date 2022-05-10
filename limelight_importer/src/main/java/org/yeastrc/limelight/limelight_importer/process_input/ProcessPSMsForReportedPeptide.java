@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,23 +36,24 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPos
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
+import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_FilterableAnnotation_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModificationDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmFilterableAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationPositionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmSearchSubGroup_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup_BestPsmValue_Generic_Lookup__DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
+import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object;
 import org.yeastrc.limelight.limelight_importer.objects.PsmOpenModification_UniquePosition_InReportedPeptide_Entry;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.utils.ReporterIonMass_Round_IfNecessary;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
@@ -63,7 +65,6 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
-import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup__Lookup__DTO;
 
 /**
@@ -73,6 +74,16 @@ import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGrou
 public class ProcessPSMsForReportedPeptide {
 
 	private static final Logger log = LoggerFactory.getLogger( ProcessPSMsForReportedPeptide.class );
+	
+	//  Internal constants
+	
+	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET = 1;
+
+	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY = 2;
+
+	private static final int PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY = 3;
+
+
 
 	/**
 	 * private constructor
@@ -94,8 +105,22 @@ public class ProcessPSMsForReportedPeptide {
 	 * @throws LimelightImporterDataException
 	 * @throws Exception
 	 */
+	/**
+	 * @param reportedPeptide
+	 * @param searchId
+	 * @param reportedPeptideDTO
+	 * @param skip_SubGroup_Processing
+	 * @param searchSubGroupDTOMap_Key_searchSubGroupLabel
+	 * @param searchProgramEntryMap
+	 * @param filterablePsmAnnotationTypesOnId
+	 * @param searchScanFileEntry_AllEntries
+	 * @param uniqueReporterIonMassesForTheReportedPeptide
+	 * @return
+	 * @throws LimelightImporterDataException
+	 * @throws Exception
+	 */
 	public PsmStatisticsAndBestValues savePSMs( 
-			ReportedPeptide reportedPeptide, 
+			Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object, 
 			int searchId, 
 			ReportedPeptideDTO reportedPeptideDTO, 
 			boolean skip_SubGroup_Processing,
@@ -103,8 +128,12 @@ public class ProcessPSMsForReportedPeptide {
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries,
-			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide ) throws LimelightImporterDataException, Exception {
+			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide,
+			Psm_FilterableAnnotation_Records_BatchInsert_DB_Records psm_FilterableAnnotation_Records_BatchInsert_DB_Records
+			) throws LimelightImporterDataException, Exception {
 
+		ReportedPeptide reportedPeptide = internalHolder_ReportedPeptide_Object.getReportedPeptide();
+		
 		boolean processing_SearchSubGroups = false;
 		
 		if ( ! skip_SubGroup_Processing ) {
@@ -121,10 +150,9 @@ public class ProcessPSMsForReportedPeptide {
 		
 		DB_Insert_PsmDynamicModificationDAO db_Insert_PsmDynamicModificationDAO = DB_Insert_PsmDynamicModificationDAO.getInstance();
 		DB_Insert_PsmReporterIonMassDAO db_Insert_PsmReporterIonMassDAO = DB_Insert_PsmReporterIonMassDAO.getInstance();
-		DB_Insert_PsmFilterableAnnotationDAO db_Insert_PsmFilterableAnnotationDAO = DB_Insert_PsmFilterableAnnotationDAO.getInstance();
 		DB_Insert_PsmDescriptiveAnnotationDAO db_Insert_PsmDescriptiveAnnotationDAO = DB_Insert_PsmDescriptiveAnnotationDAO.getInstance();
 
-		List<PsmSortingContainer> psmSortingContainerList = new ArrayList<>( psmList.size() );
+		List<InternalClass_PsmSortingContainer> psmSortingContainerList = new ArrayList<>( psmList.size() );
 
 		{
 			int counter = 0;
@@ -132,96 +160,109 @@ public class ProcessPSMsForReportedPeptide {
 
 				counter++;
 				
-				PsmSortingContainer psmSortingContainer = new PsmSortingContainer();
+				InternalClass_PsmSortingContainer psmSortingContainer = new InternalClass_PsmSortingContainer();
 				psmSortingContainerList.add(psmSortingContainer);
 
 				psmSortingContainer.psm = psm;
 				psmSortingContainer.originalOrder = counter;
-
-				if ( processing_SearchSubGroups && StringUtils.isNotEmpty( psm.getSubgroupName() ) ) {
-
-					SearchSubGroupDTO searchSubGroupDTO = searchSubGroupDTOMap_Key_searchSubGroupLabel.get( psm.getSubgroupName() );
-					if ( searchSubGroupDTO == null ) {
-						String msg = "Internal Error: searchSubGroupDTOMap_Key_searchSubGroupLabel.get( psm.getSubgroupName() ); returned null. psm.getSubgroupName(): " + psm.getSubgroupName();
-						log.error(msg);
-						throw new LimelightImporterInternalException(msg);
-					}
-
-					psmSortingContainer.searchSubGroupId = searchSubGroupDTO.getSearchSubGroupId();
+				
+				if ( psm.isIsIndependentDecoy() != null && psm.isIsIndependentDecoy() ) {
+					//  Independent Decoy order: 2
+					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY;
+				} else if ( psm.isIsDecoy() != null && psm.isIsDecoy() ) {
+					//  Decoy order: 3
+					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY;
+				} else {
+					//  Target order: 1
+					psmSortingContainer.target_IndependentDecoy_Decoy_Order = PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET;
 				}
 			}
 		}
 		
-		if ( processing_SearchSubGroups ) {
-			
-			//  Have Search Sub Groups
-			
-			//  Sort on Search Sub Groups, then original order of the PSMs
-			
-			Collections.sort( psmSortingContainerList, new Comparator<PsmSortingContainer>() {
+		//  Sort PSMs
 
-				@Override
-				public int compare(PsmSortingContainer o1, PsmSortingContainer o2) {
-					if ( o1.searchSubGroupId < o2.searchSubGroupId ) 
-						return -1;
-					if ( o1.searchSubGroupId > o2.searchSubGroupId )
-						return 1;
-					if ( o1.originalOrder < o2.originalOrder ) 
-						return -1;
-					if ( o1.originalOrder > o2.originalOrder )
-						return 1;
-					return 0;
+		//  Sort target, independent decoy, then decoy; then if populated, sub group name; then original order of the PSMs
+
+		//  Target PSM is where decoy and independent decoy neither are true
+
+		Collections.sort( psmSortingContainerList, new Comparator<InternalClass_PsmSortingContainer>() {
+
+			@Override
+			public int compare(InternalClass_PsmSortingContainer o1, InternalClass_PsmSortingContainer o2) {
+				if ( o1.target_IndependentDecoy_Decoy_Order < o2.target_IndependentDecoy_Decoy_Order ) 
+					return -1;
+				if ( o1.target_IndependentDecoy_Decoy_Order > o2.target_IndependentDecoy_Decoy_Order )
+					return 1;
+				if ( o1.psm.getSubgroupName() != null ) {
+					int compareResult = o1.psm.getSubgroupName().compareTo( o2.psm.getSubgroupName() );
+					if ( compareResult != 0 ) {
+						return compareResult;
+					}
 				}
-			});
-		}
+				if ( o1.originalOrder < o2.originalOrder ) 
+					return -1;
+				if ( o1.originalOrder > o2.originalOrder )
+					return 1;
+				return 0;
+			}
+		});
 
 		//   Accumulated data across ALL PSMs
 		
-		DataPerReportedPeptide_Or_PerSubGroup dataAccum_All_PSMs = new DataPerReportedPeptide_Or_PerSubGroup( filterablePsmAnnotationTypesOnId );
+		//  For PSMs that are Targets
+		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
+		//  For PSMs that are Targets and Independent Decoys (flag on PSM)
+		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
+		//  For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
+		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
+		
+		boolean saveAnyPSMs = false;
 
+		int psmNum_Targets_Only_AtDefaultCutoff = 0;
+		int psmNum_IndependentDecoys_Only_AtDefaultCutoff = 0;
+		int psmNum_Decoys_Only_AtDefaultCutoff = 0;
+		
+		long firstSavedPsmId_Is_Target = 0;
+		long firstSavedPsmId_Is_IndependentDecoy = 0;
+		long firstSavedPsmId_Is_Decoy = 0;
+		
+		long lastSavedPsmId = 0;
+		
 		Set<PsmOpenModification_UniquePosition_InReportedPeptide_Entry> psmOpenModification_UniquePositions = new HashSet<>();
 		Set<Integer> psmOpenModification_UniqueMassesRounded = new HashSet<>();
 		
 
-		//   Accumulated data across PSMs within a SUB GROUP
+		//   Accumulated data across PSMs within each SUB GROUP
 		
-		//       !!!!!   Must be RESET on Search Sub Group ID Change
+		Map<String, InternalClass_DataPer_PerSubGroup> dataPerSubGroupName_Map_Key_SubgroupName = null;
 		
-		DataPerReportedPeptide_Or_PerSubGroup dataAccum_PSMs_In_SubGroup = null;
+		if ( processing_SearchSubGroups ) {
+			//  Only populate When 'processing_SearchSubGroups' is true
+			dataPerSubGroupName_Map_Key_SubgroupName = new HashMap<>();
+		}
 		
-		final int PREV_SEARCH_SUB_GROUP_ID_INITIAL_VALUE = -1; //  no negative values in actual values
 		
-		int prevSearchSubGroupId = PREV_SEARCH_SUB_GROUP_ID_INITIAL_VALUE;
+		final int PREV_PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER_INITIAL_VALUE = -1; //  no negative values in actual values
+				
+		int prev__target_IndependentDecoy_Decoy_Order = PREV_PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER_INITIAL_VALUE;
+		
+		int psms_SearchImportInProgress_Counter = 0; // NOT a total counter. Is reset to zero.
 		
 		//  Process PSMs (were copied into PsmSortingContainer objects above)
 		
-		for ( PsmSortingContainer psmSortingContainer : psmSortingContainerList ) {
-			
-			if ( processing_SearchSubGroups ) {
-					
-				//  Processing Sub Groups so Do Processing
-					
-				if ( prevSearchSubGroupId != psmSortingContainer.searchSubGroupId ) {
-					if ( prevSearchSubGroupId != PREV_SEARCH_SUB_GROUP_ID_INITIAL_VALUE ) {
-	
-						//  psmSortingContainer.searchSubGroupId is not first and has changed 
-						//    so insert the previously saved values to the DB.
-						//  !!  Need to ALSO execute same code at end of loop for last searchSubGroupId !!
-
-						int searchSubGroupId = prevSearchSubGroupId;
-
-						save_PerSubGroup_Lookup_TableData( dataAccum_PSMs_In_SubGroup, searchId, reportedPeptideDTO, searchSubGroupId );
-					}
-					
-					//  Always execute on prevSearchSubGroupId, even first change from initial value done on first PSM entry
-
-					prevSearchSubGroupId = psmSortingContainer.searchSubGroupId;
-
-					dataAccum_PSMs_In_SubGroup = new DataPerReportedPeptide_Or_PerSubGroup( filterablePsmAnnotationTypesOnId );
-				}
-			}
+		for ( InternalClass_PsmSortingContainer psmSortingContainer : psmSortingContainerList ) {
 			
 			Psm psm = psmSortingContainer.psm;
+			
+			{
+				psms_SearchImportInProgress_Counter++;
+				if ( psms_SearchImportInProgress_Counter > 400 ) {
+					//  at 400th PSM every 400 PSM, Updates 'heart beat'
+					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(searchId);
+				
+					psms_SearchImportInProgress_Counter = 0;  	//  reset
+				}
+			}
 			
 			boolean psmHasModifications = false;
 			boolean psmHasOpenModifications = false;
@@ -232,29 +273,17 @@ public class ProcessPSMsForReportedPeptide {
 					&& ( ! psm.getPsmModifications().getPsmModification().isEmpty() ) ) {
 				
 				psmHasModifications = true;
-				
-				if ( dataAccum_PSMs_In_SubGroup != null ) {
-					dataAccum_PSMs_In_SubGroup.anyPsmHasDynamicModifications = true;
-				}
 			}
 			if ( psm.getPsmOpenModification() != null 
 					&& psm.getPsmOpenModification().getMass() != null ) {
 				
 				psmHasOpenModifications = true;
-				
-				if ( dataAccum_PSMs_In_SubGroup != null ) {
-					dataAccum_PSMs_In_SubGroup.anyPsmHasOpenModifications = true;
-				}
 			}
 			if ( psm.getReporterIons() != null 
 					&& psm.getReporterIons().getReporterIon() != null
 					&& ( ! psm.getReporterIons().getReporterIon().isEmpty() ) ) {
 				
 				psmHasReporterIons = true;
-				
-				if ( dataAccum_PSMs_In_SubGroup != null ) {
-					dataAccum_PSMs_In_SubGroup.anyPsmHasReporterIons = true;
-				}
 			}
 			
 			PsmDTO psmDTO = 
@@ -268,6 +297,34 @@ public class ProcessPSMsForReportedPeptide {
 							searchScanFileEntry_AllEntries );
 			
 			DB_Insert_PsmDAO.getSingletonInstance().saveToDatabase( psmDTO );
+			
+			lastSavedPsmId = psmDTO.getId();
+
+			if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order != prev__target_IndependentDecoy_Decoy_Order ) {
+
+				long psmId = psmDTO.getId();
+
+				if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__TARGET ) {
+					
+					firstSavedPsmId_Is_Target = psmId;
+				
+				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__INDEPENDENTDECOY ) {
+					
+					firstSavedPsmId_Is_IndependentDecoy = psmId;
+					
+				} else if ( psmSortingContainer.target_IndependentDecoy_Decoy_Order == PSM_SORTING_CONTAINER__TARGET_INDEPENDENTDECOY_DECOY_ORDER__DECOY ) {
+					
+					firstSavedPsmId_Is_Decoy = psmId;
+					
+				} else {
+					String msg = "psmSortingContainer.target_IndependentDecoy_Decoy_Order value not expected.  value: " + psmSortingContainer.target_IndependentDecoy_Decoy_Order;
+					log.error(msg);
+					throw new LimelightImporterInternalException(msg);
+				}
+
+				prev__target_IndependentDecoy_Decoy_Order = psmSortingContainer.target_IndependentDecoy_Decoy_Order;
+			}
+			
 			
 			if ( processing_SearchSubGroups && StringUtils.isNotEmpty( psm.getSubgroupName() ) ) {
 			
@@ -401,8 +458,14 @@ public class ProcessPSMsForReportedPeptide {
 					populatePsmAnnotations.populatePsmFilterableAnnotations( psm, psmDTO );
 			
 			for ( PsmFilterableAnnotationDTO psmFilterableAnnotationDTO : currentPsm_psmAnnotationDTO_Filterable_List ) {
-				db_Insert_PsmFilterableAnnotationDAO.saveToDatabase( psmFilterableAnnotationDTO );
+				psm_FilterableAnnotation_Records_BatchInsert_DB_Records.add_PsmFilterableAnnotationDTO(psmFilterableAnnotationDTO);
 			}
+			
+			//   Commented out since insert now done in psm_FilterableAnnotation_Records_BatchInsert_DB_Records
+			
+			//  db_Insert_PsmFilterableAnnotationDAO.saveToDatabase( currentPsm_psmAnnotationDTO_Filterable_List );
+			
+			
 			
 			List<PsmDescriptiveAnnotationDTO> currentPsm_psmAnnotationDTO_Descriptive_List =
 					populatePsmAnnotations.populatePsmDescriptivePsmAnnotations( psm, psmDTO );
@@ -411,40 +474,102 @@ public class ProcessPSMsForReportedPeptide {
 				db_Insert_PsmDescriptiveAnnotationDAO.saveToDatabase( psmDescriptiveAnnotationDTO );
 			}
 			
-			boolean doesPsmPassDefaultCutoffs = 
-					DoesPsmPassDefaultCutoffs.getInstance()
-					.doesPsmPassDefaultCutoffs( currentPsm_psmAnnotationDTO_Filterable_List, filterablePsmAnnotationTypesOnId );
-			
-			if ( doesPsmPassDefaultCutoffs ) {
+			{
+				boolean doesPsmPassDefaultCutoffs = 
+						DoesPsmPassDefaultCutoffs.getInstance()
+						.doesPsmPassDefaultCutoffs( currentPsm_psmAnnotationDTO_Filterable_List, filterablePsmAnnotationTypesOnId );
 				
-				dataAccum_All_PSMs.psmCountPassDefaultCutoffs++;
-				
-				if ( dataAccum_PSMs_In_SubGroup != null ) {
-					dataAccum_PSMs_In_SubGroup.psmCountPassDefaultCutoffs++;
+				InternalClass_DataPer_PerSubGroup dataPerSubGroupName = null;
+
+				if ( dataPerSubGroupName_Map_Key_SubgroupName != null ) {
+
+					if ( StringUtils.isEmpty( psm.getSubgroupName() ) ) {
+						String msg = "Processing Sub Groups but no Sub Group on PSM.  psm scan number: " + psm.getScanNumber();
+						log.error(msg);
+						throw new LimelightImporterDataException(msg);
+					}
+
+					dataPerSubGroupName = dataPerSubGroupName_Map_Key_SubgroupName.get( psm.getSubgroupName() );
+					if ( dataPerSubGroupName == null ) {
+						dataPerSubGroupName = new InternalClass_DataPer_PerSubGroup();
+						dataPerSubGroupName_Map_Key_SubgroupName.put( psm.getSubgroupName(), dataPerSubGroupName );
+					}
+				}
+
+				if ( doesPsmPassDefaultCutoffs ) {
+
+					if ( psmDTO.isDecoy() ) {
+
+						//  Is Decoy PSM
+
+						psmNum_Decoys_Only_AtDefaultCutoff++;
+
+						if ( dataPerSubGroupName != null ) {
+							dataPerSubGroupName.psmNum_Decoys_Only_AtDefaultCutoff++;  // Increment for Sub Group Name
+						}
+						
+					} else if ( psmDTO.isIndependentDecoy() ) {
+
+						//  Is Independent Decoy PSM
+
+						psmNum_IndependentDecoys_Only_AtDefaultCutoff++;
+
+						if ( dataPerSubGroupName != null ) {
+							dataPerSubGroupName.psmNum_IndependentDecoys_Only_AtDefaultCutoff++;  // Increment for Sub Group Name
+						}
+
+					} else {
+						//  Not any Decoy so is Target PSM
+
+						psmNum_Targets_Only_AtDefaultCutoff++;
+
+						if ( dataPerSubGroupName != null ) {
+							dataPerSubGroupName.psmNum_Targets_Only_AtDefaultCutoff++;  // Increment for Sub Group Name
+						}
+					}
 				}
 			}
 			
-			dataAccum_All_PSMs.bestPsmFilterableAnnotationProcessing.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
-			
-			if ( dataAccum_PSMs_In_SubGroup != null ) {
-				dataAccum_PSMs_In_SubGroup.bestPsmFilterableAnnotationProcessing.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+			//  Update "Best" PSM Annotation Value using current PSM
+
+			if ( psmDTO.isDecoy() ) {
+
+				//  Is Decoy PSM
+
+				//  Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
+				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+				
+			} else if ( psmDTO.isIndependentDecoy() ) {
+
+				//  Is Independent Decoy PSM
+
+				//  Update: For PSMs that are Targets and Independent Decoys (flag on PSM)
+				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+
+				//  Update since is part of that group as well
+				//     Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
+				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+				
+			} else {
+				//  Not any Decoy so is Target PSM
+
+				//  Update: For PSMs that are Targets
+				bestPsmFilterableAnnotationProcessing_PSM_Targets.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+
+				//  Update since is part of that group as well
+				//     Update: For PSMs that are Targets and Independent Decoys (flag on PSM)
+				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
+
+				//  Update since is part of that group as well
+				//     Update: For PSMs that are Targets and Independent Decoys and Decoys (flags on PSM)
+				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 			}
-			
-			updateSavedPSM_IDs_ForCurrentPsm( dataAccum_All_PSMs, psmDTO );
-			
-			if ( dataAccum_PSMs_In_SubGroup != null ) {
-				updateSavedPSM_IDs_ForCurrentPsm( dataAccum_PSMs_In_SubGroup, psmDTO );
-			}
-			
-			dataAccum_All_PSMs.saveAnyPSMs = true;
-			
-			if ( dataAccum_PSMs_In_SubGroup != null ) {
-				dataAccum_PSMs_In_SubGroup.saveAnyPSMs = true;
-			}
+
+			saveAnyPSMs = true;
 			
 		} // end of loop processing Psm in input file
 		
-		if ( ! dataAccum_All_PSMs.saveAnyPSMs ) {
+		if ( ! saveAnyPSMs ) {
 			String msg = "No PSMs saved for this reported peptide: " + 
 					reportedPeptide.getReportedPeptideString();
 			log.error( msg );
@@ -455,57 +580,55 @@ public class ProcessPSMsForReportedPeptide {
 				
 			//  Processing Sub Groups so Do Processing
 			
-			//  Execute SAME code as when psmSortingContainer.searchSubGroupId changes
+			if ( dataPerSubGroupName_Map_Key_SubgroupName == null ) {
+				String msg = "After processing PSMs, processing_SearchSubGroups is true and ( dataPerSubGroupName_Map_Key_SubgroupName == null )";
+				log.error(msg);
+				throw new LimelightImporterInternalException(msg);
+			}
 			
-			int searchSubGroupId = prevSearchSubGroupId;
-
-			save_PerSubGroup_Lookup_TableData( dataAccum_PSMs_In_SubGroup, searchId, reportedPeptideDTO, searchSubGroupId );
+			for ( Map.Entry<String, InternalClass_DataPer_PerSubGroup> mapEntry : dataPerSubGroupName_Map_Key_SubgroupName.entrySet() ) {
+				
+				String searchSubGroupName = mapEntry.getKey();
+				InternalClass_DataPer_PerSubGroup dataPerSubGroupName_For_searchSubGroupName = mapEntry.getValue();
+				
+				SearchSubGroupDTO searchSubGroupDTO = searchSubGroupDTOMap_Key_searchSubGroupLabel.get( searchSubGroupName );
+				if ( searchSubGroupDTO == null ) {
+					String msg = "Internal Error: searchSubGroupDTOMap_Key_searchSubGroupLabel.get( searchSubGroupName ); returned null. searchSubGroupName: " + searchSubGroupName;
+					log.error(msg);
+					throw new LimelightImporterInternalException(msg);
+				}
+				
+				int searchSubGroupId = searchSubGroupDTO.getSearchSubGroupId();
+				
+				save_PerSubGroup_Lookup_TableData( dataPerSubGroupName_For_searchSubGroupName, searchId, reportedPeptideDTO, searchSubGroupId );
+			}
 		}
 				
 		
 		PsmStatisticsAndBestValues psmStatisticsAndBestValues = new PsmStatisticsAndBestValues();
-		psmStatisticsAndBestValues.setPsmCountPassDefaultCutoffs( dataAccum_All_PSMs.psmCountPassDefaultCutoffs );
-		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing( dataAccum_All_PSMs.bestPsmFilterableAnnotationProcessing );
+		
+		psmStatisticsAndBestValues.setPsmNum_Targets_Only_AtDefaultCutoff( psmNum_Targets_Only_AtDefaultCutoff );
+		psmStatisticsAndBestValues.setPsmNum_IndependentDecoys_Only_AtDefaultCutoff( psmNum_IndependentDecoys_Only_AtDefaultCutoff );
+		psmStatisticsAndBestValues.setPsmNum_Decoys_Only_AtDefaultCutoff( psmNum_Decoys_Only_AtDefaultCutoff );
+		
+		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets(bestPsmFilterableAnnotationProcessing_PSM_Targets);
+		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys(bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys);
+		psmStatisticsAndBestValues.setBestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys(bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys);
+				
 		if ( ! psmOpenModification_UniqueMassesRounded.isEmpty() ) {
 			psmStatisticsAndBestValues.setPsmOpenModification_UniqueMassesRounded( psmOpenModification_UniqueMassesRounded );
 		}
 		if ( ! psmOpenModification_UniquePositions.isEmpty() ) {
 			psmStatisticsAndBestValues.setPsmOpenModification_UniquePositions( psmOpenModification_UniquePositions );
 		}
-		if ( dataAccum_All_PSMs.savedPsmIds_Sequential ) {
-			psmStatisticsAndBestValues.setFirstSavedPsmId( dataAccum_All_PSMs.firstSavedPsmId );
-			psmStatisticsAndBestValues.setLastSavedPsmId( dataAccum_All_PSMs.lastSavedPsmId );
-		}
+		
+		psmStatisticsAndBestValues.setFirstSavedPsmId_Is_Target( firstSavedPsmId_Is_Target );
+		psmStatisticsAndBestValues.setFirstSavedPsmId_Is_IndependentDecoy( firstSavedPsmId_Is_IndependentDecoy );
+		psmStatisticsAndBestValues.setFirstSavedPsmId_Is_Decoy( firstSavedPsmId_Is_Decoy );
+		
+		psmStatisticsAndBestValues.setLastSavedPsmId( lastSavedPsmId );
 		
 		return psmStatisticsAndBestValues;
-	}
-	
-	/**
-	 * @param dataAccum_Either
-	 * @param psmDTO
-	 */
-	private void updateSavedPSM_IDs_ForCurrentPsm( DataPerReportedPeptide_Or_PerSubGroup dataAccum_Either, PsmDTO psmDTO ) {
-
-		if ( dataAccum_Either.firstSavedPSM ) {
-
-			dataAccum_Either.firstSavedPSM = false;
-			dataAccum_Either.firstSavedPsmId = psmDTO.getId();
-			dataAccum_Either.lastSavedPsmId = psmDTO.getId();
-
-		} else {
-
-			if ( dataAccum_Either.savedPsmIds_Sequential ) {  // can skip once savedPsmIds_Sequential is false
-
-				dataAccum_Either.lastSavedPsmId = psmDTO.getId();
-
-				if ( ( dataAccum_Either.previousSavedPsmId + 1 ) != psmDTO.getId()  ) {
-
-					dataAccum_Either.savedPsmIds_Sequential = false;
-				}
-			}
-		}
-
-		dataAccum_Either.previousSavedPsmId = psmDTO.getId();
 	}
 	
 	/**
@@ -517,12 +640,12 @@ public class ProcessPSMsForReportedPeptide {
 	 */
 	private void save_PerSubGroup_Lookup_TableData( 
 			
-			DataPerReportedPeptide_Or_PerSubGroup dataAccum_PSMs_In_SubGroup, 
+			InternalClass_DataPer_PerSubGroup dataPerSubGroupName, 
 			int searchId, 
 			ReportedPeptideDTO reportedPeptideDTO, 
 			int searchSubGroupId ) throws Exception {
 		
-		if ( ! dataAccum_PSMs_In_SubGroup.saveAnyPSMs ) {
+		if ( dataPerSubGroupName.psmNum_Targets_Only_AtDefaultCutoff == 0 && dataPerSubGroupName.psmNum_IndependentDecoys_Only_AtDefaultCutoff == 0 && dataPerSubGroupName.psmNum_Decoys_Only_AtDefaultCutoff == 0 ) {
 			
 			//  No PSMs saved for this sub group so exit
 			
@@ -537,29 +660,11 @@ public class ProcessPSMsForReportedPeptide {
 		search_ReportedPeptide_SubGroup__Lookup__DTO.setReportedPeptideId( reportedPeptideId );
 		search_ReportedPeptide_SubGroup__Lookup__DTO.setSearchSubGroupId( searchSubGroupId );
 		
-		search_ReportedPeptide_SubGroup__Lookup__DTO.setAnyPsmHasDynamicModifications( dataAccum_PSMs_In_SubGroup.anyPsmHasDynamicModifications );
-		search_ReportedPeptide_SubGroup__Lookup__DTO.setAnyPsmHasOpenModifications( dataAccum_PSMs_In_SubGroup.anyPsmHasOpenModifications );
-		search_ReportedPeptide_SubGroup__Lookup__DTO.setAnyPsmHasReporterIons( dataAccum_PSMs_In_SubGroup.anyPsmHasReporterIons );
-
-		if ( dataAccum_PSMs_In_SubGroup.savedPsmIds_Sequential ) {
-			search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmIdSequentialStart( dataAccum_PSMs_In_SubGroup.firstSavedPsmId ); // Only not zero if PSM Ids are sequential
-			search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmIdSequentialEnd( dataAccum_PSMs_In_SubGroup.lastSavedPsmId );     // Only not zero if PSM Ids are sequential
-		}
-		
-		search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmNumAtDefaultCutoff( dataAccum_PSMs_In_SubGroup.psmCountPassDefaultCutoffs );
+		search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmNum_Targets_Only_AtDefaultCutoff( dataPerSubGroupName.psmNum_Targets_Only_AtDefaultCutoff );
+		search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmNum_IndependentDecoys_Only_AtDefaultCutoff( dataPerSubGroupName.psmNum_IndependentDecoys_Only_AtDefaultCutoff );
+		search_ReportedPeptide_SubGroup__Lookup__DTO.setPsmNum_Decoys_Only_AtDefaultCutoff( dataPerSubGroupName.psmNum_Decoys_Only_AtDefaultCutoff );
 		
 		DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO.getInstance().saveToDatabase( search_ReportedPeptide_SubGroup__Lookup__DTO );
-		
-		List<Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO> bestPsmValueList =
-				dataAccum_PSMs_In_SubGroup.bestPsmFilterableAnnotationProcessing
-				.getBestPsmValues_SearchSubGroup( search_ReportedPeptide_SubGroup__Lookup__DTO );
-		
-		for ( Search_ReportedPeptide_SubGroup_BestPsmValue_Lookup__DTO bestPsmValue : bestPsmValueList ) {
-			
-			DB_Insert_Search_ReportedPeptide_SubGroup_BestPsmValue_Generic_Lookup__DAO.getInstance()
-			.saveToDatabase( bestPsmValue );
-		}
-		
 	}
 	
 	///////
@@ -568,50 +673,32 @@ public class ProcessPSMsForReportedPeptide {
 	 * Private class for sorting PSMs
 	 *
 	 */
-	private static class PsmSortingContainer {
+	private static class InternalClass_PsmSortingContainer {
 		
 		Psm psm; 
-		int searchSubGroupId;
+		
+		/**
+		 * set to 1 for target, 2 for independent decoy, 3 for decoy - Use constants at top file root class
+		 */
+		int target_IndependentDecoy_Decoy_Order;
+		
 		int originalOrder;
 		
 		@Override
 		public String toString() {
-			return "PsmSortingContainer [psm=" + psm + ", searchSubGroupId=" + searchSubGroupId + ", originalOrder="
-					+ originalOrder + "]";
+			return "PsmSortingContainer [psm=" + psm + ", target_IndependentDecoy_Decoy_Order="
+					+ target_IndependentDecoy_Decoy_Order + ", originalOrder=" + originalOrder + "]";
 		}
-		
 	}
 	
 	/**
 	 * Private class for combining data across PSMs
 	 *
 	 */
-	private static class DataPerReportedPeptide_Or_PerSubGroup {
-		
-		
-		BestPsmFilterableAnnotationProcessing bestPsmFilterableAnnotationProcessing;
-		
-		//  Only used for Sub Group entries
-		boolean anyPsmHasDynamicModifications = false;
-		boolean anyPsmHasOpenModifications = false;
-		boolean anyPsmHasReporterIons = false;
-		
-		int psmCountPassDefaultCutoffs = 0;
-		boolean saveAnyPSMs = false;
-		
-		boolean firstSavedPSM = true;
-		boolean savedPsmIds_Sequential = true;
-		long firstSavedPsmId = 0;
-		long lastSavedPsmId = 0;
-		long previousSavedPsmId = 0;
+	private static class InternalClass_DataPer_PerSubGroup {
 
-		/**
-		 * Constructor
-		 */
-		DataPerReportedPeptide_Or_PerSubGroup( Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId ) {
-			
-			bestPsmFilterableAnnotationProcessing = BestPsmFilterableAnnotationProcessing.getInstance( filterablePsmAnnotationTypesOnId );
-		}
-		
+		int psmNum_Targets_Only_AtDefaultCutoff;
+		int psmNum_IndependentDecoys_Only_AtDefaultCutoff;
+		int psmNum_Decoys_Only_AtDefaultCutoff;
 	}
 }

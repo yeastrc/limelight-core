@@ -23,12 +23,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
     //  	Protein Coverage Data Per Reported Peptide Id
     // 					- Map <integer,[Object]> <Reported Peptide Id, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>>;
+    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
 
     //  Created when requested
     //  	Protein Coverage Data Per ProteinSequenceVersionId
     // 					- Map <integer,[Object]> <ProteinSequenceVersionId, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>>;
+    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
 
     //    proteinSequenceVersionIds  Per Reported Peptide Id
     private _proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
@@ -40,19 +40,33 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
     //  	Protein Sequence Version Ids for Current Cutoffs/Filters - in Set Unique
     private _proteinSequenceVersionIdsUnique : Set<number>; // - Set <integer> : <proteinSequenceVersionIds>
 
+    //   proteinSequenceVersionId Entries  for Reported Peptide Id
+    private _per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId: Map<number, Array<{ proteinSequenceVersionId : number, proteinIsIndependentDecoy: boolean }>>;
+
+    //   All ProteinSequenceVersionId_Entries have IndependentDecoy_True for Reported Peptide Id
+    private _all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId: Map<number, boolean>;
 
     constructor(
         {
-            proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique
+            proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique,
+            per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
         } : {
-            proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>>;
+            proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
             proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
             proteinSequenceVersionIdsUnique : Set<number>; // - Set <integer> : <proteinSequenceVersionIds>
+
+            //   proteinSequenceVersionId Entries  for Reported Peptide Id
+            per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId: Map<number, Array<{ proteinSequenceVersionId : number, proteinIsIndependentDecoy: boolean }>>;
+
+            //   All ProteinSequenceVersionId_Entries have IndependentDecoy_True for Reported Peptide Id
+            all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId: Map<number, boolean>;
         }
     ) {
         this._proteinCoverage_KeyReportedPeptideId = proteinCoverage_KeyReportedPeptideId
         this._proteinSequenceVersionIds_KeyReportedPeptideId = proteinSequenceVersionIds_KeyReportedPeptideId
         this._proteinSequenceVersionIdsUnique = proteinSequenceVersionIdsUnique
+        this._per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId = per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId
+        this._all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId = all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
     }
 
     /**
@@ -66,16 +80,16 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
     /**
      * Prefer this is NOT USED.  Here to support existing code
      */
-    get_proteinCoverage_KeyReportedPeptideId__ReturnFullMap_PREFER_NOT_USE() {
-        return this._proteinCoverage_KeyReportedPeptideId;
-    }
+    // get_proteinCoverage_KeyReportedPeptideId__ReturnFullMap_PREFER_NOT_USE() {
+    //     return this._proteinCoverage_KeyReportedPeptideId;
+    // }
 
     /**
      *
      */
-    get_proteinCoverage_KeyReportedPeptideId__ReturnMap_ValueData() {
-        return this._proteinCoverage_KeyReportedPeptideId.values();
-    }
+    // get_proteinCoverage_KeyReportedPeptideId__ReturnMap_ValueData() {
+    //     return this._proteinCoverage_KeyReportedPeptideId.values();
+    // }
 
     /**
      *
@@ -144,6 +158,22 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
         }
 
         return this._reportedPeptideIds_Map_Key_ProteinSequenceVersionId.get(proteinSequenceVersionId)
+    }
+
+
+    /**
+     * @param reportedPeptideId
+     */
+    get_per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId( reportedPeptideId: number ) {
+        //   proteinSequenceVersionId Entries  for Reported Peptide Id
+        return this._per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.get(reportedPeptideId);
+    }
+    /**
+     * @param reportedPeptideId
+     */
+    get_all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId( reportedPeptideId: number ) {
+        //   All ProteinSequenceVersionId_Entries have IndependentDecoy_True for Reported Peptide Id
+        return this._all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId.get(reportedPeptideId);
     }
 }
 
@@ -405,11 +435,19 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
      */
     private _process_WebserviceResponse({ responseData }: { responseData: any }) : void {
 
-        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number }>> = new Map();
+        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>> = new Map();
 
-        const proteinSequenceVersionIds_KeyReportedPeptideId : Map<number, Set<number>> = new Map;
+        const proteinSequenceVersionIds_KeyReportedPeptideId : Map<number, Set<number>> = new Map();
 
         const proteinSequenceVersionIdsUnique : Set<number> = new Set(); // - Set <integer> : <proteinSequenceVersionIds>
+
+        //   proteinSequenceVersionId Entries  for Reported Peptide Id
+
+        const per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId: Map<number, Array<{ proteinSequenceVersionId : number, proteinIsIndependentDecoy: boolean }>> = new Map();
+
+        //   All ProteinSequenceVersionId_Entries have IndependentDecoy_True for Reported Peptide Id
+        const all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId: Map<number, boolean> = new Map();
+
 
         for ( const proteinCoverage of responseData.proteinCoverageList ) {
 
@@ -417,6 +455,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             // this.pSVId = item.getProteinSequenceVersionId();
             // this.pSPs = item.getProteinStartPosition();
             // this.pEPs = item.getProteinEndPosition();
+            // this.iipdc = item.isProteinIsIndependentDecoy();  // If is undefined or null, it is false
 
             if ( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ) {
                 const msg = "( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ): _processProteinCoverageFromServer_Populate_loadedData";
@@ -458,8 +497,19 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
                 console.warn( msg );
                 throw Error( msg );
             }
+            if ( proteinCoverage.iipdc ) {
+                proteinCoverage.iipdc = true;
+            } else {
+                proteinCoverage.iipdc = false;
+            }
 
-            const entry = { reportedPeptideId : proteinCoverage.rPId, proteinSequenceVersionId : proteinCoverage.pSVId, proteinStartPosition : proteinCoverage.pSPs, proteinEndPosition : proteinCoverage.pEPs };
+            const entry = {
+                reportedPeptideId : proteinCoverage.rPId,
+                proteinSequenceVersionId : proteinCoverage.pSVId,
+                proteinStartPosition : proteinCoverage.pSPs,
+                proteinEndPosition : proteinCoverage.pEPs,
+                proteinIsIndependentDecoy: proteinCoverage.iipdc
+            };
 
             let proteinCoverageList_ForReportedPeptideId = proteinCoverage_KeyReportedPeptideId.get( entry.reportedPeptideId );
             if ( ! proteinCoverageList_ForReportedPeptideId ) {
@@ -479,10 +529,48 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             {
                 proteinSequenceVersionIdsUnique.add(entry.proteinSequenceVersionId);
             }
+            { // per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId
+                let per_ProteinSequenceVersionId_Entries = per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.get(entry.reportedPeptideId);
+                if ( ! per_ProteinSequenceVersionId_Entries ) {
+                    per_ProteinSequenceVersionId_Entries = [];
+                    per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.set(entry.reportedPeptideId, per_ProteinSequenceVersionId_Entries );
+                }
+
+                let alreadyIn_per_ProteinSequenceVersionId_Entries = false;
+                for ( const per_ProteinSequenceVersionId_Entry of per_ProteinSequenceVersionId_Entries ) {
+                    if ( per_ProteinSequenceVersionId_Entry.proteinSequenceVersionId === entry.proteinSequenceVersionId ) {
+                        alreadyIn_per_ProteinSequenceVersionId_Entries = true;
+                        if ( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== entry.proteinIsIndependentDecoy ) {
+                            const msg = "( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== entry.proteinIsIndependentDecoy ). entry.reportedPeptideId: " + entry.reportedPeptideId + ", entry.proteinSequenceVersionId: " + entry.proteinSequenceVersionId;
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+                        break;
+                    }
+                }
+                if ( ! alreadyIn_per_ProteinSequenceVersionId_Entries ) {
+                    per_ProteinSequenceVersionId_Entries.push({ proteinSequenceVersionId: entry.proteinSequenceVersionId, proteinIsIndependentDecoy: entry.proteinIsIndependentDecoy })
+                }
+            }
+        }
+
+        for ( const mapEntry of per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId ) {
+            const reportedPeptideId = mapEntry[0];
+            const per_ProteinSequenceVersionId_Entries = mapEntry[1];
+
+            let all_ProteinSequenceVersionId_Entries__IndependentDecoy_True = true;
+            for ( const per_Entry of per_ProteinSequenceVersionId_Entries ) {
+                if ( ! per_Entry.proteinIsIndependentDecoy ) {
+                    all_ProteinSequenceVersionId_Entries__IndependentDecoy_True = false;
+                    break;
+                }
+            }
+            all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId.set(reportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True);
         }
 
         const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder({
-            proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique
+            proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique,
+            per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
         })
 
         this._get_ProteinSequenceVersionIds_And_ProteinCoverage__FunctionResult = {

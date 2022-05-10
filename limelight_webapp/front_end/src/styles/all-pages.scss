@@ -10,7 +10,7 @@ html, body {
 
 body {
   color: $font-color-dark;
-  background-color: $color-white;
+  background-color: $site-standard-background-color;
   font-size: $default-font-size;  //  Currently 14px
   font-family: $theme-font;
   font-style:normal;
@@ -18,7 +18,7 @@ body {
 }
 
 .standard-background-color { // Same as assigned to <body>
-  background-color: $color-white;
+  background-color: $site-standard-background-color;
 }
 
 //  Placed here from 'data-pages.scss' since used on Acct Management page by using main page header
@@ -32,7 +32,7 @@ div.outermost-div {
 }
 
 .default-generic-overlay-background-color {  //
-  background-color: $color-white;
+  background-color: $site-standard-background-color;
 }
 
 a {
@@ -372,7 +372,7 @@ div.error-message-container, div.success-message-container {
   border-width: 2px;
   border-color: $site-color-gray;
   border-style: solid;
-  color: $color-white;
+  color: $site-standard-background-color;
 }
 
 .error-message-inner-container {

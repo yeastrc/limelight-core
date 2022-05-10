@@ -57,8 +57,8 @@ import {
 import {
     DownloadPSMs_PerProjectSearchId_Entry,
     DownloadPSMs_PerReportedPeptideId,
-    downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
-} from 'page_js/data_pages/experiment_driven_data_pages/common__experiment_driven_data_pages/psm_downloadForCriteria_ExperimentData_OptionalRepPepIdsProtSeqVIds';
+    download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds
+} from 'page_js/data_pages/common__project_search_and_experiment_based_download_data/download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds';
 import {
     ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions,
     ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions__LinksToExternalResources_Class
@@ -871,22 +871,27 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
         //  Get width of contained <ProteinSequenceWidgetDisplay_Root_Component_React>  (assumed to not change after this component mounts)
 
-        const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
+        {
+            const proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM = this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref.current;
 
-        const containerRect = proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM.getBoundingClientRect();
+            if ( proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM ) {
 
-        const containerRect_Width = Math.ceil( containerRect.width );
-        // const containerRect_Height = containerRect.height;
+                const containerRect = proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref_DOM.getBoundingClientRect();
 
-        this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
+                const containerRect_Width = Math.ceil( containerRect.width );
+                // const containerRect_Height = containerRect.height;
 
-            if ( state.widthOf_proteinSequenceWidgetDisplay_Component >= containerRect_Width ) {
-                //  Already >= containerRect_Width so no change
-                return null;
+                this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
+
+                    if ( state.widthOf_proteinSequenceWidgetDisplay_Component >= containerRect_Width ) {
+                        //  Already >= containerRect_Width so no change
+                        return null;
+                    }
+
+                    return { widthOf_proteinSequenceWidgetDisplay_Component : containerRect_Width }
+                });
             }
-
-            return { widthOf_proteinSequenceWidgetDisplay_Component : containerRect_Width }
-        });
+        }
 
         this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
 
@@ -1062,7 +1067,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                    proteinPositionFilter_UserSelections_StateObject : undefined
+                    proteinPositionFilter_UserSelections_StateObject : undefined,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 
             let create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = undefined;
@@ -1236,7 +1242,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                    proteinPositionFilter_UserSelections_StateObject : undefined
+                    proteinPositionFilter_UserSelections_StateObject : undefined,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 
             const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
@@ -1457,7 +1464,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
         projectSearchIdsReportedPeptideIdsPsmIds : Array<DownloadPSMs_PerProjectSearchId_Entry>
     } ) {
-        downloadPsmsFor_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {  // External Function
+        download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptProtSeqVIds( {  // External Function
             experimentId : undefined,
 			projectSearchIdsReportedPeptideIdsPsmIds,
 			searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParamsRoot,
@@ -1984,14 +1991,23 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                     window.setTimeout( () => {
                         try {
-                            this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
+                            this._peptideSequence_Update_peptideSequence_UserSelections_ComponentData();
 
-                                return { userSearchString_LocationsOn_ProteinSequence_Root };
-                            });
+                            window.setTimeout( () => {
+                                try {
+                                    this.setState( (state: ProteinPage_Display__SingleProtein_MainContent_Component_State, props: ProteinPage_Display__SingleProtein_MainContent_Component_Props ) : ProteinPage_Display__SingleProtein_MainContent_Component_State => {
 
-                            //  Now update dependent page parts
-                            this._updateRestOfPage_ForUserInteraction();
+                                        return { userSearchString_LocationsOn_ProteinSequence_Root };
+                                    });
 
+                                    //  Now update dependent page parts
+                                    this._updateRestOfPage_ForUserInteraction();
+
+                                } catch( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }
+                            }, 10 );
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
@@ -2337,7 +2353,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : this.state.userSearchString_LocationsOn_ProteinSequence_Root,
-                    proteinPositionFilter_UserSelections_StateObject : undefined
+                    proteinPositionFilter_UserSelections_StateObject : undefined,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
                 });
 
             let create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = undefined;
@@ -2507,10 +2524,14 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
 
 
-        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
+            this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
-		// Start observing the target node for configured mutations
-		this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
+        if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
+
+            // Start observing the target node for configured mutations
+            this._domMutationObserver_reported_peptides_outer_container.observe( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM, config );
+        }
 	}
 
 	/**
@@ -2522,29 +2543,33 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
 		//  Adjust overlay width to fit reported peptide list
 
-        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM = this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
+            this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
 
-        const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+        if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
 
-		const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width;
+            const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
 
-		let overlayWidth = (
-            reported_peptides_data_table_container_Width
-            + this.props.view_single_protein_overlay_body_PaddingLeft
-            + this.props.view_single_protein_overlay_body_PaddingRight
-            + 2 //  Little Extra
-        );
-		if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
-			overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
-        }
+            const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width;
 
-        if ( overlayWidth !== this._updated_OverlayWidth ) {
+            let overlayWidth = (
+                reported_peptides_data_table_container_Width
+                + this.props.view_single_protein_overlay_body_PaddingLeft
+                + this.props.view_single_protein_overlay_body_PaddingRight
+                + 2 //  Little Extra
+            );
+            if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
+                overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
+            }
 
-            //  overlayWidth has changed
+            if ( overlayWidth !== this._updated_OverlayWidth ) {
 
-            this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
+                //  overlayWidth has changed
 
-            this._updated_OverlayWidth = overlayWidth;
+                this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
+
+                this._updated_OverlayWidth = overlayWidth;
+            }
         }
 	}
 

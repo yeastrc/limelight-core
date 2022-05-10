@@ -5,6 +5,8 @@ volumes:
   spectr_upload:
   spectr_storage:
   limelight_upload:
+  limelight_blib_downloads:
+  blib_export_workdir:
 
 services:
   db:
@@ -24,12 +26,28 @@ services:
     image: mriffle/spectr:1
     container_name: limelight-spectr
     restart: always
+    environment:
+      SPECTRAL_STORAGE_MAX_SCAN_BATCH_SIZE : ${SPECTR_MAX_SCAN_BATCH_SIZE}
     volumes:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
       - limelight_upload:/data/limelight_upload
+  blib-export:
+    image: mriffle/limelight-export-blib-service:1
+    container_name: limelight-export-blib-service
+    restart: always
+    labels:
+      - traefik.enable=false
+    environment:
+      SPECTR_GET_SCAN_DATA_URL: http://spectr:8080/spectral_storage_get_data/query/getScanDataFromScanNumbers_JSON
+      WEBAPP_PORT: 3434
+      SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE}
+      APP_CLEAN_WORKDIR: ${BLIB_APP_CLEAN_WORKDIR}
+    volumes:
+      - limelight_blib_downloads:/data/app/blibdir
+      - blib_export_workdir:/data/app/workdir
   importer:
-    image: mriffle/limelight-importer:2
+    image: mriffle/limelight-importer:3
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -44,13 +62,14 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:2
+    image: mriffle/limelight-webapp:3
     container_name: limelight-webapp
     restart: always
     depends_on:
       - db
     volumes:
       - limelight_upload:/data/limelight_upload
+      - limelight_blib_downloads:/data/limelight_downloads/blib_exports
     environment:
       LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}

@@ -201,9 +201,18 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 				item.hasScanFilenames = searchFlagsForSearchIdSearcher_Result_Item.isHasScanFilenames();
 				item.hasScanData = searchFlagsForSearchIdSearcher_Result_Item.isHasScanData();
 				item.hasIsotopeLabel = searchFlagsForSearchIdSearcher_Result_Item.isHasIsotopeLabel();
+				
 				item.anyPsmHas_DynamicModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_DynamicModifications();
 				item.anyPsmHas_OpenModifications = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_OpenModifications();
 				item.anyPsmHas_ReporterIons = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_ReporterIons();
+				
+				item.anyPsmHas_IsDecoy_True = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True();
+				item.anyPsmHas_IsIndependentDecoy_True = searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsIndependentDecoy_True();
+
+				item.allPsmHave_Precursor_RetentionTime_PossiblyNull = searchFlagsForSearchIdSearcher_Result_Item.getAllPsmHave_Precursor_RetentionTime();
+				item.allPsmHave_Precursor_M_Over_Z_PossiblyNull = searchFlagsForSearchIdSearcher_Result_Item.getAllPsmHave_Precursor_M_Over_Z();
+				
+				item.psmIds_AreSequential_PossiblyNull = searchFlagsForSearchIdSearcher_Result_Item.getPsmIds_AreSequential();
 			}
 			
 			if ( ! projectSearchId_Map_Key_searchId.isEmpty() ) {
@@ -272,6 +281,14 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		private boolean anyPsmHas_DynamicModifications;
 		private boolean anyPsmHas_OpenModifications;
 		private boolean anyPsmHas_ReporterIons;
+
+		private boolean anyPsmHas_IsDecoy_True;
+		private boolean anyPsmHas_IsIndependentDecoy_True;
+
+		private Boolean allPsmHave_Precursor_RetentionTime_PossiblyNull;		//  null if not populated	//  NOT Populated Yet for Existing Searches
+		private Boolean allPsmHave_Precursor_M_Over_Z_PossiblyNull;			//  null if not populated	//  NOT Populated Yet for Existing Searches
+		
+		private Boolean psmIds_AreSequential_PossiblyNull; //  null if not populated  // All PSM Ids for the search are sequential - can use PSM Id ranges  	//  NOT Populated Yet for Existing Searches
 		
 		public int getProjectSearchId() {
 			return projectSearchId;
@@ -297,6 +314,22 @@ public class Get_SearchFlags_From_ProjectSearchIds_RestWebserviceController {
 		public boolean isAnyPsmHas_ReporterIons() {
 			return anyPsmHas_ReporterIons;
 		}
+		public boolean isAnyPsmHas_IsDecoy_True() {
+			return anyPsmHas_IsDecoy_True;
+		}
+		public boolean isAnyPsmHas_IsIndependentDecoy_True() {
+			return anyPsmHas_IsIndependentDecoy_True;
+		}
+		public Boolean getAllPsmHave_Precursor_RetentionTime_PossiblyNull() {
+			return allPsmHave_Precursor_RetentionTime_PossiblyNull;
+		}
+		public Boolean getAllPsmHave_Precursor_M_Over_Z_PossiblyNull() {
+			return allPsmHave_Precursor_M_Over_Z_PossiblyNull;
+		}
+		public Boolean getPsmIds_AreSequential_PossiblyNull() {
+			return psmIds_AreSequential_PossiblyNull;
+		}
+	
     	
     }
 }

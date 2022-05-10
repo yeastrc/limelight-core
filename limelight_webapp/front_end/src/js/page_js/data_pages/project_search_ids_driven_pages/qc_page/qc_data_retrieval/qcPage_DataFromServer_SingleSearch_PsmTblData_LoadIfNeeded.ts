@@ -173,6 +173,14 @@ const _populateHolder = function (
                 //  Copy in from Parent reportedPeptideId_psmTblDataList_Entry
                 psmEntry.reportedPeptideId = reportedPeptideId;
 
+                //  independentDecoyPSM may be not set and thus 'undefined'.  convert that to false.
+
+                if ( psmEntry.independentDecoyPSM ) {
+                    psmEntry.independentDecoyPSM = true
+                } else {
+                    psmEntry.independentDecoyPSM = false;
+                }
+
                 const psm : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId = psmEntry;
 
                 if ( psm.psmId === undefined || psm.psmId === null ) {
@@ -250,6 +258,11 @@ const _populateHolder = function (
                 }
                 if ( psm.hasReporterIons === undefined || psm.hasReporterIons === null ) {
                     const msg = "( psm.hasReporterIons === undefined || psm.hasReporterIons === null )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null ) {
+                    const msg = "( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null )";
                     console.warn(msg);
                     throw Error(msg);
                 }
