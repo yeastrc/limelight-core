@@ -218,6 +218,21 @@
 					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
 			
 			</div>
+			<div style="margin-left: 10px; font-size: 12px;">
+				(Failed imports will also be deleted, after 3 days)
+			</div>
+			
+			<div style="margin-top: 10px">
+				** Next is not needed and ignored if '<i>Delete uploaded files after Successful Import</i>' is selected
+			</div>
+			<div>
+				Delete uploaded files after Import processed, Success or Fail, after 3 days : 
+				<input type="checkbox" class=" config_checkbox_inputs_jq "  
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES__ALL_AFTER_3_DAYS %>"
+					data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
+					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+			
+			</div>
 		</div>
 	  </div> 
 	</div>	

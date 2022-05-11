@@ -44,7 +44,17 @@ public class ConfigSystemsKeysSharedConstants {
 
 	////              Delete uploaded files after Import key  -  Specific Values allowed
 
+	/**
+	 * Delete Successful import at end of import.  Delete failed import after 3 days
+	 */
 	public static final String IMPORT_DELETE_UPLOADED_FILES = "import_delete_uploaded_files_after_import";
+
+	////              Delete uploaded files after Import key  -  Specific Values allowed
+
+	/**
+	 * Delete successful and failed import after 3 days, using file_import_tracking_tbl.last_updated_date_time and status of success or fail
+	 */
+	public static final String IMPORT_DELETE_UPLOADED_FILES__ALL_AFTER_3_DAYS = "import_delete_uploaded_files_after_import__all_after_3_days";
 
 	////              Terms of Service Enabled key  -  Specific Values allowed
 

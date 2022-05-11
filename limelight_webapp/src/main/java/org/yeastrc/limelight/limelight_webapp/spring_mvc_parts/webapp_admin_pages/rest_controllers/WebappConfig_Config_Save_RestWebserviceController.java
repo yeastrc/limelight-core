@@ -162,6 +162,15 @@ public class WebappConfig_Config_Save_RestWebserviceController {
 						log.warn( msg );
 						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();	
 					}
+				} else if ( ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES__ALL_AFTER_3_DAYS.equals( item.getConfigKey() ) ) {
+						//  Not one of the text config keys so validate the config keys with specific values
+						if ( ( ! ConfigSystemsValuesSharedConstants.TRUE.equals( item.getConfigValue() ) )
+								&& ( ! ConfigSystemsValuesSharedConstants.FALSE.equals( item.getConfigValue() ) ) ) {
+							//  Invalid value for config key found
+							String msg = "Invalid value for config key: " + item.getConfigKey();
+							log.warn( msg );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();	
+						}
 				} else {
 					//  Invalid config key found
 					String msg = "Invalid config key: " + item.getConfigKey();

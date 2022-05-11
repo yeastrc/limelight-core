@@ -24,6 +24,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigD
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileConstants;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
+import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 
 import java.io.BufferedReader;
@@ -52,16 +53,22 @@ public class ManagerThread extends Thread {
 	
 	private static final int WAIT_TIME_FOR_CHECK_RUN_CONTROL_FILE_IN_SECONDS = 10;
 	
-	private static final String GET_IMPORT_AND_PROCESS_THREAD = "GetImportAndProcessThread";
+	private static final String GET_IMPORT_AND_PROCESS_THREAD = "GetImportAndProcessThread";  // Thread Name
+
+	private static final String IMPORT_FILES_DELAYED_REMOVAL_THREAD = "ImportFiles_DelayedRemoval_Thread";  // Thread Name
 	
 	private volatile boolean keepRunning = true;
 	private volatile boolean stopProcessingNextImport = false;
 	private volatile boolean stopLimelightRunImporterProgram = false;;
 	
 	private int maxTrackingRecordPriorityToRetrieve;
+	
 	private ImporterRunnerMain importerRunnerMain;
+	
 	private volatile GetImportAndProcessThread getImportAndProcessThread;
 	private int getImportAndProcessThreadCounter = 2;  // used if need to replace the thread
+	
+	private volatile ImportFiles_DelayedRemoval_Thread importFiles_DelayedRemoval_Thread;
 	
 //	private volatile ClientStatusUpdateThread clientStatusUpdateThread;
 //
@@ -106,13 +113,18 @@ public class ManagerThread extends Thread {
 		//		this.setContextClassLoader( thisClassLoader );
 		try {
 			createClientControlFile();
+			
 //			clientStatusUpdateThread = new ClientStatusUpdateThread();
 //
 //			clientStatusUpdateThread.start();
+			
 			getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
+			
+			importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */ );
+			importFiles_DelayedRemoval_Thread.start();
 			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true
 			
