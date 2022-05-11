@@ -45,7 +45,6 @@ sourceCompatibility = 1.8      //    defaults to currently installed JVM
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 //  Set default task for this build.gradle file
@@ -103,7 +102,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime
 	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
 	
-	//  NOT FOUND  either jcenter() or mavenCentral()
+	//  NOT FOUND  in mavenCentral()
 	
 	//     Took Gradle listing from https://mvnrepository.com/artifact/jargs/jargs/1.0
     // https://mvnrepository.com/artifact/jargs/jargs

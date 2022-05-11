@@ -36,7 +36,6 @@ apply plugin: "org.ajoberstar.grgit"
  
 
 repositories {
-	jcenter()
     mavenCentral()
     
     //  For Limelight Import API
