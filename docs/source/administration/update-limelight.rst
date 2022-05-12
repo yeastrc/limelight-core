@@ -6,7 +6,7 @@ New versions of Limelight with new features and bug fixes are regularly released
 Limelight installation up-to-date. Follow these instructions to update your installation of Limelight.
 
 Limelight releases use semantic versioning and are given version numbers such as 2.1.6. The `2` is considered the major
-version number. Limelight versioning is carefully controlled, so that all updates to a new release that uses
+version number. Limelight versioning is carefully controlled, so that all updates to a new release that use
 the same major version (e.g., **2**.1.6 to **2**.3.12) do not require any database updates. This kind of update is considered
 a **minor version update**. Updates that move to a new major version (e.g. **2**.1.6 to **3**.5.2) may require database updates.
 This kind of update is considered a **major version update**.
@@ -31,8 +31,8 @@ Follow these directions to determine your major version number.
 On Linux and MacOS, open a normal terminal. On Windows, if you followed our instructions for installing Docker,
 follow the directions on our :ref:`Docker Installation Tutorial <Windows Terminal>` to open a Linux terminal.
 
-2. Get Version Number From `docker-compose.yml`
-------------------------------------------------
+2. Get Version Number From ``docker-compose.yml``
+--------------------------------------------------
 Type the following into your terminal. The first line takes you into the directory where you downloaded
 Limelight. The second command retrieves the version numbers.
 

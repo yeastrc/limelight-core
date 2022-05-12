@@ -23,15 +23,22 @@ follow the directions on our :ref:`Docker Installation Tutorial <Windows Termina
 =============================
 Go into your Limelight project directory:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       cd ~/limelight
+   cd ~/limelight
 
-Shutdown Limelight:
+If you have not customized the data locations for Limelight, type the following to start Limelight:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-       sudo docker-compose down
+   sudo docker-compose down
+
+If you have customized the data locations for Limelight by following our
+:doc:`install-limelight-custom-data-location` tutorial, type the following:
+
+.. code-block:: bash
+
+   sudo docker-compose -f docker-compose-custom-data.yml down
 
 3. Update Limelight
 ===========================================
@@ -70,7 +77,15 @@ Enter ``y`` and hit enter. The orphaned images will be removed.
 ===================================
 Use the following command to bring Limelight back up using the new images:
 
-    .. code-block:: bash
+If you have not customized the data locations for Limelight, type the following to start Limelight:
 
-       sudo docker-compose up --detach
+.. code-block:: bash
 
+   sudo docker-compose up --detach
+
+If you have customized the data locations for Limelight by following our
+:doc:`install-limelight-custom-data-location` tutorial, type the following:
+
+.. code-block:: bash
+
+   sudo docker-compose -f docker-compose-custom-data.yml up --detach
