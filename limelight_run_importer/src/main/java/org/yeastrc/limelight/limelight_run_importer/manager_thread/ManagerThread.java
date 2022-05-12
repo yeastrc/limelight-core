@@ -124,6 +124,7 @@ public class ManagerThread extends Thread {
 			getImportAndProcessThread.start();
 			
 			importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */ );
+			importFiles_DelayedRemoval_Thread.setDaemon(true);
 			importFiles_DelayedRemoval_Thread.start();
 			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true
@@ -372,6 +373,15 @@ public class ManagerThread extends Thread {
 			}
 		} else {
 			log.info( "In processStopProcessingNewImportsRequest(): getImportAndProcessThread == null" );
+		}
+		if ( importFiles_DelayedRemoval_Thread != null ) {
+			try {
+				importFiles_DelayedRemoval_Thread.shutdown();
+			} catch (Throwable e) {
+				log.error( "In processStopProcessingNewImportsRequest(): call to importFiles_DelayedRemoval_Thread.shutdown() threw Throwable " + e.toString(), e );
+			}
+		} else {
+			log.info( "In processStopProcessingNewImportsRequest(): importFiles_DelayedRemoval_Thread == null" );
 		}
 		keepRunning = false;  // Set thread of the current object to exit main processing loop.
 		awaken();  // send notify() to to the thread of the current object to start it so it will exit.
