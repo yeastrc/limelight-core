@@ -22,6 +22,12 @@ package org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.c
  *
  */
 public class FileUploadCommonConstants {
+	
+	
+
+	public static final String UPLOAD_FILE_TEMP_BASE_DIR = "upload_file_temp_base_dir";
+	
+	
 
 	public static final String IMPORT_BASE_DIR = "import_base_dir";
 

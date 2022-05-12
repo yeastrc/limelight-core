@@ -116,7 +116,53 @@ public class FileImportTracking_For_ImporterRunner_DAO {
 		return result;
 	}
 	
+	//////
 	
+
+
+	private static final String GET_ALL_ID_SQL = 
+			
+			"SELECT id FROM file_import_tracking_tbl ";
+
+	/**
+	 * Get ALL import tracking item id list
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer> getAll_TrackingId_InTable_List() throws Exception {
+
+
+		List<Integer> results = new ArrayList<>( 100000 );
+
+		final String sql = GET_ALL_ID_SQL;
+
+
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+
+				try ( ResultSet rs = pstmt.executeQuery() ) {
+
+					while ( rs.next() ) {
+
+						results.add( rs.getInt( "id" ) );
+					}
+				}
+			}
+		} catch ( Exception e ) {
+
+			String msg = "getAll_TrackingId_For_SuccessAndFail_LastUpdate_Over_3_DaysAgo(...), sql: " + sql;
+
+			log.error( msg, e );
+
+			throw e;
+		}
+
+		return results;
+	}
+
+	
+	/////
 
 	private static final String GET_STATUS__SUCCESS_FAILED_OVER_3_DAYS_AGO_SQL = 
 			
@@ -163,6 +209,8 @@ public class FileImportTracking_For_ImporterRunner_DAO {
 
 		return results;
 	}
+	
+	////
 
 	private static final String GET_STATUS__STARTED__OVER_15_DAYS_AGO_SQL = 
 			

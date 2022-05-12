@@ -1,7 +1,9 @@
 package org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,9 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.ut
 public class ImportFiles_DelayedRemoval_Main {
 
 	private static final Logger log = LoggerFactory.getLogger( ImportFiles_DelayedRemoval_Main.class );
+
+	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = 24 * 60 * 60 * 1000;  // Run every 24 hours
+	
 	
 
 	/**
@@ -111,7 +116,8 @@ public class ImportFiles_DelayedRemoval_Main {
 	 */
 	private void internal_ProcessMain() throws Exception {
 		
-		{
+		{  //  Delete All Status Success or Fail and Table Record Last Updated over 3 days ago
+			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
 					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_For_Status_Success_OR_Fail_LastUpdate_Over_3_DaysAgo();
 			
@@ -119,10 +125,24 @@ public class ImportFiles_DelayedRemoval_Main {
 		}
 		if ( keepRunning ){
 			
+			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
+			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
 					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo();
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
+		}
+		if ( keepRunning ){
+		
+			//  Delete SubDirs that are NOT in the Tracking Table
+			
+			delete_Directories_NOT_IN_trackingIdList();
+		}
+		if ( keepRunning ){
+			
+			//  Delete SubDirs under upload_file_temp_base_dir that are over 15 days old
+			
+			delete_Directories_In_FileUploadSubDir__Over_15_Days_Old();
 		}
 	}
 	
@@ -167,4 +187,114 @@ public class ImportFiles_DelayedRemoval_Main {
 			}
 		}
 	}
+	
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private void delete_Directories_NOT_IN_trackingIdList() throws Exception {
+
+		long now_Minus_5_Days = System.currentTimeMillis() - ( 5 * TWENTY_FOUR_HOURS__IN_MILLISECONDS );
+		
+		Set<String> subdirNames_For_All_fileImportTrackingId_List_InTable = new HashSet<>();
+		
+		{
+			List<Integer> fileImportTrackingId_List_ALL_Id_InTable =
+					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_InTable_List();
+
+			for ( Integer fileImportTrackingId : fileImportTrackingId_List_ALL_Id_InTable ) {
+
+				String subdirNameForThisTrackingId =
+						Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( fileImportTrackingId );
+
+				subdirNames_For_All_fileImportTrackingId_List_InTable.add(subdirNameForThisTrackingId);
+			}
+		}
+
+		File limelight_XML_Importer_Work_Directory =
+				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
+		
+		File importerBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
+		
+		
+		for ( File subDir : importerBaseDir.listFiles() ) {
+			
+			String subDir_Name = subDir.getName();
+			
+			if ( ! subdirNames_For_All_fileImportTrackingId_List_InTable.contains(subDir_Name) ) {
+			
+				//  SubDir Name is NOT a name for ANY of the Tracking IDs in the DB so delete it if it was last modified before 5 days ago
+
+				boolean lastModified_Before_5_DaysAgo = false;
+
+				if ( subDir.lastModified() < now_Minus_5_Days ) {
+
+					//  subDir Last Modified before 5 days ago 
+					
+					lastModified_Before_5_DaysAgo = true;
+
+					//  Last Modified before 5 days ago so confirm all contents at root level also before 5 days ago
+
+					for ( File subDir_Entry : subDir.listFiles() ) {
+
+						if ( subDir_Entry.lastModified() > now_Minus_5_Days ) {
+
+							lastModified_Before_5_DaysAgo = false; // Set back false since after 5 days ago
+							break;
+						}
+					}
+				}
+				if ( lastModified_Before_5_DaysAgo ) {
+
+					DeleteDirectoryAndContents.getInstance().deleteDirectoryAndContents(subDir);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private void delete_Directories_In_FileUploadSubDir__Over_15_Days_Old() throws Exception {
+
+		long now_Minus_15_Days = System.currentTimeMillis() - ( 15 * TWENTY_FOUR_HOURS__IN_MILLISECONDS );
+		
+		File limelight_XML_Importer_Work_Directory =
+				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
+		
+		File uploadFileBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.UPLOAD_FILE_TEMP_BASE_DIR );
+		
+		
+		for ( File subDir : uploadFileBaseDir.listFiles() ) {
+			
+			//  delete it if it was last modified before 15 days ago
+
+			boolean lastModified_Before_15_DaysAgo = false;
+
+			if ( subDir.lastModified() < now_Minus_15_Days ) {
+
+				//  subDir Last Modified before 15 days ago 
+
+				lastModified_Before_15_DaysAgo = true;
+
+				//  Last Modified before 15 days ago so confirm all contents at root level also before 5 days ago
+
+				for ( File subDir_Entry : subDir.listFiles() ) {
+
+					if ( subDir_Entry.lastModified() > now_Minus_15_Days ) {
+
+						lastModified_Before_15_DaysAgo = false; // Set back false since after 5 days ago
+						break;
+					}
+				}
+			}
+			if ( lastModified_Before_15_DaysAgo ) {
+
+				DeleteDirectoryAndContents.getInstance().deleteDirectoryAndContents(subDir);
+			}
+		}
+	}
+	
+	
  }

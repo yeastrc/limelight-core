@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUploadFileSystemException;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
@@ -41,7 +42,7 @@ public class Limelight_XML_Importer_Work_Directory_And_SubDirs_Web implements Li
 	 */
 	@Override
 	public String getDirForUploadFileTempDir( ) {
-		String dirName = LimelightXMLFileUploadWebConstants.UPLOAD_FILE_TEMP_BASE_DIR;
+		String dirName = FileUploadCommonConstants.UPLOAD_FILE_TEMP_BASE_DIR;
 		return dirName;
 	}
 	
