@@ -34,6 +34,7 @@ import org.yeastrc.limelight.limelight_webapp.db_dto.UserDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
+import org.yeastrc.limelight.limelight_webapp.send_email_extra_on_import_finish.SendEmail_Extra_On_ImportFinish_ToConfiguredEmail_IF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtCentralWebappWebserviceAccessIF;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataRequest;
 import org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access.UserMgmtGetUserDataResponse;
@@ -64,6 +65,9 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 	private ConfigSystemDAO_IF configSystemDAO;
 	
 	@Autowired
+	private SendEmail_Extra_On_ImportFinish_ToConfiguredEmail_IF sendEmail_Extra_On_ImportFinish_ToConfiguredEmail;
+	
+	@Autowired
 	private SendEmailIF sendEmail;
 	
 	/**
@@ -79,8 +83,6 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 		
 		int userId = fileImportTrackingDTO.getUserId();
 		
-
-
 		UserDTO userDTO = userDAO.getForId( userId );
 		if ( userDTO == null ) {
 			String msg = "Failed to get userDTO for Limelight user id: " + userId;
@@ -114,8 +116,39 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 			log.error( msg );
 			throw new LimelightWebappDataException(msg);
 		}
+
+		try {  //  Send email to email addresses in properties file:  SendExtraEmail_OnImportFinish_ToConfiguredEmail_ConfigFilename_Constants.CONFIG_FILENAME
+
+			String importerBaseDir = null;
+
+			try {
+				//  Get File Import base dir
+				importerBaseDir = 
+						configSystemDAO
+						.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY );
+			} catch ( Throwable t ) {
+				// Log and eat exception
+
+			}
+
+			SendEmailItem sendEmailItem_Extra_Emails = createMailMessageToSend(
+					Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
+					fileImportTrackingDTO, 
+					fileImportTrackingRunDTO,
+					"PlaceHolder_To_Email_Address", // toEmailAddressParam
+					userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
+					importerBaseDir // from config
+					);
+			
+			sendEmail_Extra_On_ImportFinish_ToConfiguredEmail.sendEmail_Extra_On_ImportFinish_ToConfiguredEmail(sendEmailItem_Extra_Emails, fileImportTrackingDTO, fileImportTrackingRunDTO);
+			
+		} catch ( Throwable t ) {
+			
+			log.error( "Failed to send 'Extra' email on Importer Finish", t);
+			
+			//  Ignore Exception
+		}
 		
-		//  Generate email with invite code
 		// Generate and send the email to the user.
 		try {
 			SendEmailItem sendEmailItem = createMailMessageToSend( 
@@ -213,6 +246,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         			}
         			
         		}
+        		
         	}
 		}
 		catch (Exception e) {
