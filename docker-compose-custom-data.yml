@@ -19,7 +19,7 @@ services:
     container_name: limelight-spectr
     restart: always
     environment:
-      SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
+      SPECTRAL_STORAGE_MAX_SCAN_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
     volumes:
       - ${SPECTR_UPLOAD_DIRECTORY}:/data/upload
       - ${SPECTR_STORAGE_DIRECTORY}:/data/storage
