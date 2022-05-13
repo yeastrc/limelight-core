@@ -19,3 +19,21 @@ SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_USERNAME=smtp_username
 SMTP_PASSWORD=smtp_password
+
+
+#
+# Optional config options. Uncomment and change value to change configuration
+#
+
+# Settings for spectr (spectral data storage and retrieval) service
+# Setting to larger values may improve performance for function related to retrieving many
+# spectra, but consume more resources
+# SPECTR_MAX_SCAN_BATCH_SIZE=200
+
+# Settings for .blib (Bibliospec spectral library export) service in Limelight
+# yes = always delete working directory, no = never delete, "on success" = only delete on successful requests
+# BLIB_APP_CLEAN_WORKDIR=yes
+
+#
+# End Optional config options
+#

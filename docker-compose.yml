@@ -27,7 +27,7 @@ services:
     container_name: limelight-spectr
     restart: always
     environment:
-      SPECTRAL_STORAGE_MAX_SCAN_BATCH_SIZE : ${SPECTR_MAX_SCAN_BATCH_SIZE}
+      SPECTRAL_STORAGE_MAX_SCAN_BATCH_SIZE : ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
     volumes:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
@@ -41,8 +41,8 @@ services:
     environment:
       SPECTR_GET_SCAN_DATA_URL: http://spectr:8080/spectral_storage_get_data/query/getScanDataFromScanNumbers_JSON
       WEBAPP_PORT: 3434
-      SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE}
-      APP_CLEAN_WORKDIR: ${BLIB_APP_CLEAN_WORKDIR}
+      APP_CLEAN_WORKDIR: ${BLIB_APP_CLEAN_WORKDIR:-yes}
+      SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
     volumes:
       - limelight_blib_downloads:/data/app/blibdir
       - blib_export_workdir:/data/app/workdir
