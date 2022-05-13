@@ -15,12 +15,15 @@ customize where the data are stored for Limelight, follow the steps below.
 
 1. Create data directories
 ================================================
-You will need to create four directories for Limelight to store its data.
+You will need to create the following directories for Limelight to store its data.
 
     1. MySQL data directory. This is the directory used to store the database.
     2. Spectr upload directory. This the directory used for spectra processing.
     3. Spectr storage directory. This the directory used to store spectra.
     4. Limelight upload directory. This is the directory where uploads are temporarily stored.
+    5. Blib conversion work directory. This is the directory where .blib conversions are processed.
+    6. Blib destination directory. This is the directory where final .blib files will be stored.
+
 
 .. note::
     If you are using WSL2 on Windows, specifying a Windows filesystem drive (e.g., ``/mnt/d/``) for your
@@ -39,6 +42,8 @@ the following:
         sudo mkdir /data/limelight-data/spectr-upload
         sudo mkdir /data/limelight-data/spectr-storage
         sudo mkdir /data/limelight-data/limelight-upload
+        sudo mkdir /data/limelight-data/blib-workdir
+        sudo mkdir /data/limelight-data/blib-download
 
 
 2. Update ``.env`` with data storage locations
@@ -64,6 +69,8 @@ you chose above. This example uses the example directory names:
        SPECTR_UPLOAD_DIRECTORY=/data/limelight-data/spectr-upload
        SPECTR_STORAGE_DIRECTORY=/data/limelight-data/spectr-storage
        LIMELIGHT_UPLOAD_DIRECTORY=/data/limelight-data/limelight-upload
+       BLIB_WORK_DIR=/data/limelight-data/blib-workdir
+       BLIB_DESTINATION_DIR=/data/limelight-data/blib-download
 
 Type ``Control-o``, ``<ENTER>``, and ``Control-x`` to save and exit ``nano``.
 
