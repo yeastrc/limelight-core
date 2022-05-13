@@ -14,3 +14,5 @@ INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_import_ext
 INSERT INTO config_system_tbl (config_key, config_value) VALUES ('admin_email_address', 'root@localhost');
 INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_import_failed_status_extra_emails_to_send_to', 'root@localhost');
 INSERT INTO config_system_tbl (config_key, config_value) VALUES ('submit_import_received_emails_to_send_to', 'root@localhost');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('blib_spectral_library_file_creation_web_service_base_url', 'http://blib-export:3434');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('blib_spectral_library_file_result_file_base_path', '/data/limelight_downloads/blib_exports');
