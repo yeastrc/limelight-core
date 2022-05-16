@@ -15,6 +15,8 @@ CREATE TABLE  aa_limelight_database_version_tbl (
 
 --  !!!!!!!!!!!!!!!!!!!!!!!!!
 
+--  Update aa_limelight_database_version_tbl  record 'DB Version In Progress' to version 3
+
 --   Special Insert do here.  No record already exist but this will be standard SQL statement going forward.
 
 --   In Future Updates, always update this before start with other SQL updates
@@ -389,12 +391,9 @@ ALTER TABLE psm_tbl
 
 
 
---   update_to_Limelight_V3__InsertIntoTables.sql
-
-INSERT INTO aa_limelight_database_version_tbl (limelight_database_version_number) VALUES ('3');
-
-
 --  !!!!!!!!!!!!!!!!!!!!!!!!!
+
+--  Update aa_limelight_database_version_tbl  record 'DB Version Current' to version 3
 
 --   No record already exist but this will be standard SQL statement going forward.
 
