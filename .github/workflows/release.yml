@@ -75,8 +75,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Create docker-compose archive
       run: |
-        tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* docker/env-sample docker/env-custom-sample
-        zip ./docker-compose-files.zip docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample docker/env-custom-sample
+        tar -cvzf ./docker-compose-files.tgz docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* docker/env-sample
+        zip ./docker-compose-files.zip docker-compose.yml docker-compose-custom-data.yml database_scripts/install/* database_scripts/version_upgrades/* docker/env-sample
     - name: Upload docker-compose tar to github release
       uses: svenstaro/upload-release-action@v2
       with:
