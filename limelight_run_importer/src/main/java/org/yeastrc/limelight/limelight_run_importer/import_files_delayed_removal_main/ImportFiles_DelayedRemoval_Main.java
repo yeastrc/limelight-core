@@ -156,6 +156,12 @@ public class ImportFiles_DelayedRemoval_Main {
 				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
 		
 		File importerBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
+
+		if ( ! importerBaseDir.exists() ) {
+			//  Directory NOT exist so skip
+			
+			return; // EARLY RETURN
+		}
 		
 		for ( Integer fileImportTrackingId : fileImportTrackingIddList_To_Delete_Directories ) {
 			
@@ -216,6 +222,11 @@ public class ImportFiles_DelayedRemoval_Main {
 		
 		File importerBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
 		
+		if ( ! importerBaseDir.exists() ) {
+			//  Directory NOT exist so skip
+			
+			return; // EARLY RETURN
+		}
 		
 		for ( File subDir : importerBaseDir.listFiles() ) {
 			
@@ -264,6 +275,12 @@ public class ImportFiles_DelayedRemoval_Main {
 				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
 		
 		File uploadFileBaseDir = new File( limelight_XML_Importer_Work_Directory, FileUploadCommonConstants.UPLOAD_FILE_TEMP_BASE_DIR );
+
+		if ( ! uploadFileBaseDir.exists() ) {
+			//  Directory NOT exist so skip
+			
+			return; // EARLY RETURN
+		}
 		
 		
 		for ( File subDir : uploadFileBaseDir.listFiles() ) {
