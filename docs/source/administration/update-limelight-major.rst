@@ -13,8 +13,8 @@ This guide assumes you have completed all the steps in the :doc:`install-limelig
    is running, you may then update to version **4**.x.x, and so on.
 
    To update multiple steps (e.g., from major version 2 to 5), follow all of these steps to upgrade from
-   major version 2 to 3, then repeat steps 7 and 8 once to update from major version 3 to 4, then repeat
-   steps 7 and 8 again to update from major version 4 to 5.
+   major version 2 to 3, then repeat steps 8 and 9 once to update from major version 3 to 4, then repeat
+   steps 8 and 9 again to update from major version 4 to 5.
 
    You can see your current Limelight major version by following the instructions on our
    :doc:`update-limelight` instructions. This must be done before following these steps.
@@ -89,8 +89,15 @@ If you have customized your ``docker-compose.yml`` or ``docker-compose-custom-da
 customizations from the backup you made above into the new ``docker-compose.yml`` or ``docker-compose-custom-data.yml``
 file.
 
+5. Update Other Limelight Components
+===========================================
+Use the following command to download the latest version of all of the Limelight application components:
 
-5. Add Any New ``.env`` File Entries
+    .. code-block:: bash
+
+       sudo docker-compose pull
+
+6. Add Any New ``.env`` File Entries
 ===========================================
 This is only necessary if you have customized your data storage locations, as described on
 our :doc:`install-limelight-custom-data-location` tutorial. If you have not customized the data storage
@@ -100,7 +107,7 @@ You will need to configure any new data locations needed by the new release of L
 data locations are listed at our :doc:`install-limelight-custom-data-location` tutorial under step 2. Follow
 the directions for step 2 to add any missing configuration values to your ``.env`` file.
 
-6. Bring up Limelight
+7. Bring up Limelight
 ===========================================
 If you have not customized the data locations for Limelight, type the following to start Limelight:
 
@@ -115,7 +122,7 @@ If you have customized the data locations for Limelight by following our
 
    sudo docker-compose -f docker-compose-custom-data.yml up --detach
 
-7. Perform Necessary Database Updates
+8. Perform Necessary Database Updates
 ===========================================
 
 Determine If Database Update Is Necessary
@@ -163,7 +170,7 @@ given above.
    cat database_scripts/version_upgrades/$LIMELIGHT_NEW_VERSION/version_upgrade.sql | sudo docker exec -i limelight-mysql sh -c 'exec mysql -u root -p"MYSQL_ROOT_PASSWORD" limelight'
 
 
-8. Restart Limelight
+9. Restart Limelight
 =============================
 If you did not perform a database update in step 7, you can skip this step.
 
@@ -183,7 +190,7 @@ If you have customized the data locations for Limelight by following our
    sudo docker-compose -f docker-compose-custom-data.yml up --detach
 
 
-9. (Optional) Remove Orphaned Docker Images
+10. (Optional) Remove Orphaned Docker Images
 ============================================
 If new Limelight components are pulled down using the command above, the replaced Docker images will be "orphaned". To
 remove the old Docker images and free up disk space, you can use the following command:
