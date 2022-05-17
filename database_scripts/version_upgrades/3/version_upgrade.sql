@@ -401,3 +401,6 @@ INSERT INTO aa_limelight_database_version_tbl (row_label, limelight_database_ver
 VALUES ('DB Version Current', 3)
     ON DUPLICATE KEY UPDATE limelight_database_version_number = 3;
 
+-- Add necessary records for docker-compose install for blib export function
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('blib_spectral_library_file_creation_web_service_base_url', 'http://blib-export:3434');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('blib_spectral_library_file_result_file_base_path', '/data/limelight_downloads/blib_exports');
