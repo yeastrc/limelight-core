@@ -31,7 +31,12 @@ follow the directions on our :ref:`Docker Installation Tutorial <Windows Termina
 
       sudo service docker start
 
-2. Shutdown Limelight
+2. Backup the Limelight Database
+================================
+It is critical that you backup your database before updating it. Please follow the instructions for backing up
+MySQL Data on the :doc:`back-up-limelight` instructions page.
+
+3. Shutdown Limelight
 =============================
 Go into your Limelight project directory:
 
@@ -51,11 +56,6 @@ If you have customized the data locations for Limelight by following our
 .. code-block:: bash
 
    sudo docker-compose -f docker-compose-custom-data.yml down
-
-3. Backup the Limelight Database
-================================
-It is critical that you backup your database before updating it. Please follow the instructions for backing up
-MySQL Data on the :doc:`back-up-limelight` instructions page.
 
 4. Download the Latest Installation Package
 ===========================================
