@@ -39,7 +39,7 @@ services:
       - ${BLIB_DESTINATION_DIR}:/data/app/blibdir
       - ${BLIB_WORK_DIR}:/data/app/workdir
   importer:
-    image: mriffle/limelight-importer:2
+    image: mriffle/limelight-importer:3
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -54,7 +54,7 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:2
+    image: mriffle/limelight-webapp:3
     container_name: limelight-webapp
     restart: always
     depends_on:
