@@ -276,13 +276,13 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 						String msg = "Limelight XML Import Tracking Processing: Failed to get latest run for Tracking Item status FAILED. "
 								+ "Tracking Item Id: " + trackingItem.getId();
 						log.error( msg );
-						throw new LimelightInternalErrorException( msg );
-					}
-					if ( latestRunForTrackingItem.getRunStatus() != FileImportStatus.FAILED ) {
+//						throw new LimelightInternalErrorException( msg );
+					
+					} else if ( latestRunForTrackingItem.getRunStatus() != FileImportStatus.FAILED ) {
 						String msg = "Limelight XML Import Tracking Processing: Latest run status is not FAILED for Tracking Item status FAILED. "
 								+ "Tracking Item Id: " + trackingItem.getId();
 						log.error( msg );
-						throw new LimelightInternalErrorException( msg );
+//						throw new LimelightInternalErrorException( msg );
 					}
 					internalHolder.latestRunForTrackingItem = latestRunForTrackingItem;
 				}
@@ -346,7 +346,11 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 				}
 				displayItem.setStatus( statusText );
 				if ( trackingItem.getStatus() == FileImportStatus.FAILED ) {
-					displayItem.setStatusFailedMsg( internalHolder.latestRunForTrackingItem.getDataErrorText() );
+					if ( internalHolder.latestRunForTrackingItem != null ) {
+						displayItem.setStatusFailedMsg( internalHolder.latestRunForTrackingItem.getDataErrorText() );
+					} else {
+						displayItem.setStatusFailedMsg( "Error Message Unavailable." );
+					}
 				}
 				List<FileImportTrackingSingleFileDTO> fileDataList = 
 						fileImportTrackingSingleFileDAO
