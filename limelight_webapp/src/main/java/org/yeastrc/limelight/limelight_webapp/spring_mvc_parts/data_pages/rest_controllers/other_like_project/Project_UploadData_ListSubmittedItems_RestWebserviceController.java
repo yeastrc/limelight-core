@@ -293,46 +293,70 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 						fileImportTracking_PendingTrackingIdsAllProjects_Searcher
 						.getPendingTrackingIdsAllProjects();
 			}
+			
 			////////
 			
 			boolean needToUpdateQueuePosition = false; // true if need to go back through records and set queue position
 			
 			//   Main processing of tracking records
 			for ( InternalHolder internalHolder : internalHolderList ) {
+				
 				FileImportTrackingDTO trackingItem = internalHolder.trackingItem;
+				
 				FileImportTrackingDisplay displayItem = new FileImportTrackingDisplay();
+				
 				//  Set Pending queue position
 				if ( trackingItem.getStatus() == FileImportStatus.QUEUED
 						|| trackingItem.getStatus() == FileImportStatus.RE_QUEUED ) {
+					
+					
 					if ( pendingTrackingIdsAllProjectsList == null || pendingTrackingIdsAllProjectsList.isEmpty() ) {
-						String msg = "pendingTrackingIdsAllProjectsList is null or empty when tracking status is QUEUED or RE_QUEUED."
-								+ "  trackingItem id: " + trackingItem.getId();
-						log.error( msg );
-						throw new LimelightInternalErrorException(msg);
-					}
-					int queueIndex = pendingTrackingIdsAllProjectsList.indexOf( trackingItem.getId() );
-					if ( queueIndex < 0 )  {
+					
 						//  Was not found in all pending.  Must no longer be pending. Get from DB again
 						trackingItem = FileImportTracking_Shared_Get_DAO.getInstance().getItem( trackingItem.getId() );
+						
 						if ( trackingItem.getStatus() == FileImportStatus.QUEUED
 								|| trackingItem.getStatus() == FileImportStatus.RE_QUEUED ) {
-							
+
 							//  Set to QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE and fix those after processing all records
 							
 							needToUpdateQueuePosition = true;
 							displayItem.setQueuePosition( QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE );
-							
+
 							// WAS
-//							String msg = "Tracking item is not in all pending for tracking status QUEUED or RE_QUEUED"
-//									+ " after re-get from DB."
+//							String msg = "pendingTrackingIdsAllProjectsList is null or empty when tracking status is QUEUED or RE_QUEUED."
 //									+ "  trackingItem id: " + trackingItem.getId();
 //							log.error( msg );
 //							throw new LimelightInternalErrorException(msg);
 						}
+					
 					} else {
-						int queuePosition = queueIndex + 1; // add 1 since queueIndex is zero based
-						displayItem.setQueuePosition( queuePosition );
-						displayItem.setQueuePositionFmt( numberFormat.format( queuePosition ) );
+						int queueIndex = pendingTrackingIdsAllProjectsList.indexOf( trackingItem.getId() );
+						if ( queueIndex < 0 )  {
+
+							//  Was not found in all pending.  Must no longer be pending. Get from DB again
+							trackingItem = FileImportTracking_Shared_Get_DAO.getInstance().getItem( trackingItem.getId() );
+
+							if ( trackingItem.getStatus() == FileImportStatus.QUEUED
+									|| trackingItem.getStatus() == FileImportStatus.RE_QUEUED ) {
+
+								//  Set to QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE and fix those after processing all records
+
+								needToUpdateQueuePosition = true;
+								displayItem.setQueuePosition( QUEUE_POSITION_NOT_SET_SINCE_NOT_AVAILABLE );
+
+								// WAS
+//								String msg = "Tracking item is not in all pending for tracking status QUEUED or RE_QUEUED"
+//										+ " after re-get from DB."
+//										+ "  trackingItem id: " + trackingItem.getId();
+//								log.error( msg );
+//								throw new LimelightInternalErrorException(msg);
+							}
+						} else {
+							int queuePosition = queueIndex + 1; // add 1 since queueIndex is zero based
+							displayItem.setQueuePosition( queuePosition );
+							displayItem.setQueuePositionFmt( numberFormat.format( queuePosition ) );
+						}
 					}
 				}
 				displayItem.setTrackingId( trackingItem.getId() );
