@@ -15,13 +15,16 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread;
+package org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_and_main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
+import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
+import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Main_EntryPoint;
+import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
-import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main.ImportFiles_DelayedRemoval_Main;
 
 /**
  * Remove import files from disk after a delayed time of 3 days thread
@@ -29,14 +32,16 @@ import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal
  * Skip running if DB Schema Version Number in DB  NOT  match DB Schema Version Number in Code. 
  *
  */
-public class ImportFiles_DelayedRemoval_Thread extends Thread {
+public class DatabaseCleanup_RemoveData_Thread extends Thread {
 
-	private static final String className = ImportFiles_DelayedRemoval_Thread.class.getSimpleName();
+	private static final String className = DatabaseCleanup_RemoveData_Thread.class.getSimpleName();
+
+	private static final long TWENTY_FOUR_HOURS = 24;  // Run every 24 hours
 	
-	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = 24 * 60 * 60 * 1000;  // Run every 24 hours
+	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
 	
 	
-	private static final Logger log = LoggerFactory.getLogger( ImportFiles_DelayedRemoval_Thread.class );
+	private static final Logger log = LoggerFactory.getLogger( DatabaseCleanup_RemoveData_Thread.class );
 	
 	private volatile boolean keepRunning = true;
 	
@@ -44,9 +49,9 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	 * @param s
 	 * @return
 	 */
-	public static ImportFiles_DelayedRemoval_Thread getNewInstance( String s ) {
+	public static DatabaseCleanup_RemoveData_Thread getNewInstance( String s ) {
 		
-		ImportFiles_DelayedRemoval_Thread instance = new ImportFiles_DelayedRemoval_Thread(s);
+		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(s);
 		instance.init();
 		return instance;
 	}
@@ -54,7 +59,7 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	/**
 	 * default Constructor
 	 */
-	private ImportFiles_DelayedRemoval_Thread() {
+	private DatabaseCleanup_RemoveData_Thread() {
 		//  Set a name for the thread
 		String threadName = className;
 		setName( threadName );
@@ -63,7 +68,7 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	 * Constructor
 	 * @param s
 	 */
-	private ImportFiles_DelayedRemoval_Thread( String s ) {
+	private DatabaseCleanup_RemoveData_Thread( String s ) {
 		super(s);
 	}
 	
@@ -102,9 +107,13 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	public void shutdown() {
 		log.warn( "shutdown() called, setting keepRunning = false, calling awaken() " );
 		keepRunning = false;
-		
-		ImportFiles_DelayedRemoval_Main.getSingletonInstance().shutdown();
-	
+
+		try {
+			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().shutdownRequestReceived();
+		} catch (Throwable e) {
+			log.error( "In shutdown(): call to Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().shutdownRequestReceived() threw Throwable " + e.toString(), e );
+		}
+
 		awaken();
 		log.warn( "Exiting shutdown()" );
 	}
@@ -183,10 +192,18 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 				
 				///////////////
 				
+				log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
+				
 				//  Main Processing
 				
-				ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main();
+				Limelight_DatabaseCleanup__Main_EntryPoint.getSingletonInstance()
+				.limelight_DatabaseCleanup__Main_EntryPoint(
+						Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM,
+						Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS
+						);
 				
+				log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  Now Cleanup will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
+
 				
 				///////////////
 				

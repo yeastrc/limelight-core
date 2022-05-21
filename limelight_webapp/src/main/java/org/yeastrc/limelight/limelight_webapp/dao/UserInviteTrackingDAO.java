@@ -123,13 +123,28 @@ public class UserInviteTrackingDAO extends Limelight_JDBC_Base implements UserIn
 			returnItem.setInvitedProjectId( invitedProjectId );
 		}
 		returnItem.setInviteCreateDate( rs.getDate( "invite_create_date" ) );
-		returnItem.setInviteUsed( rs.getBoolean( "invite_used" ) );
+		{
+			int fieldIntValue = rs.getInt( "invite_used" );
+			if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				returnItem.setInviteUsed( true );
+			}
+		}
 		returnItem.setInviteUsedDate( rs.getDate( "invite_used_date" ) );
 		returnItem.setInviteTrackingCode( rs.getString( "invite_tracking_code" ) );
 		returnItem.setSubmitIP( rs.getString( "submit_ip" ) );
 		returnItem.setUseIP( rs.getString( "use_ip" ) );
-		returnItem.setCodeReplacedByNewer( rs.getBoolean( "code_replaced_by_newer" ) );
-		returnItem.setInviteRevoked( rs.getBoolean( "invite_revoked" ) );
+		{
+			int fieldIntValue = rs.getInt( "code_replaced_by_newer" );
+			if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				returnItem.setCodeReplacedByNewer( true );
+			}
+		}
+		{
+			int fieldIntValue = rs.getInt( "invite_revoked" );
+			if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+				returnItem.setInviteRevoked( true );
+			}
+		}
 		int revokingUserId = rs.getInt( "revoking_user_id" );
 		if ( rs.wasNull() ) {
 			returnItem.setRevokingUserId(null);
@@ -185,7 +200,11 @@ public class UserInviteTrackingDAO extends Limelight_JDBC_Base implements UserIn
 							counter++;
 							pstmt.setString( counter, item.getSubmitIP() );
 							counter++;
-							pstmt.setBoolean( counter, item.isCodeReplacedByNewer() );							
+							if ( item.isCodeReplacedByNewer() ) {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+							} else {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+							}
 
 							return pstmt;
 						}

@@ -31,6 +31,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.db_dto.UserForgotPasswordTrackingDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -74,7 +75,13 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 					returnItem.setForgotPasswordTrackingCode( rs.getString( "forgot_password_tracking_code" ) );
 					returnItem.setSubmitIP( rs.getString( "submit_ip" ) );
 					returnItem.setUseIP( rs.getString( "use_ip" ) );
-					returnItem.setCodeReplacedByNewer( rs.getBoolean( "code_replaced_by_newer" ));
+					{
+						int fieldIntValue = rs.getInt( "code_replaced_by_newer" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setCodeReplacedByNewer( true );
+						}
+					}
+
 				}
 			}
 		} catch ( Exception e ) {
@@ -209,7 +216,11 @@ public class UserForgotPasswordTrackingDAO extends Limelight_JDBC_Base implement
 									connection.prepareStatement( sql );
 							int counter = 0;
 							counter++;
-							pstmt.setBoolean( counter, codeReplacedByNewer );
+							if ( codeReplacedByNewer ) {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+							} else {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+							}
 							counter++;
 							pstmt.setInt( counter, id );
 							return pstmt;

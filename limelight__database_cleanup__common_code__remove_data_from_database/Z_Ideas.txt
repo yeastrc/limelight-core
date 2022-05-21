@@ -1,0 +1,12 @@
+
+
+When/If start deleting records from db tables common across searches.
+
+---
+
+Before start, get max value of 'id'.
+Never delete any records with 'id' >= max value to ensure not delete any newly inserted records.
+This does NOT totally fix deleting records an import in progress just queried and will depend on but it is an extra safety step.
+
+---
+

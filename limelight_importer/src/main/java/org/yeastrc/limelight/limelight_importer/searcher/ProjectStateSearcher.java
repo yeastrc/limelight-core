@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.slf4j.Logger;
 
 /**
@@ -56,9 +57,24 @@ public class ProjectStateSearcher {
 				try ( ResultSet rs = pstmt.executeQuery() ) {
 					if ( rs.next() ) {
 						result = new ProjectStateSearcherResults();
-						result.setProjectLocked( rs.getBoolean( "project_locked" ) );
-						result.setProjectEnabled( rs.getBoolean( "enabled" ) );
-						result.setProjectMarkedForDeletion( rs.getBoolean( "marked_for_deletion" ) );
+						{
+							int fieldIntValue = rs.getInt( "project_locked" );
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								result.setProjectLocked( true );
+							}
+						}
+						{
+							int fieldIntValue = rs.getInt( "enabled" );
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								result.setProjectEnabled( true );
+							}
+						}
+						{
+							int fieldIntValue = rs.getInt( "marked_for_deletion" );
+							if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+								result.setProjectMarkedForDeletion( true );
+							}
+						}
 					}
 				}
 			}

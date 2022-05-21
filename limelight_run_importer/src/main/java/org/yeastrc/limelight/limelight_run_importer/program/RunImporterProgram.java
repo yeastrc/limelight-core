@@ -28,11 +28,13 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileErrorException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
+import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
@@ -155,6 +157,10 @@ public class RunImporterProgram {
 			importDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 			
 			SharedCodeOnly_DBConnectionProvider.setSharedCodeOnly_DBConnectionProvider_Provider_IF( importDBConnectionFactory );
+			
+			Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
+			.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
+					RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getSingletonInstance() );
 
 			ConfigSystemDAO_Importer configSystemDAO = ConfigSystemDAO_Importer.getInstance();
 			ConfigSystemTableGetValueCommon.getInstance().setIConfigSystemTableGetValue( configSystemDAO );
@@ -184,8 +190,14 @@ public class RunImporterProgram {
 			e.printStackTrace( System.err );
 			throw e;
 		} finally {
-			Runtime runtime = Runtime.getRuntime();
-			runtime.removeShutdownHook( importRunnerProgramShutdown );
+			
+			try {
+				Runtime runtime = Runtime.getRuntime();
+				runtime.removeShutdownHook( importRunnerProgramShutdown );
+			} catch (Throwable t) {
+				//  Eat exception
+			}
+			
 			importRunnerProgramShutdown.setImporterRunnerMain( null );
 			if ( log.isDebugEnabled() ) {
 				log.debug( "Main Thread:  Calling DBConnectionFactory.closeAllConnections(); on main thread.");
@@ -196,7 +208,7 @@ public class RunImporterProgram {
 				if ( log.isDebugEnabled() ) {
 					log.debug( "COMPLETE:  Main Thread:  Calling DBConnectionFactory.closeAllConnections(); on main thread.");
 				}
-			} catch ( Exception e ) {
+			} catch ( Throwable e ) {
 				System.out.println( "----------------------------------------");
 				System.out.println( "----");
 				System.err.println( "----------------------------------------");
@@ -209,7 +221,9 @@ public class RunImporterProgram {
 				System.out.println( "----------------------------------------");
 				System.err.println( "----");
 				System.err.println( "----------------------------------------");
-				throw e;
+
+				//  eat exception
+				// throw e;
 			}
 		}
 		//		if ( programExitCode != PROGRAM_EXIT_CODE_DEFAULT_NO_SYTEM_EXIT_CALLED ) {

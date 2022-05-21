@@ -65,7 +65,12 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 					result = new ProjectDTO();
 					result.setId( id );
 					result.setTitle( rs.getString( "title" ) );
-					result.setProjectLocked( rs.getBoolean( "project_locked" ) );
+					{
+						int fieldIntValue = rs.getInt( "project_locked" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							result.setProjectLocked( true );
+						}
+					}
 				}
 			}
 		} catch ( RuntimeException e ) {
@@ -93,7 +98,10 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 		
 		ProjectDTO result = null;
 		
-		final String querySQL = "SELECT title, abstract, project_locked, public_access_level FROM project_tbl WHERE id = ?"
+		final String querySQL = 
+				"SELECT title, abstract, project_locked, public_access_level "
+				+ " FROM project_tbl "
+				+ " WHERE id = ?"
 				+ " AND marked_for_deletion != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
 		
 		try ( Connection dbConnection = super.getDBConnection();
@@ -107,7 +115,12 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 					result.setId( id );
 					result.setTitle( rs.getString( "title" ) );
 					result.setAbstractText( rs.getString( "abstract" ) );
-					result.setProjectLocked( rs.getBoolean( "project_locked" ) );
+					{
+						int fieldIntValue = rs.getInt( "project_locked" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							result.setProjectLocked( true );
+						}
+					}
 					int publicAccessLevel = rs.getInt( "public_access_level" );
 					if ( ! rs.wasNull() ) {
 						result.setPublicAccessLevel( publicAccessLevel );
@@ -149,16 +162,38 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 				if( rs.next() ) {
 					returnItem = new ProjectDTO();
 					returnItem.setId( projectId );
-					returnItem.setProjectLocked( rs.getBoolean( "project_locked" ) );
-					int publicAccessLevel = rs.getInt( "public_access_level" );
-					if (rs.wasNull()) {
-						returnItem.setPublicAccessLevel( null );
-					} else {
-						returnItem.setPublicAccessLevel( publicAccessLevel );
+					{
+						int fieldIntValue = rs.getInt( "project_locked" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setProjectLocked( true );
+						}
 					}
-					returnItem.setPublicAccessLocked( rs.getBoolean( "public_access_locked" ) );
-					returnItem.setEnabled( rs.getBoolean( "enabled" ) );
-					returnItem.setMarkedForDeletion( rs.getBoolean( "marked_for_deletion" ) );
+					{
+						int publicAccessLevel = rs.getInt( "public_access_level" );
+						if (rs.wasNull()) {
+							returnItem.setPublicAccessLevel( null );
+						} else {
+							returnItem.setPublicAccessLevel( publicAccessLevel );
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "public_access_locked" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setPublicAccessLocked( true );
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "enabled" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setEnabled( true );
+						}
+					}
+					{
+						int fieldIntValue = rs.getInt( "marked_for_deletion" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							returnItem.setMarkedForDeletion( true );
+						}
+					}
 				}
 			}
 		} catch ( Exception e ) {
@@ -516,7 +551,11 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 									connection.prepareStatement( UPDATE_SQL );
 							int counter = 0;
 							counter++;
-							pstmt.setBoolean( counter, markedForDeletion );
+							if ( markedForDeletion ){
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+							} else {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+							}
 							counter++;
 							pstmt.setInt( counter, userId );
 							counter++;
@@ -560,7 +599,11 @@ public class ProjectDAO extends Limelight_JDBC_Base implements ProjectDAO_IF {
 									connection.prepareStatement( UPDATE_SQL );
 							int counter = 0;
 							counter++;
-							pstmt.setBoolean( counter, projectLocked );
+							if ( projectLocked ) {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+							} else {
+								pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+							}
 							counter++;
 							pstmt.setInt( counter, userId );
 							counter++;

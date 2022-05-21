@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.constants.RunImporterToImporterParameterNamesConstants;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Importer_RunImporter_DAO;
@@ -111,6 +112,23 @@ public class ProcessSubmittedImport {
 	 * @throws Exception 
 	 */
 	public void processSubmittedImport( TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair ) throws Exception {
+		
+		try {
+			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_Start();
+			
+			processSubmittedImport__MainInternal(trackingDTOTrackingRunDTOPair);
+			
+		} finally {
+			
+			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_End();
+		}
+	}
+	
+	/**
+	 * @param trackingDTOTrackingRunDTOPair
+	 * @throws Exception
+	 */
+	private void processSubmittedImport__MainInternal( TrackingDTOTrackingRunDTOPair trackingDTOTrackingRunDTOPair ) throws Exception {
 		
 		FileImportTrackingDTO fileImportTrackingDTO = trackingDTOTrackingRunDTOPair.getFileImportTrackingDTO();
 		if ( log.isInfoEnabled() ) {

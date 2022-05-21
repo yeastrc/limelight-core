@@ -71,7 +71,12 @@ public class ProjectListForUserIdSearcher extends Limelight_JDBC_Base implements
 					ProjectListItem item = new ProjectListItem();
 					item.setId( rs.getInt( "id" ) );
 					item.setTitle( rs.getString( "title" ) );
-					item.setProjectLocked( rs.getBoolean( "project_locked" ) );
+					{
+						int fieldIntValue = rs.getInt( "project_locked" );
+						if ( fieldIntValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setProjectLocked( true );
+						}
+					}
 					{
 						int public_access_level = rs.getInt( "public_access_level");
 						if ( ! rs.wasNull() ) {

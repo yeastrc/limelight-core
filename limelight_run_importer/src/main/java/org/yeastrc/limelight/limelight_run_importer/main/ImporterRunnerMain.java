@@ -55,10 +55,14 @@ public class ImporterRunnerMain {
 		try {
 			log.warn( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   importerRunnerMain start" );
 //			currentThread = Thread.currentThread();
+			
+			//  Instantiate and 'start()' the ManagerThread
+			
 			managerThread = new ManagerThread( );
 			managerThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			managerThread.setImporterRunnerMain( this );
 			managerThread.start();
+			
 			while ( keepRunning ) {
 				//   TODO  TEMP code
 				synchronized (this) {

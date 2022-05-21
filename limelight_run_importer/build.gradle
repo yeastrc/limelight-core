@@ -105,6 +105,11 @@ dependencies {
 //  Specify dependency on limelight_importer_run_importer_shared
 
 	compile project(":limelight_importer_run_importer_shared")
+	
+	
+//  Specify dependency on limelight__database_cleanup__common_code__remove_data_from_database
+	
+	compile project(":limelight__database_cleanup__common_code__remove_data_from_database")
 }
 
 //  Assign to grgit, created by plugin

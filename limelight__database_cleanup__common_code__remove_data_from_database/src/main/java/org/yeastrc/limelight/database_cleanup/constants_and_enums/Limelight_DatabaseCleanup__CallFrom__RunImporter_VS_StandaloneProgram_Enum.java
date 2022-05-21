@@ -1,0 +1,7 @@
+package org.yeastrc.limelight.database_cleanup.constants_and_enums;
+
+public enum Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum {
+
+	LIMELIGHT__RUN_IMPORTER_PROGRAM,
+	STANDALONE_PROGRAM
+}

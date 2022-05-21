@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
@@ -152,7 +153,16 @@ public class GetImportAndProcessThread extends Thread {
 	@Override
 	public void run() {
 		
-		log.info( "run() entered" );
+		log.debug( "run() entered" );
+		
+		try { 
+			// Put here in case this is a replacement thread to ensure not waiting for running import
+			
+			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_End();
+			
+		} catch (Throwable t) {
+			//  Eat Exception
+		}
 		
 		//  Top level loop until keepRunning is false
 		

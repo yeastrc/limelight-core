@@ -25,6 +25,12 @@ package org.yeastrc.limelight.limelight_shared.enum_classes;
  * Keep these values in sync with the values in the table 
  * 'search_record_status_lookup'
  * 
+ * !!  Update class Limelight_DatabaseCleanup__ProjectSearchIdsToDeleteSearcher when add new status that indicates that record can be removed from database  !!
+ * 
+ * !!  Update class Limelight_DatabaseCleanup__SearchIdsToDeleteSearcher when add new status  !!
+ * 
+ * 			
+ * 
  */
 public enum SearchRecordStatus {
 

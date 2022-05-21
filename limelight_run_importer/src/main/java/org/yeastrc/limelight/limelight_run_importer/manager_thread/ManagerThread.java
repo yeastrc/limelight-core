@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileConstants;
+import org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_and_main.DatabaseCleanup_RemoveData_Thread;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
@@ -56,6 +57,8 @@ public class ManagerThread extends Thread {
 	private static final String GET_IMPORT_AND_PROCESS_THREAD = "GetImportAndProcessThread";  // Thread Name
 
 	private static final String IMPORT_FILES_DELAYED_REMOVAL_THREAD = "ImportFiles_DelayedRemoval_Thread";  // Thread Name
+
+	private static final String DATABASE_CLEANUP_REMOVE_DATA_THREAD = "DatabaseCleanup_RemoveData_Thread";  // Thread Name
 	
 	private volatile boolean keepRunning = true;
 	private volatile boolean stopProcessingNextImport = false;
@@ -69,6 +72,10 @@ public class ManagerThread extends Thread {
 	private int getImportAndProcessThreadCounter = 2;  // used if need to replace the thread
 	
 	private volatile ImportFiles_DelayedRemoval_Thread importFiles_DelayedRemoval_Thread;
+	private int importFiles_DelayedRemoval_ThreadCounter = 2;  // used if need to replace the thread
+	
+	private volatile DatabaseCleanup_RemoveData_Thread databaseCleanup_RemoveData_Thread;
+	private int databaseCleanup_RemoveData_ThreadCounter = 2;  // used if need to replace the thread
 	
 //	private volatile ClientStatusUpdateThread clientStatusUpdateThread;
 //
@@ -113,23 +120,34 @@ public class ManagerThread extends Thread {
 		//		this.setContextClassLoader( thisClassLoader );
 		try {
 			createClientControlFile();
-			
+
+			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 //			clientStatusUpdateThread = new ClientStatusUpdateThread();
-//
 //			clientStatusUpdateThread.start();
-			
+
+			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 			getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
 			
+			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 			importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */ );
-			importFiles_DelayedRemoval_Thread.setDaemon(true);
+			importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
 			importFiles_DelayedRemoval_Thread.start();
+
+			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
+				
+				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
+				databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance( DATABASE_CLEANUP_REMOVE_DATA_THREAD /* name */ );
+				databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+				databaseCleanup_RemoveData_Thread.start();
+			}
 			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true
 			
 			if ( stopProcessingNextImport ) {
+				
 				File clientControlFile = null;
 				FileWriter clientControlFileWriter = null;
 				try {
@@ -174,7 +192,9 @@ public class ManagerThread extends Thread {
 	 * Main Processing loop
 	 */
 	private void runProcessLoop() {
+		
 		while ( keepRunning ) {
+			
 //			if ( log.isDebugEnabled() ) {
 //				log.debug( "Top of loop in 'runProcessLoop()', waitTime in microseconds = " + waitTime );
 //			}
@@ -222,10 +242,33 @@ public class ManagerThread extends Thread {
 				GetImportAndProcessThread oldGetImportAndProcessThread = getImportAndProcessThread;
 				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */  );
 				getImportAndProcessThreadCounter += 1;
-//				ThreadsHolderSingleton.getInstance().setGetJobThread( getJobThread );
 				log.error( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
 				getImportAndProcessThread.start();
 			}
+
+			//  check health of importFiles_DelayedRemoval_Thread, replace thread if dead
+			if ( ! importFiles_DelayedRemoval_Thread.isAlive() ) {
+				ImportFiles_DelayedRemoval_Thread old_importFiles_DelayedRemoval_Thread = importFiles_DelayedRemoval_Thread;
+				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance(  IMPORT_FILES_DELAYED_REMOVAL_THREAD + "_" + importFiles_DelayedRemoval_ThreadCounter /* name */  );
+				importFiles_DelayedRemoval_ThreadCounter += 1;
+				log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_importFiles_DelayedRemoval_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + importFiles_DelayedRemoval_Thread.getName() + "'."  );
+				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+				importFiles_DelayedRemoval_Thread.start();
+			}
+
+			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
+
+				//  check health of databaseCleanup_RemoveData_Thread, replace thread if dead
+				if ( ! databaseCleanup_RemoveData_Thread.isAlive() ) {
+					DatabaseCleanup_RemoveData_Thread old_databaseCleanup_RemoveData_Thread = databaseCleanup_RemoveData_Thread;
+					databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance(  DATABASE_CLEANUP_REMOVE_DATA_THREAD + "_" + databaseCleanup_RemoveData_ThreadCounter /* name */  );
+					databaseCleanup_RemoveData_ThreadCounter += 1;
+					log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_databaseCleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + databaseCleanup_RemoveData_Thread.getName() + "'."  );
+					databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					databaseCleanup_RemoveData_Thread.start();
+				}
+			}
+
 		}
 	}
 	
@@ -339,6 +382,9 @@ public class ManagerThread extends Thread {
 	private void processStopProcessingNewImportsRequest( String stopRequestType ) {
 		
 		keepRunning = false;  // Set thread of the current object to exit main processing loop.
+
+		shutdown_Common();
+			
 		//  call getImportAndProcessThread.stopRunningAfterProcessingImport();
 		if ( getImportAndProcessThread != null ) {
 			try {
@@ -352,6 +398,7 @@ public class ManagerThread extends Thread {
 		waitForGetImportAndProcessThread();
 	}
 	
+	
 	/**
 	 * Called on a separate thread when a shutdown request comes from the operating system.
 	 * If this is not heeded, the process may be killed by the operating system after some time has passed ( controlled by the operating system )
@@ -359,11 +406,9 @@ public class ManagerThread extends Thread {
 	public void shutdown() {
 		
 		log.debug( "shutdown() called " );
-		//  Update DB that process has received shut down request.
-//		if ( clientStatusUpdateThread != null ) {
-//
-//			clientStatusUpdateThread.shutdown();
-//		}
+		
+		shutdown_Common();
+		
 		//  call getImportAndProcessThread.shutdown();
 		if ( getImportAndProcessThread != null ) {
 			try {
@@ -373,15 +418,6 @@ public class ManagerThread extends Thread {
 			}
 		} else {
 			log.info( "In processStopProcessingNewImportsRequest(): getImportAndProcessThread == null" );
-		}
-		if ( importFiles_DelayedRemoval_Thread != null ) {
-			try {
-				importFiles_DelayedRemoval_Thread.shutdown();
-			} catch (Throwable e) {
-				log.error( "In processStopProcessingNewImportsRequest(): call to importFiles_DelayedRemoval_Thread.shutdown() threw Throwable " + e.toString(), e );
-			}
-		} else {
-			log.info( "In processStopProcessingNewImportsRequest(): importFiles_DelayedRemoval_Thread == null" );
 		}
 		keepRunning = false;  // Set thread of the current object to exit main processing loop.
 		awaken();  // send notify() to to the thread of the current object to start it so it will exit.
@@ -402,6 +438,29 @@ public class ManagerThread extends Thread {
 		}
 		waitForGetImportAndProcessThread();
 		//  TODO   Update process status in DB to about to shut down or shut down
+	}
+
+	/**
+	 * 
+	 */
+	private void shutdown_Common() {
+		
+		//  importFiles_DelayedRemoval_Thread and databaseCleanup_RemoveData_Thread are daemon threads so no need to wait
+		
+		if ( importFiles_DelayedRemoval_Thread != null ) {
+			try {
+				importFiles_DelayedRemoval_Thread.shutdown();
+			} catch (Throwable e) {
+				log.error( "In processStopProcessingNewImportsRequest(): call to importFiles_DelayedRemoval_Thread.shutdown() threw Throwable " + e.toString(), e );
+			}
+		}
+		if ( databaseCleanup_RemoveData_Thread != null ) {
+			try {
+				databaseCleanup_RemoveData_Thread.shutdown();
+			} catch (Throwable e) {
+				log.error( "In processStopProcessingNewImportsRequest(): call to databaseCleanup_RemoveData_Thread.shutdown() threw Throwable " + e.toString(), e );
+			}
+		}
 	}
 	
 	/**

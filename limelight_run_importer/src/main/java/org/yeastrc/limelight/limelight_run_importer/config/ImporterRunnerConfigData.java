@@ -30,6 +30,8 @@ public class ImporterRunnerConfigData {
 
 	private static Logger log = Logger.getLogger( ImporterRunnerConfigData.class );
 	
+	private static boolean databaseCleanup_Disable;
+	
 	private static Integer waitTimeForNextCheckForImportToProcess_InSeconds;
 	
 	private static String javaExecutableWithPath;
@@ -47,7 +49,15 @@ public class ImporterRunnerConfigData {
 	
 	private static boolean configured = false;
 
-	
+
+	public static boolean isDatabaseCleanup_Disable() {
+		if ( ! configured ) {
+			String msg = "ImporterRunnerConfigData not configured";
+			log.error( msg );
+			throw new IllegalStateException(msg);
+		}
+		return databaseCleanup_Disable;
+	}
 	public static Integer getWaitTimeForNextCheckForImportToProcess_InSeconds() {
 		if ( ! configured ) {
 			String msg = "ImporterRunnerConfigData not configured";
@@ -145,6 +155,9 @@ public class ImporterRunnerConfigData {
 	}
 	public static void setRunImporterPidFileWithPath(String runImporterPidFileWithPath) {
 		ImporterRunnerConfigData.importerPidFileWithPath = runImporterPidFileWithPath;
+	}
+	public static void setDatabaseCleanup_Disable(boolean databaseCleanup_Disable) {
+		ImporterRunnerConfigData.databaseCleanup_Disable = databaseCleanup_Disable;
 	}
 
 }	

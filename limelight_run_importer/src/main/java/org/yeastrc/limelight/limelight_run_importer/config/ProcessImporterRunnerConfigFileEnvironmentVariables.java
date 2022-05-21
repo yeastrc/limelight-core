@@ -46,6 +46,12 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
 	
 	private static final String CONFIG_FILENAME = "run_importer_config_file.properties";
+	
+	//  Properties
+	
+	private static final String PROPERTY_NAME__DATABASE_CLEANUP_DISABLE = "database.cleanup.disable";
+	
+	private static final String PROPERTY_VALUE__TRUE__DATABASE_CLEANUP_DISABLE = "true";
 
 	private static final String PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS = "wait.time.for.next.check.for.import.to.process";
 
@@ -155,6 +161,31 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 				}
 			}
 			
+			////////
+			
+			boolean databaseCleanup_Disable = false;
+			{
+				String databaseCleanup_Disable_PropertyValue_String = configProps.getProperty( PROPERTY_NAME__DATABASE_CLEANUP_DISABLE );
+				
+				if ( databaseCleanup_Disable_PropertyValue_String != null ) {
+					databaseCleanup_Disable_PropertyValue_String = databaseCleanup_Disable_PropertyValue_String.trim();
+				}
+				
+				if ( PROPERTY_VALUE__TRUE__DATABASE_CLEANUP_DISABLE.equals( databaseCleanup_Disable_PropertyValue_String ) ) {
+					databaseCleanup_Disable = true;
+
+					log.warn( "INFO: Config file property '" 
+							+ PROPERTY_NAME__DATABASE_CLEANUP_DISABLE
+							+ "' has value: '" 
+							+ PROPERTY_VALUE__TRUE__DATABASE_CLEANUP_DISABLE
+							+ "' " );
+					
+					log.warn( "INFO: !!!!  " );
+					log.warn( "INFO: !!!!  Config file is configured so that Run Importer will NOT perform Database cleanup  !!!");
+					log.warn( "INFO: !!!!  " );
+				}
+			}
+			
 			String waitTimeForNextCheckForImportToProcess_InSecondsString = configProps.getProperty( PROPERTY_NAME__WAIT_TIME_FOR_NEXT_CHECK_FOR_IMPORT_TO_PROCESS );
 			
 			String javaExecutableWithPath = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH );
@@ -181,6 +212,10 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 			
 			String commandToRunOnSuccessfulImport = configProps.getProperty( PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT );
 			String commandToRunOnSuccessfulImportSyoutSyserrDir = configProps.getProperty( PROPERTY_NAME__COMMAND_RUN_ON_SUCCESSFUL_IMPORT_SYSOUT_SYSERR_DIR );
+			
+			
+			ImporterRunnerConfigData.setDatabaseCleanup_Disable(databaseCleanup_Disable);
+			
 
 			if ( StringUtils.isNotEmpty( waitTimeForNextCheckForImportToProcess_InSecondsString ) ) {
 
