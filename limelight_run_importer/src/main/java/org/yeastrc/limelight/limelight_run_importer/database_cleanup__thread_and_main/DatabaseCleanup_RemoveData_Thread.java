@@ -29,6 +29,7 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_vers
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
+import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
 
 /**
  * Remove import files from disk after a delayed time of 3 days thread
@@ -44,26 +45,78 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	
 	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
 	
-	
 	private static final Logger log = LoggerFactory.getLogger( DatabaseCleanup_RemoveData_Thread.class );
 	
 	private volatile boolean keepRunning = true;
 	
-	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	
+	
+	/**
+	 * 
+	 */
+	public static void closeAll_DatabaseConnections() {
+
+		//  Assumes only 1 instance of this class will exist at a time
+		
+		if ( importRunImporterDBConnectionFactory != null ) {
+			//  Have prev instance so close and unassign
+			try {
+				importRunImporterDBConnectionFactory.closeAllConnections();
+			} catch (Throwable t) {
+				
+			}
+			importRunImporterDBConnectionFactory = null;
+		}
+	}
+
+	
+	/**
+	 * Cleanup when thread is dead
+	 */
+	public void threadIsDead_Cleanup() {
+
+		//  Assumes only 1 instance of this class will exist at a time
+		
+		if ( importRunImporterDBConnectionFactory != null ) {
+			//  Have prev instance so close and unassign
+			try {
+				importRunImporterDBConnectionFactory.closeAllConnections();
+			} catch (Throwable t) {
+				
+			}
+			importRunImporterDBConnectionFactory = null;
+		}
+	}
+	
 	
 	/**
 	 * @param s
 	 * @return
 	 * @throws Exception 
 	 */
-	public static DatabaseCleanup_RemoveData_Thread getNewInstance( String threadLabel, DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
+	public static DatabaseCleanup_RemoveData_Thread getNewInstance( 
+			
+			String threadLabel, 
+			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
 		
+		//  Requires only 1 instance of this class will exist at a time
+		
+		if ( importRunImporterDBConnectionFactory != null ) {
+			
+			String msg = "Clean Up Previous dead DatabaseCleanup_RemoveData_Thread Thread before creating an new DatabaseCleanup_RemoveData_Thread Thread";
+			log.error(msg);
+			throw new LimelightRunImporterInternalException(msg);
+		}
 
-		ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
+		//  Create "New" Instance of ImportRunImporterDBConnectionFactory so is NOT same instance that main "Run Importer" uses 
+		//      since main "Run Importer" calls 'importRunImporterDBConnectionFactory.closeAllConnections();' after each check of imports to process 
+		importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
+		
 		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
 		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 		
-		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(threadLabel, importRunImporterDBConnectionFactory);
+		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(threadLabel);
 		instance.init();
 		return instance;
 	}
@@ -80,10 +133,8 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	 * Constructor
 	 * @param s
 	 */
-	private DatabaseCleanup_RemoveData_Thread( String threadLabel, ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory ) {
+	private DatabaseCleanup_RemoveData_Thread( String threadLabel ) {
 		super(threadLabel);
-		
-		this.importRunImporterDBConnectionFactory = importRunImporterDBConnectionFactory;
 	}
 	
 	/**
@@ -145,7 +196,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 
 		Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
 		.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
-				RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getNewInstance(this.importRunImporterDBConnectionFactory) );
+				RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory) );
 
 		
 		//  Top level loop until keepRunning is false
@@ -223,7 +274,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						);
 
 				try {
-					this.importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
+					importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
 				} catch ( Throwable t ) {
 					log.error( "Failed to close all DB connections at end of processing loop before wait to process again.");
 				}
@@ -277,11 +328,14 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 			} finally {
 
 				try {
-					this.importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
+					importRunImporterDBConnectionFactory.closeAllConnections(); // Close as exit thread 'run()'
+					
 				} catch ( Throwable t ) {
 					log.error( "Failed to close all DB connections.");
 				}
-			
+
+				importRunImporterDBConnectionFactory = null;
+				
 			}
 		}
 		log.info( "Exiting run()" );

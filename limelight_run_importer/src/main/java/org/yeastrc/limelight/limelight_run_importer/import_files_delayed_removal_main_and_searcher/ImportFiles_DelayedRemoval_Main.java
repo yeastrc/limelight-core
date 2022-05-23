@@ -1,4 +1,4 @@
-package org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main;
+package org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main_and_searcher;
 
 import java.io.File;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.limelight_run_importer.dao.FileImportTracking_For_ImporterRunner_DAO;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
@@ -71,7 +71,7 @@ public class ImportFiles_DelayedRemoval_Main {
 	/**
 	 * 
 	 */
-	public void importFiles_DelayedRemoval_Main() {
+	public void importFiles_DelayedRemoval_Main(ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory) {
 		try {
 			boolean deleteFiles_Successful_Or_Failed_Import_After_3_Days = false;
 			
@@ -99,7 +99,7 @@ public class ImportFiles_DelayedRemoval_Main {
 			
 			//  Main Execution
 			
-			internal_ProcessMain();
+			internal_ProcessMain(importRunImporterDBConnectionFactory);
 			
 		} catch ( Throwable t) {
 			
@@ -114,12 +114,13 @@ public class ImportFiles_DelayedRemoval_Main {
 	 * @throws Exception 
 	 * 
 	 */
-	private void internal_ProcessMain() throws Exception {
+	private void internal_ProcessMain(ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory) throws Exception {
 		
 		{  //  Delete All Status Success or Fail and Table Record Last Updated over 3 days ago
 			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
-					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_For_Status_Success_OR_Fail_LastUpdate_Over_3_DaysAgo();
+					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
+					.getAll_TrackingId_For_Status_Success_OR_Fail_LastUpdate_Over_3_DaysAgo(importRunImporterDBConnectionFactory);
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
@@ -128,7 +129,8 @@ public class ImportFiles_DelayedRemoval_Main {
 			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
 			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
-					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo();
+					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
+					.getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo(importRunImporterDBConnectionFactory);
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
@@ -136,7 +138,7 @@ public class ImportFiles_DelayedRemoval_Main {
 		
 			//  Delete SubDirs that are NOT in the Tracking Table
 			
-			delete_Directories_NOT_IN_trackingIdList();
+			delete_Directories_NOT_IN_trackingIdList(importRunImporterDBConnectionFactory);
 		}
 		if ( keepRunning ){
 			
@@ -198,7 +200,7 @@ public class ImportFiles_DelayedRemoval_Main {
 	 * @throws Exception 
 	 * 
 	 */
-	private void delete_Directories_NOT_IN_trackingIdList() throws Exception {
+	private void delete_Directories_NOT_IN_trackingIdList(ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory) throws Exception {
 
 		long now_Minus_5_Days = System.currentTimeMillis() - ( 5 * TWENTY_FOUR_HOURS__IN_MILLISECONDS );
 		
@@ -206,7 +208,8 @@ public class ImportFiles_DelayedRemoval_Main {
 		
 		{
 			List<Integer> fileImportTrackingId_List_ALL_Id_InTable =
-					FileImportTracking_For_ImporterRunner_DAO.getInstance().getAll_TrackingId_InTable_List();
+					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
+					.getAll_TrackingId_InTable_List(importRunImporterDBConnectionFactory);
 
 			for ( Integer fileImportTrackingId : fileImportTrackingId_List_ALL_Id_InTable ) {
 

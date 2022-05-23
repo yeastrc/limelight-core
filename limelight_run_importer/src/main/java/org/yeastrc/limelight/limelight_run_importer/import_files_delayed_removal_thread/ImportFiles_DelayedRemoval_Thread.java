@@ -21,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
-import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main.ImportFiles_DelayedRemoval_Main;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
+import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main_and_searcher.ImportFiles_DelayedRemoval_Main;
 
 /**
  * Remove import files from disk after a delayed time of 3 days thread
@@ -39,14 +42,75 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	private static final Logger log = LoggerFactory.getLogger( ImportFiles_DelayedRemoval_Thread.class );
 	
 	private volatile boolean keepRunning = true;
+
+	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	
+	
+	/**
+	 * 
+	 */
+	public static void closeAll_DatabaseConnections() {
+
+		//  Assumes only 1 instance of this class will exist at a time
+		
+		if ( importRunImporterDBConnectionFactory != null ) {
+			//  Have prev instance so close and unassign
+			try {
+				importRunImporterDBConnectionFactory.closeAllConnections();
+				importRunImporterDBConnectionFactory = null;
+			} catch (Throwable t) {
+				
+			}
+		}
+	}
+
+	
+	/**
+	 * Cleanup when thread is dead
+	 */
+	public void threadIsDead_Cleanup() {
+
+		//  Assumes only 1 instance of this class will exist at a time
+		
+		if ( importRunImporterDBConnectionFactory != null ) {
+			//  Have prev instance so close and unassign
+			try {
+				importRunImporterDBConnectionFactory.closeAllConnections();
+				importRunImporterDBConnectionFactory = null;
+			} catch (Throwable t) {
+				
+			}
+		}
+	}
+	
 	
 	/**
 	 * @param s
 	 * @return
+	 * @throws Exception 
 	 */
-	public static ImportFiles_DelayedRemoval_Thread getNewInstance( String s ) {
+	public static ImportFiles_DelayedRemoval_Thread getNewInstance( 
+			
+			String threadLabel, 
+			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
+
+		//  Requires only 1 instance of this class will exist at a time
 		
-		ImportFiles_DelayedRemoval_Thread instance = new ImportFiles_DelayedRemoval_Thread(s);
+		if ( importRunImporterDBConnectionFactory != null ) {
+			
+			String msg = "Clean Up Previous dead ImportFiles_DelayedRemoval_Thread Thread before creating an new ImportFiles_DelayedRemoval_Thread Thread";
+			log.error(msg);
+			throw new LimelightRunImporterInternalException(msg);
+		}
+
+		//  Create "New" Instance of ImportRunImporterDBConnectionFactory so is NOT same instance that main "Run Importer" uses 
+		//      since main "Run Importer" calls 'importRunImporterDBConnectionFactory.closeAllConnections();' after each check of imports to process 
+		importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
+		
+		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
+		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
+		
+		ImportFiles_DelayedRemoval_Thread instance = new ImportFiles_DelayedRemoval_Thread(threadLabel);
 		instance.init();
 		return instance;
 	}
@@ -185,7 +249,7 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 				
 				//  Main Processing
 				
-				ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main();
+				ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
 				
 				
 				///////////////

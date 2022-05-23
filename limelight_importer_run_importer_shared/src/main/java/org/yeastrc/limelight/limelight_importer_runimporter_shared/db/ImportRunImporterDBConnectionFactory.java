@@ -178,7 +178,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * @return
 	 * @throws Exception
 	 */
-	public synchronized Connection getInsertControlCommitConnection() throws Exception {
+	public Connection getInsertControlCommitConnection() throws Exception {
 		
 		if ( ! initialized ) {
 			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
@@ -220,7 +220,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * call commit() on the insert connection and return the connection to the pool 
 	 * @throws Exception
 	 */
-	public synchronized void commitInsertControlCommitConnection() throws Exception {
+	public void commitInsertControlCommitConnection() throws Exception {
 
 		if ( ! initialized ) {
 			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
@@ -249,7 +249,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * @return
 	 * @throws Exception
 	 */
-	public synchronized Connection getConnection() throws SQLException {
+	public Connection getConnection() throws SQLException {
 		
 		if ( ! initialized ) {
 			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
@@ -264,7 +264,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 
 	// get a connection to the requested database
 	
-	private synchronized Connection getConnectionInternal( WhichConnectionPool whichConnectionPool ) throws SQLException {
+	private Connection getConnectionInternal( WhichConnectionPool whichConnectionPool ) throws SQLException {
 		
 		if ( ( _dataSourceMain == null && whichConnectionPool == WhichConnectionPool.MAIN )
 				|| ( _dataSourceBatchInserts == null && whichConnectionPool == WhichConnectionPool.BULK_INSERTS ) ) {
@@ -411,7 +411,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * 
 	 * @throws Exception
 	 */
-	public synchronized void closeAllConnections() throws Exception {
+	public void closeAllConnections() throws Exception {
 		
 		if ( _insertControlCommitConnection != null ) {
 			

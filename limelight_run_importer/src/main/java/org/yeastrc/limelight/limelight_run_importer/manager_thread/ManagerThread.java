@@ -136,11 +136,15 @@ public class ManagerThread extends Thread {
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
-			
-			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-			importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */ );
-			importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-			importFiles_DelayedRemoval_Thread.start();
+
+			try {
+				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
+				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */, dbConnectionParametersProvider );
+				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+				importFiles_DelayedRemoval_Thread.start();
+			} catch (Throwable e) {
+				log.error( "Failed to create first importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
+			}
 
 			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 				
@@ -258,19 +262,32 @@ public class ManagerThread extends Thread {
 
 			//  check health of importFiles_DelayedRemoval_Thread, replace thread if dead
 			if ( ! importFiles_DelayedRemoval_Thread.isAlive() ) {
+				
 				ImportFiles_DelayedRemoval_Thread old_importFiles_DelayedRemoval_Thread = importFiles_DelayedRemoval_Thread;
-				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance(  IMPORT_FILES_DELAYED_REMOVAL_THREAD + "_" + importFiles_DelayedRemoval_ThreadCounter /* name */  );
-				importFiles_DelayedRemoval_ThreadCounter += 1;
-				log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_importFiles_DelayedRemoval_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + importFiles_DelayedRemoval_Thread.getName() + "'."  );
-				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-				importFiles_DelayedRemoval_Thread.start();
+				
+				old_importFiles_DelayedRemoval_Thread.threadIsDead_Cleanup();
+				
+				try {
+					importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( 
+							IMPORT_FILES_DELAYED_REMOVAL_THREAD + "_" + importFiles_DelayedRemoval_ThreadCounter /* name */, dbConnectionParametersProvider );
+					importFiles_DelayedRemoval_ThreadCounter += 1;
+					log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_importFiles_DelayedRemoval_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + importFiles_DelayedRemoval_Thread.getName() + "'."  );
+					importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					importFiles_DelayedRemoval_Thread.start();
+				} catch (Throwable e) {
+					log.error( "Failed to create replacement importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
+				}
 			}
 
 			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 
 				//  check health of databaseCleanup_RemoveData_Thread, replace thread if dead
 				if ( ! databaseCleanup_RemoveData_Thread.isAlive() ) {
+					
 					DatabaseCleanup_RemoveData_Thread old_databaseCleanup_RemoveData_Thread = databaseCleanup_RemoveData_Thread;
+
+					old_databaseCleanup_RemoveData_Thread.threadIsDead_Cleanup();
+					
 					try {
 						databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance(  DATABASE_CLEANUP_REMOVE_DATA_THREAD + "_" + databaseCleanup_RemoveData_ThreadCounter /* name */, dbConnectionParametersProvider  );
 						databaseCleanup_RemoveData_ThreadCounter += 1;
