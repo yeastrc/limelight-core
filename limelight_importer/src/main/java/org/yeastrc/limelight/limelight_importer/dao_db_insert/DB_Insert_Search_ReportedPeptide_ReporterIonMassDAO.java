@@ -48,7 +48,7 @@ public class DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO {
 	 */
 	public void saveSearch_ReportedPeptide_ReporterIonMass( Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( SQL ) ) {
 
 					pstmt.setInt( 1, item.getSearchId() );

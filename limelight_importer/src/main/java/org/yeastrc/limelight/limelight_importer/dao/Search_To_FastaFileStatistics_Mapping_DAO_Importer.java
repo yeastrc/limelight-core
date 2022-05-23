@@ -53,7 +53,7 @@ public class Search_To_FastaFileStatistics_Mapping_DAO_Importer {
 		final String sql = INSERT_SQL;
 		
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				

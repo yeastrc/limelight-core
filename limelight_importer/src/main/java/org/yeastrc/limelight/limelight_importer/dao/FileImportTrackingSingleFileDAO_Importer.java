@@ -53,7 +53,7 @@ public class FileImportTrackingSingleFileDAO_Importer {
 		
 		final String sql = "SELECT * FROM file_import_tracking_single_file_tbl WHERE file_import_tracking_id = ?";
 
-		try ( Connection connection = ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+		try ( Connection connection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 			
 			preparedStatement.setInt( 1, trackingId );
@@ -101,7 +101,7 @@ public class FileImportTrackingSingleFileDAO_Importer {
 	public void updateFileSizeSHA1Sum( long fileSize, String sha1Sum, int id ) throws Exception {
 		Connection dbConnection = null;
 		try {
-			dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+			dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 			updateFileSizeSHA1Sum( fileSize, sha1Sum, id, dbConnection );
 		} finally {
 			if( dbConnection != null ) {

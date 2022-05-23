@@ -53,7 +53,7 @@ public class Importer_Stats_PerTable_DAO {
 	 */
 	public void save( Importer_Stats_PerTable_DTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			
 			//  Insert into main table
 			save( item, dbConnection );

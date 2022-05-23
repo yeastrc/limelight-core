@@ -59,7 +59,7 @@ public class FastaFileStatisticsDAO_Importer {
 		
 		final String sql = GET_ID_SQL;
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				
@@ -104,7 +104,7 @@ public class FastaFileStatisticsDAO_Importer {
 		
 		final String sql = INSERT_SQL;
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 		
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 				

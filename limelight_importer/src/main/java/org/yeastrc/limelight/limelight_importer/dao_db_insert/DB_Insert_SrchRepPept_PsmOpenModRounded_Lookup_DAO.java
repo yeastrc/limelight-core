@@ -61,7 +61,7 @@ public class DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO {
 		
 		try {
 
-			conn = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			conn = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
 			

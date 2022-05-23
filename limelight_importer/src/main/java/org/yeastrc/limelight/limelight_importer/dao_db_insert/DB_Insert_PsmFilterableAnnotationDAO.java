@@ -88,7 +88,7 @@ public class DB_Insert_PsmFilterableAnnotationDAO {
 
 		long startTimeNanoSeconds = System.nanoTime();
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			saveToDatabase( psmAnnotationDTO_Filterable_List, dbConnection );
 		} catch ( Exception e ) {
 			log.error( "ERROR: saveToDatabase( psmAnnotationDTO_Filterable_List ) psmAnnotationDTO_Filterable_List: " + StringUtils.join(psmAnnotationDTO_Filterable_List, ","), e );

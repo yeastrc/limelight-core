@@ -49,7 +49,7 @@ public class ProjectSearchDAO {
 	public void saveToDatabase( ProjectSearchDTO item ) throws Exception {
 		Connection dbConnection = null;
 		try {
-			dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+			dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 
 			//  Generate next id value for insert into main table using table ...insert_id_tbl
 			
@@ -221,7 +221,7 @@ public class ProjectSearchDAO {
 	 */
 	public void updateStatus( int projectSearchId, SearchRecordStatus status ) throws Exception {
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateStatus( projectSearchId, status, dbConnection );
 		}
 	}

@@ -58,7 +58,7 @@ public class ConfigSystemDAO_Importer implements IConfigSystemTableGetValue {
 				
 		final String sql = "SELECT * FROM config_system_tbl WHERE config_key = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

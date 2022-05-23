@@ -55,7 +55,7 @@ public class ScanFileDAO_Importer {
 	 */
 	public Integer getScanFileIdForSpectralStorageAPIKey( String sequence ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			return getScanFileIdForSpectralStorageAPIKey( sequence, dbConnection );
 		}
@@ -96,7 +96,7 @@ public class ScanFileDAO_Importer {
 	 */
 	public void saveToDatabase( ScanFileDTO item, SkipLogInsertException skipLogInsertException ) throws Exception {
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			saveToDatabase( item, skipLogInsertException, dbConnection );
 		} catch ( Exception e ) {
 			log.error( "ERROR: saveToDatabase( item ) item: " + item, e );
@@ -147,7 +147,7 @@ public class ScanFileDAO_Importer {
 
 		final String sql = "DELETE FROM scan_file_tbl WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -170,7 +170,7 @@ public class ScanFileDAO_Importer {
 		
 		final String sql = "SELECT * FROM scan_file_tbl WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

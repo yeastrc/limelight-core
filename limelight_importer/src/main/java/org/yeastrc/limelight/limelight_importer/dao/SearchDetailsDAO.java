@@ -41,7 +41,7 @@ public class SearchDetailsDAO {
 	 */
 	public void saveToDatabase( SearchDetailsDTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			//  Insert 
 			saveToDatabase( item, dbConnection );

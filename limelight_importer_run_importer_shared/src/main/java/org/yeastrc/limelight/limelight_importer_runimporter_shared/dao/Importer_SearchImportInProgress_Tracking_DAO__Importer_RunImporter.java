@@ -57,7 +57,7 @@ public class Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter 
 
 		final String sql = INSERT_UPDATE_SQL;
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -84,7 +84,7 @@ public class Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter 
 
 		final String sql = DELETE_SQL;
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
@@ -114,7 +114,7 @@ public class Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter 
 
 		final String sql = DELETE_SQL;
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {

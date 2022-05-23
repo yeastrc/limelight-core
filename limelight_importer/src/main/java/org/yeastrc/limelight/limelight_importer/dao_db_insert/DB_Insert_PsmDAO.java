@@ -110,7 +110,7 @@ public class DB_Insert_PsmDAO {
 			}
 
 			//  DO NOT Close connection from getInsertControlCommitConnection()
-			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 
 			//  Generate next id value for insert into main table using table ...insert_id_tbl
 			
@@ -438,7 +438,7 @@ public class DB_Insert_PsmDAO {
 		
 		Long psmId_LastInserted = null;
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				
@@ -469,7 +469,7 @@ public class DB_Insert_PsmDAO {
 		
 		final String sql = "UPDATE psm__insert_id_tbl SET id = ? WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -500,7 +500,7 @@ public class DB_Insert_PsmDAO {
 		final String INSERT_GET_ID_SQL = "INSERT INTO psm__insert_id_tbl ( id ) VALUES ( ? )";
 		final String sql = INSERT_GET_ID_SQL;
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setLong( 1, id );
@@ -524,7 +524,7 @@ public class DB_Insert_PsmDAO {
 		
 		final String DELETE_SQL = "DELETE FROM psm__insert_id_tbl WHERE id = ?";
 		final String sql = DELETE_SQL;
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setLong( 1, id );

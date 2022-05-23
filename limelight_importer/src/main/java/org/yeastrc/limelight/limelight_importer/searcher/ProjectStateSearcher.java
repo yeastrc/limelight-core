@@ -48,7 +48,7 @@ public class ProjectStateSearcher {
 		
 		final String sql = "SELECT project_locked, enabled, marked_for_deletion FROM project_tbl WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

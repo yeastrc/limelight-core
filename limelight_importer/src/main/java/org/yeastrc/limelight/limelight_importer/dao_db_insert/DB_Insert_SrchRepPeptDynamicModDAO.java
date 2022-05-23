@@ -71,7 +71,7 @@ public class DB_Insert_SrchRepPeptDynamicModDAO {
 		
 		try {
 
-			conn = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			conn = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
 			

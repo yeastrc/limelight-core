@@ -60,7 +60,7 @@ public class ConversionProgramDAO {
 			sqlConversionDate = new Timestamp( item.getConversionDate().getTime() );
 		}
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 				int counter = 0;

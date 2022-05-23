@@ -52,7 +52,7 @@ public class DB_Insert_PsmOpenModificationDAO {
 		try {
 
 			//  DO NOT Close connection from getInsertControlCommitConnection()
-			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			saveToDatabase( item, dbConnection );
 			

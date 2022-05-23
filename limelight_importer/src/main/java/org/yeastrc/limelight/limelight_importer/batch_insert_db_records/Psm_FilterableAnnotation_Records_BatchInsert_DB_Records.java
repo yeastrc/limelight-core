@@ -78,7 +78,7 @@ public class Psm_FilterableAnnotation_Records_BatchInsert_DB_Records {
 	 */
 	public void insert_All_Records_Into_Database(SearchDTO_Importer search) throws Exception {
 
-		ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+		ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 		
 		//  insert INSERT_BLOCK_SIZE number of records with single 'insert' SQL statement
 		

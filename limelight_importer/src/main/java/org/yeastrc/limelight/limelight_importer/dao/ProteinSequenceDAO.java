@@ -130,7 +130,7 @@ public class ProteinSequenceDAO {
 		
 		final String sql = "SELECT sequence FROM protein_sequence_tbl WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, id );
 
@@ -189,7 +189,7 @@ public class ProteinSequenceDAO {
 		final String sql = "SELECT id FROM protein_sequence_tbl WHERE sequence = ? ORDER BY id";
 		
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setString( 1, sequence );
@@ -228,7 +228,7 @@ public class ProteinSequenceDAO {
 
 		String sql = "INSERT INTO protein_sequence_tbl (sequence) VALUES (?)";
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 				pstmt.setString( 1, item.getSequence() );
@@ -279,7 +279,7 @@ public class ProteinSequenceDAO {
 		
 		String sql = "DELETE FROM protein_sequence_tbl WHERE id <> ? AND sequence = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, id );
 				pstmt.setString( 2, sequence );

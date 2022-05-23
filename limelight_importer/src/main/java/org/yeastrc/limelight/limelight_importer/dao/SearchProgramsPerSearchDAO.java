@@ -45,7 +45,7 @@ public class SearchProgramsPerSearchDAO {
 	 */
 	public void save( SearchProgramsPerSearchDTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			//  Generate next id value for insert into main table using table ...insert_id_tbl
 			

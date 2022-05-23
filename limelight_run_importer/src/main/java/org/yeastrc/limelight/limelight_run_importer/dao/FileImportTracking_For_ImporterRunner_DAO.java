@@ -137,7 +137,7 @@ public class FileImportTracking_For_ImporterRunner_DAO {
 		final String sql = GET_ALL_ID_SQL;
 
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -186,7 +186,7 @@ public class FileImportTracking_For_ImporterRunner_DAO {
 		final String sql = GET_STATUS__SUCCESS_FAILED_OVER_3_DAYS_AGO_SQL;
 
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -233,7 +233,7 @@ public class FileImportTracking_For_ImporterRunner_DAO {
 		final String sql = GET_STATUS__STARTED__OVER_15_DAYS_AGO_SQL;
 
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

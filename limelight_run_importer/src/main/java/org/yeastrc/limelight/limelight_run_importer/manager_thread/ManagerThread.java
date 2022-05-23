@@ -20,6 +20,7 @@ package org.yeastrc.limelight.limelight_run_importer.manager_thread;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileConstants;
@@ -66,6 +67,8 @@ public class ManagerThread extends Thread {
 	
 	private int maxTrackingRecordPriorityToRetrieve;
 	
+	private DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider;
+	
 	private ImporterRunnerMain importerRunnerMain;
 	
 	private volatile GetImportAndProcessThread getImportAndProcessThread;
@@ -83,7 +86,10 @@ public class ManagerThread extends Thread {
 	/**
 	 * default Constructor
 	 */
-	public ManagerThread() {
+	public ManagerThread(DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider) {
+		
+		this.dbConnectionParametersProvider = dbConnectionParametersProvider;
+		
 		//  Set a name for the thread
 		String threadName = className;
 		setName( threadName );
@@ -139,9 +145,13 @@ public class ManagerThread extends Thread {
 			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 				
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-				databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance( DATABASE_CLEANUP_REMOVE_DATA_THREAD /* name */ );
-				databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-				databaseCleanup_RemoveData_Thread.start();
+				try {
+					databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance( DATABASE_CLEANUP_REMOVE_DATA_THREAD /* name */, dbConnectionParametersProvider );
+					databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					databaseCleanup_RemoveData_Thread.start();
+				} catch (Throwable e) {
+					log.error( "Failed to create first databaseCleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
+				}
 			}
 			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true
@@ -261,11 +271,15 @@ public class ManagerThread extends Thread {
 				//  check health of databaseCleanup_RemoveData_Thread, replace thread if dead
 				if ( ! databaseCleanup_RemoveData_Thread.isAlive() ) {
 					DatabaseCleanup_RemoveData_Thread old_databaseCleanup_RemoveData_Thread = databaseCleanup_RemoveData_Thread;
-					databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance(  DATABASE_CLEANUP_REMOVE_DATA_THREAD + "_" + databaseCleanup_RemoveData_ThreadCounter /* name */  );
-					databaseCleanup_RemoveData_ThreadCounter += 1;
-					log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_databaseCleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + databaseCleanup_RemoveData_Thread.getName() + "'."  );
-					databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-					databaseCleanup_RemoveData_Thread.start();
+					try {
+						databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance(  DATABASE_CLEANUP_REMOVE_DATA_THREAD + "_" + databaseCleanup_RemoveData_ThreadCounter /* name */, dbConnectionParametersProvider  );
+						databaseCleanup_RemoveData_ThreadCounter += 1;
+						log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_databaseCleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + databaseCleanup_RemoveData_Thread.getName() + "'."  );
+						databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+						databaseCleanup_RemoveData_Thread.start();
+					} catch (Throwable e) {
+						log.error( "Failed to create replacement databaseCleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
+					}
 				}
 			}
 

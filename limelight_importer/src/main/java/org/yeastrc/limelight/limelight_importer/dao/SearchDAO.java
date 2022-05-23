@@ -49,7 +49,7 @@ public class SearchDAO {
 	 */
 	public void saveToDatabase( SearchDTO_Importer item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			//  Generate next id value for insert into main table using table ...insert_id_tbl
 			
@@ -269,7 +269,7 @@ public class SearchDAO {
 	 * @throws Exception
 	 */
 	public void updateStatus( int searchId, SearchRecordStatus status ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateStatus( searchId, status, dbConnection );
 		}
 	}
@@ -299,7 +299,7 @@ public class SearchDAO {
 	 * @throws Exception
 	 */
 	public void updateAnyPsmHasDynamicModifications( int searchId, boolean anyPsmHasDynamicModifications ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateAnyPsmHasDynamicModifications( searchId, anyPsmHasDynamicModifications, dbConnection );
 		}
 	}
@@ -336,7 +336,7 @@ public class SearchDAO {
 	 * @throws Exception
 	 */
 	public void updateAnyPsmHasReporterIons( int searchId, boolean anyPsmHasReporterIons ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateAnyPsmHasReporterIons( searchId, anyPsmHasReporterIons, dbConnection );
 		}
 	}

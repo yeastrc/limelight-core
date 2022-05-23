@@ -44,7 +44,7 @@ public class DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO {
 	public void saveToDatabase( Search_ReportedPeptide_SubGroup__Lookup__DTO item ) throws Exception {
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
-			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			saveToDatabase( item, dbConnection );
 

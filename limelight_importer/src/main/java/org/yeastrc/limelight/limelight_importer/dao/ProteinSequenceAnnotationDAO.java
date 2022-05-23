@@ -55,7 +55,7 @@ public class ProteinSequenceAnnotationDAO {
 		
 		final String sql = "SELECT * FROM protein_sequence_annotation_tbl WHERE id = ?";
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, id );
@@ -122,7 +122,7 @@ public class ProteinSequenceAnnotationDAO {
 			sql = "SELECT id FROM protein_sequence_annotation_tbl WHERE name = ? AND taxonomy = ? AND description IS NULL ";
 		}
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -156,7 +156,7 @@ public class ProteinSequenceAnnotationDAO {
 		
 		final String sql = "INSERT INTO protein_sequence_annotation_tbl ( name, description, taxonomy ) VALUES (?,?,?)";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 				pstmt.setString( 1, annotation.getName() );
@@ -204,7 +204,7 @@ public class ProteinSequenceAnnotationDAO {
 			sql = "DELETE FROM protein_sequence_annotation_tbl WHERE id <> ? AND name = ? AND taxonomy = ? AND description IS NULL ";
 		}
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, id );
 				pstmt.setString( 2, annotation.getName() );

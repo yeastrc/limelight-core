@@ -176,7 +176,7 @@ public class PeptideDAO_Importer {
 		
 		final String sql = "SELECT id FROM peptide_tbl WHERE sequence = ? ORDER BY id LIMIT 1";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setString( 1, sequence );
@@ -211,7 +211,7 @@ public class PeptideDAO_Importer {
 		
 		final String sql = "INSERT INTO peptide_tbl (sequence ) VALUES (?)";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 
@@ -254,7 +254,7 @@ public class PeptideDAO_Importer {
 		
 		final String sql = "DELETE FROM peptide_tbl WHERE id = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

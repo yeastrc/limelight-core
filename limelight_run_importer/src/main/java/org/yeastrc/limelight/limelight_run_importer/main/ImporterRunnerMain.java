@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_run_importer.main;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_run_importer.manager_thread.ManagerThread;
 
 /**
@@ -51,14 +52,14 @@ public class ImporterRunnerMain {
 	/**
 	 * @param maxTrackingRecordPriorityToRetrieve
 	 */
-	public void importerRunnerMain( int maxTrackingRecordPriorityToRetrieve ) {
+	public void importerRunnerMain( int maxTrackingRecordPriorityToRetrieve, DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) {
 		try {
 			log.warn( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   importerRunnerMain start" );
 //			currentThread = Thread.currentThread();
 			
 			//  Instantiate and 'start()' the ManagerThread
 			
-			managerThread = new ManagerThread( );
+			managerThread = new ManagerThread( dbConnectionParametersProvider );
 			managerThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			managerThread.setImporterRunnerMain( this );
 			managerThread.start();

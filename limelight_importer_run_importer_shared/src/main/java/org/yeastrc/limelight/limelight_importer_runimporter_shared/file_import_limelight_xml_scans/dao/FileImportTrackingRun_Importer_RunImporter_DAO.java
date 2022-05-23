@@ -322,7 +322,7 @@ public class FileImportTrackingRun_Importer_RunImporter_DAO {
 		
 		final String sql = "SELECT inserted_search_id FROM file_import_tracking_run_tbl WHERE id = ? ORDER BY id LIMIT 1";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, id );

@@ -48,7 +48,7 @@ public class IsotopeLabelDAO_Importer {
 		
 		final String sql = "SELECT id FROM isotope_label_tbl WHERE name = ? ORDER BY id LIMIT 1";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setString( 1, isotopeLabelName );

@@ -42,7 +42,7 @@ public class ScanFileSourceFirstImportDAO_Importer {
 	 */
 	public void saveToDatabase( ScanFileSourceFirstImportDTO item ) throws Exception {
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			saveToDatabase( item, dbConnection );
 		} catch ( Exception e ) {
 			log.error( "ERROR: saveToDatabase( item ) item: " + item, e );

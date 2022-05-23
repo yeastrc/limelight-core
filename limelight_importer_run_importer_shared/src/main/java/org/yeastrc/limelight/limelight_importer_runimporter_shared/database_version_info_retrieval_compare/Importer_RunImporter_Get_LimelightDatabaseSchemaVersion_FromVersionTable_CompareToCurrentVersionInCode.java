@@ -69,7 +69,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 				
 		final String sql = "SELECT limelight_database_version_number FROM aa_limelight_database_version_tbl WHERE row_Label = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -117,7 +117,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 			//  Exception MAY be because the table aa_limelight_database_version_tbl does NOT exist, 
 			//		which would mean the database version is == DATABASE_SCHEMA_VERSION__WHEN_NO_DATABASE_VERSION_TABLE (2)
 			
-			try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+			try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 				try ( PreparedStatement pstmt = dbConnection.prepareStatement( "SELECT * FROM config_system_tbl LIMIT 1" ) ) {
 
@@ -166,7 +166,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 				
 		final String sql = "SELECT limelight_database_version_number FROM aa_limelight_database_version_tbl WHERE row_Label = ?";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -214,7 +214,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 			//  Exception MAY be because the table aa_limelight_database_version_tbl does NOT exist, 
 			//		which would mean the database version is == DATABASE_SCHEMA_VERSION__WHEN_NO_DATABASE_VERSION_TABLE (2)
 			
-			try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+			try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 				try ( PreparedStatement pstmt = dbConnection.prepareStatement( "SELECT * FROM config_system_tbl LIMIT 1" ) ) {
 

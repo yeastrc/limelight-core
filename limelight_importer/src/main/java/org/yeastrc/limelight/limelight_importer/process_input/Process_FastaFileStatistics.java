@@ -61,7 +61,7 @@ public class Process_FastaFileStatistics {
 		if ( fastaFileStatistics != null ) {
 
 			//  Commit all inserts executed to this point
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 
 			
 			int numTargets = 0;

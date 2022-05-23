@@ -270,7 +270,7 @@ public class ProcessLimelightInput {
 					searchProgramEntryMap );
 
 			//  Commit all inserts executed to this point
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 			
 			Process_FastaFileStatistics.getInstance().process_FastaFileStatistics(input_LimelightXMLFile_InternalHolder_Root_Object, searchId, projectSearchDTO.getId() );
 
@@ -308,7 +308,7 @@ public class ProcessLimelightInput {
 			}
 			
 			//  Commit all inserts executed to this point
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 			
 			try {
 				SearchDAO.getInstance().updateStatus( searchDTOInserted.getId(), SearchRecordStatus.IMPORTING_WAITING_FOR_SCAN_FILE_IMPORTS );

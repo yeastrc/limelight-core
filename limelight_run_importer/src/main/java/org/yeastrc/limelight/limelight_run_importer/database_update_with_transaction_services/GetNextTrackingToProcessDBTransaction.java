@@ -59,7 +59,7 @@ public class GetNextTrackingToProcessDBTransaction {
 		Connection dbConnection = null;
 
 		try {
-			dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+			dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 			
 			dbConnection.setAutoCommit(false);
 			

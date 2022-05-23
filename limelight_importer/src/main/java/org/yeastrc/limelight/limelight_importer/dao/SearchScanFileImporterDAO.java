@@ -42,7 +42,7 @@ public class SearchScanFileImporterDAO {
 	 * @throws Exception
 	 */
 	public void updateSpectralStorageAPIKey( int id, String spectralStorageAPIKey ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateSpectralStorageAPIKey( id, spectralStorageAPIKey, dbConnection );
 		}
 	}
@@ -75,7 +75,7 @@ public class SearchScanFileImporterDAO {
 	 * @throws Exception
 	 */
 	public void updateScanFileId( int id, int scanFileId ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateScanFileId( id, scanFileId, dbConnection );
 		}
 	}

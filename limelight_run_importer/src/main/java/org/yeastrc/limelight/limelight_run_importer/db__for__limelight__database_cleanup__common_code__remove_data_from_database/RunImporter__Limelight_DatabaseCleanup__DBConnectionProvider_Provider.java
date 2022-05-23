@@ -16,19 +16,26 @@ Limelight_DatabaseCleanup__DBConnectionProvider_Provider_IF  // For code in lime
 
 	private static final Logger log = LoggerFactory.getLogger( RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.class );
 
-	//  Singleton 
-	private static final RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider _INSTANCE = new RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider();
+	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
 	
 	// private constructor
-	private RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider() { }
+	private RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider(ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory) { 
+		
+		this.importRunImporterDBConnectionFactory = importRunImporterDBConnectionFactory;
+	}
 	
-	public static RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider getSingletonInstance() { return _INSTANCE; }
+	public static RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider getNewInstance(ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory) {
+		
+		RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider instance = new RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider(importRunImporterDBConnectionFactory);
+
+		return instance; 
+	}
 	
 	
 	@Override
 	public Connection getConnection() throws SQLException {
 
-		return ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+		return importRunImporterDBConnectionFactory.getConnection();
 	}
 	
 	

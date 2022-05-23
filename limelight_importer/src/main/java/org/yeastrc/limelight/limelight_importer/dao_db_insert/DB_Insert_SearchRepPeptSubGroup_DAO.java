@@ -45,7 +45,7 @@ public class DB_Insert_SearchRepPeptSubGroup_DAO {
 
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
-			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			saveToDatabase( item, dbConnection );
 

@@ -51,7 +51,7 @@ public class DB_Insert_SearchIsotopeLabelDAO {
 	 */
 	public void saveSearchIsotopeLabelId( int searchId, int isotopeLabelId ) throws Exception {
 				
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( SQL ) ) {
 
 					pstmt.setInt( 1, searchId );

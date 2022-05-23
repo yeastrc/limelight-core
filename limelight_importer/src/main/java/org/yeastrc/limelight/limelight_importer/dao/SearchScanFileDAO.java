@@ -42,7 +42,7 @@ public class SearchScanFileDAO {
 	 * @throws Exception
 	 */
 	public void updateScanFileId( int id, int scanFileId ) throws Exception {
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			updateScanFileId( id, scanFileId, dbConnection );
 		}
 	}

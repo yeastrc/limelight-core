@@ -488,7 +488,7 @@ public class LimelightImporterProgram {
 					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_SYSTEM_ERROR );
 					return importResults;  //  EARLY EXIT
 				}
-				ImportRunImporterDBConnectionFactory importDBConnectionFactory = ImportRunImporterDBConnectionFactory.getInstance();
+				ImportRunImporterDBConnectionFactory importDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
 				importDBConnectionFactory.initialize( dbConnectionParametersProvider );
 				
 				SharedCodeOnly_DBConnectionProvider.setSharedCodeOnly_DBConnectionProvider_Provider_IF( importDBConnectionFactory );
@@ -791,7 +791,7 @@ public class LimelightImporterProgram {
 			}
 			try {
 				// free up our db resources
-				ImportRunImporterDBConnectionFactory.getInstance().closeAllConnections();
+				ImportRunImporterDBConnectionFactory.getMainSingletonInstance().closeAllConnections();
 				if ( log.isDebugEnabled() ) {
 					log.debug( "Main Thread:  Call to ImportDBConnectionFactory.getInstance().closeAllConnections(); on main thread Completed.");
 				}
@@ -865,7 +865,7 @@ public class LimelightImporterProgram {
 			//  Ensure database connections get closed before program dies.
 			try {
 				// free up our db resources
-				ImportRunImporterDBConnectionFactory.getInstance().closeAllConnections();
+				ImportRunImporterDBConnectionFactory.getMainSingletonInstance().closeAllConnections();
 				if ( logImportProgramShutdownThread.isDebugEnabled() ) {
 					logImportProgramShutdownThread.debug( "COMPLETE:  Calling ImportDBConnectionFactory.closeAllConnections(); on shutdown thread to ensure connections closed.");
 				}

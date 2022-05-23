@@ -43,7 +43,14 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	// private constructor
 	private ImportRunImporterDBConnectionFactory() { }
 	
-	public static ImportRunImporterDBConnectionFactory getInstance() { return _INSTANCE; }
+	public static ImportRunImporterDBConnectionFactory getMainSingletonInstance() { return _INSTANCE; }
+
+	/**
+	 * 
+	 * 
+	 * @return a new instance - User in Run Importer in other than Process Import Thread
+	 */
+	public static ImportRunImporterDBConnectionFactory get_New_Instance() { return new ImportRunImporterDBConnectionFactory(); }
 	
 	
 	//  Instance properties
@@ -397,7 +404,13 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 		}
 	}
 	
-	// close them all
+	/**
+	 * Close all connections by closing All DataSources and set all object properties holding data sources to null
+	 * 
+	 * This object will create new data sources the next time the get connection is called
+	 * 
+	 * @throws Exception
+	 */
 	public void closeAllConnections() throws Exception {
 		
 		if ( _insertControlCommitConnection != null ) {

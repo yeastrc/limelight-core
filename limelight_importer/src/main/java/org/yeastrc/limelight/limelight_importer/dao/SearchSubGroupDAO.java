@@ -41,7 +41,7 @@ public class SearchSubGroupDAO {
 	 */
 	public void save( SearchSubGroupDTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			
 			//  Insert into main table
 			save( item, dbConnection );

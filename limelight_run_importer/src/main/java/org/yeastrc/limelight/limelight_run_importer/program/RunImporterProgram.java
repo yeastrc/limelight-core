@@ -28,13 +28,11 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileErrorException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
-import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
@@ -152,16 +150,12 @@ public class RunImporterProgram {
 				System.err.println( "Unable to set limelightDatabaseName since no config file present");
 			}
 
-			ImportRunImporterDBConnectionFactory importDBConnectionFactory = ImportRunImporterDBConnectionFactory.getInstance();
+			ImportRunImporterDBConnectionFactory importDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
 			importDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
 			importDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 			
 			SharedCodeOnly_DBConnectionProvider.setSharedCodeOnly_DBConnectionProvider_Provider_IF( importDBConnectionFactory );
 			
-			Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
-			.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
-					RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getSingletonInstance() );
-
 			ConfigSystemDAO_Importer configSystemDAO = ConfigSystemDAO_Importer.getInstance();
 			ConfigSystemTableGetValueCommon.getInstance().setIConfigSystemTableGetValue( configSystemDAO );
 
@@ -181,7 +175,7 @@ public class RunImporterProgram {
 
 			///////////////////////////
 			//   Main Processing
-			importerRunnerMain.importerRunnerMain( maxTrackingRecordPriorityToRetrieve );
+			importerRunnerMain.importerRunnerMain( maxTrackingRecordPriorityToRetrieve, dbConnectionParametersProvider );
 
 		} catch ( Exception e ) {
 			System.out.println( "Exception in processing" );
@@ -204,7 +198,7 @@ public class RunImporterProgram {
 			}
 			try {
 				// free up our db resources
-				ImportRunImporterDBConnectionFactory.getInstance().closeAllConnections();
+				ImportRunImporterDBConnectionFactory.getMainSingletonInstance().closeAllConnections();
 				if ( log.isDebugEnabled() ) {
 					log.debug( "COMPLETE:  Main Thread:  Calling DBConnectionFactory.closeAllConnections(); on main thread.");
 				}
@@ -261,6 +255,7 @@ public class RunImporterProgram {
 		/*
 		 * method that will run when kill signal is received
 		 */
+		@Override
 		public void run() {
 			if ( log.isDebugEnabled() ) {
 				log.debug( "ImportRunnerProgramShutdown::run() called now(): " + new Date());
@@ -276,7 +271,7 @@ public class RunImporterProgram {
 			//  Ensure database connections get closed before program dies.
 			try {
 				// free up our db resources
-				ImportRunImporterDBConnectionFactory.getInstance().closeAllConnections();
+				ImportRunImporterDBConnectionFactory.getMainSingletonInstance().closeAllConnections();
 				if ( log.isDebugEnabled() ) {
 					log.debug( "COMPLETE:  Calling DBConnectionFactory.closeAllConnections(); on shutdown thread to ensure connections closed.");
 				}

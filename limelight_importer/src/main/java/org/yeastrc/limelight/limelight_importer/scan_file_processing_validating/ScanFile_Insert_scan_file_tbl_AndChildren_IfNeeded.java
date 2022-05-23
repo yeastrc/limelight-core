@@ -59,7 +59,7 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 
 		//  First commit all inserts to this point
 		
-		ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+		ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 		
 		//  Next:
 		//		Insert these records, if needed.
@@ -134,7 +134,7 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 		Connection dbConnection = null;
 		
 		try {
-			dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection();
+			dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 			
 			dbConnection.setAutoCommit( false );  // Start a DB transaction
 			

@@ -68,7 +68,7 @@ public class ProteinSequenceVersionDAO {
 		
 		final String sql = "INSERT INTO protein_sequence_version_tbl (protein_sequence_id,isotope_label_id) VALUES (?,?)";
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 				pstmt.setInt( 1, item.getProteinSequenceId() );
@@ -115,7 +115,7 @@ public class ProteinSequenceVersionDAO {
 		final String sql = 
 				"SELECT id FROM protein_sequence_version_tbl WHERE protein_sequence_id = ? AND isotope_label_id = ? ORDER BY id LIMIT 1";
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
@@ -147,7 +147,7 @@ public class ProteinSequenceVersionDAO {
 
 		final String sql = "DELETE FROM protein_sequence_version_tbl WHERE id <> ? AND protein_sequence_id = ? AND isotope_label_id = ? ";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 

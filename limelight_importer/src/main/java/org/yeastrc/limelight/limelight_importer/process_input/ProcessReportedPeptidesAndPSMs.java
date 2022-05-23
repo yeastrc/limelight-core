@@ -97,7 +97,7 @@ public class ProcessReportedPeptidesAndPSMs {
 			) throws Exception {
 
 		//   Commit what is in progress
-		ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+		ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 
 
 		long startTimeNanoSeconds = System.nanoTime();
@@ -294,7 +294,7 @@ public class ProcessReportedPeptidesAndPSMs {
 
 
 			//  Commit to get timing, along with other reasons
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 
 			{
 				long endTimeNanoSeconds = System.nanoTime();
@@ -337,7 +337,7 @@ public class ProcessReportedPeptidesAndPSMs {
 			// Update search_tbl to set flag
 			
 			//  First commit any in progress bulk inserts 
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 			
 			SearchDAO.getInstance().updateAnyPsmHasDynamicModifications( searchId, true /* anyPsmHasDynamicModifications */ );
 		}
@@ -347,7 +347,7 @@ public class ProcessReportedPeptidesAndPSMs {
 			// Update search_tbl to set flag
 			
 			//  First commit any in progress bulk inserts 
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 			
 			SearchDAO.getInstance().updateAnyPsmHasReporterIons( searchId, true /* anyPsmHasReporterIons */ );
 		}

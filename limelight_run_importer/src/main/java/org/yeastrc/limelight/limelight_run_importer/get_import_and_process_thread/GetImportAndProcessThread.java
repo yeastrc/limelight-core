@@ -450,7 +450,7 @@ public class GetImportAndProcessThread extends Thread {
 				}
 				
 				try {
-					ImportRunImporterDBConnectionFactory.getInstance().closeAllConnections();
+					ImportRunImporterDBConnectionFactory.getMainSingletonInstance().closeAllConnections();
 
 				} catch ( Throwable t ) {
 					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

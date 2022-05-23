@@ -44,7 +44,7 @@ public class SearchProteinSequenceVersionAnnotationDAO {
 		
 		final String sql = "INSERT IGNORE INTO search__protein_sequence_version__annotation_tbl ( search_id, protein_sequence_version_id, annotation_id ) VALUES (?,?,?)";
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 				pstmt.setInt( 1, searchProteinSequenceVersionAnnotationDTO.getSearchId());
 				pstmt.setInt( 2, searchProteinSequenceVersionAnnotationDTO.getProteinSequenceVersionId() );

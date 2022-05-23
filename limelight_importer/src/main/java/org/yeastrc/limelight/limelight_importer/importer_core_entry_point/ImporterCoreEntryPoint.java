@@ -366,7 +366,7 @@ public class ImporterCoreEntryPoint {
 			
 			
 			//  Commit all inserts executed to this point
-			ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 			
 			//  Save Search Statistics, including processing time
 			
@@ -452,7 +452,7 @@ public class ImporterCoreEntryPoint {
 						System.err.println( "----------------------------------------");
 						try {
 							//  First commit the last insert transaction if needed
-							ImportRunImporterDBConnectionFactory.getInstance().commitInsertControlCommitConnection();
+							ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 						}  catch ( Exception eUpd ) {
 							//  Just ignore any exception
 					    }

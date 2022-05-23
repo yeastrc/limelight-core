@@ -61,7 +61,7 @@ public class DB_Insert_ProteinCoverageDAO {
 		final String sql = INSERT_SQL;
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
-			Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getInsertControlCommitConnection();
+			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
 

@@ -19,12 +19,16 @@ package org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_an
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Main_EntryPoint;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
 
 /**
  * Remove import files from disk after a delayed time of 3 days thread
@@ -45,13 +49,21 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	
 	private volatile boolean keepRunning = true;
 	
+	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	
 	/**
 	 * @param s
 	 * @return
+	 * @throws Exception 
 	 */
-	public static DatabaseCleanup_RemoveData_Thread getNewInstance( String s ) {
+	public static DatabaseCleanup_RemoveData_Thread getNewInstance( String threadLabel, DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
 		
-		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(s);
+
+		ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
+		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
+		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
+		
+		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(threadLabel, importRunImporterDBConnectionFactory);
 		instance.init();
 		return instance;
 	}
@@ -68,8 +80,10 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	 * Constructor
 	 * @param s
 	 */
-	private DatabaseCleanup_RemoveData_Thread( String s ) {
-		super(s);
+	private DatabaseCleanup_RemoveData_Thread( String threadLabel, ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory ) {
+		super(threadLabel);
+		
+		this.importRunImporterDBConnectionFactory = importRunImporterDBConnectionFactory;
 	}
 	
 	/**
@@ -127,6 +141,12 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	public void run() {
 		
 		log.debug( "run() entered" );
+		
+
+		Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
+		.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
+				RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getNewInstance(this.importRunImporterDBConnectionFactory) );
+
 		
 		//  Top level loop until keepRunning is false
 		
@@ -201,7 +221,13 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM,
 						Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS
 						);
-				
+
+				try {
+					this.importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
+				} catch ( Throwable t ) {
+					log.error( "Failed to close all DB connections at end of processing loop before wait to process again.");
+				}
+			
 				log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  Now Cleanup will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
 
 				
@@ -249,6 +275,12 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 				}
 				
 			} finally {
+
+				try {
+					this.importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
+				} catch ( Throwable t ) {
+					log.error( "Failed to close all DB connections.");
+				}
 			
 			}
 		}

@@ -53,7 +53,7 @@ public class DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO {
 	 */
 	public void saveToDatabase( Search_ReportedPeptide_OpenMod_PsmUniquePositions_DTO item ) throws Exception {
 
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( SQL ) ) {
 
 				int counter = 0;

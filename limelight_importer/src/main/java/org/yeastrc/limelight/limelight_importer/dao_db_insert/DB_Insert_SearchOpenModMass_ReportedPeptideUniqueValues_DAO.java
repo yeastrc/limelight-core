@@ -49,7 +49,7 @@ public class DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO {
 	 */
 	public void saveSearchOpenModMass( int searchId, int openModMassRounded ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			try ( PreparedStatement pstmt = dbConnection.prepareStatement( SQL ) ) {
 
 					pstmt.setInt( 1, searchId );

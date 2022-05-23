@@ -45,7 +45,7 @@ public class AnnotationTypeFilterableDAO {
 	 */
 	public void saveToDatabase( AnnotationTypeFilterableDTO item ) throws Exception {
 		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getInstance().getConnection() ) {
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
 			saveToDatabase( item, dbConnection );
 		}
 	}
