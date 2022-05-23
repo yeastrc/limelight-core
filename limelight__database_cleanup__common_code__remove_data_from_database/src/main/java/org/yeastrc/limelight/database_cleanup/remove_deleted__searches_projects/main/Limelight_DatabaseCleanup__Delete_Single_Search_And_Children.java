@@ -18,17 +18,9 @@ public class Limelight_DatabaseCleanup__Delete_Single_Search_And_Children {
 
 	private static final Logger log = LoggerFactory.getLogger(Limelight_DatabaseCleanup__Delete_Single_Search_And_Children.class);
 
-    //  Batch size for deleting PSM records since has children to delete with cascading delete
-    private static final int PSM_DELETE_BATCH_SIZE = 8; //  Number of records to delete at a time
-    
     //  Batch size for deleting Other records
-    private static final int OTHER_DELETE_BATCH_SIZE = 80;  //  Number of records to delete at a time
+    private static final int OTHER_DELETE_BATCH_SIZE = 5000;  //  Number of records to delete at a time
 
-    //  Batch size for deleting Other records with cascading deletes
-//    private static final int OTHER_WITH_CASCADING_DELETES_DELETE_BATCH_SIZE = 30;  //  Number of records to delete at a time
-    
-    
-    
 	/**
 	 * private constructor
 	 */
@@ -130,18 +122,8 @@ public class Limelight_DatabaseCleanup__Delete_Single_Search_And_Children {
 			return;
 		}
 		
-		{
-			// psm - cascading deletes for psm annotation
-			
-			final String TABLE = "psm_tbl";
-
-			final String SQL = 
-					"DELETE FROM " + TABLE
-							+ " WHERE search_id = " + searchId
-							+ " LIMIT " + PSM_DELETE_BATCH_SIZE;
-
-			Limelight_DatabaseCleanup__Execute_SQL_Until_NoRecordsUpdated.getInstance().execute_SQL_Until_NoRecordsUpdated( SQL, TABLE, callFrom );
-		}
+		Limelight_DatabaseCleanup__Delete_Single_Search__PSM_Table_And_Children.getInstance().delete_PSM_Table_And_Children_For_Single_Search(searchId, callFrom);
+		
 
 		if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 			
