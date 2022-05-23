@@ -22,7 +22,7 @@ public class Limelight_DatabaseCleanup__SearchTbl_Has_SearchSubGroupsFlag_ForSea
 	private static final String get_Data_SQL =
 			"SELECT has_search_sub_groups "
 			+ " FROM search_tbl "
-			+ " WHERE search_id = ?";
+			+ " WHERE id = ?";
 			
 	/**
 	 * @return
