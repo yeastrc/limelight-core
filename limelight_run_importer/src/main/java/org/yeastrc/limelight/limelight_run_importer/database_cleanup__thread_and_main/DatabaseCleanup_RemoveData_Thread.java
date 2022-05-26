@@ -46,10 +46,14 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
 	
 	private static final Logger log = LoggerFactory.getLogger( DatabaseCleanup_RemoveData_Thread.class );
+
+	
+	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	
 	
 	private volatile boolean keepRunning = true;
 	
-	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	private volatile boolean logged_CloseAllConnections_Exception = false;
 	
 	
 	/**
@@ -276,7 +280,13 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 				try {
 					importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
 				} catch ( Throwable t ) {
-					log.error( "Failed to close all DB connections at end of processing loop before wait to process again.");
+					
+					if ( ! logged_CloseAllConnections_Exception ) {
+						logged_CloseAllConnections_Exception = true;
+						log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception: ", t );
+					} else {
+						log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception only logged the first time. " );
+					}
 				}
 			
 				log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  Now Cleanup will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
