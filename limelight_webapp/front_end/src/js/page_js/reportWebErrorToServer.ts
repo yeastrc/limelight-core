@@ -84,7 +84,7 @@ var reportWebErrorToServer = {
 			
 			let errorException_stack_Contains_react_devtools_backend = false;
 			
-			if ( errorException.stack ) {
+			if ( errorException && errorException.stack ) {
 
 				const stack = errorException.stack
 				const index = stack.indexOf( react_devtools_backend_String );
