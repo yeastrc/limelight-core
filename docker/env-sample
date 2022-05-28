@@ -35,7 +35,7 @@ SMTP_PASSWORD=smtp_password
 # BLIB_APP_CLEAN_WORKDIR=yes
 
 # The number of threads to use for simultaneous processing of scan files for exporting .blib spectral libraries
-# Setting to a hire number will improve performance for multi-scan-file exports.
+# Setting to a higher number will improve performance for multi-scan-file exports.
 # MS2_MAX_THREADS=1
 
 #
