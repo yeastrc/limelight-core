@@ -17,6 +17,8 @@
  */
 package org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_and_main;
 
+import java.util.Calendar;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
@@ -228,13 +230,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 									getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
 						} catch (Exception e) {
 
-							synchronized (this) {
-								try {
-									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-								} catch (InterruptedException e2) {
-									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
-								}
-							}
+							this.wait_Until_10PM_Tomorrow();
 
 							continue;  // EARLY CONTINUE
 						}
@@ -246,13 +242,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 									getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
 						} catch (Exception e) {
 
-							synchronized (this) {
-								try {
-									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-								} catch (InterruptedException e2) {
-									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
-								}
-							}
+							this.wait_Until_10PM_Tomorrow();
 
 							continue;  // EARLY CONTINUE
 						}
@@ -261,21 +251,15 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
 								|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
 
-							synchronized (this) {
-								try {
-									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-								} catch (InterruptedException e2) {
-									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
-								}
-							}
-
+							this.wait_Until_10PM_Tomorrow();
+							
 							continue;  // EARLY CONTINUE
 						}
 					}
 
 					///////////////
 
-					log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
+					log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait before it runs again" );
 
 					//  Main Processing
 
@@ -301,40 +285,28 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						}
 					}
 
-					log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  Now Cleanup will wait " + TWENTY_FOUR_HOURS + " hours before it runs again" );
+					log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports)." );
 
 
 					///////////////
 
 					//  Next wait 24 hours before run again
 
-					synchronized (this) {
-						try {
-							wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-						} catch (InterruptedException e) {
-							log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
-						}
-					}
+					this.wait_Until_10PM_Tomorrow();
 
 				} catch ( Throwable t ) {
 
 					if ( keepRunning ) {
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!! \n\n Exception in run(): Will next wait " + TWENTY_FOUR_HOURS__IN_MILLISECONDS
-								+ " seconds before doing any more processing.  Exception: \n\n", t );
+						log.error( "!!!! \n\n Exception in run(): Will next wait before doing any more processing.  Exception: \n\n", t );
 
 						log.error( "!!!! \n\n " );
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-						synchronized (this) {
-							try {
-								wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-							} catch (InterruptedException e) {
-								log.info("waiting on Throwable exception caught:  wait() interrupted with InterruptedException");
-							}
-						}
+						this.wait_Until_10PM_Tomorrow();
+						
 					} else {
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -366,5 +338,48 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 		log.info( "Exiting run()" );
 	}
 
+	
+	/**
+	 * 
+	 */
+	private void wait_Until_10PM_Tomorrow() {
+		
 
+		log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again." );
+
+
+		Calendar calendar  = Calendar.getInstance();
+		
+		long now_calendar_Milliseconds = calendar.getTimeInMillis();
+
+		///  Change date to tomorrow at 22 hours (10pm)
+		calendar.add(Calendar.DATE,1);
+		calendar.set(Calendar.HOUR_OF_DAY,22);
+		calendar.set(Calendar.MINUTE,00);
+		calendar.set(Calendar.SECOND,00);
+		
+		long tomorrow_22_Hour__Milliseconds = calendar.getTimeInMillis();
+		
+		long tomorrow_22_Hour_Minus_Now__Milliseconds = tomorrow_22_Hour__Milliseconds - now_calendar_Milliseconds;
+		
+		if ( tomorrow_22_Hour_Minus_Now__Milliseconds < 8 * 60 * 60 * 1000 ) {
+
+			//  Less than 8 hours so add another day
+
+			calendar.add(Calendar.DATE,1);
+
+			tomorrow_22_Hour__Milliseconds = calendar.getTimeInMillis();
+			
+			tomorrow_22_Hour_Minus_Now__Milliseconds = tomorrow_22_Hour__Milliseconds - now_calendar_Milliseconds;
+		}
+		
+		synchronized (this) {
+			try {
+				wait( tomorrow_22_Hour_Minus_Now__Milliseconds ); //  wait for notify() call or timeout, in milliseconds
+			} catch (InterruptedException e) {
+				log.info("waiting on Throwable exception caught:  wait() interrupted with InterruptedException");
+			}
+		}
+	}
+ 
 }
