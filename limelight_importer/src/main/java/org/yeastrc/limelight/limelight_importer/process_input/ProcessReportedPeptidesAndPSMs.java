@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_FilterableAnnotation_Records_BatchInsert_DB_Records;
+import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
 import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
@@ -128,6 +129,11 @@ public class ProcessReportedPeptidesAndPSMs {
 					Psm_FilterableAnnotation_Records_BatchInsert_DB_Records.getSingletonInstance();
 
 			psm_FilterableAnnotation_Records_BatchInsert_DB_Records.initialize(input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput());
+			
+			SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records =
+					SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.getSingletonInstance();
+			
+			searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.initialize(input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput());
 
 			//  Accumulate Unique Reported Peptide Level Dynamic Mod Masses to insert into a lookup table
 			Set<Double> uniqueDynamicModMassesForTheSearch = new HashSet<>();
@@ -277,7 +283,7 @@ public class ProcessReportedPeptidesAndPSMs {
 
 				//  Add to unique values per search
 				uniqueReporterIonMassesForTheSearch.addAll( uniqueReporterIonMassesForTheReportedPeptide );
-
+				
 				LookupRecordsCreate_Main.getInstance()
 				.reportedPeptide_Lookup_MainProcessing( 
 						reportedPeptide, 
@@ -287,7 +293,8 @@ public class ProcessReportedPeptidesAndPSMs {
 						processSave_SingleReportedPeptide_Results.getSearchReportedPeptideFilterableAnnotationDTOList(),
 						psmStatisticsAndBestValues, 
 						filterableReportedPeptideAnnotationTypesOnId,
-						internalHolder_ReportedPeptide_Object.getProteinVersionIdsForReportedPeptide().size() );
+						internalHolder_ReportedPeptide_Object.getProteinVersionIdsForReportedPeptide().size(),
+						searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records );
 
 				
 			} //  END: for ( Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object : input_LimelightXMLFile_InternalHolder_Root_Object.get_InternalHolder_ReportedPeptide_Object_Unmodifiable() ) {
@@ -303,7 +310,7 @@ public class ProcessReportedPeptidesAndPSMs {
 
 				Importer_Stats_GeneralData_DTO importer_Stats_GeneralData_DTO = new Importer_Stats_GeneralData_DTO();
 				importer_Stats_GeneralData_DTO.setSearchId(searchId);
-				importer_Stats_GeneralData_DTO.setLabel(Importer_Stats_GeneralData_Table__Label_Values_Enum.PROCESS_REPORTEDPEPTIDESANDPSMS_MINUS_PSM_FILTERABLE_INSERTS);
+				importer_Stats_GeneralData_DTO.setLabel(Importer_Stats_GeneralData_Table__Label_Values_Enum.PROCESS_REPORTEDPEPTIDESANDPSMS_MINUS_PSM_FILTERABLE__SEARCH_REPORTEDPEPTIDE_LOOKUP_INSERTS);
 				importer_Stats_GeneralData_DTO.setTotal_elapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
 				
 				Importer_Stats_GeneralData_DAO.getInstance().save(importer_Stats_GeneralData_DTO);
@@ -315,6 +322,9 @@ public class ProcessReportedPeptidesAndPSMs {
 			// Insert all psm_FilterableAnnotation_Records.  Insert Held until this method call so they are all inserted together
 
 			psm_FilterableAnnotation_Records_BatchInsert_DB_Records.insert_All_Records_Into_Database(search);
+			
+			
+			searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.insert_All_Records_Into_Database(search);
 
 
 			//  
@@ -354,6 +364,21 @@ public class ProcessReportedPeptidesAndPSMs {
 		
 		//  Comment out since time does NOT include calls to 'commit' which is where the actual writing to DB occurs
 //		DB_Insert_PsmDAO.logTotalElapsedTimeAndCallCounts();
+		
+		
+
+		{
+			long endTimeNanoSeconds = System.nanoTime();
+			long elapsedTimeNanoSeconds = endTimeNanoSeconds - startTimeNanoSeconds;
+			long totalElapsedTime_saveToDatabase_InMilliSeconds = ( elapsedTimeNanoSeconds / 1000000 );
+
+			Importer_Stats_GeneralData_DTO importer_Stats_GeneralData_DTO = new Importer_Stats_GeneralData_DTO();
+			importer_Stats_GeneralData_DTO.setSearchId(searchId);
+			importer_Stats_GeneralData_DTO.setLabel(Importer_Stats_GeneralData_Table__Label_Values_Enum.PROCESS_REPORTEDPEPTIDESANDPSMS_INSERTS__CLASS_PROCESSREPORTEDPEPTIDESANDPSMS_PUBLIC_FUNCTION);
+			importer_Stats_GeneralData_DTO.setTotal_elapsedTime_Milliseconds(totalElapsedTime_saveToDatabase_InMilliSeconds);
+			
+			Importer_Stats_GeneralData_DAO.getInstance().save(importer_Stats_GeneralData_DTO);
+		}
 		
 	}
 

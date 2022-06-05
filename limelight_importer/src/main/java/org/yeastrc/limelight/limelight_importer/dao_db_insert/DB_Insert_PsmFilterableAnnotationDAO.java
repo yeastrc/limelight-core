@@ -59,7 +59,7 @@ public class DB_Insert_PsmFilterableAnnotationDAO {
 					+ elapsedTimeSeconds + " seconds, or "
 					+ elapsedTimeMinutes + " minutes.  "
 					+ "# method calls: " + totalCallCount_saveToDatabase
-					+ "# records saved: " + totalRecordsSavedCount_saveToDatabase);
+					+ ", # records saved: " + totalRecordsSavedCount_saveToDatabase);
 			
 			Importer_Stats_PerTable_DTO importer_Stats_PerTable_DTO = new Importer_Stats_PerTable_DTO();
 			
@@ -86,6 +86,10 @@ public class DB_Insert_PsmFilterableAnnotationDAO {
 	 */
 	public void saveToDatabase_AUTOCOMMIT_AfterInsert__NotUse_InsertControlCommitConnection( List<PsmFilterableAnnotationDTO> psmAnnotationDTO_Filterable_List ) throws Exception {
 
+		if ( psmAnnotationDTO_Filterable_List.isEmpty() ) {
+			throw new IllegalArgumentException( "psmAnnotationDTO_Filterable_List is empty" );
+		}
+		
 		long startTimeNanoSeconds = System.nanoTime();
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {

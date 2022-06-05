@@ -58,7 +58,7 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 	 * Result from createSearchReportedPeptideLevelLookupRecords
 	 *
 	 */
-	public static class CreateSearchReportedPeptideLevelLookupRecords_Result {
+	public static class SearchReportedPeptideLevelLookupRecords_Create_Result {
 		
 		private Search_ReportedPeptide__Lookup__DTO search_ReportedPeptide__Lookup__DTO;
 		
@@ -92,7 +92,7 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 	 * @return
 	 * @throws Exception
 	 */
-	public CreateSearchReportedPeptideLevelLookupRecords_Result createSearchReportedPeptideLevelLookupRecords( 
+	public SearchReportedPeptideLevelLookupRecords_Create_Result createSearchReportedPeptideLevelLookupRecords( 
 			ReportedPeptide reportedPeptide,
 			int searchId,
 			ReportedPeptideDTO savedReportedPeptideDTO,
@@ -105,8 +105,8 @@ public class CreateSearchReportedPeptideLevelLookupRecords {
 		
 		int reportedPeptide_Id = savedReportedPeptideDTO.getId();
 		
-		CreateSearchReportedPeptideLevelLookupRecords_Result methodResult =
-				new CreateSearchReportedPeptideLevelLookupRecords_Result();
+		SearchReportedPeptideLevelLookupRecords_Create_Result methodResult =
+				new SearchReportedPeptideLevelLookupRecords_Create_Result();
 		
 		boolean relatedPeptideUniqueForSearch = true;
 		boolean hasDynamicModifications = false;

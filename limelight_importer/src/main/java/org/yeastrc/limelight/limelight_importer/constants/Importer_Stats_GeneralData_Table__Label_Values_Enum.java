@@ -15,8 +15,10 @@ public enum Importer_Stats_GeneralData_Table__Label_Values_Enum {
 	TOTAL_IMPORT_TIME("Total Import Time"),
 
 	READ_LIMELIGHT_XML_FILE_TIME("Read Limelight XML File Time"),
+
+	PROCESS_REPORTEDPEPTIDESANDPSMS_INSERTS__CLASS_PROCESSREPORTEDPEPTIDESANDPSMS_PUBLIC_FUNCTION("ProcessReportedPeptidesAndPSMs__Class_ProcessReportedPeptidesAndPSMs_Public_Function"),
 	
-	PROCESS_REPORTEDPEPTIDESANDPSMS_MINUS_PSM_FILTERABLE_INSERTS("ProcessReportedPeptidesAndPSMs_Minus_PSM_Filterable_Inserts"),
+	PROCESS_REPORTEDPEPTIDESANDPSMS_MINUS_PSM_FILTERABLE__SEARCH_REPORTEDPEPTIDE_LOOKUP_INSERTS("ProcessReportedPeptidesAndPSMs_Minus_PSM_Filterable_SearchReportedPeptideLookup_Inserts"),
 	
 	IMPORTER_SEARCH_INSERTED_WAIT_TIME_FOR_SPECTR_COMPLETE("Search Inserted: Wait Time For Spectr Complete"),
 

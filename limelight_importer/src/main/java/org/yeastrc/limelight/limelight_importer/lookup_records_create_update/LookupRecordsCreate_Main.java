@@ -23,9 +23,10 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
+import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
 import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords;
-import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords.CreateSearchReportedPeptideLevelLookupRecords_Result;
+import org.yeastrc.limelight.limelight_importer.process_input.CreateSearchReportedPeptideLevelLookupRecords.SearchReportedPeptideLevelLookupRecords_Create_Result;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideDTO;
@@ -61,11 +62,13 @@ public class LookupRecordsCreate_Main {
 			List<SearchReportedPeptideFilterableAnnotationDTO> searchReportedPeptideFilterableAnnotationDTOList,
 			PsmStatisticsAndBestValues psmStatisticsAndBestValues,
 			Map<Integer, AnnotationTypeDTO> filterableReportedPeptideAnnotationTypesOnId,
-			int proteinVersionIdsForReportedPeptideCount
+			int proteinVersionIdsForReportedPeptideCount,
+			
+			SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records
 
 			) throws Exception {
 
-		CreateSearchReportedPeptideLevelLookupRecords_Result createReportedPeptideLookupAndPsmAndReportedPeptideLookupRecords_Result =
+		SearchReportedPeptideLevelLookupRecords_Create_Result searchReportedPeptideLevelLookupRecords_Create_Result =
 				CreateSearchReportedPeptideLevelLookupRecords.getInstance()
 				.createSearchReportedPeptideLevelLookupRecords( 
 						reportedPeptide, 
@@ -76,8 +79,7 @@ public class LookupRecordsCreate_Main {
 						psmStatisticsAndBestValues, 
 						filterableReportedPeptideAnnotationTypesOnId,
 						proteinVersionIdsForReportedPeptideCount );
-
-		LookupRecords_SavePerSearchLookupRecords.getInstance()
-		.savePerSearchLookupRecords( createReportedPeptideLookupAndPsmAndReportedPeptideLookupRecords_Result );
+		
+		searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.add_SearchReportedPeptideLevelLookupRecords_Create_Result(searchReportedPeptideLevelLookupRecords_Create_Result);
 	}
 }
