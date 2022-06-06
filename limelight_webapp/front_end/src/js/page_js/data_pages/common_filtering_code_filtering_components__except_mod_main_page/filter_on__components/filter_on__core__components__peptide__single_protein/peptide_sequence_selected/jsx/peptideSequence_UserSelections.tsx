@@ -187,7 +187,7 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
             const target_htmlElement = event.target as HTMLInputElement;
             const value_htmlElement = target_htmlElement.value;  //  New Value
 
-            const peptideSequence_UserSelection = value_htmlElement;
+            const peptideSequence_UserSelection = value_htmlElement.trim();
 
             // console.log( "_inputFieldChanged: target.value: " + value_htmlElement + ", this.state.peptideSequence_UserSelection: " + this.state.peptideSequence_UserSelection );
 

@@ -1,14 +1,15 @@
 /**
  * peptideSequence_UserSelections_StateObject.ts
- * 
+ *
  * Peptide Sequence Selection - State Object
- * 
+ *
  *  !!!! React Version !!!!
- * 
- * 
- * State Object used in: 
+ *
+ *
+ * State Object used in:
  *      peptideSequence_UserSelections.tsx
  */
+import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 ////////////////////
 
@@ -147,7 +148,31 @@ export class PeptideSequence_UserSelections_StateObject {
 			throw Error( msg );
 		}
 
-        this._peptideSearchStrings = encodedStateData[ _ENCODED_DATA__PEPTIDE_SEQUENCE_SEARCH_STRINGS_ENCODING_PROPERTY_NAME ];
+        const peptideSearchStrings: Array<string> = encodedStateData[ _ENCODED_DATA__PEPTIDE_SEQUENCE_SEARCH_STRINGS_ENCODING_PROPERTY_NAME ];
+
+		if ( peptideSearchStrings && ( peptideSearchStrings instanceof Array ) ) {
+
+			const peptideSearchStrings_Trimmed: Array<string> = []
+
+			for ( const peptideSearchString of peptideSearchStrings ) {
+
+				if ( limelight__IsVariableAString( peptideSearchString ) ) {
+
+					let peptideSearchString_Trimmed = peptideSearchString;
+
+					try {
+						peptideSearchString_Trimmed = peptideSearchString.trim();
+
+					} catch (e) {
+						//  Eat Exception.  Not Trim if call to .trim() results in Exception
+					}
+
+					peptideSearchStrings_Trimmed.push( peptideSearchString_Trimmed );
+				}
+			}
+
+			this._peptideSearchStrings = peptideSearchStrings_Trimmed;
+		}
 	}
 }
 
