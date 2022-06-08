@@ -61,6 +61,7 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.ob
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_XML_ToObject;
@@ -118,6 +119,9 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 	@Autowired
 	private LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile;
 
+	@Autowired
+	private SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest;
+	
 	@Autowired
 	private UnmarshalJSON_ToObject unmarshalJSON_ToObject;
 
@@ -523,11 +527,20 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 			
 			///////  Add additional checking of the filename for scan files
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
-				if ( uploadedFilename.endsWith( LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZML ) ) {
-					webserviceMethod_Internal_Params.scanFileSuffix = LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZML;
-				} else if ( uploadedFilename.endsWith( LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZXML ) ) {
-					webserviceMethod_Internal_Params.scanFileSuffix = LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZXML;
-				} else {
+
+				List<String> supported_ScanFileSuffix_List = spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes();
+				
+				boolean found_ScanFilenameSuffix = false;
+				
+				for ( String supported_ScanFileSuffix : supported_ScanFileSuffix_List ) {
+					
+					if ( uploadedFilename.endsWith( supported_ScanFileSuffix ) ) {
+						found_ScanFilenameSuffix = true;
+						break;
+					}
+				}
+				
+				if ( ! found_ScanFilenameSuffix ) {
 					//  Return Error
 					webserviceResult.setStatusSuccess(false);
 					webserviceResult.setScanFilenameSuffixNotValid( true );

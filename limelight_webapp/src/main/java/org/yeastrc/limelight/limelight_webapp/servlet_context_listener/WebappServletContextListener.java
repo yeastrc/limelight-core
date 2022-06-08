@@ -27,6 +27,7 @@ import javax.servlet.annotation.WebListener;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Remove_Old_CurrentSubdirs;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_At_LimelightStartup__Runnable_InThread;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GetJsCssCacheBustString;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_Code;
 import org.slf4j.Logger;
@@ -125,6 +126,11 @@ public class WebappServletContextListener implements ServletContextListener {
 		
 		try {
 			CachedDataInFileMgmt_Remove_Old_CurrentSubdirs.setShutdownRequested(true);
+		} catch ( Throwable t ) {
+			//  Eat Exception
+		}
+		try {
+			SpectralStorageService_Get_Supported_ScanFileSuffixes_At_LimelightStartup__Runnable_InThread.webappShutdownRequested();
 		} catch ( Throwable t ) {
 			//  Eat Exception
 		}

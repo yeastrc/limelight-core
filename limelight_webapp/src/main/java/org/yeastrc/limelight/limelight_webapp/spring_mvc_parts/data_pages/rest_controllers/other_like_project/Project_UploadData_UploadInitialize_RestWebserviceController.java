@@ -56,6 +56,7 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.co
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -91,6 +92,9 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 	
 	@Autowired
 	private ProjectDAO_IF projectDAO;
+	
+	@Autowired
+	private SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest;
 	
 	@Autowired
 	private Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF limelight_XML_Importer_Work_Directory_And_SubDirs_Web;
@@ -183,12 +187,20 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			throw new LimelightInternalErrorException( "userId should not be null" );
 		}
 		
+		WebserviceResult_JSON webserviceResult_JSON = new WebserviceResult_JSON();  // Extended from SubmitImport_Init_Response_WebJSON
+		
 		WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
 		webserviceMethod_Internal_Params.projectId = projectId;
 		webserviceMethod_Internal_Params.userId = userId;
-		webserviceMethod_Internal_Params.webserviceResult = new SubmitImport_Init_Response_WebJSON();
+		webserviceMethod_Internal_Params.webserviceResult = webserviceResult_JSON;
 		webserviceMethod_Internal_Params.requestURL = httpServletRequest.getRequestURL().toString();
 		webserviceMethod_Internal_Params.submitImport_Init_Request_WebJSON = webserviceRequest;
+		
+		try {
+			webserviceResult_JSON.accepted_ScanFilename_Suffix_List = spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes();
+		} catch ( Throwable t) {
+			// Eat Exception
+		}
 		
     	webserviceMethod_Internal( webserviceMethod_Internal_Params);
     	
@@ -574,67 +586,19 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 	//   Now uses specific classes from: limelight_submit_import_client_connector
 	//       (org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects) 
 	
-	/**
-	 * 
-	 *
-	 */
-//	public static class WebserviceRequest {
-//		
-//		private String projectIdentifier;
-//		private Boolean submitterSameMachine;
-//
-//		public String getProjectIdentifier() {
-//			return projectIdentifier;
-//		}
-//		public void setProjectIdentifier(String projectIdentifier) {
-//			this.projectIdentifier = projectIdentifier;
-//		}
-//		public Boolean getSubmitterSameMachine() {
-//			return submitterSameMachine;
-//		}
-//		public void setSubmitterSameMachine(Boolean submitterSameMachine) {
-//			this.submitterSameMachine = submitterSameMachine;
-//		}
-//	}
 	
 	/**
-	 * 
+	 * JSON Specific values
 	 *
 	 */
-//	public static class WebserviceResult {
-//		
-//		private String uploadKey;
-//		private boolean statusSuccess;
-//		private boolean projectLocked; 
-//		//  Added for processing submit from same machine
-//		private String uploadTempSubdir;
-//		
-//		public String getUploadKey() {
-//			return uploadKey;
-//		}
-//		public void setUploadKey(String uploadKey) {
-//			this.uploadKey = uploadKey;
-//		}
-//		public boolean isStatusSuccess() {
-//			return statusSuccess;
-//		}
-//		public void setStatusSuccess(boolean statusSuccess) {
-//			this.statusSuccess = statusSuccess;
-//		}
-//		public boolean isProjectLocked() {
-//			return projectLocked;
-//		}
-//		public void setProjectLocked(boolean projectLocked) {
-//			this.projectLocked = projectLocked;
-//		}
-//		public String getUploadTempSubdir() {
-//			return uploadTempSubdir;
-//		}
-//		public void setUploadTempSubdir(String uploadTempSubdir) {
-//			this.uploadTempSubdir = uploadTempSubdir;
-//		}
-//
-//	}
+	public static class WebserviceResult_JSON extends SubmitImport_Init_Response_WebJSON {
+		
+		private List<String> accepted_ScanFilename_Suffix_List;
+
+		public List<String> getAccepted_ScanFilename_Suffix_List() {
+			return accepted_ScanFilename_Suffix_List;
+		}
+	}
 
 
 

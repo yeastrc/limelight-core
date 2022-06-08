@@ -177,7 +177,8 @@
 				<div style="font-size: 80%;">
 						(Max filesize: <%=FileUploadMaxFileSizeConstants.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED()%>)
 			    		 
-					<input type="file" accept=".mzML,.mzXML"  
+			    		   <%-- accept=".mzML,.mzXML" is default. JS code will update with values from server from Spectral Storage Service  --%>
+					<input type="file" accept=".mzML,.mzXML"
 						id="import_limelight_xml_scan_file_field" style="display: none;"
 						data-file_type="<%=LimelightSubmit_FileImportFileType.SCAN_FILE.value()%>"/>
 				</div>

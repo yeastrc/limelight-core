@@ -796,11 +796,14 @@ export class ProjectPage_UploadData_NewUploadMain {
 	 * 
 	 */
 	openOverlayProcessServerResponse( params ) {
+
 //		let requestData = params.requestData; 
 		let responseData = params.responseData;
 		let statusSuccess = responseData.statusSuccess;
 		let projectLocked = responseData.projectLocked;
 		let uploadKey = responseData.uploadKey;
+		const accepted_ScanFilename_Suffix_List = responseData.accepted_ScanFilename_Suffix_List;
+
 		if ( ! statusSuccess ) {
 			if ( projectLocked ) {
 				//  Project is now locked so reload page so not display option to upload files for import
@@ -813,6 +816,22 @@ export class ProjectPage_UploadData_NewUploadMain {
 //		Save upload key
 		this.uploadKey = uploadKey;
 		this.resetOverlay();
+
+		if ( accepted_ScanFilename_Suffix_List ) {
+			const import_limelight_xml_scan_file_field_DOM = document.getElementById("import_limelight_xml_scan_file_field") as HTMLInputElement;
+			if ( ! import_limelight_xml_scan_file_field_DOM ) {
+				const msg = "No DOM element with id 'import_limelight_xml_scan_file_field'";
+				console.warn(msg);
+				throw Error(msg);
+			}
+
+			const accepted_ScanFilename_Suffix_List_CommaDelim = accepted_ScanFilename_Suffix_List.join(",");
+
+			import_limelight_xml_scan_file_field_DOM.accept = accepted_ScanFilename_Suffix_List_CommaDelim;
+
+			console.log("Updated import_limelight_xml_scan_file_field_DOM: ", import_limelight_xml_scan_file_field_DOM );
+		}
+
 		let $overlay_background = $("#limelight_xml_file_upload_modal_dialog_overlay_background"); 
 		let $overlay_container = $("#limelight_xml_file_upload_overlay_container_div");
 //		Position Overlay Vertically
