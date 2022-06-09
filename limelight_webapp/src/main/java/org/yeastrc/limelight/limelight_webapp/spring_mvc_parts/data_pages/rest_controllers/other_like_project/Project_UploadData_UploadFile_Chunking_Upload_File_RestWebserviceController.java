@@ -530,17 +530,17 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 
 				List<String> supported_ScanFileSuffix_List = spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes();
 				
-				boolean found_ScanFilenameSuffix = false;
+				String supported_ScanFileSuffix__For_Input_ScanFilename = null;
 				
 				for ( String supported_ScanFileSuffix : supported_ScanFileSuffix_List ) {
 					
 					if ( uploadedFilename.endsWith( supported_ScanFileSuffix ) ) {
-						found_ScanFilenameSuffix = true;
+						supported_ScanFileSuffix__For_Input_ScanFilename = supported_ScanFileSuffix;
 						break;
 					}
 				}
 				
-				if ( ! found_ScanFilenameSuffix ) {
+				if ( supported_ScanFileSuffix__For_Input_ScanFilename == null ) {
 					//  Return Error
 					webserviceResult.setStatusSuccess(false);
 					webserviceResult.setScanFilenameSuffixNotValid( true );
@@ -550,6 +550,8 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 					//  EARLY RETURN
 					return methodResults;
 				}
+				
+				webserviceMethod_Internal_Params.scanFileSuffix = supported_ScanFileSuffix__For_Input_ScanFilename; // pass on found suffix
 			}
 
 			return processWebRequest( 
