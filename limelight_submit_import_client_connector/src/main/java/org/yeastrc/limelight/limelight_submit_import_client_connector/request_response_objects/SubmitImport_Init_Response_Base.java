@@ -45,6 +45,8 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	
 	@XmlAttribute
 	private boolean projectLocked; 
+	
+	//  NO added properties should use Java Objects, NOT primitives (int, boolean)  so that previous versions of the Submitter Program are supported.
 
 	private List<String> accepted_ScanFilename_Suffix_List; //  Not populated for Submit Program version < 4
 
