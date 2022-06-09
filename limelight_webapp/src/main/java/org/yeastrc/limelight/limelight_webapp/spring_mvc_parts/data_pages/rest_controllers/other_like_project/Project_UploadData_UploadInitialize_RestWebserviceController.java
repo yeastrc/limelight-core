@@ -187,7 +187,7 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			throw new LimelightInternalErrorException( "userId should not be null" );
 		}
 		
-		WebserviceResult_JSON webserviceResult_JSON = new WebserviceResult_JSON();  // Extended from SubmitImport_Init_Response_WebJSON
+		SubmitImport_Init_Response_WebJSON webserviceResult_JSON = new SubmitImport_Init_Response_WebJSON();
 		
 		WebserviceMethod_Internal_Params webserviceMethod_Internal_Params = new WebserviceMethod_Internal_Params();
 		webserviceMethod_Internal_Params.projectId = projectId;
@@ -197,7 +197,7 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 		webserviceMethod_Internal_Params.submitImport_Init_Request_WebJSON = webserviceRequest;
 		
 		try {
-			webserviceResult_JSON.accepted_ScanFilename_Suffix_List = spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes();
+			webserviceResult_JSON.setAccepted_ScanFilename_Suffix_List( spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes() );
 		} catch ( Throwable t) {
 			// Eat Exception
 		}
@@ -413,7 +413,18 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			//  Update the response with the subdirectory name 
 			webserviceResult.setUploadTempSubdir( createdSubDir.getName() );
 		}
+		
+		if ( webserviceRequest.getSubmitProgramVersionNumber() != null && webserviceRequest.getSubmitProgramVersionNumber().intValue() >= 4 ) {
 
+			//  accepted_ScanFilename_Suffix_List property added in Submit Program Version 4
+			
+			try {
+				webserviceResult.setAccepted_ScanFilename_Suffix_List( spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes() );
+			} catch ( Throwable t) {
+				// Eat Exception
+			}
+		}
+		
 		byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
 
 		return ResponseEntity.ok().contentType( MediaType.APPLICATION_XML ).body( responseAsXML );
@@ -585,20 +596,6 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 	
 	//   Now uses specific classes from: limelight_submit_import_client_connector
 	//       (org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects) 
-	
-	
-	/**
-	 * JSON Specific values
-	 *
-	 */
-	public static class WebserviceResult_JSON extends SubmitImport_Init_Response_WebJSON {
-		
-		private List<String> accepted_ScanFilename_Suffix_List;
-
-		public List<String> getAccepted_ScanFilename_Suffix_List() {
-			return accepted_ScanFilename_Suffix_List;
-		}
-	}
 
 
 

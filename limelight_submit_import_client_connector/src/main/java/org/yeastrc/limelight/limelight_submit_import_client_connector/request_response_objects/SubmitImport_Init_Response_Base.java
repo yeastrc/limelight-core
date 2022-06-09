@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -43,7 +45,9 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	
 	@XmlAttribute
 	private boolean projectLocked; 
-	
+
+	private List<String> accepted_ScanFilename_Suffix_List; //  Not populated for Submit Program version < 4
+
 	public String getUploadKey() {
 		return uploadKey;
 	}
@@ -67,6 +71,12 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	}
 	public void setSubmitProgramVersionNumber_Current_Per_Webapp(Integer submitProgramVersionNumber_Current_Per_Webapp) {
 		this.submitProgramVersionNumber_Current_Per_Webapp = submitProgramVersionNumber_Current_Per_Webapp;
+	}
+	public List<String> getAccepted_ScanFilename_Suffix_List() {
+		return accepted_ScanFilename_Suffix_List;
+	}
+	public void setAccepted_ScanFilename_Suffix_List(List<String> accepted_ScanFilename_Suffix_List) {
+		this.accepted_ScanFilename_Suffix_List = accepted_ScanFilename_Suffix_List;
 	}
 	
 }
