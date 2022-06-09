@@ -162,6 +162,7 @@ public class SubmitUploadMain {
 		String userSubmitImportProgramKey = userSubmitImportProgramKeyFromCommandLine;
 
 		CallSubmitImportWebserviceInitParameters callSubmitImportWebserviceInitParameters = new CallSubmitImportWebserviceInitParameters();
+		
 		callSubmitImportWebserviceInitParameters.setWebappServerBaseURL( baseURL );
 
 		CallSubmitImportWebservice callSubmitImportWebservice = CallSubmitImportWebservice.getInstance();
@@ -251,58 +252,6 @@ public class SubmitUploadMain {
 
 				System.out.println( "Connecting to Limelight web app using URL: " + baseURL );
 
-				if ( scanFiles != null && ( ! scanFiles.isEmpty() ) ) {
-
-					//  Validate Scan Files:
-
-					//    valid suffix
-
-					//    Not duplicate filenames
-					//    Not duplicate filenames when check without filename suffix
-
-					Set<String> scanFilenames = new HashSet<>();
-					Set<String> scanFilenames_NoSuffixes = new HashSet<>();
-
-					for ( File scanFile : scanFiles ) {
-
-						String scanFilename = scanFile.getName();
-
-						String errorStringScanSuffixValidation = validateScanFileSuffix( scanFilename );
-
-						if ( errorStringScanSuffixValidation != null ) {
-
-							System.err.println( "" );
-							System.err.println( errorStringScanSuffixValidation );
-							System.err.println( "" );
-							System.err.println( FOR_HELP_STRING );
-							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-							return submitResult;  //  EARLY EXIT
-						}
-
-						if ( ! scanFilenames.add( scanFilename ) ) {
-							System.err.println( "" );
-							System.err.println( "Duplicate Scan file submitted: " + scanFilename );
-							System.err.println( "" );
-							System.err.println( FOR_HELP_STRING );
-							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-							return submitResult;  //  EARLY EXIT
-						}				
-
-						String filename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
-						if ( ! scanFilenames_NoSuffixes.add( filename_NoSuffix ) ) {
-							System.err.println( "" );
-							System.err.println( "Duplicate Scan file (With suffix removed) submitted: " 
-									+ filename_NoSuffix
-									+ ",  scan filename: "
-									+ scanFilename );
-							System.err.println( "" );
-							System.err.println( FOR_HELP_STRING );
-							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-							return submitResult;  //  EARLY EXIT
-						}			
-					}
-				}
-
 
 				SubmitImport_Init_Request_PgmXML submitImport_Init_Request = new SubmitImport_Init_Request_PgmXML();
 
@@ -351,6 +300,58 @@ public class SubmitUploadMain {
 				}
 
 				submitImport_UploadKey = submitImport_Init_Response.getUploadKey();
+
+				if ( scanFiles != null && ( ! scanFiles.isEmpty() ) ) {
+
+					//  Validate Scan Files:
+
+					//    valid suffix
+
+					//    Not duplicate filenames
+					//    Not duplicate filenames when check without filename suffix
+
+					Set<String> scanFilenames = new HashSet<>();
+					Set<String> scanFilenames_NoSuffixes = new HashSet<>();
+
+					for ( File scanFile : scanFiles ) {
+
+						String scanFilename = scanFile.getName();
+
+						String errorStringScanSuffixValidation = validateScanFileSuffix( scanFilename, submitImport_Init_Response );
+
+						if ( errorStringScanSuffixValidation != null ) {
+
+							System.err.println( "" );
+							System.err.println( errorStringScanSuffixValidation );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+							return submitResult;  //  EARLY EXIT
+						}
+
+						if ( ! scanFilenames.add( scanFilename ) ) {
+							System.err.println( "" );
+							System.err.println( "Duplicate Scan file submitted: " + scanFilename );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+							return submitResult;  //  EARLY EXIT
+						}				
+
+						String filename_NoSuffix = FilenameUtils.removeExtension( scanFilename );
+						if ( ! scanFilenames_NoSuffixes.add( filename_NoSuffix ) ) {
+							System.err.println( "" );
+							System.err.println( "Duplicate Scan file (With suffix removed) submitted: " 
+									+ filename_NoSuffix
+									+ ",  scan filename: "
+									+ scanFilename );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+							return submitResult;  //  EARLY EXIT
+						}			
+					}
+				}
 
 				String submitterKey = null;
 
@@ -621,17 +622,33 @@ public class SubmitUploadMain {
 	 * @param inputScanFileString
 	 * @return null if no error, otherwise return the error message
 	 */
-	private static String validateScanFileSuffix( String inputScanFileString ) {
+	private static String validateScanFileSuffix( String inputScanFileString, SubmitImport_Init_Response_PgmXML submitImport_Init_Response ) {
 
 		String errorString = null;
+		
+		if ( submitImport_Init_Response.getAccepted_ScanFilename_Suffix_List() != null ) {
 
-		if ( ! ( inputScanFileString.endsWith( ScanFilenameConstants.MZ_ML_SUFFIX ) 
-				|| inputScanFileString.endsWith( ScanFilenameConstants.MZ_XML_SUFFIX ) ) ) {
+			boolean found_Suffix = false;
+			
+			for ( String scanFilename_Suffix : submitImport_Init_Response.getAccepted_ScanFilename_Suffix_List() ) {
+				if ( inputScanFileString.endsWith( scanFilename_Suffix ) ) {
+					found_Suffix = true;
+					break;
+				}
+			}
+			if ( ! found_Suffix ) {
+				
+				String accepted_ScanFilename_Suffix_CommaDelim = StringUtils.join( submitImport_Init_Response.getAccepted_ScanFilename_Suffix_List(), ", " );
+				errorString =  "Scan file name must end with one of: " + accepted_ScanFilename_Suffix_CommaDelim;
+			}
+			
+		} else if ( ! ( inputScanFileString.endsWith( ScanFilenameConstants.MZ_ML_SUFFIX__DEFAULT_SPECTR_1_X ) 
+				|| inputScanFileString.endsWith( ScanFilenameConstants.MZ_XML_SUFFIX__DEFAULT_SPECTR_1_X ) ) ) {
 
 			errorString =  "Scan file name must end with '"
-					+ ScanFilenameConstants.MZ_ML_SUFFIX 
+					+ ScanFilenameConstants.MZ_ML_SUFFIX__DEFAULT_SPECTR_1_X 
 					+ "' or '"
-					+ ScanFilenameConstants.MZ_XML_SUFFIX
+					+ ScanFilenameConstants.MZ_XML_SUFFIX__DEFAULT_SPECTR_1_X
 					+ "' and have the correct contents to match the filename suffix.";
 		}
 

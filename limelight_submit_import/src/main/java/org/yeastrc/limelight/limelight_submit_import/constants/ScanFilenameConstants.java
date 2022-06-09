@@ -23,7 +23,7 @@ package org.yeastrc.limelight.limelight_submit_import.constants;
  */
 public class ScanFilenameConstants {
 
-	public static final String MZ_ML_SUFFIX = ".mzML";
+	public static final String MZ_ML_SUFFIX__DEFAULT_SPECTR_1_X = ".mzML";
 	
-	public static final String MZ_XML_SUFFIX = ".mzXML";
+	public static final String MZ_XML_SUFFIX__DEFAULT_SPECTR_1_X = ".mzXML";
 }

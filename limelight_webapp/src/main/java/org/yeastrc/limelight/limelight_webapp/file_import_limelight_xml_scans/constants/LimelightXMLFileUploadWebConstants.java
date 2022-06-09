@@ -50,8 +50,8 @@ public class LimelightXMLFileUploadWebConstants {
 	
 	
 	
-	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZML = ".mzML"; 
-	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX_MZXML = ".mzXML";
+	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX__DEFAULT_AND_SPECTR_1_X__MZML = ".mzML"; 
+	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX__DEFAULT_AND_SPECTR_1_X__MZXML = ".mzXML";
 	
 	////////////////////
 	

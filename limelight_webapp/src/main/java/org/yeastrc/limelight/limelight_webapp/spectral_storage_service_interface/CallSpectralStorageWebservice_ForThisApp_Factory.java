@@ -12,6 +12,9 @@ import org.yeastrc.spectral_storage.get_data_webapp.webservice_connect.main.Call
 import org.yeastrc.spectral_storage.get_data_webapp.webservice_connect.main.CallSpectralStorageGetDataWebserviceInitParameters;
 
 /**
+ * Spectral Storage Service "Get Data" web services
+ * 
+ * 
  * Create object of Spectral Storage Service call interface class CallSpectralStorageWebservice
  * and configure it
  *

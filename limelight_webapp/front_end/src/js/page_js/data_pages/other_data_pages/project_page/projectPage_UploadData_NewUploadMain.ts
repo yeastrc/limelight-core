@@ -34,6 +34,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { ProjectPage_UploadData_NewSingleFileEntry } from './projectPage_UploadData_NewSingleFileEntry';
 import {createSpinner, destroySpinner} from "page_js/common_all_pages/spinner";
+import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
 const LIMELIGHT_UPLOAD_FILE_PARAMS_JSON__HEADER_PARAM = "limelight_upload_file_params_json"  //  Keep in sync with server side
@@ -52,6 +53,8 @@ export class ProjectPage_UploadData_NewUploadMain {
 	private _projectPage_UploadData_ListExistingUploads;
 
 	private _per_upload_file_template = _project_page_upload_data_section_project_owner_user_interaction_template.per_upload_file_template;
+
+	private _accepted_ScanFilename_Suffix_List__FromServer: Array<string>  //  Set in openOverlayProcessServerResponse
 
 	private uploadingScanFiles = undefined;
 
@@ -654,6 +657,11 @@ export class ProjectPage_UploadData_NewUploadMain {
 				$fileElement.val("");
 				return;
 			}
+			if ( fileElement.files.length > 1 ) {
+				window.alert("Only select 1 file")
+				$fileElement.val("");
+				return;
+			}
 			file = fileElement.files[ 0 ];  // get file, will only be one file since not multi-select <file> element
 			$fileElement.val(""); // clear the input field after get the selected file
 			filename = file.name;
@@ -670,6 +678,32 @@ export class ProjectPage_UploadData_NewUploadMain {
 				throw Error( "scanFileDialogChanged(...): ( filename_LastDot_Index < 1 ).  filename_LastDot_Index: " + filename_LastDot_Index );
 			}
 			filename_NoSuffix = filename.substring( 0, filename_LastDot_Index );
+		}
+
+		{  //  Is this filename suffix supported
+
+			if ( this._accepted_ScanFilename_Suffix_List__FromServer ) {
+
+				let found_Suffix = false;
+
+				for ( const accepted_ScanFilename_Suffix of this._accepted_ScanFilename_Suffix_List__FromServer ) {
+					if ( filename.endsWith( accepted_ScanFilename_Suffix ) ) {
+						found_Suffix = true;
+						break;
+					}
+				}
+				if ( ! found_Suffix ) {
+					window.alert("This scan filename suffix is not supported.  Scan filename: " + filename );
+					return;
+				}
+			} else {
+				//  Use defaults .mzML and .mzXML
+
+				if ( ( ! filename.endsWith( ".mzML" ) && ( ! filename.endsWith( ".mzXML" ) ) ) ) {
+					window.alert("This scan filename suffix is not supported.  Scan filename: " + filename);
+					return;
+				}
+			}
 		}
 
 //		Did the user already select this filename
@@ -796,11 +830,14 @@ export class ProjectPage_UploadData_NewUploadMain {
 	 * 
 	 */
 	openOverlayProcessServerResponse( params ) {
+
 //		let requestData = params.requestData; 
 		let responseData = params.responseData;
 		let statusSuccess = responseData.statusSuccess;
 		let projectLocked = responseData.projectLocked;
 		let uploadKey = responseData.uploadKey;
+		const accepted_ScanFilename_Suffix_List = responseData.accepted_ScanFilename_Suffix_List;
+
 		if ( ! statusSuccess ) {
 			if ( projectLocked ) {
 				//  Project is now locked so reload page so not display option to upload files for import
@@ -813,6 +850,36 @@ export class ProjectPage_UploadData_NewUploadMain {
 //		Save upload key
 		this.uploadKey = uploadKey;
 		this.resetOverlay();
+
+		if ( accepted_ScanFilename_Suffix_List && accepted_ScanFilename_Suffix_List instanceof Array ) {
+
+			{
+				let allEntriesAreString = true;
+				for ( const accepted_ScanFilename_Suffix of accepted_ScanFilename_Suffix_List ) {
+					if ( ! limelight__IsVariableAString( accepted_ScanFilename_Suffix ) ) {
+						allEntriesAreString = false;
+						break;
+					}
+				}
+				if ( allEntriesAreString ) {
+					this._accepted_ScanFilename_Suffix_List__FromServer = accepted_ScanFilename_Suffix_List;
+				}
+			}
+
+			const import_limelight_xml_scan_file_field_DOM = document.getElementById("import_limelight_xml_scan_file_field") as HTMLInputElement;
+			if ( ! import_limelight_xml_scan_file_field_DOM ) {
+				const msg = "No DOM element with id 'import_limelight_xml_scan_file_field'";
+				console.warn(msg);
+				throw Error(msg);
+			}
+
+			const accepted_ScanFilename_Suffix_List_CommaDelim = accepted_ScanFilename_Suffix_List.join(",");
+
+			import_limelight_xml_scan_file_field_DOM.accept = accepted_ScanFilename_Suffix_List_CommaDelim;
+
+			console.log("Updated import_limelight_xml_scan_file_field_DOM: ", import_limelight_xml_scan_file_field_DOM );
+		}
+
 		let $overlay_background = $("#limelight_xml_file_upload_modal_dialog_overlay_background"); 
 		let $overlay_container = $("#limelight_xml_file_upload_overlay_container_div");
 //		Position Overlay Vertically
