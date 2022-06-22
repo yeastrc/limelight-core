@@ -15,7 +15,7 @@
 <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed or webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed }" >
 
 		<%--  Container for React Component --%>
-	<div id="main_peptide_view_outer_block_react_root_container" 
+	<div id="share_data_section_outer_block_react_root_container" 
 	></div>
 	
 	<c:if test="${ projectPublicAccessEnabled }" >

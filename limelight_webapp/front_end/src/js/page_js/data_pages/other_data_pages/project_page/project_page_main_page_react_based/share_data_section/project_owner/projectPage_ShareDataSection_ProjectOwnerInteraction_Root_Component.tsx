@@ -56,10 +56,10 @@ export const add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwner
         )
     );
 
-    const containerDOMElement = document.getElementById("main_peptide_view_outer_block_react_root_container");
+    const containerDOMElement = document.getElementById("share_data_section_outer_block_react_root_container");
 
     if ( ! containerDOMElement ) {
-        throw Error("No DOM element with id 'main_peptide_view_outer_block_react_root_container'");
+        throw Error("No DOM element with id 'share_data_section_outer_block_react_root_container'");
     }
 
     //  Called on render complete
