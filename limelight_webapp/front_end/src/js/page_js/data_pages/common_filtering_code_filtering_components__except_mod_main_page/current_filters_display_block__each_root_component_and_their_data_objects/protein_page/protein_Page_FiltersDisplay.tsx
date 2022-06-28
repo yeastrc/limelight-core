@@ -19,6 +19,7 @@ import {Protein_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/comm
 import {currentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide_UniquePeptide_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__protein__display_elements/currentFiltersDisplayBlock__ProteinPage__FilterOnCounts_PSM_Peptide_UniquePeptide_UserSelections";
 import {currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection";
 import {currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections";
+import {Page_MainFiltersDisplay_CommonDisplayContainer_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/common/page_MainFiltersDisplay_CommonDisplayContainer_Component";
 
 
 
@@ -181,20 +182,9 @@ export class Protein_Page_FiltersDisplay extends React.Component< Protein_Page_F
             }
 
             return (
-                <React.Fragment>
-                    <div className=" current-filters-label ">
-                    <span  style={ { fontWeight: "bold" } } >
-                        Current filters:
-                    </span>
-                        <span> </span>
-                        <span style={ { fontSize: 12, fontWeight: "normal" } } className="fake-link " onClick={ this._clearAllFiltersClickHandler_BindThis } >clear all</span>
-                    </div>
-                    <div className=" filter-common-selection-block  " style={ { marginTop: 4, marginBottom: 10, marginLeft: 6 } }>
-
-                        { currentFiltersArray }
-
-                    </div>
-                </React.Fragment>
+                <Page_MainFiltersDisplay_CommonDisplayContainer_Component clearAllFiltersClickHandler={ this.props.clearAllFiltersClickHandler } >
+                    { currentFiltersArray }
+                </Page_MainFiltersDisplay_CommonDisplayContainer_Component>
             );
 
         } catch( e ) {

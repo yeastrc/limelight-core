@@ -1149,6 +1149,10 @@
 
      //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
 
+     .current-filters-label-and-display-block-common {
+       background-color: #FEDD00;
+     }
+
      //.filter-common-block-selection-outer-block {
 
          &.no-section-labels {  //  No does NOT have Section labels between the values
@@ -1295,9 +1299,15 @@
              font-size: 18px;
              font-weight: bold;
              white-space: nowrap;
-             margin-right: 10px;
-             margin-bottom: 5px;
-             // margin-left: $yes-section-labels--show-hide-text--triangle-container-span--width;  //  Room for Triangle for Show/Hide text
+
+              .current-filters-label-inner-div {
+                //  padding- since set background color
+                padding-left: 6px;
+                padding-top: 4px;
+                padding-right: 24px;
+                padding-bottom: 5px;
+                // padding-left: $yes-section-labels--show-hide-text--triangle-container-span--width;  //  Room for Triangle for Show/Hide text
+              }
            }
 
            .show-as-single-search-label {
