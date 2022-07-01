@@ -54,7 +54,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadMaxFileSizeConstants;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.minimal_validate__get_searchname_from_uploaded_file.LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
@@ -405,7 +405,7 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 
 			///  Check chunk size (using contentLength)
 			
-			if ( contentLength > FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE ) {
+			if ( contentLength > FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE ) {
 				
 				//  Return Error
 				webserviceResult.setStatusSuccess( false );
@@ -498,11 +498,11 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
-				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSizeConstants.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE;
-				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSizeConstants.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED;
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED();
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
-				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE;
-				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED;
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED();
 			} else {
 				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType;
 				log.error( msg );
@@ -700,7 +700,7 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 		{
 			//  Copy to in memory buffer first to ensure get full chunk before append to file
 			
-			byte[] bytes_FullChunk = new byte[ FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE ];
+			byte[] bytes_FullChunk = new byte[ FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE ];
 			int bytes_FullChunk__StartIndex = 0;
 			int bytes_FullChunk__BytesPopulatedCount = 0;
 
@@ -778,8 +778,8 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 
 				long fileSize = uploadedFileOnDisk.length();
 
-				if ( ( fileSize >= FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE 
-						&& fileSize < ( FileUploadMaxFileSizeConstants.MAX_FILE_UPLOAD_CHUNK_SIZE * 2 ) )
+				if ( ( fileSize >= FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE 
+						&& fileSize < ( FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE * 2 ) )
 						|| fileSize >= webserviceRequestHeaderContents.getUploadFileSize() ) {
 
 					try {

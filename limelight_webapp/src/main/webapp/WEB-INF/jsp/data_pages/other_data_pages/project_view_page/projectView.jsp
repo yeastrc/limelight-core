@@ -16,7 +16,7 @@
 				%> Project</title>
 
 		<%--  Used by Javascript code for page parts --%>
-	<script id="controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %></script>
+	<script id="controller_path" type="text/text"><%=AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER%></script>
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_main_pages.jsp" %>
  
@@ -25,13 +25,13 @@
  		For use in Handlebars template file single_search_template.handlebars
   --%>
 
-  <script id="url_path__qc" type="text/text"><%= AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER %></script>
+  <script id="url_path__qc" type="text/text"><%=AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER%></script>
 
-  <script id="url_path__peptide" type="text/text"><%= AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER %></script>
+  <script id="url_path__peptide" type="text/text"><%=AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER%></script>
 
-  <script id="url_path__protein" type="text/text"><%= AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER %></script>
+  <script id="url_path__protein" type="text/text"><%=AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER%></script>
 
-  <script id="url_path__mod_view" type="text/text"><%= AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER %></script>
+  <script id="url_path__mod_view" type="text/text"><%=AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER%></script>
   
 </head>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 

@@ -52,7 +52,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUplo
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadMaxFileSizeConstants;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
@@ -479,11 +479,11 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
-				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSizeConstants.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE;
-				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSizeConstants.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED;
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED();
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
-				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE;
-				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSizeConstants.MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED;
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED();
 			} else {
 				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType + ".  uploadKeyString: " + uploadKeyString
 					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
