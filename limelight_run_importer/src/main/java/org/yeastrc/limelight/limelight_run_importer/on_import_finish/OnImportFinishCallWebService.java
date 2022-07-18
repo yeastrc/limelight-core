@@ -243,9 +243,9 @@ public class OnImportFinishCallWebService {
 		
 		ByteArrayOutputStream byteArrayOutputStream_ToSend = serializeObjectToXML_Return_ByteArrayOutputStream( webserviceRequest, jaxbContext );
 		
-		final String toSendAsString = new String(  byteArrayOutputStream_ToSend.toByteArray(), StandardCharsets.UTF_8 );
-		
-		System.out.println( "toSendAsString: " + toSendAsString );
+//		final String toSendAsString = new String(  byteArrayOutputStream_ToSend.toByteArray(), StandardCharsets.UTF_8 );
+//		
+//		System.out.println( "toSendAsString: " + toSendAsString );
 		
 		return callActualWebserviceOnServerSendByteArrayOrFileAsStreamReturnObject( 
 				byteArrayOutputStream_ToSend, null /* fileToSendAsStream */, null /* headersToSend */, webserviceURL, jaxbContext );
