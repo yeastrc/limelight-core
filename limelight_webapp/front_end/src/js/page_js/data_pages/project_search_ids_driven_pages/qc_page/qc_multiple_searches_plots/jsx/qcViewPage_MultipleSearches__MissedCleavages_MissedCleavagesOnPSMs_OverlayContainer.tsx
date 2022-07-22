@@ -19,7 +19,7 @@ import {QcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultip
 import {Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data_Result";
 
 
-const _Overlay_Title = "QC Plot: Missed Cleavages - Missed Cleavage Count (PSMs) / Total PSM Count"
+const _Overlay_Title = "QC Plot: Missed Cleavages - Missed Cleavage Count / Total PSM Count"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

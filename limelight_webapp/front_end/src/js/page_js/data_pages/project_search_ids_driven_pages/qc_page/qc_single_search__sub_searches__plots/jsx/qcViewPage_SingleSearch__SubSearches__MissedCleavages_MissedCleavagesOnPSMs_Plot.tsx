@@ -26,7 +26,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 
 
-const chartTitle = "Missed Cleavage Count (PSMs) / Total PSM Count";
+const chartTitle = "Missed Cleavage Count / Total PSM Count";
 
 /**
  *
