@@ -371,7 +371,7 @@ export class QcViewPage_SingleSearch__SubSearches__MissedCleavages_PSM_Fraction_
                 "<b>Sub Search</b>: " + searchSubGroup.subgroupName_Display +
                 "<br><b>Fraction</b>: " + fraction_BarLabel + "<br>" +
                 psm_Count_Containing_MissedCleavage.toLocaleString() + " PSM Missed Cleavage Count / " +
-                psm_Count_Containing_MissedCleavage.toLocaleString() + " Total PSM Count"
+                total_PSM_Count.toLocaleString() + " Total PSM Count"
 
             chart_X.push( x_Label );
             chart_Y.push( fraction );
