@@ -19,25 +19,83 @@ var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
      //  Also removed from package.json      "webpack-handlebars-precompiler": "^1.1.0"
 
 
-const mainConfig = {		
-	
-	devtool: 'source-map',
-    optimization: {
-	    minimize: false
+const devtool = 'source-map'
+const optimization = {
+	minimize: false
+}
+
+const output = {
+	path: path.resolve(__dirname, 'webpack_build_output/'),
+	filename: 'js_generated_bundles/[name]-bundle.js'
+}
+
+
+const module_MAIN = {
+	rules:[
+		{
+			test: /node_modules/,
+			loader: 'ify-loader'
+		},
+		{
+			test: /\.(ts|tsx)$/,
+			exclude: /(node_modules|bower_components)/,
+			use: [
+				{
+					loader: 'ts-loader',
+					options: {
+						// transpileOnly: true,
+						// "baseUrl": "./src/js",
+					}
+				}
+			]
+		},
+		{
+			test: /\.(js|jsx)$/,
+			exclude: /(node_modules|bower_components)/,
+			loader: "babel-loader",
+			options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
+		},
+		{
+			test:/\.scss$/,
+			use: [
+				{
+					loader: 'file-loader',
+					options: {
+						name: '[name].css',
+						outputPath: 'css_generated/'
+					}
+				},
+				{
+					loader: 'extract-loader'
+				},
+				{
+					loader: 'css-loader',
+					options: { minimize: true }
+				},
+				{
+					loader: 'sass-loader'
+				}
+			]
+		}
+	]
+}
+
+////////
+
+const resolve = {
+	alias: {
+		'handlebars.runtime': 'handlebars/dist/handlebars.runtime.min.js'
 	},
-	resolve: {
-	    alias: {
-	       'handlebars.runtime': 'handlebars/dist/handlebars.runtime.min.js'
-	    },
-	    modules: [
-	        path.resolve('./src/js'),
-	        path.resolve('./node_modules'),
-		],
-		extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss']  //  !!!!!!!  Needs to be updated for any new file extensions used
-	},
-	plugins: [
-		new CaseSensitivePathsPlugin()
-		//  Removed (both) since doesn't precompile the Handlebars in an output format that can be imported  
+	modules: [
+		path.resolve('./src/js'),
+	path.resolve('./node_modules'),
+	],
+	extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss']  //  !!!!!!!  Needs to be updated for any new file extensions used
+}
+
+const plugins = [
+	new CaseSensitivePathsPlugin()
+//  Removed (both) since doesn't precompile the Handlebars in an output format that can be imported
 //        new HandlebarsPrecompiler({
 //            precompileOpts: {preventIndent: true},  //  Passed to Handlebars.precompile(..., precompileOpts ); https://handlebarsjs.com/reference.html
 //            templatesPath: path.join(__dirname, 'handlebars_templates'),
@@ -47,14 +105,27 @@ const mainConfig = {
 //        }),
 //        new HandlebarsPrecompiler( {
 //        	precompileOpts: { preventIndent: true }, //  Passed to Handlebars.precompile(..., precompileOpts ); https://handlebarsjs.com/reference.html
-//        	templatesPath: path.join( __dirname, 'handlebars_templates','peptide_table' ), 
+//        	templatesPath: path.join( __dirname, 'handlebars_templates','peptide_table' ),
 //        	templatesExt: '.handlebars',
 ////      	helpersPath: path.join(__dirname, 'helpers'), // optional
 //        	outputFile: path.join( __dirname, 'handlebars_templates_precompiled', 'peptide_page', 'peptide_table_template-bundle.js' )
 //        } )
-    ],
+]
 
-	entry: {
+
+////////
+
+const mainConfig = (env, argv) => {
+
+	// Choose which 'entry' properties to build using on command line:
+	//
+	//		Single
+	// node_modules/.bin/webpack --env.build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser
+	//
+	//		Multiple  - repeat  '--env.build_entry='
+	// node_modules/.bin/webpack --env.build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser --env.build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers
+
+	let entry = {
 
 		//  Main Pages Header: for header_main_pages.jsp
 
@@ -103,7 +174,7 @@ const mainConfig = {
 
 		'data_pages/modExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_LoggedInUsers.ts',
 		'data_pages/modExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_PublicUser.ts',
-		
+
 		///////////////
 		
 		//  User Pages
@@ -134,66 +205,101 @@ const mainConfig = {
 		
 		// SASS files
 		'styles' : './src/styles/global.scss',
-	},
-	output: {
-		path: path.resolve(__dirname, 'webpack_build_output/'),
-		filename: 'js_generated_bundles/[name]-bundle.js'
-	},
+	}
 
-	module:{
-		rules:[
-			{
-				test: /node_modules/,
-				loader: 'ify-loader'
-			},
-				{
-					test: /\.(ts|tsx)$/,
-					exclude: /(node_modules|bower_components)/,
-					use: [
-						{
-							loader: 'ts-loader',
-							options: {
-								// transpileOnly: true,
-								// "baseUrl": "./src/js", 
-							}
-						}
-					]
-				},
-				{
-		          test: /\.(js|jsx)$/,
-		          exclude: /(node_modules|bower_components)/,
-		          loader: "babel-loader",
-		          options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
-				},
-				{
-					test:/\.scss$/,
-					use: [
-						{
-							loader: 'file-loader',
-							options: {
-								name: '[name].css',
-								outputPath: 'css_generated/'
-							}
-						},
-						{
-							loader: 'extract-loader'
-						},
-						{
-							loader: 'css-loader',
-							options: { minimize: true }
-						},
-						{
-							loader: 'sass-loader'
-						}
-					]
+	// console.log("env: " + env)
+
+	if (env) {
+
+		// console.log("Object.keys(env).join(\", \"): " + Object.keys(env).join(", "))
+		// console.log("env.build_entry: " + env.build_entry)
+		// console.log("env.build_entry.length: " + env.build_entry.length)
+
+		if ( env.build_entry ) {
+
+			console.log()
+
+			console.log("Entering processing in 'webpack.config.js'")
+			console.log()
+
+			console.log("'env.build_entry' has a value.  Processing it.")
+
+			const entry_New = {}
+
+			if ( env.build_entry instanceof Array ) {
+
+				console.log("Specific 'entry' entries will be copied for build from command line params '--env.build_entry=': " + env.build_entry.join(", ") )
+
+				for ( const buildEntry of env.build_entry ) {
+
+					const existingEntry = entry[ buildEntry ];
+
+					if ( ! existingEntry ) {
+						const msg = "No 'entry' object key with string '" + buildEntry + "' from env.build_entry entries."
+						console.warn(msg)
+						throw Error(msg)
+					}
+
+					entry_New[ buildEntry ] = existingEntry
 				}
-		 	]
-	  },
-};
+
+				entry = entry_New;
+
+			} else {
+
+				console.log("Specific 'entry' entry will be copied for build from command line param '--env.build_entry=': " + env.build_entry )
+
+				// console.log("env.build_entry not Array.  env.build_entry: " + env.build_entry)
+				//
+				// console.log("entry[ env.build_entry ]: " +  entry[ env.build_entry ] );
+
+				const existingEntry = entry[ env.build_entry ];
+
+				if ( ! existingEntry ) {
+					const msg = "No 'entry' object key with string '" + env.build_entry + "' from env.build_entry."
+					console.warn(msg)
+					throw Error(msg)
+				}
+
+				entry_New[ env.build_entry ] = existingEntry
+			}
+
+			entry = entry_New;
+
+
+			console.log()
+			console.log("After changes to 'entry' based on command line param(s) '--env.build_entry='")
+			console.log()
+			console.log("'entry' properties: " + Object.keys(entry).join(", "))
+			console.log()
+			{
+				const entry_firstPropertyName = Object.keys(entry)[0];
+				console.log("'entry' 1 random property : key: '" + entry_firstPropertyName);
+				console.log("'entry' 1 random property : key: '" + entry_firstPropertyName + "', value: " + entry[entry_firstPropertyName])
+			}
+			console.log()
+		}
+	}
+
+
+	return {
+		name: "mainConfig",
+		devtool,
+		optimization,
+		resolve,
+		plugins,
+
+		entry,
+		output,
+
+		module: module_MAIN
+	}
+
+}
 
 module.exports = mainConfig;
 
 //     Following doesn't work.
 
-//  export default [ mainConfig ];
+ // export default [ mainConfig ];
 

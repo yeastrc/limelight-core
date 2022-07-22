@@ -2,6 +2,15 @@
 <project basedir="." name="Limelight buildFrontEnd_CopyToTomcat" default="built-copy-front-end">
 
 	<!--  Build the 'front end' and copy to a Tomcat Deploy  -->
+
+	<!--  
+			Targets to build Javascript Only for a Single Page.  The Handlebars templates are NOT rebuilt.  The JSP are NOT copied.
+	
+	 		Search for:  <target name="js_only_build_copy
+	 		
+	 		
+	 		Run ant for specific target using:  ant -f <filename> <target>
+	-->
 	
 	<!--
 	<property environment="env" />
@@ -17,6 +26,17 @@
 	    <condition property="executableToRun_Build_FrontEnd_CopyToComcat" value="./gradlew.bat" else="./gradlew">
 	        <os family="windows"/>
 	    </condition>
+	
+	
+	
+	<!-- When build specific 'entry' for specific page, build using webpack -->
+
+	 <!-- Set program to run for Windows, else Non-Windows (Linux/Mac) -->
+	    <condition property="webpack_executable" value="./node_modules/webpack/bin/webpack.js" else="./node_modules/.bin/webpack">
+	        <os family="windows"/>
+	    </condition>
+	
+	
 	
 	<property name="config_file" value="ant_buildFrontEnd_CopyToTomcat.settings.properties" />
 	
@@ -44,6 +64,9 @@
 	
 	<property name="tomcat.static" value="${tomcat.limelight.webapp.root}${file.separator}static" />
 	<property name="tomcat.jsp" value="${tomcat.limelight.webapp.root}${file.separator}WEB-INF${file.separator}jsp" />
+	
+	
+	<!-- MAIN / DEFAULT Target  -->
 	
 	<target name="built-copy-front-end" description="">
 
@@ -78,5 +101,125 @@
 		</copy>			 
 
 	</target>
+	
+	
+	<!-- =======================  -->
 
+	<!--  Targets to build Javascript Only for a Single Page -->
+	
+	
+	
+	<!--     QC Page Javascript Only Build Target  -->
+	
+	<target name="js_only_build_copy_QC_Page" description="">
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		
+		<exec executable="${webpack_executable}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
+			
+			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
+			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers" />
+			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_PublicUser" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>			 
+				
+	</target>
+
+	<!--     Peptide Page (NOT Experiment Page) Javascript Only Build Target  -->
+	
+	<target name="js_only_build_copy_Peptide_Page" description="">
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		
+		<exec executable="${webpack_executable}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
+			
+			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
+			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers" />
+			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_PublicUser" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>			 
+				
+	</target>
+
+	<!--     Protein Page (NOT Experiment Page) Javascript Only Build Target  -->
+	
+	<target name="js_only_build_copy_Protein_Page" description="">
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		
+		<exec executable="${webpack_executable}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
+			
+			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
+			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers" />
+			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_PublicUser" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>			 
+				
+	</target>
+
+	<!--     Mod Page Javascript Only Build Target  -->
+	
+	<target name="js_only_build_copy_Mod_Page" description="">
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+		
+		<exec executable="${webpack_executable}" dir="." failonerror="true" 
+		    resolveexecutable="true" >
+		    <!--
+		    resolveexecutable:
+		    When this attribute is true, the name of the executable is resolved firstly against the project basedir 
+		    and if that does not exist, against the execution directory if specified. 
+		    On Unix systems, if you only want to allow execution of 
+		    commands in the user's path, set this to false. since Ant 1.6
+		    -->
+			
+			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
+			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers" />
+			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_PublicUser" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+		
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+  		    <fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>			 
+				
+	</target>
+	
+	
 </project>
