@@ -10,7 +10,7 @@
 	-Dlog4j.configurationFile=log4j2__write_to_log_file_under_pgm_run_dir.xml
  -->
 
-<Configuration  status="debug" >
+<Configuration  status="info" >
 
   <Appenders>
   
