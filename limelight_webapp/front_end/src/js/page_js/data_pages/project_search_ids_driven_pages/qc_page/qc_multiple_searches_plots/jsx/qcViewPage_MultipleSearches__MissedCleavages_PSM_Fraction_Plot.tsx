@@ -326,7 +326,7 @@ export class QcViewPage_MultipleSearches__MissedCleavages_PSM_Fraction_Plot exte
 
             const fraction = psm_Count_Containing_MissedCleavage / total_PSM_Count;
             const tooltip = psm_Count_Containing_MissedCleavage.toLocaleString() + " PSM Missed Cleavage Count / " +
-                psm_Count_Containing_MissedCleavage.toLocaleString() + " Total PSM Count"
+                total_PSM_Count.toLocaleString() + " Total PSM Count"
 
             let fraction_BarLabel = fraction.toFixed( 2 );
             {
