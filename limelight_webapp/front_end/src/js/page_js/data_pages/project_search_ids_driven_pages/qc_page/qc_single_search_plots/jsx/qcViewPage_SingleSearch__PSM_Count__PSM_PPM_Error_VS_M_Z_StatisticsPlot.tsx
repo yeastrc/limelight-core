@@ -24,7 +24,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 
 
-const chartTitle = "PPM Error vs/ M/Z";
+const chartTitle = "PPM Error vs/ m/z";
 
 /**
  *
@@ -335,7 +335,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
                 y: chart_Y,
                 hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                     '<b>PPM Error</b>: %{y}' +
-                    '<br><b>M/Z</b>: %{x}' +
+                    '<br><b>m/z</b>: %{x}' +
                     '<br><b>PSM Count</b>: %{z}<extra></extra>',
                 ncontours: 20,
                 colorscale: 'Hot',
@@ -347,7 +347,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
-            chart_X_Axis_Label: "M/Z",
+            chart_X_Axis_Label: "m/z",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram2dcontour'
             chart_Y_Axis_Label: "PPM Error",
             showlegend: false

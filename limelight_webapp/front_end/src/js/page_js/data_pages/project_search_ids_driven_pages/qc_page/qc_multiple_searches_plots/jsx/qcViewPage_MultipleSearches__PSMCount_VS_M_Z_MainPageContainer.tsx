@@ -120,7 +120,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_MainPageContainer exte
             <div >
                 <div>
                     <h2>
-                        Distribution of PSM M/Z
+                        Distribution of PSM m/z
                     </h2>
                 </div>
 

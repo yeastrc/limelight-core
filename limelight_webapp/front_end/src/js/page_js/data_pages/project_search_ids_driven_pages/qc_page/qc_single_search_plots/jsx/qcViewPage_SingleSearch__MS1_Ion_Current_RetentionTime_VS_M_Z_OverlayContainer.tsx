@@ -20,7 +20,7 @@ import {QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Statistics
 
 ////////////////////////////////
 
-const _Overlay_Title = "QC Plot: MS1 Ion Current:  Retention Time VS M/Z  Statistics"
+const _Overlay_Title = "QC Plot: MS1 Ion Current:  Retention Time VS m/z  Statistics"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

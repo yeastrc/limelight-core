@@ -514,7 +514,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             chartTitle,
             chart_X_Axis_Label: "Retention Time (Minutes)",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
-            chart_Y_Axis_Label: "M/Z",
+            chart_Y_Axis_Label: "m/z",
             showlegend: true,
             notMoveTitle: true
         });
@@ -707,7 +707,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
                 const hoverText =
                     // Remove this line: '<b>MS' + spectralStorage_NO_Peaks_DataFor_ScanNumber.level + ' data for PSM</b>' +
-                    '<br><b>M/Z</b>: ' + precursor_M_Over_Z_String +
+                    '<br><b>m/z</b>: ' + precursor_M_Over_Z_String +
                     '<br><b>Retention Time</b>: ' + retentionTime_InMinutes_String +
                     '<br>' + peptideSequenceDisplay_Charge_Display_RowsArray.join("<br>");
 
@@ -828,7 +828,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 // hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                 //     '<b>Ion Current</b>: %{z}' +
                 //     '<br><b>Retention Time (minutes)</b>: %{x}' +
-                //     '<br><b>M/Z</b>: %{y}' +
+                //     '<br><b>m/z</b>: %{y}' +
                 //     '<extra></extra>'
             },
             {
@@ -852,7 +852,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 hoverinfo: 'text',
                 // hovertemplate: //  Added '<extra></extra>' to remove secondary box with trace name
                 //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
-                //     '<br><b>M/Z</b>: %{y}' +
+                //     '<br><b>m/z</b>: %{y}' +
                 //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
             }
         ];

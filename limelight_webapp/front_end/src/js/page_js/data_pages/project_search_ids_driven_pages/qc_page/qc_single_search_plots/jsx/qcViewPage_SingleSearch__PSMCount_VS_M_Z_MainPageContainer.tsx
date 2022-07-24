@@ -116,7 +116,7 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_MainPageContainer extends 
             <div >
                 <div >
                     <h2>
-                        M/Z Statistics
+                        m/z Statistics
                     </h2>
                 </div>
                 <QcPage_ChartBorder>

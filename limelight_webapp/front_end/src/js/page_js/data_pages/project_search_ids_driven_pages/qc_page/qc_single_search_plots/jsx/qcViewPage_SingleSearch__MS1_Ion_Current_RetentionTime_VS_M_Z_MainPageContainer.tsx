@@ -239,7 +239,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
             <div >
                 <div >
                     <h2>
-                        MS1: Retention Time VS M/Z Statistics
+                        MS1: Retention Time VS m/z Statistics
                     </h2>
                 </div>
 

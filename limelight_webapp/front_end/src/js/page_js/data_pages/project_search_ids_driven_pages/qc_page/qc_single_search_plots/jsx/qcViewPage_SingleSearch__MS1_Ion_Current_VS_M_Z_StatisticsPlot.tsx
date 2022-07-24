@@ -358,7 +358,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot exte
             totalSummedIonCurrent += summedIonCurrent;
         }
 
-        console.log( "Chart: MS1 Ion Current vs/ M/Z.  totalSummedIonCurrent: " + totalSummedIonCurrent )
+        console.log( "Chart: MS1 Ion Current vs/ m/z.  totalSummedIonCurrent: " + totalSummedIonCurrent )
 
         //  Colors for Bars
         const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 1 });
@@ -374,18 +374,18 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot exte
                 y: chart_Y,
                 hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                     '<b>Ion Current</b>: %{y}' +
-                    '<br><b>M/Z</b>: %{x}<extra></extra>',
+                    '<br><b>m/z</b>: %{x}<extra></extra>',
                 marker: {
                     color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             }
         ];
 
-        const chartTitle = "MS1 Ion Current vs/ M/Z<br><sup>Note: Data in plot are not filtered.</sup>";
+        const chartTitle = "MS1 Ion Current vs/ m/z<br><sup>Note: Data in plot are not filtered.</sup>";
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
-            chart_X_Axis_Label: "M/Z",
+            chart_X_Axis_Label: "m/z",
             //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
             chart_Y_Axis_Label: "Ion Current",
             showlegend: false

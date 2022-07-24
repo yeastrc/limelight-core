@@ -18,7 +18,7 @@ import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSear
 import {QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_StatisticsPlot";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data";
 
-const _Overlay_Title = "QC Plot: Error Vs M/Z";
+const _Overlay_Title = "QC Plot: Error Vs m/z";
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

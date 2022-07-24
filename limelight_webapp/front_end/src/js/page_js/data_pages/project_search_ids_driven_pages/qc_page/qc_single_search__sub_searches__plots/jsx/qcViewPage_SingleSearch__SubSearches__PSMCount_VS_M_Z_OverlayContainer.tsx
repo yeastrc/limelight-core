@@ -17,7 +17,7 @@ import {qcPage_ChartOverlayDimensions} from "page_js/data_pages/project_search_i
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {QcViewPage_SingleSearch__SubSearches__PSMCount_VS_M_Z_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__PSMCount_VS_M_Z_StatisticsPlot";
 
-const _Overlay_Title = "QC Plot: PSM Count vs M/Z Statistics"
+const _Overlay_Title = "QC Plot: PSM Count vs m/z Statistics"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

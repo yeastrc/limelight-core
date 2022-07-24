@@ -69,7 +69,7 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_MainPageCo
             <div >
                 {/*<div >*/}
                 {/*    <h2>*/}
-                {/*        Error Vs M/Z*/}
+                {/*        Error Vs m/z*/}
                 {/*    </h2>*/}
                 {/*</div>*/}
                 <QcPage_ChartBorder>

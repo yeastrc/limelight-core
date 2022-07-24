@@ -237,7 +237,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer e
             <div >
                 {/*<div >*/}
                 {/*    <h2>*/}
-                {/*        M/Z Statistics*/}
+                {/*        m/z Statistics*/}
                 {/*    </h2>*/}
                 {/*</div>*/}
 

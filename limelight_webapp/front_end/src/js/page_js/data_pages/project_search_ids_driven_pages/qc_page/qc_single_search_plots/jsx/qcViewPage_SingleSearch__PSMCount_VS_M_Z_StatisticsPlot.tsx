@@ -25,7 +25,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 
 
-const chartTitle = "PSM Count vs/ M/Z";
+const chartTitle = "PSM Count vs/ m/z";
 
 /**
  *
@@ -417,7 +417,7 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
                         x: chart_X,
                         hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
                             '<b>PSM Count</b>: %{y}' +
-                            '<br><b>M/Z</b>: %{x}<extra></extra>',
+                            '<br><b>m/z</b>: %{x}<extra></extra>',
                         marker: {
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         }
@@ -426,7 +426,7 @@ export class QcViewPage_SingleSearch__PSMCount_VS_M_Z_StatisticsPlot extends Rea
 
                 const chart_Layout = qcPage_StandardChartLayout({
                     chartTitle,
-                    chart_X_Axis_Label: "M/Z",
+                    chart_X_Axis_Label: "m/z",
                     //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
                     chart_Y_Axis_Label: "PSM Count",
                     showlegend: false

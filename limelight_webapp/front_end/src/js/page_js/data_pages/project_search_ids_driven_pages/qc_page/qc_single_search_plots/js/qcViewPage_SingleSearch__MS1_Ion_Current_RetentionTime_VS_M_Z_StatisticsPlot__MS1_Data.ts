@@ -254,7 +254,7 @@ export const qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     const text =
                         '<b>Ion Current</b>: ' + ionCurrentString +
                         '<br><b>Retention Time</b>: ' + retentionTime_InMinutes_String +
-                        '<br><b>M/Z</b>: ' + ( outerIndex + m_z_Binned_Min );
+                        '<br><b>m/z</b>: ' + ( outerIndex + m_z_Binned_Min );
                     textEntriesInner.push( text );
                 } else {
                     textEntriesInner.push(null);

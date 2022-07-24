@@ -26,7 +26,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 
 
-const chartTitle = "Distribution of PSM Precursor M/Z";
+const chartTitle = "Distribution of PSM Precursor m/z";
 
 
 /**
@@ -489,7 +489,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
             chartTitle,
             chart_X_Axis_Label: "Search Number",
             chart_X_Axis_IsTypeCategory: true,
-            chart_Y_Axis_Label: "M/Z",
+            chart_Y_Axis_Label: "m/z",
             showlegend: false,
             search_SubSearch_Count_SizeFor: transforms_styles.length
         });

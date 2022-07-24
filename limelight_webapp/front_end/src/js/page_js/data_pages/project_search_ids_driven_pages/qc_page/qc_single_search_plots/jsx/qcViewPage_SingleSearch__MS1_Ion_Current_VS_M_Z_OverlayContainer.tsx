@@ -19,7 +19,7 @@ import {QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot} from "pa
 
 ////////////////////////////////
 
-const _Overlay_Title = "QC Plot: M/Z Time Statistics"
+const _Overlay_Title = "QC Plot: m/z Time Statistics"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

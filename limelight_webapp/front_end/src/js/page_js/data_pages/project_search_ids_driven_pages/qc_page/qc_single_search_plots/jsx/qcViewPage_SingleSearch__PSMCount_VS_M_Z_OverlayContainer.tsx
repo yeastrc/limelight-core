@@ -20,7 +20,7 @@ import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 
-const _Overlay_Title = "QC Plot: PSM Count vs/ M/Z"
+const _Overlay_Title = "QC Plot: PSM Count vs/ m/z"
 
 
 const qcPage_ChartOverlayDimensions_Value = qcPage_ChartOverlayDimensions();

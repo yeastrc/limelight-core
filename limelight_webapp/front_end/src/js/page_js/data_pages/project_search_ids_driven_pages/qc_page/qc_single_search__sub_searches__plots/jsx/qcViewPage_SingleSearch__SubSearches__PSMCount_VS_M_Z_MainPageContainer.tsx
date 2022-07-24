@@ -108,7 +108,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSMCount_VS_M_Z_MainPageConta
             <div >
                 <div>
                     <h2>
-                        Distribution of PSM M/Z
+                        Distribution of PSM m/z
                     </h2>
                 </div>
 

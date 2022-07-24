@@ -434,7 +434,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
                 </div>
 
                 <div className=" filter-common-filter-label ">
-                    Filter on Precursor M/Z:
+                    Filter on Precursor m/z:
 
                     <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
                         <div className=" inner-absolute-pos ">
@@ -456,7 +456,7 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
                         <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                             { ( ! this.props.allSearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData ) ? (
                                 <div>
-                                    Not all searches have Precursor M/Z data
+                                    Not all searches have Precursor m/z data
                                 </div>
                             ) : (
                                 <React.Fragment>
