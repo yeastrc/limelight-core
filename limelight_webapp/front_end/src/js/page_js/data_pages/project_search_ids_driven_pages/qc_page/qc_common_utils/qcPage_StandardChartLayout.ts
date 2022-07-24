@@ -13,8 +13,8 @@ const _Plot_Margin_Right = 50;
 const _Plot_Margin_Top = 40;
 const _Plot_Margin_Bottom = 55;
 
-const _StandardChart_Width = 500;
-const _StandardChart_Height = 300;
+const _StandardChart_Width = 750; // was 500;
+const _StandardChart_Height = 450; // was 300;
 
 const _StandardChart_AspectRatio = _StandardChart_Width / _StandardChart_Height;
 
