@@ -370,6 +370,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot exte
                 name: "",  // So tooltip does not show "trace0"
                 type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'histogram'
                 histfunc: "sum",
+                nbinsx: 200, // _CHART_MAX_BINS,
                 x: chart_X,
                 y: chart_Y,
                 hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
