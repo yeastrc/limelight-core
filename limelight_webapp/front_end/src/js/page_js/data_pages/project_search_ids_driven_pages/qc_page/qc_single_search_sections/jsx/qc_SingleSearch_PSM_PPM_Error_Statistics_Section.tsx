@@ -342,7 +342,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
                     ( this.state.loadingData ) ? (
 
                         ( this.state.sectionExpanded ) ? (
-                            <div >
+                            <div className=" section-content-block " style={ { marginBottom: 20 } } >
                                 LOADING DATA
                             </div>
                         ) : null
