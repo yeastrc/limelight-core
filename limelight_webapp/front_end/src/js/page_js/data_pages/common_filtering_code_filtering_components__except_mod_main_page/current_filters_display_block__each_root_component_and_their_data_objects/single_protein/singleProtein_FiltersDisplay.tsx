@@ -22,6 +22,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {SingleProtein_FiltersDisplay_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/single_protein/singleProtein_FiltersDisplay_ComponentData";
 import {currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection";
 import {Page_MainFiltersDisplay_CommonDisplayContainer_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/common/page_MainFiltersDisplay_CommonDisplayContainer_Component";
+import {currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections";
 
 
 
@@ -179,6 +180,15 @@ export class SingleProtein_FiltersDisplay extends React.Component< SingleProtein
 
                 const currentFilter = currentFiltersDisplayBlock__Peptide_QC__PeptideSequence_UserSelections({
                     peptideSequence_UserSelections_StateObject: this.props.singleProtein_FiltersDisplay_ComponentData.peptideSequence_UserSelections_StateObject
+                });
+                if ( currentFilter ) {
+                    currentFiltersArray.push( currentFilter );
+                }
+            }
+
+            {  //  Peptide Sequence Missed Cleavage Count UserSelections
+                const currentFilter = currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections({
+                    peptideSequence_MissedCleavageCount_UserSelections_StateObject: this.props.singleProtein_FiltersDisplay_ComponentData.peptideSequence_MissedCleavageCount_UserSelections_StateObject
                 });
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );

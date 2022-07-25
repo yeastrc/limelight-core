@@ -40,6 +40,7 @@ const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'h';
 const _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 const _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'j';
 const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
+const _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'l';
 
 /**
  * 
@@ -57,6 +58,7 @@ export class PeptideExperimentPageRoot_CentralStateManagerObjectClass {
 		scan_RetentionTime_MZ_UserSelections_EncodedStateData?: any // Scan_RetentionTime_MZ_UserSelections_StateObject
 		psm_Charge_Filter_UserSelection_EncodedStateData?: any
 		peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData?: any
+		peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData? : any // PeptideSequence_MissedCleavageCount_UserSelections_StateObject
 	}
 
 	_centralPageStateManager? : CentralPageStateManager
@@ -90,7 +92,8 @@ export class PeptideExperimentPageRoot_CentralStateManagerObjectClass {
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData : encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData : encodedStateData[ _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				psm_Charge_Filter_UserSelection_EncodedStateData : encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+				psm_Charge_Filter_UserSelection_EncodedStateData : encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: encodedStateData[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -263,6 +266,29 @@ export class PeptideExperimentPageRoot_CentralStateManagerObjectClass {
 		return this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData(
+		{
+			peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+		} :{
+			peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: any
+		} ) {
+		this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData = peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+	 */
+	get_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData() {
+		return this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+	}
+
     /**
      * Called by Central State Manager and maybe other code
 	 */
@@ -307,6 +333,9 @@ export class PeptideExperimentPageRoot_CentralStateManagerObjectClass {
 		}
 		if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
 			dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+		}
+		if ( this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
 		}
 
 		return dataForEncoding;

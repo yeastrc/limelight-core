@@ -279,7 +279,7 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
                 </div>
 
                 <div className=" filter-common-selection-block " >
-                    <div className=" filter-common-selection-inner-block ">
+                    <div className=" filter-common-selection-inner-block "  style={ { marginBottom: 6 } }>
                         <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                             <input type="text" maxLength={ 400 } style={ { width: 250} } value={ peptideSequence_UserSelection }
                                    onChange={ this._inputFieldChanged_BindThis }

@@ -41,6 +41,7 @@ const _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME =
 const _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'i';
 const _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'j';
 const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
+const _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'l';
 
 /**
  *
@@ -59,6 +60,7 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
         scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any  // ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scan_RetentionTime_MZ_UserSelections_EncodedStateData?: any // Scan_RetentionTime_MZ_UserSelections_StateObject
         psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
+        peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData? : any // PeptideSequence_MissedCleavageCount_UserSelections_StateObject
     };
 
     private _centralPageStateManager : CentralPageStateManager;
@@ -91,7 +93,8 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
                 reporterIonMassesSelectedEncodedStateData : encodedStateData[ _REPORTER_ION_MASSES_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
                 scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData : encodedStateData[ _SCAN_FILENAME_ID_ON_PSM_FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
                 scan_RetentionTime_MZ_UserSelections_EncodedStateData : encodedStateData[ _SCAN_RETENTION_TIME_MZ__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-                psm_Charge_Filter_UserSelection_EncodedStateData : encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
+                psm_Charge_Filter_UserSelection_EncodedStateData : encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+                peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData : encodedStateData[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
         }
     }
@@ -250,6 +253,29 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
     }
 
     /**
+     *
+     */
+    set_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData(
+        {
+            peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+        } :{
+            peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: any
+        } ) {
+        this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData = peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+
+        if ( this._centralPageStateManager ) {
+            this._centralPageStateManager.setState( { component : this } );
+        }
+    }
+
+    /**
+     * peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+     */
+    get_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData() {
+        return this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+    }
+
+    /**
      * Called by Central State Manager and maybe other code
      */
     getUniqueId() {
@@ -292,6 +318,9 @@ export class ProteinList_ExpPage_CentralStateManagerObjectClass {
         }
         if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
             dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+        }
+        if ( this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData !== undefined ) {
+            dataForEncoding[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
         }
 
         return dataForEncoding;

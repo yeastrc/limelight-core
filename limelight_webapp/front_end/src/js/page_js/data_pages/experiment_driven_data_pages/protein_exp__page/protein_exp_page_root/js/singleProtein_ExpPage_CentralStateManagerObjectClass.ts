@@ -46,6 +46,7 @@ const _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'k';
 const _FILTER_ON_SCAN_FILENAME_ID_ON_PSM_FILTER_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'l';
 const _FILTER_ON_SCAN_RETENTION_TIME_MZ_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'm';
 const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'n';
+const _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'o';
 
 /**
  * for class property _value
@@ -64,6 +65,7 @@ class InternalStateObject {
 	scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any
 	scan_RetentionTime_MZ_UserSelection_EncodedStateData?: any
 	psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
+	peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData? : any // PeptideSequence_MissedCleavageCount_UserSelections_StateObject
 	experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData?: any // For Single Protein Overlay
 }
 
@@ -116,6 +118,7 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData: encodedStateData[ _FILTER_ON_SCAN_FILENAME_ID_ON_PSM_FILTER_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scan_RetentionTime_MZ_UserSelection_EncodedStateData: encodedStateData[ _FILTER_ON_SCAN_RETENTION_TIME_MZ_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				psm_Charge_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: encodedStateData[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData: encodedStateData[ _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN ]
             };
 		}
@@ -313,6 +316,29 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 		return this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData(
+		{
+			peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+		} :{
+			peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: any
+		} ) {
+		this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData = peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData
+	 */
+	get_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData() {
+		return this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
+	}
+
 	setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData( { experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData }: { experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData: any } ) {
 		this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData;
 
@@ -376,6 +402,9 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 		}
 		if ( this._value.psm_Charge_Filter_UserSelection_EncodedStateData !== undefined ) {
 			dataForEncoding[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.psm_Charge_Filter_UserSelection_EncodedStateData;
+		}
+		if ( this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData !== undefined ) {
+			dataForEncoding[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData;
 		}
 		if ( this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData !== undefined ) {
 			dataForEncoding[ _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN ] = this._value.experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData;

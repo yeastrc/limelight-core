@@ -45,6 +45,7 @@ import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pag
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
+import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
 
 /**
  * 'async' function
@@ -64,6 +65,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
         psm_Charge_Filter_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
+        peptideSequence_MissedCleavageCount_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject
     } : {
         propsValue : PeptideExperimentPage_Display_MainContent_Component_Props_Prop
@@ -79,6 +81,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
         psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
+        peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
     }  ) :
 
@@ -140,6 +143,7 @@ const compute_FullPage_Except_ExperimentGraphic = async function(
             psm_Charge_Filter_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
+            peptideSequence_MissedCleavageCount_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root : null,
             proteinPositionFilter_UserSelections_StateObject,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined

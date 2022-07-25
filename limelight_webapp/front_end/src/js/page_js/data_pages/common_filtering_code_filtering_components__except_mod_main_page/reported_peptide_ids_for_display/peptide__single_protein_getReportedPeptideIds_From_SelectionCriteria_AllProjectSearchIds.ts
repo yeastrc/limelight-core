@@ -39,6 +39,8 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject";
+import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {DataPage_common_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 
 /**
  * object of this class is returned from function 'getReportedPeptideIdsForDisplay_AllProjectSearchIds' which is in this file
@@ -93,6 +95,7 @@ class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_Requ
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
+    peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
 }
 
 //  Class for contents of returned from main method on main class
@@ -116,19 +119,22 @@ class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_Retu
 export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
 
     private _projectSearchIds : Array<number>;
+    private _dataPage_common_Searches_Flags: DataPage_common_Searches_Flags
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
     private _getReportedPeptideIdsForDisplay_SingleProjectSearchId_Class_Map_Key_ProjectSearchId: Map<number, GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class> = new Map();
 
     private constructor(
         {
-            projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            projectSearchIds, dataPage_common_Searches_Flags, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
             projectSearchIds : Array<number>;
+            dataPage_common_Searches_Flags: DataPage_common_Searches_Flags
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         }
     ) {
         this._projectSearchIds = projectSearchIds;
+        this._dataPage_common_Searches_Flags = dataPage_common_Searches_Flags;
         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
         for ( const projectSearchId of projectSearchIds ) {
@@ -158,14 +164,15 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
      */
     static getNewInstance(
         {
-            projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            projectSearchIds, dataPage_common_Searches_Flags, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
             projectSearchIds : Array<number>;
+            dataPage_common_Searches_Flags: DataPage_common_Searches_Flags
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         }
     ) {
         return new GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class({
-            projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            projectSearchIds, dataPage_common_Searches_Flags, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         });
     }
 
@@ -217,10 +224,16 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                 throw Error( "this._getReportedPeptideIdsForDisplay_SingleProjectSearchId_Class_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId );
             }
 
+            const dataPage_common_Flags_SingleSearch = this._dataPage_common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            if ( ! dataPage_common_Flags_SingleSearch ) {
+                throw Error( "this._dataPage_common_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned nothing for projectSearchId: " + projectSearchId )
+            }
+
             const getReportedPeptideIdsForDisplay_SingleProjectSearchId_Result =
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProjectSearchId({
 
                     not_filtered_position_modification_selections: requestParams.not_filtered_position_modification_selections,
+                    dataPage_common_Flags_SingleSearch,
                     proteinSequenceVersionId: requestParams.proteinSequenceVersionId,
 
                     //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
@@ -235,6 +248,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                     psm_Charge_Filter_UserSelection_StateObject: requestParams.psm_Charge_Filter_UserSelection_StateObject,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: requestParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: requestParams.peptideSequence_UserSelections_StateObject,
+                    peptideSequence_MissedCleavageCount_UserSelections_StateObject: requestParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: requestParams.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: requestParams.proteinPositionFilter_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root: requestParams.userSearchString_LocationsOn_ProteinSequence_Root
