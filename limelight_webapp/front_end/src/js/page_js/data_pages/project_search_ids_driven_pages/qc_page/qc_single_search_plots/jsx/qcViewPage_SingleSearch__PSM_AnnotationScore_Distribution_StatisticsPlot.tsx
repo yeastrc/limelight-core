@@ -1,8 +1,9 @@
 /**
- * qcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot.tsx
+ * qcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot.tsx
  *
- * QC Page Single Search : PSM Count vs PSM Annotation Score Statistics
+ * QC Page Single Search : PSM Annotation Score Distribution Statistics Statistics
  *
+ * Histogram
  */
 
 
@@ -19,9 +20,9 @@ import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageS
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {
-    open_PSMCount_VS_AnnotationScore_OverlayContainer,
-    QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
+    open_PSM_AnnotationScore_Distribution_OverlayContainer,
+    QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
@@ -34,16 +35,10 @@ import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filteri
 import {CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
-const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
-const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
-
-// const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE_ASCII = ">=";
-// const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW_ASCII = "<=";
-
 /**
  *
  */
-export interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_Props {
+export interface QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_Props {
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
@@ -52,7 +47,7 @@ export interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_Statistic
 
     searchScanFileId_Selection: number
     annotationTypeId_Score_X: number
-    transform_Score: QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
+    transform_Score: QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice
 
     score_Contains_NegativeValues_Callback: ( score_Contains_NegativeValues: boolean ) => void
 
@@ -63,7 +58,7 @@ export interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_Statistic
 /**
  *
  */
-interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_State {
+interface QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_State {
 
     //  Update shouldComponentUpdate(...) and componentDidUpdate(...) if this changes
 
@@ -74,7 +69,7 @@ interface QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_S
 /**
  *
  */
-export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot extends React.Component< QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_Props, QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_State > {
+export class QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot extends React.Component< QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_Props, QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_State > {
 
     //  bind to 'this' for passing as parameters
 
@@ -94,7 +89,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
     /**
      *
      */
-    constructor(props: QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_Props) {
+    constructor(props: QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_Props) {
         super(props);
 
         if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 ) {
@@ -204,7 +199,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
     /**
      *
      */
-    shouldComponentUpdate(nextProps: Readonly<QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_Props>, nextState: Readonly<QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_State>, nextContext: any): boolean {
+    shouldComponentUpdate(nextProps: Readonly<QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_Props>, nextState: Readonly<QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_State>, nextContext: any): boolean {
 
         if (
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== nextProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent
@@ -225,7 +220,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
     /**
      *
      */
-    componentDidUpdate(prevProps: Readonly<QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_Props>, prevState: Readonly<QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlot_State>, snapshot?: any) {
+    componentDidUpdate(prevProps: Readonly<QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_Props>, prevState: Readonly<QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_StatisticsPlot_State>, snapshot?: any) {
         try {
             if ( this._renderChart ) {
 
@@ -536,8 +531,8 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                         this.props.score_Contains_NegativeValues_Callback(true)
                     }
 
-                    if ( transform_Score_Local === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10
-                        || transform_Score_Local === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+                    if ( transform_Score_Local === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.LOG_10
+                        || transform_Score_Local === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
                         //  Cannot create chart with Score < 0 and Transform Score to Log so return.  Parent component will change to not transform
                         return;  // EARLY RETURN
@@ -551,7 +546,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     }
                 }
 
-                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.LOG_10 ) {
 
                     const psmFilterableAnnotation_Scores_Original = psmFilterableAnnotation_Scores; // Save off original scores
 
@@ -591,7 +586,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                         }
                     }
 
-                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
                     const psmFilterableAnnotation_Scores_Original = psmFilterableAnnotation_Scores; // Save off original scores
 
@@ -634,7 +629,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
                 }
 
-                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NONE ) {
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NONE ) {
 
                     // ONLY if NO Transform
 
@@ -653,12 +648,12 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
                 if ( annotationTypeItem_ForDisplayScore.filterDirectionAbove ) {
 
-                    if ( this.props.transform_Score !== QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+                    if ( this.props.transform_Score !== QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
                         totalScoreValueCount__StartAt_Zero = false;
                     }
                 } else {
-                    if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+                    if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
                         totalScoreValueCount__StartAt_Zero = false;
                     }
@@ -666,30 +661,34 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
 
                 const chart_X : Array<number> = []
-                const chart_Y : Array<number> = []
+                // const chart_Y : Array<number> = []
 
                 {
                     limelight__Sort_ArrayOfNumbers_SortArrayInPlace(psmFilterableAnnotation_Scores);
 
-                    let totalScoreValueCount = 0;
+                    // let totalScoreValueCount = 0;
+                    //
+                    // if ( ! totalScoreValueCount__StartAt_Zero ) {
+                    //     totalScoreValueCount = psmFilterableAnnotation_Scores.length;
+                    // }
 
-                    if ( ! totalScoreValueCount__StartAt_Zero ) {
-                        totalScoreValueCount = psmFilterableAnnotation_Scores.length;
-                    }
                     for ( const scoreValue of psmFilterableAnnotation_Scores ) {
 
-                        if ( totalScoreValueCount__StartAt_Zero ) {
-                            //  Increment it before taking the value
-                            totalScoreValueCount++;
-                        }
-
                         chart_X.push( scoreValue );
-                        chart_Y.push( totalScoreValueCount );
+                        // chart_Y.push( totalScoreValueCount );
 
-                        if ( ! totalScoreValueCount__StartAt_Zero ) {
-                            //  Decrement it after taking the value
-                            totalScoreValueCount--;
-                        }
+                        // if ( totalScoreValueCount__StartAt_Zero ) {
+                        //     //  Increment it before taking the value
+                        //     totalScoreValueCount++;
+                        // }
+                        //
+                        // chart_X.push( scoreValue );
+                        // chart_Y.push( totalScoreValueCount );
+                        //
+                        // if ( ! totalScoreValueCount__StartAt_Zero ) {
+                        //     //  Decrement it after taking the value
+                        //     totalScoreValueCount--;
+                        // }
                     }
                 }
 
@@ -699,51 +698,56 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                 const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index(0);
 
                 //  Marker Size
-                let marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__MAIN_PAGE;
-                if ( this.props.isInSingleChartOverlay ) {
-                    marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
+                // let marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__MAIN_PAGE;
+                // if ( this.props.isInSingleChartOverlay ) {
+                //     marker_Size = QcViewPage_CommonAll_Constants.SCATTERPLOT_MARKER_SIZE__OVERLAY;
+                // }
+
+                let hoverTemplate_X_Axis_Label = "PSM Score"
+
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+
+                    hoverTemplate_X_Axis_Label = "Log10(" + hoverTemplate_X_Axis_Label + ")";
+
+                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+
+                    hoverTemplate_X_Axis_Label = "-Log10(" + hoverTemplate_X_Axis_Label + ")";
                 }
 
                 const chart_Data = [
                     {
                         x: chart_X,
-                        y: chart_Y,
-                        type: 'scattergl',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
-                        mode: 'lines',
+                        type: 'histogram',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'
+                        nbins: 200,
+                        hovertemplate:
+                            '<br><b>PSM Count</b>: %{y}' +
+                            '<br><b>' + hoverTemplate_X_Axis_Label + '</b>: %{x}' +
+                            '<extra></extra>',  //  Added '<extra></extra>' to remove secondary box with trace name
                         marker: {
-                            size: marker_Size,  //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                             color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                         }
                     }
                 ];
-
-                let comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW;
-                if ( ! totalScoreValueCount__StartAt_Zero ) {
-                    comparisonDirectionString = _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE;
-                }
 
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
                 const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
 
 
-                const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X_HTMLEncoded + "<br><sup>Note: Data in plot are not filtered.</sup>";
+                const chartTitle = "PSM Score Distribution: " + annotationType_Name_Score_X_HTMLEncoded + "<br><sup>Note: Data in plot are not filtered.</sup>";
                 let chart_X_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
-                let chart_Y_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
 
-                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
+                if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.LOG_10 ) {
 
                     chart_X_Axis_Label = "Log10(" + chart_X_Axis_Label + ")";
-                    chart_Y_Axis_Label = "Log10(" + chart_Y_Axis_Label + ")";
 
-                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
+                } else if ( this.props.transform_Score === QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_OverlayContainer__TransformScoreChoice.NEGATIVE_LOG_10 ) {
 
                     chart_X_Axis_Label = "-Log10(" + chart_X_Axis_Label + ")";
-                    chart_Y_Axis_Label = "-Log10(" + chart_Y_Axis_Label + ")";
                 }
 
                 chart_X_Axis_Label = "PSM Score: " + chart_X_Axis_Label
-                chart_Y_Axis_Label = "# PSM " + comparisonDirectionString + " " + chart_Y_Axis_Label
+                const chart_Y_Axis_Label = "# PSM"
 
                 const chart_Layout = qcPage_StandardChartLayout({
                     chartTitle,
@@ -753,7 +757,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
                     showlegend: false
                 });
 
-                chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
+                // chart_Layout.hovermode = false;  //  TURN OFF Tooltips for Scatter Plot since get 100% CPU usage when too many points with very similar X or Y
 
                 //    Positioned Above create chart since width used in chart creation/computation
                 // const chart_Layout = qcPage_StandardChartLayout(...)
@@ -848,7 +852,7 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
      */
     private _openChartInOverlay() {
         try {
-            open_PSMCount_VS_AnnotationScore_OverlayContainer({
+            open_PSM_AnnotationScore_Distribution_OverlayContainer({
                 params: {
                     qcViewPage_CommonData_To_AllComponents_From_MainComponent : this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent,
                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent,

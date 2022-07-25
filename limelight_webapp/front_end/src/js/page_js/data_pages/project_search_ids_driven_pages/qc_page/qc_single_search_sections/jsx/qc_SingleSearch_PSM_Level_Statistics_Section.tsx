@@ -16,6 +16,7 @@ import {QcViewPage_SingleSearch__PSM_ChargeState_MainPageContainer} from "page_j
 import {QcViewPage_SingleSearch__PSMCount_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_M_Z_MainPageContainer";
 import {QcViewPage_SingleSearch__PSMCount_VS_PeptideLength_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_PeptideLength_MainPageContainer";
 import {QcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount__PeptideLength_VS_RetentionTime_MainPageContainer";
+import {QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_MainPageContainer";
 
 /**
  *
@@ -253,6 +254,12 @@ export class Qc_SingleSearch_PSM_Level_Statistics_Section extends React.Componen
                                 <QcViewPage_SingleSearch__PSMCount_VS_M_Z_MainPageContainer
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                />
+
+                                <QcViewPage_SingleSearch__PSM_AnnotationScore_Distribution_MainPageContainer
+                                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                    annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
                                 />
 
                                 <QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_MainPageContainer
