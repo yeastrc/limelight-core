@@ -115,21 +115,23 @@ export class Qc_SingleSearch__SubSearches_Peptide_Level_Statistics_Section exten
         return (
 
             <div >
-                <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }
-                    onClick={ this._sectionHeaderRowClicked_BindThis }
+                <div style={ { display: "inline-block" } }
+                     onClick={ this._sectionHeaderRowClicked_BindThis }
                 >
-                    {/*  2 column grid  */}
-                    <div>
-                        { ( this.state.sectionExpanded ) ? (
-                            <img src="static/images/pointer-down.png" className=" icon-large fake-link-image " />
-                        ) : (
-                            <img src="static/images/pointer-right.png" className=" icon-large fake-link-image " />
-                        )}
-                    </div>
-                    <div className=" top-level-label clickable " >
-                        Peptide Level Statistics
-                    </div>
-                </div>  {/* END: 2 column grid  */}
+                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                        {/*  2 column grid  */}
+                        <div>
+                            { ( this.state.sectionExpanded ) ? (
+                                <img src="static/images/pointer-down.png" className=" icon-large fake-link-image " />
+                            ) : (
+                                <img src="static/images/pointer-right.png" className=" icon-large fake-link-image " />
+                            )}
+                        </div>
+                        <div className=" top-level-label clickable " >
+                            Peptide Level Statistics
+                        </div>
+                    </div>  {/* END: 2 column grid  */}
+                </div>
 
                 <div className="top-level-label-bottom-border"></div>
 

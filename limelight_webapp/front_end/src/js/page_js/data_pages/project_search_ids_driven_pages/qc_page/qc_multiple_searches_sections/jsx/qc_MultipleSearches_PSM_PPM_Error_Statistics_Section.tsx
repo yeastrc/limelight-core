@@ -351,21 +351,23 @@ export class Qc_MultipleSearches_PSM_PPM_Error_Statistics_Section extends React.
         return (
 
             <div >
-                <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }
-                    onClick={ this._sectionHeaderRowClicked_BindThis }
+                <div style={ { display: "inline-block" } }
+                     onClick={ this._sectionHeaderRowClicked_BindThis }
                 >
-                    {/*  2 column grid  */}
-                    <div>
-                        { ( this.state.sectionExpanded ) ? (
-                            <img src="static/images/pointer-down.png" className=" icon-large fake-link-image " />
-                        ) : (
-                            <img src="static/images/pointer-right.png" className=" icon-large fake-link-image " />
-                        )}
-                    </div>
-                    <div className=" top-level-label clickable " >
-                        PSM Error Estimates
-                    </div>
-                </div>  {/* END: 2 column grid  */}
+                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                        {/*  2 column grid  */}
+                        <div>
+                            { ( this.state.sectionExpanded ) ? (
+                                <img src="static/images/pointer-down.png" className=" icon-large fake-link-image " />
+                            ) : (
+                                <img src="static/images/pointer-right.png" className=" icon-large fake-link-image " />
+                            )}
+                        </div>
+                        <div className=" top-level-label clickable " >
+                            PSM Error Estimates
+                        </div>
+                    </div>  {/* END: 2 column grid  */}
+                </div>
 
                 <div className="top-level-label-bottom-border"></div>
 

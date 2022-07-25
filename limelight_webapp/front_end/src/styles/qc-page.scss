@@ -6,7 +6,8 @@
 body.qc-page {
 
   div.top-level-label {
-    margin-left: 10px;  //  Distance from Triangle icon on left
+    padding-left: 10px;  //  Distance from Triangle icon on left
+    white-space: nowrap;
   }
 
   div.section-content-block {
