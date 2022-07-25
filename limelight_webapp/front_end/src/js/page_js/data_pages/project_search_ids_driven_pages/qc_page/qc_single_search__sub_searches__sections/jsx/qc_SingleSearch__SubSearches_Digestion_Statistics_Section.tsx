@@ -217,7 +217,12 @@ export class Qc_SingleSearch__SubSearches_Digestion_Statistics_Section extends R
 
                     //  NO DATA
 
-                    this.setState({ compute_MissedCleavages_Data_Result_Root: null });
+                    this.setState( (prevState, props) => {
+                        if ( prevState.compute_MissedCleavages_Data_Result_Root !== null ) {
+                            return { compute_MissedCleavages_Data_Result_Root: null }
+                        }
+                        return null;
+                    });
 
                     return;  // EARLY RETURN
                 }
