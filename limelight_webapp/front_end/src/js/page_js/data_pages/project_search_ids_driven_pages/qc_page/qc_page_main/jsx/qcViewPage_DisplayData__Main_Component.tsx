@@ -1132,6 +1132,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
             this.props.propsValue.peptideSequence_UserSelections_StateObject.clearPeptideSearchStrings();
 
+            this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject.clearAll();
+
             this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.clearSelections();
 
             this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.clearAll();
