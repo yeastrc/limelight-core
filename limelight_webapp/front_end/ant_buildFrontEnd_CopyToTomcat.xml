@@ -124,7 +124,10 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			
+
+			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
+			<arg value="--mode=development" />
+
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers" />
 			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_PublicUser" />
@@ -152,7 +155,10 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			
+
+			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
+			<arg value="--mode=development" />
+
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers" />
 			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_PublicUser" />
@@ -180,7 +186,10 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			
+
+			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
+			<arg value="--mode=development" />
+
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers" />
 			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_PublicUser" />
@@ -208,7 +217,10 @@
 		    On Unix systems, if you only want to allow execution of 
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
-			
+
+			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
+			<arg value="--mode=development" />
+
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers" />
 			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_PublicUser" />
