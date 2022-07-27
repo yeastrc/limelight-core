@@ -11,6 +11,11 @@
 	 		
 	 		Run ant for specific target using:  ant -f <filename> <target>
 	-->
+
+	
+	<!-- !!  ONLY used for building for specific pages where run webpack here -->
+	<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
+	<property name="webpack_param_mode_value" value="--mode=development" />
 	
 	<!--
 	<property environment="env" />
@@ -125,8 +130,8 @@
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
 
-			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
-			<arg value="--mode=development" />
+			<!-- Webpack directive  -->
+			<arg value="${webpack_param_mode_value}" />
 
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers" />
@@ -156,8 +161,8 @@
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
 
-			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
-			<arg value="--mode=development" />
+			<!-- Webpack directive  -->
+			<arg value="${webpack_param_mode_value}" />
 
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers" />
@@ -187,8 +192,8 @@
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
 
-			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
-			<arg value="--mode=development" />
+			<!-- Webpack directive  -->
+			<arg value="${webpack_param_mode_value}" />
 
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers" />
@@ -218,8 +223,8 @@
 		    commands in the user's path, set this to false. since Ant 1.6
 		    -->
 
-			<!-- Webpack directive, mode development.  Same as used when build all of front end in build.gradle when build from this ant script -->
-			<arg value="--mode=development" />
+			<!-- Webpack directive  -->
+			<arg value="${webpack_param_mode_value}" />
 
 			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
 			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers" />
