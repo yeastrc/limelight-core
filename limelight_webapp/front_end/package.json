@@ -44,7 +44,7 @@
     "@types/react-beautiful-dnd": "^11.0.3",
     "@types/react-plotly.js": "^2.5.0",
     "babel-loader": "^8.0.6",
-    "caniuse-lite": "^1.0.30001307",
+    "caniuse-lite": "^1.0.30001373",
     "d3-drag": "^1.2.4",
     "ify-loader": "^1.1.0",
     "jstat": "^1.9.1",
