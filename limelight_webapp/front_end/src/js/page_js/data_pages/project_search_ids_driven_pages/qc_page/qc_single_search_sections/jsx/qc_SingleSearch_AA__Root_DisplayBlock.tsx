@@ -174,16 +174,12 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-
-                {/*
-                Commented out until approved
                 <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_Protein_Level_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
-                */}
 
             </React.Fragment>
         );
