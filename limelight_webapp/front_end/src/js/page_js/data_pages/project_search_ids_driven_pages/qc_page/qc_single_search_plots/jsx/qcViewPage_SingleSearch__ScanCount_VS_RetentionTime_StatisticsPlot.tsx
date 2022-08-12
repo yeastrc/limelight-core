@@ -367,7 +367,7 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
         //     return null;
         // });
 
-
+        const searchScanFileId = this.props.searchScanFileId_Selection;
 
         const promises: Array<Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>> = []
 
@@ -402,6 +402,13 @@ export class QcViewPage_SingleSearch__ScanCount_VS_RetentionTime_StatisticsPlot 
             try {
                 if ( ! this._componentMounted ) {
                     //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
+                if ( searchScanFileId !== this.props.searchScanFileId_Selection ) {
+
+                    //  Data NOT loaded for currently selected searchScanFileId_Selected so SKIP - USER Likely changed selection while data was loading
+
                     return; // EARLY RETURN
                 }
 

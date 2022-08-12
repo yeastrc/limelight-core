@@ -182,15 +182,25 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_RetentionTime_MainPageC
      */
     private _loadDataIfNeeded() {
 
+        const searchScanFileId = this.props.searchScanFileId_Selected;
+
         const promise =
             this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ({ searchScanFileId: this.props.searchScanFileId_Selected });
+            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ({ searchScanFileId });
 
         promise.catch( reason => {
 
         })
         promise.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => {
             try {
+
+                if ( searchScanFileId !== this.props.searchScanFileId_Selected ) {
+
+                    //  Data NOT loaded for currently selected searchScanFileId_Selected so SKIP - USER Likely changed selection while data was loading
+
+                    return; // EARLY RETURN
+                }
+
                 const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData =
                     qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( this.props.searchScanFileId_Selected );
 

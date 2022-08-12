@@ -172,14 +172,23 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
             return null;
         });
 
+        const searchScanFileId = this.props.searchScanFileId_Selected;
+
         const promise =
             this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileSummaryPerLevelData({ searchScanFileId: this.props.searchScanFileId_Selected });
+            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileSummaryPerLevelData({ searchScanFileId });
 
         promise.catch( reason => {
 
         })
         promise.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => {
+
+            if ( searchScanFileId !== this.props.searchScanFileId_Selected ) {
+
+                //  Data NOT loaded for currently selected searchScanFileId_Selected so SKIP - USER Likely changed selection while data was loading
+
+                return; // EARLY RETURN
+            }
 
             this.setState((prevState: Readonly<QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State>, props: Readonly<QcViewPage_SingleSearch__ScanFileSummaryDataBlock_Props>) : QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State =>  {
 
