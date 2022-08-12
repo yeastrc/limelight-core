@@ -55,7 +55,7 @@ public class ScanFiles_Populate_SpectralStorageService_API_Key {
 
 				String spectralStorageAPIKey =
 						scanFileToSpectralStorageService_GetAPIKey
-						.scanFileToSpectralStorageService_GetAPIKey( spectralStorageProcessKey );
+						.scanFileToSpectralStorageService_GetAPIKey( spectralStorageProcessKey, searchScanFileEntry );
 				
 				searchScanFileImporterDTO.setSpectralStorageAPIKey( spectralStorageAPIKey );
 			}

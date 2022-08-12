@@ -24,8 +24,10 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterConf
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterSpectralStorageServiceErrorException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterSpectralStorageServiceRetryExceededException;
+import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.spectral_storage.accept_import_web_app.shared_server_client.constants_enums.WebserviceSpectralStorageAcceptImport_ProcessStatusEnum;
 import org.yeastrc.spectral_storage.accept_import_web_app.shared_server_client.webservice_request_response.main.Get_UploadedScanFileInfo_Request;
 import org.yeastrc.spectral_storage.accept_import_web_app.shared_server_client.webservice_request_response.main.Get_UploadedScanFileInfo_Response;
@@ -73,7 +75,11 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 
 	
 	
-	public String scanFileToSpectralStorageService_GetAPIKey( String spectralStorage_Process_Key ) throws Exception {
+	public String scanFileToSpectralStorageService_GetAPIKey( 
+			
+			String spectralStorage_Process_Key,
+			SearchScanFileEntry searchScanFileEntry //  Overall data
+			) throws Exception {
 
 		String spectralStorageAPIKey = null;
 		
@@ -169,17 +175,39 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 				
 				String scanFileParseErrorMsg = null;  // If other Failure
 				
-				if ( StringUtils.isNotEmpty( get_UploadedScanFileInfo_Response.getDataErrorFailMessage() ) )  {
-
-					String msg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
-					log.error( msg );
+				{
+					String scanFilename_WithLabel = "";
+					SearchScanFileDTO searchScanFileDTO = searchScanFileEntry.getSearchScanFileDTO();
+					if ( searchScanFileDTO != null && StringUtils.isNotEmpty( searchScanFileDTO.getFilename() ) ) {
+						scanFilename_WithLabel = ":  Uploaded Scan Filename: " + searchScanFileDTO.getFilename();
+					}
 					
-					//  Return Data Error Fail Message returned from Spectral Storage Service
-					scanFileParse_Data_ErrorMsg = get_UploadedScanFileInfo_Response.getDataErrorFailMessage();
+					String scanFileUploaded_OnDisk_WithLabel = "";
+					if ( searchScanFileEntry.getSearchScanFileImporterDTO() != null
+							&& StringUtils.isNotEmpty( searchScanFileEntry.getSearchScanFileImporterDTO().getAbsoluteFilename_W_Path_OnSubmitMachine() ) ) {
+						scanFileUploaded_OnDisk_WithLabel = ": Uploaded scan file on disk: "
+								+ searchScanFileEntry.getSearchScanFileImporterDTO().getAbsoluteFilename_W_Path_OnSubmitMachine();
+					}
 
-				} else {
-					scanFileParseErrorMsg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
-					log.error( scanFileParseErrorMsg );
+					if ( StringUtils.isNotEmpty( get_UploadedScanFileInfo_Response.getDataErrorFailMessage() ) )  {
+
+						String msg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " 
+								+ spectralStorage_Process_Key
+								+ scanFilename_WithLabel
+								+ scanFileUploaded_OnDisk_WithLabel;
+						log.error( msg );
+
+						//  Return Data Error Fail Message returned from Spectral Storage Service
+						scanFileParse_Data_ErrorMsg = get_UploadedScanFileInfo_Response.getDataErrorFailMessage();
+
+					} else {
+
+						scanFileParseErrorMsg = "Spectral Storage System Failed to process Scan file.  spectralStorage_API_Process_Key: " 
+								+ spectralStorage_Process_Key
+								+ scanFilename_WithLabel
+								+ scanFileUploaded_OnDisk_WithLabel;
+						log.error( scanFileParseErrorMsg );
+					}
 				}
 				
 				try {
@@ -199,8 +227,15 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 					log.error( msg2, e );
 				}
 				
-				if ( scanFileParse_Data_ErrorMsg != null ) {
-					throw new LimelightImporterDataException( scanFileParse_Data_ErrorMsg );
+				if ( scanFileParse_Data_ErrorMsg != null ) { // ABOVE: scanFileParse_Data_ErrorMsg = get_UploadedScanFileInfo_Response.getDataErrorFailMessage();
+
+					String scanFilename_WithLabel = "";
+					SearchScanFileDTO searchScanFileDTO = searchScanFileEntry.getSearchScanFileDTO();
+					if ( searchScanFileDTO != null && StringUtils.isNotEmpty( searchScanFileDTO.getFilename() ) ) {
+						scanFilename_WithLabel = ": Scan Filename: " + searchScanFileDTO.getFilename();
+					}
+					
+					throw new LimelightImporterDataException( "Error processing Scan File" + scanFilename_WithLabel + ": " + scanFileParse_Data_ErrorMsg );
 				}
 				
 				throw new LimelightImporterSpectralStorageServiceErrorException(scanFileParseErrorMsg);
