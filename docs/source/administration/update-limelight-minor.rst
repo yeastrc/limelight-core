@@ -12,13 +12,6 @@ This guide assumes you have completed all the steps in the :doc:`install-limelig
 On Linux and MacOS, open a normal terminal. On Windows, if you followed our instructions for installing Docker,
 follow the directions on our :ref:`Docker Installation Tutorial <Windows Terminal>` to open a Linux terminal.
 
-.. note::
-   If you are using **Windows**, you may need to start Docker by typing:
-
-   .. code-block:: bash
-
-      sudo service docker start
-
 2. Shutdown Limelight
 =============================
 Go into your Limelight project directory:

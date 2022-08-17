@@ -18,7 +18,7 @@ This tutorial will install WSL2 and Docker Desktop, which will allow you to run 
 in Linux on Windows.
 
 1. Install WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_. If WSL2 is already installed, skip this step.
-2. Install Docker Desktop and link it to WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_ If Docker Desktop is already installed, follow the link and follow the directions to ensure it is enabled in your Linux distribution.
+2. Install Docker Desktop and link it to WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_. If Docker Desktop is already installed, follow the link and follow the directions to ensure it is enabled in your Linux distribution.
 
 Windows Terminal
 -------------------
@@ -32,8 +32,6 @@ and clicking the menu icon as depicted below. Note `Ubuntu 20.04` may be a diffe
 If you do not install Windows Terminal, you can access your new Ubuntu LTS installation by opening
 a command prompt (Press the Win + R keys on your keyboard, then type cmd, and press Enter on your keyboard or click/tap OK).
 Enter ``bash`` into the command prompt and hit enter.
-
-Once you have completed the installation of WSL 2, please view the :ref:`Ubuntu 20.04` section below to install Docker.
 
 Apple macOS
 ====================
@@ -57,9 +55,6 @@ Copy and paste each of the following commands, one by one, into the Linux termin
        sudo apt update -y
        apt-cache policy docker-ce
        sudo apt install docker-ce -y
-
-       # If you are on Windows, start Docker with:
-       sudo service docker start
 
 
 CentOS

@@ -98,15 +98,6 @@ To stop Limelight:
        sudo docker-compose -f docker-compose-custom-data.yml down
 
 .. note::
-   If you are using **Windows**, ensure Docker is running by typing:
-
-   .. code-block:: bash
-
-      sudo service docker start
-
-   You should now be able to start Limelight.
-
-.. note::
    The first time you start Limelight, all of the components will download and the database will
    initialize. This may take a few minutes, depending on your download speed. Subsequent startups
    of Limelight will not require these steps and will be faster.
