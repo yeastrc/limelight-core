@@ -13,6 +13,12 @@ For more information about Docker, see `the official Docker website <https://www
 
 Microsoft Windows
 ====================
+
+.. important::
+   This document assumes you do not have Docker Desktop installed. If you do, please
+   `follow these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_
+   and disregard the remainder of this document.
+
 We recommend installing Docker via the Windows Subsystem for Linux (WSL 2). WSL 2 one of the latest
 features of Windows that supports natively running Linux right alongside Windows at the same
 time. This opens the Linux ecosystem up to Windows users and makes installing and using many Linux applications
