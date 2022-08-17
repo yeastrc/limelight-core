@@ -14,45 +14,22 @@ For more information about Docker, see `the official Docker website <https://www
 Microsoft Windows
 ====================
 
-.. important::
-   This document assumes you do not have Docker Desktop installed. If you do, please
-   `follow these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_
-   and disregard the remainder of this document.
+This tutorial will install WSL2 and Docker Desktop, which will allow you to run any Docker containers natively
+in Linux on Windows.
 
-We recommend installing Docker via the Windows Subsystem for Linux (WSL 2). WSL 2 one of the latest
-features of Windows that supports natively running Linux right alongside Windows at the same
-time. This opens the Linux ecosystem up to Windows users and makes installing and using many Linux applications
-much simpler.
-
-Open an **administrator** PowerShell or Windows Command prompt and enter the following:
-
-    .. code-block:: bash
-
-       wsl --install -d Ubuntu-20.04
-
-Reboot your computer.
-
-If you encounter any issues installing WSL2, please `follow these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/install>`_.
-
-  .. note::
-     At the time of this writing, the instructions from Microsoft will install Ubuntu 22.04.1 by default. So if you followed
-     the instructions from Microsoft, run this command to ensure Ubuntu 20.04 is installed:
-
-    .. code-block:: bash
-
-       wsl --install -d Ubuntu-20.04
-
+1. Install WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_. If WSL2 is already installed, skip this step.
+2. Install Docker Desktop and link it to WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_ If Docker Desktop is already installed, follow the link and follow the directions to ensure it is enabled in your Linux distribution.
 
 Windows Terminal
 -------------------
-We recommend installing **Windows Terminal** at this time.
+If you are using Windows 10, we recommend installing **Windows Terminal** at this time. Windows 11 has Windows Terminal installed by default.
 `Follow these directions from Microsoft to install Windows Terminal <https://docs.microsoft.com/en-us/windows/terminal/get-started>`_. Once installed
-you can easily access the command line of your new Ubuntu 20.04 LTS installation by launching Windows Terminal
-and clicking the menu icon as depicted below.
+you can easily access the command line of your new Ubuntu LTS installation by launching Windows Terminal
+and clicking the menu icon as depicted below. Note `Ubuntu 20.04` may be a different version number on your system.
 
 .. image:: /_static/windows-terminal-ubuntu.png
 
-If you do not install Windows Terminal, you can access your new Ubuntu 20.04 LTS installation by opening
+If you do not install Windows Terminal, you can access your new Ubuntu LTS installation by opening
 a command prompt (Press the Win + R keys on your keyboard, then type cmd, and press Enter on your keyboard or click/tap OK).
 Enter ``bash`` into the command prompt and hit enter.
 
@@ -65,8 +42,7 @@ Once installed and running, Docker may be accessed by opening a new Terminal and
 
 Linux
 ==============
-Below are instructions and links to instructions for installing Docker on the most popular Linux distributions. If
-you installed WSL 2 on Windows per the instructions above, follow the **Ubuntu 20.04** instructions.
+Below are instructions and links to instructions for installing Docker on the most popular Linux distributions.
 
 Ubuntu 20.04
 ---------------
