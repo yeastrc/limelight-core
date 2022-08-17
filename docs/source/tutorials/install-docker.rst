@@ -18,10 +18,24 @@ features of Windows that supports natively running Linux right alongside Windows
 time. This opens the Linux ecosystem up to Windows users and makes installing and using many Linux applications
 much simpler.
 
-To enable WSL 2 on your Windows 10 installation,
-`follow these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`_. Scroll down
-to the **Manual Installation Steps** section and follow the instructions. Once you get to **Step 6** these instructions
-will assume you have installed **Ubuntu 20.04 LTS**.
+Open an **administrator** PowerShell or Windows Command prompt and enter the following:
+
+    .. code-block:: bash
+
+       wsl --install -d Ubuntu-20.04
+
+Reboot your computer.
+
+If you encounter any issues installing WSL2, please `follow these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/install>`_.
+
+  .. note::
+     At the time of this writing, the instructions from Microsoft will install Ubuntu 22.04.1 by default. So if you followed
+     the instructions from Microsoft, run this command to ensure Ubuntu 20.04 is installed:
+
+    .. code-block:: bash
+
+       wsl --install -d Ubuntu-20.04
+
 
 Windows Terminal
 -------------------
