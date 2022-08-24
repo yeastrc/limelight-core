@@ -54,6 +54,9 @@ export const tooltip_Limelight_Create_Tooltip = function({
 
     documentBody.appendChild( tooltip_addedDivElementDOM );
 
+    const tooltip_Limelight_Created_Tooltip = new Tooltip_Limelight_Created_Tooltip({ tooltip_addedDivElementDOM });
+
+
     // console.log( "mainCellMouseEnter: this._tooltip_addedDivElementDOM:" );
     // console.log( this._tooltip_addedDivElementDOM );
     
@@ -75,6 +78,7 @@ export const tooltip_Limelight_Create_Tooltip = function({
     const tooltip = (
         <Tooltip_Limelight_Component 
             tooltipContents={ tooltipContents }
+            tooltip_Limelight_Created_Tooltip={ tooltip_Limelight_Created_Tooltip }
             targetDOMElement_domRect_Left={ targetDOMElement_domRect_Left }
             targetDOMElement_domRect_Right={ targetDOMElement_domRect_Right }
             targetDOMElement_domRect_Top={ targetDOMElement_domRect_Top }
@@ -87,8 +91,6 @@ export const tooltip_Limelight_Create_Tooltip = function({
         tooltip_addedDivElementDOM,
         renderCompletecallbackFcn 
     );
-
-    const tooltip_Limelight_Created_Tooltip = new Tooltip_Limelight_Created_Tooltip({ tooltip_addedDivElementDOM });
 
     return tooltip_Limelight_Created_Tooltip;
 }
@@ -189,7 +191,8 @@ interface Tooltip_Limelight_Component_Props {
     targetDOMElement_domRect_Right : number;
     targetDOMElement_domRect_Top : number;
     targetDOMElement_domRect_Bottom : number;
-    tooltipContents
+    tooltipContents : JSX.Element
+    tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip
 }
 
 interface Tooltip_Limelight_Component_State {
@@ -224,6 +227,9 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         // console.log("class TooltipComponent: constructor()");
     }
 
+    /**
+     *
+     */
     componentDidMount() {
         // console.log("class TooltipComponent: componentDidMount()");
 
@@ -235,9 +241,28 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
                 this._processAfter_componentDidMount();
 
             }, 10 )
-
     }
 
+    /**
+     *
+     */
+    componentWillUnmount() {
+        // console.log("class TooltipComponent: componentWillUnmount()");
+
+        this._componentMounted = false;
+
+        try {
+            window.clearTimeout( this._timeoutId_ComponentDidMount_RunAfter_SetTimeout );
+        } catch (e) {
+            //  eat exception
+        }
+    }
+
+    ////
+
+    /**
+     *
+     */
     private _processAfter_componentDidMount() {
 
         if ( ! this._componentMounted ) {
@@ -347,16 +372,24 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
         this.setState({ tooltip_width : tooltipDiv_domRect_Width, tooltip_Left: tooltip_Left_PositionAbsolute, tooltip_Top_PositionAbsolute });
     }
 
-    componentWillUnmount() {
-        // console.log("class TooltipComponent: componentWillUnmount()");
+    /**
+     *
+     */
+    private _onMouseEnter_MainDiv( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
 
-        this._componentMounted = false;
+        console.warn("_onMouseEnter_MainDiv")
 
-        try {
-            window.clearTimeout( this._timeoutId_ComponentDidMount_RunAfter_SetTimeout );
-        } catch (e) {
-            //  eat exception
-        }
+        this.props.tooltip_Limelight_Created_Tooltip.removeTooltip();
+    }
+
+    /**
+     *
+     */
+    private _onMouseLeave_MainDiv( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
+
+        console.warn("_onMouseLeave_MainDiv")
+
+        this.props.tooltip_Limelight_Created_Tooltip.removeTooltip();
     }
 
     /**
@@ -366,20 +399,22 @@ class Tooltip_Limelight_Component extends React.Component< Tooltip_Limelight_Com
 
         const tooltip_Left = this.state.tooltip_Left;
         const tooltip_Top = this.state.tooltip_Top_PositionAbsolute;
-        
+
         const tooltip = (
             <div ref={ this.tooltip_outer_Ref }
-                className=" tooltip-limelight-react-based-outer-container "
-                style={ { 
-                    position: "absolute", 
-                    zIndex: 100000,
-                    pointerEvents: "none",
-                    top: tooltip_Top,
-                    left: tooltip_Left,
-                    width: this.state.tooltip_width,
-                    minWidth: 50, 
-                    maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
-                }}
+                 className=" tooltip-limelight-react-based-outer-container "
+                 style={ {
+                     position: "absolute",
+                     zIndex: 100000,
+                     // pointerEvents: "none",
+                     top: tooltip_Top,
+                     left: tooltip_Left,
+                     width: this.state.tooltip_width,
+                     minWidth: 50,
+                     maxWidth: "calc( 100vw - 100px )", //  Viewport width (100vw) minus 100px.  100px chosen in part to allow for vertical scrollbar
+                 }}
+                 onMouseEnter={ event => { this._onMouseEnter_MainDiv(event) } }
+                 onMouseLeave={ event => { this._onMouseLeave_MainDiv(event) } }
             >
                 <span style={ { overflowWrap : "break-word"  /* Force single words to break to wrap if exceed max width */ 
                     //  overflowWrap set here since 'tooltipContents' is passed in
