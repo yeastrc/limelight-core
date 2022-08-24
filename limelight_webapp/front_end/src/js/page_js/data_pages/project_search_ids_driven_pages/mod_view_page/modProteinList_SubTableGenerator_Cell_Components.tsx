@@ -88,6 +88,8 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
 
     private _tooltip_Limelight_Created_Tooltip : Tooltip_Limelight_Created_Tooltip;
 
+    private _mouse_IsCurrently_Entered_And_NotLeft = false;
+
     private _unmounted = false;
 
     /**
@@ -137,14 +139,23 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
             return;
         }
 
+        this._mouse_IsCurrently_Entered_And_NotLeft = true;
+
         const tooltipContents = _getTooltipText( null );
-        const loadingMessage_Tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._proteinNameSpan_Ref.current, tooltipContents });
+        this._tooltip_Limelight_Created_Tooltip = tooltip_Limelight_Create_Tooltip({ tooltip_target_DOM_Element: this._proteinNameSpan_Ref.current, tooltipContents });
 
         const promise = this.props.modViewDataManager.getProteinNamesAndDescriptions({ proteinId: this.props.proteinId, projectSearchIds: this.props.projectSearchIds });
 
         promise.then( result => {
 
-            loadingMessage_Tooltip_Limelight_Created_Tooltip.removeTooltip();
+            if ( this._tooltip_Limelight_Created_Tooltip ) {
+                this._tooltip_Limelight_Created_Tooltip.removeTooltip();
+            }
+
+            if ( ! this._mouse_IsCurrently_Entered_And_NotLeft ) {
+                //  Already mouse leave so not display main tooltip
+                return;
+            }
 
             if ( this._unmounted ) {
                 return;
@@ -166,6 +177,8 @@ class Cell_Protein_Name_Contents_Component extends React.Component< Cell_Protein
     private _onMouseLeave( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
 
         // event.stopPropagation();
+
+        this._mouse_IsCurrently_Entered_And_NotLeft = false;
 
         if ( this._tooltip_Limelight_Created_Tooltip ) {
             this._tooltip_Limelight_Created_Tooltip.removeTooltip();
