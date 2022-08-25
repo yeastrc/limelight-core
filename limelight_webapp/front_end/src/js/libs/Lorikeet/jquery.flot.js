@@ -2386,7 +2386,10 @@ let addFlotMainToJquery = function( $ ) {
                         }
                         if(series.peaks.print) {
                             // appending a div is too slow
-                            o = plot.getPlotOffset();
+
+                            //        Change made in Limelight code Only:  put 'const' before 'o'
+                            const o = plot.getPlotOffset();
+                            
                             placeholder.append('<div style="position:absolute;left:' +(myx+o.left-2) + 'px;top:' +(myy2 - o.top - 2)  + 'px;color:'+series.color+'">'+label+'</div>');
                         }
                         else {
