@@ -162,7 +162,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 
 		} catch( e ) {
 			
-			const msg = "Failed to add Lorikeet Spectrum viewer to child window.";
+			const msg = "Failed to add Lorikeet Spectrum viewer to page.";
 			console.warn( msg + "  Error: ", e )
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			alert( msg );
@@ -314,14 +314,16 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			if ( this._openModPosition_Displayed === LorikeetSpectrumViewer_Constants.OPENMOD_POSITION_QUERY_STRING_VALUE__N ) {
 
 				let positionEntry : LorikeetSpectrumViewer_DataFromServer_OpenModification_Position_SubPart_Data = null;
-				for ( const positionEntry_InList of positionEntries_Optional ) {
-					if ( positionEntry_InList.is_N_Terminal ) {
-						positionEntry = positionEntry_InList;
+				if ( positionEntries_Optional ) {
+					for ( const positionEntry_InList of positionEntries_Optional ) {
+						if ( positionEntry_InList.is_N_Terminal ) {
+							positionEntry = positionEntry_InList;
+						}
 					}
 				}
 				if ( ! positionEntry ) {
 
-					window.alert("URL has open mod position but there is data for position 'n' for open mod for psm");
+					window.alert("URL has open mod position but there is NO data for position 'n' for open mod for psm");
 
 					const msg = "( this._openModPosition_Displayed !== undefined && this._openModPosition_Displayed !== null ) AND NO entry for ( positionEntry_InList.is_N_Terminal ) ";
 					console.warn(msg);
@@ -333,14 +335,16 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			} else if ( this._openModPosition_Displayed === LorikeetSpectrumViewer_Constants.OPENMOD_POSITION_QUERY_STRING_VALUE__C ) {
 
 				let positionEntry : LorikeetSpectrumViewer_DataFromServer_OpenModification_Position_SubPart_Data = null;
-				for ( const positionEntry_InList of positionEntries_Optional ) {
-					if ( positionEntry_InList.is_C_Terminal ) {
-						positionEntry = positionEntry_InList;
+				if ( positionEntries_Optional ) {
+					for ( const positionEntry_InList of positionEntries_Optional ) {
+						if ( positionEntry_InList.is_C_Terminal ) {
+							positionEntry = positionEntry_InList;
+						}
 					}
 				}
 				if ( ! positionEntry ) {
 
-					window.alert("URL has open mod position but there is data for position 'c' for open mod for psm");
+					window.alert("URL has open mod position but there is NO data for position 'c' for open mod for psm");
 
 					const msg = "( this._openModPosition_Displayed !== undefined && this._openModPosition_Displayed !== null ) AND NO entry for ( positionEntry_InList.is_C_Terminal ) ";
 					console.warn(msg);
@@ -354,14 +358,16 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 				//  A numeric position was selected
 
 				let positionEntry : LorikeetSpectrumViewer_DataFromServer_OpenModification_Position_SubPart_Data = null;
-				for ( const positionEntry_InList of positionEntries_Optional ) {
-					if ( positionEntry_InList.position === this._openModPosition_Displayed ) {
-						positionEntry = positionEntry_InList;
+				if ( positionEntries_Optional ) {
+					for ( const positionEntry_InList of positionEntries_Optional ) {
+						if ( positionEntry_InList.position === this._openModPosition_Displayed ) {
+							positionEntry = positionEntry_InList;
+						}
 					}
 				}
 				if ( ! positionEntry ) {
 
-					window.alert("URL has open mod position but there is data for position " + this._openModPosition_Displayed + " for open mod for psm");
+					window.alert("URL has open mod position but there is NO data for position " + this._openModPosition_Displayed + " for open mod for psm");
 
 					const msg = "( this._openModPosition_Displayed !== undefined && this._openModPosition_Displayed !== null ) AND NO entry for position " + this._openModPosition_Displayed;
 					console.warn(msg);
