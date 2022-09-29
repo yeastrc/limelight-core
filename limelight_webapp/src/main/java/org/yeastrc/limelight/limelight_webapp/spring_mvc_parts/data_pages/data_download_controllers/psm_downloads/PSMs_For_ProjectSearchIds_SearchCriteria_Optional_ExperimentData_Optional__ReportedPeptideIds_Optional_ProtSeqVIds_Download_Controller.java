@@ -93,6 +93,8 @@ import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalDa
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.AA_DataDownloadControllersPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.data_download_controllers.DownloadsCharacterSetConstant;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants;
+import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.LorikeetSpectrumViewer_PageController;
 import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
 import org.yeastrc.limelight.limelight_webapp.web_utils.SearchSubGroup_Name_Display_Computation_Util;
 import org.yeastrc.limelight.limelight_webapp.web_utils.UnmarshalJSON_ToObject;
@@ -123,6 +125,11 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	private static final String CONTROLLER_PATH =
 			AA_DataDownloadControllersPaths_Constants.PATH_START_ALL
 			+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER;
+	
+	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__N_TERM = "n";
+	private static final String SPECTRUM_VIEWER_OPEN_MOD_POSITION__C_TERM = "c";
+	
+	private static final String OPEN_MOD_POSITION_URL_ADDITION = "?openmod-position=";  //  Change in Client side code as well if change this string
 	
 
 	private static final int MINIMUM_NUMBER_OF_PSMS_PER_REPORTED_PEPTIDE = 1; // TODO standard minimum # PSMs 
@@ -223,6 +230,23 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			
 			//  TODO Maybe do something different
 			throw new LimelightInternalErrorException( "'requestJSONString' is not populated field in form POST" );
+		}
+		
+		String requestURL_Base__Before__ControllerPath = null;
+		
+		{
+			String requestURL = httpServletRequest.getRequestURL().toString();
+			
+			int controllerPathStart_Index = requestURL.indexOf( 
+					AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER );
+			
+			if ( controllerPathStart_Index < 0 ) {
+				throw new LimelightInternalErrorException( "request url 'httpServletRequest.getRequestURL().toString()' does NOT contain controller path '"
+						+ AA_DataDownloadControllersPaths_Constants.PSMS_FOR_PROJECT_SEARCH_IDS_SEARCH_CRITERIA_OPTIONAL_EXPERIMENT_DATA_DOWNLOAD_CONTROLLER 
+						+ "'" );
+			}
+			
+			requestURL_Base__Before__ControllerPath = requestURL.substring(0, controllerPathStart_Index );
 		}
 
 
@@ -531,6 +555,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		}
 			
     		writeOutputToResponse(
+    				requestURL_Base__Before__ControllerPath,
     				experimentId,
     				searchItemMinimal_Key_projectSearchId,
     				writeOutputToResponse_Per_SearchId_List,
@@ -1177,13 +1202,16 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				//  Process Map entries into result display string for Open Mod Masses and positions
     				
     				psmEntry_InternalClass_Entry.openModificationMassString = openModMass.toString();
-    				psmEntry_InternalClass_Entry.openModificationMassPositions = ""; //  Default
+    				psmEntry_InternalClass_Entry.openModificationMassPositions_String = ""; //  Default
     				
     				//  
-    				StringBuilder openModificationMassPositionsSB = new StringBuilder( 100000 );
+    				StringBuilder openModificationMassPositions_StringSB = new StringBuilder( 100000 );
 
     				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTOList_ForEntry = openModificationPositionsList_Key_OpenModMass_For_PsmId_OnlyMapEntry.getValue();
     				if ( psmOpenModificationPositionDTOList_ForEntry != null && ( ! psmOpenModificationPositionDTOList_ForEntry.isEmpty() ) ) {
+    					
+    					psmEntry_InternalClass_Entry.openModificationMassPosition_List = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() + 1 );
+    					
     					boolean is_N_Terminal = false;
     					boolean is_C_Terminal = false;
     					List<Integer> positions = new ArrayList<>( psmOpenModificationPositionDTOList_ForEntry.size() );
@@ -1201,26 +1229,29 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     					boolean firstPositionEntry = true;
     					if ( is_N_Terminal ) {
     						firstPositionEntry = false;
-    						openModificationMassPositionsSB.append( "n-term" );
+    						openModificationMassPositions_StringSB.append( "n-term" );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( SPECTRUM_VIEWER_OPEN_MOD_POSITION__N_TERM );
     					}
     					for ( Integer position : positions ) {
     						if ( ! firstPositionEntry ) {
-    							openModificationMassPositionsSB.append( ", " );
+    							openModificationMassPositions_StringSB.append( ", " );
     						}
     						firstPositionEntry = false;
-    						openModificationMassPositionsSB.append( position );
+    						openModificationMassPositions_StringSB.append( position );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( String.valueOf( position ) );
     					}
     					if ( is_C_Terminal ) {
     						if ( ! firstPositionEntry ) {
-    							openModificationMassPositionsSB.append( ", " );
+    							openModificationMassPositions_StringSB.append( ", " );
     						}
-    						openModificationMassPositionsSB.append( "c-term" );
+    						openModificationMassPositions_StringSB.append( "c-term" );
+    						psmEntry_InternalClass_Entry.openModificationMassPosition_List.add( SPECTRUM_VIEWER_OPEN_MOD_POSITION__C_TERM );
     					}
     				}
     				
-    				String openModificationMassPositions = openModificationMassPositionsSB.toString();
+    				String openModificationMassPositions_String = openModificationMassPositions_StringSB.toString();
 
-    				psmEntry_InternalClass_Entry.openModificationMassPositions = openModificationMassPositions;
+    				psmEntry_InternalClass_Entry.openModificationMassPositions_String = openModificationMassPositions_String;
     			}
     		}
     	}
@@ -1374,6 +1405,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 * @throws Exception
 	 */
 	private void writeOutputToResponse(
+			String requestURL_Base__Before__ControllerPath,
 			Integer experimentId,
 			Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId,
 			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
@@ -1486,7 +1518,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			BufferedOutputStream bos = new BufferedOutputStream(out);
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
-			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tPEPTIDE\tMODS" ); // 
+			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tSPECTRUM VIEWER URLS (comma delim)\tPEPTIDE\tMODS" ); // 
 			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
@@ -1611,6 +1643,66 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							}
 							writer.write( "\t" );
 							writer.write( String.valueOf( psmWebDisplay.getScanNumber() ) );
+							
+							if ( searchHasScanData ) {
+								
+								//  Link(s) to Spectrum Viewer (Lorikeet)
+								
+								String spectrumViewerURLs = null;
+								
+								String spectrumViewer_BaseURL = 
+										requestURL_Base__Before__ControllerPath 
+										+ AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ LorikeetSpectrumViewer_PageController.PATH_PART_PROJECT_SEARCH_ID_LABEL
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ projectSearchId
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ LorikeetSpectrumViewer_PageController.PATH_PART_PSM_ID_LABEL
+										+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+										+ psmWebDisplay.getPsmId();
+										
+								
+								if ( psmEntry_InternalClass.openModificationMassPosition_List != null && ( ! psmEntry_InternalClass.openModificationMassPosition_List.isEmpty() ) ) {
+
+									//  YES Open Mod positions so create URL Link for each position
+
+									StringBuilder spectrumViewerURLsSB = new StringBuilder( psmEntry_InternalClass.openModificationMassPosition_List.size() * 100 );
+									
+									boolean firstEntry = true;
+									
+									for ( String openModificationMassPosition : psmEntry_InternalClass.openModificationMassPosition_List ) {
+										
+										if ( firstEntry ) {
+											firstEntry = false;
+										} else {
+											spectrumViewerURLsSB.append( ", " );
+										}
+										
+										String spectrumViewerURL = spectrumViewer_BaseURL + OPEN_MOD_POSITION_URL_ADDITION + openModificationMassPosition;
+										
+										spectrumViewerURLsSB.append( spectrumViewerURL );
+									}
+									
+									spectrumViewerURLs = spectrumViewerURLsSB.toString();
+									
+								} else {
+									
+									//  NO Open Mod positions so create single URL Link
+									
+									spectrumViewerURLs = spectrumViewer_BaseURL;
+								}
+
+								writer.write( "\t" );
+								writer.write( spectrumViewerURLs );
+								
+							} else {
+								
+								//  NO Scan Data
+								
+								writer.write( "\t\t" );
+							}
+							
 							writer.write( "\t" );
 							writer.write( peptideString );
 							writer.write( "\t" );
@@ -1716,10 +1808,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							}
 							writer.write( "\t" );
 							{
-								String openModificationMassPositions = psmEntry_InternalClass.openModificationMassPositions;
-								if ( openModificationMassPositions != null ) {
+								String openModificationMassPositions_String = psmEntry_InternalClass.openModificationMassPositions_String;
+								if ( openModificationMassPositions_String != null ) {
 
-									writer.write( String.valueOf( openModificationMassPositions ) );
+									writer.write( String.valueOf( openModificationMassPositions_String ) );
 								}
 							}
 
@@ -1881,7 +1973,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 		private List<BigDecimal> reporterIonMassList;
 		private String openModificationMassString;
-		private String openModificationMassPositions;
+		private String openModificationMassPositions_String;
+		private List<String> openModificationMassPosition_List;
 	}
 	
 	/**

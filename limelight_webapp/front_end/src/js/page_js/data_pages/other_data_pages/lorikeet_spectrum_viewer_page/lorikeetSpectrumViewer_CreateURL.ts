@@ -6,7 +6,10 @@
  * Used on data pages and also used on Lorikeet page when switch PSM to display
  *
  */
+
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
+
+const OPEN_MOD_POSITION_URL_ADDITION = '?openmod-position=';  //  Change in Server side code as well if change this string
 
 let main_page_lorikeet_page_controller_path: string = undefined;
 
@@ -25,7 +28,7 @@ const lorikeetSpectrumViewer_CreateURL = function({ projectSearchId, psmId, open
 
     let url = main_page_lorikeet_page_controller_path + "/ps/" + projectSearchId + "/psm/" + psmId;
     if(openModPosition !== undefined && openModPosition !== null) {
-        url += '?openmod-position=' + openModPosition;
+        url += OPEN_MOD_POSITION_URL_ADDITION + openModPosition;
     }
 
     return url;

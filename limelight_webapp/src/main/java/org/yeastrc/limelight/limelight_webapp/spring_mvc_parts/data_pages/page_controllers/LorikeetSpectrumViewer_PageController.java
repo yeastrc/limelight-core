@@ -56,6 +56,10 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_page
 public class LorikeetSpectrumViewer_PageController {
 
 	private static final Logger log = LoggerFactory.getLogger( LorikeetSpectrumViewer_PageController.class );
+	
+	public static final String PATH_PART_PROJECT_SEARCH_ID_LABEL = "ps";
+	
+	public static final String PATH_PART_PSM_ID_LABEL = "psm";
 
 	//  For No PSM found page
 	private static final String REQUEST_PSM_ID_FROM_LORIKEET_SPECTRUM_VIEWER_CONTROLLER = "psmId_From_LorikeetSpectrumViewer_PageController";
@@ -115,11 +119,11 @@ public class LorikeetSpectrumViewer_PageController {
 			AA_PageControllerPaths_Constants.PATH_START_ALL
 			+ AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
-			+ "ps"
+			+ PATH_PART_PROJECT_SEARCH_ID_LABEL
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
 			+ PATH_PARAMETER_LABEL_PROJECT_SEARCH_ID_PATH_ADDITION
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
-			+ "psm"
+			+ PATH_PART_PSM_ID_LABEL
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
 			+ PATH_PARAMETER_LABEL_PSM_ID_PATH_ADDITION;
 
