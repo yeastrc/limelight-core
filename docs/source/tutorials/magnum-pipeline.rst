@@ -95,7 +95,7 @@ the Percolator post processing software. To run percolator enter:
 
     .. code-block:: bash
 
-      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/percolator:3.05 -X percout.xml treated.perc.txt
+      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/percolator:3.05 percolator -X percout.xml treated.perc.txt
 
 This will generate a file named ``percout.xml`` that contains the percolator results in XML format.
 
@@ -251,7 +251,7 @@ Run Percolator on Untreated Data
 
     .. code-block:: bash
 
-      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/percolator:3.05 -X percout.xml untreated.perc.txt
+      sudo docker run --rm -it --user $(id -u):$(id -g) -v `pwd`:`pwd` -w `pwd` mriffle/percolator:3.05 percolator -X percout.xml untreated.perc.txt
 
 Convert Untreated Results to Limelight XML
 ----------------------------------------------
