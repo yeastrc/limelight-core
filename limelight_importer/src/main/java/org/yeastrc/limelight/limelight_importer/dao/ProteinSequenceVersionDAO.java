@@ -50,16 +50,17 @@ public class ProteinSequenceVersionDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public ProteinSequenceVersionDTO getProteinSequenceVersionDTO_InsertIfNotInDB( ProteinSequenceVersionDTO searchItem ) throws Exception {
-		Integer smallestId = getSmallestIdForData( searchItem );
+	public ProteinSequenceVersionDTO getProteinSequenceVersionDTO_InsertIfNotInDB( ProteinSequenceVersionDTO item ) throws Exception {
+
+		Integer smallestId = getSmallestIdForData( item );
 		if ( smallestId != null ) {
-			searchItem.setId( smallestId );
+			item.setId( smallestId );
 		} else {
-			saveToDatabase( searchItem );
+			saveToDatabase( item );
 		}
-		return searchItem;
+		return item;
 	}
-	
+
 	/**
 	 * @param item
 	 * @throws Exception

@@ -156,10 +156,7 @@ const _getProteinDataTableColumns = function(
     } ) : DataTable_RootTableDataObject_Both_ColumnArrays {
 
     //  For getting search info for projectSearchIds
-
-    //  searchNamesKeyProjectSearchId is an Object where the property names are project search ids as numbers
-    const searchNamesMap_KeyProjectSearchId = dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
-
+    const searchData_SearchName_Etc_Root = dataPageStateManager_DataFrom_Server.get_searchData_SearchName_Etc_Root();
 
     let columns : Array<DataTable_Column> = [ ];
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -208,12 +205,12 @@ const _getProteinDataTableColumns = function(
 
                 if ( projectSearchIds.length > 1 ) {
 
-                    const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+                    const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
                     if ( ! searchNameObject ) {
-                        throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
+                        throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
                     }
 
-                    displayName += ' (' + searchNameObject.searchId + ")";
+                    displayName += ' (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
                 }
 
                 const column = new DataTable_Column({
@@ -533,12 +530,12 @@ const _getProteinDataTableColumns = function(
 
             for ( const projectSearchId of projectSearchIds ) {
 
-                const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
                 if ( ! searchNameObject ) {
-                    throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
+                    throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
                 }
 
-                const displayName = 'PSMs (' + searchNameObject.searchId + ")";
+                const displayName = 'PSMs (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
                 const column = new DataTable_Column({
                     id :           'psms_' + projectSearchId,
@@ -561,12 +558,12 @@ const _getProteinDataTableColumns = function(
 
             for ( const projectSearchId of projectSearchIds ) {
 
-                const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
                 if ( ! searchNameObject ) {
-                    throw Error("No searchNameObject for projectSearchId: " + projectSearchId );
+                    throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
                 }
 
-                const displayName = 'NSAF (' + searchNameObject.searchId + ")";
+                const displayName = 'NSAF (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
                 const column = new DataTable_Column({
                     id :           'nsaf_' + projectSearchId,
@@ -587,16 +584,16 @@ const _getProteinDataTableColumns = function(
 
         for ( const projectSearchId of projectSearchIds ) {
 
-            const searchNameObject = searchNamesMap_KeyProjectSearchId.get(projectSearchId);
-            if (!searchNameObject) {
-                throw Error("No searchNameObject for projectSearchId: " + projectSearchId);
+            const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+            if ( ! searchNameObject ) {
+                throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
             }
 
             if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
 
                 //  Reported Peptides count
 
-                const displayName = 'Distinct Peptides (' + searchNameObject.searchId + ")";
+                const displayName = 'Distinct Peptides (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
                 const column = new DataTable_Column({
                     id: 'peptides_' + projectSearchId,
@@ -616,7 +613,7 @@ const _getProteinDataTableColumns = function(
 
                 //  Reported Peptides Unique count
 
-                const displayName = 'Unique Peptides (' + searchNameObject.searchId + ")";
+                const displayName = 'Unique Peptides (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
 
                 const column = new DataTable_Column({
                     id: 'peptidesUnique_' + projectSearchId,

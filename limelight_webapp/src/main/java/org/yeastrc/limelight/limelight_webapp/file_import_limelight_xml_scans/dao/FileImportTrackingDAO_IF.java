@@ -33,13 +33,12 @@ public interface FileImportTrackingDAO_IF {
 	
 	
 	/**
-	 * @param markedForDeletion
-	 * @param status
 	 * @param id
-	 * @return true if record updated, false otherwise
+	 * @param status_ToExclude - Do NOT update if has this status
+	 * @param deletedByUserId
 	 * @throws Exception
 	 */
-	public boolean updateMarkedForDeletionForIdStatus( 
-			boolean markedForDeletion, FileImportStatus status, int id, Integer deletedByUserId ) throws Exception;
+	public void setMarkedForDeletionForId_ExcludingStatus( 
+			int id, FileImportStatus status_ToExclude,  int deletedByUserId ) throws Exception;
 
 }

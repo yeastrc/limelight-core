@@ -1,6 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.user_mgmt_webapp_access;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.yeastrc.user_mgmt_central.user_mgmt_central__embed_code.UserMgmtCentral_Embedded_Facade_Builder;
@@ -68,6 +69,14 @@ public class UserMgmtCentralWebappWebserviceAccess implements UserMgmtCentralWeb
 	@Override
 	public UserMgmtSessionKeyAliveResponse sessionKeyAlive(
 			UserMgmtSessionKeyAliveWebserviceRequest userMgmtSessionKeyAliveRequest) throws Exception {
+		
+		if ( StringUtils.isEmpty( userMgmtSessionKeyAliveRequest.getSessionKey() ) ) {
+
+			UserMgmtSessionKeyAliveResponse userMgmtSessionKeyAliveResponse = new UserMgmtSessionKeyAliveResponse();
+			userMgmtSessionKeyAliveResponse.setSuccess( false );
+			userMgmtSessionKeyAliveResponse.setSessionKeyNotValid( true );
+			userMgmtSessionKeyAliveResponse.setErrorMessage( "Limelight Internal Response: Provided Session Key is empty string or null " );
+		}
 	
 		SessionKeyAliveFacadeRequest facadeRequest = new SessionKeyAliveFacadeRequest();
 		facadeRequest.setSessionKeyFDSJKLUIOEWVCXM( userMgmtSessionKeyAliveRequest.getSessionKey() );

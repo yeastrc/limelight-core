@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.dao;
 
+import java.util.List;
+
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectSearchDTO;
 
 /**
@@ -38,9 +40,10 @@ public interface ProjectSearchDAO_IF {
 	void save( ProjectSearchDTO item );
 	
 	/**
+	 * @param searchShortName TODO
 	 * 
 	 */
-	void updateSearchName(String searchName, int projectSearchId);
+	void update_SearchName_SearchShortName(String searchName, String searchShortName, int projectSearchId);
 	
 	/**
 	 * @param projectSearchId
@@ -53,6 +56,17 @@ public interface ProjectSearchDAO_IF {
 	 * @param newDisplayOrder
 	 */
 	public void updateDisplayOrderForProjectSearch( int projectSearchId, int newDisplayOrder );
+	
+	/**
+	 * @param folderId
+	 * @param projectSearchId_List_To_Exclude
+	 */
+	void updateDisplayOrder_ToZero_For_FolderId_AND_Exclude_ProjectSearchId_List( int folderId, List<Integer> projectSearchId_List_To_Exclude );
+	
+	/**
+	 * @param folderId
+	 */
+	void updateDisplayOrder_ToZero_For_FolderId( int folderId );
 	
 	/**
 	 * @param projectSearchId

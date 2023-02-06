@@ -140,7 +140,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 					importerBaseDir // from config
 					);
 			
-			sendEmail_Extra_On_ImportFinish_ToConfiguredEmail.sendEmail_Extra_On_ImportFinish_ToConfiguredEmail(sendEmailItem_Extra_Emails, fileImportTrackingDTO, fileImportTrackingRunDTO);
+			sendEmail_Extra_On_ImportFinish_ToConfiguredEmail.sendEmail_Extra_On_ImportFinish_ToConfiguredEmail(sendEmailItem_Extra_Emails, fileImportTrackingDTO.getStatus());
 			
 		} catch ( Throwable t ) {
 			

@@ -18,6 +18,7 @@ import {
 export interface QcPage_ChartBorder_Props {
     width_OverrideStandard?: number
     height_OverrideStandard?: number
+    no_Min_Height?: boolean
 }
 
 /**
@@ -55,6 +56,10 @@ export class QcPage_ChartBorder extends React.Component< QcPage_ChartBorder_Prop
         }
         if ( this.props.height_OverrideStandard ) {
             minHeight = this.props.height_OverrideStandard
+        }
+
+        if ( this.props.no_Min_Height ) {
+            minHeight = null
         }
 
         return (

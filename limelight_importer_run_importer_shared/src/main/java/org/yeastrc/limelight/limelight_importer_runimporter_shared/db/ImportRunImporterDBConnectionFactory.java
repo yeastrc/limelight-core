@@ -178,7 +178,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * @return
 	 * @throws Exception
 	 */
-	public Connection getInsertControlCommitConnection() throws Exception {
+	synchronized public Connection getInsertControlCommitConnection() throws Exception {
 		
 		if ( ! initialized ) {
 			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
@@ -220,7 +220,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * call commit() on the insert connection and return the connection to the pool 
 	 * @throws Exception
 	 */
-	public void commitInsertControlCommitConnection() throws Exception {
+	synchronized public void commitInsertControlCommitConnection() throws Exception {
 
 		if ( ! initialized ) {
 			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
@@ -249,10 +249,10 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * @return
 	 * @throws Exception
 	 */
-	public Connection getConnection() throws SQLException {
+	synchronized public Connection getConnection() throws SQLException {
 		
 		if ( ! initialized ) {
-			String msg = "Not Initialized: In getInsertControlCommitConnection(): ";
+			String msg = "Not Initialized: In getConnection(): ";
 			log.error( msg );
 			throw new IllegalStateException(msg);
 		}
@@ -398,7 +398,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 			
 		} catch ( Throwable t ) {
 			
-			log.error( "Failed to get connection", t );
+//			log.error( "Failed to get connection", t );
 			
 			throw t;
 		}
@@ -411,7 +411,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * 
 	 * @throws Exception
 	 */
-	public void closeAllConnections() throws Exception {
+	synchronized public void closeAllConnections() throws Exception {
 		
 		if ( _insertControlCommitConnection != null ) {
 			

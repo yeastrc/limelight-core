@@ -29,6 +29,7 @@ public class ProjectSearchDTO {
 	private int projectId;
 	private int searchId;
 	private String searchName;
+	private String searchShortName;
 	private Integer createdByUserId;
 	
 	public int getId() {
@@ -60,6 +61,12 @@ public class ProjectSearchDTO {
 	}
 	public void setCreatedByUserId(Integer createdByUserId) {
 		this.createdByUserId = createdByUserId;
+	}
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
 	}
 	
 }

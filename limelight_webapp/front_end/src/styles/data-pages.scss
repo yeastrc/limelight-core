@@ -11,6 +11,33 @@
         background-color:$site-color-light;
     }
 
+   .search-tag-display-everywhere {  //  Search Details, "Manage" overlay
+     color: black;  // Set font color to black
+     white-space: nowrap;
+     padding: 4px;
+     border-radius: 10px;
+     margin-right: 2px;
+   }
+
+   //   Filter On Tags
+
+   .filter-on-tags--currently-filtering { //  Add border color when currently filtering
+     border-color: $filtering-display-border-color;
+     border-style: solid;
+     border-width: 6px;
+     padding-left: 6px;
+   }
+
+   .search-tag-manage-overlay-outer-block {
+
+     .select-color-display-div {
+       background-color: $site-standard-background-color;
+       border-style: solid;
+       border-width: 2px;
+       border-color: $site-color-gray;
+     }
+   }
+
 
     //  These are used when add icon to left of row for show/hide child table
 
@@ -759,7 +786,7 @@
                 background-color: $site-color-medium;
             }
 
-            &.selected {
+            .search-entry-container-selected {
                 color: white;
                 background-color:$site-color-dark;
 
@@ -1150,7 +1177,7 @@
      //  Common Filter Block layout.  Overridden for specific Filter Blocks Next
 
      .current-filters-label-and-display-block-common {
-       background-color: #FEDD00;
+       background-color: $filtering-display-background-color;
      }
 
      //.filter-common-block-selection-outer-block {

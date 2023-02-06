@@ -37,11 +37,20 @@ let _page_visibilitychange__hidden_Event_Triggered__At__Milliseconds: number;
 var reportWebErrorToServer = {
 
 		/**
-		 * 
+		 *
 		 */
-		reportErrorObjectToServer : function( params ) {
+		reportErrorObjectToServer : function(
+			params
+				:
+				{
+					errorException?: any
+					webserviceURL?: any
+					skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error?: boolean
+				} ) {
 
 			const errorException = params.errorException;
+			const webserviceURL = params.webserviceURL
+			const skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error = params.skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error
 
 			if ( _pageHide_Event_Triggered ) {
 
@@ -80,29 +89,32 @@ var reportWebErrorToServer = {
 				}
 			}
 
-			const react_devtools_backend_String = "react_devtools_backend";
-			
-			let errorException_stack_Contains_react_devtools_backend = false;
-			
-			if ( errorException && errorException.stack ) {
+			if ( ! skipDisplayErrorOverlay_SkipCall__errorDisplay_WhenHave_Javascript_Typescript_Error ) {
 
-				const stack = errorException.stack
-				const index = stack.indexOf( react_devtools_backend_String );
-				
-				if ( index != -1 ) {
-					
-					errorException_stack_Contains_react_devtools_backend = true;
-				}
-			}
+				const react_devtools_backend_String = "react_devtools_backend";
 
-			if ( ! errorException_stack_Contains_react_devtools_backend ) {
-				try {
-					errorDisplay_WhenHave_Javascript_Typescript_Error();
-				} catch (e) {
-					console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
+				let errorException_stack_Contains_react_devtools_backend = false;
+
+				if ( errorException && errorException.stack ) {
+
+					const stack = errorException.stack
+					const index = stack.indexOf( react_devtools_backend_String );
+
+					if ( index != -1 ) {
+
+						errorException_stack_Contains_react_devtools_backend = true;
+					}
 				}
-			} else {
-				console.warn("Exception Stack contains dev tools string so NOT displaying error msg to user.  dev tools string: '" + react_devtools_backend_String + "'." )
+
+				if ( ! errorException_stack_Contains_react_devtools_backend ) {
+					try {
+						errorDisplay_WhenHave_Javascript_Typescript_Error();
+					} catch (e) {
+						console.warn("Exception calling errorDisplay_WhenHave_Javascript_Typescript_Error();")
+					}
+				} else {
+					console.warn("Exception Stack contains dev tools string so NOT displaying error msg to user.  dev tools string: '" + react_devtools_backend_String + "'." )
+				}
 			}
 
 			console.warn("reportErrorObjectToServer: params: ", params)
@@ -125,7 +137,8 @@ var reportWebErrorToServer = {
 						errorMsg : errorException.message,
 						stackString : errorException && errorException.stack || '(no stack trace)',
 						userAgent : userAgent,
-						browserURL : browserURL };
+						browserURL : browserURL,
+						webserviceURL };
 
 				var requestData = JSON.stringify( requestObj );
 

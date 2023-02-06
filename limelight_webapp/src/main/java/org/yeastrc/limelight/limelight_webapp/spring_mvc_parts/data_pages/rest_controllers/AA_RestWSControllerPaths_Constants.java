@@ -129,25 +129,31 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	//////
 	
-	//   Upload Data Webservices
+	//   Upload Data - Upload List - Main Page - Webservices
 
 	public static final String PROJECT__UPLOAD_DATA_PENDING_COUNT_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-pending-count";
 	
 	public static final String PROJECT__UPLOAD_DATA_LIST_SUBMITTED_ITEMS_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-list-submitted-items";
+	
+	//  Mark as deleted: entry in table file_import_tracking_tbl - Not change if in STARTED status 
 
-	public static final String PROJECT__UPLOAD_DATA_REMOVE_QUEUED_IMPORT_REST_WEBSERVICE_CONTROLLER =
-			"d/rws/for-page/project-upload-data-remove-queued-import";
-	public static final String PROJECT__UPLOAD_DATA_REMOVE_FAILED_IMPORT_REST_WEBSERVICE_CONTROLLER =
-			"d/rws/for-page/project-upload-data-remove-failed-import";
-	public static final String PROJECT__UPLOAD_DATA_REMOVE_SUCCESS_IMPORT_REST_WEBSERVICE_CONTROLLER =
-			"d/rws/for-page/project-upload-data-remove-success-import";
+	public static final String PROJECT__UPLOAD_DATA_REMOVE_FILE_IMPORT_ITEM__REMOVE_IMPORT_LIMELIGHTXML_ANDOR_SCAN_FILES__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-remove-file-import-item-remove-import-limelightxml-andor-scan-files";
+
+	//  Mark as deleted: entry in table import_and_pipeline_run_tracking_tbl - Not change if in STARTED status
+
+	public static final String PROJECT__UPLOAD_DATA_REMOVE_IMPORT_AND_PIPELINE_RUN_ITEM__REMOVE_IMPORT_ANDOR_PIPELINE_RUN__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-remove-import-and-pipeline-run-item-remove-import-import-andor-pipeline-run";
 	
 	//  Upload Data, New Upload Webservices
 
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_SUBMIT_PGM_AUTH_TEST_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-submit-pgm-auth-test";
+
+	public static final String PROJECT__UPLOAD_DATA_UPLOAD_GET_SUPPORTED_SCAN_FILENAME_SUFFIXES_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-upload-get-supported-scan-filename-suffixes";
 	
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-initialize";
@@ -171,12 +177,69 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/project-upload-data-upload-remove-abandoned";
 
 	///////////////////////
+
+	//  Feature Detection - Import
+
+	public static final String PROJECT__FEATURE_DETECTION_IMPORT_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-import-initialize";
+
+	public static final String PROJECT__FEATURE_DETECTION_IMPORT_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-import-upload-file";
+
+	public static final String PROJECT__FEATURE_DETECTION_IMPORT_SUBMIT_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-import-submit";
+
+	//  Feature Detection - Run and Import
+
+	public static final String PROJECT__FEATURE_DETECTION_RUN_AND_IMPORT_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-run-and-import-initialize";
+
+	public static final String PROJECT__FEATURE_DETECTION_RUN_AND_IMPORT_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-run-and-import-upload-file";
+
+	public static final String PROJECT__FEATURE_DETECTION_RUN_AND_IMPORT_SUBMIT_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-feature-detection-run-and-import-submit";
+
+	///////////////////////
+	
+	//   Feature Detection (Scan File) - Display Label - Description - Change
+
+	public static final String FEATURE_DETECTION_DISPLAY_LABEL_DESCRIPTION_CHANGE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/feature-detection-display-label-description-change";
+
+	///////////////////////
 	
 	//   Label for Project - for Short URL
 
 	public static final String PROJECT_LABEL_GET_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-label-get";
 	public static final String PROJECT_LABEL_ADD_CHANGE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-label-add-change";
 	
+	///////////////////////
+	
+	//  Scan Files in a Project
+
+	public static final String PROJECT_SCAN_FILES__PROJECT_CONTAIN_ANY_SCAN_FILES_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-scan-files--project-contain-any-scan-files";
+	
+	public static final String PROJECT_SCAN_FILES_IN_PROJECT_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-files-in-project-list";
+
+	//  Scan File Details for Single Scan File - Data associated with this Project
+	
+	public static final String PROJECT_SCAN_FILE_DETAILS_FOR_PROJECT_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-details-for-project";
+
+
+	//  Scan File Feature Detection Root Mapping Entry - Delete
+	
+	public static final String PROJECT_SCAN_FILE_FEATURE_DETECTION_ROOT_MAPPING_ENTRY_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-feature-detection-root-mapping-entry-delete";
+	
+	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project scan file id
+	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__PROJECT_SCAN_FILE_ID =
+			"d/rws/for-page/ptsb/spectral-storage-data--no-peaks--project-scan-file-id";
+
+//  Get Spectra Storage Data (Spectr) Scan Data With Peaks  for a project scan file id AND scan number
+	public static final String SPECTRAL_STORAGE_SCAN_SPECTRUM_FOR_PROJECT_SCAN_FILE_ID_SCAN_NUMBER_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/spectral-storage-scan-spectrum-for-project-scan-file-id-scan-number";
+
 	///////////////////////
 	
 	//   Notes for Project
@@ -205,7 +268,7 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	//   Searches for Project
 
-	public static final String PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-search-list";
+	public static final String PROJECT_VIEW_PAGE_SEARCH_LIST_V2_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-search-list-v2";  //  added "-v2" as part of 4.0 release
 	
 	//        Project_HasAtLeastOneActive_ProjectSearchId_RestWebserviceController
 	public static final String PROJECT_HAS_AT_LEAST_ONE_ACTIVE_SEARCH_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-has-at-least-one-active-search";
@@ -218,9 +281,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PROJECT_ORGANIZE_SEARCHES_SET_SEARCHES_ORDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-searches-order";
 
+	public static final String PROJECT_ORGANIZE_SEARCHES_SET_SEARCHES_ORDER_IN_FOLDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-searches-order-in-folder";
+
 	public static final String PROJECT_ORGANIZE_SEARCHES_SET_FOLDERS_ORDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-folders-order";
 
-	public static final String PROJECT_ORGANIZE_SEARCHES_SET_SEARCH_FOLDER_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-set-search-folder";
+	public static final String PROJECT_ORGANIZE_SEARCHES_FOLDER_UPDATE_TO_NEW_SEARCHES_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-folder-update-to-new-searches";
 
 	public static final String PROJECT_ORGANIZE_SEARCHES_FOLDER_RENAME_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-organize-searches-folder-rename";
 
@@ -259,8 +324,8 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	//   Project Search Id driven Update DB
 	
-	public static final String UPDATE_SEARCH_NAME_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/update-search-name";
+	public static final String SEARCH_NAME_SEARCH_SHORT_NAME_UPDATE_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-name-search-short-name-update";
 
 	//   Project Search Id driven Delete DB
 	public static final String DELETE_PROJECT_SEARCH_REST_WEBSERVICE_CONTROLLER = 
@@ -368,7 +433,89 @@ public class AA_RestWSControllerPaths_Constants {
 	//  Search Scan File Data for Project Search Id
 	public static final String GET_SEARCH_SCAN_FILE_DATA_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psb/get-search-scan-file-data-for-project-search-id-list";
+	
 
+	public static final String SEARCH_TAGS_GET_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-get-for-project-search-id-list";
+
+
+	//  Used by "Tag Search"
+	
+	public static final String SEARCH_TAGS_GET_FOR_PROJECT_SEARCH_ID_AND_ALL_DISTINCT_FOR_ASSOC_PROJECT_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-get-for-project-search-id-list-and-all-distinct-for-assoc-project-id";
+
+	/**
+	 *   @deprecated
+	 *   
+	 *   !!!   NO LONGER USED  !!!
+	 */
+//	public static final String SEARCH_TAGS_UPDATE_FOR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+//			"d/rws/for-page/search-tags-update-for-project-search-id-list";
+
+	
+	
+	public static final String SEARCH_TAGS_ADD_TAG_TO_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-add-tag-to-project-search-id-list";
+
+	public static final String SEARCH_TAGS_REMOVE_TAG_FROM_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-remove-tag-from-project-search-id-list";
+
+
+
+	//  Used by "Manage Project Tags"
+
+	//  Search Tag Categories
+	
+	
+
+	public static final String SEARCH_TAG_CATEGORIES_GET_FOR_PROJECT_ID_OR_PROJECT_ID_FROM_PROJECT_SEARCH_IDS_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tag-categories-get-for-project-id-or-project-id-from-project-search-ids";
+
+	public static final String SEARCH_TAGS_ADD_SINGLE_SEARCH_TAG_CATEGORY_FOR_PROJECT_ID_OR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-add-single-search-tag-category-for-project-id-or-project-search-id-list";
+
+	public static final String SEARCH_TAG_CATEGORIES_UPDATE_SINGLE_SEARCH_TAG_CATEGORY_FOR_TAG_CATEGORY_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tag-categories-update-single-search-tag-category-for-tag-category-id";
+	
+	public static final String SEARCH_TAG_CATEGORIES_DELETE_SINGLE_SEARCH_TAG_CATEGORY_FOR_TAG_CATEGORY_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tag-categories-delete-single-search-tag-category-for-tag-category-id";
+	
+	//  Search Tags
+	
+	public static final String SEARCH_TAGS_GET_FOR_PROJECT_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-get-for-project-id";
+
+	public static final String SEARCH_TAGS_ADD_SINGLE_SEARCH_TAG_FOR_PROJECT_ID_OR_PROJECT_SEARCH_ID_LIST_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-add-single-search-tag-for-project-id-or-project-search-id-list";
+
+	public static final String SEARCH_TAGS_UPDATE_SINGLE_SEARCH_TAG_FOR_TAG_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-update-single-search-tag-for-tag-id";
+	
+	public static final String SEARCH_TAGS_DELETE_SINGLE_SEARCH_TAG_FOR_TAG_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/search-tags-delete-single-search-tag-for-tag-id";
+	
+	
+
+
+	//  Scan File Feature Detection Root Entries AND Assoc Search Scan File Data for Project Search Id
+	
+	public static final String SCAN_FILE_FEATURE_DETECTION_ROOT_ENTRIES_ROOT_SINGLE_PROJECT_SEARCH_ID = "d/rws/for-page/scan-file-feature-detection-root-entries-single-project-search-id";
+	
+	//  Scan File Feature Detection Singular Feature Entries for Project Search Id and feature_detection_root__project_scnfl_mapping_tbl__id  
+	
+	public static final String SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
+			"d/rws/for-page/scan-file-feature-detection-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
+
+	//  Scan File Feature Detection Persistent Feature Entries for Project Search Id and FeatureDetection Root Id
+	
+	public static final String SCAN_FILE_FEATURE_DETECTION_PERSISTENT_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =
+			"d/rws/for-page/scan-file-feature-detection-persistent-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+
+	//  Scan File Feature Detection Map Persistent To Singular Feature Entries for Project Search Id and FeatureDetection Root Id
+	
+	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =
+			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+	
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psb/static-mods-single-project-search-id";

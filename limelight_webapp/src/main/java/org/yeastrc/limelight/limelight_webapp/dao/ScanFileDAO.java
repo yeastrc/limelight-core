@@ -37,6 +37,9 @@ public class ScanFileDAO extends Limelight_JDBC_Base implements ScanFileDAO_IF {
 	private static final Logger log = LoggerFactory.getLogger( ScanFileDAO.class );
 	
 	/**
+	 * Use ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher if have list of scan file id to get in single query
+	 * 
+	 * 
 	 * @param id
 	 * @return null if not found
 	 * @throws SQLException

@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controller_inter
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -564,65 +565,94 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 		
 		//  Get ProjectSearchIds from ProjectSearchIdCodes
 		
-		List<String> projectSearchIdCodesList = new ArrayList<>( projectSearchIdCodes.length );
-		for ( String projectSearchIdCode : projectSearchIdCodes ) {
-			projectSearchIdCodesList.add( projectSearchIdCode );
-		}
-		Set<String> projectSearchIdCodesSet_RemoveToCheckAllFound = new HashSet<>( projectSearchIdCodesList );
+		List<Integer> projectSearchIds_InOrderOf_ProjectSearchIdCodes = new ArrayList<>( projectSearchIdCodes.length );
 		
-		List<ProjectSearchIdCodeDTO> projectSearchIdCodeDTO_List = 
-				projectSearchIdCodeDAO.getProjectSearchIdCodeDTOList_For_project_search_id_codes(projectSearchIdCodesList);
-		
-		Set<Integer> projectSearchIds = new HashSet<>( projectSearchIdCodesList.size() );
-		
-		for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTO_List ) {
-			projectSearchIdCodesSet_RemoveToCheckAllFound.remove( projectSearchIdCodeDTO.getProjectSearchIdCode() );
-			projectSearchIds.add( projectSearchIdCodeDTO.getProjectSearchId() );
-		}
-		
-		if ( ! projectSearchIdCodesSet_RemoveToCheckAllFound.isEmpty() ) {
-			//  NOT All projectSearchIdCodes found
+		{
+			List<String> projectSearchIdCodes_List = new ArrayList<>( projectSearchIdCodes.length );
+			for ( String projectSearchIdCode : projectSearchIdCodes ) {
+				projectSearchIdCodes_List.add( projectSearchIdCode );
+			}
 
-			final int statusCode404 = 404; // Resource not found
+			List<ProjectSearchIdCodeDTO> projectSearchIdCodeDTO_List = 
+					projectSearchIdCodeDAO.getProjectSearchIdCodeDTOList_For_project_search_id_codes(projectSearchIdCodes_List);
 
-			httpServletResponse.setStatus( statusCode404 ); 
+			{
+				//  Validate all projectSearchIdCodes found in DB
 
-			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
-			//  WAS
-			// httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_DATA_NOT_FOUND, true ); // Control message on error page
+				Set<String> projectSearchIdCodesSet_RemoveToCheckAllFound = new HashSet<>( projectSearchIdCodes_List );
 
-			final String mainErrorPageControllerURL =
-					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
-					+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+				for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTO_List ) {
+					projectSearchIdCodesSet_RemoveToCheckAllFound.remove( projectSearchIdCodeDTO.getProjectSearchIdCode() );
+				}
 
-			RequestDispatcher requestDispatcher = 
-					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+				if ( ! projectSearchIdCodesSet_RemoveToCheckAllFound.isEmpty() ) {
+					//  NOT All projectSearchIdCodes found in DB
 
-			log.warn( "Error in URL to Project Search Based page, NOT All projectSearchIdCodes found in database. "
-					+ "setting HTTP status code to: " + statusCode404
-					+ ".  Forwarding to '"
-					+ mainErrorPageControllerURL
-					+ "'. requestURI: " + requestURI );
+					final int statusCode404 = 404; // Resource not found
 
-			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+					httpServletResponse.setStatus( statusCode404 ); 
+
+					httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
+					//  WAS
+					// httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_DATA_NOT_FOUND, true ); // Control message on error page
+
+					final String mainErrorPageControllerURL =
+							AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+							+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+
+					RequestDispatcher requestDispatcher = 
+							httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+					log.warn( "Error in URL to Project Search Based page, NOT All projectSearchIdCodes found in database. "
+							+ "setting HTTP status code to: " + statusCode404
+							+ ".  Forwarding to '"
+							+ mainErrorPageControllerURL
+							+ "'. requestURI: " + requestURI );
+
+					requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+					//
+
+					Internal_LookupMethodResult result = new Internal_LookupMethodResult();
+
+					result.return_False_FromTopLevelMethod = true;
+
+					return result; //  EARLY EXIT	
+				}
+			}
 			
-			//
+			//  Populate projectSearchIds_InOrderOf_ProjectSearchIdCodes, skipping any duplicate projectSearchIds (there should not be any(
 
-			Internal_LookupMethodResult result = new Internal_LookupMethodResult();
-
-			result.return_False_FromTopLevelMethod = true;
+			Set<Integer> projectSearchIds_DuplicateCheck = new HashSet<>( projectSearchIdCodes_List.size() );
 			
-			return result; //  EARLY EXIT	
+			Map<String, ProjectSearchIdCodeDTO> projectSearchIdCodeDTO_Key_ProjectSearchIdCode = new HashMap<>( projectSearchIdCodes_List.size() );
+
+			for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTO_List ) {
+				projectSearchIdCodeDTO_Key_ProjectSearchIdCode.put( projectSearchIdCodeDTO.getProjectSearchIdCode(), projectSearchIdCodeDTO );
+			}
+
+			for ( String projectSearchIdCode : projectSearchIdCodes ) {
+
+				ProjectSearchIdCodeDTO projectSearchIdCodeDTO = projectSearchIdCodeDTO_Key_ProjectSearchIdCode.get( projectSearchIdCode );
+				if ( projectSearchIdCodeDTO == null ) {
+					String msg = "projectSearchIdCodeDTO_Key_ProjectSearchIdCode.get( projectSearchIdCode ); returned null for projectSearchIdCode: " + projectSearchIdCode;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				if ( projectSearchIds_DuplicateCheck.add( projectSearchIdCodeDTO.getProjectSearchId() ) ) {
+					projectSearchIds_InOrderOf_ProjectSearchIdCodes.add( projectSearchIdCodeDTO.getProjectSearchId() );
+				}
+			}
 		}
 		
 		Integer projectId = null;
+		Integer userId = null;
 
-		List<Integer> projectSearchIdsList = new ArrayList<>( projectSearchIds );
-		
 		{ // Perform Access Check
 			
 			Internal_UserAccessCheckResult internal_UserAccessCheckResult =
-					this._performUserAccessCheck_UpdateRequest_FromUserSession_ForPageHeader(projectSearchIdsList, requestURI, httpServletRequest, httpServletResponse);
+					this._performUserAccessCheck_UpdateRequest_FromUserSession_ForPageHeader(projectSearchIds_InOrderOf_ProjectSearchIdCodes, requestURI, httpServletRequest, httpServletResponse);
 			
 			if ( internal_UserAccessCheckResult.return_False_FromTopLevelMethod ) {
 				
@@ -636,16 +666,22 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 			}
 			
 			projectId = internal_UserAccessCheckResult.projectId;
+			
+			userId = internal_UserAccessCheckResult.userId;
 		}
 		
 
 		
 		SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo = new SearchDataLookupParams_CreatedByInfo();
 
-		// TODO  !!!!!! Update these 2 if/when have user id
-		//			searchDataLookupParams_CreatedByInfo.setCreatedByUserId(  );
-		searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
-				SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
+		if ( userId != null ) {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserId( userId );
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
+		} else {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
+		}
 		
 		searchDataLookupParams_CreatedByInfo.setCreatedByRemoteIP( httpServletRequest.getRemoteAddr() );
 		
@@ -656,7 +692,7 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 				.searchDataLookupParametersLookupCode__Create_InsertToDB__Service(
 						projectId, 
 						null /* searchDataLookupParamsRoot */, 
-						projectSearchIdsList, 
+						projectSearchIds_InOrderOf_ProjectSearchIdCodes, 
 						searchDataLookupParams_CreatedByInfo );
 		
 		serviceResult.getSearchDataLookupParamsCode();
@@ -667,7 +703,7 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 		result.return_False_FromTopLevelMethod = false;
 		result.searchDataLookupParametersLookupCode = serviceResult.getSearchDataLookupParamsCode();
 		result.searchDataLookupParametersLookupDTO = serviceResult.getSearchDataLookupParametersLookupDTO();
-		result.projectSearchIds = projectSearchIdsList;
+		result.projectSearchIds = projectSearchIds_InOrderOf_ProjectSearchIdCodes;
 		result.searchDataLookupParametersLookupJSON = serviceResult.getSearchDataLookupParametersLookupDTO().getLookupParametersJSONMainData();
 		result.searchDataLookupParamsRoot = serviceResult.getSearchDataLookupParamsRoot();
 		
@@ -899,6 +935,10 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 		result.return_False_FromTopLevelMethod = false;
 		result.projectId = projectId;
 		
+		if ( userSession != null ) {
+			result.userId = userSession.getUserId(); 
+		}
+		
 		return result;
     }
 
@@ -943,5 +983,7 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     	boolean return_False_FromTopLevelMethod;
     	
     	int projectId;
+    	
+    	Integer userId;
     }
 }

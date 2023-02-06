@@ -25,7 +25,6 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root, AnnotationTypeItem,
     SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItem
@@ -35,6 +34,10 @@ import {
     ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_Single_MainCell_ChangeSearches_Overlay";
 import {Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
@@ -52,8 +55,7 @@ export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
     mainCell_Identifier : ExperimentConditions_GraphicRepresentation_MainCell_Identifier
     searchesData :  {
-        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData : {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -67,7 +69,7 @@ export class Data_ProjectPage_Experiments_SingleExperiment_MainCellMaint {
  * Internal class to wrap: wrappedSearch : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
  */
 class SearchSelected_Entry {
-    wrappedSearch : GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+    wrappedSearch : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     psmFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
     reportedPeptideFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
 }
@@ -218,7 +220,7 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
     /**
      * 
      */
-    _save({ projectSearchIds }: { projectSearchIds: any }) {
+    _save({ projectSearchIds }: { projectSearchIds: Set<number> }) {
 
         //  Called from Delete and Add below
         this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.save_ProjectSearchIds_ForMainCell({ projectSearchIds });
@@ -258,7 +260,8 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
         }
 
         const overlayComponent = get_ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Overlay_Layout({
-            searchList : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searches_TopLevelAndNestedInFolders,
+
+            searchesSearchTagsFolders_Result_Root : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searchesSearchTagsFolders_Result_Root,
             projectSearchIds_Selected : projectSearchIdsSet,
             projectSearchIds_ContainedInAllOtherCells : this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.projectSearchIds_ContainedInAllOtherCells,
             current__data_ProjectPage_Experiments_SingleExperiment_MainCellMaint: this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint,
@@ -437,8 +440,7 @@ const _createSearchLists = function({ projectSearchIds, searchesData, conditionG
 
     projectSearchIds: Set<number>
     searchesData :  {
-        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData: {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -450,7 +452,7 @@ const _createSearchLists = function({ projectSearchIds, searchesData, conditionG
 
     const searches_Selected : Array<SearchSelected_Entry> = [];
 
-    for ( const searchEntry of searchesData.searchList_OnlySearches ) {
+    for ( const searchEntry of searchesData.searchesSearchTagsFolders_Result_Root.get_SearchData_ALL_StandardDisplay_Sorted_SearchId_Descending() ) {
 
         const projectSearchId = searchEntry.projectSearchId;
 
@@ -474,12 +476,11 @@ const _createSearchLists = function({ projectSearchIds, searchesData, conditionG
  */
 const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, conditionGroupsDataContainer, searchesData } : {
 
-    searchEntry: GetSearchesAndFolders_SingleProject_PromiseResponse_Item
+    searchEntry: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     projectSearchId : number
     conditionGroupsDataContainer: Experiment_ConditionGroupsDataContainer
     searchesData :  {
-        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData: {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root

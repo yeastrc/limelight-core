@@ -119,6 +119,7 @@ public class LogBrowserJavascriptError_RestWebserviceController {
     				+ "\n stack: " + webserviceRequest.stackString
     				+ "\n userAgent: " + webserviceRequest.userAgent
     				+ "\n browserURL: " + webserviceRequest.browserURL
+    				+ "\n webserviceURL: " + webserviceRequest.webserviceURL
     				+ "\n Remote IP: " + httpServletRequest.getRemoteAddr()
     				+ usernameForLogMsg
     				+ userIdForLogMsg );
@@ -163,6 +164,7 @@ public class LogBrowserJavascriptError_RestWebserviceController {
 		private String stackString;
 		private String userAgent;
 		private String browserURL;
+		private String webserviceURL;
 		private boolean fdajklweRWOIUOPOP;
 		
 		
@@ -195,6 +197,9 @@ public class LogBrowserJavascriptError_RestWebserviceController {
 		}
 		public void setBrowserURL(String browserURL) {
 			this.browserURL = browserURL;
+		}
+		public void setWebserviceURL(String webserviceURL) {
+			this.webserviceURL = webserviceURL;
 		}
 	}
 

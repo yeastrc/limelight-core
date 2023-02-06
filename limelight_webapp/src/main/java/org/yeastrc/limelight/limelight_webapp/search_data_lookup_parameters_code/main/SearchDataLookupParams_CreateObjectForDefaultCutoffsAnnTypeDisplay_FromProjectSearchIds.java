@@ -76,8 +76,13 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 	@Override
 	public SearchDataLookupParamsRoot createSearchDataLookupParamsRoot_forDefaults( 
 			int projectId,
-			List<Integer> projectSearchIds, 
-			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
+			List<Integer> projectSearchIds, //  In the order the projectSearchIds are ADDED to SearchDataLookupParamsRoot
+			Map<Integer, Integer> projectSearchIdsToSearchIds, 
+			
+			// null if no existing data.  Returned after updating if not null.  existingSearchDataLookupParamsRoot already has entries removed for projectSearchIds NOT wanted in result
+			SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot
+			
+			) throws SQLException {
 	
 		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 			throw new IllegalArgumentException( "projectSearchIds is null or empty" );

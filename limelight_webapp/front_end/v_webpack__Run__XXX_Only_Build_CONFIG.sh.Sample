@@ -1,0 +1,9 @@
+
+
+#  Copy to 'v_webpack__Run__XXX_Only_Build_CONFIG.sh'
+
+#       Assign value DESTINATION_DIR like th example
+
+#   Example:  DESTINATION_DIR=/data/webtools/apache-tomcat-9.0.52/webapps/limelight/static/js_generated_bundles
+
+DESTINATION_DIR=

@@ -21,11 +21,27 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 
-import { ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders } from "./projectPage_SearchesAdmin_OrganizeSearchesAndFolders";
-import {ProjectPage_SearchesSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction";
 import {Set_ProjectWide_DefaultFilter_Cutoffs_Overrides} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides";
-import {projectPage_DeleteSearch_Overlay_Component__openOverlay} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
+import {
+	projectPage_DeleteSearch_Overlay_Component__openOverlay,
+	ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
 import {openOverlay_ForCopyMoveSearches} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component";
+import {open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_project/search_Tags_Manage_TagsForProject_OverlayComponent";
+import {
+	project_OrganizeSearches_Folder_AddRename_Component__openOverlay,
+	Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback,
+	Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params
+} from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches_Folder_AddRename_Component";
+import {
+	searchName_and_SearchShortName_Change_Component__openOverlay,
+	SearchName_and_SearchShortName_Change_Component_Change_Callback
+} from "page_js/data_pages/common_components__react/search_name_and_search_short_name__user_change_overlay/searchName_and_SearchShortName_Change_Component_and_WebserviceCall";
+import {
+	open_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent_Overlay,
+	Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams,
+	Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch
+} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent";
 
 /**
  * 
@@ -36,11 +52,7 @@ export class ProjectPage_SearchesAdmin {
 
 	private _projectIdentifierFromURL;
 
-	projectPage_SearchesAdmin_OrganizeSearchesAndFolders: ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders;
-
 	set_ProjectWide_DefaultFilter_Cutoffs_Overrides: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides;
-
-	private _projectPage_SearchesSection_AllUsersInteraction: ProjectPage_SearchesSection_AllUsersInteraction;
 
 	/**
 	 * searchSelectionChangeCallback - function called when the search selection changes
@@ -51,10 +63,6 @@ export class ProjectPage_SearchesAdmin {
 
         this._projectIdentifierFromURL = projectIdentifierFromURL;
 
-		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders = new ProjectPage_SearchesAdmin_OrganizeSearchesAndFolders({
-			projectIdentifierFromURL
-		});
-
 		this.set_ProjectWide_DefaultFilter_Cutoffs_Overrides = new Set_ProjectWide_DefaultFilter_Cutoffs_Overrides({
 			projectIdentifierFromURL
 		});
@@ -63,58 +71,41 @@ export class ProjectPage_SearchesAdmin {
 	/**
 	 * 
 	 */
-	initialize(
-		{
-			projectPage_SearchesSection_AllUsersInteraction
-		} : {
-			projectPage_SearchesSection_AllUsersInteraction: ProjectPage_SearchesSection_AllUsersInteraction
-		}
-	) {
-		this._projectPage_SearchesSection_AllUsersInteraction = projectPage_SearchesSection_AllUsersInteraction;
-
-		this.projectPage_SearchesAdmin_OrganizeSearchesAndFolders.initialize( { projectPage_SearchesSection_AllUsersInteraction });
-
+	initialize() {
 		this.set_ProjectWide_DefaultFilter_Cutoffs_Overrides.initialize();
 
         this._initializeCalled = true;
     }
 
-	/**
-	 * 
-	 */
-	saveSearchName(
+    openOverlay_Change_SearchName_SearchShortName(
 		{
-			projectSearchId, newSearchName, saveComplete_Callback
+			projectSearchId,
+			existingSearchName,
+			existingSearchShortName,
+			position_top,
+			position_left,
+			change_Callback,
+			cancel_Callback
 		} : {
 			projectSearchId: number
-			newSearchName: string
-			saveComplete_Callback: () => void
-		}) {
+			existingSearchName: string
+			existingSearchShortName: string
+			position_top: number
+			position_left: number
+			change_Callback: SearchName_and_SearchShortName_Change_Component_Change_Callback
+			cancel_Callback: () => void
+		}
+	) {
+		searchName_and_SearchShortName_Change_Component__openOverlay({
+			projectSearchId,
+			existingSearchName,
+			existingSearchShortName,
+			position_top,
+			position_left,
+			change_Callback,
+			cancel_Callback
+		} )
 
-		let requestObj = {
-			projectSearchId : projectSearchId,
-			searchName : newSearchName
-		};
-
-		const url = "d/rws/for-page/update-search-name";
-
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
-		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-		promise_webserviceCallStandardPost.catch( () => { }  );
-
-		promise_webserviceCallStandardPost.then( ({ responseData }) => {
-			try {
-				saveComplete_Callback()
-
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-		});
 	}
 
 	/**
@@ -133,23 +124,79 @@ export class ProjectPage_SearchesAdmin {
 			deleteComplete_Callback: () => void
 		}) {
 
-		projectPage_DeleteSearch_Overlay_Component__openOverlay({ projectSearchId, searchId, searchName, projectIdentifier, deleteComplete_Callback });
+		const searchesToDelete: Array<ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry> = [
+			{ projectSearchId, searchId, searchName }
+		]
 
+		projectPage_DeleteSearch_Overlay_Component__openOverlay({ searchesToDelete, projectIdentifier, deleteComplete_Callback });
 
 		return;
 	}
 
-	//  FOLDER
+	/**
+	 * Initiate Delete these Searches
+	 *
+	 * Opens an overlay for user to get info and confirm deletion
+	 */
+	deleteSearches(
+		{
+			searchesToDelete, projectIdentifier, deleteComplete_Callback
+		} : {
+			searchesToDelete: Array<ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry>
+			projectIdentifier : string
+			deleteComplete_Callback: () => void
+		}) : void {
 
+		if ( searchesToDelete.length === 0 ) {
+
+			// No project search ids found to process
+
+			return; // EARLY RETURN
+		}
+		projectPage_DeleteSearch_Overlay_Component__openOverlay({ searchesToDelete, projectIdentifier, deleteComplete_Callback });
+
+		return;
+	}
+
+	////////  FOLDER
+
+	renameFolder(
+		{
+			folderId, folderName, position_top, position_left
+		} : {
+			folderId: number
+			folderName: string
+			position_top: number
+			position_left: number
+		}
+	) : void {
+
+		const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
+			(params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
+
+				window.location.reload(true)
+			}
+
+		project_OrganizeSearches_Folder_AddRename_Component__openOverlay({
+			projectIdentifier: null, // For Add
+			folderId_Existing: folderId,
+			folderName_Existing: folderName,
+			position_top,
+			position_left,
+			change_Callback,
+			cancel_Callback: null
+		})
+	}
 
 	/**
 	 * Delete this Folder Id
 	 */
 	deleteFolder(
 		{
-			folderId
+			folderId, callback_FolderDelete_Complete
 		} : {
 			folderId: number
+			callback_FolderDelete_Complete: () => void
 		}) {
 
 		if ( ! window.confirm("Delete folder?" ) ) {
@@ -171,7 +218,9 @@ export class ProjectPage_SearchesAdmin {
 
 		promise_webserviceCallStandardPost.then( ({ responseData }) => {
 			try {
-				this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
+				if ( callback_FolderDelete_Complete ) {
+					callback_FolderDelete_Complete()
+				}
 
 			} catch (e) {
 				reportWebErrorToServer.reportErrorObjectToServer({ errorException: e });
@@ -188,13 +237,10 @@ export class ProjectPage_SearchesAdmin {
 	 * @param doMove
 	 * @param projectSearchIdsSelected
 	 */
-	openOverlay_ForCopyMoveSearches(
+	openOverlay_ForCopySearches(
 		{
-			doCopy, doMove, projectSearchIdsSelected, projectIdentifier
+			projectSearchIdsSelected, projectIdentifier
 		} : {
-
-			doCopy: boolean
-			doMove: boolean
 			projectSearchIdsSelected: Set<number>
 			projectIdentifier : string
 
@@ -209,10 +255,51 @@ export class ProjectPage_SearchesAdmin {
 
 		const copyMoveSearchesReturnToProject_Callback = () => {
 
-			this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
+			//  Do Nothing since only copy.  No longer move
 		}
 
-		openOverlay_ForCopyMoveSearches({ doCopy, doMove, projectSearchIdsSelected, projectIdentifier, copyMoveSearchesReturnToProject_Callback });
+		openOverlay_ForCopyMoveSearches({ doCopy: true, doMove: false, projectSearchIdsSelected, projectIdentifier, copyMoveSearchesReturnToProject_Callback });
 	}
 
+
+	openOverlay_For_Search_Tags_Manage_TagsForSearches(
+		{
+			projectSearchIdsSelected
+		} : {
+			projectSearchIdsSelected: Set<number>
+		} ) : void {
+
+		if (projectSearchIdsSelected.size === 0) {
+
+			// No project search ids found to process
+
+			return; // EARLY RETURN
+		}
+
+		const searches: Array<Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch> = []
+
+		for ( const projectSearchId of projectSearchIdsSelected ) {
+			const search: Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch = {
+				projectSearchId
+			}
+			searches.push(search)
+		}
+
+		const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {
+			searches
+		}
+
+		open_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent_Overlay({ mainParams })
+	}
+
+
+	openOverlay_For_Search_Tags_Manage_TagsForProject(
+		{
+			projectIdentifier
+		} : {
+			projectIdentifier: string
+		} ) : void {
+
+		open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay({ mainParams:{ projectIdentifier} })
+	}
 }

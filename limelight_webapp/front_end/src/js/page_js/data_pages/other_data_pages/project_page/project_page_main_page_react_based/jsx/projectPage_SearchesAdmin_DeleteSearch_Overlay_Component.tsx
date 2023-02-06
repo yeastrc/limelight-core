@@ -22,7 +22,7 @@ import {
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 
-const _Overlay_Title = "Delete Search"
+const _Overlay_Title = "Delete Searches"
 
 
 const _Overlay_Width_Min = 600;
@@ -33,17 +33,22 @@ const _Overlay_Height_Max = 1000;
 /**
  *
  */
+export class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry {
+    projectSearchId: number
+    searchId: number
+    searchName: string
+}
+
+/**
+ *
+ */
 export const projectPage_DeleteSearch_Overlay_Component__openOverlay = function (
     {
-        projectSearchId,
-        searchId,
-        searchName,
+        searchesToDelete,
         projectIdentifier,
         deleteComplete_Callback
     } : {
-        projectSearchId: number
-        searchId: number
-        searchName: string
+        searchesToDelete: Array<ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry>
         projectIdentifier : string
         deleteComplete_Callback: () => void
 
@@ -59,9 +64,7 @@ export const projectPage_DeleteSearch_Overlay_Component__openOverlay = function 
 
     const overlayComponent =  (
         <ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component
-            projectSearchId={ projectSearchId }
-            searchId={ searchId }
-            searchName={ searchName }
+            searchesToDelete={ searchesToDelete }
             projectIdentifier={ projectIdentifier }
             deleteComplete_Callback={ deleteComplete_Callback }
             callback_Close_Overlay={ callback_Close_Overlay }
@@ -76,9 +79,7 @@ export const projectPage_DeleteSearch_Overlay_Component__openOverlay = function 
  *
  */
 interface ProjectPage_DeleteSearch_Overlay_Component_Props {
-    projectSearchId: number
-    searchId: number
-    searchName: string
+    searchesToDelete: Array<ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry>
     projectIdentifier : string
     deleteComplete_Callback: () => void
     callback_Close_Overlay: () => void
@@ -135,7 +136,10 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
 
 
         const projectSearchIds = new Set<number>();
-        projectSearchIds.add(  this.props.projectSearchId );
+
+        for ( const searchToDelete of this.props.searchesToDelete ) {
+            projectSearchIds.add(  searchToDelete.projectSearchId );
+        }
 
         const promise = projectPage_ListExperimentsContainingProjectSearchIds({
             projectIdentifier: this.props.projectIdentifier, projectSearchIds });
@@ -166,7 +170,13 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
 
         this.setState({ show_DeletingMessage: true });
 
-        const promise = _deleteSearch_CallWebservice({ projectSearchId: this.props.projectSearchId, experimentIds_Containing_ProjectSearchId })
+        const projectSearchIds = new Set<number>();
+
+        for ( const searchToDelete of this.props.searchesToDelete ) {
+            projectSearchIds.add(  searchToDelete.projectSearchId );
+        }
+
+        const promise = _deleteSearch_CallWebservice({ projectSearchIds: Array.from( projectSearchIds ), experimentIds_Containing_ProjectSearchId })
         promise.catch( reason => {
             if ( this._unmountCalled ) {
 
@@ -276,7 +286,7 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                             { ( this.state.show_LoadingMessage ) ? (
                                 <span>LOADING DATA</span>
                             ) : (
-                                <span>DELETING SEARCH</span>
+                                <span>DELETING SEARCH{ this.props.searchesToDelete.length > 1 ? "ES" : null }</span>
                             ) }
                         </div>
 
@@ -291,65 +301,79 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                     <React.Fragment>
 
                         <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                             // style={ { marginBottom : ( this.state.experiments && this.state.experiments.length > 0 ) ? 0 : 0 } }
-                        >
-                            <div style={ { fontWeight: "bold" } }>
-                                Search to Delete:
-                            </div>
-                            <div style={ { marginLeft: 10 } }>
-                                { this.props.searchName } ({ this.props.searchId })
-                            </div>
-                        </div>
-
-                        <div className=" top-level fixed-height  modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
                              style={ { marginTop : 20, marginBottom: 20 } }
                         >
                             <button
                                 onClick={ this._deleteSearch_BindThis }
                             >
-                                Delete Search
+                                Delete Search{ this.props.searchesToDelete.length > 1 ? "es" : null }
                             </button>
                         </div>
 
-                        { ( this.state.show_ExperimentListChanged_Message ) ? (
+                        <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                             style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
+                            // style={ { padding : 6 } }
+                        >
+                            <div style={ { fontWeight: "bold", marginBottom: 5 } }>
+                                Search{ this.props.searchesToDelete.length > 1 ? "es" : null } to Delete:
+                            </div>
+                            <div>
+                                <ul>
+                                    { this.props.searchesToDelete.map( (value, index, fullArray ) => {
 
-                            <div className=" top-level fixed-height  modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                                 style={ { marginBottom: 20 } }
-                            >
-                                <div style={ { fontWeight: "bold", color: "red" } }>
-                                    The Experiment List has changed. Please validate and click the button to delete the search.
-                                </div>
+                                        return (
+                                            <li key={ value.projectSearchId } style={ { marginBottom: 3 } }>
+                                                <span>
+                                                    { value.searchName }
+                                                </span>
+                                                <span> ({ value.searchId })</span>
+                                            </li>
+                                        )
+                                    })}
+                                </ul>
                             </div>
 
-                        ) : null }
+                            { ( this.state.show_ExperimentListChanged_Message ) ? (
 
-                        { ( this.state.experiments && this.state.experiments.length > 0 ) ? (
+                                    <div style={ { fontWeight: "bold", color: "red", marginBottom: 20 } }>
+                                        The Experiment List has changed. Please validate and click the button to delete the search.
+                                    </div>
 
-                            <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
-                                 style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
-                                // style={ { padding : 6 } }
-                            >
-                                <div style={ { fontWeight: "bold" } }>
-                                    Experiments that contain the search and will be deleted when the search is deleted:
-                                </div>
-                                <div >
-                                    <ul>
-                                    {
-                                        this.state.experiments.map( (experiment, index) => {
+                            ) : null }
 
-                                            return (
-                                                <li key={ experiment.experimentId }>
-                                                    { experiment.experimentName }
-                                                </li>
-                                            )
-                                        })
-                                    }
-                                    </ul>
-                                </div>
+                            { ( this.state.experiments && this.state.experiments.length > 0 ) ? (
 
-                            </div>
+                                <React.Fragment>
+                                    <div style={ { fontWeight: "bold" } }>
+                                        { this.props.searchesToDelete.length === 1 ? (
+                                            <span>
+                                                Experiments that contain the search and will be deleted when the search is deleted:
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                Experiments that contain the searches and will be deleted when the searches are deleted:
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div >
+                                        <ul>
+                                        {
+                                            this.state.experiments.map( (experiment, index) => {
 
-                        ) : null }
+                                                return (
+                                                    <li key={ experiment.experimentId }>
+                                                        { experiment.experimentName }
+                                                    </li>
+                                                )
+                                            })
+                                        }
+                                        </ul>
+                                    </div>
+
+                                </React.Fragment>
+
+                            ) : null }
+                        </div>
 
                     </React.Fragment>
 
@@ -372,15 +396,15 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
  */
 const _deleteSearch_CallWebservice = function (
     {
-        projectSearchId,
+        projectSearchIds,
         experimentIds_Containing_ProjectSearchId
     } : {
-        projectSearchId: number
+        projectSearchIds : Array<number>
         experimentIds_Containing_ProjectSearchId: Array<number>
     }) : Promise<DeleteSearch_CallWebservice_Result> {
 
     let requestObj = {
-        projectSearchId,
+        projectSearchIds,
         experimentIds_Containing_ProjectSearchId
     };
 

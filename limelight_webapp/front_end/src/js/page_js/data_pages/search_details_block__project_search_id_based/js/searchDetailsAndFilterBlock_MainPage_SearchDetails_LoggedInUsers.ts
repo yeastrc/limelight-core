@@ -28,6 +28,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 
 import { SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers } from './searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers'
 import {searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId} from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/search_sub_group__manage__group_names__open_overlay__pass__project_search_id";
+import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /**
 * 
@@ -160,6 +161,11 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers {
                $html.click(function(eventObject) {
                    try {
                        eventObject.preventDefault();
+
+                       if ( limelight__IsTextSelected() ) {
+                           return; // EARLY RETURN
+                       }
+
                        objectThis._manageSubGroupsClicked({ projectSearchId, clickedThis : this });
                    } catch (e) {
                        reportWebErrorToServer.reportErrorObjectToServer({

@@ -30,6 +30,7 @@ public class ProjectSearchDTO {
 	private int searchId;
 	private int statusId;
 	private String searchName;
+	private String searchShortName;
 	private int searchDisplayOrder;
 	private Integer createdByUserId;
 	
@@ -74,6 +75,12 @@ public class ProjectSearchDTO {
 	}
 	public void setSearchDisplayOrder(int searchDisplayOrder) {
 		this.searchDisplayOrder = searchDisplayOrder;
+	}
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
 	}
 	
 }

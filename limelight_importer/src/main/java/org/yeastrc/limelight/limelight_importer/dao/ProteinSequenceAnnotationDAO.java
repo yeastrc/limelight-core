@@ -88,6 +88,10 @@ public class ProteinSequenceAnnotationDAO {
 	 * @throws Exception
 	 */
 	public void getAnnotationId_InsertIfNotInDB( ProteinSequenceAnnotationDTO annotation ) throws Exception {
+
+		//  First update last_used_in_search_import so the record doesn't get deleted before the next step 
+		update_last_used_in_search_import( annotation );
+		
 		{
 			List<Integer> idList = getIdForNameTaxDesc( annotation );
 			if ( idList.size() > 1 ) {
@@ -105,6 +109,34 @@ public class ProteinSequenceAnnotationDAO {
 			annotation.setId( idListAfterInsert.get(0) );
 		}
 		return;
+	}
+
+	/**
+	 * Update the last_used_in_search_import associated with this record
+	 * @param sequence
+	 * @throws Exception
+	 */
+	public void update_last_used_in_search_import( ProteinSequenceAnnotationDTO annotation ) throws Exception {
+
+		String sql = "UPDATE protein_sequence_annotation_tbl SET last_used_in_search_import = NOW() WHERE name = ? AND taxonomy = ? AND description = ? ";
+		if ( annotation.getDescription() == null ) {
+			sql = "UPDATE protein_sequence_annotation_tbl SET last_used_in_search_import = NOW() WHERE name = ? AND taxonomy = ? AND description IS NULL ";
+		}
+		 
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				pstmt.setString( 1, annotation.getName() );
+				pstmt.setInt( 2, annotation.getTaxonomy() );
+				if ( annotation.getDescription() != null ) {
+					pstmt.setString( 3, annotation.getDescription() );
+				}
+				pstmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: updateStatus(...) sql: " + sql, e );
+			throw e;
+		}
 	}
 	
 	/**
@@ -185,7 +217,7 @@ public class ProteinSequenceAnnotationDAO {
 			annotation.setId( idList.get(0) );
 			return;
 		}
-		String msg = "Unable to find protein_sequence_annotation_tbl record just inserted by sequence.  "
+		String msg = "Unable to find protein_sequence_annotation_tbl record just inserted by name, description, taxonomy.  "
 				+ "Inserted id: " + insertedId + ", annotation: " + annotation;
 		log.error( msg );
 		throw new LimelightImporterInternalException(msg);

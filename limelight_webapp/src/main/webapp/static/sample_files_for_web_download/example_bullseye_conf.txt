@@ -1,0 +1,57 @@
+# Bullseye parameter file
+# Built by Michael Riffle <mriffle@uw.edu> November 2022
+#
+# This parameter file is specific to the Limelight feature detection pipeline
+#
+# This file specifies the parameters that will be passed to Bullseye after Hardklor is run
+#
+# To specify a parameter:
+#	1. Uncomment it by deleting the # at the beginning of the line
+#	2. Change the default value to the desired value
+
+
+#            Ignore peptides that persist for this length in time.
+#            These peptides are considered contaminants.
+#            The unit of time is whatever unit is used in your data file.
+#            Default value: 2
+#c=2
+
+#            Gap size tolerance when checking for peptides across consecutive
+#            scans.
+#            Default value: 1
+#g=1
+
+#            Only consider peptides below this maximum mass in daltons.
+#            Default value: 8000
+#m=8000
+
+#            Only consider peptides above this minimum mass in daltons.
+#            Default value: 600
+
+
+#            Sets the tolerance (+/- ppm) for finding persistent peptides.
+#            Default value: 5
+#r=5
+
+#            Number of consecutive scans over which a peptide must be
+#            observed to be considered real. Gaps in persistence are allowed
+#            when setting the -g flag.
+#            Default value: 3
+#s=3
+
+#            Sets the tolerance (+/- minutes) around the retention
+#            time over which a peptide can be matched to the MS/MS
+#            spectrum.
+#            Default value: 0.5
+#t=0.5
+
+#            Use exact match to precursor ion. Rather than use wide
+#            precursor boundaries, this flag forces Bullseye to match
+#            precursors to the base isotope peak identified in Hardklor.
+#            The tolerance is set with the -p flag.
+#            Change to true to enable
+#e=false
+
+#            Sets the tolerance (+/- ppm) for exact match searches.
+#            Default value: 10
+#p=10

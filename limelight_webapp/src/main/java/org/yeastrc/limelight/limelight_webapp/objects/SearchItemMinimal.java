@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_webapp.objects;
 import java.util.Date;
 
 /**
- * Single Search Minimal - only name, search id, projectSearchId
+ * Single Search Minimal - only name, search short name, search id, projectSearchId
  *
  */
 public class SearchItemMinimal {
@@ -30,14 +30,16 @@ public class SearchItemMinimal {
 	private int projectId;
 	private int displayOrder;
 	private String name;
+	private String searchShortName;
 	private boolean searchHasSubgroups;
 	private Date importEndTimestamp;
 
 	@Override
 	public String toString() {
 		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
-				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + ", searchHasSubgroups="
-				+ searchHasSubgroups + ", importEndTimestamp=" + importEndTimestamp + "]";
+				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + ", searchShortName="
+				+ searchShortName + ", searchHasSubgroups=" + searchHasSubgroups + ", importEndTimestamp="
+				+ importEndTimestamp + "]";
 	}
 	
 	/**
@@ -88,6 +90,14 @@ public class SearchItemMinimal {
 
 	public void setImportEndTimestamp(Date importEndTimestamp) {
 		this.importEndTimestamp = importEndTimestamp;
+	}
+
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
 	}
 		
 }

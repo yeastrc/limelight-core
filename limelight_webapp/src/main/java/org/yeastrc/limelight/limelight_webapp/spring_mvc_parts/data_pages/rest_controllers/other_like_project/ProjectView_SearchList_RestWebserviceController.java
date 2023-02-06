@@ -44,23 +44,44 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchIdCodeDAO.LogDuplicateSQLException;
+import org.yeastrc.limelight.limelight_webapp.db_dto.FolderForProjectDTO;
+import org.yeastrc.limelight.limelight_webapp.db_dto.FolderProjectSearchDTO;
+import org.yeastrc.limelight.limelight_webapp.dao.FolderForProjectDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.FolderProjectSearchDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchIdCodeDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearch_TagCategoryInProject_DAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchTags_InProject_ForProjectIdSearcher.SearchTags_InProject_ForProjectIdSearcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchTagCategories_ForProjectId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchListForProjectIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchTags_InProject_ForProjectIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchTagCategories_ForProjectId_Searcher.ProjectSearchTagCategories_ForProjectId_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher.SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultIfNull;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
+/**
+ * Old version copied to ProjectView_SearchList_RestWebserviceController__OLD_VERSION before updates for 4.0 release
+ * 
+ * uses new '-v2' controller path
+ * 
+ * Searches for Project Id
+ * 
+ * Searches, Folders, Search to folder mapping, Search Tags
+ * 
+ * Data is NOT cached since user can update.  v2 in controller path is since replaced existing response with different response.  
+ *
+ */
 @RestController
 public class ProjectView_SearchList_RestWebserviceController {
   
@@ -68,19 +89,37 @@ public class ProjectView_SearchList_RestWebserviceController {
 	
 	private static final int RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE = 30;
 
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_REST_WEBSERVICE_CONTROLLER;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_V2_REST_WEBSERVICE_CONTROLLER;
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
-	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
+	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
+
+	@Autowired
+	private FolderForProjectDAO_IF folderForProjectDAO;
+
+	@Autowired
+	private FolderProjectSearchDAO_IF folderProjectSearchDAO;
 	
 	@Autowired ProjectSearchIdCodeDAO_IF projectSearchIdCodeDAO;
 	
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
 
+	@Autowired
+	private SearchTags_InProject_ForProjectIdSearcher_IF searchTags_InProject_ForProjectIdSearcher;
+	
+	@Autowired
+	private SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_IF searchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher;
+
+	@Autowired
+	private ProjectSearch_TagCategoryInProject_DAO_IF projectSearch_TagCategoryInProject_DAO;
+
+	@Autowired
+	private ProjectSearchTagCategories_ForProjectId_Searcher_IF projectSearchTagCategories_ForProjectId_Searcher;
+	
 	@Autowired
 	private SearchNameReturnDefaultIfNull searchNameReturnDefaultIfNull;
 	
@@ -180,94 +219,10 @@ public class ProjectView_SearchList_RestWebserviceController {
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
 			
-			//  Set userCanEditAndDeleteFolders on each folder
-			
-			boolean userCanEditAndDeleteFolders = false;
-			
-			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
-				userCanEditAndDeleteFolders = true;
-			}
-			
 			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
-
-			boolean requestFromActualUser = false;
 			
-			if ( userSession != null && userSession.isActualUser() && userSession.getUserId() != null ) {
-				requestFromActualUser = true;
-			}
+			WebserviceResult webserviceResult = processRequest_CreateResult(projectId, requestingIPAddress, webSessionAuthAccessLevel, userSession);
 
-//    		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
-
-			//  Get the searches and put them in folders
-			ProjectPageFoldersSearches projectPageFoldersSearches = 
-					viewProjectSearchesInFolders.getProjectPageFoldersSearches( projectId );
-			
-			boolean noSearchesFound = projectPageFoldersSearches.isNoSearchesFound();
-			
-
-    		WebserviceResult webserviceResult = new WebserviceResult();
-    		
-    		webserviceResult.noSearchesFound = noSearchesFound;
-			
-    		if ( ! noSearchesFound ) {
-    			
-    			//  Searches were found so convert to webservice response
-    			{    		
-    				List<SearchItemMinimal> searchesNotInFolders_FromDB = projectPageFoldersSearches.getSearchesNotInFolders();
-
-    				if ( searchesNotInFolders_FromDB != null && ( ! searchesNotInFolders_FromDB.isEmpty() ) ) {
-
-    					// Process Searches Not In Folders  
-
-    					List<WebserviceResult_SingleSearch> searchesNotInFolders = convertSearchesFromDBToWebserviceResponse(
-    							searchesNotInFolders_FromDB,
-    							requestingIPAddress, 
-    							webSessionAuthAccessLevel, 
-    							userSession, 
-    							requestFromActualUser );
-
-    					webserviceResult.searchesNotInFolders = searchesNotInFolders;
-    				}
-    			}
-    			{
-    				List<ProjectPageSingleFolder> folders_FromDB = projectPageFoldersSearches.getFolders();
-
-    				if ( ! folders_FromDB.isEmpty() ) {
-
-    					//  Process Folders
-
-    					List<WebserviceResult_SingleFolder> folderList = new ArrayList<>( folders_FromDB.size() );
-    					webserviceResult.folderList = folderList;
-
-    					for ( ProjectPageSingleFolder folder_FromDB : folders_FromDB ) {
-
-    						//  Process Searches in this folder
-
-							WebserviceResult_SingleFolder singleFolder = new WebserviceResult_SingleFolder();
-							folderList.add( singleFolder );
-							singleFolder.id = folder_FromDB.getId();
-							singleFolder.folderName = folder_FromDB.getFolderName();
-							singleFolder.canEdit = userCanEditAndDeleteFolders;
-							singleFolder.canDelete = userCanEditAndDeleteFolders;
-
-    						List<SearchItemMinimal> searchesInFolders_FromDB = folder_FromDB.getSearches();
-
-    						if ( searchesInFolders_FromDB != null && ( ! searchesInFolders_FromDB.isEmpty() ) ) {
-    						
-    							List<WebserviceResult_SingleSearch> searchesInFolders = convertSearchesFromDBToWebserviceResponse(
-    									searchesInFolders_FromDB,
-    									requestingIPAddress, 
-    									webSessionAuthAccessLevel, 
-    									userSession, 
-    									requestFromActualUser );
-
-    							singleFolder.searchesInFolder = searchesInFolders;
-    						}
-    					}
-    				}
-	    		}
-    		}
-    		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
@@ -289,53 +244,178 @@ public class ProjectView_SearchList_RestWebserviceController {
 	 * @param requestingIPAddress
 	 * @param webSessionAuthAccessLevel
 	 * @param userSession
-	 * @param requestFromActualUser
 	 * @return
-	 * @throws SQLException
+	 * @throws Exception 
 	 */
-	private List<WebserviceResult_SingleSearch> convertSearchesFromDBToWebserviceResponse( 
-			List<SearchItemMinimal> searchesFromDB_List,
+	private WebserviceResult processRequest_CreateResult(
+			int projectId,
 			String requestingIPAddress,
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel, 
-			UserSession userSession, 
-			boolean requestFromActualUser
-			 ) throws SQLException {
+			UserSession userSession
+			 ) throws Exception {
+
+		WebserviceResult webserviceResult = new WebserviceResult();
 		
-		
-		List<Integer> projectSearchIdList = new ArrayList<>( searchesFromDB_List.size() );
-		for ( SearchItemMinimal searchItemMinimal : searchesFromDB_List ) {
-			projectSearchIdList.add( searchItemMinimal.getProjectSearchId() );
+		if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+			webserviceResult.userIsProjectOwner = true;
 		}
 		
-		List<ProjectSearchIdCodeDTO> projectSearchIdCodeDTOList = projectSearchIdCodeDAO.getByProjectSearchIdList(projectSearchIdList);
-		Map<Integer, ProjectSearchIdCodeDTO> projectSearchIdCodeDTOMap_Key_projectSearchId = new HashMap<>( projectSearchIdCodeDTOList.size() );
-		for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTOList ) {
-			projectSearchIdCodeDTOMap_Key_projectSearchId.put( projectSearchIdCodeDTO.getProjectSearchId(), projectSearchIdCodeDTO );
+		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
+		
+		List<FolderForProjectDTO> folderForProjectList_DB = folderForProjectDAO.getFolderForProjectDTO_ForProjectId( projectId );
+		List<FolderProjectSearchDTO> folderProjectSearchList_DB = folderProjectSearchDAO.getFolderProjectSearchDTO_ForProjectId( projectId );
+		
+		{ // populate webserviceResult.folderList
+			List<WebserviceResult_SingleFolder> folderList_Result = new ArrayList<>( folderForProjectList_DB.size() );
+			for ( FolderForProjectDTO folderForProjectItem_DB : folderForProjectList_DB ) {
+				
+				WebserviceResult_SingleFolder singleFolder_Result = new WebserviceResult_SingleFolder();
+				singleFolder_Result.id = folderForProjectItem_DB.getId();
+				singleFolder_Result.folderName = folderForProjectItem_DB.getName();
+				singleFolder_Result.displayOrder = folderForProjectItem_DB.getDisplayOrder();
+				folderList_Result.add(singleFolder_Result);
+			}
+			webserviceResult.folderList = folderList_Result;
+		}
+		{ // populate webserviceResult.folderProjectSearchMappingList
+			List<WebserviceResult_SingleFolderProjectSearchMapping> folderProjectSearchMappingList_Result = new ArrayList<>( folderForProjectList_DB.size() );
+			for ( FolderProjectSearchDTO folderProjectSearchItem_DB : folderProjectSearchList_DB ) {
+				
+				WebserviceResult_SingleFolderProjectSearchMapping singleFolderProjectSearchMapping_Result = new WebserviceResult_SingleFolderProjectSearchMapping();
+				singleFolderProjectSearchMapping_Result.folderId = folderProjectSearchItem_DB.getFolderId();
+				singleFolderProjectSearchMapping_Result.projectSearchId = folderProjectSearchItem_DB.getProjectSearchId();
+				singleFolderProjectSearchMapping_Result.searchDisplayOrder = folderProjectSearchItem_DB.getSearchDisplayOrder();
+				folderProjectSearchMappingList_Result.add(singleFolderProjectSearchMapping_Result);
+			}
+			webserviceResult.folderProjectSearchMappingList = folderProjectSearchMappingList_Result;
+		}
+
+		if ( searchListDB.isEmpty() ) {
+			//  NO Searches
+			webserviceResult.noSearchesFound = true;
+		}
+
+
+		List<Integer> projectSearchIdList = new ArrayList<>( searchListDB.size() );
+		
+		for ( SearchItemMinimal search : searchListDB ) {
+			projectSearchIdList.add( search.getProjectSearchId() );
 		}
 		
-		
-		List<WebserviceResult_SingleSearch> searchList = new ArrayList<>( searchesFromDB_List.size() );
-		for ( SearchItemMinimal searchListDBItem : searchesFromDB_List ) {
+		{ 
+
+    		List<WebserviceResult_SingleProjectSearchTagCategory> tagCategories_DistinctInProject = null;
+    		{
+    			List<ProjectSearchTagCategories_ForProjectId_Searcher_ResultItem> results = 
+    					projectSearchTagCategories_ForProjectId_Searcher.getProjectSearchTagCategories_ForProjectId(projectId);
+    			
+    			tagCategories_DistinctInProject = new ArrayList<>( results.size() );
+    			
+    			for ( ProjectSearchTagCategories_ForProjectId_Searcher_ResultItem result : results ) {
+    				WebserviceResult_SingleProjectSearchTagCategory webserviceResult_TagCategory = new WebserviceResult_SingleProjectSearchTagCategory();
+    				webserviceResult_TagCategory.category_id = result.getCategory_id();
+    				webserviceResult_TagCategory.category_label = result.getCategory_label();
+    				webserviceResult_TagCategory.label_Color_Font = result.getLabel_Color_Font();
+    				webserviceResult_TagCategory.label_Color_Background = result.getLabel_Color_Background();
+    				webserviceResult_TagCategory.label_Color_Border = result.getLabel_Color_Border();
+    				tagCategories_DistinctInProject.add(webserviceResult_TagCategory);
+    			}
+    		}
+    		
+    		webserviceResult.tagCategories_DistinctInProject = tagCategories_DistinctInProject;
+		}
+
+		{  //  Project Search Tags:   webserviceResult.projectSearchTagList;
 			
-			ProjectSearchIdCodeDTO projectSearchIdCodeDTO = projectSearchIdCodeDTOMap_Key_projectSearchId.get( searchListDBItem.getProjectSearchId() );
-			if ( projectSearchIdCodeDTO == null ) {
-				projectSearchIdCodeDTO = _create_Insert_projectSearchIdCodeDTO( searchListDBItem );
+
+			Integer id_For_UncategorizedFakeRecord = projectSearch_TagCategoryInProject_DAO.getId_For_UncategorizedFakeRecord();
+			
+
+			List<SearchTags_InProject_ForProjectIdSearcher_ResultItem> resultsDB = 
+					searchTags_InProject_ForProjectIdSearcher.get_SearchTags_InProject_ForProjectId(projectId);
+
+			List<WebserviceResult_SingleProjectSearchTag> projectSearchTagList = new ArrayList<>( resultsDB.size() );
+
+			for ( SearchTags_InProject_ForProjectIdSearcher_ResultItem resultDB_Item : resultsDB ) {
+				
+				Integer tagCategoryId = null;
+				
+				{
+					int tag_category_id_FromDB = resultDB_Item.getTag_category_id();
+
+					if ( id_For_UncategorizedFakeRecord == null || id_For_UncategorizedFakeRecord.intValue() != tag_category_id_FromDB ) {
+						//  NOT uncategorized so copy to result
+						tagCategoryId = tag_category_id_FromDB;
+					}
+				}
+				
+				WebserviceResult_SingleProjectSearchTag webserviceResult_SingleProjectSearchTag = new WebserviceResult_SingleProjectSearchTag();
+				webserviceResult_SingleProjectSearchTag.tagId = resultDB_Item.getTag_id();
+				webserviceResult_SingleProjectSearchTag.tagCategoryId = tagCategoryId;
+				webserviceResult_SingleProjectSearchTag.tagString = resultDB_Item.getTag_string();
+				webserviceResult_SingleProjectSearchTag.tag_Color_Font = resultDB_Item.getTag_Color_Font();
+				webserviceResult_SingleProjectSearchTag.tag_Color_Background = resultDB_Item.getTag_Color_Background();
+				webserviceResult_SingleProjectSearchTag.tag_Color_Border = resultDB_Item.getTag_Color_Border();
+
+				projectSearchTagList.add(webserviceResult_SingleProjectSearchTag);
+			}
+			
+			webserviceResult.projectSearchTagList = projectSearchTagList;
+		}
+		
+		{
+			List<SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_ResultItem> resultsDB = 
+			searchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher.get_SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectId(projectId);
+			
+			List<WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping> projectSearchTag_ProjectSearchId_Mapping_List = new ArrayList<>( resultsDB.size() );
+			
+			for ( SearchTagId_ProjectSearchId_Mapping_InProject_ForProjectIdSearcher_ResultItem resultDB_Item : resultsDB ) {
+				WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping webserviceResult_ForType = new WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping();
+				webserviceResult_ForType.projectSearchId = resultDB_Item.getProjectSearchId();
+				webserviceResult_ForType.tagId = resultDB_Item.getTag_id();
+				projectSearchTag_ProjectSearchId_Mapping_List.add(webserviceResult_ForType);
+			}
+			
+			webserviceResult.projectSearchTag_ProjectSearchId_Mapping_List = projectSearchTag_ProjectSearchId_Mapping_List;
+		}
+		
+		if ( searchListDB.isEmpty() ) {
+
+			webserviceResult.searchList = new ArrayList<>( searchListDB.size() );
+			
+		} else {
+			
+			//  populate webserviceResult.searchList
+		
+			List<ProjectSearchIdCodeDTO> projectSearchIdCodeDTOList = projectSearchIdCodeDAO.getByProjectSearchIdList(projectSearchIdList);
+			Map<Integer, ProjectSearchIdCodeDTO> projectSearchIdCodeDTOMap_Key_projectSearchId = new HashMap<>( projectSearchIdCodeDTOList.size() );
+			for ( ProjectSearchIdCodeDTO projectSearchIdCodeDTO : projectSearchIdCodeDTOList ) {
+				projectSearchIdCodeDTOMap_Key_projectSearchId.put( projectSearchIdCodeDTO.getProjectSearchId(), projectSearchIdCodeDTO );
 			}
 
-			WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
-			resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
-			resultItem.projectSearchIdCode = projectSearchIdCodeDTO.getProjectSearchIdCode();
-			resultItem.searchId = searchListDBItem.getSearchId();
-			resultItem.displayOrder = searchListDBItem.getDisplayOrder();
-			resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
-			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
-				resultItem.setCanChangeSearchName(true);
-				resultItem.setCanDelete(true);
+			List<WebserviceResult_SingleSearch> searchList = new ArrayList<>( searchListDB.size() );
+			
+			for ( SearchItemMinimal searchListDBItem : searchListDB ) {
+
+				ProjectSearchIdCodeDTO projectSearchIdCodeDTO = projectSearchIdCodeDTOMap_Key_projectSearchId.get( searchListDBItem.getProjectSearchId() );
+				if ( projectSearchIdCodeDTO == null ) {
+					projectSearchIdCodeDTO = _create_Insert_projectSearchIdCodeDTO( searchListDBItem );
+				}
+
+				WebserviceResult_SingleSearch resultItem = new WebserviceResult_SingleSearch();
+				resultItem.projectSearchId = searchListDBItem.getProjectSearchId();
+				resultItem.projectSearchIdCode = projectSearchIdCodeDTO.getProjectSearchIdCode();
+				resultItem.searchId = searchListDBItem.getSearchId();
+				resultItem.displayOrder = searchListDBItem.getDisplayOrder();
+				resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
+				resultItem.searchShortName = searchListDBItem.getSearchShortName();
+				searchList.add( resultItem );
 			}
-			searchList.add( resultItem );
+
+			webserviceResult.searchList = searchList;
 		}
 		
-		return searchList;
+		return webserviceResult;
 	}
 	
 	/**
@@ -483,27 +563,49 @@ public class ProjectView_SearchList_RestWebserviceController {
      */
     public static class WebserviceResult {
 
-    	private List<WebserviceResult_SingleFolder> folderList;
-    	private List<WebserviceResult_SingleSearch> searchesNotInFolders;
+    	private boolean userIsProjectOwner;
+    	
     	private boolean noSearchesFound;
     	
+    	private List<WebserviceResult_SingleFolder> folderList;
+    	private List<WebserviceResult_SingleFolderProjectSearchMapping> folderProjectSearchMappingList;
+    	private List<WebserviceResult_SingleSearch> searchList;
+    	
+    	private List<WebserviceResult_SingleProjectSearchTagCategory> tagCategories_DistinctInProject;
+    	private List<WebserviceResult_SingleProjectSearchTag> projectSearchTagList;
+    	
+    	private List<WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping> projectSearchTag_ProjectSearchId_Mapping_List;
+
 		public List<WebserviceResult_SingleFolder> getFolderList() {
 			return folderList;
 		}
-		public void setFolderList(List<WebserviceResult_SingleFolder> folderList) {
-			this.folderList = folderList;
+
+		public List<WebserviceResult_SingleSearch> getSearchList() {
+			return searchList;
 		}
-		public List<WebserviceResult_SingleSearch> getSearchesNotInFolders() {
-			return searchesNotInFolders;
-		}
-		public void setSearchesNotInFolders(List<WebserviceResult_SingleSearch> searchesNotInFolders) {
-			this.searchesNotInFolders = searchesNotInFolders;
-		}
+
 		public boolean isNoSearchesFound() {
 			return noSearchesFound;
 		}
-		public void setNoSearchesFound(boolean noSearchesFound) {
-			this.noSearchesFound = noSearchesFound;
+
+		public List<WebserviceResult_SingleProjectSearchTag> getProjectSearchTagList() {
+			return projectSearchTagList;
+		}
+
+		public List<WebserviceResult_SingleFolderProjectSearchMapping> getFolderProjectSearchMappingList() {
+			return folderProjectSearchMappingList;
+		}
+
+		public List<WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping> getProjectSearchTag_ProjectSearchId_Mapping_List() {
+			return projectSearchTag_ProjectSearchId_Mapping_List;
+		}
+
+		public boolean isUserIsProjectOwner() {
+			return userIsProjectOwner;
+		}
+
+		public List<WebserviceResult_SingleProjectSearchTagCategory> getTagCategories_DistinctInProject() {
+			return tagCategories_DistinctInProject;
 		}
     }
 
@@ -515,42 +617,39 @@ public class ProjectView_SearchList_RestWebserviceController {
     	
     	private int id;
     	private String folderName;
-    	List<WebserviceResult_SingleSearch> searchesInFolder;
-    	private boolean canEdit;
-    	private boolean canDelete;
+    	private int displayOrder;
     	
 		public int getId() {
 			return id;
 		}
-		public void setId(int id) {
-			this.id = id;
-		}
 		public String getFolderName() {
 			return folderName;
 		}
-		public void setFolderName(String folderName) {
-			this.folderName = folderName;
-		}
-		public List<WebserviceResult_SingleSearch> getSearchesInFolder() {
-			return searchesInFolder;
-		}
-		public void setSearchesInFolder(List<WebserviceResult_SingleSearch> searchesInFolder) {
-			this.searchesInFolder = searchesInFolder;
-		}
-		public boolean isCanDelete() {
-			return canDelete;
-		}
-		public void setCanDelete(boolean canDelete) {
-			this.canDelete = canDelete;
-		}
-		public boolean isCanEdit() {
-			return canEdit;
-		}
-		public void setCanEdit(boolean canEdit) {
-			this.canEdit = canEdit;
+		public int getDisplayOrder() {
+			return displayOrder;
 		}
     	
-    
+    }
+
+    /**
+     * Webservice Result - Single Search
+     *
+     */
+    public static class WebserviceResult_SingleFolderProjectSearchMapping {
+    	
+    	private int folderId;
+    	private int projectSearchId;
+    	private int searchDisplayOrder;
+    	
+		public int getFolderId() {
+			return folderId;
+		}
+		public int getProjectSearchId() {
+			return projectSearchId;
+		}
+		public int getSearchDisplayOrder() {
+			return searchDisplayOrder;
+		}
     }
     
     /**
@@ -562,53 +661,109 @@ public class ProjectView_SearchList_RestWebserviceController {
     	private int projectSearchId;
     	private String projectSearchIdCode;
     	private int searchId;
-    	private int displayOrder; // zero if no display order applied
+    	private int displayOrder; // zero if no display order applied.   Display Order for "All Searches"
     	private String name;
-    	private boolean canChangeSearchName;
-    	private boolean canDelete;
+    	private String searchShortName;
     	
 		public int getProjectSearchId() {
 			return projectSearchId;
 		}
-		public void setProjectSearchId(int projectSearchId) {
-			this.projectSearchId = projectSearchId;
+		public String getProjectSearchIdCode() {
+			return projectSearchIdCode;
 		}
 		public int getSearchId() {
 			return searchId;
 		}
-		public void setSearchId(int searchId) {
-			this.searchId = searchId;
+		public int getDisplayOrder() {
+			return displayOrder;
 		}
 		public String getName() {
 			return name;
 		}
-		public void setName(String name) {
-			this.name = name;
+		public String getSearchShortName() {
+			return searchShortName;
 		}
-		public boolean isCanChangeSearchName() {
-			return canChangeSearchName;
-		}
-		public void setCanChangeSearchName(boolean canChangeSearchName) {
-			this.canChangeSearchName = canChangeSearchName;
-		}
-		public boolean isCanDelete() {
-			return canDelete;
-		}
-		public void setCanDelete(boolean canDelete) {
-			this.canDelete = canDelete;
-		}
-		public int getDisplayOrder() {
-			return displayOrder;
-		}
-		public void setDisplayOrder(int displayOrder) {
-			this.displayOrder = displayOrder;
-		}
-		public String getProjectSearchIdCode() {
-			return projectSearchIdCode;
-		}
-    	
     }
-    
+
+    /**
+     * Webservice Result - Single Project Search Tag Category
+     *
+     */
+    public static class WebserviceResult_SingleProjectSearchTagCategory {
+
+    	private int category_id;
+		private String category_label;
+		private String label_Color_Font;
+    	private String label_Color_Background;
+    	private String label_Color_Border;
+    	
+		public int getCategory_id() {
+			return category_id;
+		}
+		public String getCategory_label() {
+			return category_label;
+		}
+		public String getLabel_Color_Font() {
+			return label_Color_Font;
+		}
+		public String getLabel_Color_Background() {
+			return label_Color_Background;
+		}
+		public String getLabel_Color_Border() {
+			return label_Color_Border;
+		}
+		
+    }
+
+    /**
+     * Webservice Result - Single Project Search Tag
+     *
+     */
+    public static class WebserviceResult_SingleProjectSearchTag {
+    	
+    	private int tagId;
+    	private Integer tagCategoryId;
+    	private String tagString;
+		private String tag_Color_Font;
+    	private String tag_Color_Background;
+    	private String tag_Color_Border;
+    	
+		public int getTagId() {
+			return tagId;
+		}
+		public String getTagString() {
+			return tagString;
+		}
+		public String getTag_Color_Font() {
+			return tag_Color_Font;
+		}
+		public String getTag_Color_Background() {
+			return tag_Color_Background;
+		}
+		public String getTag_Color_Border() {
+			return tag_Color_Border;
+		}
+		public Integer getTagCategoryId() {
+			return tagCategoryId;
+		}
+    }
+
+    /**
+     * Webservice Result - Single Project Search Tag Project SearchId Mapping
+     *
+     */
+    public static class WebserviceResult_Single_ProjectSearchTag_ProjectSearchId_Mapping {
+    	
+    	private int tagId;
+    	private int projectSearchId;
+    	
+		public int getTagId() {
+			return tagId;
+		}
+		public int getProjectSearchId() {
+			return projectSearchId;
+		}
+    }
 }
 
 

@@ -42,7 +42,8 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 		
 	private static final String QUERY_SQL = 
 			"SELECT project_search_tbl.id AS project_search_id, project_search_tbl.project_id AS project_id, search_tbl.id AS search_id,"
-			+ " project_search_tbl.search_display_order, project_search_tbl.search_name, search_tbl.import_end_timestamp  "
+			+ " project_search_tbl.search_display_order, project_search_tbl.search_name, project_search_tbl.search_short_name, "
+			+ " search_tbl.import_end_timestamp  "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
 			+ " WHERE project_search_tbl.project_id = ? AND project_search_tbl.status_id = " + SearchRecordStatus.IMPORT_COMPLETE_VIEW.value();
@@ -69,6 +70,7 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 					item.setSearchId( rs.getInt( "search_id" ) );
 					item.setDisplayOrder( rs.getInt( "search_display_order" ) );
 					item.setName( rs.getString( "search_name" ) );
+					item.setSearchShortName( rs.getString( "search_short_name" ) );
 					item.setImportEndTimestamp( rs.getTimestamp( "import_end_timestamp" ) );
 					resultList.add( item );
 				}

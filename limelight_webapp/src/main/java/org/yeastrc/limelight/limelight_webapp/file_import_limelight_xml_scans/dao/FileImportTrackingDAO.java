@@ -50,9 +50,9 @@ public class FileImportTrackingDAO extends Limelight_JDBC_Base implements FileIm
 
 		final String sql = "INSERT INTO file_import_tracking_tbl ( "
 				+ " id, project_id, priority, status_id, marked_for_deletion, insert_request_url, "
-				+ " search_name, search_path, user_id,  "
+				+ " search_name, search_short_name, search_path, user_id,  "
 				+ " remote_user_ip_address, last_updated_date_time )"
-				+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW() )";
+				+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW() )";
 
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -84,6 +84,8 @@ public class FileImportTrackingDAO extends Limelight_JDBC_Base implements FileIm
 							counter++;
 							pstmt.setString( counter, item.getSearchName() );
 							counter++;
+							pstmt.setString( counter, item.getSearchShortName() );
+							counter++;
 							pstmt.setString( counter, item.getSearchPath() );
 							counter++;
 							pstmt.setInt( counter, item.getUserId() );
@@ -100,47 +102,23 @@ public class FileImportTrackingDAO extends Limelight_JDBC_Base implements FileIm
 			throw e;
 		}
 	}
-	
+
 	/**
-	 * @param markedForDeletion
-	 * @param status
 	 * @param id
-	 * @return true if record updated, false otherwise
+	 * @param status_ToExclude - Do NOT update if has this status
+	 * @param deletedByUserId
 	 * @throws Exception
 	 */
 	@Override
-	public boolean updateMarkedForDeletionForIdStatus( 
-			
-			boolean markedForDeletion, FileImportStatus status, int id, Integer deletedByUserId ) throws Exception {
+	public void setMarkedForDeletionForId_ExcludingStatus( 
+			int id, FileImportStatus status_ToExclude,  int deletedByUserId ) throws Exception {
 
-		if ( markedForDeletion ) {
-			if ( deletedByUserId == null ) {
-				throw new IllegalArgumentException( "deletedByAuthUserId == null invalid when markedForDeletion is true" );
-			}
-		} else {
-			if ( deletedByUserId != null ) {
-				throw new IllegalArgumentException( "deletedByAuthUserId != null invalid when markedForDeletion is false" );
-			}
-		}
-		boolean recordUpdated = false;
-		
-		String sql = null;
-		
-		if ( markedForDeletion ) {
-			sql = "UPDATE file_import_tracking_tbl "
-					+ " SET marked_for_deletion = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE
-					+ " , last_updated_date_time = NOW(),"
-					+ " deleted_by_user_id = ?, deleted_date_time = NOW() "
-					+ " WHERE id = ? AND status_id = ?";
-		} else {
-			sql = "UPDATE file_import_tracking_tbl "
-					+ " SET marked_for_deletion = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE
-					+ " , last_updated_date_time = NOW(),"
-					+ " deleted_by_user_id = NULL, deleted_date_time = NULL "
-					+ " WHERE id = ? AND status_id = ?";
-		}
-
-		final String sqlFinal = sql;
+		final String sqlFinal = "UPDATE file_import_tracking_tbl "
+				+ " SET marked_for_deletion = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE
+				+ " , last_updated_date_time = NOW(),"
+				+ " deleted_by_user_id = ?, deleted_date_time = NOW() "
+				+ " WHERE id = ? AND status_id != ?";
+;
 
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -152,33 +130,21 @@ public class FileImportTrackingDAO extends Limelight_JDBC_Base implements FileIm
 							PreparedStatement pstmt =
 									connection.prepareStatement( sqlFinal );
 							int counter = 0;
-							if ( markedForDeletion ) {
-								counter++;
-								if ( deletedByUserId != null ) {
-									pstmt.setInt( counter, deletedByUserId );
-								} else {
-									pstmt.setNull( counter, java.sql.Types.INTEGER );
-								}
-							}
+							counter++;
+							pstmt.setInt( counter, deletedByUserId );
 							counter++;
 							pstmt.setInt( counter, id );
 							counter++;
-							pstmt.setInt( counter, status.value() );
+							pstmt.setInt( counter, status_ToExclude.value() );
 							return pstmt;
 						}
 					});
 
-			if ( rowsUpdated > 0 ) {
-				recordUpdated = true;
-			}
-
 		} catch ( RuntimeException e ) {
-			String msg = "updateMarkedForDeletionForIdStatus(...) id: " + id + ", SQL: " + sql;
+			String msg = "setMarkedForDeletionForId_ExcludingStatus(...) id: " + id + ", SQL: " + sqlFinal;
 			log.error( msg, e );
 			throw e;
 		}
-		
-		return recordUpdated;
 	}
 	
 }

@@ -236,7 +236,11 @@ function handleAJAXError(
 	} else if ( jqXHR_statusCode === 500 ) {
 		
 		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 500, textStatus: " + textStatus  } );
-		
+
+	} else if ( jqXHR_statusCode === 0 ) {
+
+		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 0, textStatus: " + textStatus  } );
+
 	} else {
 		
 		try {

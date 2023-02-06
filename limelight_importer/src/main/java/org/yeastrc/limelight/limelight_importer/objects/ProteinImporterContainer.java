@@ -26,8 +26,8 @@ import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceAnnotationDTO
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceDTO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinSequenceVersionAnnotationDTO;
+import org.yeastrc.limelight.limelight_importer.utils.Create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util;
 import org.yeastrc.limelight.limelight_importer.utils.PeptideProteinSequenceForProteinInference;
-import org.yeastrc.limelight.limelight_importer.utils.ProteinAnnotationNameTruncationUtil;
 import org.yeastrc.limelight.limelight_shared.constants.IsotopeLabelsConstants;
 
 /**
@@ -160,17 +160,9 @@ public class ProteinImporterContainer {
 
 		for ( MatchedProteinLabel matchedProteinLabel : matchedProteinLabelList ) {
 			
-			ProteinSequenceAnnotationDTO annotationDTO = new ProteinSequenceAnnotationDTO();
-
-			String proteinAnnotationNameTruncated = ProteinAnnotationNameTruncationUtil.truncateProteinAnnotationName( matchedProteinLabel.getName() );
-
-			annotationDTO.setName( proteinAnnotationNameTruncated );
-			annotationDTO.setDescription( matchedProteinLabel.getDescription() );
-
-			if ( matchedProteinLabel.getNcbiTaxonomyId() != null ) {
-
-				annotationDTO.setTaxonomy( matchedProteinLabel.getNcbiTaxonomyId().intValue() );
-			}
+			ProteinSequenceAnnotationDTO annotationDTO = 
+					Create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util
+					.create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util( matchedProteinLabel );
 
 			annotationDTOList.add( annotationDTO );
 		}

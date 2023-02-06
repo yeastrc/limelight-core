@@ -32,11 +32,16 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 public interface SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF {
 
 	/**
-	 * @param projectId TODO
-	 * @param projectSearchIds
+	 * @param projectId 
+	 * @param projectSearchIds - In the order the projectSearchIds are ADDED to SearchDataLookupParamsRoot
+	 * 
 	 * @param searchDataLookupParams_CreatedByInfo
 	 * @param projectSearchIdsToSearchIds
-	 * @param existingSearchDataLookupParamsRoot TODO
+	 * 
+	 * @param existingSearchDataLookupParamsRoot 
+	 * 				- null if no existing data.  
+	 * 					Returned after updating if not null.  
+	 * 					existingSearchDataLookupParamsRoot already has entries removed for projectSearchIds NOT wanted in result
 	 * @return
 	 * @throws SQLException
 	 */

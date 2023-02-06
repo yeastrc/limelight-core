@@ -8,7 +8,6 @@
  */
 
 import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData, Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root, AnnotationTypeItem,
     SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId
@@ -18,6 +17,10 @@ import {
     DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein,
     DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 } from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
  /**
  * 
@@ -34,10 +37,9 @@ export const create_experiment_SearchFilterValuesFromDefaultCutoffs = ({
     conditionGroupsDataContainer
 } : {
      projectSearchIds : Set<number>
-     searchDataMap_KeyProjectSearchId : Map<number, GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+     searchDataMap_KeyProjectSearchId : Map<number, CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>
      searchesData : {
-         searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-         searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+         searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
          searchesSubData : {
              searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
              annotationTypeData_Root : AnnotationTypeData_Root

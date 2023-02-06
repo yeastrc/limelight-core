@@ -55,9 +55,9 @@ public class SearchDisplayOrder_Update_UsingDBTransactionService implements Sear
 	public void searchDisplayOrder_Update( List<Integer> projectSearchIdList ) { //  No 'Throws' allowed due to 
 		try {
 			int newDisplayOrder = 0;
-			for ( int searchId : projectSearchIdList ) {
-				newDisplayOrder++;  //  increment for each search id
-				projectSearchDAO.updateDisplayOrderForProjectSearch( searchId, newDisplayOrder );
+			for ( int projectSearchId : projectSearchIdList ) {
+				newDisplayOrder++;  //  increment for each project search id
+				projectSearchDAO.updateDisplayOrderForProjectSearch( projectSearchId, newDisplayOrder );
 			}
 									
 		} catch ( RuntimeException e ) {

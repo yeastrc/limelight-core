@@ -106,8 +106,7 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
     const dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId = params.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId;
     const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = params.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds
 
-    const searchNamesMap_KeyProjectSearchId = params.dataPageStateManager.get_searchNames_AsMap(); // Map with key is projectSearchId as number
-
+    const searchData_SearchName_Etc_Root = params.dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
     const dataTable_Columns : Array<DataTable_Column> = [];
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
@@ -149,15 +148,22 @@ export const proteinPage_SingleProtein_searchesForSinglePeptide_createChildTable
 
             //  searchNames // Object with property name is projectSearchId as number
 
-            const searchNameObj = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+            const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
             if ( ! searchNameObj ) {
-                const msg = "searchesForSinglePeptide_createChildTableObjects(...): No value in searchNames for projectSearchId: " + projectSearchId;
+                const msg = "searchesForSinglePeptide_createChildTableObjects(...): No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
                 console.warn( msg );
                 throw Error( msg );
             }
             const searchName = searchNameObj.name;
+            const searchShortName = searchNameObj.searchShortName;
             const searchId = searchNameObj.searchId;
-            const searchNameDisplay = searchName + " (" + searchId + ")";
+
+            let searchShortName_Display = "";
+            if ( searchShortName ) {
+                searchShortName_Display = " (" + searchShortName + ")"
+            }
+
+            const searchNameDisplay = searchName + searchShortName_Display + " (" + searchId + ")";
 
             let psmCount : number = createReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry_ForParentRow.psmCountsMap_KeyProjectSearchId.get( projectSearchId );
             if ( ! psmCount ) { // is undefined if not in map so then set to 0

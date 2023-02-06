@@ -34,6 +34,11 @@ public class AA_OtherRestControllerPaths_Constants {
 
 	public static final String RUN_IMPORTER_IMPORT_FINISH_REST_WEBSERVICE_CONTROLLER = 
 			"o/rws/run-importer-import-finish";
-	
+
+	/**
+	 * 
+	 */
+	public static final String RUN_IMPORTER_IMPORT_OR_RUN_PIPELINE_FINISH_REST_WEBSERVICE_CONTROLLER = 
+			"o/rws/run-importer-import-or-run-pipeline-finish";
 
 }

@@ -17,13 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookupRootIdTypes;
 import org.yeastrc.limelight.limelight_webapp.db_dto.SearchDataLookupParametersLookupDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
-import org.yeastrc.limelight.limelight_webapp.objects.ProjectPageSingleFolder;
-import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.constants.SearchDataLookupParams_VersionNumber;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF;
@@ -40,8 +32,6 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds.SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_MainProcessing.SearchDataLookupParams_MainProcessing_Result;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFoldersIF;
-import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFolders.ProjectPageFoldersSearches;
 
 /**
  * 
@@ -52,9 +42,6 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.ViewProjectSearchesInFol
 public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service implements SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF {
 
 	private static final Logger log = LoggerFactory.getLogger( SearchDataLookupParametersLookupCode__Create_InsertToDB__Service.class );
-
-	@Autowired
-	private ViewProjectSearchesInFoldersIF viewProjectSearchesInFolders;
 	
 	@Autowired
 	private SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIdsIF searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds;
@@ -112,6 +99,8 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
 
 		if ( projectSearchIds_CreateDefault != null && ( ! projectSearchIds_CreateDefault.isEmpty() ) ) {
 			
+			//  Have projectSearchIds to Add using Default
+			
 			if ( searchDataLookupParamsRoot_FromRequest != null ) {
 				
 				//  Adding to existing SearchDataLookupParamsRoot so Version must match
@@ -127,100 +116,22 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
     			}
 			}
 			
-			//  Put ProjectSearchIds_CreateDefault in same order as displayed on Project Page
-			
-			List<Integer> projectSearchIds_CreateDefault_InOrder = new ArrayList<>( projectSearchIds_CreateDefault.size() );
-			
-
-//			if ( searchDataLookupParamsRoot != null ) {
-//				
-//				//  Also have SearchDataLookupParamsRoot so just copy in array provided
-//				
-//				projectSearchIds_CreateDefault_InOrder.addAll( projectSearchIds_CreateDefault );
-//			
-//			} else {
-				
-				//  No SearchDataLookupParamsRoot so set order based on order on project page
-    				
-    			if ( projectSearchIds_CreateDefault.size() == 1 ) {
-    				//  Only 1 entry so no need to put it in order
-    				
-    				projectSearchIds_CreateDefault_InOrder.add( projectSearchIds_CreateDefault.get( 0 ) );
-    			
-    			} else {
-    				// > 1 entry so get searches i order of project page
-    			
-    				Set<Integer> projectSearchIds_CreateDefault_Set = new HashSet<>( projectSearchIds_CreateDefault );
-
-    				//  Get the searches and put them in folders
-    				ProjectPageFoldersSearches projectPageFoldersSearches = 
-    						viewProjectSearchesInFolders.getProjectPageFoldersSearches( projectId );
-    				
-    				
-    				if (  projectPageFoldersSearches.getFolders() != null ) {
-    					
-    					for ( ProjectPageSingleFolder folder : projectPageFoldersSearches.getFolders() ) {
-    						
-    						if ( folder.getSearches() != null ) {
-    							
-    							List<SearchItemMinimal> searchList = folder.getSearches();
-
-    							sortSearches( searchList );
-    							
-    							for ( SearchItemMinimal search : searchList ) {
-    								Integer projectSearchId_Of_Search = search.getProjectSearchId();
-    								if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
-    									
-    									projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
-    									projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
-    								}
-    							}
-    						}
-    					}
-    				}
-    				
-    				if ( projectPageFoldersSearches.getSearchesNotInFolders() != null ) {
-
-						List<SearchItemMinimal> searchList = projectPageFoldersSearches.getSearchesNotInFolders();
-
-						sortSearches( searchList );
-						
-    					for ( SearchItemMinimal search : projectPageFoldersSearches.getSearchesNotInFolders() ) {
-							Integer projectSearchId_Of_Search = search.getProjectSearchId();
-							if ( projectSearchIds_CreateDefault_Set.contains( projectSearchId_Of_Search ) ) {
-								
-								projectSearchIds_CreateDefault_InOrder.add(projectSearchId_Of_Search);
-								projectSearchIds_CreateDefault_Set.remove(projectSearchId_Of_Search);
-							}
-						}
-    				}
-    				
-    				if ( ! projectSearchIds_CreateDefault_Set.isEmpty() ) {
-    					log.warn( "The following Project Search Ids are in projectSearchIds_CreateDefault but not in projectPageFoldersSearches:"
-    							+ projectSearchIds_CreateDefault_Set );
-    					
-    					List<Integer> projectSearchIds_CreateDefault_Leftovers = new ArrayList<>( projectSearchIds_CreateDefault_Set );
-    					Collections.sort( projectSearchIds_CreateDefault_Leftovers );
-    					projectSearchIds_CreateDefault_InOrder.addAll(projectSearchIds_CreateDefault_Leftovers);
-    				}
-//    			}
-			}
-			
-			
-			        		
 			SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result result = 
 			searchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds
 			.create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(
 					projectId, 
-					projectSearchIds_CreateDefault_InOrder,
+					projectSearchIds_CreateDefault,
 					searchDataLookupParams_CreatedByInfo, 
-					null /* projectSearchIdsToSearchIds */, searchDataLookupParamsRoot_FromRequest );
+					null /* projectSearchIdsToSearchIds */, 
+					searchDataLookupParamsRoot_FromRequest );
 
 			searchDataLookupParamsCode = result.getSearchDataLookupParamsCode();
 			newSearchDataLookupParamsRoot = result.getSearchDataLookupParamsRoot();
 			searchDataLookupParametersLookupDTO = result.getSearchDataLookupParametersLookupDTO();
 		
 		} else if ( searchDataLookupParamsRoot_FromRequest != null ) {
+			
+			//  Have existing searchDataLookupParamsRoot so create "CODE" for it.  Likely had searches removed
 			
 			newSearchDataLookupParamsRoot = searchDataLookupParamsRoot_FromRequest;
 
@@ -248,36 +159,4 @@ public class SearchDataLookupParametersLookupCode__Create_InsertToDB__Service im
 		return result;
 	}
 	
-	/**
-	 * @param searchList
-	 */
-	private void sortSearches( List<SearchItemMinimal> searchList ) {
-		
-		Collections.sort( searchList, new Comparator<SearchItemMinimal>() {
-
-			@Override
-			public int compare(SearchItemMinimal o1, SearchItemMinimal o2) {
-
-				// display order ascending
-				if ( o1.getDisplayOrder() < o2.getDisplayOrder() ) {
-					return -1;
-				}
-				if ( o1.getDisplayOrder() > o2.getDisplayOrder() ) {
-					return 1;
-				}
-				// search id descending
-				if ( o1.getSearchId() < o2.getSearchId() ) {
-					return 1;
-				}
-				if ( o1.getSearchId() > o2.getSearchId() ) {
-					return -1;
-				}
-
-				return 0;
-			}
-			
-		});
-		
-	}
-
 }

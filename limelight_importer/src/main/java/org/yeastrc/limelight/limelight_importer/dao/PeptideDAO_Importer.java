@@ -21,6 +21,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -113,6 +116,55 @@ public class PeptideDAO_Importer {
 			importer_Stats_PerTable_DTO.setTotalRecords( totalCallCount_delete );
 			
 			Importer_Stats_PerTable_DAO.getInstance().save(importer_Stats_PerTable_DTO);
+		}
+	}
+
+	
+	private ConcurrentMap< Integer, String> _update_last_used_in_search_import__SQL_Map_Key_SequenceListLength = new ConcurrentHashMap<>();
+
+	/**
+	 * Update the last_used_in_search_import associated with this record
+	 * @param sequenceList
+	 * @throws Exception
+	 */
+	public void update_last_used_in_search_import( List<String> sequenceList ) throws Exception {
+		
+		String sql = _update_last_used_in_search_import__SQL_Map_Key_SequenceListLength.get(sequenceList.size());
+		
+		if ( sql == null ) {
+
+			StringBuilder sqlSB = new StringBuilder( 1000 );
+			
+			sqlSB.append( "UPDATE peptide_tbl SET last_used_in_search_import = NOW() WHERE sequence IN ( " );
+			
+			for ( int count = 0; count < sequenceList.size(); count++ ) {
+				
+				if ( count != 0 ) {
+					sqlSB.append( "," );
+				}
+				sqlSB.append( "?" );
+			}
+			
+			sqlSB.append( " ) " ); // close IN
+
+			sql = sqlSB.toString();
+			
+			_update_last_used_in_search_import__SQL_Map_Key_SequenceListLength.put(sequenceList.size(), sql);
+		}
+		 
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				int counter = 0;
+				for ( String sequence : sequenceList ) {
+					counter++;
+					pstmt.setString( counter, sequence );
+				}
+				pstmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: update_last_used_in_search_import(...) sql: " + sql, e );
+			throw e;
 		}
 	}
 

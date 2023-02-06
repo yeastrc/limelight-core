@@ -135,16 +135,15 @@ public class Delete_ProjectSearch_RestWebserviceController {
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		Integer projectSearchId = webserviceRequest.projectSearchId;
+    		Set<Integer> projectSearchIds = webserviceRequest.projectSearchIds;
         	Set<Integer> experimentIds_Containing_ProjectSearchId = webserviceRequest.experimentIds_Containing_ProjectSearchId; // Optional
 
-    		if ( projectSearchId == null ) {
+    		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
     			log.warn( "No Project Search Ids" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
-    		projectSearchIdsForValidate.add( projectSearchId );
+    		List<Integer> projectSearchIdsForValidate = new ArrayList<>( projectSearchIds );
 
     		////////////////
     		
@@ -163,11 +162,8 @@ public class Delete_ProjectSearch_RestWebserviceController {
 
     		// First validate all Experiment IDs containing Project Search Id are included in request
     		{
-    			Set<Integer> projectSearchIds_GetExperiments = new HashSet<>();
-    			projectSearchIds_GetExperiments.add( projectSearchId );
-
     			List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
-    					experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds_GetExperiments);
+    					experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds);
     			
     			if ( dbResultList.isEmpty() && ( experimentIds_Containing_ProjectSearchId != null && ( ! experimentIds_Containing_ProjectSearchId.isEmpty() ) ) ) {
     				
@@ -181,10 +177,16 @@ public class Delete_ProjectSearch_RestWebserviceController {
     			
     				Set<Integer> experimentIds_Containing_ProjectSearchId_CopyForRemovals = new HashSet<>( experimentIds_Containing_ProjectSearchId );
     				
+    				Set<Integer> experimentIds_FoundInDB = new HashSet<>();
+    				
     				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
     					if ( ! experimentIds_Containing_ProjectSearchId_CopyForRemovals.remove( dbResult.getExperimentId() ) ) {
-    						webserviceResult.experimentIdsNotMatch = true;
-    						break;
+    						if ( ! experimentIds_FoundInDB.contains( dbResult.getExperimentId() ) ) {
+    							webserviceResult.experimentIdsNotMatch = true;
+    							break;
+    						}
+    					} else {
+    						experimentIds_FoundInDB.add( dbResult.getExperimentId() );
     					}
     				}
     				if ( ! webserviceResult.experimentIdsNotMatch ) {
@@ -197,18 +199,15 @@ public class Delete_ProjectSearch_RestWebserviceController {
     		
     		if ( ! webserviceResult.experimentIdsNotMatch ) {
     		
-    			deleteProjectSearchId_UsingDBTransactionService.deleteProjectSearchId( projectSearchId, experimentIds_Containing_ProjectSearchId );
+    			deleteProjectSearchId_UsingDBTransactionService.deleteProjectSearchIds( projectSearchIds, experimentIds_Containing_ProjectSearchId );
 
     			webserviceResult.statusSuccess = true;
 
 
 				{ // Next Delete all Experiment IDs containing Project Search Id That were NOT deleted in call to .deleteProjectSearchId(...)
 
-					Set<Integer> projectSearchIds_GetExperiments = new HashSet<>();
-					projectSearchIds_GetExperiments.add( projectSearchId );
-
 					List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
-							experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds_GetExperiments);
+							experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIds);
 
 					if ( ! dbResultList.isEmpty() ) {
 
@@ -246,14 +245,14 @@ public class Delete_ProjectSearch_RestWebserviceController {
 
     public static class DeleteProjectSearchRequest {
     	
-    	private Integer projectSearchId;
+    	private Set<Integer> projectSearchIds;
     	private Set<Integer> experimentIds_Containing_ProjectSearchId; // Optional
 
-		public void setProjectSearchId(Integer projectSearchId) {
-			this.projectSearchId = projectSearchId;
-		}
 		public void setExperimentIds_Containing_ProjectSearchId(Set<Integer> experimentIds_Containing_ProjectSearchId) {
 			this.experimentIds_Containing_ProjectSearchId = experimentIds_Containing_ProjectSearchId;
+		}
+		public void setProjectSearchIds(Set<Integer> projectSearchIds) {
+			this.projectSearchIds = projectSearchIds;
 		}
     }
     

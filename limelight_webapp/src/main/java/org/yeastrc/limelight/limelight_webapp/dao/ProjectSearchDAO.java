@@ -22,8 +22,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -45,7 +47,7 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 	private static final Logger log = LoggerFactory.getLogger( ProjectSearchDAO.class );
 	
 	private static final String getFromId_querySQL = 
-			"SELECT project_id, search_id, status_id, search_name, search_display_order, created_by_user_id "
+			"SELECT project_id, search_id, status_id, search_name, search_short_name, search_display_order, created_by_user_id "
 			+ " FROM project_search_tbl WHERE id = ? ";
 	/**
 	 * Get the given record from the database
@@ -74,6 +76,7 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 					result.setSearchId( rs.getInt( "search_id" ) );
 					result.setStatusId( rs.getInt( "status_id" ) );
 					result.setSearchName( rs.getString( "search_name" ) );
+					result.setSearchShortName( rs.getString( "search_short_name" ) );
 					result.setSearchDisplayOrder( rs.getInt( "search_display_order" ) );
 					int createdByUserId = rs.getInt( "created_by_user_id" );
 					if ( ! rs.wasNull() ) {
@@ -193,10 +196,8 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 
 	private static final String insert_querySQL = 
 			"INSERT INTO project_search_tbl "
-			+ " ( id, project_id, search_id, status_id, search_name, search_display_order, created_by_user_id ) "
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ? )";
-//			"SELECT project_id, search_id, status_id, search_name, search_display_order, created_by_user_id "
-//			+ " FROM project_search_tbl WHERE id = ? ";
+			+ " ( id, project_id, search_id, status_id, search_name, search_short_name, search_display_order, created_by_user_id ) "
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
@@ -206,6 +207,8 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 		final String INSERT_SQL = insert_querySQL;
 
 		// Use Spring JdbcTemplate so Transactions work properly
+		
+		//  NO LONGER getting id field from autoincrement.  id field is part of what is being inserted.
 		
 		//  How to get the auto-increment primary key for the inserted record
 		
@@ -230,6 +233,8 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 							pstmt.setInt( counter, item.getStatusId() );
 							counter++;
 							pstmt.setString( counter, item.getSearchName() );
+							counter++;
+							pstmt.setString( counter, item.getSearchShortName() );
 							counter++;
 							pstmt.setInt( counter, item.getSearchDisplayOrder() );
 							counter++;
@@ -270,9 +275,9 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
-	public void updateSearchName( String searchName, int projectSearchId ) {
+	public void update_SearchName_SearchShortName( String searchName, String searchShortName, int projectSearchId ) {
 		
-		final String UPDATE_SQL = "UPDATE project_search_tbl SET search_name = ? WHERE id = ?";
+		final String UPDATE_SQL = "UPDATE project_search_tbl SET search_name = ?, search_short_name = ? WHERE id = ?";
 		
 		// Use Spring JdbcTemplate so Transactions work properly
 		
@@ -286,6 +291,8 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 							int counter = 0;
 							counter++;
 							pstmt.setString( counter, searchName );
+							counter++;
+							pstmt.setString( counter, searchShortName );
 							counter++;
 							pstmt.setInt( counter, projectSearchId );
 
@@ -367,6 +374,110 @@ public class ProjectSearchDAO extends Limelight_JDBC_Base implements ProjectSear
 
 		} catch ( RuntimeException e ) {
 			String msg = "newDisplayOrder: " + newDisplayOrder + ", projectSearchId: " + projectSearchId + ", SQL: " + UPDATE_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updateDisplayOrder_ToZero_For_FolderId_AND_Exclude_ProjectSearchId_List( int folderId, List<Integer> projectSearchId_List_To_Exclude ) {
+		
+		final String sql_Start = 
+				"UPDATE project_search_tbl "
+				+ " INNER JOIN folder_project_search_tbl ON project_search_tbl.id = folder_project_search_tbl.project_search_id "
+				+ " SET project_search_tbl.search_display_order = 0 " //  set to zero to 'clear out'
+				+ " WHERE folder_project_search_tbl.folder_id = ? ";
+		
+		StringBuilder sqlSB = new StringBuilder( 1000000 );
+		
+		sqlSB.append( sql_Start );
+
+		if ( ! projectSearchId_List_To_Exclude.isEmpty() ) {
+		
+			sqlSB.append( " AND project_search_tbl.id NOT IN ( " );
+
+			for ( int counter = 1; counter <= projectSearchId_List_To_Exclude.size(); counter++ ) {
+				if ( counter > 1 ) {
+					sqlSB.append( " , " );	
+				}
+				sqlSB.append( " ? " );
+			}
+
+			sqlSB.append( " ) " );
+		}
+		
+		final String UPDATE_SQL = sqlSB.toString();
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+//			int rowsUpdated = 
+			this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( UPDATE_SQL );
+							int counter = 0;
+
+							counter++;
+							pstmt.setInt( counter, folderId );
+							
+							if ( ! projectSearchId_List_To_Exclude.isEmpty() ) {
+								for ( Integer projectSearchId : projectSearchId_List_To_Exclude ) {
+									counter++;
+									pstmt.setInt( counter, projectSearchId );
+								}
+							}
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "folderId: " + folderId + ", projectSearchId_List_To_Exclude: " + StringUtils.join( projectSearchId_List_To_Exclude, ", " ) + ", SQL: " + UPDATE_SQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updateDisplayOrder_ToZero_For_FolderId( int folderId ) {
+		
+		final String UPDATE_SQL = 
+				"UPDATE project_search_tbl "
+				+ " INNER JOIN folder_project_search_tbl ON project_search_tbl.id = folder_project_search_tbl.project_search_id "
+				+ " SET project_search_tbl.search_display_order = 0 " //  set to zero to 'clear out'
+				+ " WHERE folder_project_search_tbl.folder_id = ? ";
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+//			int rowsUpdated = 
+			this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( UPDATE_SQL );
+							int counter = 0;
+
+							counter++;
+							pstmt.setInt( counter, folderId );
+							
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "folderId: " + folderId + ", SQL: " + UPDATE_SQL;
 			log.error( msg, e );
 			throw e;
 		}

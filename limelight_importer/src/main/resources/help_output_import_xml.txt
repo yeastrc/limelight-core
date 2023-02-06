@@ -13,6 +13,9 @@ Warning:
     In program output, the input parameters are listed, one per line between
       'Command Line Parameters (START):' and 'Command Line Parameters (END):'
 
+
+See below for Import ONLY Scan Files with NO Limelight XML file 
+
 Examples:
 
     To import a Limelight XML file (with no scans):
@@ -35,7 +38,32 @@ Parameters:
     -n (--no-scan-files) : [Optional] : Must be set if no Scan files are present, the Limelight XML file
                                         will be imported without any scan files. May not be set if -s is used.
                                         
-    --search-name : [Optional] : Specify the search name for the created search in the database.
+    --search-name= : [Optional] : Specify the search name for the created search in the database.
     						     Put whole thing in quotes to deal with spaces in search name.
     
     							Example: "--search-name=search name"
+
+	--search-tag=   :  tag string to put on the imported search.  
+						(To specify the category, make the parameter value "<category>~<tag string>"  so "~" is the separator)
+						(There is a Max Length of tag string allowed.  Tag string will be truncated to the max allowed length if necessary)
+						(Can have multiple, repeat the --search-tag=)
+
+    							
+    							Example: "--search-tag=tag string"
+    							
+    							
+  -------------
+  
+  Import ONLY Scan Files with NO Limelight XML file - MUST have at least one scan file
+  
+  --no-limelight-xml-file : NO Limelight XML file
+  
+  -s (--scan-file=)  <scan file>
+   (Can have more than one scan file. 
+    Repeat the: 
+    	-s (--scan-file=)  <scan file>
+    for each scan file.)
+  
+	Ignored: --search-name=
+  
+  

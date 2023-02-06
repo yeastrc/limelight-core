@@ -23,7 +23,7 @@ public class ConfigSystemsKeysSharedConstants {
 	////  Limelight Blib Spectal Library File Creation
 	
 	////       Web Service Base URL - 
-	////             URL used to communicate to Spectral Storage Service using Class CallSpectralStorageWebservice
+	////             URL used to communicate to Blib File Creation Service
 	
 	public static final String BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL = 
 			"blib_spectral_library_file_creation_web_service_base_url";
@@ -32,6 +32,21 @@ public class ConfigSystemsKeysSharedConstants {
 	
 	public static final String BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH = 
 			"blib_spectral_library_file_result_file_base_path";
+	
+	
+
+	////  Limelight Run Feature Detection Service - Run Hardklor/Bullseye 
+	
+	////       Web Service Base URL - 
+	////             URL used to communicate to Feature Detection Run Service - Run Hardklor/Bullseye
+	
+	public static final String RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL = 
+			"run_feature_detection_service_run_hardklor_bullseye_web_service_base_url";
+
+	////       Directory Base Path Result Files are written to ('HOST_MACHINE_FINAL_DIR' variable used by service):  
+	
+	public static final String RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH = 
+			"run_feature_detection_service_run_hardklor_bullseye_result_files_base_path";
 	
 	
 	
@@ -74,5 +89,8 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY );
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL );
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH );
+		
+		textConfigKeys.add( RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL );
+		textConfigKeys.add( RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH );
 	}
 }

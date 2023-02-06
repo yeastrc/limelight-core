@@ -91,8 +91,11 @@ public class User_AccountManagement_Controller {
     		HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse ) {
 		
 //		log.warn( "controllerMethod(...) called" );
+		
+		UserSession userSession = null;
+		
 		try {
-			UserSession userSession = accessControl_GetUserSession_RefreshAccessEnabled.getUserSession_RefreshAccessEnabled( httpServletRequest );
+			userSession = accessControl_GetUserSession_RefreshAccessEnabled.getUserSession_RefreshAccessEnabled( httpServletRequest );
 
 			if ( userSession == null || ( ! userSession.isActualUser() ) ) {
 				return AA_UserAccount_PageControllerPaths_Constants.FORWARD_TO_LOGIN_PAGE_CONTROLLER; //  EARLY RETURN
@@ -172,7 +175,13 @@ public class User_AccountManagement_Controller {
 
 		} catch ( Exception e ) {
 			
-			String msg = "Exception: ";
+			String userInfo = "user session object is null or not retrieved yet.";
+			
+			if ( userSession != null ) {
+				userInfo = "UserId: " + userSession.getUserId() + ", username: " + userSession.getUsername();
+			}
+			
+			String msg = "userInfo: " + userInfo + ", Exception: ";
 			log.error( msg, e );
 
 			sendEmailOnServerOrJsError_ToConfiguredEmail.sendEmailOnServerOrJsError_ToConfiguredEmail();

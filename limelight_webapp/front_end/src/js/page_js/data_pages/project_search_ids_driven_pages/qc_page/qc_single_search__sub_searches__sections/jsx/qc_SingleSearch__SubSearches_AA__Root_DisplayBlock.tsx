@@ -20,6 +20,7 @@ import {Qc_SingleSearch__SubSearches_ErrorEstimation_Section} from "page_js/data
 import {QcPage_DataFromServer_AndDerivedData_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {Qc_SingleSearch__SubSearches_Target_Decoy_Analysis_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Target_Decoy_Analysis_Section";
 import {Qc_SingleSearch__SubSearches_Protein_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Protein_Level_Statistics_Section";
+import {Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section";
 
 /**
  *  Passed to Child Components
@@ -137,6 +138,12 @@ export class Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock extends React.Co
             <React.Fragment>
                 <div style={ { clear: "both" } }>
                     <Qc_SingleSearch__SubSearches_SummaryStatistics_Section
+                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                        qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this._qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
+                    />
+                </div>
+                <div style={ { clear: "both" } }>
+                    <Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this._qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
                     />

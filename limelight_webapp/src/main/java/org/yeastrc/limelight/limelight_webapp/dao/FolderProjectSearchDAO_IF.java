@@ -19,8 +19,6 @@ package org.yeastrc.limelight.limelight_webapp.dao;
 
 import java.util.List;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.yeastrc.limelight.limelight_webapp.db_dto.FolderProjectSearchDTO;
 
 /**
@@ -39,13 +37,20 @@ public interface FolderProjectSearchDAO_IF {
 	/**
 	 * @param item
 	 */
-
 	void saveOrUpdate(FolderProjectSearchDTO item, int createUserId);
+	
+	/**
+	 * @param folderId
+	 * @param projectSearchId
+	 * @param newDisplayOrder
+	 */
+	void updateDisplayOrderFor_FolderId_ProjectSearchId( int folderId, int projectSearchId, int newDisplayOrder );
 
 	/**
-	 * @param id
+	 * @param not_In_ProjectSearchId_List
+	 * @param folderId TODO
 	 * @throws Exception
 	 */
-	void delete(int id);
+	void delete_NOT_In_ProjectSearchId_List(List<Integer> not_In_ProjectSearchId_List, int folderId);
 
 }

@@ -9,7 +9,7 @@ html, body {
 }
 
 body {
-  color: $font-color-dark;
+  color: $font-color-default;
   background-color: $site-standard-background-color;
   font-size: $default-font-size;  //  Currently 14px
   font-family: $theme-font;
@@ -191,6 +191,15 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   }
 }
 
+//  Border between elements --  Use above 'standard-border-color-...' for color
+.bottom-border--no-border-color {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
 //  Background Color
 
 .standard-background-color-very-dark {
@@ -227,7 +236,7 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   border-style: solid;
   border-width: 2px;
   border-color: grey;
-  background-color: white;
+  background-color: $site-standard-background-color;
   position: absolute; 
   left: 0px; 
   right: 0px; 
@@ -675,4 +684,136 @@ div.help-tip-symbol--next-to-standard-font-size-text {
   }
 }
 
+/////////
+
+
+//////
+
+
+//    For Text Font Size: font-size: 18px;
+
+/////   Help Icon '?' in circle and element shown on hover
+
+div.help-tip-symbol--next-to-font-size-18px-text {
+  display: inline-block;
+  position: relative;
+  width: 10px;
+  margin-left: 5px;
+
+  div.inner-absolute-pos {
+    position: absolute;
+    bottom: 3px;
+
+    div.main-div {
+
+      position: relative;
+      text-align: center;
+
+      //  Make a circle around the '?':  width and height have to be same value
+
+      font-size: 13px;
+      //line-height: 10px;
+      width: 13px;
+      height: 13px;
+      cursor: default;
+
+      //  Make a circle around the '?':  border-radius: 50%;
+
+      border-radius: 50%;
+      border-color: $site-color-dark;
+      border-style: solid;
+      border-width: 2px;
+
+      &:before { //  Add '?'
+        content: '?';
+        font-weight: bold;
+        color: $site-color-dark;
+      }
+
+      &:hover .help-tip-actual {
+        display: block;
+        transform-origin: 100% 0%;
+
+        -webkit-animation: fadeIn 0.3s ease-in-out;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      $filter-common-block-selection--section-label--help-tip-actual--main-left-right: -2px;
+      $filter-common-block-selection--section-label--help-tip-actual--before-left-right: 1px;
+
+      .help-tip-actual { //  Displayed tooltip
+        display: none;
+        z-index: 10000;
+        font-weight: normal; //  Clear from bold of parent
+        white-space: normal; //  Clear from bold of parent
+        text-align: left;
+        background-color: $site-standard-background-color;
+        padding: 10px;
+        width: 300px;
+        position: absolute;
+        border-radius: 3px;
+        //box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+        border-color: $site-color-dark;
+        border-style: solid;
+        border-width: 1px;
+        top: 6px;
+        left: $filter-common-block-selection--section-label--help-tip-actual--main-left-right;
+        font-size: 13px;
+        line-height: 1.4;
+
+        &:before {  //  Creates the 'pseudo up arrow' on the top of the tooltip box pointing at the "?"
+          position: absolute;
+          content: '';
+          width: 0;
+          height: 0;
+          border: 6px solid transparent;
+          border-bottom-color: $site-color-dark;
+          left: $filter-common-block-selection--section-label--help-tip-actual--before-left-right;
+          top: -12px;
+        }
+
+        &:after {  //  Provides larger hover target under/over the "?" icon to keep the tooltip visible
+          width: 20px;
+          height: 20px;
+          content: '';
+          position: absolute;
+          top: -20px;
+          left: 0;
+        }
+
+        &.align-right-edge { //  align right edge of tooltip (expands to left of ? symbol)
+
+          right: $filter-common-block-selection--section-label--help-tip-actual--main-left-right;
+          left: auto; // clear value set in parent
+
+          &:before {
+            right: $filter-common-block-selection--section-label--help-tip-actual--before-left-right;
+            left: auto; // clear value set in parent
+          }
+        }
+
+        @-webkit-keyframes fadeIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.6);
+          }
+
+          100% {
+            opacity: 100%;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes fadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 100%;
+          }
+        }
+      }
+    }
+  }
+}
 

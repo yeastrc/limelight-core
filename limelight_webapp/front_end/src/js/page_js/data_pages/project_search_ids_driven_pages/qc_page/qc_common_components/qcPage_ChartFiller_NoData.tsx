@@ -19,6 +19,8 @@ export interface QcPage_ChartFiller_NoData_Props {
 
     chartTitle: string
 
+    displayMessages_Replace_NoData_Message?: Array<string>
+
     width_OverrideStandard?: number
     height_OverrideStandard?: number
 }
@@ -83,7 +85,17 @@ export class QcPage_ChartFiller_NoData extends React.Component< QcPage_ChartFill
                 // justify-content: center;
                 // height: 100%;
                 >
-                    No Data
+                    { this.props.displayMessages_Replace_NoData_Message ? (
+                        this.props.displayMessages_Replace_NoData_Message.map((value, index) => {
+                            return (
+                                <div key={ index }>
+                                    { value }
+                                </div>
+                            )
+                        })
+                    ) : (
+                        "No Data"
+                    )}
                 </div>
                 <div></div>
             </div>

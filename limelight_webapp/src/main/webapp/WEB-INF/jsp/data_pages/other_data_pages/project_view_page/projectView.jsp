@@ -1,6 +1,7 @@
+<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"%>
-<%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
+<%@page import="org.yeastrc.limelight.limelight_webapp.constants.ProjectSearchId_Based_Pages_Constants"%>
 <%--
 	projectView.jsp
 	
@@ -32,6 +33,10 @@
   <script id="url_path__protein" type="text/text"><%=AA_PageControllerPaths_Constants.PROTEIN_VIEW_PAGE_CONTROLLER%></script>
 
   <script id="url_path__mod_view" type="text/text"><%=AA_PageControllerPaths_Constants.MOD_VIEW_PAGE_CONTROLLER%></script>
+  
+  <%--  Scan File Pages --%>
+  
+  <script id="url_path__scan_browser" type="text/text"><%=AA_PageControllerPaths_Constants.SCAN_FILE_BROWSER_PAGE_CONTROLLER%></script>
   
 </head>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 
@@ -73,12 +78,15 @@
 	<%--  Experiments List --%>
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
-
-
-	<%--  Search List --%>
-
-	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SearchList.jsp" %>
 	
+	<%--  Rest of Sections rendered by single React Component --%>
+	
+	<div id="project_page_rest_of_sections__contents_block"></div>
+	
+	<%--  Used by Search List Section: --%>
+	
+	<script type="text/text" id="project_search_id_code_block_start_end_identifier_strings"><%= ProjectSearchId_Based_Pages_Constants.PROJECT_SEARCH_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS %></script>
+	<script type="text/text" id="project_search_id_code_separator"><%= ProjectSearchId_Based_Pages_Constants.PROJECT_SEARCH_ID_CODE_SEPARATOR %></script>
 	
 	<%--Footer and related --%>
 	

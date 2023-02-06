@@ -60,6 +60,9 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 	private static final int GET_API_KEY_RETRY_COUNT_MAX_TOTAL_ALLOWED = 6500;  // Total number of retries allowed
 	private static final int GET_API_KEY_RETRY_DELAY_STEP_LAST = 15 * 1000; // 15 second
 	
+	private static final int ScanProcessStatusKey_NotFound__MAX_RETRY_COUNT = 3;
+	private static final int ScanProcessStatusKey_NotFound__RETRY_DELAY = 5 * 1000; // 5 second
+	
 	///   Retry for max of roughly 26 hours.  Could exceed this if another web app or Limelight Instance has uploaded a lot of scan files to Spectra Storage Service
 	
 	// TODOO TEMP smaller values
@@ -108,16 +111,27 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 		
 		
 		int retryCount = 0;
+
+		int scanProcessStatusKey_NotFound__RetryCount = 0;
 		
 		while( true ) {  // use 'break;' inside loop to exit
 
-			if ( retryCount > 0 ) {
+
+			if ( scanProcessStatusKey_NotFound__RetryCount > 0 ) {
+
+				// Sleep before retry
+				Thread.sleep( ScanProcessStatusKey_NotFound__RETRY_DELAY ); // Sleep wait for retry
+			
+			} else if ( retryCount > 0 ) {
+				
 				// Sleep before retry
 				if ( retryCount < GET_API_KEY_RETRY_COUNT_MAX_STEP_1 ) {
 					Thread.sleep( GET_API_KEY_RETRY_DELAY_STEP_1 ); // Sleep wait for retry
 				} else {
 					Thread.sleep( GET_API_KEY_RETRY_DELAY_STEP_LAST ); // Sleep wait for retry
 				}
+				
+				scanProcessStatusKey_NotFound__RetryCount = 0; //  reset
 			}
 
 			retryCount++;
@@ -164,9 +178,19 @@ public class ScanFileToSpectralStorageService_GetAPIKey {
 			}
 
 			if ( get_UploadedScanFileInfo_Response.isScanProcessStatusKey_NotFound() ) {
-				String msg = "Error in processing since ScanProcessStatusKey is not in Spectral Storage System.  spectralStorage_API_Process_Key: " + spectralStorage_Process_Key;
-				log.error( msg );
-				throw new LimelightImporterSpectralStorageServiceErrorException(msg);
+				
+				if ( scanProcessStatusKey_NotFound__RetryCount > ScanProcessStatusKey_NotFound__MAX_RETRY_COUNT ) {
+
+					String msg = "Error in processing since ScanProcessStatusKey is not in Spectral Storage System.  spectralStorage_Process_Key: " + spectralStorage_Process_Key;
+					log.error( msg );
+					throw new LimelightImporterSpectralStorageServiceErrorException(msg);
+				}
+				
+				log.warn( "ScanProcessStatusKey is not found in Spectral Storage System.  Will RETRY.  spectralStorage_Process_Key:" + spectralStorage_Process_Key );
+
+				scanProcessStatusKey_NotFound__RetryCount++;
+
+				continue;  //  EARLY LOOP CONTINUE
 			}
 
 			if ( get_UploadedScanFileInfo_Response.getStatus() == WebserviceSpectralStorageAcceptImport_ProcessStatusEnum.FAIL ) {

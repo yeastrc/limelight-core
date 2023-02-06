@@ -43,7 +43,7 @@ import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_u
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_XML_ToObject;
 
 /**
- * Called by Run Importer (for submitted imports) when the importer finishes
+ * Called by Run Importer (for submitted imports) when the Limelight XML and/or Scan Files importer finishes
  *
  */
 @RestController

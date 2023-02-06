@@ -237,7 +237,7 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
             const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID_NOT_Filtered__get_SearchSubGroupId_ForPSM_ID__FunctionResult>( (resolve, reject) => { try {
                 this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM.catch(reason => reject(reason))
                 this._promise_WebserviceRetrieval_InProgress__Exclude_DecoyPSM.then(noValue => { try {
-                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Include_DecoyPSM } );
+                    resolve({ searchSubGroupId_ForPSM_ID_Holder: this._searchSubGroupId_ForPSM_ID_Holder__Exclude_DecoyPSM } );
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 

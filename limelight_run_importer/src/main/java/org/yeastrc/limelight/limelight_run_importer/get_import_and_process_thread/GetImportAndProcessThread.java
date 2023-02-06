@@ -31,6 +31,7 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_l
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.constants.GetImportStatus_FileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_update_with_transaction_services.GetNextTrackingToProcessDBTransaction;
+import org.yeastrc.limelight.limelight_run_importer.manager_thread.ManagerThread;
 import org.yeastrc.limelight.limelight_run_importer.process_submitted_import.ProcessSubmittedImport;
 import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 
@@ -58,6 +59,10 @@ public class GetImportAndProcessThread extends Thread {
 
 	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
 	
+	//  Parent ManagerThread managerThread
+	
+	private ManagerThread managerThread;
+	
 	//  For CURRENT DB Version Number
 	
 	private boolean db_Schema_Version_Number__For_CURRENT_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code = false;
@@ -72,9 +77,11 @@ public class GetImportAndProcessThread extends Thread {
 	
 	private int maxTrackingRecordPriorityToRetrieve;
 	
-	public static GetImportAndProcessThread getNewInstance( String s ) {
+	public static GetImportAndProcessThread getNewInstance( String s, ManagerThread managerThread ) {
 		
 		GetImportAndProcessThread instance = new GetImportAndProcessThread(s);
+		instance.managerThread = managerThread;
+		
 		instance.init();
 		return instance;
 	}
@@ -154,6 +161,13 @@ public class GetImportAndProcessThread extends Thread {
 	public void run() {
 		
 		log.debug( "run() entered" );
+
+		//  Track 
+		
+		boolean firstSuccessful_DB_Access = false;
+		
+		long lastSQLErrorTimestamp = 0;
+		
 		
 		try { 
 			// Put here in case this is a replacement thread to ensure not waiting for running import
@@ -177,6 +191,15 @@ public class GetImportAndProcessThread extends Thread {
 					this.db_Schema_Version_Number__For_UpgradeInProgress_Version_in_DB__NOT__match_DB_Schema_Version_Number_in_Code;
 
 			
+			Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN log_Exception_YN =
+					Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES;
+			
+			
+			if ( System.currentTimeMillis() - lastSQLErrorTimestamp < 5 * 60 * 1000 ) {
+				log_Exception_YN =
+						Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.NO;
+			}
+			
 			//  Check DB Version Number
 
 			{ //  Validate Code And Database Schema Versions match
@@ -184,8 +207,17 @@ public class GetImportAndProcessThread extends Thread {
 				//  CURRENT Version
 				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
 				try {
-					limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-					getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+					limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = 
+							Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+							getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result( log_Exception_YN );
+					
+					if ( ! firstSuccessful_DB_Access ) {
+					
+						firstSuccessful_DB_Access = true;
+						
+						managerThread.completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread();
+					}
+					
 				} catch (Exception e) {
 
 					int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
@@ -195,6 +227,12 @@ public class GetImportAndProcessThread extends Thread {
 						} catch (InterruptedException e2) {
 							log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
 						}
+					}
+					
+					lastSQLErrorTimestamp = System.currentTimeMillis();
+
+					if ( log_Exception_YN == log_Exception_YN.YES ) {
+						log.error( "NOT all failed attempts to query the database will be logged." );
 					}
 					
 					continue;  // EARLY CONTINUE
@@ -271,8 +309,9 @@ public class GetImportAndProcessThread extends Thread {
 					//  DB Update in Progress Version
 					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
 					try {
-						limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+						limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = 
+								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+								getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result( log_Exception_YN );
 					} catch (Exception e) {
 
 						int waitTimeInSeconds = waitTimeForNextCheckForImportToProcess_InSeconds;
@@ -282,6 +321,12 @@ public class GetImportAndProcessThread extends Thread {
 							} catch (InterruptedException e2) {
 								log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
 							}
+						}
+
+						lastSQLErrorTimestamp = System.currentTimeMillis();
+						
+						if ( log_Exception_YN == log_Exception_YN.YES ) {
+							log.error( "NOT all failed attempts to query the database will be logged." );
 						}
 						
 						continue;  // EARLY CONTINUE

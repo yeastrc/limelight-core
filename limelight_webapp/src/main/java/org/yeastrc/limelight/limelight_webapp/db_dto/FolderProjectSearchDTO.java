@@ -25,6 +25,13 @@ public class FolderProjectSearchDTO {
 	
 	private int projectSearchId; // primary key
 	private int folderId;
+	private int searchDisplayOrder;
+
+	@Override
+	public String toString() {
+		return "FolderProjectSearchDTO [projectSearchId=" + projectSearchId + ", folderId=" + folderId
+				+ ", searchDisplayOrder=" + searchDisplayOrder + "]";
+	}
 	
 	public int getFolderId() {
 		return folderId;
@@ -37,6 +44,12 @@ public class FolderProjectSearchDTO {
 	}
 	public void setProjectSearchId(int projectSearchId) {
 		this.projectSearchId = projectSearchId;
+	}
+	public int getSearchDisplayOrder() {
+		return searchDisplayOrder;
+	}
+	public void setSearchDisplayOrder(int searchDisplayOrder) {
+		this.searchDisplayOrder = searchDisplayOrder;
 	}
 
 }

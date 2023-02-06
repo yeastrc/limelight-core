@@ -66,7 +66,7 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
- * For Upload Data, Initialize a New Upload (called when user opens Upload overlay)
+ * For Upload Data, Initialize a New Upload (called when start of a send files/data for import)
  * 
  * WARNING:  The Submit Import Program will show the value of BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage when set
  * 			 and will NO LONGER check the boolean flags (other than statusSuccess).

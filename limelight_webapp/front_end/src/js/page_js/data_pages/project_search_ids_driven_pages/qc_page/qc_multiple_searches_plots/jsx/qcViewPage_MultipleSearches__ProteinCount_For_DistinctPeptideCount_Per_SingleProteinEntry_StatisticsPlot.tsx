@@ -26,6 +26,8 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {QcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_AA__Root_DisplayBlock";
 import {qcViewPage_MultipleSearches__Open_ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/jsx/qcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_OverlayContainer";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 
 
 const chartTitle = "Peptides Per Protein";
@@ -56,7 +58,10 @@ interface QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per
 /**
  *
  */
-export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot extends React.Component< QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot_Props, QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot_State > {
+export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot
+    extends React.Component< QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot_Props, QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_Per_SingleProteinEntry_StatisticsPlot_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     static chartTitle = chartTitle;
 
@@ -71,6 +76,8 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _componentMounted = false;
 
@@ -89,13 +96,37 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
         this.plot_Ref = React.createRef();
         this.image_Ref = React.createRef();
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = { showCreatingMessage: true, showUpdatingMessage: false };
+    }
+
+    /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
@@ -211,10 +242,26 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
                 //  Eat Exception
             }
 
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
+
             this.setState({ showUpdatingMessage: true });
 
             window.setTimeout( () => {
                 try {
+                    if (
+                        ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                        )) {
+                        //  Skip these params since they are not the "Latest"
+                        return; // EARLY RETURN
+                    }
+
                     this._populateChart();
 
                 } catch( e ) {
@@ -294,6 +341,22 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(projectSearchId,
                         get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder)
                 }
+
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
+                    return; // EARLY RETURN
+                }
+            }
+
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
             }
 
             //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
@@ -374,15 +437,15 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
             const chartData_MainTraces_Array = [];
 
             {
-                const searchNames_AsMap = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchNames_AsMap();
+                const searchData_SearchName_Etc_Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
                 for (const projectSearchId of projectSearchIds) {
 
                     const color = qcViewPage_MultipleSearches__ComputeColorsForSearches.get_Color_AsHexString_By_ProjectSearchId( projectSearchId )
 
-                    const searchNameData = searchNames_AsMap.get(projectSearchId);
-                    if ( ! searchNameData ) {
-                        const msg = "searchNames_AsMap.get(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
+                    const searchData = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                    if ( ! searchData ) {
+                        const msg = "searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -462,6 +525,9 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
 
                         chart_Bars_Tooltips.push( chart_Bars_Tooltip );
                     }
+
+                    const searchLabel__SearchShortName_OR_SearchId = searchData.searchLabel__SearchShortName_OR_SearchId;
+
                     if ( proteinCounts_Per_DistinctPeptideCount__10_Plus > 0 ) {
                         //  10+ entry
 
@@ -473,7 +539,7 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
                         chart_Y.push(protein_Fraction);
 
                         const chart_Bars_Tooltip =
-                            "<b>Search</b>: " + searchNameData.searchId +
+                            "<b>Search</b>: " + searchLabel__SearchShortName_OR_SearchId +
                             "<br><b>Distinct Peptide Count<b>: " + "10+" +
                             "<br><b>Protein Count</b>: " + proteinCount +
                             "<br><b>Protein Fraction</b>: " + protein_Fraction.toFixed(3)
@@ -484,7 +550,7 @@ export class QcViewPage_MultipleSearches__ProteinCount_For_DistinctPeptideCount_
 
                     const chart_Data_SingleProjectSearchId =
                         {
-                            name: searchNameData.searchId.toString(),
+                            name: searchLabel__SearchShortName_OR_SearchId,
                             type: 'scatter',
                             x: chart_X,
                             y: chart_Y,

@@ -16,6 +16,10 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import {qcPage_StandardChartLayout_StandardWidth} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 
 /**
  *
@@ -34,6 +38,8 @@ interface QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State {
 
     scanFile_SummaryPerLevelData_Root?: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root
     scanNumbersCount_For_FilteredPSMs?: ScanNumbersCount_For_FilteredPSMs
+    totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel?: Map<number, number>
+    allScans_Have_TotalIonCurrent?: boolean
     showUpdatingMessage?: boolean
 }
 
@@ -44,9 +50,14 @@ class ScanNumbersCount_For_FilteredPSMs {
 /**
  *
  */
-export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Component< QcViewPage_SingleSearch__ScanFileSummaryDataBlock_Props, QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State > {
+export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
+    extends React.Component< QcViewPage_SingleSearch__ScanFileSummaryDataBlock_Props, QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     //  bind to 'this' for passing as parameters
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
 
     /**
@@ -61,15 +72,38 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
             throw Error(msg);
         }
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = { showUpdatingMessage: false };
+    }
+
+    /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
     }
 
     /**
      *
      */
-    // componentWillUnmount() {
-    //
-    // }
+    componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
+    }
 
     /**
      *
@@ -133,6 +167,14 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                         return;
                     }
 
+                    if (
+                        ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                        )) {
+                        //  Skip these params since they are not the "Latest"
+                        return; // EARLY RETURN
+                    }
+
                     this._populateblock();
 
                 } catch( e ) {
@@ -190,6 +232,14 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                 return; // EARLY RETURN
             }
 
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
+
             this.setState((prevState: Readonly<QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State>, props: Readonly<QcViewPage_SingleSearch__ScanFileSummaryDataBlock_Props>) : QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State =>  {
 
                 if ( prevState.showUpdatingMessage ) {
@@ -217,8 +267,25 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
     ) {
 
         const psmTblData = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData;
+        const spectralStorage_NO_Peaks_Data = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.spectralStorage_NO_Peaks_Data;
 
         const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
+
+        const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( this.props.searchScanFileId_Selected );
+        if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
+            const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( this.props.searchScanFileId_Selected ); returned nothing. searchScanFileId: " + this.props.searchScanFileId_Selected;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        let allScans_Have_TotalIonCurrent = true;
+
+        for ( const scan of spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+            if ( scan.totalIonCurrent_ForScan === undefined || scan.totalIonCurrent_ForScan === null ) {
+                allScans_Have_TotalIonCurrent = false;
+                break;
+            }
+        }
 
         const peptideDistinct_Array =
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
@@ -235,20 +302,22 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
 
         const scanNumbers : Set<number> = new Set()
 
-        for ( const psmTblData_Entry of psmTblData_Filtered ) {
+        const totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel: Map<number, number> = new Map();
 
-            if ( ! psmTblData_Entry.searchScanFileId ) {
-                const msg = "( ! psmTblData_Entry.searchScanFileId ) projectSearchId: " + projectSearchId;
+        for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
+
+            if ( ! psmTblData_Filtered_Entry.searchScanFileId ) {
+                const msg = "( ! psmTblData_Filtered_Entry.searchScanFileId ) projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! psmTblData_Entry.scanNumber ) {
-                const msg = "( ! psmTblData_Entry.scanNumber ) projectSearchId: " + projectSearchId;
+            if ( ! psmTblData_Filtered_Entry.scanNumber ) {
+                const msg = "( ! psmTblData_Filtered_Entry.scanNumber ) projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
-            const searchScanFileId = psmTblData_Entry.searchScanFileId;
-            const scanNumber = psmTblData_Entry.scanNumber;
+            const searchScanFileId = psmTblData_Filtered_Entry.searchScanFileId;
+            const scanNumber = psmTblData_Filtered_Entry.scanNumber;
 
             if ( searchScanFileId !== this.props.searchScanFileId_Selected ) {
 
@@ -256,14 +325,35 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                 continue;  // EARLY CONTINUE
             }
 
-            scanNumbers.add( scanNumber );
+            if ( ! scanNumbers.has( scanNumber ) ) {
+
+                scanNumbers.add( scanNumber );
+
+                if ( allScans_Have_TotalIonCurrent ) {
+
+                    const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
+                    if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
+                        const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing. scanNumber: " + psmTblData_Filtered_Entry.scanNumber;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+
+                    let totalIonCurrent_ForScanLevel_FilteredScans = totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get( spectralStorage_NO_Peaks_DataFor_ScanNumber.level )
+                    if ( ! totalIonCurrent_ForScanLevel_FilteredScans ) {
+                        totalIonCurrent_ForScanLevel_FilteredScans = 0;  //  Set to zero when undefined or zero
+                    }
+                    const new_totalIonCurrent_ForScanLevel_FilteredScans = totalIonCurrent_ForScanLevel_FilteredScans + spectralStorage_NO_Peaks_DataFor_ScanNumber.totalIonCurrent_ForScan;
+                    //  save new value to Map
+                    totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.set( spectralStorage_NO_Peaks_DataFor_ScanNumber.level, new_totalIonCurrent_ForScanLevel_FilteredScans )
+                }
+            }
         }
 
         const scanNumbersCount_For_FilteredPSMs: ScanNumbersCount_For_FilteredPSMs = {
             scanNumbersCount_For_FilteredPSMs: scanNumbers.size
         };
 
-        this.setState({ scanNumbersCount_For_FilteredPSMs });
+        this.setState({ scanNumbersCount_For_FilteredPSMs, totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel, allScans_Have_TotalIonCurrent });
     }
 
     /**
@@ -315,34 +405,101 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                     const style_Label: React.CSSProperties = { paddingRight: 30, paddingBottom: paddingBottom };
                     const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom };
 
-                    if ( summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length ) {
-                        style_Label.paddingBottom = 14;
-                        style_Value.paddingBottom = 14;
+                    let paddingBottom_OuterDiv_ToNextGroup = 0;
+                    {
+                        if ( this.state.allScans_Have_TotalIonCurrent
+                            && ( this.state.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.has( summaryPerLevelData.scanLevel + 1 )
+                                //  add  '|| ...' since always put second row on last scan level
+                                || summaryPerLevelData_Array_Counter + 1 === summaryPerLevelData_Array_Length ) ) {
+                            //  Add padding between this scan level data and next since next will have a second row
+                            paddingBottom_OuterDiv_ToNextGroup = 10
+                        }
                     }
 
-                    const perLevel_TotalIonCurrent_DisplayEntry = (
-                        <React.Fragment key={ summaryPerLevelData.scanLevel }>
-                            <div style={ style_Label }>
-                                Total MS{ summaryPerLevelData.scanLevel } Ion Current:
-                            </div>
-                            <div style={ style_Value }>
-                                { summaryPerLevelData.totalIonCurrent.toExponential( 3 ) }
-                            </div>
-                        </React.Fragment>
-                    )
-                    perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
+                    if ( summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length ) {
+                        paddingBottom_OuterDiv_ToNextGroup = 14;
+                    }
 
-                    const perLevel_Count_DisplayEntry = (
-                        <React.Fragment key={ summaryPerLevelData.scanLevel }>
-                            <div style={ style_Label }>
-                                Number MS{ summaryPerLevelData.scanLevel } Scans:
-                            </div>
-                            <div style={ style_Value }>
-                                { summaryPerLevelData.numberOfScans.toLocaleString() }
-                            </div>
-                        </React.Fragment>
-                    )
-                    perLevel_Count_DisplayEntries.push( perLevel_Count_DisplayEntry );
+                    let willDisplay__FilteredPsmEntry = false;
+
+                    const style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent: React.CSSProperties = {}
+                    const style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent: React.CSSProperties = {}
+
+                    if ( this.state.allScans_Have_TotalIonCurrent
+                        && ( summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length
+                            || this.state.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.has( summaryPerLevelData.scanLevel ) ) ) {
+                        willDisplay__FilteredPsmEntry = true;
+                        style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent.paddingBottom = paddingBottom_OuterDiv_ToNextGroup;
+                    } else {
+                        style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent.paddingBottom = paddingBottom_OuterDiv_ToNextGroup;
+                    }
+
+                    {
+                        const perLevel_TotalIonCurrent_DisplayEntry = (
+                            <React.Fragment key={ summaryPerLevelData.scanLevel + "_main" }>
+                                <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
+                                    <div style={ style_Label }>
+                                        Total MS{ summaryPerLevelData.scanLevel } Ion Current:
+                                    </div>
+                                </div>
+                                <div style={ style_OuterDiv_MainEntry_AllColumns__TotalIonCurrent }>
+                                    <div style={ style_Value }>
+                                        { summaryPerLevelData.totalIonCurrent.toExponential( 3 ) }
+                                    </div>
+                                </div>
+                            </React.Fragment>
+                        )
+                        perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
+                    }
+                    {
+                        const totalIonCurrent_ForScanLevel_FilteredScans = this.state.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get( summaryPerLevelData.scanLevel )
+                        //  always put second row on last scan level
+                        if ( this.state.allScans_Have_TotalIonCurrent && summaryPerLevelData.scanLevel > 1
+                            && ( totalIonCurrent_ForScanLevel_FilteredScans
+                                || ( this.state.allScans_Have_TotalIonCurrent && summaryPerLevelData_Array_Counter === summaryPerLevelData_Array_Length ) ) ) {
+                            //  Scan Level > 1  AND  This level has Total Ion Current that is for filtered PSMs
+                            const perLevel_TotalIonCurrent_DisplayEntry = (
+                                <React.Fragment key={ summaryPerLevelData.scanLevel + "_filtered" }>
+                                    <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
+                                        <div style={ style_Label }>
+                                            MS{ summaryPerLevelData.scanLevel } TIC with PSM:
+                                        </div>
+                                    </div>
+                                    <div style={ style_OuterDiv_FilteredPsmEntry_AllColumns__TotalIonCurrent }>
+                                        <div style={ style_Value }>
+                                            <span>
+                                                { ( ! totalIonCurrent_ForScanLevel_FilteredScans ) ? "0" :
+                                                    totalIonCurrent_ForScanLevel_FilteredScans.toExponential( 3 ) }
+                                            </span>
+                                            <span> </span>
+                                            <span>(</span>
+                                            <span>
+                                                { ( ( ! totalIonCurrent_ForScanLevel_FilteredScans ) || ( ! summaryPerLevelData.totalIonCurrent ) ) ? "0" :
+                                                    ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) }
+                                            </span>
+                                            <span>%</span>
+                                            <span>)</span>
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            )
+                            perLevel_TotalIonCurrent_DisplayEntries.push( perLevel_TotalIonCurrent_DisplayEntry );
+                        }
+                    }
+
+                    {
+                        const perLevel_Count_DisplayEntry = (
+                            <React.Fragment key={ summaryPerLevelData.scanLevel }>
+                                <div style={ style_Label }>
+                                    Number MS{ summaryPerLevelData.scanLevel } Scans:
+                                </div>
+                                <div style={ style_Value }>
+                                    { summaryPerLevelData.numberOfScans.toLocaleString() }
+                                </div>
+                            </React.Fragment>
+                        )
+                        perLevel_Count_DisplayEntries.push( perLevel_Count_DisplayEntry );
+                    }
                 }
 
                 let scanNumbersCount_For_FilteredPSMs_Percentage_String : string = undefined;
@@ -375,10 +532,12 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
                         </div>
                         { perLevel_TotalIonCurrent_DisplayEntries }
                         { perLevel_Count_DisplayEntries }
-                        <div  style={ { paddingBottom: paddingBottom } }>
+
+                        {/*  Remove paddingBottom: paddingBottom from both columns of last row since now in border and padding all around */}
+                        <div >
                             Scans with a <br/>PSM meeting filters
                         </div>
-                        <div style={ { textAlign: "right", paddingBottom: paddingBottom } }>
+                        <div style={ { textAlign: "right" } }>
                             <span>{ this.state.scanNumbersCount_For_FilteredPSMs.scanNumbersCount_For_FilteredPSMs.toLocaleString() }</span>
                             <span> (</span>
                             <span>{ scanNumbersCount_For_FilteredPSMs_Percentage_String }</span>
@@ -391,30 +550,48 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock extends React.Com
             }
         }
 
-        return (
-            <div >
-                <h3>
-                    Scan File Statistics
-                </h3>
-                <div style={ { position: "relative" } }>
-                    { ( dataDisplay ) ? (
-                        <React.Fragment>
-                            {dataDisplay}
-                            {( this.state.showUpdatingMessage ) ? (
-                                <div className=" block-updating-overlay-container ">
-                                    <div style={ { textAlign: "center", marginTop: 40 } }>
-                                        Updating Data
-                                    </div>
-                                </div>
-                            ) : null }
-                        </React.Fragment>
-                    ) : (
-                        <div>
-                            LOADING DATA
-                        </div>
-                    )}
-                </div>
+        if ( this.state.showUpdatingMessage ) {
+            console.warn( " ( this.state.showUpdatingMessage ) true IN QcViewPage_SingleSearch__ScanFileSummaryDataBlock:render() ")
+        }
 
+        return (
+
+            <div  //  This div is used as container for "Updating" message overlay at bottom of this div
+
+                style={ { position: "relative", display: "inline-block", minWidth: qcPage_StandardChartLayout_StandardWidth() } }
+            >
+
+                <QcPage_ChartBorder no_Min_Height={ true }>
+
+                    <div style={ { padding: 15 } }>
+
+                        <div
+                            style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }
+                        >
+                            Scan File Statistics
+                        </div>
+                        <div style={ { position: "relative" } }>
+                            { ( dataDisplay ) ? (
+                                <React.Fragment>
+                                    {dataDisplay}
+                                    {( this.state.showUpdatingMessage ) ? (
+                                        <div className=" block-updating-overlay-container ">
+                                            <div style={ { textAlign: "center", marginTop: 40 } }>
+                                                Updating Data
+                                            </div>
+                                        </div>
+                                    ) : null }
+                                </React.Fragment>
+                            ) : (
+                                <div>
+                                    LOADING DATA
+                                </div>
+                            )}
+                        </div>
+
+                    </div>
+
+                </QcPage_ChartBorder>
             </div>
         );
     }

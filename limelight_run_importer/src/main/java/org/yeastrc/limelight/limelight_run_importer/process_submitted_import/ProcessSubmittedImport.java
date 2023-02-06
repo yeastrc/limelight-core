@@ -34,7 +34,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigD
 import org.yeastrc.limelight.limelight_run_importer.constants.RunImporterCommandConstants;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
-import org.yeastrc.limelight.limelight_run_importer.on_import_finish.OnImportFinishCallWebService;
+import org.yeastrc.limelight.limelight_run_importer.on_import_finish.On_ImportLimelightXMLScanFile_Finish_CallWebService;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommand;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommandResponse;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
@@ -246,6 +246,8 @@ public class ProcessSubmittedImport {
 		
 		runSystemCommand = RunSystemCommand.getInstance();
 		try {
+			log.warn( "ProcessSubmittedImport: BEFORE:  Calling: runSystemCommand.runCmd(...) ");
+			
 			RunSystemCommandResponse runSystemCommandResponse = 
 					runSystemCommand.runCmd( 
 							commandAndItsArgumentsAsList, 
@@ -253,6 +255,9 @@ public class ProcessSubmittedImport {
 							fileToWriteSysoutTo /* fileToWriteSysoutTo*/,
 							fileToWriteSyserrTo /* fileToWriteSyserrTo*/,
 							false /* throwExceptionOnCommandFailure */ );
+
+			log.warn( "ProcessSubmittedImport: AFTER:  Calling: runSystemCommand.runCmd(...) ");
+			
 			if ( runSystemCommandResponse.isShutdownRequested() ) {
 				log.warn( "command was aborted for run importer program shutdown: " + commandAndItsArgumentsAsList
 						+ ", subdirForThisTrackingId:  " + subdirForThisTrackingId.getCanonicalPath() );
@@ -360,7 +365,7 @@ public class ProcessSubmittedImport {
 				while ( ! callServerCompleted && ! shutdownRequested ) {
 
 					try {
-						OnImportFinishCallWebService.getInstance()
+						On_ImportLimelightXMLScanFile_Finish_CallWebService.getInstance()
 						.callLimelightWebServiceOnSingleImportFinish( 
 								fileImportTrackingDTO.getId(), 
 								fileImportTrackingRunDTO.getId() );
@@ -547,7 +552,7 @@ public class ProcessSubmittedImport {
 			while ( ! callServerCompleted && ! shutdownRequested ) {
 
 				try {
-					OnImportFinishCallWebService.getInstance()
+					On_ImportLimelightXMLScanFile_Finish_CallWebService.getInstance()
 					.callLimelightWebServiceOnSingleImportFinish( 
 							fileImportTrackingDTO.getId(), 
 							fileImportTrackingRunDTO.getId() );

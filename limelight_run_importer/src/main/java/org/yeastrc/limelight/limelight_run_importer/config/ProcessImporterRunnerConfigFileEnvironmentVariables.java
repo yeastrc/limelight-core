@@ -42,6 +42,8 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 	
 	private static String ENVIRONMENT_VARIABLE_NAME__JAVA_EXECUTABLE_PARAMETERS = "LIMELIGHT_JAVA_EXECUTE_PARAMS";
 
+	private static String ENVIRONMENT_VARIABLE_NAME__FEATURE_DETECTION_PROGRAM__JAVA_EXECUTABLE_PARAMETERS = "LIMELIGHT_FEATURE_DETECTION_PROGRAM_JAVA_EXECUTE_PARAMS";
+
 
 	private static final String NO_PROPERTIES_FILE_ERROR_MESSAGE = "No DB Connection Properties file found.";
 	
@@ -58,10 +60,21 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 	private static final String PROPERTY_NAME__JAVA_EXECUTABLE_WITH_PATH = "java.executable.with.path";
 	
 	private static String PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS = "java.executable.parameters";
+
+	//   Importer of Limelight XML and/or Scan files
 	
 	private static final String PROPERTY_NAME__IMPORTER_JAR_WITH_PATH = "importer.jar.with.path";
 	
 	private static final String PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH = "importer.db.config.file.with.path";
+	
+	//  Feature Detection Program Importer and Run Pipeline
+
+	private static final String PROPERTY_NAME__FEATURE_DETECTION__IMPORTER_AND_RUN_PIPELINE_JAR_WITH_PATH = "feature_detection.importer_and_run_pipeline.jar.with.path";
+
+	private static String PROPERTY_NAME__FEATURE_DETECTION_PROGRAM_JAVA_EXECUTABLE_PARAMETERS = "feature.detection.program.java.executable.parameters";
+	
+	private static final String PROPERTY_NAME__FEATURE_DETECTION__IMPORTER_AND_RUN_PIPELINE_DB_CONFIG_WITH_PATH = "feature_detection.importer_and_run_pipeline.db.config.file.with.path";
+	
 	
 	public static final String PROPERTY_NAME__RUN_IMPORTER_PID_FILE_WITH_PATH = "run.importer.pid.file.with.path";
 
@@ -198,11 +211,31 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 //			}
 			
 			if ( javaExecutableParametersString == null ) {
-					configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS );
+				javaExecutableParametersString = configProps.getProperty( PROPERTY_NAME__JAVA_EXECUTABLE_PARAMETERS );
 			}
+
+			//											First from Environment Variables
+			String featureDetectionProgram_JavaExecutableParametersString = System.getenv( ENVIRONMENT_VARIABLE_NAME__FEATURE_DETECTION_PROGRAM__JAVA_EXECUTABLE_PARAMETERS );
+
+//			if ( featureDetectionProgram_JavaExecutableParametersString != null ) {
+//				System.out.println( "Environment Variable '" + ENVIRONMENT_VARIABLE_NAME__FEATURE_DETECTION_PROGRAM__JAVA_EXECUTABLE_PARAMETERS + "' has value : " + featureDetectionProgram_JavaExecutableParametersString );
+//			}
+			
+			if ( featureDetectionProgram_JavaExecutableParametersString == null ) {
+				featureDetectionProgram_JavaExecutableParametersString = configProps.getProperty( PROPERTY_NAME__FEATURE_DETECTION_PROGRAM_JAVA_EXECUTABLE_PARAMETERS );
+			}
+
+			//   Importer of Limelight XML and/or Scan files
 			
 			String importerJarWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_JAR_WITH_PATH );
 			String importerDbConfigWithPath = configProps.getProperty( PROPERTY_NAME__IMPORTER_DB_CONFIG_WITH_PATH );
+
+			//  Other Importer and Run Pipeline
+
+			String featureDetectionImporterAndPipelineRun_JarWithPath = configProps.getProperty( PROPERTY_NAME__FEATURE_DETECTION__IMPORTER_AND_RUN_PIPELINE_JAR_WITH_PATH );
+			String featureDetectionImporterAndPipelineRun_DbConfigWithPath = configProps.getProperty( PROPERTY_NAME__FEATURE_DETECTION__IMPORTER_AND_RUN_PIPELINE_DB_CONFIG_WITH_PATH );
+			
+			///////
 			
 			String runImporterPidFileWithPath = configProps.getProperty( PROPERTY_NAME__RUN_IMPORTER_PID_FILE_WITH_PATH );
 			
@@ -264,11 +297,37 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 				}
 			}
 			
+
+			if ( StringUtils.isNotEmpty( featureDetectionProgram_JavaExecutableParametersString ) ) {
+				String[] javaExecutableParametersArray = featureDetectionProgram_JavaExecutableParametersString.split( " " );
+				List<String> javaExecutableParametersLocal = new ArrayList<>( javaExecutableParametersArray.length );
+				for ( String javaExecutableParameter : javaExecutableParametersArray ) {
+					if ( StringUtils.isNotEmpty(javaExecutableParameter) ) {
+						javaExecutableParametersLocal.add( javaExecutableParameter );
+					}
+				}
+				if ( ! javaExecutableParametersLocal.isEmpty() ) {
+					ImporterRunnerConfigData.setFeatureDetectionProgram_JavaExecutableParameters( javaExecutableParametersLocal );
+				}
+			}
+			
+			//   Importer of Limelight XML and/or Scan files
+			
 			ImporterRunnerConfigData.setImporterJarWithPath( importerJarWithPath );
 			
 			if ( StringUtils.isNotEmpty( importerDbConfigWithPath ) ) {
 				ImporterRunnerConfigData.setImporterDbConfigWithPath( importerDbConfigWithPath );
 			}
+
+			//  Other Importer and Run Pipeline
+
+			ImporterRunnerConfigData.setFeatureDetectionImporterAndPipelineRun_JarWithPath(featureDetectionImporterAndPipelineRun_JarWithPath);
+			
+			if ( StringUtils.isNotEmpty( featureDetectionImporterAndPipelineRun_DbConfigWithPath ) ) {
+				ImporterRunnerConfigData.setFeatureDetectionImporterAndPipelineRun_DbConfigWithPath(featureDetectionImporterAndPipelineRun_DbConfigWithPath);
+			}
+			
+			/////////////////////
 			
 			if ( StringUtils.isNotEmpty( importerPidFileWithPath ) ) {
 				

@@ -5,9 +5,9 @@ import java.util.Set;
 public interface DeleteProjectSearchId_UsingDBTransactionServiceIF {
 
 	/**
-	 * @param projectSearchId
+	 * @param projectSearchIds
 	 * @param experimentIds_Containing_ProjectSearchId TODO
 	 */
-	void deleteProjectSearchId(int projectSearchId, Set<Integer> experimentIds_Containing_ProjectSearchId);
+	void deleteProjectSearchIds(Set<Integer> projectSearchIds, Set<Integer> experimentIds_Containing_ProjectSearchId);
 
 }

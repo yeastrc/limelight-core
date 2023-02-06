@@ -41,6 +41,8 @@ import {
     CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder,
     CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_NO_PSM_Peptide_Protein_Filtering__sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 
 
 // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
@@ -80,7 +82,10 @@ interface QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_Es
 /**
  *
  */
-export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot extends React.Component< QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot_Props, QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot_State > {
+export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot
+    extends React.Component< QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot_Props, QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_StatisticsPlot_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     //  bind to 'this' for passing as parameters
 
@@ -94,6 +99,8 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _componentMounted = false;
 
@@ -133,15 +140,39 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
         this.plot_Ref = React.createRef();
         this.image_Ref = React.createRef();
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = {
             showCreatingMessage: true, showUpdatingMessage: false
         };
     }
 
     /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
+    }
+
+    /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
@@ -268,10 +299,26 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
                     //  Eat Exception
                 }
 
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
+                    return; // EARLY RETURN
+                }
+
                 this.setState({ showUpdatingMessage: true });
 
                 window.setTimeout(() => {
                     try {
+                        if (
+                            ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                            )) {
+                            //  Skip these params since they are not the "Latest"
+                            return; // EARLY RETURN
+                        }
+
                         this._populateChart();
 
                     } catch (e) {
@@ -332,6 +379,14 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
 
         if ( ! this._componentMounted ) {
             //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
+        if (
+            ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+            )) {
+            //  Skip these params since they are not the "Latest"
             return; // EARLY RETURN
         }
 
@@ -491,6 +546,14 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
             try {
                 if ( ! this._componentMounted ) {
                     //  Component no longer mounted so exit
+                    return; // EARLY RETURN
+                }
+
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
                     return; // EARLY RETURN
                 }
 

@@ -152,7 +152,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
             });
         }
 
-        const searchNamesMap_KeyProjectSearchId = dataPageStateManager.get_searchNames_AsMap(); // Map with key is projectSearchId as number
+        const searchData_SearchName_Etc_Root = dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
         //  PSM counts by search in each PSM Count Column
 
@@ -305,9 +305,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                 //  searchNames // Object with property name is projectSearchId as number
 
-                const searchNameObj = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+                const searchNameObj = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
                 if ( ! searchNameObj ) {
-                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): No value in searchNames for projectSearchId: " + projectSearchId;
+                    const msg = "createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein(...): No value in searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId;
                     console.warn( msg );
                     throw Error( msg );
                 }
@@ -315,9 +315,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                 let displayName : string = undefined;
 
                 if ( projectSearchIds.length > 1 ) {
-                    const searchName = searchNameObj.name;
-                    const searchId = searchNameObj.searchId;
-                    displayName = "PSM Count (" + searchId + ")";
+                    const searchLabel__SearchShortName_OR_SearchId = searchNameObj.searchLabel__SearchShortName_OR_SearchId;
+                    displayName = "PSM Count (" + searchLabel__SearchShortName_OR_SearchId + ")";
                 } else {
                     // Special value when only 1 search for Single Search
                     displayName = "PSM Count";
@@ -859,6 +858,10 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                         dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject,
                     });
+                } else {
+                    const msg = "Neither variable is set: dataRow_GetChildTableData_Return_DataTable_RootTableObject or dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ";
+                    console.warn(msg)
+                    throw Error(msg)
                 }
 
                 if ( ! dataTable_DataRowEntry ) {

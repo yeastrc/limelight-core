@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.FolderForProjectDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.database_update_with_transaction_services.Project_Folder_Delete_UsingDBTransactionService;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -55,12 +56,15 @@ public class Project_OrganizeSearches_FolderDelete_RestWebserviceController {
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
+	
+	@Autowired
+	private FolderForProjectDAO_IF folderForProjectDAO;
 
 	@Autowired
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds;
 	
 	@Autowired
-	private FolderForProjectDAO_IF folderForProjectDAO;
+	private Project_Folder_Delete_UsingDBTransactionService project_Folder_Delete_UsingDBTransactionService;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -152,7 +156,7 @@ public class Project_OrganizeSearches_FolderDelete_RestWebserviceController {
 			////////   Auth complete
 			//////////////////////////////////////////
 			
-			folderForProjectDAO.delete( folderId );
+			project_Folder_Delete_UsingDBTransactionService.folder_Delete(folderId);
 			
 			webserviceResult.status = true;
 

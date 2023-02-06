@@ -21,6 +21,10 @@ import { AnnotationTypeData_ReturnSpecifiedTypes } from './annotationTypeData_Re
 import { SearchDataLookupParameters_Root, copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root } from '../data_pages__common_data_classes/searchDataLookupParameters';
 import {DataPage_common_Searches_Flags} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {DataPage_common_Searches_Info} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
+import {
+	SearchTags__Get_For_ProjectSearchIds_Result,
+	SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId
+} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/searchTags__Get_For_ProjectSearchIds";
 
 //  Class Exported at bottom
 
@@ -131,9 +135,25 @@ class DataPageStateManager {
 		this._PrivateProperties_MayChangeWithoutNotice._dataPage_common_Searches_Info = dataPage_common_Searches_Info;
 	}
 
+	/**
+	 * @returns SearchData_SearchName_Etc_Root__DataPageStateManagerEntry object
+	 */
+	get_searchData_SearchName_Etc_Root() : SearchData_SearchName_Etc_Root__DataPageStateManagerEntry {
+
+		return this._PrivateProperties_MayChangeWithoutNotice._searchData_SearchName_Etc_Root
+	}
 
 	/**
-	 * 
+	 *
+	 */
+	set_searchData_SearchName_Etc_Root( searchData_SearchName_Etc_Root : SearchData_SearchName_Etc_Root__DataPageStateManagerEntry ) {
+
+		this._PrivateProperties_MayChangeWithoutNotice._searchData_SearchName_Etc_Root = searchData_SearchName_Etc_Root
+	}
+
+	/**
+	 * @deprecated  Use get_searchData_SearchName_Etc_Root() instead
+	 *
 	 * @returns Map<ProjectSearchId, SearchNames_AsMap_Entry>
 	 *     Where Map value is SearchNames_AsMap_Entry:
 	 *
@@ -170,6 +190,28 @@ class DataPageStateManager {
 	 */
 	set_SearchSubGroups_Root( searchSubGroups_Root : SearchSubGroups_Root__DataPageStateManagerEntry ) : void {
 		this._PrivateProperties_MayChangeWithoutNotice._searchSubGroups_Root = searchSubGroups_Root;
+	}
+
+	get_userCanEditSearchTags() : boolean {
+		return this._PrivateProperties_MayChangeWithoutNotice._userCanEditSearchTags;
+	}
+
+	set_userCanEditSearchTags( userCanEditSearchTags : boolean ) : void {
+		this._PrivateProperties_MayChangeWithoutNotice._userCanEditSearchTags = userCanEditSearchTags;
+	}
+
+	/**
+	 *
+	 * @returns undefined IF NO searches have search tags
+	 */
+	get_SearchTags_SearchTagCategories_Root() {
+		return this._PrivateProperties_MayChangeWithoutNotice._searchTags_SearchTagCategories_Root;
+	}
+	/**
+	 *
+	 */
+	set_SearchTags_SearchTagCategories_Root(_searchTags_SearchTagCategories_Root ) : void {
+		this._PrivateProperties_MayChangeWithoutNotice._searchTags_SearchTagCategories_Root = _searchTags_SearchTagCategories_Root;
 	}
 
 	//  NOT SET
@@ -275,11 +317,17 @@ class PageState_InternalData_Properties {
 
 	_dataPage_common_Searches_Info: DataPage_common_Searches_Info
 
+	_searchData_SearchName_Etc_Root : SearchData_SearchName_Etc_Root__DataPageStateManagerEntry
+
 	_searchNames_AsMap : SearchNames_AsMap
 
 	_userCanEditSearchSubGroups : boolean
 
 	_searchSubGroups_Root : SearchSubGroups_Root__DataPageStateManagerEntry
+
+	_userCanEditSearchTags : boolean
+
+	_searchTags_SearchTagCategories_Root : SearchTags_SearchTagCategories_Root__DataPageStateManagerEntry
 
 	//  No longer used/set
 	// _searchNames; // { <projectSearchId> : 'search name', ... }
@@ -328,10 +376,73 @@ class PageState_InternalData_Properties {
 
 //  Types and Classes for what is stored in DataPageStateManager
 
-type SearchNames_AsMap_Entry = { projectSearchId : number, searchId : number, name : string, searchHasSubgroups : boolean } ;
+type SearchNames_AsMap_Entry = {
+	projectSearchId : number
+	searchId : number
+	name : string
+	searchShortName: string
+	searchLabel__SearchShortName_OR_SearchId: string
+	searchLabel_FromSearchShortName: boolean
+	searchLabel_FromSearchId: boolean
+	searchHasSubgroups : boolean
+} ;
 
 type SearchNames_AsMap = Map<number, SearchNames_AsMap_Entry> ;
 
+////////
+
+/**
+ * Search Data - SearchName Etc Root
+ */
+class SearchData_SearchName_Etc_Root__DataPageStateManagerEntry {
+
+	private _searchData_SearchName_Etc_Map_Key_ProjectSearchId : Map<number, SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry>
+	private _all_SearchShortNames_Or_SearchIdsWhereSearchNamesNotPopulated_AreUnique: boolean
+
+	constructor(
+		{
+			searchData_SearchName_Etc_Map_Key_ProjectSearchId,
+			all_SearchShortNames_Or_SearchIdsWhereSearchNamesNotPopulated_AreUnique
+		} : {
+			searchData_SearchName_Etc_Map_Key_ProjectSearchId : Map<number, SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry>
+
+			//  Check if all Search Short Name (Or use Search Id when Search Short Name is NOT populated) is unique.
+
+			//    ( If they are not unique, the search display label will always be the search id since that is always unique )
+
+			all_SearchShortNames_Or_SearchIdsWhereSearchNamesNotPopulated_AreUnique: boolean
+		}
+	) {
+		this._searchData_SearchName_Etc_Map_Key_ProjectSearchId = searchData_SearchName_Etc_Map_Key_ProjectSearchId
+	}
+
+	get_SearchData_For_ProjectSearchId( projectSearchId: number) {
+		return this._searchData_SearchName_Etc_Map_Key_ProjectSearchId.get(projectSearchId)
+	}
+
+	/**
+	 *  true if all Search Short Name (Or use Search Id when Search Short Name is NOT populated) is unique.
+	 *
+	 *  ( If they are not unique, the search display label will always be the search id since that is always unique )
+	 */
+	get_all_SearchShortNames_Or_SearchIdsWhereSearchNamesNotPopulated_AreUnique() {
+		return this._all_SearchShortNames_Or_SearchIdsWhereSearchNamesNotPopulated_AreUnique
+	}
+}
+
+/**
+ * Entry in SearchData_SearchName_Etc_Root__DataPageStateManagerEntry for Single Search
+ */
+class SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry {
+	readonly projectSearchId : number
+	readonly searchId : number
+	readonly name : string
+	readonly searchShortName: string
+	readonly searchLabel__SearchShortName_OR_SearchId: string
+	readonly searchLabel_FromSearchShortName: boolean
+	readonly searchLabel_FromSearchId: boolean
+	readonly searchHasSubgroups : boolean
+}
 
 /**
  * Search Sub Groups Entry for Project Search Id
@@ -431,6 +542,34 @@ class SearchSubGroups_Root__DataPageStateManagerEntry {
 	 */
 	get_searchSubGroups_ForProjectSearchId( projectSearchId : Readonly<number> ) : SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry {
 		return this.entries_PerProjectSearchId.get( projectSearchId )
+	}
+}
+
+/**
+ * Search Tags Root
+ */
+class SearchTags_SearchTagCategories_Root__DataPageStateManagerEntry {
+
+	private searchTags__Get_For_ProjectSearchIds_Result: SearchTags__Get_For_ProjectSearchIds_Result
+
+	private entries_PerProjectSearchId : Map<number, SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId> = new Map()
+
+	public addForProjectSearchId( entry : SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId ) : void {
+
+		this.entries_PerProjectSearchId.set( entry.projectSearchId, entry )
+	}
+	/**
+	 *
+	 */
+	get_SearchTags_SearchTagCategories_ForProjectSearchId(projectSearchId : Readonly<number> ) : SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId {
+		return this.entries_PerProjectSearchId.get( projectSearchId )
+	}
+
+	set_SearchTags__Get_For_ProjectSearchIds_Result( searchTags__Get_For_ProjectSearchIds_Result: SearchTags__Get_For_ProjectSearchIds_Result ) {
+		this.searchTags__Get_For_ProjectSearchIds_Result = searchTags__Get_For_ProjectSearchIds_Result
+	}
+	get_SearchTags__Get_For_ProjectSearchIds_Result() {
+		return this.searchTags__Get_For_ProjectSearchIds_Result
 	}
 }
 
@@ -653,9 +792,12 @@ class AnnotationTypeItem {
 
 
 export { 
-	DataPageStateManager, SearchNames_AsMap, SearchNames_AsMap_Entry,
+	DataPageStateManager,
+	SearchData_SearchName_Etc_Root__DataPageStateManagerEntry, SearchData_SearchName_Etc_SingleSearchEntry__DataPageStateManagerEntry,
+	SearchNames_AsMap, SearchNames_AsMap_Entry,
 	SearchSubGroups_Root__DataPageStateManagerEntry, SearchSubGroups_EntryFor_ProjectSearchId__DataPageStateManagerEntry,
 	SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry,
+	SearchTags_SearchTagCategories_Root__DataPageStateManagerEntry,
 	SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId, SearchProgramsPerSearchItem,
 	AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem 
 }

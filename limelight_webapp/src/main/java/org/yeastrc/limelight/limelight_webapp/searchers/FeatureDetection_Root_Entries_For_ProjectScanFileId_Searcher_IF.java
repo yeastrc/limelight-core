@@ -1,0 +1,9 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher.FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_Result;
+
+public interface FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_IF {
+
+	FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_Result getForProjectScanFileId(int projectScanFileId) throws Exception;
+
+}

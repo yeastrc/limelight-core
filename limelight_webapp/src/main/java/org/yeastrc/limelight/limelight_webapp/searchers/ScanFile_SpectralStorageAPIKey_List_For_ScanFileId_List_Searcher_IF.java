@@ -1,0 +1,13 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem;
+
+public interface ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF {
+
+	List<ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem> getSpectralStorageAPIKeyList_From_ScanFileIdList(
+			List<Integer> scanFileId_List) throws SQLException;
+
+}

@@ -156,13 +156,7 @@ task createHandlebarsOutputDirs {
   	  
   	  dirToCreate = rootDir + "project_page_searches_section_researcher_user_interaction"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "project_page__searches_section_organize_searches"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "project_page_upload_data_section_project_owner_user_interaction"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
+
   	  dirToCreate = rootDir + "project_page__saved_views_section"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -474,54 +468,6 @@ task handlebarsPrecompile_project_page_searches_section_researcher_user_interact
    ]
 }
 
-//  Handlebars Precompile for input handlebars_templates/project_page__searches_section_organize_searches
-
-task handlebarsPrecompile_project_page__searches_section_organize_searches(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/project_page__searches_section_organize_searches"
-  def precompile_Output_File = "handlebars_templates_precompiled/project_page__searches_section_organize_searches/project_page__searches_section_organize_searches_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-//  Handlebars Precompile for input handlebars_templates/project_page_upload_data_section_project_owner_user_interaction
-
-task handlebarsPrecompile_project_page_upload_data_section_project_owner_user_interaction(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/project_page_upload_data_section_project_owner_user_interaction"
-  def precompile_Output_File = "handlebars_templates_precompiled/project_page_upload_data_section_project_owner_user_interaction/project_page_upload_data_section_project_owner_user_interaction_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
 //  Handlebars Precompile for input handlebars_templates/project_page__saved_views_section
 
 task handlebarsPrecompile_project_page__saved_views_section(type: NodeTask) {
@@ -729,6 +675,7 @@ task runWebpack_DevelopmentMode(type: NodeTask ) { //  , dependsOn: 'npmInstall'
   } else {
     script = project.file('node_modules/.bin/webpack')
   }
+  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]  //  Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
   //  specify mode development, defaults to production
   args = [ '--mode=development' ] // --mode=development does no minification, also React Library includes more code and validation
 }
@@ -747,6 +694,7 @@ task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall')
   } else {
     script = project.file('node_modules/.bin/webpack')
   }
+  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]  //  Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
   //  specify mode development, defaults to production
   args = [ '--mode=production' ] // --mode=development does no minification
 }
@@ -799,8 +747,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      'handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction',
      'handlebarsPrecompile_project_page_searches_section_all_users_interaction',
      'handlebarsPrecompile_project_page_searches_section_researcher_user_interaction',
-     'handlebarsPrecompile_project_page__searches_section_organize_searches',
-	 'handlebarsPrecompile_project_page_upload_data_section_project_owner_user_interaction',
 	 'handlebarsPrecompile_project_page__saved_views_section',
 	 'handlebarsPrecompile_project_page__saved_views_section_loggedin_users',
      'handlebarsPrecompile_project_list',

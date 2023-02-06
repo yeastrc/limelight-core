@@ -31,6 +31,7 @@ import org.yeastrc.limelight.limelight_webapp.dao.DataPageSavedViewDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ExperimentDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.FolderProjectSearchDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchIdAssocSearchIdInProjectIdSearcherIF;
 
 /**
@@ -89,7 +90,12 @@ public class MoveProjectSearchIdToNewProjectUsingDBTransactionService implements
 					 projectSearchDAO.updateDisplayOrderForProjectSearch( projectSearchId, DISPLAY_ORDER_NO_ORDER );
 					
 					//  Remove folder mapping record related to old project, if it exists
-					 folderProjectSearchDAO.delete( projectSearchId );
+					 
+					 if ( true ) {
+						 throw new LimelightInternalErrorException( "Must not call this method.  Method  folderProjectSearchDAO.delete( projectSearchId ); has changed signature" );
+					 }
+					 
+//					 folderProjectSearchDAO.delete( projectSearchId );
 					
 					//  Remove any Shared Views with this project search id
 					dataPageSavedViewDAO.deleteForProjectSearchId( projectSearchId ); 

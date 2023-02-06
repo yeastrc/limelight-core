@@ -147,7 +147,10 @@ const mainConfig = (env, argv) => {
 		//   Project is Locked
 		'data_pages/projectViewPage_ProjectLocked_Researcher_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ResearcherUser.ts',
 		'data_pages/projectViewPage_ProjectLocked_ProjectOwner_W_User' : './src/js/page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectLocked_ProjectOwnerUser.ts',
-		
+
+		//  Project: Organize Searches Page:
+		'data_pages/project_OrganizeSearches_Page' : './src/js/page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches_ROOT.ts',
+
 		//  Lorikeet Own Page
 		'data_pages/lorikeetSpectrumViewPage_Root' : './src/js/page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_OwnPage_Root.ts',
 
@@ -174,6 +177,12 @@ const mainConfig = (env, argv) => {
 
 		'data_pages/modExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_LoggedInUsers.ts',
 		'data_pages/modExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_PublicUser.ts',
+
+
+		//  Scan File Data pages
+
+		'data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserViewPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserViewPage_RootLaunch_PublicUser.ts',
 
 		///////////////
 		

@@ -159,8 +159,8 @@ public class ProjectSearchDAO {
 	
 	private static final String INSERT_SQL =
 			"INSERT INTO project_search_tbl "
-			+ " ( id, project_id, search_id, search_name, status_id, created_by_user_id ) "
-			+ " VALUES ( ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
+			+ " ( id, project_id, search_id, search_name, search_short_name, status_id, created_by_user_id ) "
+			+ " VALUES ( ?, ?, ?, ?, ?, " +  SearchRecordStatus.IMPORTING.value() + ", ? "
 			+ " )";
 	/**
 	 * This will INSERT the given ProjectSearchDTO into the database... even if an id is already set.
@@ -184,6 +184,8 @@ public class ProjectSearchDAO {
 			pstmt.setInt( counter, item.getSearchId() );
 			counter++;
 			pstmt.setString( counter, item.getSearchName() );
+			counter++;
+			pstmt.setString( counter, item.getSearchShortName() );
 			counter++;
 			if ( item.getCreatedByUserId() != null ) {
 				pstmt.setInt( counter, item.getCreatedByUserId() );

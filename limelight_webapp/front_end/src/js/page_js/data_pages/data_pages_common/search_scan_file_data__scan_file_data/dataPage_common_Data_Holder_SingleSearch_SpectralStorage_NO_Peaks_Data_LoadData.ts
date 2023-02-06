@@ -93,6 +93,7 @@ const _populate_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peak
             throw Error(msg);
         }
         for ( const scanFileEntry of responseData.scanFileEntries ) {
+
             if ( scanFileEntry.searchScanFileId === undefined || scanFileEntry.searchScanFileId === null ) {
                 const msg = "( scanFileEntry.searchScanFileId === undefined || scanFileEntry.searchScanFileId === null )";
                 console.warn(msg);
@@ -103,6 +104,18 @@ const _populate_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peak
                 console.warn(msg);
                 throw Error(msg);
             }
+
+            if ( scanFileEntry.projectScanFileId === undefined || scanFileEntry.projectScanFileId === null ) {
+                const msg = "( scanFileEntry.projectScanFileId === undefined || scanFileEntry.projectScanFileId === null )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( ! variable_is_type_number_Check( scanFileEntry.projectScanFileId ) ) {
+                const msg = "( ! variable_is_type_number_Check( scanFileEntry.projectScanFileId ) )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+
             if ( scanFileEntry.scanEntries === undefined || scanFileEntry.scanEntries === null ) {
                 const msg = "( scanFileEntry.scanEntries === undefined || scanFileEntry.scanEntries === null )";
                 console.warn(msg);
@@ -115,9 +128,10 @@ const _populate_DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peak
             }
 
             const searchScanFileId = scanFileEntry.searchScanFileId;
+            const projectScanFileId = scanFileEntry.projectScanFileId;
 
             const dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId =
-                new DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId({ searchScanFileId });
+                new DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId({ searchScanFileId, projectScanFileId });
             spectralStorage_NO_Peaks_Data.add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId);
 
             const scanLevels_Set : Set<number> = new Set()

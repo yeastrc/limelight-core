@@ -36,6 +36,7 @@ public class FileImportTrackingDTO {
 	private String remoteUserIpAddress;
 	private boolean markedForDeletion;
 	private String searchName;
+	private String searchShortName;
 	private String searchPath;
 	private String insertRequestURL;
 	
@@ -47,6 +48,17 @@ public class FileImportTrackingDTO {
 	private Integer deletedByUserId;
 	private Date deletedDateTime;
 	
+	@Override
+	public String toString() {
+		return "FileImportTrackingDTO [id=" + id + ", projectId=" + projectId + ", priority=" + priority + ", userId="
+				+ userId + ", status=" + status + ", remoteUserIpAddress=" + remoteUserIpAddress
+				+ ", markedForDeletion=" + markedForDeletion + ", searchName=" + searchName + ", searchShortName="
+				+ searchShortName + ", searchPath=" + searchPath + ", insertRequestURL=" + insertRequestURL
+				+ ", recordInsertDateTime=" + recordInsertDateTime + ", importStartDateTime=" + importStartDateTime
+				+ ", importEndDateTime=" + importEndDateTime + ", lastUpdatedDateTime=" + lastUpdatedDateTime
+				+ ", deletedByUserId=" + deletedByUserId + ", deletedDateTime=" + deletedDateTime + "]";
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -142,6 +154,12 @@ public class FileImportTrackingDTO {
 	}
 	public void setDeletedDateTime(Date deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;
+	}
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
 	}
 	
 }

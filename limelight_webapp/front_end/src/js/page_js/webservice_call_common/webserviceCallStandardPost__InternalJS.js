@@ -92,14 +92,34 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
 
                             try {
                                 //  Create error to send to server
-                                throw Error("Response from server cannot be parsed as JSON. Server response contents: " + responseDataJSON );
+
+                                let responseDataJSON_Length = "Not computed since responseDataJSON not populated";
+                                if ( responseDataJSON ) {
+                                    try {
+                                        responseDataJSON_Length = responseDataJSON.length;
+                                    } catch( e ) {
+                                        //  eat exception
+                                    }
+                                }
+
+                                const msg = "Response from server cannot be parsed as JSON.  Server response contents length: " +  + ", Server response contents: " + responseDataJSON
+                                console.warn(msg)
+                                throw Error( msg );
                             } catch( e ) {
 
                                 if ( ! doNotHandleErrorResponse ) {
-                                    handleAJAXFailure( "Response from server cannot be parsed as JSON." );  //  Sometimes throws exception so rest of processing won't always happen
+
+                                    let errorMessage_Addition = ""
+                                    if ( responseDataJSON === "" ) {
+                                        errorMessage_Addition = "  Response from server is empty string."
+                                    }
+
+                                    const msg = "Response from server cannot be parsed as JSON." + errorMessage_Addition;
+                                    console.warn(msg)
+                                    handleAJAXFailure( msg );  //  Sometimes throws exception so rest of processing won't always happen
                                 }
 
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
                                 throw e;
                             }
                         }
@@ -108,7 +128,7 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
 
                     } catch( e ) {
 
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
 
                         const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
 
@@ -200,4 +220,5 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
 };
 
 export { webserviceCallStandardPost_INTERNALONLY }
+
 

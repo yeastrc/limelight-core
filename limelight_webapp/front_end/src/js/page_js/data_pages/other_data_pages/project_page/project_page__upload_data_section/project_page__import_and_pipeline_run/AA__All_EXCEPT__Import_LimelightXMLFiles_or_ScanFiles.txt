@@ -1,0 +1,6 @@
+
+Code in this subdir is for:
+
+1) Import other than Limelight XML File or Scan File
+2) Running a service via webservice call and then possibly running an import.
+

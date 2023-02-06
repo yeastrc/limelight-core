@@ -15,6 +15,9 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher.ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher.ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKeyForSearchId_Searcher.SpectralStorageAPIKeyForSearchId_Searcher_Result;
@@ -34,7 +37,9 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Get Scan Data (No Peaks) from Spectral Storage Service (Spectr) for Project Search Id
@@ -62,6 +67,9 @@ public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceCon
     
     @Autowired
     private SpectralStorageAPIKeyForSearchId_SearcherIF spectralStorageAPIKeyForSearchId_Searcher;
+    
+    @Autowired
+    private ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_IF projectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher;
     
     @Autowired
     private Call_Get_ScanNumbers_SpectralStorageWebserviceIF call_Get_ScanNumbers_SpectralStorageWebservice;
@@ -130,8 +138,21 @@ public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceCon
             		spectralStorageAPIKeyForSearchId_Searcher.get_SearchScanFileId_SpectralStorageAPIKey_Entries_ForSearchId( searchId );
 
             List<WebsserviceResult_SingleScanFile> scanFileEntries = new ArrayList<>( spectralStorageAPIKeyForSearchId_Searcher_Result.getResultItems().size() );
+            
+            Map<Integer, Integer> project_scan_file_id__FOR__Search_scan_file_id_Map = new HashMap<>( spectralStorageAPIKeyForSearchId_Searcher_Result.getResultItems().size() );
+            
+            {
+            	ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_Result result = 
+            			projectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher.get_ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId(projectSearchId);
+            	for ( ProjectScanFileId_SearchScanFileIds_Mapping_AND_ProjectScanFileId_For_ProjectSearchId_Searcher_ResultItem resultItem : result.getResultItemList() ) {
+            		project_scan_file_id__FOR__Search_scan_file_id_Map.put( resultItem.getSearch_scan_file_id(), resultItem.getProject_scan_file_id() );
+            	}
+            }
+            
 
             for( SpectralStorageAPIKeyForSearchId_Searcher_Result_Item resultItem: spectralStorageAPIKeyForSearchId_Searcher_Result.getResultItems() ) {
+            	
+            	
             	String scanFileAPIKey = resultItem.getSpectralStorageAPIKey();
                 if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
                     String msg = "Got empty scanFileAPIKey for search id: " + searchId;
@@ -144,6 +165,14 @@ public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceCon
                 
                 websserviceResult_SingleScanFile.searchScanFileId = resultItem.getSearchScanFileId();
                 
+                Integer project_scan_file_id = project_scan_file_id__FOR__Search_scan_file_id_Map.get( resultItem.getSearchScanFileId() );
+                if ( project_scan_file_id == null ) {
+                	 String msg = "NO project_scan_file_id for for SearchScanFileId: " + resultItem.getSearchScanFileId();
+                     log.error( msg );
+                     throw new LimelightInternalErrorException( msg );
+                }
+                
+                websserviceResult_SingleScanFile.projectScanFileId = project_scan_file_id;
 
         		List<Integer> scanNumbers = call_Get_ScanNumbers_SpectralStorageWebservice.getScanNumbersFromSpectralStorageService(null, null, scanFileAPIKey);
                 
@@ -241,6 +270,8 @@ public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceCon
     public static class WebsserviceResult_SingleScanFile {
     	
     	private int searchScanFileId;
+    	private int projectScanFileId;
+    	
     	private List<WebsserviceResult_SingleScanEntry> scanEntries;
 
 		public List<WebsserviceResult_SingleScanEntry> getScanEntries() {
@@ -249,6 +280,10 @@ public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceCon
 
 		public int getSearchScanFileId() {
 			return searchScanFileId;
+		}
+
+		public int getProjectScanFileId() {
+			return projectScanFileId;
 		}
     }
     

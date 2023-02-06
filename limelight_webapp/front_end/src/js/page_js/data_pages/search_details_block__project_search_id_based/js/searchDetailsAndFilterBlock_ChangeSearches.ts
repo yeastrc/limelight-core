@@ -19,7 +19,6 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {ParseURL_Into_PageStateParts} from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
-import {navigation_dataPages_Maint_Instance} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint";
 
 import { newURL_Build_PerProjectSearchIds_Or_ExperimentId }  from 'page_js/data_pages/data_pages_common/newURL_Build_PerProjectSearchIds_Or_ExperimentId';
 import {
@@ -31,13 +30,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 
-import { sortSearchesOnDisplayOrder_OrDefaultOrder, sortSearchesOnDisplayOrder_OrDefaultOrder_SingleSearchList } from 'page_js/data_pages/data_pages_common/sortSearchesOnDisplayOrder_OrDefaultOrder';
-import {
-    getSearchesAndFolders_SingleProject, GetSearchesAndFolders_SingleProject_PromiseResponse,
-    GetSearchesAndFolders_SingleProject_PromiseResponse_Item
-} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout";
 
 
@@ -76,13 +69,11 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
 
         const projectIdentifier : string = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
 
-        const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds( )
-
-        const projectSearchIdsSet : Set<number> = new Set( projectSearchIds );
+        const projectSearchIds_Selected = Array.from( this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds() )
 
         const overlayComponent = get_SearchDetailsAndFilterBlock_ChangeSearches_Overlay_Layout({
             projectIdentifier,
-            projectSearchIds_Selected : projectSearchIdsSet,
+            projectSearchIds_Selected,
             callback_updateSelected_Searches: this._callback_updateSelected_Searches_BindThis,
             callbackOn_Cancel_Close_Clicked : this._callbackOn_Cancel_Close_Clicked_BindThis
         })
@@ -116,35 +107,33 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
      */
     _callback_updateSelected_Searches( params : SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Component__Callback_updateSelected_Searches_Params ) : void {
 
-        const updated_selected_ProjectSearchIds = params.updated_selected_ProjectSearchIds;
-        const searchesAndFoldersList = params.searchesAndFoldersList;
+        const updated_selected_ProjectSearchIds__Object = params.updated_selected_ProjectSearchIds__Object;
 
-        const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds()
+        if ( ! updated_selected_ProjectSearchIds__Object ) {
 
-        let projectSearchIds_Changed = false;
+            //  NO Changes so EXIT after closing Overlay
 
-        let projectSearchIds_Additions : Set<number> = new Set();
-        let projectSearchIds_Removals : Set<number> = new Set();
+            this._remove_ModalOverlay();
+
+            return; // EARLY RETURN
+        }
+
+
+        const projectSearchIds__All_CurrentDisplay = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds()
+
+        const projectSearchIds_Removals : Set<number> = new Set();
 
         {
-            const updated_selected_ProjectSearchIds_Copy = new Set( updated_selected_ProjectSearchIds );
-            for ( const projectSearchId of projectSearchIds ) {
+            const updated_selected_ProjectSearchIds_Copy = new Set( updated_selected_ProjectSearchIds__Object.get_ProjectSearchIds_Selected_IterableIterator() );
+            for ( const projectSearchId of projectSearchIds__All_CurrentDisplay ) {
                 if ( ! (  updated_selected_ProjectSearchIds_Copy.delete( projectSearchId ) ) ) {
                     //  Found Deletion
                     projectSearchIds_Removals.add( projectSearchId );
-
-                    projectSearchIds_Changed = true;
                 }
-            }
-            if ( updated_selected_ProjectSearchIds_Copy.size > 0 ) {
-                // All entries left in updated_selected_ProjectSearchIds_Copy are Project Search Ids to Add
-                projectSearchIds_Additions = updated_selected_ProjectSearchIds_Copy;
-
-                projectSearchIds_Changed = true;
             }
         }
 
-        if ( ! projectSearchIds_Changed ) {
+        if ( projectSearchIds_Removals.size === 0 && updated_selected_ProjectSearchIds__Object.get_ProjectSearchIds_Selected_Additions_In_DisplayOrder().length === 0 ) {
 
             //  NO Changes so EXIT after closing Overlay
 
@@ -177,67 +166,11 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
             this._searchDetailsBlockDataMgmtProcessing.
             getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds();
 
-        let paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
-
         if ( ! searchDataLookupParamsRoot ) {
             throw Error( "searchDataLookupParamsRoot not found" );
         }
 
-        //  entries should be sorted on search id ascending
-        let projectSearchIds_Additions_Final_Ordered : Array<number>  = undefined;
-
-        if ( projectSearchIds_Additions.size > 0 ) {
-
-            projectSearchIds_Additions_Final_Ordered = [];
-
-            const searchesAdditions : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
-
-            for ( const searchList_ForUserSelectionEntry of searchesAndFoldersList ) {
-
-                if ( searchList_ForUserSelectionEntry.projectSearchId !== undefined ) {
-                    if (projectSearchIds_Additions.has(searchList_ForUserSelectionEntry.projectSearchId)) {
-                        searchesAdditions.push(searchList_ForUserSelectionEntry);
-                    }
-                } else {
-                    //  Folder Entry
-                    if ( searchList_ForUserSelectionEntry.searchesInFolder === undefined ) {
-                        const msg = "_changeSearches(...): False 'searchList_ForUserSelectionEntry.projectSearchId !== undefined' and true 'searchList_ForUserSelectionEntry.searchesInFolder === undefined'";
-                        console.warn( msg );
-                        throw Error( msg )
-                    }
-                    for ( const searchInFolder of searchList_ForUserSelectionEntry.searchesInFolder ) {
-                        if (projectSearchIds_Additions.has(searchInFolder.projectSearchId)) {
-                            searchesAdditions.push(searchInFolder);
-                        }
-                    }
-                }
-            }
-
-            //  Sort on search id
-            searchesAdditions.sort(function(a, b) {
-                if (a.searchId < b.searchId) {
-                    return -1;
-                }
-                if (a.searchId > b.searchId) {
-                    return 1;
-                }
-                return 0;
-            })
-
-            for ( const searchesAdditionEntry of searchesAdditions ) {
-
-                projectSearchIds_Additions_Final_Ordered.push( searchesAdditionEntry.projectSearchId );
-            }
-
-            if ( projectSearchIds_Additions_Final_Ordered.length === 0 ) {
-                const msg = "_changeSearches(...): projectSearchIds_Additions_Final_Ordered.length === 0 When projectSearchIds_Additions.size > 0";
-                console.warn( msg );
-                throw Error( msg )
-            }
-        }
-
-        //  Not needed until update existing page
-        // this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds_Additions_Final_Ordered  )
+        const paramsForProjectSearchIds = searchDataLookupParamsRoot.paramsForProjectSearchIds;
 
         // Remove removed project search ids from searchDataLookupParamsRoot
 
@@ -260,10 +193,15 @@ export class SearchDetailsAndFilterBlock_ChangeSearches {
             }
         }
 
+        let projectSearchIds_CreateDefault: ReadonlyArray<number>
+        if ( updated_selected_ProjectSearchIds__Object.get_ProjectSearchIds_Selected_Additions_In_DisplayOrder().length > 0 ) {
+            projectSearchIds_CreateDefault = updated_selected_ProjectSearchIds__Object.get_ProjectSearchIds_Selected_Additions_In_DisplayOrder()
+        }
+
         const promise = new Promise((resolve,reject) => {
             try {
                 const requestObj = {
-                    projectSearchIds_CreateDefault : projectSearchIds_Additions_Final_Ordered,
+                    projectSearchIds_CreateDefault,
                     searchDataLookupParamsRoot,
                     sjklwuiowerzUIryhnIOWzq : true
                 };

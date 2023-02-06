@@ -209,6 +209,7 @@ public class SearchNameList_From_ProjectSearchIds_RestWebserviceController {
     			webserviceResult_SearchItemMinimal.searchId = searchItemMinimal.getSearchId();
     			webserviceResult_SearchItemMinimal.name = 
     					searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+    			webserviceResult_SearchItemMinimal.searchShortName = searchItemMinimal.getSearchShortName();
     			webserviceResult_SearchItemMinimal.searchHasSubgroups = searchItemMinimal.isSearchHasSubgroups();
     			searchList.add( webserviceResult_SearchItemMinimal );
     			
@@ -398,6 +399,7 @@ public class SearchNameList_From_ProjectSearchIds_RestWebserviceController {
     	private int projectSearchId;
     	private int searchId;
     	private String name;
+    	private String searchShortName;
     	private boolean searchHasSubgroups;
     	
 		public int getProjectSearchId() {
@@ -411,6 +413,9 @@ public class SearchNameList_From_ProjectSearchIds_RestWebserviceController {
 		}
 		public boolean isSearchHasSubgroups() {
 			return searchHasSubgroups;
+		}
+		public String getSearchShortName() {
+			return searchShortName;
 		}
     	
     }

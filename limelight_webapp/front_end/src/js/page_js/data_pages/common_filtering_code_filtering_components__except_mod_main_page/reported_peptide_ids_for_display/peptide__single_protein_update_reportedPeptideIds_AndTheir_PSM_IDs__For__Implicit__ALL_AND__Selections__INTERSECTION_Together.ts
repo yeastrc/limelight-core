@@ -1098,75 +1098,110 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
                     throw Error(msg);
                 }
 
-                if ( psmTblData_For_PsmId.searchScanFileId === undefined || psmTblData_For_PsmId.searchScanFileId === null ) {
-                    const msg = "( psmTblData_For_PsmId.searchScanFileId === undefined || psmTblData_For_PsmId.searchScanFileId === null ). psmId: " + psmId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
+                let retentionTimeSeconds_ForFiltering = psmTblData_For_PsmId.retentionTimeSeconds
+                let precursor_M_Over_Z_ForFiltering = psmTblData_For_PsmId.precursor_M_Over_Z
 
-                const spectralStorage_NO_Peaks_Data_For_searchScanFileId = spectralStorage_NO_Peaks_Data_Holder.get_SpectralStorage_NO_Peaks_Data_For_SearchScanFileId(psmTblData_For_PsmId.searchScanFileId);
-                if ( ! spectralStorage_NO_Peaks_Data_For_searchScanFileId ) {
-                    const msg = "dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_For_PsmId.searchScanFileId); returned nothing. psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                let spectralStorage_NO_Peaks_Data_For_ScanNumber = spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_For_PsmId.scanNumber);
-                if ( ! spectralStorage_NO_Peaks_Data_For_searchScanFileId ) {
-                    const msg = "spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_For_PsmId.scanNumber); returned nothing. psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
+                if ( (
+                    ( ( scanRetentionTime__From__Filter !== undefined && scanRetentionTime__From__Filter !== null )
+                        || ( scanRetentionTime__To__Filter !== undefined && scanRetentionTime__To__Filter !== null ) )
+                    && ( retentionTimeSeconds_ForFiltering === undefined || retentionTimeSeconds_ForFiltering === null ) )
+                    || (
+                        ( ( scanMZ__From__Filter !== undefined && scanMZ__From__Filter !== null )
+                            || ( scanMZ__To__Filter !== undefined && scanMZ__To__Filter !== null ) )
+                        &&  ( precursor_M_Over_Z_ForFiltering === undefined || precursor_M_Over_Z_ForFiltering === null ) ) ) {
 
-                let spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 = spectralStorage_NO_Peaks_Data_For_ScanNumber;
+                    //  Filtering on Retention Time or Precursor M/Z and NOT have the associated value on the PSM so get from Scan
 
-                while ( spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2.level !== 2 ) {
-
-                    // have scan level > 2 so get MS 2 scan for filtering
-
-                    const parentScanNumber = spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2.parentScanNumber;
-                    spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 = spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(parentScanNumber);
-                    if ( ! spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 ) {
-                        const msg = "spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( parentScanNumber); returned nothing. parentScanNumber: " + parentScanNumber + ", psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                    if ( psmTblData_For_PsmId.searchScanFileId === undefined || psmTblData_For_PsmId.searchScanFileId === null ) {
+                        const msg = "( psmTblData_For_PsmId.searchScanFileId === undefined || psmTblData_For_PsmId.searchScanFileId === null ). psmId: " + psmId;
                         console.warn(msg);
                         throw Error(msg);
                     }
+
+                    const spectralStorage_NO_Peaks_Data_For_searchScanFileId = spectralStorage_NO_Peaks_Data_Holder.get_SpectralStorage_NO_Peaks_Data_For_SearchScanFileId(psmTblData_For_PsmId.searchScanFileId);
+                    if ( ! spectralStorage_NO_Peaks_Data_For_searchScanFileId ) {
+                        const msg = "dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_For_PsmId.searchScanFileId); returned nothing. psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    let spectralStorage_NO_Peaks_Data_For_ScanNumber = spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_For_PsmId.scanNumber);
+                    if ( ! spectralStorage_NO_Peaks_Data_For_searchScanFileId ) {
+                        const msg = "spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_For_PsmId.scanNumber); returned nothing. psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+
+                    let spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 = spectralStorage_NO_Peaks_Data_For_ScanNumber;
+
+                    while ( spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2.level !== 2 ) {
+
+                        // have scan level > 2 so get MS 2 scan for filtering
+
+                        const parentScanNumber = spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2.parentScanNumber;
+                        spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 = spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(parentScanNumber);
+                        if ( ! spectralStorage_NO_Peaks_Data_For_ScanNumber_ScanLevel_2 ) {
+                            const msg = "spectralStorage_NO_Peaks_Data_For_searchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( parentScanNumber); returned nothing. parentScanNumber: " + parentScanNumber + ", psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+                    }
+
+                    if ( retentionTimeSeconds_ForFiltering === undefined || retentionTimeSeconds_ForFiltering === null ) {
+                        retentionTimeSeconds_ForFiltering = spectralStorage_NO_Peaks_Data_For_ScanNumber.retentionTime_InSeconds
+                    }
+
+                    if ( precursor_M_Over_Z_ForFiltering === undefined || precursor_M_Over_Z_ForFiltering === null ) {
+                        precursor_M_Over_Z_ForFiltering = spectralStorage_NO_Peaks_Data_For_ScanNumber.precursor_M_Over_Z
+                    }
                 }
 
-                let scanMeetsFilters = true;
+                if ( retentionTimeSeconds_ForFiltering === undefined || retentionTimeSeconds_ForFiltering === null ) {
+                    const msg = "retentionTimeSeconds_ForFiltering is computed to undefined or null, psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                if ( precursor_M_Over_Z_ForFiltering === undefined || precursor_M_Over_Z_ForFiltering === null ) {
+                    const msg = "precursor_M_Over_Z_ForFiltering is computed to undefined or null, psmTblData_For_PsmId.scanNumber: " + psmTblData_For_PsmId.scanNumber + ", psmTblData_For_PsmId.searchScanFileId: " + psmTblData_For_PsmId.searchScanFileId + ", psmId: " + psmId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                let psmOrScan_Values_MeetsFilters = true;
                 {
-                    const retentionTime_InMinutes = spectralStorage_NO_Peaks_Data_For_ScanNumber.retentionTime_InSeconds / 60;
+                    const retentionTime_InMinutes = retentionTimeSeconds_ForFiltering / 60;
 
                     if ( scanRetentionTime__From__Filter !== undefined && scanRetentionTime__From__Filter !== null ) {
                         if ( retentionTime_InMinutes < scanRetentionTime__From__Filter ) {
-                            scanMeetsFilters = false;
+                            psmOrScan_Values_MeetsFilters = false;
                         }
                     }
-                    if ( scanMeetsFilters ) {
+                    if ( psmOrScan_Values_MeetsFilters ) {
                         if ( scanRetentionTime__To__Filter !== undefined && scanRetentionTime__To__Filter !== null ) {
                             if ( retentionTime_InMinutes > scanRetentionTime__To__Filter ) {
-                                scanMeetsFilters = false;
+                                psmOrScan_Values_MeetsFilters = false;
                             }
                         }
                     }
                 }
                 {
-                    if ( scanMeetsFilters ) {
+                    if ( psmOrScan_Values_MeetsFilters ) {
                         if ( scanMZ__From__Filter !== undefined && scanMZ__From__Filter !== null ) {
-                            if ( spectralStorage_NO_Peaks_Data_For_ScanNumber.precursor_M_Over_Z < scanMZ__From__Filter ) {
-                                scanMeetsFilters = false;
+                            if ( precursor_M_Over_Z_ForFiltering < scanMZ__From__Filter ) {
+                                psmOrScan_Values_MeetsFilters = false;
                             }
                         }
                     }
-                    if ( scanMeetsFilters ) {
+                    if ( psmOrScan_Values_MeetsFilters ) {
                         if ( scanMZ__To__Filter !== undefined && scanMZ__To__Filter !== null ) {
-                            if ( spectralStorage_NO_Peaks_Data_For_ScanNumber.precursor_M_Over_Z > scanMZ__To__Filter ) {
-                                scanMeetsFilters = false;
+                            if ( precursor_M_Over_Z_ForFiltering > scanMZ__To__Filter ) {
+                                psmOrScan_Values_MeetsFilters = false;
                             }
                         }
                     }
                 }
 
-                if ( scanMeetsFilters ) {
+                if ( psmOrScan_Values_MeetsFilters ) {
                     psmIds_Include__FilteredFor_SearchScanFileId.add(psmId);
                 }
             }

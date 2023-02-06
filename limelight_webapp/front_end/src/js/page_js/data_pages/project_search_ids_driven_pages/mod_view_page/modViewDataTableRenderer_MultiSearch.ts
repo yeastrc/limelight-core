@@ -37,6 +37,7 @@ import {
 	ModView_VizOptionsData_SubPart_selectedStateObject
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {modViewDataTableRenderer_MultiSearch_Subcomponents__Cell_ExternalModLinks_Contents} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch_Subcomponents";
+import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 
 export class ModViewDataTableRenderer_MultiSearch {
 
@@ -336,7 +337,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			dataPageStateManager_DataFrom_Server : DataPageStateManager
 		}) : string  {
 
-		const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
+		const searchIdXorShortName = ModDataUtils.getSearchShortNameXorSearchIdForProjectSearchId({projectSearchId, dataPageStateManager_DataFrom_Server});
 
 		let displayString = '';
 
@@ -348,7 +349,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			displayString = quantTypeString + ' ' + (vizOptionsData.data.psmQuant === 'counts' ? "count" : "ratio");
 		}
 
-		displayString += " (" + searchId + ")";
+		displayString += " (" + searchIdXorShortName + ")";
 
 		return displayString;
 	}

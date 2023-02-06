@@ -54,7 +54,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSONBlob_DTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
@@ -62,6 +67,7 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.ut
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_Base;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_WebJSON;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_Base;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
@@ -71,6 +77,7 @@ import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectIdIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId.Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessLevelAnd_ProjectId_Result;
+import org.yeastrc.limelight.limelight_webapp.constants.FieldLengthConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
@@ -544,9 +551,66 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			return webserviceMethod_Internal_Results;  //  EARLY EXIT
 		}
 		
+		//  Truncate Search Tags and Search Tag Categories if too Long
+		
+		if ( webservice_Request_Base.getSearchTagList() != null && ( ! webservice_Request_Base.getSearchTagList().isEmpty() ) ) {
+
+			List<String> searchTagList_TruncatedStrings = new ArrayList<>( webservice_Request_Base.getSearchTagList().size() );
+			
+			for ( String searchTag : webservice_Request_Base.getSearchTagList() ) {
+				
+				String searchTag_Truncated = searchTag.trim();
+				
+				if ( searchTag_Truncated.length() > FieldLengthConstants.SEARCH_TAG_MAX_LENGTH__TAG_STRING ) {
+					searchTag_Truncated = searchTag.substring(0, FieldLengthConstants.SEARCH_TAG_MAX_LENGTH__TAG_STRING);
+				}
+				
+				searchTagList_TruncatedStrings.add(searchTag_Truncated);
+			}
+			
+			webservice_Request_Base.setSearchTagList(searchTagList_TruncatedStrings);
+		}
+
+		if ( webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList() != null && ( ! webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList().isEmpty() ) ) {
+
+			for ( SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry searchTagCategory : webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList() ) {
+				
+				if ( StringUtils.isEmpty( searchTagCategory.getSearchTagCategoryLabel() ) ) {
+	    			final String msg = "SearchTagCategoryLabel is empty or null.";
+	    			log.warn(msg );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+
+				if ( searchTagCategory.getSearchTagCategoryLabel().length() > FieldLengthConstants.SEARCH_TAG_CATEGORY_MAX_LENGTH__CATEGORY_LABEL ) {
+					searchTagCategory.setSearchTagCategoryLabel( searchTagCategory.getSearchTagCategoryLabel().substring(0, FieldLengthConstants.SEARCH_TAG_CATEGORY_MAX_LENGTH__CATEGORY_LABEL) );
+				}
+
+				if ( searchTagCategory.getSearchTagList() != null && ( ! searchTagCategory.getSearchTagList().isEmpty() ) ) {
+					
+					List<String> searchTagList_TruncatedStrings = new ArrayList<>( searchTagCategory.getSearchTagList().size() );
+
+					for ( String searchTag : searchTagCategory.getSearchTagList() ) {
+
+						String searchTag_Truncated = searchTag.trim();
+
+						if ( searchTag_Truncated.length() > FieldLengthConstants.SEARCH_TAG_MAX_LENGTH__TAG_STRING ) {
+							searchTag_Truncated = searchTag.substring(0, FieldLengthConstants.SEARCH_TAG_MAX_LENGTH__TAG_STRING);
+						}
+
+						searchTagList_TruncatedStrings.add(searchTag_Truncated);
+					}
+
+					searchTagCategory.setSearchTagList(searchTagList_TruncatedStrings);
+				}
+			}
+		}
+		
+		/////////////////////
+		
 		String requestURL = httpServletRequest.getRequestURL().toString();
 		String remoteUserIpAddress = httpServletRequest.getRemoteHost();
 		File importer_Work_Directory = Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
+		
 		//  Get the File object for the Base Subdir used to temporarily store the files in this request 
 		String uploadFileTempDirString =
 				limelight_XML_Importer_Work_Directory_And_SubDirs_Web.getDirForUploadFileTempDir();
@@ -642,6 +706,29 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			//  No Search name in upload request
 			searchName = null; // make null if it is the empty string
 		}
+
+		if ( searchName != null ) {
+			
+			if ( searchName.length() > FieldLengthConstants.SEARCH_NAME_MAX_LENGTH ) {
+				//  Trim to max length
+				searchName = searchName.substring(0, FieldLengthConstants.SEARCH_NAME_MAX_LENGTH );
+			}
+		}
+		
+		String searchShortName = webservice_Request_Base.getSearchShortName();
+		if ( StringUtils.isEmpty( searchShortName ) ) {
+			//  No Search Short name in upload request
+			searchShortName = null; // make null if it is the empty string
+		}
+		
+		if ( searchShortName != null ) {
+			
+			if ( searchShortName.length() > FieldLengthConstants.SEARCH_SHORT_NAME_MAX_LENGTH ) {
+				//  Trim to max length
+				searchShortName = searchShortName.substring(0, FieldLengthConstants.SEARCH_SHORT_NAME_MAX_LENGTH );
+			}
+		}
+		
 		//  use search path in Submit request if populated
 		String searchPath = webserviceMethod_Internal_Params.searchPath;
 		if ( StringUtils.isEmpty( searchPath ) ) {
@@ -816,7 +903,56 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			// Swallow Exception since NOT mission critical
 		}
 		
-		//  Save to the DB
+		FileImportTrackingDataJSONBlob_DTO fileImportTrackingDataJSONBlob_DTO = null;
+		
+		{
+			FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001 fileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001 = new FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001();
+
+			if ( webservice_Request_Base.getSearchTagList() != null && ( ! webservice_Request_Base.getSearchTagList().isEmpty() ) ) {
+				
+				fileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001.setSearchTagList( webservice_Request_Base.getSearchTagList() );
+			}
+
+			FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001 searchTagCategories_AndTheir_SearchTagStrings = new FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001();
+			
+			if ( webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList() != null && ( ! webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList().isEmpty() ) ) {
+			
+				List<FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001> searchTagCategoryList = new ArrayList<>( webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList().size() );
+				
+				for ( SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry inputSearchTagCategoryAndItsSearchTagsEntry : webservice_Request_Base.getSearchTagCategoryAndItsSearchTagsList() ) {
+					
+					if ( inputSearchTagCategoryAndItsSearchTagsEntry.getSearchTagList() != null && ( ! inputSearchTagCategoryAndItsSearchTagsEntry.getSearchTagList().isEmpty() ) ) {
+					
+						FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001 resultCategoryEntry = new FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001();
+						resultCategoryEntry.setCategoryLabel( inputSearchTagCategoryAndItsSearchTagsEntry.getSearchTagCategoryLabel() );
+					
+						resultCategoryEntry.setSearchTagList( inputSearchTagCategoryAndItsSearchTagsEntry.getSearchTagList() );
+						
+						searchTagCategoryList.add(resultCategoryEntry);
+					}
+				}
+				
+				if ( ! searchTagCategoryList.isEmpty() ) {
+					
+					searchTagCategories_AndTheir_SearchTagStrings.setSearchTagCategoryList(searchTagCategoryList);
+				}
+			}
+			
+			FileImportTrackingDataJSON_Contents_Version_Number_001 fileImportTrackingDataJSON_Contents_Version_Number_001 = new FileImportTrackingDataJSON_Contents_Version_Number_001(); 
+
+			fileImportTrackingDataJSON_Contents_Version_Number_001.setSearchTagStrings( fileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001 );
+			
+			fileImportTrackingDataJSON_Contents_Version_Number_001.setSearchTagCategories_AndTheir_SearchTagStrings(searchTagCategories_AndTheir_SearchTagStrings);
+			
+			String jsonContents = marshalObjectToJSON.getJSONString( fileImportTrackingDataJSON_Contents_Version_Number_001 );
+
+			fileImportTrackingDataJSONBlob_DTO = new FileImportTrackingDataJSONBlob_DTO();
+			fileImportTrackingDataJSONBlob_DTO.setJsonContents_FormatVersion(FileImportTrackingDataJSON_Contents_Version_Number_001.VERSION_NUMBER_001);
+			fileImportTrackingDataJSONBlob_DTO.setJsonContents(jsonContents);
+		}
+		
+
+		//  Main File Import Tracking Object
 		FileImportTrackingDTO fileImportTrackingDTO = new FileImportTrackingDTO();
 		fileImportTrackingDTO.setId( importTrackingId );
 		fileImportTrackingDTO.setStatus( FileImportStatus.QUEUED );
@@ -824,11 +960,14 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		fileImportTrackingDTO.setProjectId( projectId );
 		fileImportTrackingDTO.setUserId( userId );
 		fileImportTrackingDTO.setSearchName( searchName );
+		fileImportTrackingDTO.setSearchShortName( searchShortName );
 		fileImportTrackingDTO.setSearchPath( searchPath );
 		fileImportTrackingDTO.setInsertRequestURL( requestURL );
 		fileImportTrackingDTO.setRemoteUserIpAddress( remoteUserIpAddress );
+		
+		//  Save to the DB
 		importTrackingAndChildren_Save_SingleDBTransaction
-		.saveImportTrackingAndChildrenInSingleDBTransaction( fileImportTrackingDTO, fileImportTrackingSingleFileDTOList );
+		.saveImportTrackingAndChildrenInSingleDBTransaction( fileImportTrackingDTO, fileImportTrackingDataJSONBlob_DTO, fileImportTrackingSingleFileDTOList );
 		
 		if ( webserviceMethod_Internal_Params.submitterSameMachine ) {
 			//  submitterSameMachine true, return the subdir name for import
@@ -938,11 +1077,16 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 				processedLimelightXMLFile = true;
 			}
 		}
-		if ( ! processedLimelightXMLFile ) {
-			String msg = "Missing Limelight XML file";
-			log.warn( msg );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
+		
+		//  NOW allow without Limelight XML File
+		
+//		if ( ! processedLimelightXMLFile ) {
+//			String msg = "Missing Limelight XML file";
+//			log.warn( msg );
+//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//		}
+		
+		
 		processFilesInTempUploadDirResult.limelightUploadTempDataFileContentsAndAssocDataList = limelightUploadTempDataFileContentsAndAssocData_OnDisk_List;
 		return processFilesInTempUploadDirResult;
 	}
@@ -1141,157 +1285,5 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		String importerSubDir;
 	}
 	
-	
-	/////////////////////////////////
-	/////   Classes for webservice request and response
-	/**
-	 * 
-	 *
-	 */
-//	public static class WebserviceRequest {
-//		private String projectIdentifier;
-//		private String uploadKey;
-//		/**
-//		 * For submitting on same machine
-//		 */
-//		boolean submitterSameMachine;
-//		/**
-//		 * For submitting on same machine
-//		 */
-//		String submitterKey;
-//		String searchName;
-//		String searchPath;
-//		List<WebserviceRequest_SingleFileItem> fileItems;
-//		
-//		public String getProjectIdentifier() {
-//			return projectIdentifier;
-//		}
-//		public void setProjectIdentifier(String projectIdentifier) {
-//			this.projectIdentifier = projectIdentifier;
-//		}
-//		public String getUploadKey() {
-//			return uploadKey;
-//		}
-//		public void setUploadKey(String uploadKey) {
-//			this.uploadKey = uploadKey;
-//		}
-//		public boolean isSubmitterSameMachine() {
-//			return submitterSameMachine;
-//		}
-//		public void setSubmitterSameMachine(boolean submitterSameMachine) {
-//			this.submitterSameMachine = submitterSameMachine;
-//		}
-//		public String getSubmitterKey() {
-//			return submitterKey;
-//		}
-//		public void setSubmitterKey(String submitterKey) {
-//			this.submitterKey = submitterKey;
-//		}
-//		public String getSearchName() {
-//			return searchName;
-//		}
-//		public void setSearchName(String searchName) {
-//			this.searchName = searchName;
-//		}
-//		public String getSearchPath() {
-//			return searchPath;
-//		}
-//		public void setSearchPath(String searchPath) {
-//			this.searchPath = searchPath;
-//		}
-//		public List<WebserviceRequest_SingleFileItem> getFileItems() {
-//			return fileItems;
-//		}
-//		public void setFileItems(List<WebserviceRequest_SingleFileItem> fileItems) {
-//			this.fileItems = fileItems;
-//		}
-//	}
-//	
-//
-//	/**
-//	 * 
-//	 *
-//	 */
-//	public static class WebserviceRequest_SingleFileItem {
-//		
-//		private String uploadedFilename;
-//		private Integer fileType;
-//		private Integer fileIndex;
-//		private Boolean isLimelightXMLFile;
-//		//  Following are only for submitting on same machine
-//		private String filenameOnDiskWithPathSubSameMachine;
-//		
-//		public String getUploadedFilename() {
-//			return uploadedFilename;
-//		}
-//		public void setUploadedFilename(String uploadedFilename) {
-//			this.uploadedFilename = uploadedFilename;
-//		}
-//		public Integer getFileType() {
-//			return fileType;
-//		}
-//		public void setFileType(Integer fileType) {
-//			this.fileType = fileType;
-//		}
-//		public Integer getFileIndex() {
-//			return fileIndex;
-//		}
-//		public void setFileIndex(Integer fileIndex) {
-//			this.fileIndex = fileIndex;
-//		}
-//		public Boolean getIsLimelightXMLFile() {
-//			return isLimelightXMLFile;
-//		}
-//		public void setIsLimelightXMLFile(Boolean isLimelightXMLFile) {
-//			this.isLimelightXMLFile = isLimelightXMLFile;
-//		}
-//		public String getFilenameOnDiskWithPathSubSameMachine() {
-//			return filenameOnDiskWithPathSubSameMachine;
-//		}
-//		public void setFilenameOnDiskWithPathSubSameMachine(String filenameOnDiskWithPathSubSameMachine) {
-//			this.filenameOnDiskWithPathSubSameMachine = filenameOnDiskWithPathSubSameMachine;
-//		}
-//		
-//	}
-//	
-//	/**
-//	 * 
-//	 *
-//	 */
-//	public static class WebserviceResult {
-//		private boolean statusSuccess;
-//		private boolean projectLocked;
-//		private boolean submittedScanFileNotAllowed;
-//		private String importerSubDir;
-//		
-//		public boolean isStatusSuccess() {
-//			return statusSuccess;
-//		}
-//		public void setStatusSuccess(boolean statusSuccess) {
-//			this.statusSuccess = statusSuccess;
-//		}
-//		public boolean isProjectLocked() {
-//			return projectLocked;
-//		}
-//		public void setProjectLocked(boolean projectLocked) {
-//			this.projectLocked = projectLocked;
-//		}
-//		public boolean isSubmittedScanFileNotAllowed() {
-//			return submittedScanFileNotAllowed;
-//		}
-//		public void setSubmittedScanFileNotAllowed(boolean submittedScanFileNotAllowed) {
-//			this.submittedScanFileNotAllowed = submittedScanFileNotAllowed;
-//		}
-//		public String getImporterSubDir() {
-//			return importerSubDir;
-//		}
-//		public void setImporterSubDir(String importerSubDir) {
-//			this.importerSubDir = importerSubDir;
-//		}
-//		
-//
-//	}
-
-
 
 }

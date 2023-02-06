@@ -22,6 +22,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSONBlob_DTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 
 /**
@@ -32,10 +33,11 @@ public interface ImportTrackingAndChildren_Save_SingleDBTransactionIF {
 
 	/**
 	 * @param trackingItem
+	 * @param fileImportTrackingDataJSONBlob_DTO TODO
 	 * @param singleFileDTOList
 	 */
 	void saveImportTrackingAndChildrenInSingleDBTransaction(
 
-			FileImportTrackingDTO trackingItem, List<FileImportTrackingSingleFileDTO> singleFileDTOList);
+			FileImportTrackingDTO trackingItem, FileImportTrackingDataJSONBlob_DTO fileImportTrackingDataJSONBlob_DTO, List<FileImportTrackingSingleFileDTO> singleFileDTOList);
 
 }

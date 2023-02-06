@@ -41,6 +41,22 @@ import {
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_MultipleSearches";
+import {SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/searchTags__Get_For_ProjectSearchIds";
+import {
+    SearchName_and_SearchShortName_Change_Component_Change_Callback,
+    SearchName_and_SearchShortName_Change_Component_Change_Callback_Params
+} from "page_js/data_pages/common_components__react/search_name_and_search_short_name__user_change_overlay/searchName_and_SearchShortName_Change_Component_and_WebserviceCall";
+import {
+    Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams,
+    Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch
+} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent";
+import {
+    Search_Tags_DisplaySearchTags_UnderSearchName_Component,
+    Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root,
+    Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry,
+    Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTagCategory_Entry
+} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
+import {Search_Tags_SelectSearchTags_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 
 
 /**
@@ -733,10 +749,15 @@ class SearchNameAndDetails_Root_State {
  */
 class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Root_Props, SearchNameAndDetails_Root_State > {
 
+    private _changeSearchName_Clicked_BindThis = this._changeSearchName_Clicked.bind(this);
+
+    private _searchName_Div_Ref: React.RefObject<HTMLDivElement>; //  React.createRef()
+
     private _searchDetailsContainer_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div>
 
     private _showSearchDetails_Clicked_BindThis = this._showSearchDetails_Clicked.bind(this);
     private _hideSearchDetails_Clicked_BindThis = this._hideSearchDetails_Clicked.bind(this);
+    private _add_Change_SearchTags_Clicked_BindThis = this._add_Change_SearchTags_Clicked.bind(this);
 
     private _searchDetailsAddedToDOM : boolean = false;
 
@@ -746,6 +767,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
     constructor(props : SearchNameAndDetails_Root_Props) {
         super(props);
 
+        this._searchName_Div_Ref = React.createRef<HTMLDivElement>();
         this._searchDetailsContainer_div_Ref = React.createRef<HTMLDivElement>();
 
         this.state = {
@@ -820,6 +842,83 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         this._searchDetailsAddedToDOM = true;
     }
 
+
+    ////////////////////////////////////////
+
+    /**
+     *
+     * @param event
+     */
+    private _add_Change_SearchTags_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+
+        const searches: Array<Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch> = []
+
+        const search: Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch = {
+            projectSearchId: this.props.projectSearchId
+        }
+        searches.push(search)
+
+        const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {
+            searches
+        }
+
+        this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_open_Search_Tags_Manage_TagsForSearch_OverallTags_OverlayComponent_Overlay() ({
+            mainParams
+        })
+    }
+
+    /**
+     *
+     */
+    private _changeSearchName_Clicked(event: React.MouseEvent<HTMLImageElement, MouseEvent>) {
+
+        event.stopPropagation();
+
+        if ( ! ( this.props.propValue &&
+            this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory &&
+            this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_searchName_and_SearchShortName_Change_Component__openOverlay() ) ) {
+
+            const msg = "Should NEVER get here: in _changeSearchName_Clicked(...): ( ! ( this.props.propValue && this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory && this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_searchName_and_SearchShortName_Change_Component__openOverlay() ) )  "
+
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        const buttonContainer_BoundingRect = this._searchName_Div_Ref.current.getBoundingClientRect();
+
+        let position_top =  buttonContainer_BoundingRect.top;
+        let position_left =  buttonContainer_BoundingRect.left;
+
+        const projectSearchId = this.props.projectSearchId
+
+        const searchNamesMap_KeyProjectSearchId = this.props.propValue.dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
+
+        const searchNameObject = searchNamesMap_KeyProjectSearchId.get( projectSearchId );
+        if ( ! searchNameObject ) {
+            throw Error("No Search Name for projectSearchId: " + projectSearchId );
+        }
+
+
+        const change_Callback: SearchName_and_SearchShortName_Change_Component_Change_Callback =
+            ( params: SearchName_and_SearchShortName_Change_Component_Change_Callback_Params ) : void => {
+
+                window.location.reload(true)
+
+                // this.props.searchDisplayListItem.searchName = searchName_InputField_Value;
+                // this.setState({ changeSearchName_Active: false });
+            }
+
+        this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_searchName_and_SearchShortName_Change_Component__openOverlay() ({
+            projectSearchId,
+            existingSearchName: searchNameObject.name,
+            existingSearchShortName: searchNameObject.searchShortName,
+            position_top,
+            position_left,
+            change_Callback,
+            cancel_Callback: null
+        })
+    }
+
     ////////////////////////////////////////
 
     /**
@@ -830,6 +929,52 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         const projectSearchId = this.props.projectSearchId;
 
         const searchNamesMap_KeyProjectSearchId = this.props.propValue.dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
+
+        const searchTagIds_OnSearch_Set: Set<number> = new Set()
+
+        const searchTagEntries_Filter_AllEntries: Array<Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry> = []
+
+        const searchTagCategory_Array_Filter_AllEntries: Array<Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTagCategory_Entry> = []
+
+        {
+            const searchTags_Root = this.props.propValue.dataPageStateManager_DataFrom_Server.get_SearchTags_SearchTagCategories_Root()
+            if ( searchTags_Root ) {
+                const searchTags_For_ProjectSearchId = searchTags_Root.get_SearchTags_SearchTagCategories_ForProjectSearchId( projectSearchId );
+
+                if ( searchTags_For_ProjectSearchId && searchTags_For_ProjectSearchId.entriesPerTag && searchTags_For_ProjectSearchId.entriesPerTag.length > 0 ) {
+
+
+                    for ( const searchTag of searchTags_For_ProjectSearchId.entriesPerTag ) {
+
+                        searchTagEntries_Filter_AllEntries.push({
+                            tagId: searchTag.tag_id,
+                            tagCategoryId: searchTag.tag_category_id,
+                            tagString: searchTag.tag_string,
+                            tag_Color_Background: searchTag.tag_Color_Background,
+                            tag_Color_Font: searchTag.tag_Color_Font,
+                            tag_Color_Border: searchTag.tag_Color_Border
+                        })
+
+                        searchTagIds_OnSearch_Set.add( searchTag.tag_id )
+                    }
+
+                    if ( searchTags_Root.get_SearchTags__Get_For_ProjectSearchIds_Result() && searchTags_Root.get_SearchTags__Get_For_ProjectSearchIds_Result().categories_Array ) {
+
+                        for ( const category of searchTags_Root.get_SearchTags__Get_For_ProjectSearchIds_Result().categories_Array ) {
+
+                            searchTagCategory_Array_Filter_AllEntries.push(category)
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        const search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root = {
+            searchTagCategory_Array: searchTagCategory_Array_Filter_AllEntries, searchTag_Array: searchTagEntries_Filter_AllEntries
+        }
 
         const annotationTypeData_Root : AnnotationTypeData_Root = this.props.propValue.dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root();
 
@@ -860,6 +1005,15 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
             colorBlockForSearch_Color = "#" + this.props.propValue.limelight_Colors_For_MultipleSearches.get_Color_AsHexString_By_ProjectSearchId(projectSearchId);
         }
 
+        let add_Change_SearchTags_Clicked_BindThis
+
+        if ( this.props.propValue.dataPageStateManager_DataFrom_Server.get_userCanEditSearchTags() ) {
+
+            // { Only if project owner }
+
+            add_Change_SearchTags_Clicked_BindThis = this._add_Change_SearchTags_Clicked_BindThis;
+        }
+
         return (
             <React.Fragment>
                 <td style={ { verticalAlign : "top" } }>
@@ -883,10 +1037,73 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                 </td>
                 <td style={ searchName_TD_Style }>
                     <div >
-                        <div style={ { wordBreak: "break-word" } }>
-                            { searchNameObject.name } ({ searchNameObject.searchId })
+                        <div
+                            ref={ this._searchName_Div_Ref }
+                        >
+                            <span style={ { overflowWrap: "break-word" } }>
+                                { searchNameObject.name }
+                            </span>
+                            { searchNameObject.searchShortName ? (
+                                <>
+                                    <span> </span>
+                                    <span style={ { whiteSpace: "nowrap" } }>
+                                        ({ searchNameObject.searchShortName })
+                                    </span>
+                                </>
+                            ) : null }
+                            <span> </span>
+                            <span style={ { whiteSpace: "nowrap" } }>
+                                <span>
+                                    ({ searchNameObject.searchId })
+                                </span>
+                                { ( this.props.propValue &&
+                                    this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory &&
+                                    this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_searchName_and_SearchShortName_Change_Component__openOverlay() ) ? (
+                                    <>
+                                        <span> </span>
+                                        <img className="icon-small clickable "
+                                             src="static/images/icon-edit.png"
+                                             title="Edit name of search"
+                                             onClick={ this._changeSearchName_Clicked_BindThis }
+                                        />
+                                    </>
+                                ) : null }
+                            </span>
                         </div>
+
+                        {/*  Search Tags for Search  */}
+                        <div>
+                            { search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root && search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
+                                //  Have Search Tags for Search
+                                <div>
+                                    <Search_Tags_DisplaySearchTags_UnderSearchName_Component
+                                        searchTagIds_OnSearch_Set={ searchTagIds_OnSearch_Set }
+                                        searchTagData_Root={ search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root  }
+                                        addTag_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }
+                                        changeTags_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }
+                                    />
+                                </div>
+                            ) : (
+                                //  NO Search Tags for Search
+                                ( this.props.propValue.dataPageStateManager_DataFrom_Server.get_userCanEditSearchTags() ) ? (
+
+                                    // { Only if project owner }
+                                    <div>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._add_Change_SearchTags_Clicked_BindThis }
+                                            title="Add tags to this search"
+                                        >
+                                            +Add Tag
+                                        </span>
+                                    </div>
+                                ) : null
+                            ) }
+                        </div>
+                        {/*  END Search Tags  */}
+
                     </div>
+
                     <div ref={ this._searchDetailsContainer_div_Ref } style={ searchDetailsContainer_div_Style }>
                     </div>
                 </td>

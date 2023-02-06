@@ -73,6 +73,7 @@ import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/co
 import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 import {Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
 
 
 /**
@@ -449,6 +450,10 @@ export class QcViewPage_RootClass_Common {
 
 		//  Have all data in page variables to render the page
 
+
+		const currentProjectId_FromDOM = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
+
+
 		const propsValue : PeptidePage_Display_MainContent_Component_Props_Prop = {
 
 			projectSearchIds,
@@ -483,6 +488,7 @@ export class QcViewPage_RootClass_Common {
 
 		const propsValue_QC: QcViewPage_DisplayData__Main_Component_Props_Prop = {
 
+			currentProjectId_FromDOM,
 			proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: this._proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject,
 			qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject: this._qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
 		}

@@ -46,6 +46,12 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 		CODE_LESS_THAN_DATABASE,
 		CODE_GREATER_THAN_DATABASE
 	}
+	
+	/**
+	 * Should the Exception be logged
+	 *
+	 */
+	public static enum Log_Exception_YN { YES, NO }
 
 	//  private constructor
 	private Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode() { }
@@ -62,7 +68,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 	 * 
 	 * @throws Exception
 	 */
-	public LimelightDatabaseSchemaVersion_Comparison_Result getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result() throws Exception {
+	public LimelightDatabaseSchemaVersion_Comparison_Result getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result( Log_Exception_YN log_Exception_YN ) throws Exception {
 
 
 		Integer versionNumber = null;
@@ -136,8 +142,10 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 				//  Other table ('config_system_tbl') which has existed since start of Limelight project 
 				//    also fails to query so there must a problem with SQL access so just rethrow the mainSelect exception
 				
-				String msg = "Failed to select database version: sql: " + sql;
-				log.error( msg, exception_MainSelect );
+				if ( log_Exception_YN == Log_Exception_YN.YES ) {
+					String msg = "Failed to select database version: sql: " + sql;
+					log.error( msg, exception_MainSelect );
+				}
 				throw exception_MainSelect;
 			}
 		}
@@ -159,7 +167,7 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 	 * 
 	 * @throws Exception
 	 */
-	public LimelightDatabaseSchemaVersion_Comparison_Result getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result() throws Exception {
+	public LimelightDatabaseSchemaVersion_Comparison_Result getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result( Log_Exception_YN log_Exception_YN ) throws Exception {
 
 
 		Integer versionNumber = null;
@@ -231,8 +239,11 @@ public class Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersion
 				//  Other table ('config_system_tbl') which has existed since start of Limelight project 
 				//    also fails to query so there must a problem with SQL access so just rethrow the mainSelect exception
 				
-				String msg = "Failed to select database version: sql: " + sql;
-				log.error( msg, exception_MainSelect );
+				if ( log_Exception_YN == Log_Exception_YN.YES ) {
+					String msg = "Failed to select database version: sql: " + sql;
+					log.error( msg, exception_MainSelect );
+				}
+				
 				throw exception_MainSelect;
 			}
 		}

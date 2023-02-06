@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailIF;
 import org.yeastrc.limelight.limelight_webapp.send_email.SendEmailItem;
@@ -77,8 +75,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Override
 	public void sendEmail_Extra_On_ImportFinish_ToConfiguredEmail(
 			SendEmailItem sendEmailItem_Extra_Emails,
-			FileImportTrackingDTO fileImportTrackingDTO,
-			FileImportTrackingRunDTO fileImportTrackingRunDTO
+			FileImportStatus status
 			) {
 
 		try {
@@ -111,7 +108,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				}
 			}
 
-			if ( fileImportTrackingDTO.getStatus() == FileImportStatus.FAILED
+			if ( status == FileImportStatus.FAILED
 					&& configuration.getTo_emailAddresses_OnImportFinish_Failed_Imports() != null ) {
 
 				for ( String to_emailAddress : configuration.getTo_emailAddresses_OnImportFinish_Failed_Imports() ) {
@@ -121,7 +118,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				}
 			}
 
-			if ( fileImportTrackingDTO.getStatus() == FileImportStatus.COMPLETE
+			if ( status == FileImportStatus.COMPLETE
 					&& configuration.getTo_emailAddresses_OnImportFinish_Successful_Imports() != null ) {
 
 				for ( String to_emailAddress : configuration.getTo_emailAddresses_OnImportFinish_Successful_Imports() ) {

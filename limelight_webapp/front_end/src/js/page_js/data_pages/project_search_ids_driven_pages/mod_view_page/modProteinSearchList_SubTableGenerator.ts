@@ -187,7 +187,16 @@ export class ModProteinSearchList_SubTableGenerator {
                     dataPageStateManager_DataFrom_Server
                 });
 
-                const displayString = "(" + searchId + ") " + searchName;
+                const searchShortName = ModDataUtils.getSearchShortNameForProjectSearchId({
+                    projectSearchId:proteinData.projectSearchId,
+                    dataPageStateManager_DataFrom_Server
+                });
+
+                let displayString = searchName;
+                if(searchShortName && searchShortName.length > 0) {
+                    displayString += " (" + searchShortName + ")";
+                }
+                displayString += " (" + searchId + ")";
 
                 const valueDisplay = displayString;
                 const searchEntriesForColumn : Array<string> = [ valueDisplay ]

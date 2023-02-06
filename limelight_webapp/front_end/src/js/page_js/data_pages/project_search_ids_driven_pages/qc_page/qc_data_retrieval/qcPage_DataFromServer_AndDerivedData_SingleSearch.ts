@@ -108,6 +108,14 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
                 promises.push(promise);
             }
         }
+        {
+            const promise = this._qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded.singleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded({
+                retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
+            });
+            if (promise) {
+                promises.push(promise);
+            }
+        }
 
         if ( promises.length === 0 ) {
             //  No wait so immediately return resolved promise

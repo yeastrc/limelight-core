@@ -40,6 +40,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.searchers.FileImportTracking_PendingCount_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
+import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.searchers.FileImportAndPipelineRunTracking_PendingCount_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -65,6 +66,9 @@ public class Project_UploadData_PendingCount_RestWebserviceController {
 	
 	@Autowired
 	private FileImportTracking_PendingCount_SearcherIF fileImportTracking_PendingCount_Searcher;
+
+	@Autowired
+	private FileImportAndPipelineRunTracking_PendingCount_Searcher_IF fileImportAndPipelineRunTracking_PendingCount_Searcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -186,7 +190,8 @@ public class Project_UploadData_PendingCount_RestWebserviceController {
 			throws Exception {
 		
 		int pendingCount = 
-				fileImportTracking_PendingCount_Searcher.getPendingCountForProject( projectId );
+				fileImportTracking_PendingCount_Searcher.getPendingCountForProject( projectId )
+				+ fileImportAndPipelineRunTracking_PendingCount_Searcher.getPendingCountForProject( projectId );
 		
 		WebserviceResult webserviceResult = new WebserviceResult();
 		webserviceResult.pendingCount = pendingCount;

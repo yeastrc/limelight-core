@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.common.database_connection.Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
-import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Main_EntryPoint;
+import org.yeastrc.limelight.database_cleanup.main_entry_point.Limelight_DatabaseCleanup__Main_EntryPoint;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
@@ -227,7 +227,9 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
 						try {
 							limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-									getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+									getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
+											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+											);
 						} catch (Exception e) {
 
 							this.wait_Until_10PM_Tomorrow();
@@ -239,7 +241,9 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
 						try {
 							limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-									getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+									getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
+											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+											);
 						} catch (Exception e) {
 
 							this.wait_Until_10PM_Tomorrow();

@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +77,7 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 
 		List<Search__SearchDetailsDisplay_Item> search_PathFastaFilename_ItemList = 
 				search_PathFastaFilenameImportEndTimestamp_ForProjectSearchIdsSearcher.getSearch_SearchDetailsDisplay_ListForProjectSearchIds( projectSearchIds, retrieve_Path, retrieve_CLI_PARAMS );
-
+		
 		List<SearchDetails_Core_Item> results = new ArrayList<>( search_PathFastaFilename_ItemList.size() );
 
 		DateFormat dateTimeFormat = DateFormat.getDateTimeInstance( DateFormat.LONG, DateFormat.LONG );

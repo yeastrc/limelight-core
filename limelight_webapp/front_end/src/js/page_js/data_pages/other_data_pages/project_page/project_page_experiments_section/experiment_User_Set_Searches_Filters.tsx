@@ -20,11 +20,14 @@ import React from 'react'
 
 import {Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data} from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes";
 import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root, AnnotationTypeItem,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 
 // const _FILTER_LABEL_PSM = "PSM";
@@ -38,8 +41,7 @@ export interface Experiment_User_Set_Searches_Filters_Props {
 
     projectSearchIds : Array<number>
     searchesData : {
-        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData: {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -81,10 +83,10 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     private _save_BindThis = this._save.bind(this);
     private _cancel_BindThis = this._cancel.bind(this);
 
-    private _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_BindThis = this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData.bind(this);
+    // private _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_BindThis = this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData.bind(this);
     private _userUpdatedInputValue_Callback_BindThis = this._userUpdatedInputValue_Callback.bind(this);
 
-    private _searchDataMap_KeyProjectSearchId : Map<number,  GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+    private _searchDataMap_KeyProjectSearchId : Map<number,  CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
 
     constructor(props : Experiment_User_Set_Searches_Filters_Props) {
         super(props);
@@ -101,7 +103,7 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
 
            const searchesData = this.props.searchesData;
            if ( searchesData ) {
-               const searchList = searchesData.searchList_OnlySearches;
+               const searchList = searchesData.searchesSearchTagsFolders_Result_Root.get_SearchData_ALL_Iterator();
                if ( searchList ) {
                    for ( const search of searchList ) {
                        const projectSearchId = search.projectSearchId;
@@ -229,17 +231,17 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
     /**
      * User Clicked Show all filters for Search
      */
-    _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData({ projectSearchId }: { projectSearchId: any }) {
-
-        // console.log( "_update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData: projectSearchId: " + projectSearchId );
-
-        this.setState( (state: Experiment_User_Set_Searches_Filters_State, props: Experiment_User_Set_Searches_Filters_Props): Experiment_User_Set_Searches_Filters_State => {
-
-            return this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_SetStateCallback({ 
-                projectSearchId, state, props 
-            });
-        });
-    }
+    // _update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData({ projectSearchId }: { projectSearchId: any }) {
+    //
+    //     // console.log( "_update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData: projectSearchId: " + projectSearchId );
+    //
+    //     this.setState( (state: Experiment_User_Set_Searches_Filters_State, props: Experiment_User_Set_Searches_Filters_Props): Experiment_User_Set_Searches_Filters_State => {
+    //
+    //         return this._update_data_ForProjectSearchId_Pop_ForAll_AnnTypeData_SetStateCallback({
+    //             projectSearchId, state, props
+    //         });
+    //     });
+    // }
  
     /**
      * 
@@ -614,8 +616,7 @@ const _get_filtersPerSearch_SingleSearch_Components = function({
     data_ForProjectSearchId_ReportedPeptidePSM_Local : any
     searchDataMap_KeyProjectSearchId : any
     searchesData : {
-        searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-        searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData: {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -1021,10 +1022,9 @@ const _searchFilterValues_PopulateNotSetWithEmptyString = ({
     dataMapPerProjectSearchId_KeyProjectSearchId
 } : {
      projectSearchIds : Array<number>
-     searchDataMap_KeyProjectSearchId : Map<number,  GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+     searchDataMap_KeyProjectSearchId : Map<number,  CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
      searchesData : {
-         searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-         searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+         searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
          searchesSubData: {
              searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
              annotationTypeData_Root : AnnotationTypeData_Root
@@ -1079,8 +1079,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
     } : {
         projectSearchId : number
         searchesData : {
-            searches_TopLevelAndNestedInFolders: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
-            searchList_OnlySearches: GetSearchesAndFolders_SingleProject_PromiseResponse_Item[],
+            searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
             searchesSubData: {
                 searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
                 annotationTypeData_Root : AnnotationTypeData_Root

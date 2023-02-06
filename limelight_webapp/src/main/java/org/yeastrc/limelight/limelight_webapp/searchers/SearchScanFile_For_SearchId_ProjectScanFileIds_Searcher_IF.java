@@ -1,0 +1,13 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+import java.util.Collection;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchId_ProjectScanFileIds_Searcher.SearchScanFile_For_SearchId_ProjectScanFileIds_Searcher_Result;
+
+public interface SearchScanFile_For_SearchId_ProjectScanFileIds_Searcher_IF {
+
+	SearchScanFile_For_SearchId_ProjectScanFileIds_Searcher_Result getSearchScanFile_For_SearchId_ProjectScanFileIds(
+			int searchId, Collection<Integer> projectScanFileIds) throws SQLException;
+
+}

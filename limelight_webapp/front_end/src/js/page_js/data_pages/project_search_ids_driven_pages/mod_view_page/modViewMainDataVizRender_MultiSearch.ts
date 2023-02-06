@@ -19,6 +19,7 @@ import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_p
 import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
+import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -1079,7 +1080,17 @@ export class ModViewDataVizRenderer_MultiSearch {
             dataPageStateManager_DataFrom_Server:DataPageStateManager
         }) {
 
-        let searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
+        let searchName;
+        const searchShortName = ModDataUtils.getSearchShortNameForProjectSearchId({
+            projectSearchId:projectSearchId,
+            dataPageStateManager_DataFrom_Server
+        });
+
+        if(searchShortName && searchShortName.length > 1) {
+            searchName = searchShortName;
+        } else {
+            searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
+        }
 
         if(searchName.length > maxSearchLabelLength) {
             searchName = searchName.substring(0, maxSearchLabelLength - 4) + '...';
@@ -1303,8 +1314,28 @@ export class ModViewDataVizRenderer_MultiSearch {
                 }
 
                 if(projectSearchId) {
-                    const searchName = ModViewDataVizRenderer_MultiSearch.getSearchNameForProjectSearchId({ dataPageStateManager_DataFrom_Server, projectSearchId });
-                    const searchName_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( searchName );
+                    const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({
+                        projectSearchId:projectSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    const searchName = ModDataUtils.getSearchNameForProjectSearchId({
+                        projectSearchId:projectSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    const searchShortName = ModDataUtils.getSearchShortNameForProjectSearchId({
+                        projectSearchId:projectSearchId,
+                        dataPageStateManager_DataFrom_Server
+                    });
+
+                    let displayString = searchName;
+                    if(searchShortName && searchShortName.length > 0) {
+                        displayString += " (" + searchShortName + ")";
+                    }
+                    displayString += " (" + searchId + ")";
+
+                    const searchName_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( displayString );
                     txt += "<p>Search: " + searchName_HTMLEncoded + "</p>";
                 }
 

@@ -36,11 +36,19 @@ import {PeptidePageRoot_CentralStateManagerObjectClass} from "page_js/data_pages
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {ControllerPaths_forDataPages_FromDOM} from "page_js/data_pages/data_pages_common/controllerPaths_forDataPages_FromDOM";
+import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries";
+import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries";
+import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries";
+import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 
 
 const _MainPage_Chart_Width = 1000; // + 200 for y axis label, tick marks
 const _MainPage_Chart_Height = 600; // + 200 for x axis label, tick marks
 
+
+const _CHART_TITLE = "MS1 Binned Ion Current: m/z vs/ Retention Time<br><sup>Note: MS1 scan data in plot are not filtered.</sup>";
 
 
 /**
@@ -66,6 +74,12 @@ export interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_S
         cached_MS1_ChartData_Map_Key_SearchScanFileId: Map<number, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root>
     }
 
+    //  null if No featureDetection_Root entries for current scan file
+    featureDetection_Root_Entry_Selection: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry
+
+    show_Individual_MS_1_Features: boolean
+    show_Persistent_FeatureBoundaries: boolean
+
     isInSingleChartOverlay: boolean
 }
 
@@ -83,7 +97,10 @@ interface QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Statisti
 /**
  *
  */
-export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot extends React.Component< QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State > {
+export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot
+    extends React.Component< QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     static readonly _MainPage_Chart_Width = _MainPage_Chart_Width; // + 200 for y axis label, tick marks
     static readonly _MainPage_Chart_Height = _MainPage_Chart_Height; // + 200 for x axis label, tick marks
@@ -108,6 +125,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
     private _cached_MS1_ChartData__ProjectSearchId: number
     private _cached_MS1_ChartData_Map_Key_SearchScanFileId : Map<number, QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root> = new Map();
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _renderChart: boolean = true;
 
@@ -143,13 +162,37 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         this.scanLevel_1_Ref = React.createRef();
         this.scanLevel_2_Ref = React.createRef();
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = { showCreatingMessage: true, showUpdatingMessage: false };
+    }
+
+    /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
@@ -233,6 +276,9 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
             || nextProps.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData !== this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData
             || nextProps.searchScanFileName_Selected !== this.props.searchScanFileName_Selected
             || nextProps.searchScanFileId_Selected !== this.props.searchScanFileId_Selected
+            || nextProps.featureDetection_Root_Entry_Selection !== this.props.featureDetection_Root_Entry_Selection
+            || nextProps.show_Individual_MS_1_Features !== this.props.show_Individual_MS_1_Features
+            || nextProps.show_Persistent_FeatureBoundaries !== this.props.show_Persistent_FeatureBoundaries
             || nextProps.isInSingleChartOverlay !== this.props.isInSingleChartOverlay
             || nextState.showCreatingMessage !== this.state.showCreatingMessage
             || nextState.showUpdatingMessage !== this.state.showUpdatingMessage
@@ -263,6 +309,9 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     || prevProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
                     || prevProps.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData !== this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData
                     || prevProps.searchScanFileName_Selected !== this.props.searchScanFileName_Selected
+                    || prevProps.featureDetection_Root_Entry_Selection !== this.props.featureDetection_Root_Entry_Selection
+                    || prevProps.show_Individual_MS_1_Features !== this.props.show_Individual_MS_1_Features
+                    || prevProps.show_Persistent_FeatureBoundaries !== this.props.show_Persistent_FeatureBoundaries
                     || prevProps.searchScanFileId_Selected !== this.props.searchScanFileId_Selected
                     || prevProps.isInSingleChartOverlay !== this.props.isInSingleChartOverlay
                     //  ALWAYS remove check of state properties in 'componentDidUpdate'
@@ -289,6 +338,14 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     }
                 } catch (e) {
                     //  Eat Exception
+                }
+
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
+                    return; // EARLY RETURN
                 }
 
                 this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot_State =>  {
@@ -437,16 +494,112 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 return; // EARLY RETURN
             }
 
-            const qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch =
-                await this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileMS1_RetentionTime_VS_M_Z_Data();
+            const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
 
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
 
-            const create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result =
-                await this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                qc_compute_Cache_create_GeneratedReportedPeptideListData.compute_And_Cache_create_GeneratedReportedPeptideListData();
+            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId : " + projectSearchId )
+            }
 
+            let qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+            let create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result: Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+            let featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder
+            let featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder
 
-            this._populateChart_Actual({qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch, create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result});
+            const promises: Array<Promise<void>> = [] // Always has at least 1 entry from first promise
+
+            {
+                const promise = new Promise<void>((resolve, reject) => { try {
+                    const returnedPromise =
+                        this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
+                        qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileMS1_RetentionTime_VS_M_Z_Data();
+                    returnedPromise.catch(reason => reject(reason))
+                    returnedPromise.then(value => { try {
+                        qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch = value;
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            }
+            {
+                const promise = new Promise<void>((resolve, reject) => { try {
+                    const returnedPromise =
+                        this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                        qc_compute_Cache_create_GeneratedReportedPeptideListData.compute_And_Cache_create_GeneratedReportedPeptideListData();
+                    returnedPromise.catch(reason => reject(reason))
+                    returnedPromise.then(value => { try {
+                        create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result = value;
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            }
+
+            if ( this.props.show_Individual_MS_1_Features ) {
+
+                const get_FeatureDetection_SingleFeature_EntriesHolder_Result =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries().
+                    get_FeatureDetection_SingularFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id: this.props.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id });
+
+                if ( get_FeatureDetection_SingleFeature_EntriesHolder_Result.data ) {
+                    featureDetection_SingularFeature_Entries_Holder = get_FeatureDetection_SingleFeature_EntriesHolder_Result.data.featureDetection_SingularFeature_Entries_Holder;
+                } else if ( get_FeatureDetection_SingleFeature_EntriesHolder_Result.promise ) {
+                    const promise = new Promise<void>((resolve, reject) => { try {
+                        get_FeatureDetection_SingleFeature_EntriesHolder_Result.promise.catch(reason => { reject(reason) })
+                        get_FeatureDetection_SingleFeature_EntriesHolder_Result.promise.then(value => { try {
+                            featureDetection_SingularFeature_Entries_Holder = value.featureDetection_SingularFeature_Entries_Holder;
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    throw Error("get_FeatureDetection_SingleFeature_EntriesHolder_Result no data or promise")
+                }
+            }
+
+            if ( this.props.show_Persistent_FeatureBoundaries ) {
+
+                const get_FeatureDetection_PersistentFeature_EntriesHolder_Result =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries().
+                    get_FeatureDetection_PersistentFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id: this.props.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id });
+
+                if ( get_FeatureDetection_PersistentFeature_EntriesHolder_Result.data ) {
+                    featureDetection_PersistentFeature_Entries_Holder = get_FeatureDetection_PersistentFeature_EntriesHolder_Result.data.featureDetection_PersistentFeature_Entries_Holder;
+                } else if ( get_FeatureDetection_PersistentFeature_EntriesHolder_Result.promise ) {
+                    const promise = new Promise<void>((resolve, reject) => { try {
+                        get_FeatureDetection_PersistentFeature_EntriesHolder_Result.promise.catch(reason => { reject(reason) })
+                        get_FeatureDetection_PersistentFeature_EntriesHolder_Result.promise.then(value => { try {
+                            featureDetection_PersistentFeature_Entries_Holder = value.featureDetection_PersistentFeature_Entries_Holder;
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    throw Error("get_FeatureDetection_PersistentFeature_EntriesHolder_Result no data or promise")
+                }
+            }
+
+            const promiseAll = Promise.all( promises );
+
+            promiseAll.catch(reason => {
+
+            })
+            promiseAll.then(noValues => { try {
+
+                this._populateChart_Actual({
+                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch,
+                    create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
+                    featureDetection_SingularFeature_Entries_Holder,
+                    featureDetection_PersistentFeature_Entries_Holder
+                });
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -456,14 +609,27 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
      */
     private _populateChart_Actual(
         {
-            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch, create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+            qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch,
+            create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
+            featureDetection_SingularFeature_Entries_Holder,
+            featureDetection_PersistentFeature_Entries_Holder
         } : {
             qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
             create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result: Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result
+            featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder
+            featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder
         }) {
 
         if (!this._componentMounted) {
             //  Component no longer mounted so exit
+            return; // EARLY RETURN
+        }
+
+        if (
+            ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+            )) {
+            //  Skip these params since they are not the "Latest"
             return; // EARLY RETURN
         }
 
@@ -480,58 +646,6 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         //     return null;
         // });
 
-        if (this._cached_MS1_ChartData__ProjectSearchId !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId) {
-            this._cached_MS1_ChartData_Map_Key_SearchScanFileId.clear();
-        }
-
-        let ms1_ChartData: QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root;
-
-        if ( this.props.onlyForOverlay ) {
-
-            // Data passed from main to overlay
-
-            ms1_ChartData = this.props.onlyForOverlay.cached_MS1_ChartData_Map_Key_SearchScanFileId.get(this.props.searchScanFileId_Selected);
-            if (!ms1_ChartData) {
-                const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData = this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData;
-                ms1_ChartData = qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__Compute_MS1_Data({ms1_PeakIntensityBinnedOn_RT_MZ_OverallData});
-            }
-
-        } else {
-            //  Main page chart
-
-            ms1_ChartData = this._cached_MS1_ChartData_Map_Key_SearchScanFileId.get( this.props.searchScanFileId_Selected );
-            if ( ! ms1_ChartData ) {
-
-                const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData = this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData;
-                ms1_ChartData = qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__Compute_MS1_Data({ ms1_PeakIntensityBinnedOn_RT_MZ_OverallData });
-                this._cached_MS1_ChartData_Map_Key_SearchScanFileId.set( this.props.searchScanFileId_Selected, ms1_ChartData );
-            }
-        }
-
-        const chartTitle = "MS1 Binned Ion Current: m/z vs/ Retention Time<br><sup>Note: MS1 scan data in plot are not filtered.</sup>";
-
-        const chart_Layout = qcPage_StandardChartLayout({
-            chartTitle,
-            chart_X_Axis_Label: "Retention Time (Minutes)",
-            //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
-            chart_Y_Axis_Label: "m/z",
-            showlegend: true,
-            notMoveTitle: true
-        });
-
-
-        // console.warn("QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot:  Hard Coded width/height")
-        //
-        // chart_Layout.width = retentionTime_Seconds_Binned_Max - retentionTime_Seconds_Binned_Min + 1 + 200; // + 200 for y axis label, tick marks
-        // chart_Layout.height = m_z_Binned_Max - m_z_Binned_Min + 1 + 200; // + 200 for x axis label, tick marks
-
-        console.warn("QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot:  Hard Coded width/height")
-
-        chart_Layout.width = _MainPage_Chart_Width; // + 200 for y axis label, tick marks
-        chart_Layout.height = _MainPage_Chart_Height; // + 200 for x axis label, tick marks
-
-        ////////////
-
         //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
 
         //  Have existing chart in overlay when re-populate chart when have window resize
@@ -544,6 +658,303 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 //  Eat Exception
             }
         }
+
+        ///////   Chart Layout
+
+        const chart_Layout = qcPage_StandardChartLayout({
+            chartTitle: _CHART_TITLE,
+            chart_X_Axis_Label: "Retention Time (Minutes)",
+            //   NO 'chart_X_Axis_IsTypeCategory: true' when chart type 'histogram'
+            chart_Y_Axis_Label: "m/z",
+            showlegend: true,
+            notMoveTitle: true
+        });
+
+        // https://plotly.com/javascript/reference/#layout-legend-traceorder
+
+        if ( chart_Layout.legend ) {
+            chart_Layout.legend.traceorder = "normal";
+        } else {
+            chart_Layout.legend = {
+                traceorder: "normal"
+            };
+        }
+
+        // console.warn("QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot:  Hard Coded width/height")
+        //
+        // chart_Layout.width = retentionTime_Seconds_Binned_Max - retentionTime_Seconds_Binned_Min + 1 + 200; // + 200 for y axis label, tick marks
+        // chart_Layout.height = m_z_Binned_Max - m_z_Binned_Min + 1 + 200; // + 200 for x axis label, tick marks
+
+        console.warn("QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot:  Hard Coded width/height")
+
+        chart_Layout.width = _MainPage_Chart_Width; // + 200 for y axis label, tick marks
+        chart_Layout.height = _MainPage_Chart_Height; // + 200 for x axis label, tick marks
+
+        /////////////
+
+        const chart_Data = [];  //  !!!!!!!!!!   MAIN Plotly Chart Data Array
+
+        /////////////
+
+        ///   MS 1 HeatMap Data
+
+        if (this._cached_MS1_ChartData__ProjectSearchId !== this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId) {
+            this._cached_MS1_ChartData_Map_Key_SearchScanFileId.clear();
+        }
+
+        let ms1_ChartData: QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__MS1_Data_Root;
+
+        {
+            if ( this.props.onlyForOverlay ) {
+
+                // Data passed from main to overlay
+
+                ms1_ChartData = this.props.onlyForOverlay.cached_MS1_ChartData_Map_Key_SearchScanFileId.get(this.props.searchScanFileId_Selected);
+                if (!ms1_ChartData) {
+                    const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData = this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData;
+                    ms1_ChartData = qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__Compute_MS1_Data({ms1_PeakIntensityBinnedOn_RT_MZ_OverallData});
+                }
+
+            } else {
+                //  Main page chart
+
+                ms1_ChartData = this._cached_MS1_ChartData_Map_Key_SearchScanFileId.get( this.props.searchScanFileId_Selected );
+                if ( ! ms1_ChartData ) {
+
+                    const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData = this.props.ms1_PeakIntensityBinnedOn_RT_MZ_OverallData;
+                    ms1_ChartData = qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_StatisticsPlot__Compute_MS1_Data({ ms1_PeakIntensityBinnedOn_RT_MZ_OverallData });
+                    this._cached_MS1_ChartData_Map_Key_SearchScanFileId.set( this.props.searchScanFileId_Selected, ms1_ChartData );
+                }
+            }
+
+            chart_Data.push(
+                {
+                    //  Fake Scatter Plot with points in upper left and lower right so chart not shift when hide MS2 scatter plot data
+                    name: "",  // So tooltip does not show "trace0"
+                    type: 'scatter',
+                    hoverinfo: "none",
+                    mode: 'marker',
+                    marker: {
+                        size: 1, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                        color: 'rgba(255,255,255,0)', // white, transparent
+                        // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
+                    },
+                    xaxis: {
+                        range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+                    },
+                    yaxis: {
+                        range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+                    },
+                    x: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ],
+                    y: [ ms1_ChartData.chart_Y_Max, ms1_ChartData.chart_Y_Min ],
+                })
+
+            ////
+
+            //  Add main Heatmap to Chart Data array
+
+            let heatmap_Colorbar_Length =  0.92;  // Make room for "MS# Filtered" trace in legend
+
+            if ( this.props.show_Individual_MS_1_Features ) {
+
+                heatmap_Colorbar_Length =  0.85;  // Make room for "MS# Filtered" AND "Int MS1 Feat" trace in legend
+            }
+
+            //  Can set colorbar length by pixels if needs to be more exact:  https://plotly.com/javascript/reference/layout/coloraxis/#layout-coloraxis-colorbar-lenmode
+
+            chart_Data.push({
+                name: "",  // So tooltip does not show "trace0"
+                type: 'heatmap',
+                colorscale: "OrRd",
+                // colorscale: [   //  The numbers on left are from zero to one
+                //     ['0', 'rgb(255,255,255)'], // white
+                //     ['1', 'rgb(255,0,0)'], // red
+                // ],
+                // colorscale: [   //  The numbers on left are from zero to one
+                //     ['0', 'rgb(255,255,255)'], // white
+                //     ['.3', 'rgb(0,0,255)'], // blue
+                //     ['.6', 'rgb(255,255,0)'], // yellow
+                //     ['1', 'rgb(255,0,0)'], // red
+                // ],
+                colorbar:{
+                    len: heatmap_Colorbar_Length, //Change size of bar
+                    y: 0,
+                    yanchor: "bottom",
+                    ypad: 10, //  default is 10
+                    title: {  // https://plotly.com/javascript/reference/heatmap/#heatmap-colorbar-title
+                        text: 'Total Ion Current', //  set title
+                        side: 'top', //set position
+                        // font: {color: 'blue'} //title font color
+                    },
+                    tickmode: "array",
+                    tickvals: ms1_ChartData.ms1_IntensityScaleBar_Tick_Values,
+                    ticktext: ms1_ChartData.ms1_IntensityScaleBar_Tick_Labels
+                },
+                xaxis: {
+                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+                },
+                yaxis: {
+                    range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+                },
+                x: ms1_ChartData.chart_X,
+                y: ms1_ChartData.chart_Y,
+                z: ms1_ChartData.chart_Z,
+                zmin: ms1_ChartData.intensity_Min_For_ColorBar_Computations_Log,
+                zmax: ms1_ChartData.intensity_Max_For_ColorBar_Computations_Log,
+                hoverongaps: false,
+                text: ms1_ChartData.chart_TextEntries_ForTooltip,
+                hoverinfo: 'text',
+                //   !!!  Update hovertemplate
+                // hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
+                //     '<b>Ion Current</b>: %{z}' +
+                //     '<br><b>Retention Time (minutes)</b>: %{x}' +
+                //     '<br><b>m/z</b>: %{y}' +
+                //     '<extra></extra>'
+            })
+        }
+
+        ///////////////////
+
+        if ( this.props.show_Persistent_FeatureBoundaries ) {
+
+            //  Add Feature Detection Persistent Entries
+
+            chart_Layout.shapes = []
+
+            for ( const featureDetection_PersistentFeature_Entry of featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries() ) {
+
+                //  Retention time is in minutes in the variable and the chart.  0.5 minutes is 30 seconds
+                const x0 = featureDetection_PersistentFeature_Entry.retentionTimeRange_Start - 0.5
+                const x1 = featureDetection_PersistentFeature_Entry.retentionTimeRange_End + 0.5
+
+                let y0: number
+                let y1: number
+
+                {
+                    const monoisotopicMass = featureDetection_PersistentFeature_Entry.monoisotopicMass;
+                    const charge = featureDetection_PersistentFeature_Entry.charge;
+
+                    const _10_ppm_error = monoisotopicMass * 10 / 1000000
+
+                    const monoisotopic_upper_end = monoisotopicMass + _10_ppm_error; // mu
+                    const monoisotopic_lower_end = monoisotopicMass - _10_ppm_error; // ml
+
+                    //  Convert mu and ml to m/z using:    (x + z * proton_mass) / z
+                    // where:
+                    //     x is mu for upper end of range, and ml for lower end of range
+                    // z is the charge
+                    // proton_mass = 1.007276466621
+
+                    const proton_mass = 1.007276466621;
+
+                    const mz_upperRange = ( monoisotopic_upper_end + charge * proton_mass ) / charge
+                    const mz_lowerRange = ( monoisotopic_lower_end + charge * proton_mass ) / charge
+
+                    y0 = mz_lowerRange;
+                    y1 = mz_upperRange;
+                }
+
+                const shape = {
+                    type: 'rect',
+                    // x-reference is assigned to the x-values
+                    xref: 'x',
+                    // y-reference is assigned to the y-values
+                    yref: 'y',
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    // fillcolor: 'black',
+                    // opacity: 0.2,
+                    line: {
+                        width: 1,
+                        opacity: 0.1
+                    }
+                }
+
+                chart_Layout.shapes.push( shape );
+            }
+        }
+
+        ///////////////////
+
+        if ( this.props.show_Individual_MS_1_Features ) {
+
+            //  Add Feature Detection Singular Entries
+
+            const chart_X__MS_1_IndividualFeature_Data: Array<number> = [];
+            const chart_Y__MS_1_IndividualFeature_Data: Array<number> = [];
+            const chart_Text__MS_1_IndividualFeature_Data : Array<string> = [];
+
+            for ( const featureDetection_SingleFeature_Entry of featureDetection_SingularFeature_Entries_Holder.get_FeatureDetection_SingularFeature_Entries() ) {
+
+                const scanNumber = featureDetection_SingleFeature_Entry.ms_1_scan_number;
+
+                const spectralStorage_NO_Peaks_DataFor_SearchScanFileId =
+                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( this.props.searchScanFileId_Selected );
+                if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
+                    const msg = "qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( this.props.searchScanFileId_Selected ); returned NOTHING. searchScanFileId_Selected: " + this.props.searchScanFileId_Selected;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( scanNumber );
+                if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
+                    const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( scanNumber ); returned NOTHING. scanNumber: " + scanNumber + ", searchScanFileId_Selected: " + this.props.searchScanFileId_Selected;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                const feature_M_Over_Z = featureDetection_SingleFeature_Entry.base_isotope_peak;
+
+                const retentionTime_InMinutes = spectralStorage_NO_Peaks_DataFor_ScanNumber.retentionTime_InSeconds / 60;
+
+                const feature_M_Over_Z_String = feature_M_Over_Z.toFixed( 3 );
+                const retentionTime_InMinutes_String = retentionTime_InMinutes.toFixed( 3 );
+
+                chart_X__MS_1_IndividualFeature_Data.push( retentionTime_InMinutes );
+                chart_Y__MS_1_IndividualFeature_Data.push( feature_M_Over_Z );
+
+                const hoverText =
+                    // Remove this line: '<b>MS' + spectralStorage_NO_Peaks_DataFor_ScanNumber.level + ' data for PSM</b>' +
+                    '<br><b>m/z</b>: ' + feature_M_Over_Z_String +
+                    '<br><b>Retention Time</b>: ' + retentionTime_InMinutes_String;
+
+                chart_Text__MS_1_IndividualFeature_Data.push( hoverText );
+            }
+
+            chart_Data.push(
+                {
+                    name: "Ind MS1 Feat",
+                    type: 'scattergl', // scattergl  scatter
+                    mode: 'markers',
+                    marker: {
+                        size: 2, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                        color: "black",
+                        // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
+                    },
+                    xaxis: {
+                        range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
+                    },
+                    yaxis: {
+                        range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
+                    },
+                    x: chart_X__MS_1_IndividualFeature_Data,
+                    y: chart_Y__MS_1_IndividualFeature_Data,
+
+                    text: chart_Text__MS_1_IndividualFeature_Data,
+                    hoverinfo: 'text',
+
+                    // hovertemplate: //  Added '<extra></extra>' to remove secondary box with trace name
+                    //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
+                    //     '<br><b>m/z</b>: %{y}' +
+                    //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
+                });
+        }
+
+        ////////////
+
+        //   MS 2 (or 3+, whatever maps to PSMs or is largest MS level) Chart Data
 
         const peptideEntry_Map_Key_PSM_ID: Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry> = new Map();
 
@@ -761,82 +1172,14 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
         // }
 
 
-        const chart_Data = [
-            {
-                //  Fake Scatter Plot with points in upper left and lower right so chart not shift when hide MS2 scatter plot data
-                name: "",  // So tooltip does not show "trace0"
-                type: 'scatter',
-                hoverinfo: "none",
-                mode: 'marker',
-                marker: {
-                    size: 1, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
-                    color: 'rgba(255,255,255,0)', // white, transparent
-                    // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
-                },
-                xaxis: {
-                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                },
-                yaxis: {
-                    range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
-                },
-                x: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ],
-                y: [ ms1_ChartData.chart_Y_Max, ms1_ChartData.chart_Y_Min ],
-            },
-            {
-                name: "",  // So tooltip does not show "trace0"
-                type: 'heatmap',
-                colorscale: "OrRd",
-                // colorscale: [   //  The numbers on left are from zero to one
-                //     ['0', 'rgb(255,255,255)'], // white
-                //     ['1', 'rgb(255,0,0)'], // red
-                // ],
-                // colorscale: [   //  The numbers on left are from zero to one
-                //     ['0', 'rgb(255,255,255)'], // white
-                //     ['.3', 'rgb(0,0,255)'], // blue
-                //     ['.6', 'rgb(255,255,0)'], // yellow
-                //     ['1', 'rgb(255,0,0)'], // red
-                // ],
-                colorbar:{
-                    len: 0.92, //Change size of bar
-                    y: 0,
-                    yanchor: "bottom",
-                    ypad: 10, //  default is 10
-                    title: {  // https://plotly.com/javascript/reference/heatmap/#heatmap-colorbar-title
-                        text: 'Total Ion Current', //  set title
-                        side: 'top', //set position
-                        // font: {color: 'blue'} //title font color
-                    },
-                    tickmode: "array",
-                    tickvals: ms1_ChartData.ms1_IntensityScaleBar_Tick_Values,
-                    ticktext: ms1_ChartData.ms1_IntensityScaleBar_Tick_Labels
-                },
-                xaxis: {
-                    range: [ ms1_ChartData.chart_X_Min, ms1_ChartData.chart_X_Max ]
-                },
-                yaxis: {
-                    range: [ ms1_ChartData.chart_Y_Min, ms1_ChartData.chart_Y_Max ]
-                },
-                x: ms1_ChartData.chart_X,
-                y: ms1_ChartData.chart_Y,
-                z: ms1_ChartData.chart_Z,
-                zmin: ms1_ChartData.intensity_Min_For_ColorBar_Computations_Log,
-                zmax: ms1_ChartData.intensity_Max_For_ColorBar_Computations_Log,
-                hoverongaps: false,
-                text: ms1_ChartData.chart_TextEntries_ForTooltip,
-                hoverinfo: 'text',
-                //   !!!  Update hovertemplate
-                // hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
-                //     '<b>Ion Current</b>: %{z}' +
-                //     '<br><b>Retention Time (minutes)</b>: %{x}' +
-                //     '<br><b>m/z</b>: %{y}' +
-                //     '<extra></extra>'
-            },
+
+        chart_Data.push(
             {
                 name: "MS" + MS_2_Plus_PrecursorData_ScanLevel_String + " Filtered",
                 type: 'scattergl', // scattergl  scatter
                 mode: 'markers',
                 marker: {
-                    size: ms2_Marker_Size, //  2,  4 in overlay //  https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
+                    size: ms2_Marker_Size, //   https://plotly.com/javascript/reference/scattergl/#scattergl-marker-size
                     color: "green",
                     // symbol: "x" // https://plotly.com/javascript/reference/scattergl/#scattergl-marker-symbol
                 },
@@ -854,8 +1197,8 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                 //     // Remove this line: '<b>MS' + MS_2_Plus_PrecursorData_ScanLevel_String + ' data for PSM</b>' +
                 //     '<br><b>m/z</b>: %{y}' +
                 //     '<br><b>Retention Time</b>: %{x}<extra></extra>'
-            }
-        ];
+            });
+
 
         const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
 
@@ -935,7 +1278,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
                         if (eventdata["xaxis.range[1]"] !== undefined) {
 
-                            //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is M/Z
+                            //  Selected Range  - X axis is Retention Time in Minutes.  Y axis is m/z
 
                             const xaxis_range_0 = eventdata["xaxis.range[0]"];
                             const xaxis_range_1 = eventdata["xaxis.range[1]"];

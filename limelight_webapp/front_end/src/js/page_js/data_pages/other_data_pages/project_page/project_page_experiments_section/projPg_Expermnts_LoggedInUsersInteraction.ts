@@ -30,13 +30,16 @@ import {
 	ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer,
 	ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_Props
 } from './projPg_Expermnts_Single_Maint_OverlayContainer';
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
 	AnnotationTypeData_Root,
 	SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ProjectPage_ExperimentsSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_AllUsersInteraction";
 import {DefaultFilter_Cutoffs_Overrides_ProjectWide_Root} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {
+	CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+	CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 
 /**
@@ -133,9 +136,8 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 			try {
 				const results : {
 					makeClone? : boolean
-					searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+					searchesSearchTagsFolders_Result_Root?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
 					noSearchesFound? : boolean
-					searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
 					searchesSubData? : {
 						searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
@@ -153,8 +155,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
 						results.noSearchesFound = promiseResult.noSearchesFound;
-						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
-						results.searchList_OnlySearches = promiseResult.searchList_OnlySearches;
+						results.searchesSearchTagsFolders_Result_Root = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse
 						results.searchesSubData = promiseResult.searchesSubData;
 						results.defaultFilter_Cutoffs_Overrides_ProjectWide_Root = promiseResult.defaultFilter_Cutoffs_Overrides_ProjectWide_Root
 					} else if ( promiseResult.experimentData ) {
@@ -191,17 +192,18 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	_open_New_Update_ExperimentOverlay(
 		{
 			makeClone,
-			searches_TopLevelAndNestedInFolders,
-			noSearchesFound,
+			searchesSearchTagsFolders_Result_Root,
 			searchList_OnlySearches,
+			noSearchesFound,
 			searchesSubData,
 			defaultFilter_Cutoffs_Overrides_ProjectWide_Root,
 			experimentData
 		} :  {
 			makeClone? : boolean
-			searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+			searchesSearchTagsFolders_Result_Root?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
+			searchList_OnlySearches? : Array<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
+
 			noSearchesFound? : boolean
-			searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
 			searchesSubData? : {
 				searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
@@ -226,8 +228,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 		}
 
 		const searchesData = {
-			searches_TopLevelAndNestedInFolders,
-			searchList_OnlySearches,
+			searchesSearchTagsFolders_Result_Root,
 			searchesSubData,
 			defaultFilter_Cutoffs_Overrides_ProjectWide_Root
 		};

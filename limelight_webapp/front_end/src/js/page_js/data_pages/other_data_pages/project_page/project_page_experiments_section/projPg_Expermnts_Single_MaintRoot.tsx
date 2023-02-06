@@ -53,13 +53,16 @@ import {
     Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data,
     Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData
 } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_Get_ProjectSearchIds_From_ConditionGroupsContainer_ConditionGroupsDataContainer";
 import {DefaultFilter_Cutoffs_Overrides_ProjectWide_Root} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 
         //  !!!!  Possibly redesign constructor once this Component becomes a child of another component.
@@ -101,8 +104,7 @@ export interface ProjectPage_Experiments_SingleExperimentMaintRoot_Props {
     projectPage_ExperimentsSection_LoggedInUsersInteraction: any
 
     searchesData : {
-        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData : {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -222,7 +224,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
     /////
 
-    private _searchDataMap_KeyProjectSearchId : Map<number, GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+    private _searchDataMap_KeyProjectSearchId : Map<number, CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>
 
     //  Not Used
     // private _projectPage_ExperimentsSection_LoggedInUsersInteraction;
@@ -245,7 +247,7 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
            const searchesData = this.props.searchesData;
            if ( searchesData ) {
-               const searchList = searchesData.searchList_OnlySearches;
+               const searchList = searchesData.searchesSearchTagsFolders_Result_Root.get_SearchData_ALL_Iterator();
                if ( searchList ) {
                    for ( const search of searchList ) {
                        const projectSearchId = search.projectSearchId;

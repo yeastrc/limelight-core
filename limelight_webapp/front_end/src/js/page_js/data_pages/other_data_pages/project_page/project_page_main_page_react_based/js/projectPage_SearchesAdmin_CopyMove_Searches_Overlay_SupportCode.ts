@@ -260,12 +260,13 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
  */
 export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches = function(
     {
-        projectIdentifier, projectSearchIdsSelected, experimentIds_To_Delete, chosenProjectId, doCopy, doMove
+        projectIdentifier, projectSearchIdsSelected, experimentIds_To_Delete, chosenProjectId, copyAnyAssociatedTags, doCopy, doMove
     } : {
         projectIdentifier : string
         projectSearchIdsSelected: Set<number>
         experimentIds_To_Delete: Set<number>
         chosenProjectId: number
+        copyAnyAssociatedTags: boolean
         doCopy: boolean
         doMove: boolean
 
@@ -284,6 +285,7 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
         projectSearchIdsSelected: projectSearchIdsSelected_Array, // to copy or move
         experimentIds_Containing_ProjectSearchIds: experimentIds_To_Delete_Array,
         copyOrMoveToProjectId: chosenProjectId, // Project Id to copy or move to
+        copyAnyAssociatedTags,
         copyToOtherProject: doCopy,  // true if copy
         moveToOtherProject: doMove  // true if move
     };

@@ -13,12 +13,12 @@ import React from 'react'
 import { ProjectPage_Experiments_SingleExperimentMaintRoot } from './projPg_Expermnts_Single_MaintRoot';
 import {keep_UserSession_AliveIfExists_OnServer_WebserviceCall} from "page_js/keep_UserSession_AliveIfExists_OnServer_WebserviceCall";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {GetSearchesAndFolders_SingleProject_PromiseResponse_Item} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
 import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {DefaultFilter_Cutoffs_Overrides_ProjectWide_Root} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 /**
  * 
@@ -29,8 +29,7 @@ export interface ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer_
     experimentData: any
     projectIdentifierFromURL: any
     searchesData : {
-        searches_TopLevelAndNestedInFolders: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-        searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+        searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
         searchesSubData : {
             searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
             annotationTypeData_Root : AnnotationTypeData_Root
@@ -189,7 +188,7 @@ export class ProjectPage_Experiments_SingleExperimentMaint_OverlayContainer exte
 
         return (
             <React.Fragment>
-                <div className="modal-overlay-page-background  modal-overlay-page-background-clickable " style={ { zIndex : 600 } } > </div>
+                <div className="modal-overlay-page-background  " style={ { zIndex : 600 } } > </div>
 
                 <div className=" modal-overlay-container modal-overlay-flexbox-overflow-control-no-header-container experiment-maint-main-body modal-overlay-content-body " 
                     style={ { position: "fixed", left: 5, top: 5, width: "calc(100vw - 10px)", height: "calc(100vh - 10px)", zIndex: 601 } }>

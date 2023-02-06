@@ -145,9 +145,9 @@ export class ModProteinList_SubTableGenerator {
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
         for(const projectSearchId of projectSearchIds) {
-            const searchId = ModViewDataVizRenderer_MultiSearch.getSearchIdForProjectSearchId({ projectSearchId, dataPageStateManager_DataFrom_Server });
+            const searchIdXorShortName = ModDataUtils.getSearchShortNameXorSearchIdForProjectSearchId({projectSearchId, dataPageStateManager_DataFrom_Server});
 
-            const displayName = "PSM Count (" + searchId + ")";
+            const displayName = "PSM Count (" + searchIdXorShortName + ")";
 
             const dataTableColumn = new DataTable_Column({
                 id : projectSearchId + '-' + modMass + '-psms', // Used for tracking sort order. Keep short

@@ -39,7 +39,7 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 	private static final Logger log = LoggerFactory.getLogger( SearchMinimalForProjectSearchIdSearcher.class );
 		
 	private static final String QUERY_SQL = 
-			"SELECT project_search_tbl.search_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id, "
+			"SELECT project_search_tbl.search_name, project_search_tbl.search_short_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id, "
 			+ " project_search_tbl.project_id AS project_id, search_tbl.has_search_sub_groups "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
@@ -69,6 +69,7 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 					result.setSearchId( rs.getInt( "search_id" ) );
 					result.setProjectId( rs.getInt( "project_id" ) );
 					result.setName( rs.getString( "search_name" ) );
+					result.setSearchShortName( rs.getString( "search_short_name" ) );
 					{
 						int resultInt = rs.getInt( "has_search_sub_groups" );
 						if ( resultInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {

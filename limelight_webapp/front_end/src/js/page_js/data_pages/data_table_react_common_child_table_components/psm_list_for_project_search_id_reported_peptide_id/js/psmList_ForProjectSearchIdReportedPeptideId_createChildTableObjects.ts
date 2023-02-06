@@ -333,6 +333,9 @@ const _getDataTableColumns = function({
             sortable : true,
         });
         dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     } 
     
     if ( anyPsmsHave_retentionTime ) {

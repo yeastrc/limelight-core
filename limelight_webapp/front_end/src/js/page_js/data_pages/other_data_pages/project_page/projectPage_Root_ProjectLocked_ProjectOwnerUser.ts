@@ -42,12 +42,14 @@ import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_p
 
 import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
 
-import { ProjectPage_SearchesSection_AllUsersInteraction } from './project_page_main_page_react_based/js/projectPage_SearchesSection_AllUsersInteraction';
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
 import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './project_page_project_section/js/projectPage_ProjectSection_ProjectOwnerInteraction';
 import {add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
+import {
+	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 
 /**
  * 
@@ -61,8 +63,6 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	private _projectPage_ExperimentsSection_AllUsersInteraction : ProjectPage_ExperimentsSection_AllUsersInteraction
-
-	private _projectPage_SearchesSection_AllUsersInteraction : ProjectPage_SearchesSection_AllUsersInteraction
 
 	private _projectPage_SavedViews_Section_AllUsersInteraction : ProjectPage_SavedViews_Section_AllUsersInteraction
 
@@ -110,9 +110,6 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 			projectIdentifierFromURL : this._projectIdentifierFromURL
 		} );
 
-		this._projectPage_SearchesSection_AllUsersInteraction = 
-			new ProjectPage_SearchesSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: null } );
-		
 		this._projectPage_SavedViews_Section_AllUsersInteraction =
 			new ProjectPage_SavedViews_Section_AllUsersInteraction({ 
 				projectIdentifierFromURL : this._projectIdentifierFromURL });
@@ -126,11 +123,10 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 
 		this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
 
-		this._projectPage_SearchesSection_AllUsersInteraction.initialize();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
 		this._projectPage_ProjectSection_ProjectOwnerInteraction.initialize();
-		
+
 		window.setTimeout(() => {
 			//  Run in setTimeout to catch Errors
 			this._projectPage_ProjectUserAccessAdminSection.initialize();
@@ -144,15 +140,18 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();
-		
-//		let projectViewPage_UserAccessAdminSection = 
-//			new ProjectViewPage_UserAccessAdminSection( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
-//		projectViewPage_UserAccessAdminSection.initialize();
-		
+
 		this._projectPage_ProjectSection_AllUsersInteraction.getProjectData();
 		this._projectPage_SavedViews_Section_AllUsersInteraction.getSavedViewsData();
-		this._projectPage_SearchesSection_AllUsersInteraction.getSearchList();
-		
+
+		add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
+			projectIdentifierFromURL : this._projectIdentifierFromURL,
+			projectIsLocked: true,
+			projectPage_SearchesAdmin: null,
+			projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: null,
+			dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: null
+		})
+
 		this._initializeCalled = true;
 	};
 	

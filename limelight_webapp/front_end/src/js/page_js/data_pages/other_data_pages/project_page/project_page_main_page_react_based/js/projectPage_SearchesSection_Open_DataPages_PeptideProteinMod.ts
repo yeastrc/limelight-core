@@ -10,6 +10,8 @@
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import {CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import {ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_SearchesAndFoldersList_Component";
 
 let initialized = false;
 
@@ -83,14 +85,10 @@ export const projectPage_SearchesSection_Open_DataPages_PeptideProteinMod__Initi
  */
 export class ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams {
 
-    projectSearchIds: Set<number>
-    projectSearchIdCodes: Set<string>
+    selected_Searches_Data_Object: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object
+    searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
     ctrlKeyOrMetaKey: boolean
 }
-
-
-export type ProjectPage_SearchesSection_Open_DataPage_PeptideProteinMod =
-    ( params: ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams ) => void
 
 /**
  * QC View
@@ -138,15 +136,13 @@ const mod_View_OpenDataPage = function ( params : ProjectPage_SearchesSection_Op
  */
 const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams, urlPath: string ) : void {
 
-    const projectSearchIds = params.projectSearchIds;
-    const projectSearchIdCodes = params.projectSearchIdCodes;
     const ctrlKeyOrMetaKey = params.ctrlKeyOrMetaKey;
 
-    if (projectSearchIds.size < 1) {
+    if ( ! params.selected_Searches_Data_Object.is_ANY_Search_Selected() ) {
         return;
     }
 
-    const projectSearchIdCodes_EncodedForURL = get_projectSearchIdCodes_EncodedForURL({ projectSearchIdCodes });
+    const projectSearchIdCodes_EncodedForURL = get_projectSearchIdCodes_EncodedForURL( params );
 
     const url = urlPath + projectSearchIdCodes_EncodedForURL + "/r";
 
@@ -162,42 +158,27 @@ const _openDataPage = function ( params : ProjectPage_SearchesSection_Open_DataP
     window.location.href = url;
 
     return;  // EARLY RETURN
-
-    // const promise_getSearchDataLookupParamsCode = _getSearchDataLookupParamsCode({ projectSearchIds });
-    //
-    //
-    // let newWindow = null;  // Always null since handled above
-
-    //  Handled above
-
-    // if ( ctrlKeyOrMetaKey ) {
-    //
-    //     //  Ctrl or meta (command on mac) key pressed while button clicked
-    //     // Open URL in new window
-    //
-    //     //  Open Empty window to set the URL below in call to _goToURL_DataPage(...)
-    //      newWindow = window.open( "", "_blank", "noopener" );
-    // }
-
-
-    // promise_getSearchDataLookupParamsCode.catch((reason) => { });
-    //
-    // promise_getSearchDataLookupParamsCode.then((result) => {
-    //     try {
-    //         const url = urlPath + result.searchDataLookupParamsCode + "/r";
-    //         _goToURL_DataPage({ url, newWindow });
-    //     } catch( e ) {
-    //         reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-    //         throw e;
-    //     }
-    // });
 };
 
 /**
  *
  */
-const get_projectSearchIdCodes_EncodedForURL = function ({ projectSearchIdCodes } : { projectSearchIdCodes: Set<string>}) : string {
+const get_projectSearchIdCodes_EncodedForURL = function (params : ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod__InputParams) : string {
 
+    const projectSearchIdCodes = new Array<string>();
+
+    for ( const projectSearchId of  params.selected_Searches_Data_Object.get_ProjectSearchIds_Selected_Additions_In_DisplayOrder() ) {
+
+        const searchData = params.searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId);
+
+        if ( ! searchData ) {
+            const msg = "params.searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        projectSearchIdCodes.push(searchData.projectSearchIdCode);
+    }
 
     const projectSearchIdCodes_Encoded = project_search_id_code_block_start_end_identifier_strings +
         Array.from( projectSearchIdCodes ).join( project_search_id_code_separator ) +

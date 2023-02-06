@@ -113,6 +113,9 @@
 	<target name="compileAllSubmodules" depends="npm_install">
 
 		<!--  Build submodules and create runnable jars -->
+		
+		<!--  limelight_feature_detection_run_import  -->
+		<ant antfile="ant__create_runnable_jar_importer.xml"  dir="limelight_feature_detection_run_import" />
 
 		<!--  importer  -->		
 		<ant antfile="ant__create_runnable_jar_importer.xml"  dir="limelight_importer" />
@@ -137,6 +140,7 @@
 		<!-- copy files from subdir 'deploy' to deploy -->
 		<copy file="limelight_webapp/build/libs/limelight.war" todir="deploy" />
 		<copy file="limelight_importer/build/libs/limelightImporter_XMLFile_ScanFiles.jar" todir="deploy" />
+		<copy file="limelight_feature_detection_run_import/build/libs/limelight_FeatureDetection_Run_Import.jar" todir="deploy" />
 		<copy file="limelight_run_importer/build/libs/limelightRunImporter.jar" todir="deploy" />
 		<copy file="limelight_submit_import/build/libs/limelightSubmitImport.jar" todir="deploy" />
 		

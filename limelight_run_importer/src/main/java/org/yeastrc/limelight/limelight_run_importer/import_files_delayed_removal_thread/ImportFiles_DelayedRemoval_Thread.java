@@ -197,7 +197,9 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
 					try {
 						limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
+								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+								);
 					} catch (Exception e) {
 
 						synchronized (this) {
@@ -215,7 +217,9 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
 					try {
 						limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
+								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+								);
 					} catch (Exception e) {
 
 						synchronized (this) {

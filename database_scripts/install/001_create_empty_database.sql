@@ -104,6 +104,7 @@ CREATE UNIQUE INDEX short_name ON project_tbl (short_name ASC) VISIBLE;
 CREATE TABLE  reported_peptide_tbl (
   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   sequence VARCHAR(2000) NOT NULL,
+  last_used_in_search_import DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
@@ -118,6 +119,7 @@ CREATE INDEX sequence ON reported_peptide_tbl (sequence(20) ASC) VISIBLE;
 CREATE TABLE  peptide_tbl (
   id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   sequence VARCHAR(2000) NOT NULL,
+  last_used_in_search_import DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
@@ -182,6 +184,7 @@ CREATE TABLE  project_search_tbl (
   search_id MEDIUMINT UNSIGNED NOT NULL,
   status_id TINYINT UNSIGNED NOT NULL DEFAULT 1,
   search_name VARCHAR(2000) NULL,
+  search_short_name VARCHAR(50) NULL COMMENT 'displayed where limited space',
   search_display_order INT NOT NULL DEFAULT 0,
   marked_for_deletion_user_id INT UNSIGNED NULL,
   marked_for_deletion_timestamp DATETIME NULL,
@@ -897,6 +900,7 @@ CREATE INDEX search_id_for_fk___type_best_psm_val_idx ON search__rep_pept__psm_t
 CREATE TABLE  protein_sequence_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   sequence MEDIUMTEXT NOT NULL,
+  last_used_in_search_import DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
@@ -913,6 +917,7 @@ CREATE TABLE  protein_sequence_annotation_tbl (
   taxonomy INT(10) UNSIGNED NULL,
   name VARCHAR(2000) NOT NULL,
   description VARCHAR(2500) NULL,
+  last_used_in_search_import DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
@@ -1031,6 +1036,7 @@ CREATE TABLE  file_import_tracking_tbl (
   remote_user_ip_address VARCHAR(45) NOT NULL,
   marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0,
   search_name VARCHAR(2000) NULL,
+  search_short_name VARCHAR(50) NULL,
   search_path VARCHAR(2000) NULL,
   insert_request_url VARCHAR(255) NOT NULL,
   record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1434,7 +1440,9 @@ CREATE INDEX folder_for_project_proj_id_fk_idx ON folder_for_project_tbl (projec
 CREATE TABLE  folder_project_search_tbl (
   project_search_id INT UNSIGNED NOT NULL,
   folder_id INT UNSIGNED NOT NULL,
-  PRIMARY KEY (project_search_id),
+  search_display_order INT NOT NULL DEFAULT 0,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (project_search_id, folder_id),
   CONSTRAINT folder_project_search_folder_id
     FOREIGN KEY (folder_id)
     REFERENCES folder_for_project_tbl (id)
@@ -2814,6 +2822,683 @@ CREATE TABLE  importer__search_import_in_progress_tracking_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX heart_beat_idx ON importer__search_import_in_progress_tracking_tbl (importer_running_heart_beat_last_update ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_root_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_root_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  scan_file_id INT UNSIGNED NOT NULL,
+  entry_fully_inserted TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Set to 1 when all data inserted',
+  entry_fully_inserted_date_time DATETIME NULL,
+  feature_detection_type_label VARCHAR(255) NULL COMMENT 'A label for what type like hardklor',
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_root_tbl_2
+    FOREIGN KEY (scan_file_id)
+    REFERENCES scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_feature_detection_root_tbl_2_idx ON feature_detection_root_tbl (scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_singular_feature_uploaded_file_stats_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_singular_feature_uploaded_file_stats_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  file_fully_inserted TINYINT NOT NULL DEFAULT 0,
+  file_fully_inserted_date_time DATETIME NULL,
+  feature_detection_program_name VARCHAR(45) NULL,
+  feature_detection_program_version VARCHAR(45) NULL,
+  feature_detection_program_primary_version SMALLINT UNSIGNED NULL,
+  uploaded_filename VARCHAR(255) NULL,
+  uploaded_file_size INT UNSIGNED NOT NULL,
+  uploaded_file_sha1_sum VARCHAR(45) NULL,
+  uploaded_file_sha384_zero_in_second_digit VARCHAR(300) NULL COMMENT 'For each hex pair, if zero in second digit keep it.  This is maybe different from standard display of sha384.',
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_singular_feature_uploaded_file_stats_tbl_1
+    FOREIGN KEY (feature_detection_root_id)
+    REFERENCES feature_detection_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'hardklor etc';
+
+CREATE INDEX fk_feature_detection_singular_feature_uploaded_file_stats_t_idx ON feature_detection_singular_feature_uploaded_file_stats_tbl (feature_detection_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_singular_feature_entry_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_singular_feature_entry_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  feature_detection_singular_feature_uploaded_file_stats_id INT UNSIGNED NOT NULL,
+  ms_1_scan_number INT UNSIGNED NOT NULL,
+  monoisotopic_mass DOUBLE NULL,
+  charge TINYINT NULL,
+  intensity DOUBLE NULL,
+  base_isotope_peak DOUBLE NULL,
+  analysis_window_start_m_z DOUBLE NULL,
+  analysis_window_end_m_z DOUBLE NULL,
+  correlation_score DOUBLE NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_singular_feature_entry_tbl_1
+    FOREIGN KEY (feature_detection_singular_feature_uploaded_file_stats_id)
+    REFERENCES feature_detection_singular_feature_uploaded_file_stats_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_feature_detection_singular_feature_entry_tbl_1_idx ON feature_detection_singular_feature_entry_tbl (feature_detection_singular_feature_uploaded_file_stats_id ASC) VISIBLE;
+
+CREATE INDEX feature_detection_root_id_idx ON feature_detection_singular_feature_entry_tbl (feature_detection_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_other_uploaded_file_like_conf_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_other_uploaded_file_like_conf_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  file_fully_inserted TINYINT NOT NULL DEFAULT 0,
+  file_fully_inserted_date_time DATETIME NULL,
+  limelight_internal_filename VARCHAR(255) NOT NULL COMMENT 'name used to store file on disk',
+  uploaded_filename VARCHAR(255) NULL,
+  uploaded_file_size INT UNSIGNED NOT NULL,
+  uploaded_file_sha1_sum VARCHAR(45) NULL,
+  uploaded_file_sha384_zero_in_second_digit VARCHAR(300) NULL COMMENT 'For each hex pair, if zero in second digit keep it.  This is maybe different from standard display of sha384.',
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  file_contents LONGBLOB NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT feature_detection_other_uploaded_file_like_conf_tbl_1
+    FOREIGN KEY (feature_detection_root_id)
+    REFERENCES feature_detection_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX feature_detection_other_uploaded_file_like_conf_tbl_1_idx ON feature_detection_other_uploaded_file_like_conf_tbl (feature_detection_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_singular_feature_entry_mods_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_singular_feature_entry_mods_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_singular_feature_entry_id INT UNSIGNED NOT NULL,
+  modification_mass DOUBLE NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_singular_feature_entry_mods_tbl_1
+    FOREIGN KEY (feature_detection_singular_feature_entry_id)
+    REFERENCES feature_detection_singular_feature_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Modifications';
+
+CREATE INDEX fk_feature_detection_singular_feature_entry_mods_tbl_1_idx ON feature_detection_singular_feature_entry_mods_tbl (feature_detection_singular_feature_entry_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_feature_uploaded_file_stats_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_feature_uploaded_file_stats_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  file_fully_inserted TINYINT NOT NULL DEFAULT 0,
+  file_fully_inserted_date_time DATETIME NULL,
+  feature_detection_program_name VARCHAR(45) NULL,
+  feature_detection_program_version VARCHAR(45) NULL,
+  feature_detection_program_primary_version SMALLINT UNSIGNED NULL,
+  uploaded_filename VARCHAR(255) NULL,
+  uploaded_file_size INT UNSIGNED NOT NULL,
+  uploaded_file_sha1_sum VARCHAR(45) NULL,
+  uploaded_file_sha384_zero_in_second_digit VARCHAR(300) NULL COMMENT 'For each hex pair, if zero in second digit keep it.  This is maybe different from standard display of sha384.',
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_main_uploaded_file_stats_tbl_10
+    FOREIGN KEY (feature_detection_root_id)
+    REFERENCES feature_detection_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'bullseye etc';
+
+CREATE INDEX fk_feature_detection_main_uploaded_file_stats_tbl_1_idx ON feature_detection_persistent_feature_uploaded_file_stats_tbl (feature_detection_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_feature_entry_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_feature_entry_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  feature_detection_persistent_feature_uploaded_file_stats_id INT UNSIGNED NOT NULL,
+  monoisotopic_mass DOUBLE NOT NULL,
+  charge TINYINT NOT NULL,
+  retention_time_range_start FLOAT NOT NULL,
+  retention_time_range_end FLOAT NOT NULL,
+  retention_time_range_apex FLOAT NOT NULL,
+  abundance_retention_time_range_apex DOUBLE NOT NULL,
+  abundance_total DOUBLE NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_persistent_feature_entry_tbl_1
+    FOREIGN KEY (feature_detection_persistent_feature_uploaded_file_stats_id)
+    REFERENCES feature_detection_persistent_feature_uploaded_file_stats_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX feature_detection_root_id_idx ON feature_detection_persistent_feature_entry_tbl (feature_detection_root_id ASC) VISIBLE;
+
+CREATE INDEX fk_feature_detection_persistent_feature_entry_tbl_1_idx ON feature_detection_persistent_feature_entry_tbl (feature_detection_persistent_feature_uploaded_file_stats_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_feature_entry_ms_2_scan_number_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_feature_entry_ms_2_scan_number_tbl (
+  feature_detection_persistent_feature_entry_id INT UNSIGNED NOT NULL,
+  ms_2_scan_number INT UNSIGNED NOT NULL,
+  PRIMARY KEY (feature_detection_persistent_feature_entry_id, ms_2_scan_number),
+  CONSTRAINT fk_ftr_dtn_prstnt_ftr_ntr_ms_2_scn_nbr
+    FOREIGN KEY (feature_detection_persistent_feature_entry_id)
+    REFERENCES feature_detection_persistent_feature_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_map_persistnt_to_snglr_feature_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_map_persistnt_to_snglr_feature_tbl (
+  feature_detection_persistent_feature_entry_id INT UNSIGNED NOT NULL,
+  feature_detection_singular_feature_entry_id INT UNSIGNED NOT NULL,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (feature_detection_persistent_feature_entry_id, feature_detection_singular_feature_entry_id),
+  CONSTRAINT fk_ft_detn_pstnt_sngr_ftr_mapping1
+    FOREIGN KEY (feature_detection_persistent_feature_entry_id)
+    REFERENCES feature_detection_persistent_feature_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_ft_detn_pstnt_sngr_ftr_mapping2
+    FOREIGN KEY (feature_detection_singular_feature_entry_id)
+    REFERENCES feature_detection_singular_feature_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'many to many mapping table';
+
+CREATE INDEX feature_detection_root_id_idx ON feature_detection_map_persistnt_to_snglr_feature_tbl (feature_detection_root_id ASC) VISIBLE;
+
+CREATE INDEX fk_feature_detection_persistent_to_singular_feature_mapping_idx ON feature_detection_map_persistnt_to_snglr_feature_tbl (feature_detection_singular_feature_entry_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_featr_enty_ms_2_scn_nmbrs_json_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_featr_enty_ms_2_scn_nmbrs_json_tbl (
+  feature_detection_persistent_feature_entry_id INT UNSIGNED NOT NULL,
+  ms_2_scan_numbers_json_array MEDIUMTEXT NOT NULL,
+  PRIMARY KEY (feature_detection_persistent_feature_entry_id),
+  CONSTRAINT fk_ftr_dtn_prstnt_ftr_ntr_ms2_scnnbr_jn
+    FOREIGN KEY (feature_detection_persistent_feature_entry_id)
+    REFERENCES feature_detection_persistent_feature_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_feature_file_header_contents_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_feature_file_header_contents_tbl (
+  feature_detection_persistent_feature_uploaded_file_stats_id INT UNSIGNED NOT NULL,
+  file_header_contents MEDIUMTEXT CHARACTER SET 'latin1' NOT NULL,
+  PRIMARY KEY (feature_detection_persistent_feature_uploaded_file_stats_id),
+  CONSTRAINT fk_ftr_dtn_prstnt_ftr_hdr_cts
+    FOREIGN KEY (feature_detection_persistent_feature_uploaded_file_stats_id)
+    REFERENCES feature_detection_persistent_feature_uploaded_file_stats_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_singular_feature_file_header_contents_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_singular_feature_file_header_contents_tbl (
+  feature_detection_singular_feature_uploaded_file_stats_id INT UNSIGNED NOT NULL,
+  file_header_contents MEDIUMTEXT CHARACTER SET 'latin1' NOT NULL,
+  PRIMARY KEY (feature_detection_singular_feature_uploaded_file_stats_id),
+  CONSTRAINT fk_ftr_dtn_snglr_ftr_hdr_cts
+    FOREIGN KEY (feature_detection_singular_feature_uploaded_file_stats_id)
+    REFERENCES feature_detection_singular_feature_uploaded_file_stats_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table project_scan_file_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_scan_file_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  scan_file_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT project_scan_filename_project_fk
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT project_scan_filename_scan_file_fk
+    FOREIGN KEY (scan_file_id)
+    REFERENCES scan_file_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Scan file in a project';
+
+CREATE INDEX project_id_idx ON project_scan_file_tbl (project_id ASC) VISIBLE;
+
+CREATE INDEX search_scan_filename_scan_file_fk_idx ON project_scan_file_tbl (scan_file_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX unique_record ON project_scan_file_tbl (project_id ASC, scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_scan_file_importer_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_scan_file_importer_tbl (
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  file_size BIGINT NOT NULL,
+  sha1sum VARCHAR(255) NOT NULL,
+  canonical_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
+  absolute_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
+  aws_s3_bucket_name VARCHAR(2000) NULL,
+  aws_s3_object_key VARCHAR(2000) NULL,
+  PRIMARY KEY (project_scan_file_id),
+  CONSTRAINT prjct_scn_filenm_srch_scn_file_id
+    FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+COMMENT = 'Tracks a scan file where imported from.  ';
+
+CREATE INDEX prjct_scn_filenm_srch_scn_file_id_idx ON project_scan_file_importer_tbl (project_scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_scan_filename_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_scan_filename_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  scan_filename VARCHAR(700) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_project_scan_file_info_tbl_1
+    FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Filename for Scan file in a project - Entry per scan filename';
+
+CREATE UNIQUE INDEX unique_record ON project_scan_filename_tbl (project_scan_file_id ASC, scan_filename ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_scan_filename__search_scan_file__mapping_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_scan_filename__search_scan_file__mapping_tbl (
+  project_scan_filename_id INT UNSIGNED NOT NULL,
+  search_scan_file_id MEDIUMINT UNSIGNED NOT NULL,
+  project_search_id INT UNSIGNED NOT NULL COMMENT 'field exists so auto delete on remove project_search_tbl record',
+  PRIMARY KEY (project_scan_filename_id, search_scan_file_id, project_search_id),
+  CONSTRAINT fk_prjscnfl_srchscnfl_mp_ssf_fk
+    FOREIGN KEY (search_scan_file_id)
+    REFERENCES search_scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_prjscnfl_srchscnfl_mp_psfi_fk
+    FOREIGN KEY (project_scan_filename_id)
+    REFERENCES project_scan_filename_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_prjscnfl_srchscnfl_mp_ps_fk
+    FOREIGN KEY (project_search_id)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'map project_scan_filename_tbl to project_scan_filename_tbl';
+
+CREATE INDEX search_scan_file_id ON project_scan_filename__search_scan_file__mapping_tbl (search_scan_file_id ASC) VISIBLE;
+
+CREATE INDEX fk_prjscnfl_srchscnfl_mp_ps_fk_idx ON project_scan_filename__search_scan_file__mapping_tbl (project_search_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_root__project_scnfl_mapping_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_root__project_scnfl_mapping_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  feature_detection_root_id INT UNSIGNED NOT NULL,
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  display_label VARCHAR(300) NOT NULL,
+  description VARCHAR(5000) NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_featdetctrt_prjtscnfl_mp_1
+    FOREIGN KEY (feature_detection_root_id)
+    REFERENCES feature_detection_root_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_featdetctrt_prjtscnfl_mp_2
+    FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Map feature_detection_root_tbl record to project_scan_file_tbl record';
+
+CREATE INDEX fk_featdetctrt_prjtscnfl_mp_1_idx ON feature_detection_root__project_scnfl_mapping_tbl (feature_detection_root_id ASC) VISIBLE;
+
+CREATE INDEX fk_featdetctrt_prjtscnfl_mp_2_idx ON feature_detection_root__project_scnfl_mapping_tbl (project_scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_search_tag_category_in_project_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_tag_category_in_project_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NULL COMMENT 'Allow NULL for fake uncat record',
+  category_label VARCHAR(500) NOT NULL,
+  uncategorized_fake_record TINYINT UNSIGNED NULL COMMENT '1 if this a fake record for uncategorized tags to reference',
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'updated from on duplicate update sql',
+  created_by_user_id INT NULL,
+  create_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_by_user_id INT NULL,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  label_color_font VARCHAR(45) NULL,
+  label_color_background VARCHAR(45) NULL,
+  label_color_border VARCHAR(45) NULL COMMENT 'set to 1 for uncategorized fake record',
+  PRIMARY KEY (id),
+  CONSTRAINT fk_project_search_tag_strings_in_project_tbl_10
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_project_search_tag_strings_in_project_tbl_1_idx ON project_search_tag_category_in_project_tbl (project_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX unique_record ON project_search_tag_category_in_project_tbl (project_id ASC, category_label ASC) VISIBLE;
+
+CREATE UNIQUE INDEX uncategorized_fake_record_unique_idx ON project_search_tag_category_in_project_tbl (uncategorized_fake_record ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_search_tag_strings_in_project_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_tag_strings_in_project_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  project_id INT UNSIGNED NOT NULL,
+  tag_category_id INT UNSIGNED NOT NULL COMMENT 'MUST be set for UNIQUE index to work.  Reference actual category record or the uncategorized dummy record.',
+  tag_string VARCHAR(500) NOT NULL,
+  created_by_user_id INT NULL,
+  create_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_by_user_id INT NULL,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  tag_color_font VARCHAR(45) NULL,
+  tag_color_background VARCHAR(45) NULL,
+  tag_color_border VARCHAR(45) NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_project_search_tag_strings_in_project_tbl_1
+    FOREIGN KEY (project_id)
+    REFERENCES project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_project_search_tag_strings_in_project_tbl_2
+    FOREIGN KEY (tag_category_id)
+    REFERENCES project_search_tag_category_in_project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_project_search_tag_strings_in_project_tbl_1_idx ON project_search_tag_strings_in_project_tbl (project_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX unique_record ON project_search_tag_strings_in_project_tbl (project_id ASC, tag_category_id ASC, tag_string ASC) VISIBLE;
+
+CREATE INDEX fk_project_search_tag_strings_in_project_tbl_2_idx ON project_search_tag_strings_in_project_tbl (tag_category_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table project_search_tag_mapping_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_tag_mapping_tbl (
+  project_search_id INT UNSIGNED NOT NULL,
+  project_search_tag_strings_in_project_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (project_search_id, project_search_tag_strings_in_project_id),
+  CONSTRAINT project_search_tag_mapping_tbl_fk0
+    FOREIGN KEY (project_search_tag_strings_in_project_id)
+    REFERENCES project_search_tag_strings_in_project_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT project_search_tag_mapping_tbl_fk1
+    FOREIGN KEY (project_search_id)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX project_search_tag_mapping_tbl_fk0_idx ON project_search_tag_mapping_tbl (project_search_tag_strings_in_project_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_import_tracking_data_json_blob_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import_tracking_data_json_blob_tbl (
+  file_import_tracking_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (file_import_tracking_id),
+  CONSTRAINT fk_file_import_tracking_data_json_blob_tbl_1
+    FOREIGN KEY (file_import_tracking_id)
+    REFERENCES file_import_tracking_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_tbl (
+  id INT UNSIGNED NOT NULL,
+  request_type SMALLINT NOT NULL,
+  project_id INT UNSIGNED NOT NULL,
+  priority TINYINT NOT NULL,
+  marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  status_id TINYINT UNSIGNED NOT NULL,
+  request_data_format_version_number INT UNSIGNED NOT NULL DEFAULT 0,
+  request_data_contents_version_number INT UNSIGNED NOT NULL DEFAULT 0,
+  request_data LONGTEXT NULL,
+  request_data__label_value_pairs__json__format_version_number INT UNSIGNED NOT NULL DEFAULT 0,
+  request_data__label_value_pairs__json__content_version_number INT UNSIGNED NOT NULL DEFAULT 0,
+  request_data__label_value_pairs__json MEDIUMTEXT NULL,
+  run_id_for_status_id INT UNSIGNED NULL COMMENT 'run id that the status id reflects',
+  insert_request_url VARCHAR(255) NULL,
+  record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  insert_request__remote_user_ip_address VARCHAR(45) NULL,
+  insert_request_user_id INT UNSIGNED NULL,
+  last_updated_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  run_start_date_time DATETIME NULL,
+  run_end_date_time DATETIME NULL,
+  deleted_by_user_id INT NULL,
+  deleted_date_time DATETIME NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT imprt_a_piplne_rn_trkg_user_id
+    FOREIGN KEY (insert_request_user_id)
+    REFERENCES user_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT imprt_a_piplne_rn_trkg_status_id
+    FOREIGN KEY (status_id)
+    REFERENCES file_import_tracking_status_values_lookup_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_insert_request_user_id_idx ON import_and_pipeline_run_tracking_tbl (insert_request_user_id ASC) VISIBLE;
+
+CREATE INDEX project_id_status_id ON import_and_pipeline_run_tracking_tbl (project_id ASC, status_id ASC) VISIBLE;
+
+CREATE INDEX fk_status_id_idx ON import_and_pipeline_run_tracking_tbl (status_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tkg_id_creator_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tkg_id_creator_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_run_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_run_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  import_and_pipeline_run_tracking_id INT UNSIGNED NOT NULL,
+  status_id TINYINT UNSIGNED NOT NULL,
+  sub_status_id TINYINT UNSIGNED NULL,
+  record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  in_progress_end_user_display_message MEDIUMTEXT NULL,
+  finished_sucess_end_user_display_message MEDIUMTEXT NULL,
+  finished_success_pipeline_end_user_display_message MEDIUMTEXT NULL,
+  finished_fail_end_user_display_message MEDIUMTEXT NULL,
+  finished_fail_pipeline_end_user_display_message MEDIUMTEXT NULL,
+  result_data_format_version_number INT NULL,
+  result_data LONGTEXT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_imprt_a_ppln_rn_tkg_rn_pnt_id
+    FOREIGN KEY (import_and_pipeline_run_tracking_id)
+    REFERENCES import_and_pipeline_run_tracking_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_imprt_a_ppln_rn_tkg_rn_st_id
+    FOREIGN KEY (status_id)
+    REFERENCES file_import_tracking_status_values_lookup_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_imprt_a_ppln_rn_tkg_rn_pnt_id_idx ON import_and_pipeline_run_tracking_run_tbl (import_and_pipeline_run_tracking_id ASC) VISIBLE;
+
+CREATE INDEX fk_imprt_a_ppln_rn_tkg_rn_st_id_idx ON import_and_pipeline_run_tracking_run_tbl (status_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tkg_run_id_creator_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tkg_run_id_creator_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_run_step_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_run_step_tbl (
+  id INT UNSIGNED NOT NULL,
+  import_and_pipeline_run_tracking_run_id INT UNSIGNED NOT NULL,
+  step_number INT UNSIGNED NOT NULL,
+  record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  step_initiate_remote_program_response_data_version_number INT NULL,
+  step_initiate_remote_program_response_data LONGTEXT NULL COMMENT 'Store the initial response from external program',
+  result_data_version_number INT NULL,
+  result_data LONGTEXT NULL,
+  last_updated_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_imprt_a_ppln_rn_tkg_rn_st_pnt_id
+    FOREIGN KEY (import_and_pipeline_run_tracking_run_id)
+    REFERENCES import_and_pipeline_run_tracking_run_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_imprt_a_ppln_rn_tkg_rn_st_pnt_id_idx ON import_and_pipeline_run_tracking_run_step_tbl (import_and_pipeline_run_tracking_run_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_run_step_run_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_run_step_run_tbl (
+  id INT UNSIGNED NOT NULL,
+  import_and_pipeline_run_tracking_run_step_id INT UNSIGNED NOT NULL,
+  record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  step_initiate_remote_program_response_data_version_number INT NULL,
+  step_initiate_remote_program_response_data LONGTEXT NULL COMMENT 'Store the initial response from external program',
+  result_data_version_number INT NULL,
+  result_data LONGTEXT NULL,
+  last_updated_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_imprt_a_ppln_rn_tkg_rn_stp_rn_id_id
+    FOREIGN KEY (import_and_pipeline_run_tracking_run_step_id)
+    REFERENCES import_and_pipeline_run_tracking_run_step_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_imprt_a_ppln_rn_tkg_rn_stp_rn_id_idx ON import_and_pipeline_run_tracking_run_step_run_tbl (import_and_pipeline_run_tracking_run_step_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_status_history_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_status_history_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  import_and_pipeline_run_tracking_id INT UNSIGNED NOT NULL,
+  status_id TINYINT UNSIGNED NOT NULL,
+  status_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_import_and_pipeline_run_tracking_status_history_tbl_1
+    FOREIGN KEY (import_and_pipeline_run_tracking_id)
+    REFERENCES import_and_pipeline_run_tracking_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_import_and_pipeline_run_tracking_status_history_tbl_1_idx ON import_and_pipeline_run_tracking_status_history_tbl (import_and_pipeline_run_tracking_id ASC) VISIBLE;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

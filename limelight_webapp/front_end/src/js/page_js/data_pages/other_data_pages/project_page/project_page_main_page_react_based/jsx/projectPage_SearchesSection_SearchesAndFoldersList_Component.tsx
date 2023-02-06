@@ -10,14 +10,75 @@
 
 
 import React from "react";
-import {
-    ProjectPage_SearchesSection_Searches_Folders_Root, ProjectPage_SearchesSection_Searches_Folders_SingleFolder,
-    ProjectPage_SearchesSection_Searches_Folders_SingleSearch
-} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Get_Searches_Folders_From_Server";
-import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
+
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
-import {ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet";
+import {
+    ProjectPage_SearchEntry_UsedInMultipleSections_Component,
+    ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params,
+    ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
+import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
+
+//  Internal Constants
+
+
+/////////////  INTERNAL classes at bottom
+
+
+/**
+ *
+ */
+export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object {
+
+    private _search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
+    private _searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
+
+    constructor(
+        {
+            search_Selected_InProgress, searchesSearchTagsFolders_Result_Root
+        } : {
+            search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
+            searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
+        }
+    ) {
+        this._search_Selected_InProgress = search_Selected_InProgress
+        this._searchesSearchTagsFolders_Result_Root = searchesSearchTagsFolders_Result_Root
+    }
+
+    is_ANY_Search_Selected() {
+        return this._search_Selected_InProgress.is_ANY_Search_Selected()
+    }
+
+    get_Number_Searches_Selected() {
+        return this._search_Selected_InProgress.get_Number_Searches_Selected()
+    }
+
+    has_Entry_For_ProjectSearchId( projectSearchId: number ) {
+        return this._search_Selected_InProgress.has_Entry_For_ProjectSearchId(projectSearchId)
+    }
+
+    /**
+     * returned in Random Order from Map keys()
+     */
+    get_ProjectSearchIds_Selected_In_SelectionOrder_IterableIterator() :  IterableIterator<number> {
+
+        return this._search_Selected_InProgress.get_search_Selected_InProgress_ProjectSearchIdArray().values()
+    }
+
+    /**
+     * Return the newly selected ProjectSearchIds in display order
+     */
+    get_ProjectSearchIds_Selected_Additions_In_DisplayOrder() : ReadonlyArray<number> {
+
+        return this._search_Selected_InProgress.get_search_Selected_InProgress_ProjectSearchIdArray()
+    }
+}
 
 /**
  * Create new Object and pass in as Props to force all Show Search Details to the new boolean value of true or false
@@ -33,19 +94,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expan
 /**
  *
  */
-export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params {
-    updated_folderIds_ExpandedFolders : Set<number>
-}
-
-export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback =
-    ( params : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Params ) => void
-
-
-/**
- *
- */
 export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds_Params {
-    updated_selected_ProjectSearchIds : Set<number>
+    readonly selected_Searches_Data_Object: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object
 }
 
 export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds =
@@ -58,15 +108,19 @@ export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_
  */
 export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props {
     projectIdentifier : string
-    folderIds_ExpandedFolders_InitialValue : Set<number>;
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
-    searchesAndFolders: ProjectPage_SearchesSection_Searches_Folders_Root
+    searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
+    search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
+    projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering?: Set<number>   //  null if no filtering
+    folderIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering?: Set<number>          //  null if no filtering
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
+    projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet: ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet
     callback_updateSelected_Searches : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds
-    callback_Update_folderIds_ExpandedFolders: ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_folderIds_ExpandedFolders_Callback
+
     callback_SearchDeleted: () => void
+    callback_FolderDeleted: () => void
 }
 
 /**
@@ -74,12 +128,12 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
  */
 interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State {
 
-    projectSearchIds_Selected_InProgress? : Set<number>;
     folderIds_ExpandedFolders_InProgress? : Set<number>;
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force_FromProps?: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
 
     fakeTriggerRender?: object
+    force_Rerender?: object
 }
 
 /**
@@ -88,14 +142,20 @@ interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State {
 export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extends React.Component< ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props, ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State > {
 
     private _folderEntry_Expanded_Collapsed_Callback_BindThis = this._folderEntry_Expanded_Collapsed_Callback.bind(this)
-    private _searchCheckboxChanged_BindThis = this._searchCheckboxChanged.bind(this);
+    private _searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis = this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback.bind(this);
+    private _searchEntry_In_Folder_Selected_DeSelected_Callback_BindThis = this._searchEntry_In_Folder_Selected_DeSelected_Callback.bind(this);
     private _deleteSearch_Callback_BindThis = this._deleteSearch_Callback.bind(this);
 
     private _DO_NOT_CALL() {
 
         const folderEntry_Expanded_Collapsed_Callback: FolderEntry_Expanded_Collapsed_Callback_Type = this._folderEntry_Expanded_Collapsed_Callback;
-        const deleteSearch_Callback: DeleteSearch_Callback_Type = this._deleteSearch_Callback;
+
+        const searchEntry_In_Folder_Selected_DeSelected_Callback: SearchEntry_In_Folder_Selected_DeSelected_Callback_Type = this._searchEntry_In_Folder_Selected_DeSelected_Callback;
+
+        const deleteSearch_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type = this._deleteSearch_Callback;
     }
+
+    private _search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData()
 
     /**
      *
@@ -104,8 +164,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
         super(props);
 
         this.state = {
-            projectSearchIds_Selected_InProgress : new Set(),
-            folderIds_ExpandedFolders_InProgress : new Set( props.folderIds_ExpandedFolders_InitialValue ),
+            folderIds_ExpandedFolders_InProgress : new Set( props.projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_FolderIds_ExpandedFolders() ),
             expand_All_Folders__ShowSearchDetailsTo_Global_Force_FromProps: props.expand_All_Folders__ShowSearchDetailsTo_Global_Force,
             fakeTriggerRender: {}
         };
@@ -135,20 +194,22 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
 
             if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force ) {
                 if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue
-                    && props.searchesAndFolders && props.searchesAndFolders.folderList) {
+                    && props.searchesSearchTagsFolders_Result_Root && ( ! props.searchesSearchTagsFolders_Result_Root.is_NO_Folders_In_Project() ) ) {
 
                     const folderIds_ExpandedFolders_InProgress: Set<number> = new Set();
-                    for ( const entry of props.searchesAndFolders.folderList ) {
-                        const id = entry.id;
+                    for ( const entry of props.searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder() ) {
+                        const id = entry.folderId;
                         folderIds_ExpandedFolders_InProgress.add( id );
                     }
 
-                    props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
+                    props.projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+                    update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
 
                     newState.folderIds_ExpandedFolders_InProgress = folderIds_ExpandedFolders_InProgress;
 
                 } else {
-                    props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: new Set() });
+                    props.projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+                    update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: new Set() });
 
                     newState.folderIds_ExpandedFolders_InProgress = new Set();
                 }
@@ -173,7 +234,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                 }
             }
 
-            props.callback_Update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
+            props.projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+            update_folderIds_ExpandedFolders({ updated_folderIds_ExpandedFolders: folderIds_ExpandedFolders_InProgress });
 
             return { folderIds_ExpandedFolders_InProgress };
         });
@@ -182,642 +244,204 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
     /**
      *
      */
-    private _searchCheckboxChanged( projectSearchId : number ): void {
+    private _searchEntry_NOT_In_Folder_Selected_DeSelected_Callback( projectSearchId: number ) : void {
 
-        this.setState( (state, props) : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State => {
-
-            const newSelection = new Set( state.projectSearchIds_Selected_InProgress );
-
-            if ( ! newSelection.delete( projectSearchId ) ) {
-                newSelection.add( projectSearchId )
-            }
-
-            if ( this.props.callback_updateSelected_Searches ) {
-                this.props.callback_updateSelected_Searches({ updated_selected_ProjectSearchIds: newSelection });
-            }
-
-            return { projectSearchIds_Selected_InProgress: newSelection };
-        });
+        this._searchEntry_In_Folder_Selected_DeSelected_Callback({ projectSearchId, folderId: null })
     }
 
     /**
      *
      */
-    private _deleteSearch_Callback( params : DeleteSearch_Callback_Params ) {
+    private _searchEntry_In_Folder_Selected_DeSelected_Callback( params : SearchEntry_In_Folder_Selected_DeSelected_Callback_Type_Params ): void {
 
-        const new_searchesInFolder: ProjectPage_SearchesSection_Searches_Folders_SingleSearch[] = [];
-        for ( const search of this.props.searchesAndFolders.searchesNotInFolders ) {
-            if ( search.projectSearchId !== params.projectSearchId) {
-                new_searchesInFolder.push( search );
-            }
+        //  Update selection object
+
+        if ( this._search_Selected_InProgress.has_Entry_For_ProjectSearchId( params.projectSearchId ) ) {
+            this._search_Selected_InProgress.delete_Entry_For_ProjectSearchId( params.projectSearchId )
+        } else {
+            this._search_Selected_InProgress.add_For_ProjectSearchId_IfNotExists(params.projectSearchId)
         }
-        this.props.searchesAndFolders.searchesNotInFolders = new_searchesInFolder;
 
-        this.setState({ fakeTriggerRender: {} })
+        //  Pass new selection up to parent via callback
 
-        this.props.callback_SearchDeleted()
+        const selected_Searches_Data_Object = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object({
+            search_Selected_InProgress: this._search_Selected_InProgress,
+            searchesSearchTagsFolders_Result_Root: this.props.searchesSearchTagsFolders_Result_Root
+        })
+
+        this.props.callback_updateSelected_Searches({ selected_Searches_Data_Object });
+
+        this.setState({ force_Rerender: {} })
+    }
+
+    /**
+     *
+     */
+    private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
+
+        window.location.reload(true)
     }
 
     /**
      *
      */
     render(): React.ReactNode {
+
+        if ( this.props.searchesSearchTagsFolders_Result_Root.is_NO_Folders_In_Project() ) {
+            return this._render_NO_Folders()
+        }
+
+        return this._render_YES_Folders()
+    }
+
+    /**
+     *
+     */
+    private _render_NO_Folders(): React.ReactNode {
 
         const searchDisplayList : Array<JSX.Element> = [];
 
-        {
-            const folderList = this.props.searchesAndFolders.folderList;
+        for ( const projectSearchId of this.props.searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder() ) {
 
-            if (folderList) {
-
-                for (const folderEntry of folderList) {
-
-                    const searchDisplayListEntry = (
-                        <FolderEntry
-                            key={"folder:" + folderEntry.id}
-                            projectIdentifier={ this.props.projectIdentifier }
-                            searchDisplayListItem={folderEntry}
-                            expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
-                            folderIds_ExpandedFolders_InProgress={ this.state.folderIds_ExpandedFolders_InProgress }
-                            projectSearchIds_Selected_InProgress={this.state.projectSearchIds_Selected_InProgress}
-                            dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
-                            projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                            folderEntry_Expanded_Collapsed_Callback={ this._folderEntry_Expanded_Collapsed_Callback_BindThis }
-                            callbackOn_searchEntry_Clicked={this._searchCheckboxChanged_BindThis}
-                        />
-                    )
-                    searchDisplayList.push(searchDisplayListEntry);
-                }
+            if ( this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering // null if no filtering
+                && ( ! this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId ) ) ) {
+                //  Skip since filtering and not in filter
+                continue;
             }
-        }
 
-        {
-            const searchesNotInFolders = this.props.searchesAndFolders.searchesNotInFolders;
+            const searchData = this.props.searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId);
 
-            if (searchesNotInFolders) {
-
-                for (const searchEntry of searchesNotInFolders) {
-
-                    const selected = this.state.projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
-
-                    const searchDisplayListEntry = (
-                        <SearchEntry
-                            key={searchEntry.projectSearchId}
-                            expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
-                            projectIdentifier={ this.props.projectIdentifier }
-                            searchDisplayListItem={searchEntry}
-                            selected={selected}
-                            showSeparatorBelow={true}
-                            dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                            projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                            deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
-                            callbackOn_entry_Clicked={this._searchCheckboxChanged_BindThis}
-                        />
-                    )
-                    searchDisplayList.push(searchDisplayListEntry);
-                }
+            if ( ! searchData ) {
+                const msg = "this._searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
             }
+
+
+            const selected = this._search_Selected_InProgress.has_Entry_For_ProjectSearchId(searchData.projectSearchId);
+
+            const searchDisplayListEntry = (
+                <ProjectPage_SearchEntry_UsedInMultipleSections_Component
+                    key={searchData.projectSearchId}
+                    expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
+                    projectIdentifier={ this.props.projectIdentifier }
+                    searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
+                    search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
+                    searchDisplayListItem={searchData}
+                    selected={selected}
+                    showSeparatorBelow={true}
+                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
+                    callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
+                />
+            )
+            searchDisplayList.push(searchDisplayListEntry);
         }
 
         return (
             <React.Fragment>
-                <div
-                    // style={ { padding : 6 } }
-                >
-
+                <div>
                     { searchDisplayList }
-
                 </div>
             </React.Fragment>
         );
+
     }
-}
-
-/////
-
-//  Single Search Entry
-
-interface DeleteSearch_Callback_Params {
-    projectSearchId: number
-}
-
-type DeleteSearch_Callback_Type = ( params: DeleteSearch_Callback_Params ) => void
-
-/**
- *
- */
-interface SearchEntry_Props {
-    projectIdentifier : string
-    searchDisplayListItem : ProjectPage_SearchesSection_Searches_Folders_SingleSearch
-    expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
-    selected : boolean
-    showSeparatorBelow : boolean
-    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
-    projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
-
-    callbackOn_entry_Clicked : ( projectSearchId : number ) => void;
-    deleteSearch_Callback: DeleteSearch_Callback_Type
-}
-
-/**
- *
- */
-interface SearchEntry_State {
-
-    showSearchDetails? : boolean
-    changeSearchName_Active? : boolean
-    searchName_InputField_Value? : string
-
-    expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props ?: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
-}
-
-/**
- *
- */
-class SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State > {
-
-
-    private _searchDetailsContainer_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div>
-
-    private _showSearchDetails_Clicked_BindThis = this._showSearchDetails_Clicked.bind(this);
-    private _hideSearchDetails_Clicked_BindThis = this._hideSearchDetails_Clicked.bind(this);
-    private _searchName_Clicked_BindThis = this._searchName_Clicked.bind(this);
-
-    private _changeSearchName_Clicked_BindThis = this._changeSearchName_Clicked.bind(this);
-    private _changeSearchName_InputChanged_BindThis = this._changeSearchName_InputChanged.bind(this);
-    private _changeSearchName_Save_Clicked_BindThis = this._changeSearchName_Save_Clicked.bind(this);
-
-    private _deleteSearch_Clicked_BindThis = this._deleteSearch_Clicked.bind(this);
-
-    private _qc_Page_FakeLink_Clicked_BindThis = this._qc_Page_FakeLink_Clicked.bind(this);
-    private _peptide_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
-    private _protein_Page_FakeLink_Clicked_BindThis = this._protein_Page_FakeLink_Clicked.bind(this);
-    private _modifications_Page_FakeLink_Clicked_BindThis = this._modifications_Page_FakeLink_Clicked.bind(this);
-
-    private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
-
-
-    private _searchNameInputField_Ref : React.RefObject<HTMLInputElement>; //  React.createRef()  for container <div>
-
-
-    private _searchDetailsAddedToDOM : boolean = false;
-
 
     /**
      *
      */
-    constructor(props: SearchEntry_Props) {
-        super(props);
+    private _render_YES_Folders(): React.ReactNode {
 
-        this._searchDetailsContainer_div_Ref = React.createRef<HTMLDivElement>();
-        this._searchNameInputField_Ref = React.createRef<HTMLInputElement>();
+        const folderDisplayList : Array<JSX.Element> = [];
 
-        let showSearchDetails = false;
-        if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force ) {
-            if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue ) {
-                showSearchDetails = true;
+        {
+            for ( const folderEntry of this.props.searchesSearchTagsFolders_Result_Root.get_allFolders_Data_InDisplayOrder() ) {
+
+                if ( this.props.folderIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering // null if no filtering
+                    && ( ! this.props.folderIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( folderEntry.folderId ) ) ) {
+                    //  Skip since filtering and not in filter
+                    continue;
+                }
+
+                const element = (
+                    <FolderEntry
+                        key={folderEntry.folderId}
+                        projectIdentifier={ this.props.projectIdentifier }
+                        folderEntry={folderEntry}
+                        expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
+
+                        searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
+                        search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
+                        projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering={ this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering }
+                        folderIds_ExpandedFolders_InProgress={ this.state.folderIds_ExpandedFolders_InProgress }
+                        search_Selected_InProgress={ this._search_Selected_InProgress }
+                        dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
+                        projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                        folderEntry_Expanded_Collapsed_Callback={ this._folderEntry_Expanded_Collapsed_Callback_BindThis }
+                        callbackOn_SearchEntry_In_Folder_Selected_DeSelected={ this._searchEntry_In_Folder_Selected_DeSelected_Callback_BindThis }
+                        callback_FolderDeleted={ this.props.callback_FolderDeleted }
+                    />
+                )
+                folderDisplayList.push(element);
             }
         }
 
-        this.state = {
-            changeSearchName_Active: false,
-            showSearchDetails,
-            expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props: props.expand_All_Folders__ShowSearchDetailsTo_Global_Force
-        };
-    }
+        const searchDisplayList : Array<JSX.Element> = [];
 
-    /**
-     * Must be Static
-     * Called before
-     *   Initial render: 'render()'
-     *   Rerender : 'shouldComponentUpdate()'
-     *
-     * Return new state (like return from setState(callback)) or null
-     */
-    static getDerivedStateFromProps( props : SearchEntry_Props, state : SearchEntry_State ) : SearchEntry_State {
+        for ( const projectSearchId of this.props.searchesSearchTagsFolders_Result_Root.get_searches_ProjectSearchIds_NOT_IN_ANY_Folder_InDisplayOrder() ) {
 
-        let newState : SearchEntry_State = null;
-
-        if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force !== state.expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props ) {
-
-            newState = {};
-
-            if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force ) {
-
-                newState.expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props = props.expand_All_Folders__ShowSearchDetailsTo_Global_Force
-                newState.showSearchDetails = props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue
-            }
-        }
-
-        return newState;
-    }
-
-    /**
-     *
-     */
-    componentDidMount() {
-
-        if ( this.state.showSearchDetails && ( ! this._searchDetailsAddedToDOM ) ) {
-            this._addSearchDetailToDOM()
-        }
-    }
-
-    /**
-     *
-     */
-    componentDidUpdate(prevProps: Readonly<SearchEntry_Props>, prevState: Readonly<SearchEntry_State>, snapshot?: any): void {
-
-        if ( prevProps.searchDisplayListItem.projectSearchId !== this.props.searchDisplayListItem.projectSearchId ) {
-
-            /// If update and projectSearchId changed, remove Search Details from DOM and set showSearchDetails to false
-
-            this._removeSearchDetailsFromDOM(); //  Will also set this._searchDetailsAddedToDOM to false
-        }
-
-        if ( this.state.showSearchDetails && ( ! this._searchDetailsAddedToDOM ) ) {
-            this._addSearchDetailToDOM()
-        }
-    }
-
-    /**
-     *
-     */
-    componentWillUnmount(): void {
-
-        this._removeSearchDetailsFromDOM();
-    }
-
-    /**
-     *
-     */
-    private _removeSearchDetailsFromDOM() {
-
-        const $detailsContainer = $( this._searchDetailsContainer_div_Ref.current );
-        $detailsContainer.empty()
-
-        this._searchDetailsAddedToDOM = false;
-    }
-
-    /**
-     * Show Search Details
-     */
-    private _showSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
-
-        this.setState({ showSearchDetails: true })
-    }
-
-    /**
-     * Hide Search Details
-     */
-    private _hideSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
-
-        this.setState({ showSearchDetails: false })
-    }
-
-    /**
-     *
-     */
-    private _searchName_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
-
-        event.stopPropagation();
-
-        try { // In try/catch block in case not supported in browser
-            const selectionObj = window.getSelection();
-            const selection = selectionObj.toString()
-            if ( selection ) {
-                //  Found a Selection so exit with no further action
-                return; //  EARLY RETURN
+            if ( this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering // null if no filtering
+                && ( ! this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId ) ) ) {
+                //  Skip since filtering and not in filter
+                continue;
             }
 
-        } catch (e) {
-            //  Eat exception
-            const znothing = 0;
-        }
+            const searchData = this.props.searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId);
 
-        this.setState( (state, props) : SearchEntry_State => {
+            if ( ! searchData ) {
+                const msg = "this._searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
+            }
 
-            return { showSearchDetails: ! state.showSearchDetails };
-        });
-    }
 
-    /**
-     *
-     */
-    private _changeSearchName_Clicked(event: React.MouseEvent<HTMLImageElement, MouseEvent>) {
+            const selected = this._search_Selected_InProgress.has_Entry_For_ProjectSearchId(searchData.projectSearchId);
 
-        const searchName_InputField_Value = this.props.searchDisplayListItem.name;
-        this.setState({ changeSearchName_Active: true, searchName_InputField_Value });
-    }
-
-    /**
-     *
-     */
-    private _changeSearchName_InputChanged(event: React.MouseEvent<HTMLInputElement, MouseEvent>) {
-
-        const searchName_InputField_Value = this._searchNameInputField_Ref.current.value;
-        this.setState({ searchName_InputField_Value });
-    }
-
-    /**
-     *
-     */
-    private _changeSearchName_Save_Clicked(event: React.MouseEvent<HTMLImageElement, MouseEvent>) {
-
-        const saveComplete_Callback = () => {
-
-            this.props.searchDisplayListItem.name = searchName_InputField_Value;
-            this.setState({ changeSearchName_Active: false });
-        }
-
-        const searchName_InputField_Value = this.state.searchName_InputField_Value;
-        this.props.projectPage_SearchesAdmin.saveSearchName({
-            projectSearchId: this.props.searchDisplayListItem.projectSearchId,
-            newSearchName: searchName_InputField_Value,
-            saveComplete_Callback
-        });
-    }
-
-    /**
-     *
-     */
-    private _deleteSearch_Clicked(event: React.MouseEvent<HTMLImageElement, MouseEvent>) {
-
-        const deleteComplete_Callback = (): void => {
-
-            this.props.deleteSearch_Callback({ projectSearchId: this.props.searchDisplayListItem.projectSearchId });
-        }
-
-        this.props.projectPage_SearchesAdmin.deleteSearch({
-            projectSearchId: this.props.searchDisplayListItem.projectSearchId,
-            searchId: this.props.searchDisplayListItem.searchId,
-            searchName: this.props.searchDisplayListItem.name,
-            projectIdentifier : this.props.projectIdentifier,
-            deleteComplete_Callback
-        })
-    }
-
-    /**
-     *
-     */
-    private _qc_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
-
-        event.stopPropagation();
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
-        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
-
-        const projectSearchIds = new Set<number>();
-        projectSearchIds.add( projectSearchId );
-
-        const projectSearchIdCodes = new Set<string>();
-        projectSearchIdCodes.add( projectSearchIdCode );
-
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.qc_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
-    }
-
-    /**
-     *
-     */
-    private _peptide_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
-
-        event.stopPropagation();
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
-        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
-
-        const projectSearchIds = new Set<number>();
-        projectSearchIds.add( projectSearchId );
-
-        const projectSearchIdCodes = new Set<string>();
-        projectSearchIdCodes.add( projectSearchIdCode );
-
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.peptide_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
-    }
-
-    /**
-     *
-     */
-    private _protein_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
-
-        event.stopPropagation();
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
-        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
-
-        const projectSearchIds = new Set<number>();
-        projectSearchIds.add( projectSearchId );
-
-        const projectSearchIdCodes = new Set<string>();
-        projectSearchIdCodes.add( projectSearchIdCode );
-
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.protein_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
-    }
-
-    /**
-     *
-     */
-    private _modifications_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const projectSearchIdCode = this.props.searchDisplayListItem.projectSearchIdCode;
-        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
-
-        const projectSearchIds = new Set<number>();
-        projectSearchIds.add( projectSearchId );
-
-        const projectSearchIdCodes = new Set<string>();
-        projectSearchIdCodes.add( projectSearchIdCode );
-
-        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.mod_View_OpenDataPage({ projectSearchIds, projectSearchIdCodes, ctrlKeyOrMetaKey })
-    }
-
-    /**
-     * Add Search Details to DOM
-     */
-    private _addSearchDetailToDOM() {
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers = (
-            new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({
-                dataPages_LoggedInUser_CommonObjectsFactory : this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails
-            })
-        );
-
-        searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.showSearchDetailsClicked({ projectSearchId, domElementToInsertInto : this._searchDetailsContainer_div_Ref.current });
-
-        this._searchDetailsAddedToDOM = true;
-    }
-
-    ////////////////////////////////////////
-
-    /**
-     *
-     */
-    private _checkboxChanged( event: React.MouseEvent<HTMLDivElement> ): void {
-
-        this.props.callbackOn_entry_Clicked( this.props.searchDisplayListItem.projectSearchId );
-    }
-
-    /**
-     *
-     */
-    render(): React.ReactNode {
-
-        const searchDisplayListItem = this.props.searchDisplayListItem;
-
-        let selectedClass = ""
-
-        // if ( this.props.selected ) {
-        //     selectedClass = " selected "
-        // }
-
-        const cssClasses = "  " + selectedClass;
-
-        const searchNameDisplay = searchDisplayListItem.name+ " (" + searchDisplayListItem.searchId + ")";
-
-        const searchDetailsContainer_div_Style : React.CSSProperties = {}
-        if ( ! this.state.showSearchDetails ) {
-            searchDetailsContainer_div_Style.display = "none";
+            const searchDisplayListEntry = (
+                <ProjectPage_SearchEntry_UsedInMultipleSections_Component
+                    key={searchData.projectSearchId}
+                    expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
+                    projectIdentifier={ this.props.projectIdentifier }
+                    searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
+                    search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
+                    searchDisplayListItem={searchData}
+                    selected={selected}
+                    showSeparatorBelow={true}
+                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
+                    callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
+                />
+            )
+            searchDisplayList.push(searchDisplayListEntry);
         }
 
         return (
             <React.Fragment>
-                <div
-                     className={ cssClasses }
-                     style={ { display: "grid", gridTemplateColumns: "  24px  16px auto " } }>
-
-                    {/*  3 Column Grid  */}
-
-                    <div style={ { marginRight: 8, position: "relative" } }>
-                        <div style={ { position: "absolute", top: -2 }}>
-                            <input type="checkbox" checked={ this.props.selected } onChange={ this._checkboxChanged_BindThis } />
-                        </div>
-                    </div>
-                    <div >
-                        { ( this.state.showSearchDetails ) ? (
-                            <img className="icon-small fake-link-image "
-                                 onClick={ this._hideSearchDetails_Clicked_BindThis }
-                                 src="static/images/pointer-down.png"/>
-                        ) : (
-                            <img className="icon-small fake-link-image "
-                                 onClick={ this._showSearchDetails_Clicked_BindThis }
-                                 src="static/images/pointer-right.png"/>
-                        )}
-                    </div>
-
-                    {/* Container for both search name and the links to the right */}
-
-                    <div >
-
-                        {/* 2 Column Grid */}
-                        <div style={ { display: "grid", gridTemplateColumns: "  auto min-content " } }>
-                            <div style={ { maxWidth: "calc( 100vw - 390px )" }}>
-                                { ( ! this.state.changeSearchName_Active ) ? (
-                                    <React.Fragment>
-                                        <span
-                                            style={ { overflowWrap : "break-word"} }
-                                            className=" clickable "
-                                            onClick={ this._searchName_Clicked_BindThis }
-                                        >
-                                            { searchNameDisplay }
-                                        </span>
-                                        <span> </span>
-                                        { ( searchDisplayListItem.canChangeSearchName ) ? (
-                                            <img className="icon-small clickable  edit_search_name_jq selector_tool_tip_attached "
-                                                 src="static/images/icon-edit.png"
-                                                 title="Edit name of search"
-                                                 onClick={ this._changeSearchName_Clicked_BindThis }
-                                            />
-                                        ): null }
-                                    </React.Fragment>
-                                ) : (
-                                    <div style={ { whiteSpace: "nowrap" } }>
-                                        <input
-                                            style={ { width: 600 } }
-                                            value={ this.state.searchName_InputField_Value }
-                                            ref={ this._searchNameInputField_Ref }
-                                            onChange={ this._changeSearchName_InputChanged_BindThis }
-                                        />
-                                        <span> </span>
-                                        <input type="button" value="Save"
-                                           onClick={ this._changeSearchName_Save_Clicked_BindThis }
-                                        />
-                                        <span> </span>
-                                        <input type="button" value="Cancel"
-                                               onClick={ (event) => { this.setState({ changeSearchName_Active: false}) } }
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
-
-                                {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */}
-
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._qc_Page_FakeLink_Clicked_BindThis }
-                                >
-                                    [Stats/QC]
-                                </span>
-                                <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._peptide_Page_FakeLink_Clicked_BindThis }
-                                >
-                                    [Peptides]
-                                </span>
-                                <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
-                                >
-                                    [Proteins]
-                                </span>
-                                <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._modifications_Page_FakeLink_Clicked_BindThis }
-                                >
-                                    [Modifications]
-                                </span>
-
-                                {/* Delete Search Icon */}
-                                <span> </span>
-                                { ( searchDisplayListItem.canDelete ) ? (
-                                    <img className="icon-small clickable  "
-                                         src="static/images/icon-circle-delete.png"
-                                         title="Delete search"
-                                         onClick={ this._deleteSearch_Clicked_BindThis }
-                                    />
-                                ): null }
-                            </div>
-                        </div>
-
-                        {/* Search Detail Container */}
-                        <div ref={ this._searchDetailsContainer_div_Ref } style={ searchDetailsContainer_div_Style }>
-                            <span
-                                style={ { color: "green", fontSize: 18 } }
-                            >
-                                LOADING
-                            </span>
-                        </div>
-                    </div>
+                <div>
+                    { folderDisplayList }
                 </div>
-
-                {this.props.showSeparatorBelow ?
-                    <div className="standard-border-color-dark"
-                         style={{ marginTop: 7,marginBottom: 8, width: "100%", borderBottomStyle: "solid", borderBottomWidth: 1 }}
-                    ></div>
-                    : null
-                }
-
+                <div>
+                    { searchDisplayList }
+                </div>
             </React.Fragment>
         );
+
     }
 }
+
 
 interface FolderEntry_Expanded_Collapsed_Callback_Params {
     folderId: number
@@ -826,6 +450,14 @@ interface FolderEntry_Expanded_Collapsed_Callback_Params {
 
 type FolderEntry_Expanded_Collapsed_Callback_Type =
     ( params : FolderEntry_Expanded_Collapsed_Callback_Params ) => void
+
+interface SearchEntry_In_Folder_Selected_DeSelected_Callback_Type_Params {
+    folderId: number
+    projectSearchId: number
+}
+
+type SearchEntry_In_Folder_Selected_DeSelected_Callback_Type =
+    ( params : SearchEntry_In_Folder_Selected_DeSelected_Callback_Type_Params ) => void
 
 /////
 
@@ -836,18 +468,23 @@ type FolderEntry_Expanded_Collapsed_Callback_Type =
  */
 interface FolderEntry_Props {
     projectIdentifier : string
-    searchDisplayListItem : ProjectPage_SearchesSection_Searches_Folders_SingleFolder
+    folderEntry : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
 
-    projectSearchIds_Selected_InProgress : Set<number>
+    searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
+    search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
+    projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering?: Set<number>   //  null if no filtering
+
+    search_Selected_InProgress : ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData
     folderIds_ExpandedFolders_InProgress : Set<number>;
 
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     folderEntry_Expanded_Collapsed_Callback: FolderEntry_Expanded_Collapsed_Callback_Type
-    callbackOn_searchEntry_Clicked : ( projectSearchId : number ) => void;
+    callbackOn_SearchEntry_In_Folder_Selected_DeSelected : SearchEntry_In_Folder_Selected_DeSelected_Callback_Type
+    callback_FolderDeleted: () => void
 }
 
 /**
@@ -868,9 +505,11 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
     private _deleteSearch_Callback_BindThis = this._deleteSearch_Callback.bind(this);
 
+    private _callbackOn_searchEntry_Clicked_BindThis = this._callbackOn_searchEntry_Clicked.bind(this);
+
     private _DO_NOT_CALL() {
 
-        const deleteSearch_Callback: DeleteSearch_Callback_Type = this._deleteSearch_Callback;
+        const deleteSearch_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type = this._deleteSearch_Callback;
     }
 
     /**
@@ -879,22 +518,15 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     constructor(props: FolderEntry_Props) {
         super(props);
 
-        let folderExpanded = false;
-
-        const searchesInFolder = this.props.searchDisplayListItem.searchesInFolder;
-
-        if ( searchesInFolder ) {
-            for (const searchEntry of searchesInFolder) {
-
-                if (searchEntry.projectSearchId !== undefined) {
-
-                    const selected = this.props.projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
-                    if (selected) {
-                        folderExpanded = true; // Set true if any contained search is initially selected
-                    }
-                }
-            }
-        }
+        // let folderExpanded = false;
+        //
+        // for (const projectSearchId of this.props.folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder) {
+        //
+        //     const selected = this.props.projectSearchIds_Selected_InProgress.has(projectSearchId);
+        //     if (selected) {
+        //         folderExpanded = true; // Set true if any contained search is initially selected
+        //     }
+        // }
 
         this.state = {};
     }
@@ -919,7 +551,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
             const znothing = 0;
         }
 
-        this.props.folderEntry_Expanded_Collapsed_Callback({ flip_isExpanded: true, folderId: this.props.searchDisplayListItem.id });
+        this.props.folderEntry_Expanded_Collapsed_Callback({ flip_isExpanded: true, folderId: this.props.folderEntry.folderId });
     }
 
     /**
@@ -929,10 +561,18 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
         event.stopPropagation();
 
-        this.props.projectPage_SearchesAdmin.projectPage_SearchesAdmin_OrganizeSearchesAndFolders.
-        changeFolderName_MainFolderList({ folderId: this.props.searchDisplayListItem.id, folderName: this.props.searchDisplayListItem.folderName });
-    }
+        const eventTarget_DOMElement = event.target as HTMLImageElement
 
+        const eventTarget_DOMElement_BoundingRect = eventTarget_DOMElement.getBoundingClientRect();
+
+        const position_top =  eventTarget_DOMElement_BoundingRect.top;
+        const position_left =  eventTarget_DOMElement_BoundingRect.left;
+
+        this.props.projectPage_SearchesAdmin.renameFolder({
+            folderId: this.props.folderEntry.folderId, folderName: this.props.folderEntry.folderName,
+            position_top, position_left
+        });
+    }
 
     /**
      *
@@ -941,23 +581,38 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
         event.stopPropagation();
 
-        this.props.projectPage_SearchesAdmin.deleteFolder({ folderId: this.props.searchDisplayListItem.id })
+        const callback_FolderDelete_Complete = () : void => {
+
+            this.props.callback_FolderDeleted()
+        }
+
+        this.props.projectPage_SearchesAdmin.deleteFolder({ folderId: this.props.folderEntry.folderId, callback_FolderDelete_Complete })
     }
 
     /**
      *
      */
-    private _deleteSearch_Callback( params : DeleteSearch_Callback_Params ) {
+    private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
 
-        const new_searchesInFolder: ProjectPage_SearchesSection_Searches_Folders_SingleSearch[] = [];
-        for ( const search of this.props.searchDisplayListItem.searchesInFolder ) {
-            if ( search.projectSearchId !== params.projectSearchId) {
-                new_searchesInFolder.push( search );
-            }
-        }
-        this.props.searchDisplayListItem.searchesInFolder = new_searchesInFolder;
+        window.location.reload(true)
 
-        this.setState({ fakeTriggerRender: {} })
+        // const new_searchesInFolder: ProjectPage_SearchesSection_Searches_Folders_SingleSearch[] = [];
+        // for ( const search of this.props.folderEntry.searchesInFolder ) {
+        //     if ( search.projectSearchId !== params.projectSearchId) {
+        //         new_searchesInFolder.push( search );
+        //     }
+        // }
+        // this.props.folderEntry.searchesInFolder = new_searchesInFolder;
+        //
+        // this.setState({ fakeTriggerRender: {} })
+    }
+
+    /**
+     *
+     */
+    private _callbackOn_searchEntry_Clicked( projectSearchId : number ) : void {
+
+        this.props.callbackOn_SearchEntry_In_Folder_Selected_DeSelected({ folderId: this.props.folderEntry.folderId, projectSearchId })
     }
 
     /**
@@ -969,25 +624,31 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
         const searchDisplayList : Array<JSX.Element> = [];
         let emptyFolderMessage : JSX.Element = null;
 
-        const folderExpanded = this.props.folderIds_ExpandedFolders_InProgress.has( this.props.searchDisplayListItem.id );
+        const folderExpanded = this.props.folderIds_ExpandedFolders_InProgress.has( this.props.folderEntry.folderId );
 
         if ( folderExpanded ) {
 
-            const searchesInFolder = this.props.searchDisplayListItem.searchesInFolder
+            const projectSearchIds_InDisplayOrder = this.props.folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder
 
-            if ( searchesInFolder && searchesInFolder.length > 0 ) {
+            if ( projectSearchIds_InDisplayOrder && projectSearchIds_InDisplayOrder.length > 0 ) {
 
-                const searchesInFolder_length = searchesInFolder.length;
+                const searchesInFolder_length = projectSearchIds_InDisplayOrder.length;
 
                 let counter = 0;
 
-                for (const searchEntry of searchesInFolder) {
+                for (const projectSearchId_InDisplayOrder of projectSearchIds_InDisplayOrder) {
 
                     counter++;
 
-                    if (searchEntry.projectSearchId !== undefined) {
+                    if ( this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering // null if no filtering
+                        && ( ! this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( projectSearchId_InDisplayOrder ) ) ) {
+                        //  Skip since filtering and not in filter
+                        continue;
+                    }
 
-                        const selected = this.props.projectSearchIds_Selected_InProgress.has(searchEntry.projectSearchId);
+                    if (projectSearchId_InDisplayOrder !== undefined) {
+
+                        const selected = this.props.search_Selected_InProgress.has_Entry_For_ProjectSearchId(projectSearchId_InDisplayOrder);
                         if (selected) {
                             anySearchSelected = true;
                         }
@@ -997,17 +658,29 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                             showSeparatorBelow = false;
                         }
 
+                        const searchData = this.props.searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId_InDisplayOrder);
+
+                        if ( ! searchData ) {
+                            const msg = "this._searchesSearchTagsFolders_Result_Root.get_SearchData_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId_InDisplayOrder;
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+
                         const searchDisplayListEntry = (
-                            <SearchEntry key={searchEntry.projectSearchId}
-                                         projectIdentifier={ this.props.projectIdentifier }
-                                         searchDisplayListItem={searchEntry}
-                                         expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
-                                         selected={selected}
-                                         showSeparatorBelow={ showSeparatorBelow }
-                                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
-                                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                                         deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
-                                         callbackOn_entry_Clicked={this.props.callbackOn_searchEntry_Clicked}
+                            <ProjectPage_SearchEntry_UsedInMultipleSections_Component
+                                key={searchData.projectSearchId}
+                                projectIdentifier={ this.props.projectIdentifier }
+                                searchDisplayListItem={searchData}
+                                searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
+                                search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
+                                expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
+                                selected={selected}
+                                showSeparatorBelow={ showSeparatorBelow }
+                                dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
+                                projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                                deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
+                                callbackOn_Search_Entry_Clicked={this._callbackOn_searchEntry_Clicked_BindThis}
                             />
                         )
                         searchDisplayList.push(searchDisplayListEntry);
@@ -1054,9 +727,19 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                             }
                         </div>
                         <div>
-                            <span className=" folder-name-display ">{ this.props.searchDisplayListItem.folderName }</span>
+                            <span className=" folder-name-display ">
+                                { this.props.folderEntry ? (
+                                    <span>
+                                        { this.props.folderEntry.folderName }
+                                    </span>
+                                ) : (
+                                    <span>
+                                        All Searches   {/*  "All Searches" Folder Label  */}
+                                    </span>
+                                )}
+                            </span>
 
-                            { ( this.props.searchDisplayListItem.canEdit ) ? (
+                            { ( this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                 <React.Fragment>
                                     <span> </span>
                                     <img src="static/images/icon-edit.png"
@@ -1066,7 +749,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                                     />
                                 </React.Fragment>
                             ) : null }
-                            { ( this.props.searchDisplayListItem.canDelete ) ? (
+                            { ( this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                 <React.Fragment>
                                     <span> </span>
                                     <img src="static/images/icon-circle-delete.png"
@@ -1093,4 +776,45 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
             </React.Fragment>
         );
     }
+}
+
+
+/**
+ *
+ */
+export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData {
+
+    private _search_Selected_InProgress : Array<number> = [];
+
+    add_For_ProjectSearchId_IfNotExists ( projectSearchId: number ) {
+        if ( ! this._search_Selected_InProgress.includes( projectSearchId ) ) {
+            this._search_Selected_InProgress.push( projectSearchId );
+        }
+    }
+
+    has_Entry_For_ProjectSearchId( projectSearchId: number ) {
+        return this._search_Selected_InProgress.includes( projectSearchId )
+    }
+
+    delete_Entry_For_ProjectSearchId( projectSearchId: number ) : void {
+        this._search_Selected_InProgress = this._search_Selected_InProgress.filter(value => {
+            if ( value === projectSearchId ) {
+                return false
+            }
+            return true
+        })
+    }
+
+    is_ANY_Search_Selected() {
+        return this._search_Selected_InProgress.length > 0
+    }
+
+    get_Number_Searches_Selected() {
+        return this._search_Selected_InProgress.length
+    }
+
+    get_search_Selected_InProgress_ProjectSearchIdArray(): ReadonlyArray<number> {
+        return this._search_Selected_InProgress
+    }
+
 }

@@ -199,7 +199,6 @@ const _getHTMLFromAJAXResponse = function ( { overall_AJAX_Response_Holder } : {
 	const responseData = overall_AJAX_Response_Holder.coreDataFromServer;
 	const searchNamesAndSubGroups = overall_AJAX_Response_Holder.searchNamesAndSubGroups;
 
-
 	const searchNamesAndSubGroups_searchSubGroupsPerSearchList = searchNamesAndSubGroups.searchSubGroupsPerSearchList;
 	const canEditSearchSubGroups = searchNamesAndSubGroups.canEditSearchSubGroups;
 

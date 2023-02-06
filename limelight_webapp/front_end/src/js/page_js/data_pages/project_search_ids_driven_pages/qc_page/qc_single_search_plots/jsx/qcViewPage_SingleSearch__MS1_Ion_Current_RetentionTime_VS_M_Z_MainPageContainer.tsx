@@ -291,6 +291,9 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
                                     qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                     qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                     onlyForOverlay={ null }
+                                    featureDetection_Root_Entry_Selection={ null }
+                                    show_Persistent_FeatureBoundaries={ false }
+                                    show_Individual_MS_1_Features={ false }
                                     isInSingleChartOverlay={ false }
                                 />
                             </QcPage_ChartBorder>

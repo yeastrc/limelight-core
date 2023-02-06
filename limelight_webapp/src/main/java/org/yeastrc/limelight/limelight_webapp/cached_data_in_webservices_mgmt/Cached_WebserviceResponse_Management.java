@@ -162,7 +162,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	}
 	
 
-	/* (non-Javadoc)
+	/* 
+	 * If boolean accept_GZIP is false, it will unzip the cached response before returning it
+	 * 
+	 * (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF#getCachedResponse(java.lang.String, byte[])
 	 */
 	@Override

@@ -16,6 +16,8 @@ public interface Cached_WebserviceResponse_Management_IF {
 	Set<String> get_registered_ControllerPaths_Copy();
 	
 	/**
+	 * If boolean accept_GZIP is false, it will unzip the cached response before returning it
+	 * 
 	 * @param accept_GZIP TODO
 	 * @param controllerPathForCachedResponse
 	 * @param requestPostBody

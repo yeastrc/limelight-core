@@ -68,9 +68,13 @@ public class ViewProjectSearchesInFolders implements ViewProjectSearchesInFolder
 		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
 		
 		if ( searchListDB.isEmpty() ) {
+			//  NO Searches
 			projectPageFoldersSearches.setNoSearchesFound( true );
 			return projectPageFoldersSearches; //  EARLY EXIT
 		}
+		
+		//  Have Searches
+		
 		projectPageFoldersSearches.setNoSearchesFound( false );
 		//  Get data for Put searches into folders
 		List<FolderForProjectDTO> folderForProjectList = folderForProjectDAO_IF.getFolderForProjectDTO_ForProjectId( projectId );

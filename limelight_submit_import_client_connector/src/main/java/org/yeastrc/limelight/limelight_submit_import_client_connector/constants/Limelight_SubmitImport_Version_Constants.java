@@ -2,7 +2,7 @@ package org.yeastrc.limelight.limelight_submit_import_client_connector.constants
 
 public class Limelight_SubmitImport_Version_Constants {
 
-	public static final int SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER = 4;
+	public static final int SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER = 7;
 	
 	/**
 	 * Used in Web app to error if passed in version number is < this value

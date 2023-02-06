@@ -21,13 +21,11 @@ import {AnnotationTypeDataRetrieval} from "page_js/data_pages/data_pages_common/
 import {SearchProgramsPerSearchDataRetrieval} from "page_js/data_pages/data_pages_common/searchProgramsPerSearchDataRetrieval";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    getSearchesAndFolders_SingleProject
-} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
-import {
     defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval,
     DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein,
     DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 } from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {getSearchesSearchTagsAndFolders_SingleProject} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 /**
  *
@@ -106,28 +104,15 @@ export const set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer =
 
     return new Promise<Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result>((resolve,reject) => {
         try {
-            const promise_getSearches = getSearchesAndFolders_SingleProject({ projectIdentifier: projectIdentifierFromURL });
+            const promise_getSearches = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier: projectIdentifierFromURL });
 
             promise_getSearches.catch( (reason) => {
                 reject( reason )
             })
 
-            promise_getSearches.then( result => {
+            promise_getSearches.then( searchesSearchTagsFolders_Result_Root => {
 
-                const projectSearchIds : Array<number> = []
-
-                for ( const item of result.items ) {
-
-                    if ( item.isFolder ) {
-
-                        for ( const search of item.searchesInFolder ) {
-                            projectSearchIds.push( search.projectSearchId );
-                        }
-                    } else {
-
-                        projectSearchIds.push( item.projectSearchId )
-                    }
-                }
+                const projectSearchIds : Array<number> = Array.from( searchesSearchTagsFolders_Result_Root.get_all_Searches_ProjectSearchIds_Set() );
 
                 const promise_primary = _getPrimaryData({ projectIdentifierFromURL, projectSearchIds });
 

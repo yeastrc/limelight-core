@@ -3,7 +3,10 @@ Submit Import Help:
 --limelight-web-app-url=<URL to Limelight web app, including the "/limelight" > 
          (may be different from "/limelight" 
           if the deployed war file was changed from "limelight.war")
+          
     **  See information at end of help about configuration file
+    
+    **     See below for Submit ONLY Scan Files with NO Limelight XML file 
 
 -V  display version (Capitol V)
 
@@ -31,9 +34,38 @@ Submit Import Help:
 
 --no-search-description
 
---send-search-path
+--search-short-label=      : Short Label for Search.  Same as 'Short Label:' in the web app.  Value will be truncated to the max allowed length if necessary
 
-  ---
+--path=					   : Displayed in "Path" on website. 
+
+--send-search-path         : Send current directory as "Path"
+								(Not allowed if '--path=' is set)
+
+--search-tag=   :  tag string to put on the imported search.  
+					(To specify the category, make the parameter value "<category>~<tag string>"  so "~" is the separator)
+					(There is a Max Length of tag string allowed.  Tag string will be truncated to the max allowed length if necessary)
+					(Can have multiple, repeat the --search-tag=)
+
+  -------------
+  
+  Submit ONLY Scan Files with NO Limelight XML file - MUST have at least one scan file
+  
+  --no-limelight-xml-file : NO Limelight XML file
+  
+  -s (--scan-file=)  <scan file>
+   (Can have more than one scan file. 
+    Repeat the: 
+    	-s (--scan-file=)  <scan file>
+    for each scan file.)
+
+	*** When Scan File(s) submitted without a Limelight XML file, each Scan File will be submitted separately
+			-- Each scan file will be listed as a separate import
+			-- Some scan files may be successfully submitted even if this program fails. 
+
+
+	Ignored: --search-description= --search-short-label=  --send-search-path  --search-tag=
+
+  -------------
   
   To Test that user can submit to the project but not submit a file, use:
   (No files, search description, or send search path is allowed when this property is set)

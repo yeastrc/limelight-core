@@ -142,7 +142,6 @@ public class Get_SearchDetailsCore_RestWebservice {
 			
     		UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
 
-    		
     		Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath populatePath = Get_SearchDetails_Core_For_ProjectSearchIds_Service__PopulatePath.NO;
 
     		if ( userSession != null && userSession.isActualUser() ) {
@@ -165,7 +164,7 @@ public class Get_SearchDetailsCore_RestWebservice {
     				.get_SearchDetails_Core_For_ProjectSearchIds( webserviceRequest.getProjectSearchIds(), populatePath, populate_ConverterProgram_CLI_Parameters );
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
-    	    		
+    		
     		webserviceResult.setResults( results );
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -211,7 +210,7 @@ public class Get_SearchDetailsCore_RestWebservice {
     public static class WebserviceResult {
     
     	private List<SearchDetails_Core_Item> results;
-
+    	
 		public List<SearchDetails_Core_Item> getResults() {
 			return results;
 		}
@@ -219,7 +218,6 @@ public class Get_SearchDetailsCore_RestWebservice {
 		public void setResults(List<SearchDetails_Core_Item> results) {
 			this.results = results;
 		}
-
     }
 
 }

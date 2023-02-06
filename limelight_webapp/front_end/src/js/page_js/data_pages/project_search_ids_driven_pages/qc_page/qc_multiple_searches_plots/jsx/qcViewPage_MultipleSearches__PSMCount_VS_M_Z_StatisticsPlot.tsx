@@ -21,9 +21,13 @@ import {DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_R
 import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
 import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
+    QcPage_Plotly__ChangePlotlyLayout_For_XaxisLabelLengths__Params,
     QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
     QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+import {qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_plots/js/qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 
 
 const chartTitle = "Distribution of PSM Precursor m/z";
@@ -56,7 +60,10 @@ interface QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot_State {
 /**
  *
  */
-export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends React.Component< QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot_Props, QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot_State > {
+export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot
+    extends React.Component< QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot_Props, QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     static chartTitle = chartTitle;
 
@@ -69,6 +76,8 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
     private _qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
     private _componentMounted = false;
 
@@ -87,13 +96,37 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
         this.plot_Ref = React.createRef();
         this.image_Ref = React.createRef();
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = { showCreatingMessage: true, showUpdatingMessage: false };
+    }
+
+    /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
     }
 
     /**
      *
      */
     componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
 
         try {
             if ( this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params ) {
@@ -209,10 +242,26 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
                 //  Eat Exception
             }
 
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
+
             this.setState({ showUpdatingMessage: true });
 
             window.setTimeout( () => {
                 try {
+                    if (
+                        ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                        )) {
+                        //  Skip these params since they are not the "Latest"
+                        return; // EARLY RETURN
+                    }
+
                     this._loadData_IfNeeded_ThenCall_populateChart();
 
                 } catch( e ) {
@@ -297,6 +346,13 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
                     //  Component no longer mounted so exit
                     return; // EARLY RETURN
                 }
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
+                    return; // EARLY RETURN
+                }
 
                 this._populateChart({ data_Holder_MultipleSearches });
 
@@ -332,7 +388,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
         const peptideDistinct_Array =
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-        const searchNames_AsMap = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchNames_AsMap();
+        const searchData_SearchName_Etc_Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
         const qcViewPage_MultipleSearches__ComputeColorsForSearches = new QcViewPage_MultipleSearches__ComputeColorsForSearches({projectSearchIds});
 
@@ -372,14 +428,14 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
                 }
             }
 
-            const searchData = searchNames_AsMap.get( projectSearchId );
+            const searchData = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
             if ( ! searchData ) {
-                const msg = "searchNames_AsMap.get( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
+                const msg = "searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
 
-            const x_Label = searchData.searchId.toString();
+            const x_Label = searchData.searchLabel__SearchShortName_OR_SearchId;
 
             const psmTblData = data_Holder_SingleSearch.psmTblData
 
@@ -438,13 +494,16 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
 
             const color = qcViewPage_MultipleSearches__ComputeColorsForSearches.get_Color_AsHexString_By_ProjectSearchId( projectSearchId )
 
-            const searchData = searchNames_AsMap.get( projectSearchId );
+            const searchData = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
             if ( ! searchData ) {
-                const msg = "searchNames_AsMap.get( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
+                const msg = "searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
-            transforms_styles.push({target: searchData.searchId.toString(), value: {line: {color: color}}});
+
+            const x_Label = searchData.searchLabel__SearchShortName_OR_SearchId;
+
+            transforms_styles.push({target: x_Label, value: {line: {color: color}}});
         }
 
         const chart_Data_Entry = {
@@ -485,9 +544,17 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
         //         type: 'bar'
         //     };
 
+        const qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc__Result =
+            qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc({
+                projectSearchIds,
+                searchData_SearchName_Etc_Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root()
+            })
+
+        const xAxisTitle = qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc__Result.xAxisTitle;
+
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,
-            chart_X_Axis_Label: "Search Number",
+            chart_X_Axis_Label: xAxisTitle,
             chart_X_Axis_IsTypeCategory: true,
             chart_Y_Axis_Label: "m/z",
             showlegend: false,
@@ -525,6 +592,9 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
             // console.log("*********************************")
         }
 
+        const changePlotlyLayout_For_XaxisLabelLengths__Params: QcPage_Plotly__ChangePlotlyLayout_For_XaxisLabelLengths__Params = {
+            xAxisLabels: new Set(chart_X), xAxisTitle
+        }
 
         if ( ! this.props.isInSingleChartOverlay ) {
 
@@ -535,7 +605,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
                 chart_Width: chart_Layout.width,
                 chart_Height: chart_Layout.height,
                 image_DOM_Element: this.image_Ref.current,
-                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                changePlotlyLayout_For_XaxisLabelLengths__Params,
                 plotRendered_Success_Callback: () : void => {
                     this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
                 },
@@ -558,7 +628,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_M_Z_StatisticsPlot extends
                 chart_Width: chart_Layout.width,
                 chart_Height: chart_Layout.height,
                 plot_Div_DOM_Element: this.plot_Ref.current,
-                changePlotlyLayout_For_XaxisLabelLengths__Params: undefined,
+                changePlotlyLayout_For_XaxisLabelLengths__Params,
                 plotRendered_Success_Callback: () : void => {
                     this.setState({ showCreatingMessage: false, showUpdatingMessage: false }); // Do at end
                 },

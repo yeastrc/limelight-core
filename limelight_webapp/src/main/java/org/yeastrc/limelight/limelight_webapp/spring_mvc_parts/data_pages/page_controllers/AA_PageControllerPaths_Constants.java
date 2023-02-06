@@ -78,6 +78,11 @@ public class AA_PageControllerPaths_Constants {
 	 */
 	public static final String PROJECT_SHORT_NAME_REDIRECT_PAGE_CONTROLLER = "p";
 
+	/**
+	 * Project - Organize Searches
+	 */
+	public static final String PROJECT_ORGANIZE_SEARCHES_VIEW_PAGE_CONTROLLER = "d/pg/project-organize-searches";  //  Hard coded in front end code
+
 	///////////////
 	
 	//   PSM based controller
@@ -148,6 +153,17 @@ public class AA_PageControllerPaths_Constants {
 	 * QC View - QC View - 1 or multiple project search ids
 	 */
 	public static final String QC_VIEW_PAGE_CONTROLLER = "d/pg/psb/qc-view/";
+	
+	
+	///////  Scan File Pages
+
+	/**
+	 * Scan Browser - Scan File Browser View - 1 project id and 1 Scan File id
+	 */
+	public static final String SCAN_FILE_BROWSER_PAGE_CONTROLLER = "d/pg/ptsb/scan-browser/";
+	
+	public static final String SCAN_FILE_BROWSER_MAIN_CODE = "c/";
+	
 	
 
 	///////////////

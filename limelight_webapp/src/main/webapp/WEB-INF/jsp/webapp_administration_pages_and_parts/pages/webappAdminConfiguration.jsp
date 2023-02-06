@@ -281,6 +281,29 @@
 	  </div> 
 	</div>
 	
+	<div style="margin-bottom: 10px;margin-top: 20px; ">
+	  <div style="margin-bottom: 3px;">
+	  	<div>
+			Run Feature Detection Web Service - Run Hardklor/Bullseye (Not used if either not configured):
+		</div>
+		<div style="margin-left: 20px;">
+		
+			<div style="margin-bottom: 3px;">
+				Web Service Base URL (Including Port): 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+			<div>
+				Result File Base Directory Path ('HOST_MACHINE_FINAL_DIR' variable used by service): 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+		</div>
+	  </div> 
+	</div>
+	
 	<div style="margin-bottom: 20px; ">
 		<input type="button" value="Save" id="save_button">
 		<input type="button" value="Reset" id="reset_button">

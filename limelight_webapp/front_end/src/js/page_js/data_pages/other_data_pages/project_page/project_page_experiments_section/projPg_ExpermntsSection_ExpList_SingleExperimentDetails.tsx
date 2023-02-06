@@ -27,13 +27,13 @@ import {
     GetSearchesDataForProject_ExperimentProcessing_Result
 } from './projPg_Expermnts_Load_SearchesData_ForProject';
 import {
-    GetSearchesAndFolders_SingleProject_PromiseResponse,
-    GetSearchesAndFolders_SingleProject_PromiseResponse_Item
-} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
-import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+    CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 /**
  * 
@@ -145,9 +145,8 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 		promisesAll.then ( ( promiseResults ) => {
 			try {
 				const results : {
-                    searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+                    searchesSearchTagsFolders_Result_Root?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
                     noSearchesFound? : boolean
-                    searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
                     searchesSubData? : {
                         searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
@@ -162,8 +161,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 
 					if ( promiseResult instanceof GetSearchesDataForProject_ExperimentProcessing_Result ) {
 					    results.noSearchesFound = promiseResult.noSearchesFound;
-						results.searches_TopLevelAndNestedInFolders = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse.items
-                        results.searchList_OnlySearches = promiseResult.searchList_OnlySearches;
+						results.searchesSearchTagsFolders_Result_Root = promiseResult.getSearchesAndFolders_SingleProject_PromiseResponse
                         results.searchesSubData = promiseResult.searchesSubData;
 					} else if ( promiseResult.experimentData ) {
 						results.experimentData = promiseResult.experimentData;
@@ -194,9 +192,9 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
             results
         } : {
             results : {
-                searches_TopLevelAndNestedInFolders?: Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+                searchesSearchTagsFolders_Result_Root?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
                 noSearchesFound? : boolean
-                searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
+                searchList_OnlySearches? : Array<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
 
                 searchesSubData? : {
                     searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,

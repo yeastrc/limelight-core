@@ -22,7 +22,7 @@ import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 @Component
 public class SearchScanFile_For_SearchIds_Searcher extends Limelight_JDBC_Base implements SearchScanFile_For_SearchIds_Searcher_IF  {
 
-	private static final Logger log = LoggerFactory.getLogger( SearchScanFileDAO.class );
+	private static final Logger log = LoggerFactory.getLogger( SearchScanFile_For_SearchIds_Searcher.class );
 	
 	
 	/* (non-Javadoc)

@@ -45,6 +45,7 @@ import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFil
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.PreprocessValidate_ScanFiles_ScanFilenames;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFiles_UpdateForSpectralStorageService_API_Key;
@@ -86,6 +87,7 @@ public class ProcessLimelightInput {
 	
 	/**
 	 * @param projectId
+	 * @param searchShortName TODO
 	 * @param limelightInput
 	 * @param scanFileList
 	 * @return
@@ -94,12 +96,14 @@ public class ProcessLimelightInput {
 	public void processLimelightInput( 
 			int projectId,
 			Integer userIdInsertingSearch,
+			String searchShortName,
+			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			LimelightInput limelightInput,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
-			Boolean skipPopulatingPathOnSearchLineOptChosen,
 			
-			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
+			Boolean skipPopulatingPathOnSearchLineOptChosen, SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
+			
 			) throws Exception {
 		
 		searchDTOInserted = null;
@@ -186,6 +190,9 @@ public class ProcessLimelightInput {
 			projectSearchDTO.setCreatedByUserId( userIdInsertingSearch );
 			if ( StringUtils.isNotEmpty( limelightInput.getName() ) ) {
 				projectSearchDTO.setSearchName( limelightInput.getName() );
+			}
+			if ( StringUtils.isNotEmpty( searchShortName ) ) {
+				projectSearchDTO.setSearchShortName( searchShortName );
 			}
 			ProjectSearchDAO.getInstance().saveToDatabase( projectSearchDTO );
 			projectSearchDTOInserted = projectSearchDTO;
@@ -309,7 +316,7 @@ public class ProcessLimelightInput {
 			
 			//  Commit all inserts executed to this point
 			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
-			
+
 			try {
 				SearchDAO.getInstance().updateStatus( searchDTOInserted.getId(), SearchRecordStatus.IMPORTING_WAITING_FOR_SCAN_FILE_IMPORTS );
 			}  catch ( Exception e ) {
@@ -329,7 +336,7 @@ public class ProcessLimelightInput {
 				long time_Before_WaitFor_Spectr = System.currentTimeMillis();
 
 				ScanFiles_UpdateForSpectralStorageService_API_Key.getInstance()
-				.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
+				.scanFiles_UpdateForSpectralStorageService_API_Key( searchScanFileEntry_AllEntries, projectId, projectSearchDTO.getId() );
 
 				PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles.getInstance()
 				.validateAllScanNumbersOnPSMsInScanFiles( searchScanFileEntry_AllEntries );
@@ -340,6 +347,12 @@ public class ProcessLimelightInput {
 
 				searchStatistics_General_SavedToDB.setImporter_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds(importer_SearchInserted_WaitTime_For_Spectr_Complete_Milliseconds);
 			}
+			
+
+			//  Save Search Tags -- Do LAST since adds the tag strings to the project
+			ProcessSaveSearchTags.getInstance().processSearchTags(projectId, searchTags_SearchTagCategories_Root_And_SubParts_InputData, projectSearchDTO, userIdInsertingSearch);
+			
+			
 		} catch ( Exception e ) {
 			throw e;
 		}

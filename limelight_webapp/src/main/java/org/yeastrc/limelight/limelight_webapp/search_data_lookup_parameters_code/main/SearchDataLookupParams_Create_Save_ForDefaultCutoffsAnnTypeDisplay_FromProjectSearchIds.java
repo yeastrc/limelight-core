@@ -74,9 +74,14 @@ public class SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_
 	@Override
 	public SearchDataLookupParams_Create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds_Result create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds( 
 			int projectId,
-			List<Integer> projectSearchIds,
+			List<Integer> projectSearchIds, //  In the order the projectSearchIds are ADDED to SearchDataLookupParamsRoot
 			SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo, 
-			Map<Integer, Integer> projectSearchIdsToSearchIds, SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot ) throws SQLException {
+			Map<Integer, Integer> projectSearchIdsToSearchIds, 
+			
+			// null if no existing data.  Returned after updating if not null.  existingSearchDataLookupParamsRoot already has entries removed for projectSearchIds NOT wanted in result
+			SearchDataLookupParamsRoot existingSearchDataLookupParamsRoot
+			
+			) throws SQLException {
 		
 		if ( projectSearchIds == null || projectSearchIds.isEmpty() ) {
 			String msg = "create_Save_ForDefaultCutoffsAnnTypeDisplay_FromProjectSearchIds(...): projectSearchIds == null || projectSearchIds.isEmpty()";

@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.json_marshal_unmarshal_interfaces.Limelight_SharedCode__JSON_UnMarshal_CommonInterface;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 @Component
-public class UnmarshalJSON_ToObject {
+public class UnmarshalJSON_ToObject implements Limelight_SharedCode__JSON_UnMarshal_CommonInterface {
 
 	private static final Logger log = LoggerFactory.getLogger( UnmarshalJSON_ToObject.class );
 	

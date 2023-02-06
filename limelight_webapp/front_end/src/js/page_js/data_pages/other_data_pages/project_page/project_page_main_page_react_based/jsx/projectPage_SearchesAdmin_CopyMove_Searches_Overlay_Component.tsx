@@ -134,6 +134,8 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
     private _selected_ProjectId_To_CopyOrMove_To: number
 
+    private _copyAnyAssociatedTags = true
+
     private _unmountCalled = false;
 
     /**
@@ -326,6 +328,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
             projectSearchIdsSelected: this._projectSearchIds_To_CopyMove,
             experimentIds_To_Delete: this._experimentIds_To_Delete,
             chosenProjectId: this._selected_ProjectId_To_CopyOrMove_To,
+            copyAnyAssociatedTags: this._copyAnyAssociatedTags,
             doCopy: this.props.doCopy,
             doMove: this.props.doMove
         });
@@ -488,22 +491,38 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                             <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
                                  style={ { marginBottom: 10 } }
                             >
-                                <span> </span>
-                                {( this.props.doCopy ) ? (
-                                    <span>
+                                <div>
+                                    {( this.props.doCopy ) ? (
+                                        <span>
                                         Copy
                                     </span>
-                                ) : (
-                                    <span>
+                                    ) : (
+                                        <span>
                                         Move
                                     </span>
-                                )}
-                                <span> </span>
-                                <span>
-                                    selected searches to &quot;{ this.state.selectedProjectTitle }&quot;?
-                                </span>
+                                    )}
+                                    <span> </span>
+                                    <span>
+                                        selected searches to &quot;{ this.state.selectedProjectTitle }&quot;?
+                                    </span>
+                                </div>
+                                <div style={ { marginTop: 4 } }>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            defaultChecked={ this._copyAnyAssociatedTags }
+                                            onChange={ event => {
+                                                this._copyAnyAssociatedTags = event.target.checked
+                                            } }
+                                        />
+                                        <span>
+                                            Copy any associated tags
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                         </React.Fragment>
+
                         {( this.state.projectSearchDataEntriesInProject && this.state.projectSearchDataEntriesInProject.length > 0 ) ? (
 
                             <React.Fragment>

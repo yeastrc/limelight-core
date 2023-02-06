@@ -95,6 +95,8 @@ import {ProteinPositionFilter_UserSelections__GetsProteinData} from "page_js/dat
 import {Psm_Exclude_IndependentDecoy_PSMs_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_exclude_independent_decoy_psms/psm_Exclude_IndependentDecoy_PSMs_UserSelection";
 import {QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/jsx/peptideSequence_MissedCleavageCount_UserSelections_Component";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 
 
 /**
@@ -102,7 +104,13 @@ import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page
  */
 export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
 
+    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback
+
+    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
     projectSearchIds : Array<number>
+
+    currentProjectId_FromDOM: string
 
     searchSubGroup_Ids_Selected : Set<number>
 
@@ -153,6 +161,7 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent__Processi
  */
 export interface QcViewPage_DisplayData__Main_Component_Props_Prop {
 
+    currentProjectId_FromDOM: string
     proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject
     qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject : QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
 }
@@ -292,11 +301,15 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = new QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot()  //  Common across all Plotly Plots
 
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback
+
     /**
      *
      */
     constructor(props : QcViewPage_DisplayData__Main_Component_Props) {
         super(props);
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback = new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback()
 
         const projectSearchIds = props.propsValue.projectSearchIds;
 
@@ -954,7 +967,10 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             });
 
             const qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent = {
+                qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
+                qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput: new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput(),
                 projectSearchIds: this.props.propsValue.projectSearchIds,
+                currentProjectId_FromDOM: this.props.propsValue_QC.currentProjectId_FromDOM,
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
                 propsValue_QC : this.props.propsValue_QC,
@@ -1864,14 +1880,31 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
                     window.setTimeout( () => {
                         try {
-                            this._updateRestOfPage_ForUserInteraction__After_Update_updateCurrentPeptideFiltersSection();
+                            const qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput = new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput()
+
+                            //  Notify all child components that are registered that there is a new value for qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput that will be passed down with the other values
+                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.call_AllRegistered({ qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput });
+
+                            // console.warn("FAKE DO RETURN")
+                            //
+                            // return  //  return here is ONLY for testing
+
+                            window.setTimeout( () => {
+                                try {
+                                    this._updateRestOfPage_ForUserInteraction__After_Update_updateCurrentPeptideFiltersSection({ qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput });
+
+                                } catch( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }
+                            }, 0 );
 
                         } catch( e ) {
                             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                             throw e;
                         }
+                        //  Update more parts like protein coverage and peptide list
                     }, 0 );
-
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
@@ -1889,7 +1922,13 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
     /**
      * Handle Update Rest of the page beyond what the user manipulated
      */
-    async _updateRestOfPage_ForUserInteraction__After_Update_updateCurrentPeptideFiltersSection() {
+    async _updateRestOfPage_ForUserInteraction__After_Update_updateCurrentPeptideFiltersSection(
+        {
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+        } : {
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput : QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+        }
+    ) {
         try {
             const searchSubGroup_Ids_Selected : Set<number> = PeptidePage_Display_MainContent_Component_nonClass_Functions.compute_searchSubGroup_Ids_Selected({ propsValue : this.props.propsValue });
 
@@ -1936,7 +1975,10 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             });
 
             const qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent = {
+                qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
+                qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput,
                 projectSearchIds: this.props.propsValue.projectSearchIds,
+                currentProjectId_FromDOM: this.props.propsValue_QC.currentProjectId_FromDOM,
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
                 propsValue_QC : this.props.propsValue_QC,
@@ -1955,6 +1997,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING: this.state.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING,
                 qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: this._qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
             }
+
 
 
             window.setTimeout( () => {
@@ -2261,7 +2304,9 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                         <div className=" inner-absolute-pos ">
                                             <div className=" main-div ">
                                                 <p className="help-tip-actual">
-                                                    When checked, view as standard Single Search
+                                                    This search contains sub-searches--multiple individual searches analyzed by a single post-processing step (e.g. running percolator once on multiple comet searches).
+                                                    When not checked, the results of each sub-search will be displayed separately where appropriate.
+                                                    When checked, all sub-searches are collated together and treated as a single search.
                                                 </p>
                                             </div>
                                         </div>

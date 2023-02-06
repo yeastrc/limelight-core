@@ -17,10 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating;
 
-import java.util.Map;
-
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.slf4j.Logger;
 
@@ -39,7 +36,7 @@ public class ScanFiles_UpdateForSpectralStorageService_API_Key {
 	 * @param searchScanFileEntry_KeyScanFilename
 	 * @throws Exception
 	 */
-	public void scanFiles_UpdateForSpectralStorageService_API_Key( SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws Exception {
+	public void scanFiles_UpdateForSpectralStorageService_API_Key( SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries, int projectId, int projectSearchId ) throws Exception {
 		
 		if ( searchScanFileEntry_AllEntries == null ) {
 			return;  // EARLY RETURN
@@ -49,7 +46,7 @@ public class ScanFiles_UpdateForSpectralStorageService_API_Key {
 		.populate_SpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
 		
 		ScanFiles_UpdateDB_WithSpectralStorageService_API_Key.getInstance()
-		.updateDB_WithSpectralStorageService_API_Key( searchScanFileEntry_AllEntries );
+		.updateDB_WithSpectralStorageService_API_Key( searchScanFileEntry_AllEntries, projectId, projectSearchId );
 	}
 	
 	

@@ -37,8 +37,21 @@ public class ImporterRunnerConfigData {
 	private static String javaExecutableWithPath;
 	private static List<String> javaExecutableParameters;
 	
+
+	//   Importer of Limelight XML and/or Scan files
+	
 	private static String importerJarWithPath;
 	private static String importerDbConfigWithPath;
+
+	//  Feature Detection Importer and Run Pipeline
+
+	private static String featureDetectionImporterAndPipelineRun_JarWithPath;
+	private static List<String> featureDetectionProgram_JavaExecutableParameters;
+	
+	private static String featureDetectionImporterAndPipelineRun_DbConfigWithPath;
+
+	
+	//////////////
 	
 	private static String importerPidFileWithPath;
 	
@@ -81,6 +94,22 @@ public class ImporterRunnerConfigData {
 			throw new IllegalStateException(msg);
 		}
 		return importerDbConfigWithPath;
+	}
+	public static String getFeatureDetectionImporterAndPipelineRun_JarWithPath() {
+		if ( ! configured ) {
+			String msg = "ImporterRunnerConfigData not configured";
+			log.error( msg );
+			throw new IllegalStateException(msg);
+		}
+		return featureDetectionImporterAndPipelineRun_JarWithPath;
+	}
+	public static String getFeatureDetectionImporterAndPipelineRun_DbConfigWithPath() {
+		if ( ! configured ) {
+			String msg = "ImporterRunnerConfigData not configured";
+			log.error( msg );
+			throw new IllegalStateException(msg);
+		}
+		return featureDetectionImporterAndPipelineRun_DbConfigWithPath;
 	}
 	public static String getLimelightWebAppBaseURL() {
 		if ( ! configured ) {
@@ -158,6 +187,19 @@ public class ImporterRunnerConfigData {
 	}
 	public static void setDatabaseCleanup_Disable(boolean databaseCleanup_Disable) {
 		ImporterRunnerConfigData.databaseCleanup_Disable = databaseCleanup_Disable;
+	}
+	public static void setFeatureDetectionImporterAndPipelineRun_JarWithPath(String importerAndPipelineRun_JarWithPath) {
+		ImporterRunnerConfigData.featureDetectionImporterAndPipelineRun_JarWithPath = importerAndPipelineRun_JarWithPath;
+	}
+	public static void setFeatureDetectionImporterAndPipelineRun_DbConfigWithPath(String importerAndPipelineRun_DbConfigWithPath) {
+		ImporterRunnerConfigData.featureDetectionImporterAndPipelineRun_DbConfigWithPath = importerAndPipelineRun_DbConfigWithPath;
+	}
+	public static List<String> getFeatureDetectionProgram_JavaExecutableParameters() {
+		return featureDetectionProgram_JavaExecutableParameters;
+	}
+	public static void setFeatureDetectionProgram_JavaExecutableParameters(
+			List<String> featureDetectionProgram_JavaExecutableParameters) {
+		ImporterRunnerConfigData.featureDetectionProgram_JavaExecutableParameters = featureDetectionProgram_JavaExecutableParameters;
 	}
 
 }	

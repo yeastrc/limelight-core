@@ -17,6 +17,7 @@
  */
 package org.yeastrc.limelight.limelight_importer.process_input;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import java.util.Set;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProtein;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModification;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModifications;
@@ -34,10 +36,12 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPosition;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinImporterContainerDAO;
+import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersionDAO;
+import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceAnnotationDTO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
@@ -51,6 +55,7 @@ import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.peptide_protein_position.ProteinCoverageDTO_SaveToDB_NoDups;
 import org.yeastrc.limelight.limelight_importer.process_input.GetProteinsForPeptide.GetProteinsForPeptideResult_EntryPerProtein;
+import org.yeastrc.limelight.limelight_importer.utils.Create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util;
 import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
@@ -89,6 +94,14 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries
 			) throws Exception {
 
+		{
+			//  First update last_used_in_search_import in both tables so the record doesn't get deleted before the next step.
+
+			update_field_last_used_in_search_import_To_NOW(input_LimelightXMLFile_InternalHolder_Root_Object);
+			
+			Thread.sleep( 100 ); // Short sleep before start looking up records
+		}
+
 		int searchId = search.getId();
 
 		// Put MatchedProteins in Singleton class GetProteinsForPeptides
@@ -114,17 +127,17 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 					if ( reportedPeptides_SearchImportInProgress_Counter > 400 ) {
 						//  at 400th entry every 400 entry, Updates 'heart beat'
 						Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
-					
+
 						reportedPeptides_SearchImportInProgress_Counter = 0;  	//  reset
 					}
 				}
-				
+
 				// Save Protein Mappings for Reported Peptide  "matched_protein_refs"    
 
 				Set<Integer> proteinVersionIdsForReportedPeptide = new HashSet<>();
 
 				Map<Integer,Set<String>> proteinResidueLetters_AllProteins_Map_Key_PeptidePosition = new HashMap<>();
-				
+
 				internalHolder_ReportedPeptide_Object.setProteinVersionIdsForReportedPeptide( proteinVersionIdsForReportedPeptide );
 				internalHolder_ReportedPeptide_Object.setProteinResidueLetters_AllProteins_Map_Key_PeptidePosition(proteinResidueLetters_AllProteins_Map_Key_PeptidePosition);
 
@@ -161,7 +174,7 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 
 				// Save Protein Mappings for Reported Peptide  "matched_protein_refs"    
-				
+
 				for ( Map.Entry<ProteinImporterContainer, GetProteinsForPeptideResult_EntryPerProtein> proteins_PeptidePositionsInProteinEntry : proteins_PeptidePositionsInProtein.entrySet() ) {
 
 					ProteinImporterContainer proteinImporterContainer = proteins_PeptidePositionsInProteinEntry.getKey();
@@ -252,7 +265,7 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 					}
 				}
 			}
-			
+
 
 			insert_searchProteinVersionDTO_ToBeInserted( searchProteinVersionDTO_ToBeInserted, search );
 
@@ -359,13 +372,94 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 				if ( searchImportInProgress_Counter > 400 ) {
 					//  at 400th entry every 400 entry, Updates 'heart beat'
 					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
-				
+
 					searchImportInProgress_Counter = 0;  	//  reset
 				}
 			}
-			
+
 			DB_Insert_SearchProteinVersionDAO.getInstance().save( searchProteinVersionDTO );
 		}	
+	}
+
+
+
+	/**
+	 * update last_used_in_search_import in all tables so the record doesn't get deleted before the next step
+	 * 
+	 * @param input_LimelightXMLFile_InternalHolder_Root_Object
+	 * @throws Exception 
+	 */
+	private void update_field_last_used_in_search_import_To_NOW(Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object) throws Exception {
+
+		//  First update last_used_in_search_import in all tables so the record doesn't get deleted before the next step.
+
+		//    Doing this here creates some time separation between when a record is updated last_used_in_search_import field and when it is searched for, even if just milliseconds
+
+		final int update_DBRecords_BlockSize = 100;
+
+		MatchedProteins matchedProteinsFromLimelightXML = input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getMatchedProteins();
+
+		if ( matchedProteinsFromLimelightXML == null ) {
+
+			return; // EARLY RETURN
+		}
+
+		{
+			//  First do Protein Sequence
+			
+			ProteinSequenceDAO proteinSequenceDAO = ProteinSequenceDAO.getInstance();
+
+			List<String> proteinSequence_List = new ArrayList<>( update_DBRecords_BlockSize );
+
+			int update_CurrentCount = 0;
+
+			for ( MatchedProtein matchedProtein : matchedProteinsFromLimelightXML.getMatchedProtein() ) {
+
+				update_CurrentCount++;
+
+				//  Add to the batch
+
+				proteinSequence_List.add( matchedProtein.getSequence() );
+
+				if ( update_CurrentCount >= update_DBRecords_BlockSize ) {
+
+					// Updates to DB of the current batch
+
+					proteinSequenceDAO.update_last_used_in_search_import(proteinSequence_List);
+
+					//  Reset holding Lists for next batch
+
+					update_CurrentCount = 0;
+
+					proteinSequence_List.clear();
+				}
+
+			}
+
+			// Updates for final group
+
+			if ( ! proteinSequence_List.isEmpty() ) {
+				proteinSequenceDAO.update_last_used_in_search_import(proteinSequence_List);
+			}
+		}
+		
+		{
+			//  Second do Protein Sequence Annotation
+			
+			ProteinSequenceAnnotationDAO proteinSequenceAnnotationDAO = ProteinSequenceAnnotationDAO.getInstance();
+
+			for ( MatchedProtein matchedProtein : matchedProteinsFromLimelightXML.getMatchedProtein() ) {
+
+				for ( MatchedProteinLabel matchedProteinLabel : matchedProtein.getMatchedProteinLabel() ) {
+
+					ProteinSequenceAnnotationDTO annotationDTO = 
+							Create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util
+							.create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util( matchedProteinLabel );
+
+					proteinSequenceAnnotationDAO.update_last_used_in_search_import(annotationDTO);
+				}
+			}
+		}
 	}
 
 }

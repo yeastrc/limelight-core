@@ -187,6 +187,7 @@ public class Project_OrganizeSearches_AddFolder_RestWebserviceController {
 			folderForProjectDAO.save( folderForProjectDTO, userId );
 			
 			webserviceResult.status = true;
+			webserviceResult.folderId = folderForProjectDTO.getId();
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -223,12 +224,16 @@ public class Project_OrganizeSearches_AddFolder_RestWebserviceController {
     public static class WebserviceResult {
 
 		private boolean status;
+		private int folderId;
 
 		public boolean isStatus() {
 			return status;
 		}
 		public void setStatus(boolean status) {
 			this.status = status;
+		}
+		public int getFolderId() {
+			return folderId;
 		}
     }
 

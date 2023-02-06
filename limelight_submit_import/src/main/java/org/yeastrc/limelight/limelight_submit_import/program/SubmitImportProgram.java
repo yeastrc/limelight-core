@@ -8,13 +8,17 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_submit_import.auth_test.AuthTest_Perform_ConnectToServer;
 import org.yeastrc.limelight.limelight_submit_import.config.ConfigParams;
+import org.yeastrc.limelight.limelight_submit_import.constants.SearchTagCategory_SeparatorCharacter_Constants;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportConfigException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportReportedErrorException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportServerResponseException;
@@ -22,6 +26,7 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
 import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain;
 import org.yeastrc.limelight.limelight_submit_import.main.SubmitUploadMain.SubmitResult;
+import org.yeastrc.limelight.limelight_submit_import.objects.SearchTagCategory_AndItsSearchTagStrings_Object;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 
 /**
@@ -140,9 +145,18 @@ public class SubmitImportProgram {
 
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
 
+			CmdLineParser.Option noLimelightXMLFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-limelight-xml-file" );
+			
+
 			CmdLineParser.Option searchNameFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "search-description" );
 			CmdLineParser.Option noSearchNameCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-search-description" );
+			CmdLineParser.Option searchShortNameFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "search-short-label" );
+			
+			CmdLineParser.Option searchPathFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "path" );
+
 			CmdLineParser.Option sendSearchPathCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "send-search-path" );
+			
+			CmdLineParser.Option searchTagsCommandLineOpt = cmdLineParser.addStringOption( 'Z', "search-tag" );
 			
 			CmdLineParser.Option authTestCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', AUTH_TEST_PARAM_STRING );
 			
@@ -248,6 +262,77 @@ public class SubmitImportProgram {
 			
 			String retryCountLimitString = (String)cmdLineParser.getOptionValue( retryCountLimitFromCommandLineCommandLineOpt );
 			
+			
+			List<String> searchTagList = new ArrayList<>();
+			List<SearchTagCategory_AndItsSearchTagStrings_Object> searchTagCategory_AndItsSearchTagStrings_Object_List = null;
+			
+			{
+				Map<String, SearchTagCategory_AndItsSearchTagStrings_Object> searchTagCategory_AndItsSearchTagStrings_Object_Map_Key_CategoryLabel = new HashMap<>(); 
+				
+				@SuppressWarnings("rawtypes")
+				Vector searchTagStringVector = cmdLineParser.getOptionValues( searchTagsCommandLineOpt );
+
+				for ( Object searchTagStringObject : searchTagStringVector ) {
+
+					if( searchTagStringObject == null ) {
+
+						System.err.println( "" );
+						System.err.println( "Internal ERROR:  searchTagStringObject is null." );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_PROGRAM_PROBLEM);  //  EARLY EXIT
+					}
+
+					if ( ! (  searchTagStringObject instanceof String ) ) {
+
+						System.err.println( "" );
+						System.err.println( "Internal ERROR:  searchTagStringObject is not a String object." );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_PROGRAM_PROBLEM);  //  EARLY EXIT
+					}
+
+					String searchTagString = ( (String) searchTagStringObject ).trim();
+
+					if( searchTagString.equals( "" ) ) {
+
+						System.err.println( "" );
+						System.err.println( "ERROR:  search-tag param value is empty." );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_PROGRAM_PROBLEM);  //  EARLY EXIT
+					}
+					
+					final int SPLIT_LIMIT = 2; // Only split on first instance of delimiter
+					
+					String[] searchTagString_SplitOn_SearchTagCategorySeparator = searchTagString.split( SearchTagCategory_SeparatorCharacter_Constants.SEARCH_TAG_CATEGORY_SEPARATORY_CHARACTER__FOR_SPLIT_REGEX, SPLIT_LIMIT );
+					
+					if ( searchTagString_SplitOn_SearchTagCategorySeparator.length == 1 ) {
+						//  No Category
+
+						searchTagList.add( searchTagString );
+						
+					} else {
+						//  Yes Category
+						String categoryLabel = searchTagString_SplitOn_SearchTagCategorySeparator[0].trim();
+						String searchTagString_AfterSplit = searchTagString_SplitOn_SearchTagCategorySeparator[1].trim();
+						
+						SearchTagCategory_AndItsSearchTagStrings_Object searchTagCategory_AndItsSearchTagStrings_Object = searchTagCategory_AndItsSearchTagStrings_Object_Map_Key_CategoryLabel.get( categoryLabel );
+						if ( searchTagCategory_AndItsSearchTagStrings_Object == null ) {
+							searchTagCategory_AndItsSearchTagStrings_Object = new SearchTagCategory_AndItsSearchTagStrings_Object();
+							searchTagCategory_AndItsSearchTagStrings_Object.setCategoryLabel(categoryLabel);
+							searchTagCategory_AndItsSearchTagStrings_Object_Map_Key_CategoryLabel.put( categoryLabel, searchTagCategory_AndItsSearchTagStrings_Object );
+						}
+						
+						searchTagCategory_AndItsSearchTagStrings_Object.getSearchTagStrings().add(searchTagString_AfterSplit);
+					}	
+				}
+				
+				searchTagCategory_AndItsSearchTagStrings_Object_List = new ArrayList<>( searchTagCategory_AndItsSearchTagStrings_Object_Map_Key_CategoryLabel.values() );
+			}
 
 			limelightXMLFileString = (String)cmdLineParser.getOptionValue( limelightXMLFileFromCommandLineCommandLineOpt );
 
@@ -255,7 +340,12 @@ public class SubmitImportProgram {
 			@SuppressWarnings("rawtypes")
 			Vector inputScanFileStringVector = cmdLineParser.getOptionValues( scanFilesFromCommandLineCommandLineOpt );
 			
-			Boolean noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
+			//  Since have default as second param to 'getOptionValue' will always return true or false so no need to handle null
+
+			boolean noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
+			boolean noLimelightXMLFileCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noLimelightXMLFileCommandLineOpt, Boolean.FALSE);
+			
+			//  Process Command Line Params
 
 			if ( StringUtils.isEmpty( projectIdString ) ) {
 				System.err.println( "Project id must be specified." );
@@ -269,6 +359,7 @@ public class SubmitImportProgram {
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 			}
+			
 			if ( StringUtils.isNotEmpty(retryCountLimitString)) {
 				try {
 					retryCountLimit = Integer.parseInt( retryCountLimitString );
@@ -279,14 +370,32 @@ public class SubmitImportProgram {
 					System.out.println( msg );
 				}
 			}
+			
 			if ( StringUtils.isEmpty(limelightXMLFileString) ) {
-				if ( ! authTestCommandLineOptChosen ) {
-					System.err.println( "Limelight XML file must be specified." );
+				if ( ( ! authTestCommandLineOptChosen ) && ( ! noLimelightXMLFileCommandLineOptChosen ) ) {
+					System.err.println( "Limelight XML file must be specified since no param for Auth check or No Limelight XML File." );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
-			} else if ( authTestCommandLineOptChosen ) {
-				System.err.println( "Limelight XML file NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
-				System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+			}
+			if ( authTestCommandLineOptChosen ) {
+				if ( StringUtils.isNotEmpty(limelightXMLFileString) ) {
+					System.err.println( "Limelight XML file NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				if ( noLimelightXMLFileCommandLineOptChosen ) {
+					System.err.println( "param for Auth check NOT ALLOWED When Param for No Limelight XML File is specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+			}
+			if ( noLimelightXMLFileCommandLineOptChosen ) {
+				if ( StringUtils.isNotEmpty(limelightXMLFileString) ) {
+					System.err.println( "Limelight XML file NOT ALLOWED when Param for No Limelight XML File is specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				if ( authTestCommandLineOptChosen ) {
+					System.err.println( "param for Auth check NOT ALLOWED When Param for No Limelight XML File is specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
 			}
 			
 			if ( StringUtils.isNotEmpty(limelightXMLFileString) ) {
@@ -350,6 +459,11 @@ public class SubmitImportProgram {
 					scanFiles.add( scanFile );
 				}
 			}
+			
+			if (  ( ! authTestCommandLineOptChosen ) && ( StringUtils.isEmpty(limelightXMLFileString) && ( scanFiles == null || scanFiles.isEmpty() ) ) ) {
+				System.err.println( "No Limelight XML File is specified AND No Scan Files are specified." );
+				System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+			}
 
 			String searchName = (String)cmdLineParser.getOptionValue( searchNameFromCommandLineCommandLineOpt );
 			
@@ -375,6 +489,15 @@ public class SubmitImportProgram {
 			}
 
 			Boolean noSearchNameCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noSearchNameCommandLineOpt, Boolean.FALSE);
+			
+			String searchShortName = (String)cmdLineParser.getOptionValue( searchShortNameFromCommandLineCommandLineOpt );
+
+			String searchPath_FromCommandLine = (String)cmdLineParser.getOptionValue( searchPathFromCommandLineCommandLineOpt );
+			
+			if ( searchPath_FromCommandLine != null ) {
+				searchPath_FromCommandLine = searchPath_FromCommandLine.trim();
+			}
+			
 			Boolean sendSearchPathCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( sendSearchPathCommandLineOpt, Boolean.FALSE);
 
 			String baseURL = null;
@@ -455,32 +578,108 @@ public class SubmitImportProgram {
 				}
 			}
 			
+			if ( StringUtils.isNotEmpty( searchPath_FromCommandLine ) ) {
+				
+				if ( sendSearchPathCommandLineOptChosen ) {
+					System.err.println( "Send Search Path NOT ALLOWED when param '--path=' is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+
+				searchPath = searchPath_FromCommandLine;
+			}
 			
+			SubmitResult submitResult = null;
+			
+			if ( authTestCommandLineOptChosen ) {
+			
+				submitResult = 
+						AuthTest_Perform_ConnectToServer.getInstance().authTest_Perform_ConnectToServer(
+								baseURL, userSubmitImportProgramKeyFromCommandLine, projectIdString, retryCountLimit);
+			
+			
+			} else if ( limelightXMLFile != null ) {
 
-			SubmitResult submitResult = 
-					SubmitUploadMain.getInstance().submitUpload(
-							
-							authTestCommandLineOptChosen,
-							
-							submitterSameMachine, 
-							baseURL,
-							uploadBaseDir, 
-							
-							userSubmitImportProgramKeyFromCommandLine,
-							
-							projectId, 
-							projectIdString,
-							
-							retryCountLimit,
+				submitResult = 
+						SubmitUploadMain.getInstance().submitUpload(
 
-							limelightXMLFile, 
-							scanFiles,
+								submitterSameMachine, 
+								baseURL,
+								uploadBaseDir, 
 
-							searchName,
-							searchPath,
+								userSubmitImportProgramKeyFromCommandLine,
+
+								projectId, 
+								projectIdString,
+
+								retryCountLimit,
+
+								limelightXMLFile, 
+								scanFiles,
+
+								searchName,
+								searchShortName,
+								searchPath,
+
+								noSearchNameCommandLineOptChosen,
+								noScanFilesCommandLineOptChosen,
+								
+								searchTagList,
+								searchTagCategory_AndItsSearchTagStrings_Object_List);
+			
+			} else {
+				
+				//  No Limelight XML File
+
+				//  Submit each Scan File separately
+
+				if ( scanFiles != null && ( ! scanFiles.isEmpty() ) ) {
+
+					for ( File scanFile : scanFiles ) {
+						
+						List<File> scanFiles_SingleFileSubmission = new ArrayList<>( 2 );
+						
+						scanFiles_SingleFileSubmission.add(scanFile);
+
+						SubmitResult submitResult_ForSingleFile = 
+								SubmitUploadMain.getInstance().submitUpload(
+
+										submitterSameMachine, 
+										baseURL,
+										uploadBaseDir, 
+
+										userSubmitImportProgramKeyFromCommandLine,
+
+										projectId, 
+										projectIdString,
+
+										retryCountLimit,
+
+										limelightXMLFile, //  is null
+										scanFiles_SingleFileSubmission,
+
+										searchName,
+										searchShortName,
+										searchPath,
+
+										noSearchNameCommandLineOptChosen,
+										noScanFilesCommandLineOptChosen,
+										
+										searchTagList,
+										searchTagCategory_AndItsSearchTagStrings_Object_List
+										);
+
+						submitResult = submitResult_ForSingleFile;
+						
+						if ( submitResult_ForSingleFile.getExitCode() != 0 ) {
 							
-							noSearchNameCommandLineOptChosen,
-							noScanFilesCommandLineOptChosen);
+							//  Exit for first exit code not zero
+							
+							break; // EARLY BREAK
+						}
+					}
+				}
+				
+			}
 			
 			
 			System.exit( submitResult.getExitCode() );

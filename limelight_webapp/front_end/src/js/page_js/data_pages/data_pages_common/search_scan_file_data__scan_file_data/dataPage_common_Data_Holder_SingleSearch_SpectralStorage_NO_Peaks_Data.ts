@@ -16,6 +16,7 @@
 export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root {
 
     private _spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId: Map<number, DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> = new Map();
+    private _spectralStorageData_PerSearchScanFileId_Map_Key_ProjectScanFileId: Map<number, DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> = new Map();
 
     constructor() {
     }
@@ -30,9 +31,24 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
     /**
      *
      */
+    get_SpectralStorage_NO_Peaks_DataFor_ProjectScanFileId(projectScanFileId: number) {
+        return this._spectralStorageData_PerSearchScanFileId_Map_Key_ProjectScanFileId.get(projectScanFileId);
+    }
+
+    /**
+     *
+     */
     get_SpectralStorage_NO_Peaks_DataEntries_IterableIterator(): IterableIterator<DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> {
 
         return this._spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId.values()
+    }
+
+    /**
+     *
+     */
+    get_SpectralStorage_NO_Peaks_DataEntries_Key_ProjectScanFileId_IterableIterator(): IterableIterator<DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId> {
+
+        return this._spectralStorageData_PerSearchScanFileId_Map_Key_ProjectScanFileId.values()
     }
 
     ///  Add/Set
@@ -40,6 +56,7 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
     add_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( item : DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId ) {
 
         this._spectralStorageData_PerSearchScanFileId_Map_Key_SearchScanFileId.set( item.searchScanFileId, item );
+        this._spectralStorageData_PerSearchScanFileId_Map_Key_ProjectScanFileId.set( item.projectScanFileId, item );
     }
 }
 
@@ -49,6 +66,8 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId{
 
     readonly searchScanFileId: number;
+    readonly projectScanFileId: number;
+
     private _singleScanEntry_Map_Key_ScanNumber: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
 
     private _scanLevels: Set<number> = new Set()
@@ -56,12 +75,14 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 
     constructor(
         {
-            searchScanFileId
+            searchScanFileId, projectScanFileId
         }: {
             searchScanFileId: number
+            projectScanFileId: number
         }
     ) {
         this.searchScanFileId = searchScanFileId;
+        this.projectScanFileId = projectScanFileId;
     }
 
     get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanNumber: number) {

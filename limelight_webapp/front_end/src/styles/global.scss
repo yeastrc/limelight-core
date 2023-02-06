@@ -6,6 +6,8 @@ $site-standard-background-color: $color-white;
 
 $font-color-dark: #172B4D;
 
+$font-color-default: $font-color-dark;  // used on <body>
+
 $font-color-light-gray: #808080; // rgb(128,128,128): Used for 'fading out' text
 
 $font-background-color-gray: #969696;  // Currently NOT USED.  Was used in Sequence Coverage
@@ -29,6 +31,11 @@ $link-color-visited: #005606;
 $link-color-hover: $site-color-dark;
 $link-color-active: $site-color-dark;
 $link-color-underline: #65A96A;
+
+//  color for "Filtering"
+$filtering-display-color: #FEDD00;
+$filtering-display-background-color: $filtering-display-color; //  Background color for Data Page "Filtering On" and other uses
+$filtering-display-border-color: $filtering-display-color;
 
 //  The border color used for the NOT of OR/AND/NOT Peptide Filters
 

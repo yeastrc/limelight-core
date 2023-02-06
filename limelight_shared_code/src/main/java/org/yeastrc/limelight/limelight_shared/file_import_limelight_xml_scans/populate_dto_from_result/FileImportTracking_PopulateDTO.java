@@ -70,6 +70,8 @@ public class FileImportTracking_PopulateDTO {
 		}
 		
 		returnItem.setSearchName( rs.getString( "search_name" ) );
+		returnItem.setSearchShortName( rs.getString( "search_short_name" ) );
+		
 		returnItem.setSearchPath( rs.getString( "search_path" ) );
 		
 		returnItem.setInsertRequestURL( rs.getString( "insert_request_url" ) );

@@ -41,12 +41,27 @@ public abstract class SubmitImport_FinalSubmit_Request_Base {
 	private String uploadKey;
 	@XmlAttribute
 	private String searchName;
+	@XmlAttribute
+	private String searchShortName;
 	
 	/**
 	 * List of files being submitted
 	 */
 	private List<SubmitImport_FinalSubmit_SingleFileItem> fileItems;
 	
+	/**
+	 * List of Search Tag Strings that are NOT in any category
+	 */
+	private List<String> searchTagList;
+	
+
+	/**
+	 * List of Search Tag Categories and their Search Tag Strings
+	 */
+	private List<SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry> searchTagCategoryAndItsSearchTagsList;
+	
+	
+	////////////////////////////
 
 	public String getProjectIdentifier() {
 		return projectIdentifier;
@@ -85,5 +100,30 @@ public abstract class SubmitImport_FinalSubmit_Request_Base {
 
 	public void setSubmitProgramVersionNumber(Integer submitProgramVersionNumber) {
 		this.submitProgramVersionNumber = submitProgramVersionNumber;
+	}
+
+	public List<String> getSearchTagList() {
+		return searchTagList;
+	}
+
+	public void setSearchTagList(List<String> searchTagList) {
+		this.searchTagList = searchTagList;
+	}
+
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
+	}
+
+	public List<SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry> getSearchTagCategoryAndItsSearchTagsList() {
+		return searchTagCategoryAndItsSearchTagsList;
+	}
+
+	public void setSearchTagCategoryAndItsSearchTagsList(
+			List<SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry> searchTagCategoryAndItsSearchTagsList) {
+		this.searchTagCategoryAndItsSearchTagsList = searchTagCategoryAndItsSearchTagsList;
 	}
 }

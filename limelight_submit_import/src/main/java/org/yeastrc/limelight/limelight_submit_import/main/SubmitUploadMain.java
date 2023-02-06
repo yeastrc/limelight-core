@@ -38,15 +38,15 @@ import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImpo
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUserDataException;
 import org.yeastrc.limelight.limelight_submit_import.exceptions.LimelightSubImportUsernamePasswordFileException;
 import org.yeastrc.limelight.limelight_submit_import.get_submitter_key.GetSubmitterKey;
+import org.yeastrc.limelight.limelight_submit_import.objects.SearchTagCategory_AndItsSearchTagStrings_Object;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.call_submit_import_parameter_objects.Call_SubmitImport_UploadFile_Service_Parameters;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.enum_classes.LimelightSubmit_FileImportFileType;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.exceptions.LimelightSubmitImportWebserviceCallErrorException;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebservice;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.main.CallSubmitImportWebserviceInitParameters;
-import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
-import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_SingleFileItem;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
@@ -71,11 +71,11 @@ public class SubmitUploadMain {
 
 	private static final int PROGRAM_EXIT_CODE_NO_ERROR = 0;
 
-	private static final int PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION = 1;
+	public static final int PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION = 1;
 
 	private static final int PROGRAM_EXIT_CODE_INVALID_CONFIGURATION = 2;
 
-	private static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 3;
+	public static final int PROGRAM_EXIT_CODE_INVALID_INPUT = 3;
 
 	//	private static final int PROGRAM_EXIT_CODE_NO_PROJECTS_FOR_USER = 4;
 
@@ -127,8 +127,6 @@ public class SubmitUploadMain {
 	 */
 	public SubmitResult submitUpload(
 
-			boolean authTestChosen,
-
 			boolean submitterSameMachine,
 			String baseURL, 
 			File uploadBaseDir,
@@ -145,16 +143,18 @@ public class SubmitUploadMain {
 			List<File> scanFiles,
 
 			String searchName,
+			String searchShortName,
 			String searchPath,
 			Boolean noSearchNameCommandLineOptChosen,
 
-
-			Boolean noScanFilesCommandLineOptChosen
+			Boolean noScanFilesCommandLineOptChosen,
+			
+			List<String> searchTagList,  //  that do NOT have Categories
+			
+			List<SearchTagCategory_AndItsSearchTagStrings_Object> searchTagCategory_AndItsSearchTagStrings_Object_List
 
 			) throws Exception,
 	IOException {
-
-
 
 		SubmitResult submitResult = new SubmitResult();
 
@@ -168,66 +168,6 @@ public class SubmitUploadMain {
 		CallSubmitImportWebservice callSubmitImportWebservice = CallSubmitImportWebservice.getInstance();
 
 		callSubmitImportWebservice.init( callSubmitImportWebserviceInitParameters );
-
-		if ( authTestChosen ) {
-
-			//  ONLY Perform Auth Test for User and Project id
-
-			SubmitImport_AuthTest_Request_PgmXML submitImport_AuthTest_Request = new SubmitImport_AuthTest_Request_PgmXML();
-
-			submitImport_AuthTest_Request.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-			submitImport_AuthTest_Request.setProjectIdentifier( projectIdString );
-			submitImport_AuthTest_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
-
-			SubmitImport_AuthTest_Response_PgmXML submitImport_AuthTest_Response = 
-					callSubmitImportWebservice.call_SubmitImport_AuthTest_Webservice(submitImport_AuthTest_Request);
-
-			if ( submitImport_AuthTest_Response.isStatusSuccess() ) {
-
-				System.err.println( "" );
-				System.err.println( "********************************************************" );
-				System.err.println( "" );
-				System.err.println( "Auth Test Successful." );
-				System.err.println( "" );
-
-				System.out.println( "" );
-				System.out.println( "********************************************************" );
-				System.out.println( "" );
-				System.out.println( "Auth Test Successful." );
-				System.out.println( "" );
-
-			} else {
-
-				System.err.println( "" );
-				System.err.println( "********************************************************" );
-				System.err.println( "" );
-				System.err.println( "Auth Test Failed." );
-				System.err.println( "" );
-
-				if ( submitImport_AuthTest_Response.isSubmitProgramVersionNumber_NotAccepted() ) {
-
-					reportSubmitterVersionErrorToUser( submitImport_AuthTest_Response.getSubmitProgramVersionNumber_Current_Per_Webapp() );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_SUBMITTER_VERSION;
-					return submitResult;    //  EARLY EXIT
-				}
-
-				if ( StringUtils.isNotBlank( submitImport_AuthTest_Response.getStatusFail_ErrorMessage() ) ) {
-
-					System.err.println( submitImport_AuthTest_Response.getStatusFail_ErrorMessage() );
-					submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-					return submitResult;    //  EARLY EXIT
-				}
-
-				System.err.println( "Upload failed at init.  Please try again." );
-
-				System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
-
-				submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
-			}
-
-			return submitResult;  //  EARLY RETURN
-		}
-
 
 		String submitImport_UploadKey = null;
 
@@ -383,6 +323,18 @@ public class SubmitUploadMain {
 				//   Build Submit objects and upload files to server if not running this pgm on server
 
 
+				List<SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry> searchTagCategoryAndItsSearchTagsList = new ArrayList<>( searchTagCategory_AndItsSearchTagStrings_Object_List.size() );
+
+				for ( SearchTagCategory_AndItsSearchTagStrings_Object searchTagCategory_AndItsSearchTagStrings_Object : searchTagCategory_AndItsSearchTagStrings_Object_List ) {
+					
+					SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry searchTagCategoryAndItsSearchTags = new SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry();
+					
+					searchTagCategoryAndItsSearchTags.setSearchTagCategoryLabel( searchTagCategory_AndItsSearchTagStrings_Object.getCategoryLabel() );
+					searchTagCategoryAndItsSearchTags.setSearchTagList( searchTagCategory_AndItsSearchTagStrings_Object.getSearchTagStrings() );
+					
+					searchTagCategoryAndItsSearchTagsList.add(searchTagCategoryAndItsSearchTags);
+				}
+
 
 				SubmitImport_FinalSubmit_Request_PgmXML finalSubmit_Request = new SubmitImport_FinalSubmit_Request_PgmXML();
 
@@ -391,8 +343,12 @@ public class SubmitUploadMain {
 				finalSubmit_Request.setProjectIdentifier( projectIdString );
 				finalSubmit_Request.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 				finalSubmit_Request.setSearchName( searchName ); // optional
+				finalSubmit_Request.setSearchShortName( searchShortName );
 				finalSubmit_Request.setSearchPath( searchPath ); // optional
 				finalSubmit_Request.setUploadKey( submitImport_UploadKey );
+				
+				finalSubmit_Request.setSearchTagList(searchTagList);
+				finalSubmit_Request.setSearchTagCategoryAndItsSearchTagsList(searchTagCategoryAndItsSearchTagsList);
 
 				if ( submitterSameMachine ) {
 					finalSubmit_Request.setSubmitterSameMachine( true );
@@ -406,7 +362,7 @@ public class SubmitUploadMain {
 
 				int fileIndex = 1;
 
-				{
+				if ( limelightXMLFile != null ) {
 					//  Process Limelight XML file
 
 					SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
@@ -662,7 +618,7 @@ public class SubmitUploadMain {
 	 * @param inputScanFileString
 	 * @return null if no error, otherwise return the error message
 	 */
-	private static void reportSubmitterVersionErrorToUser( Integer submitProgramVersionNumber_Current_Per_Webapp ) {
+	public static void reportSubmitterVersionErrorToUser( Integer submitProgramVersionNumber_Current_Per_Webapp ) {
 
 		System.err.println();
 		System.err.println( "The Limelight Submit Program is out of date.  This version is no longer supported." );

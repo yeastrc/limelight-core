@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
@@ -79,6 +80,7 @@ public class FolderProjectSearchDAO extends Limelight_JDBC_Base implements Folde
 		FolderProjectSearchDTO returnItem = new FolderProjectSearchDTO();
 		returnItem.setFolderId( rs.getInt( "folder_id" ) );
 		returnItem.setProjectSearchId( rs.getInt( "project_search_id" ) );
+		returnItem.setSearchDisplayOrder( rs.getInt( "search_display_order" ) );
 		return returnItem;
 	}
 	
@@ -86,10 +88,10 @@ public class FolderProjectSearchDAO extends Limelight_JDBC_Base implements Folde
 	
 	////////////////////////
 
-	// primary key project_search_id
+	// primary key project_search_id and folder_id.   On DUPLICATE KEY UPDATE: do NOT set search_display_order since it is passed in with zero for new entries
 	private static final String INSERT_OR_UPDATE_SQL =
-			"INSERT INTO folder_project_search_tbl ( project_search_id, folder_id ) VALUES ( ?, ? )"
-					+ " ON DUPLICATE KEY UPDATE folder_id = ?";
+			"INSERT INTO folder_project_search_tbl ( project_search_id, folder_id, search_display_order ) VALUES ( ?, ?, ? )"
+					+ " ON DUPLICATE KEY UPDATE dummy_on_duplicate_update = 0";
 	/**
 	 * @param item
 	 */
@@ -120,30 +122,89 @@ public class FolderProjectSearchDAO extends Limelight_JDBC_Base implements Folde
 							counter++;
 							pstmt.setInt( counter, item.getFolderId() );
 							counter++;
-							pstmt.setInt( counter, item.getFolderId() );
+							pstmt.setInt( counter, item.getSearchDisplayOrder() );
 														
 							return pstmt;
 						}
 					});
 			
 		} catch ( RuntimeException e ) {
-			String msg = "NoteDTO: " + item + ", SQL: " + insertSQL;
+			String msg = "item: " + item + ", SQL: " + insertSQL;
+			log.error( msg, e );
+			throw e;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	//  Spring DB Transactions
+	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
+	public void updateDisplayOrderFor_FolderId_ProjectSearchId( int folderId, int projectSearchId, int newDisplayOrder ) {
+		
+		final String UPDATE_SQL = "UPDATE folder_project_search_tbl SET search_display_order = ? WHERE folder_id = ? AND project_search_id = ?";
+		
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+//			int rowsUpdated = 
+			this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt = connection.prepareStatement( UPDATE_SQL );
+							int counter = 0;
+							counter++;
+							pstmt.setInt( counter, newDisplayOrder );
+							counter++;
+							pstmt.setInt( counter, folderId );
+							counter++;
+							pstmt.setInt( counter, projectSearchId );
+
+							return pstmt;
+						}
+					});
+
+		} catch ( RuntimeException e ) {
+			String msg = "newDisplayOrder: " + newDisplayOrder + ", projectSearchId: " + projectSearchId + ", SQL: " + UPDATE_SQL;
 			log.error( msg, e );
 			throw e;
 		}
 	}
 	
 	/**
-	 * @param projectSearchId
+	 * @param not_In_ProjectSearchId_List
 	 * @throws Exception
 	 */
 	@Override
 	//  Spring DB Transactions
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
 
-	public void delete( int projectSearchId ) {
+	public void delete_NOT_In_ProjectSearchId_List( List<Integer> not_In_ProjectSearchId_List, int folderId ) {
+		
+		if ( not_In_ProjectSearchId_List == null ) {
+			throw new IllegalArgumentException( " ( not_In_ProjectSearchId_List == null )" );
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( 10000 ); 
+		sqlSB.append( "DELETE FROM folder_project_search_tbl WHERE folder_id = ?" );
+		
+		if ( ! not_In_ProjectSearchId_List.isEmpty() ) {
+		
+			sqlSB.append( " AND project_search_id NOT IN ( " );
 
-		final String sql = "DELETE FROM folder_project_search_tbl WHERE project_search_id = ?";
+			for ( int counter = 1; counter <= not_In_ProjectSearchId_List.size(); counter++ ) {
+				if ( counter > 1 ) {
+					sqlSB.append( " , " );	
+				}
+				sqlSB.append( " ? " );
+			}
+			
+			sqlSB.append( " ) " );
+		}
+
+		final String sql = sqlSB.toString();
 
 		// Use Spring JdbcTemplate so Transactions work properly
 
@@ -158,12 +219,19 @@ public class FolderProjectSearchDAO extends Limelight_JDBC_Base implements Folde
 									connection.prepareStatement( sql );
 							int counter = 0;
 							counter++;
-							pstmt.setInt( counter, projectSearchId );
+							pstmt.setInt( counter, folderId );
+							
+							if ( ! not_In_ProjectSearchId_List.isEmpty() ) {
+								for ( Integer not_In_ProjectSearchId : not_In_ProjectSearchId_List ) {
+									counter++;
+									pstmt.setInt( counter, not_In_ProjectSearchId );
+								}
+							}
 							return pstmt;
 						}
 					});
 		} catch ( RuntimeException e ) {
-			String msg = "Failed to delete, id: " + projectSearchId + ", sql: " + sql;
+			String msg = "Failed to delete, id_List: " + StringUtils.join( not_In_ProjectSearchId_List, ", " ) + ", sql: " + sql;
 			log.error( msg, e );
 			throw e;
 		}

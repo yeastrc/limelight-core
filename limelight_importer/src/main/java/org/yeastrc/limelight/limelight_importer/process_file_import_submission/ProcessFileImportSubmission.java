@@ -28,6 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
+import org.yeastrc.limelight.limelight_importer.constants.Importer__InsertedSearchId_When_NoSearchImported_Constants;
+import org.yeastrc.limelight.limelight_importer.dao.FileImportTrackingDataJSONBlob_DAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.FileImportTrackingSingleFileDAO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataNotFoundException;
@@ -38,14 +40,25 @@ import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchSt
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData.SearchTags_SearchTagCategories__SingleCategoryAndItsTags;
+import org.yeastrc.limelight.limelight_importer.process_input.Process_ScanFiles_ONLY_Main__No_LimelightXMLFile;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
+import org.yeastrc.limelight.limelight_importer.utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSONBlob_DTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight__FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO_Util;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight__FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO_Util.Limelight__FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO_Util__Result;
 
 /**
  * Process fileImportTrackingDTO
@@ -108,9 +121,12 @@ public class ProcessFileImportSubmission {
 
 		int projectId = fileImportTrackingDTO.getProjectId();
 		int userIdInsertingSearch = fileImportTrackingDTO.getUserId();
-
+		
 		//  Search Name from fileImportTrackingDTO or command Line
 		String searchNameOverrideValue = fileImportTrackingDTO.getSearchName();
+		
+		//  Search Short Name from fileImportTrackingDTO
+		String searchShortName = fileImportTrackingDTO.getSearchShortName();
 
 		//  "search_path" field from "file_import_tracking" table, if import run from Run Import pgm
 		String importDirectoryOverrideValue = null;
@@ -120,8 +136,67 @@ public class ProcessFileImportSubmission {
 			importDirectoryOverrideValue = fileImportTrackingDTO.getSearchPath();
 		}
 
-		List<File> scanFileList = null;
+		//  Get the Search Tags
+		
+		SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData = new SearchTags_SearchTagCategories_Root_And_SubParts_InputData();
+				
+		{
 
+			//  fileImportTrackingDataJSONBlob_DTO  may be null.
+			FileImportTrackingDataJSONBlob_DTO fileImportTrackingDataJSONBlob_DTO = 
+					FileImportTrackingDataJSONBlob_DAO_Importer.getInstance().getForTrackingId( fileImportTrackingDTO.getId() );
+
+			if ( fileImportTrackingDataJSONBlob_DTO != null ) {
+
+				Limelight__FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO_Util__Result getJSON_Contents_Object_Result =
+						Limelight__FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO_Util
+						.getSingletonInstance()
+						.get_FileImportTrackingDataJSON_Contents_Object_From_JSONBlob_DTO(fileImportTrackingDataJSONBlob_DTO, UnmarshalJSON_ToObject.getInstance() );
+
+				if ( getJSON_Contents_Object_Result.getFileImportTrackingDataJSON_Contents_Version_Number_001() != null ) {
+
+					FileImportTrackingDataJSON_Contents_Version_Number_001 fileImportTrackingDataJSON_Contents_Version_Number_001 =
+							getJSON_Contents_Object_Result.getFileImportTrackingDataJSON_Contents_Version_Number_001();
+					
+					{
+						FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001 searchTagStrings_Object =
+								fileImportTrackingDataJSON_Contents_Version_Number_001.getSearchTagStrings();
+
+						if ( searchTagStrings_Object != null ) {
+							if ( searchTagStrings_Object.getSearchTagList() != null && ( ! searchTagStrings_Object.getSearchTagList().isEmpty() ) ) {
+
+								searchTags_SearchTagCategories_Root_And_SubParts_InputData.setSearchTags_Uncategorized( searchTagStrings_Object.getSearchTagList() );
+							}
+						}
+					}
+					{
+						FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001 searchTagCategories_AndTheir_SearchTagStrings =
+								fileImportTrackingDataJSON_Contents_Version_Number_001.getSearchTagCategories_AndTheir_SearchTagStrings();
+
+						if ( searchTagCategories_AndTheir_SearchTagStrings != null ) {
+							if ( searchTagCategories_AndTheir_SearchTagStrings.getSearchTagCategoryList() != null && ( ! searchTagCategories_AndTheir_SearchTagStrings.getSearchTagCategoryList().isEmpty() ) ) {
+
+								List<SearchTags_SearchTagCategories__SingleCategoryAndItsTags> searchTagCategories_AndTheir_SearchTags = new ArrayList<>( searchTagCategories_AndTheir_SearchTagStrings.getSearchTagCategoryList().size() );
+								
+								for ( FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001 searchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry : searchTagCategories_AndTheir_SearchTagStrings.getSearchTagCategoryList() ) {
+									
+									SearchTags_SearchTagCategories__SingleCategoryAndItsTags result_SingleCategoryAndItsTags = new SearchTags_SearchTagCategories__SingleCategoryAndItsTags();
+									
+									result_SingleCategoryAndItsTags.setCategoryLabel( searchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry.getCategoryLabel() );
+									result_SingleCategoryAndItsTags.setSearchTagStrings( searchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry.getSearchTagList() );
+									
+									searchTagCategories_AndTheir_SearchTags.add(result_SingleCategoryAndItsTags);
+								}
+
+								searchTags_SearchTagCategories_Root_And_SubParts_InputData.setSearchTagCategories_AndTheir_SearchTags(searchTagCategories_AndTheir_SearchTags);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
 		///  Get the Limelight XML file and Scan files
 		List<FileImportTrackingSingleFileDTO> fileDBRecordList = 
 				FileImportTrackingSingleFileDAO_Importer.getInstance()
@@ -139,11 +214,34 @@ public class ProcessFileImportSubmission {
 				throw new LimelightImporterInternalException( msg ); 
 			}
 		}
+		
 		if ( limelightXMLFileDBRecord == null ) {
-			String msg = "No Limelight XML File file record for fileImportTrackingDTO.getId(): " + fileImportTrackingDTO.getId();
-			log.error( msg );
-			throw new LimelightImporterInternalException( msg ); 
+			
+			//  ONLY Importing Scan Files
+			
+			if ( scanFilesDBRecords.isEmpty() ) {
+				
+				//  NO Scan Files to import
+				
+				String msg = "NO Limelight XML file AND No Scan Files to Import";
+				log.error( msg );
+				throw new LimelightImporterInternalException( msg ); 
+			}
+			
+			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries =
+					create_ScanFileFileContainer_AllEntries__Populate_importResults(scanFilesDBRecords, importResults, fileImportRunIdToProcess);
+			
+
+			Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( scanFileFileContainer_AllEntries, projectId );
+			
+			return Importer__InsertedSearchId_When_NoSearchImported_Constants.INSERTED_SEARCH_ID_WHEN_NO_SEARCH_IMPORTED;  //  EARLY RETURN
+			
+			
+//			String msg = "No Limelight XML File file record for fileImportTrackingDTO.getId(): " + fileImportTrackingDTO.getId();
+//			log.error( msg );
+//			throw new LimelightImporterInternalException( msg ); 
 		}
+
 		
 		File mainXMLFileToImport = null;
 		
@@ -185,13 +283,72 @@ public class ProcessFileImportSubmission {
 		FileImportTrackingSingleFileDAO_Importer.getInstance()
 		.updateFileSizeSHA1Sum(mainXMLFileToImportFileSize, SHA1Sum, limelightXMLFileDBRecord.getId() );
 		
+
+		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries =
+				create_ScanFileFileContainer_AllEntries__Populate_importResults(scanFilesDBRecords, importResults, fileImportRunIdToProcess);
+
+		
+		int insertedSearchId = 
+				importerCoreEntryPoint.doImport(
+						projectId, 
+						userIdInsertingSearch, 
+						searchNameOverrideValue, 
+						searchShortName,
+						searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
+						importDirectoryOverrideValue, 
+						mainXMLFileToImport, // LimelightInputForImportParam, 
+						null,
+						scanFileFileContainer_AllEntries,
+						skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB
+						);
+		
+//		if ( StringUtils.isNotEmpty( filenameWithSearchIdToCreateOnSuccessInsert ) ) {
+//			try {
+//				String filenameWithSearchIdToCreateOnSuccessInsertActual = filenameWithSearchIdToCreateOnSuccessInsert + insertedSearchId;
+//				FileWriter writer = null;
+//				try {
+//					writer = new FileWriter( filenameWithSearchIdToCreateOnSuccessInsertActual );
+//					writer.write( "Inserted search id: " + insertedSearchId );
+//				} finally {
+//					if ( writer != null ) {
+//						writer.close();
+//					}
+//				}
+//			} catch ( Throwable t ) {
+//				//  just eat it
+//			}
+//		}
+
+		return insertedSearchId;
+
+
+
+	}
+	
+	/**
+	 * @param scanFilesDBRecords
+	 * @param importResults
+	 * @param fileImportRunIdToProcess
+	 * @return
+	 * @throws LimelightImporterDataException
+	 * @throws Exception
+	 */
+	private ScanFileFileContainer_AllEntries create_ScanFileFileContainer_AllEntries__Populate_importResults(
+			
+			List<FileImportTrackingSingleFileDTO> scanFilesDBRecords,
+			ImportResults importResults,
+			int fileImportRunIdToProcess
+			
+			) throws LimelightImporterDataException, Exception {
+
+
 		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 		
 		if ( scanFilesDBRecords.isEmpty() ) {
 			// noScanFilesCommandLineOptChosen = true; 
 		} else {
 			
-			scanFileList = new ArrayList<>( scanFilesDBRecords.size() );
+			List<File> scanFileList = new ArrayList<>( scanFilesDBRecords.size() );
 			
 			Set<String> scanFilenameInUpload_NoSuffixes = new HashSet<>();
 			
@@ -280,39 +437,6 @@ public class ProcessFileImportSubmission {
 
 		}
 		
-		int insertedSearchId = 
-				importerCoreEntryPoint.doImport(
-						projectId, 
-						userIdInsertingSearch, 
-						searchNameOverrideValue, 
-						importDirectoryOverrideValue, 
-						mainXMLFileToImport, 
-						null, // LimelightInputForImportParam, 
-						scanFileFileContainer_AllEntries,
-						skipPopulatingPathOnSearchLineOptChosen,
-						searchStatistics_General_SavedToDB_ToDB
-						);
-		
-//		if ( StringUtils.isNotEmpty( filenameWithSearchIdToCreateOnSuccessInsert ) ) {
-//			try {
-//				String filenameWithSearchIdToCreateOnSuccessInsertActual = filenameWithSearchIdToCreateOnSuccessInsert + insertedSearchId;
-//				FileWriter writer = null;
-//				try {
-//					writer = new FileWriter( filenameWithSearchIdToCreateOnSuccessInsertActual );
-//					writer.write( "Inserted search id: " + insertedSearchId );
-//				} finally {
-//					if ( writer != null ) {
-//						writer.close();
-//					}
-//				}
-//			} catch ( Throwable t ) {
-//				//  just eat it
-//			}
-//		}
-
-		return insertedSearchId;
-
-
-
+		return scanFileFileContainer_AllEntries;
 	}
 }

@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.FilenameUtils;
@@ -33,6 +35,7 @@ import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_importer.config.Process_ConfigFileData_OtherThanDBConfig;
 import org.yeastrc.limelight.limelight_importer.constants.ImporterProgramExitCodes;
+import org.yeastrc.limelight.limelight_importer.constants.SearchTagCategory_SeparatorCharacter_Constants;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLimelightXMLDeserializeFailException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
@@ -41,7 +44,10 @@ import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchSt
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData.SearchTags_SearchTagCategories__SingleCategoryAndItsTags;
 import org.yeastrc.limelight.limelight_importer.process_file_import_submission.ProcessFileImportSubmission;
+import org.yeastrc.limelight.limelight_importer.process_input.Process_ScanFiles_ONLY_Main__No_LimelightXMLFile;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
@@ -205,11 +211,20 @@ public class LimelightImporterProgram {
 			CmdLineParser cmdLineParser = new CmdLineParser();
 			CmdLineParser.Option projectIdOpt = cmdLineParser.addIntegerOption( 'p', "project-id" );	
 			CmdLineParser.Option inputMainFileStringCommandLineOpt = cmdLineParser.addStringOption( 'i', "import-file" );
+
+			CmdLineParser.Option noLimelightXMLFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-limelight-xml-file" );
+			
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
 			CmdLineParser.Option inputScanFileStringCommandLineOpt = cmdLineParser.addStringOption( 's', "scan-file" );
+			
 			CmdLineParser.Option dbConfigFileNameCommandLineOpt = cmdLineParser.addStringOption( 'c', "config" );
+			
 			//  'Z' is arbitrary and won't be suggested to user
 			CmdLineParser.Option skipSearchNameOverrideOpt = cmdLineParser.addStringOption( 'Z', "search-name" );
+
+			//  'Z' is arbitrary and won't be suggested to user
+			CmdLineParser.Option searchTagsCommandLineOpt = cmdLineParser.addStringOption( 'Z', "search-tag" );
+			
 			//  'Z' is arbitrary and won't be suggested to user
 			CmdLineParser.Option skipPopulatingPathOnSearchLineOpt = cmdLineParser.addBooleanOption( 'Z', SKIP_POPULATING_PATH_ON_SEARCH_CMD_LINE_PARAM_STRING );
 
@@ -261,7 +276,13 @@ public class LimelightImporterProgram {
 			Integer fileImportRunIdToProcess = null;
 			
 			Integer projectId = null;
-			Boolean noScanFilesCommandLineOptChosen = null;
+			boolean noLimelightXMLFileCommandLineOptChosen = false;
+			boolean noScanFilesCommandLineOptChosen = false;
+			
+
+			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData = null;
+			
+			
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 			
 			File mainXMLFileToImport = null;
@@ -320,8 +341,96 @@ public class LimelightImporterProgram {
 
 
 				projectId = (Integer)cmdLineParser.getOptionValue( projectIdOpt );
+
+				{
+
+					@SuppressWarnings("rawtypes")
+					Vector searchTagStringVector = cmdLineParser.getOptionValues( searchTagsCommandLineOpt );
+
+
+					List<String> searchTags_Uncategorized = new ArrayList<>( searchTagStringVector.size() );
+					
+					Map<String, SearchTags_SearchTagCategories__SingleCategoryAndItsTags> searchTagCategories_AndTheir_SearchTags_MAP_Key_CategoryLabel = new HashMap<>();
+					
+					for ( Object searchTagStringObject : searchTagStringVector ) {
+
+						if( searchTagStringObject == null ) {
+
+							System.err.println( "" );
+							System.err.println( "Internal ERROR:  searchTagStringObject is null." );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							importResults.setImportSuccessStatus( false) ;
+							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+							return importResults;  //  EARLY EXIT
+						}
+
+						if ( ! (  searchTagStringObject instanceof String ) ) {
+
+							System.err.println( "" );
+							System.err.println( "Internal ERROR:  searchTagStringObject is not a String object." );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							importResults.setImportSuccessStatus( false) ;
+							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+							return importResults;  //  EARLY EXIT
+						}
+
+						String searchTagString = (String) searchTagStringObject;
+
+						if( searchTagString.equals( "" ) ) {
+
+							System.err.println( "" );
+							System.err.println( "ERROR:  search-tag param value is empty." );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							importResults.setImportSuccessStatus( false) ;
+							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+							return importResults;  //  EARLY EXIT
+						}
+
+						final int SPLIT_LIMIT = 2; // Only split on first instance of delimiter
+						
+						String[] searchTagString_SplitOn_SearchTagCategorySeparator = searchTagString.split( SearchTagCategory_SeparatorCharacter_Constants.SEARCH_TAG_CATEGORY_SEPARATORY_CHARACTER__FOR_SPLIT_REGEX, SPLIT_LIMIT );
+						
+						if ( searchTagString_SplitOn_SearchTagCategorySeparator.length == 1 ) {
+							//  No Category
+
+							searchTags_Uncategorized.add( searchTagString );
+							
+						} else {
+							//  Yes Category
+							String categoryLabel = searchTagString_SplitOn_SearchTagCategorySeparator[0].trim();
+							String searchTagString_AfterSplit = searchTagString_SplitOn_SearchTagCategorySeparator[1].trim();
+							
+							SearchTags_SearchTagCategories__SingleCategoryAndItsTags searchTags_SearchTagCategories__SingleCategoryAndItsTags = searchTagCategories_AndTheir_SearchTags_MAP_Key_CategoryLabel.get( categoryLabel );
+							if ( searchTags_SearchTagCategories__SingleCategoryAndItsTags == null ) {
+								searchTags_SearchTagCategories__SingleCategoryAndItsTags = new SearchTags_SearchTagCategories__SingleCategoryAndItsTags();
+								searchTags_SearchTagCategories__SingleCategoryAndItsTags.setCategoryLabel(categoryLabel);
+								searchTags_SearchTagCategories__SingleCategoryAndItsTags.setSearchTagStrings( new ArrayList<>( searchTagStringVector.size() ) );
+								searchTagCategories_AndTheir_SearchTags_MAP_Key_CategoryLabel.put( categoryLabel, searchTags_SearchTagCategories__SingleCategoryAndItsTags );
+							}
+							
+							searchTags_SearchTagCategories__SingleCategoryAndItsTags.getSearchTagStrings().add(searchTagString_AfterSplit);
+						}	
+					}
+
+					List<SearchTags_SearchTagCategories__SingleCategoryAndItsTags> searchTagCategories_AndTheir_SearchTags = new ArrayList<>( searchTagCategories_AndTheir_SearchTags_MAP_Key_CategoryLabel.values() );
+
+					searchTags_SearchTagCategories_Root_And_SubParts_InputData = new SearchTags_SearchTagCategories_Root_And_SubParts_InputData();
+					
+					searchTags_SearchTagCategories_Root_And_SubParts_InputData.setSearchTagCategories_AndTheir_SearchTags(searchTagCategories_AndTheir_SearchTags);
+					searchTags_SearchTagCategories_Root_And_SubParts_InputData.setSearchTags_Uncategorized(searchTags_Uncategorized);
+				}
+
+				
 				String inputLimelightFileString = (String)cmdLineParser.getOptionValue( inputMainFileStringCommandLineOpt );
+
+				//  Since have default as second param to 'getOptionValue' will always return true or false so no need to handle null
+
+				noLimelightXMLFileCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noLimelightXMLFileCommandLineOpt, Boolean.FALSE);
 				noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
+				
 				@SuppressWarnings("rawtypes")
 				Vector inputScanFileStringVector = cmdLineParser.getOptionValues( inputScanFileStringCommandLineOpt );
 				String searchNameOverrideValueFromCommandLine = (String)cmdLineParser.getOptionValue( skipSearchNameOverrideOpt );
@@ -331,35 +440,61 @@ public class LimelightImporterProgram {
 				if ( StringUtils.isNotEmpty( searchNameOverrideValueFromCommandLine ) ) {
 					searchNameOverrideValue = searchNameOverrideValueFromCommandLine;
 				}
-
-				if( ( noScanFilesCommandLineOptChosen == null || ( ! noScanFilesCommandLineOptChosen ) )
-						&& ( inputScanFileStringVector == null || ( inputScanFileStringVector.isEmpty() ) ) ) {
-					System.err.println( "At least one scan file is required since 'no scan files' param ('-n' or '--no-scan-files') not specified.\n" );
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
-					importResults.setImportSuccessStatus( false) ;
-					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-					return importResults;  //  EARLY EXIT
+				
+				if ( noLimelightXMLFileCommandLineOptChosen ) {
+					
+					//  NO Limelight XML file param so must have NO Limelight and at least one scan file
+					
+					if (StringUtils.isNotEmpty( inputLimelightFileString ) ) {
+						System.err.println( "'Limelight XML file' param (-i (--import-file=) ) is specified when '--no-limelight-xml-file' is specified.\n" );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
+					
+					if( ( inputScanFileStringVector == null || ( inputScanFileStringVector.isEmpty() ) ) ) {
+						System.err.println( "At least one scan file is required since 'no limelight XML file' param ('--no-limelight-xml-file') is specified.\n" );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
+					
+					
+				} else {
+	
+					if( ( ! noScanFilesCommandLineOptChosen )
+							&& ( inputScanFileStringVector == null || ( inputScanFileStringVector.isEmpty() ) ) ) {
+						System.err.println( "At least one scan file is required since 'no scan files' param ('-n' or '--no-scan-files') not specified.\n" );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
+					if( projectId == null || projectId == 0 ) {
+						System.err.println( "Must specify a project id using -p\n" );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
+					mainXMLFileToImport = new File( inputLimelightFileString );
+					importResults.setImportedLimelightXMLFile( mainXMLFileToImport );
+					if( ! mainXMLFileToImport.exists() ) {
+						System.err.println( "Could not find main XML File To Import file: " + mainXMLFileToImport.getAbsolutePath() );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
 				}
-				if( projectId == null || projectId == 0 ) {
-					System.err.println( "Must specify a project id using -p\n" );
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
-					importResults.setImportSuccessStatus( false) ;
-					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-					return importResults;  //  EARLY EXIT
-				}
-				mainXMLFileToImport = new File( inputLimelightFileString );
-				importResults.setImportedLimelightXMLFile( mainXMLFileToImport );
-				if( ! mainXMLFileToImport.exists() ) {
-					System.err.println( "Could not find main XML File To Import file: " + mainXMLFileToImport.getAbsolutePath() );
-					System.err.println( "" );
-					System.err.println( FOR_HELP_STRING );
-					importResults.setImportSuccessStatus( false) ;
-					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-					return importResults;  //  EARLY EXIT
-				}
-
+				
 				//  Process scan files
 
 				if ( inputScanFileStringVector != null && ( ! inputScanFileStringVector.isEmpty() ) ) {
@@ -503,12 +638,16 @@ public class LimelightImporterProgram {
 				//  CURRENT Version
 				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result =
 						Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result();
+						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
+								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+								);
 
 				//  DB Update in Progress Version
 				LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result =
 						Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result();
+						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
+								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+								);
 				
 				if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME
 						|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
@@ -623,9 +762,10 @@ public class LimelightImporterProgram {
 
 			importerCoreEntryPoint = ImporterCoreEntryPoint.getInstance();
 			
-			int insertedSearchId = 0;
+			int insertedSearchId = 0; //  NOT updated when only scan files
 
 			if ( fileImportRunIdToProcess != null ) {
+				
 				//  Process Submitted Import
 				insertedSearchId = 	
 						ProcessFileImportSubmission.getInstance()
@@ -633,18 +773,25 @@ public class LimelightImporterProgram {
 								fileImportRunIdToProcess, trackingDTOTrackingRunDTOPair, importerCoreEntryPoint, importResults, 
 								searchStatistics_General_SavedToDB_ToDB
 								);
+			
+			} else if ( mainXMLFileToImport == null ) {
+			
+				Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( scanFileFileContainer_AllEntries, projectId );
+				
 			} else {
+			
 				insertedSearchId = 
 						importerCoreEntryPoint.doImport(
 								projectId, 
 								null,  //  userIdInsertingSearch, 
 								searchNameOverrideValue, 
+								null, // searchShortName
+								searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
 								importDirectoryOverrideValue, 
 								mainXMLFileToImport, 
-								limelightInputForImportParam, 
+								limelightInputForImportParam,
 								scanFileFileContainer_AllEntries,
-								skipPopulatingPathOnSearchLineOptChosen,
-								searchStatistics_General_SavedToDB_ToDB
+								skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB
 								);
 				
 				System.out.println( "" );
@@ -654,8 +801,13 @@ public class LimelightImporterProgram {
 				System.out.println( "" );
 				System.out.println( "Completed Limelight import for parameters:" );
 				System.out.println( "project id: " + projectId );
-				System.out.println( "main XML File To Import file: " 
-						+ mainXMLFileToImport.getAbsolutePath() );
+				
+				if ( mainXMLFileToImport != null ) {
+					System.out.println( "main Limelight XML File To Import file: " 
+							+ mainXMLFileToImport.getAbsolutePath() );
+				} else {
+					System.out.println( "NO Limelight XML File To Import file." ); 
+				}
 				if ( scanFileList == null || scanFileList.isEmpty() ) {
 					System.out.println( " " );
 					System.out.println( "No Scan files" );

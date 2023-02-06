@@ -21,6 +21,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -117,6 +120,55 @@ public class ReportedPeptideDAO_Importer {
 		
 	}
 
+	private ConcurrentMap< Integer, String> _update_last_used_in_search_import__SQL_Map_Key_SequenceListLength = new ConcurrentHashMap<>();
+
+	/**
+	 * Update the last_used_in_search_import associated with this record
+	 * @param reportedPeptideStringList
+	 * @throws Exception
+	 */
+	public void update_last_used_in_search_import( List<String> reportedPeptideStringList ) throws Exception {
+
+		String sql = _update_last_used_in_search_import__SQL_Map_Key_SequenceListLength.get(reportedPeptideStringList.size());
+		
+		if ( sql == null ) {
+		
+			StringBuilder sqlSB = new StringBuilder( 1000 );
+			
+			sqlSB.append( "UPDATE reported_peptide_tbl SET last_used_in_search_import = NOW() WHERE sequence IN ( " );
+			
+			for ( int count = 0; count < reportedPeptideStringList.size(); count++ ) {
+				
+				if ( count != 0 ) {
+					sqlSB.append( "," );
+				}
+				sqlSB.append( "?" );
+			}
+			
+			sqlSB.append( " ) " ); // close IN
+			
+			sql = sqlSB.toString();
+
+			_update_last_used_in_search_import__SQL_Map_Key_SequenceListLength.put(reportedPeptideStringList.size(), sql);
+		}
+		 
+		 
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				int counter = 0;
+				for ( String reportedPeptideString : reportedPeptideStringList ) {
+					counter++;
+					pstmt.setString( counter, reportedPeptideString );
+				}
+				pstmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: update_last_used_in_search_import(...) sql: " + sql, e );
+			throw e;
+		}
+	}
+
 	/**
 	 * Get the reported peptide DTO corresponding to supplied sequence. 
 	 * If no matching reported peptide is found in the database, it is inserted and a populated DTO returned.
@@ -130,7 +182,7 @@ public class ReportedPeptideDAO_Importer {
 
 		ReportedPeptideDTO reportedPeptideDTO = new ReportedPeptideDTO();
 		reportedPeptideDTO.setSequence( sequence );
-		
+
 		Integer id = getReportedPeptideIdForSequence( sequence );
 		
 		if ( id != null ) {
@@ -142,7 +194,7 @@ public class ReportedPeptideDAO_Importer {
 
 		return reportedPeptideDTO;
 	}
-	
+
 	/**
 	 * @param reportedPeptideDTO
 	 */

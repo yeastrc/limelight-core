@@ -50,6 +50,7 @@ import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimel
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
+import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateAnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatchedProteinSection;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
@@ -89,6 +90,7 @@ public class ImporterCoreEntryPoint {
 	 * @param projectId
 	 * @param userIdInsertingSearch
 	 * @param searchNameOverrideValue
+	 * @param searchShortName TODO
 	 * @param importDirectoryOverrideValue
 	 * @param mainXMLFileToImport
 	 * @param limelightInputForImportParam
@@ -104,12 +106,13 @@ public class ImporterCoreEntryPoint {
 			int projectId,
 			Integer userIdInsertingSearch,
 			String searchNameOverrideValue,
+			String searchShortName,
+			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			String importDirectoryOverrideValue,
 			File mainXMLFileToImport,
 			LimelightInput limelightInputForImportParam,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
-			Boolean skipPopulatingPathOnSearchLineOptChosen,
-			SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
+			Boolean skipPopulatingPathOnSearchLineOptChosen, SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
 			) throws Exception, LimelightImporterProjectNotAllowImportException, LimelightImporterLimelightXMLDeserializeFailException {
 		
 		LimelightInput limelightInputForImport = null;
@@ -189,6 +192,8 @@ public class ImporterCoreEntryPoint {
 		int insertedSearchId = doImportPassingDeserializedLimelightImportInputXML( 
 				projectId, 
 				userIdInsertingSearch,
+				searchShortName,
+				searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 				limelightInputObjectContainer, 
 				scanFileFileContainer_AllEntries, 
 				importDirectory, 
@@ -236,7 +241,6 @@ public class ImporterCoreEntryPoint {
 			}
 			Object unmarshalledObject = null;
 			try {
-
 				XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
 				XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStream ) );
 				unmarshalledObject = unmarshaller.unmarshal( xmlStreamReader );
@@ -254,7 +258,9 @@ public class ImporterCoreEntryPoint {
 				System.out.println( msg );
 				throw new LimelightImporterInternalException(msg);
 			}
+			
 			limelightInputForImport = (LimelightInput) unmarshalledObject;
+			
 		} catch ( LimelightImporterLimelightXMLDeserializeFailException e ) {
 			throw e;
 		} catch ( Exception e ) {
@@ -280,6 +286,8 @@ public class ImporterCoreEntryPoint {
 	public int doImportPassingDeserializedLimelightImportInputXML( 
 			int projectId,
 			Integer userIdInsertingSearch,
+			String searchShortName,
+			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			LimelightInputObjectContainer limelightInputObjectContainer,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
@@ -354,11 +362,12 @@ public class ImporterCoreEntryPoint {
 			processLimelightInput.processLimelightInput( 
 					projectId, 
 					userIdInsertingSearch,
-					limelightInputForImport, 
-					scanFileFileContainer_AllEntries,
-					importDirectory, 
-					skipPopulatingPathOnSearchLineOptChosen,
-					searchStatistics_General_SavedToDB_ToDB
+					searchShortName,
+					searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
+					limelightInputForImport,
+					scanFileFileContainer_AllEntries, 
+					importDirectory,
+					skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB
 					);
 			
 			SearchDTO_Importer searchDTOInserted = processLimelightInput.getSearchDTOInserted();

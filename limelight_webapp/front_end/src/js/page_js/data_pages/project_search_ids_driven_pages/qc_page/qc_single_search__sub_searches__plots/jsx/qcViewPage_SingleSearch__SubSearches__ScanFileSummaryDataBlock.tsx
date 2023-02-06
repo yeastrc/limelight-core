@@ -14,6 +14,8 @@ import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Creat
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch__SubSearches";
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 
 /**
  *
@@ -36,9 +38,14 @@ interface QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State {
 /**
  *
  */
-export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock extends React.Component< QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_Props, QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State > {
+export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
+    extends React.Component< QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_Props, QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State >
+    implements QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+{
 
     //  bind to 'this' for passing as parameters
+
+    private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
 
     /**
@@ -53,15 +60,38 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
             throw Error(msg);
         }
 
+        //  Initialize to current passed value
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+
         this.state = { showUpdatingMessage: false };
+    }
+
+    /**
+     * From interface QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
+     * @param item
+     */
+    set_Current_QcViewPage__Track_LatestUpdates_For_UserInput(item: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput) {
+
+        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback = item
+
+        this.setState({ showUpdatingMessage: true });
     }
 
     /**
      *
      */
-    // componentWillUnmount() {
-    //
-    // }
+    componentWillUnmount() {
+
+        try {
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+        } catch (e) {
+            //  Eat Exception
+        }
+    }
 
     /**
      *
@@ -123,6 +153,14 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                         return;
                     }
 
+                    if (
+                        ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                        )) {
+                        //  Skip these params since they are not the "Latest"
+                        return; // EARLY RETURN
+                    }
+
                     this._populateblock();
 
                 } catch( e ) {
@@ -162,6 +200,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
             return null;
         });
 
+        //  ALSO: use 'await' below in method '_compute_Data(...)' to load more data
+
         const promise =
             this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
             qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
@@ -172,6 +212,14 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
         })
         promise.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => {
 
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
+
             const promise_2 =
                 this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
                 qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
@@ -181,6 +229,14 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
 
             })
             promise_2.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => { try {
+
+                if (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )) {
+                    //  Skip these params since they are not the "Latest"
+                    return; // EARLY RETURN
+                }
 
                 this.setState((prevState: Readonly<QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State>, props: Readonly<QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_Props>) : QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock_State =>  {
                     if ( prevState.showUpdatingMessage ) {
@@ -197,7 +253,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
     }
 
     /**
-     *
+     * ALSO: use 'await' in this method to load more data
      */
     private async _compute_Data (
         {
@@ -208,13 +264,25 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
     ) : Promise<void> {
 
         try {
-            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 ) {
-                const msg = "( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 )"
-                console.warn(msg)
-            }
-            const projectSearchId = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds[0];
+            const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId;
 
             const searchSubGroup_Ids_Selected = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.searchSubGroup_Ids_Selected;
+
+            const spectralStorage_NO_Peaks_Data = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch().spectralStorage_NO_Peaks_Data;
+
+            let allScans_Have_TotalIonCurrent = true;
+
+            for ( const spectralStorage_NO_Peaks_DataEntry of spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataEntries_IterableIterator() ) {
+                for ( const scan of spectralStorage_NO_Peaks_DataEntry.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+                    if ( scan.totalIonCurrent_ForScan === undefined || scan.totalIonCurrent_ForScan === null ) {
+                        allScans_Have_TotalIonCurrent = false;
+                        break;
+                    }
+                }
+                if ( ! allScans_Have_TotalIonCurrent ) {
+                    break;
+                }
+            }
 
             const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
 
@@ -223,12 +291,22 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                 throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId);
             }
 
+            //   'await':  get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise()
+
             const get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
                 await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                 get_commonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters().
                 get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
 
             const searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder = get_SearchSubGroupId_ForPSM_ID__For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder;
+
+            if (
+                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                )) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
 
             const searchSubGroups_DisplayOrder: Array<SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry> = [];
             const searchSubGroupIds_DisplayOrder: Array<number> = [];
@@ -262,6 +340,10 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
             const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
 
             const scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId : Map<number,Map<number,Set<number>>> = new Map();
+
+            const totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel_Map_Key_SearchSubGroupId: Map<number, Map<number, number>> = new Map();
+
+            const scanNumbers_TotalIonCurrent_Tracking__Map_Key_searchScanFileId : Map<number,Set<number>> = new Map();
 
             for ( const psmTblData_Entry of psmTblData_Filtered ) {
 
@@ -297,7 +379,54 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                     scanNumbers_For_searchScanFileId = new Set();
                     scanNumbers_Map_Key_searchScanFileId_Map.set(searchScanFileId, scanNumbers_For_searchScanFileId);
                 }
-                scanNumbers_For_searchScanFileId.add( scanNumber );
+
+                if ( ! scanNumbers_For_searchScanFileId.has( scanNumber ) ) {
+
+                    scanNumbers_For_searchScanFileId.add( scanNumber );
+                }
+
+                if ( allScans_Have_TotalIonCurrent ) {
+
+                    let scanNumbers_For_searchScanFileId = scanNumbers_TotalIonCurrent_Tracking__Map_Key_searchScanFileId.get(searchScanFileId);
+                    if ( ! scanNumbers_For_searchScanFileId ) {
+                        scanNumbers_For_searchScanFileId = new Set();
+                        scanNumbers_TotalIonCurrent_Tracking__Map_Key_searchScanFileId.set(searchScanFileId, scanNumbers_For_searchScanFileId);
+                    }
+
+                    if ( ! scanNumbers_For_searchScanFileId.has( scanNumber ) ) {
+                        //  NOT processed this scan number so process now
+
+                        scanNumbers_For_searchScanFileId.add( scanNumber );
+
+                        const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Entry.searchScanFileId );
+                        if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
+                            const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId( psmTblData_Entry.searchScanFileId ); returned nothing. searchScanFileId: " + psmTblData_Entry.searchScanFileId;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( scanNumber );
+                        if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
+                            const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( scanNumber ); returned nothing. scanNumber: " + scanNumber;
+                            console.warn(msg);
+                            throw Error(msg);
+                        }
+
+                        let totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel = totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel_Map_Key_SearchSubGroupId.get( subGroupId );
+                        if ( ! totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel ) {
+                            totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel = new Map()
+                            totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel_Map_Key_SearchSubGroupId.set( subGroupId, totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel );
+                        }
+
+                        let totalIonCurrent_ForScanLevel_FilteredScans = totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get( spectralStorage_NO_Peaks_DataFor_ScanNumber.level )
+                        if ( ! totalIonCurrent_ForScanLevel_FilteredScans ) {
+                            totalIonCurrent_ForScanLevel_FilteredScans = 0;  //  Set to zero when undefined or zero
+                        }
+                        const new_totalIonCurrent_ForScanLevel_FilteredScans = totalIonCurrent_ForScanLevel_FilteredScans + spectralStorage_NO_Peaks_DataFor_ScanNumber.totalIonCurrent_ForScan;
+                        //  save new value to Map
+                        totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.set( spectralStorage_NO_Peaks_DataFor_ScanNumber.level, new_totalIonCurrent_ForScanLevel_FilteredScans )
+                    }
+                }
             }
 
             //  Get Scan Count
@@ -308,6 +437,9 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                     //  NOT a Selected searchSubGroup_Id so SKIP
                     continue; // EARLY CONTINUE
                 }
+
+                const totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel =
+                    totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel_Map_Key_SearchSubGroupId.get( searchSubGroup.searchSubGroup_Id );
 
                 let scanCount_PSM_MeetsCutoff = 0;
                 const searchScanFileIds_For_SearchSubGroupId = new Set<number>();
@@ -385,15 +517,16 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                     scanCount_PSM_MeetsCutoff: scanCount_PSM_MeetsCutoff,
                     totalIonCurrent_ForSearch,
                     totalScanCount_AtHighestLevelNumber,
+                    totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel,
 
-                    dataPerScanLevel: dataPerSubSearch_PerScanLevel_Array
+                    dataPerScanLevel_Map_Key_ScanLevel: dataPerSubSearch_PerScanLevel_Map_Key_ScanLevel
                 }
 
                 dataPerSubSearchArray.push( dataPerSubSearch );
             }
 
             const dataComputed: DataComputed = {
-                dataPerSubSearchArray, largest_ScanLevel
+                dataPerSubSearchArray, largest_ScanLevel, allScans_Have_TotalIonCurrent
             }
 
             this.setState({ dataComputed });
@@ -471,6 +604,133 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                 }
             }
 
+            //  "Total MS{scanLevel} Ion Current"  AND  "MS{scanLevel} TIC with PSM":  Per Scan Level Data
+
+            for ( let scanLevel = 1; scanLevel <= this.state.dataComputed.largest_ScanLevel; scanLevel++ ) {
+
+                let display__totalIonCurrent_ForScanLevel_FilteredScans__Row = false;
+
+                if ( this.state.dataComputed.allScans_Have_TotalIonCurrent && scanLevel !== 1 ) {  // skip for scanLevel 1
+                    for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
+                        const totalIonCurrent_ForScanLevel_FilteredScans = dataPerSubSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get(scanLevel);
+                        if ( ( ! totalIonCurrent_ForScanLevel_FilteredScans )
+                        || ( scanLevel === this.state.dataComputed.largest_ScanLevel && this.state.dataComputed.allScans_Have_TotalIonCurrent ) ) {
+                            display__totalIonCurrent_ForScanLevel_FilteredScans__Row = true;
+                            break;
+                        }
+                    }
+                }
+
+                let paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup = 0;
+
+                if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
+                    //  Add padding between this scan level data and previous since next will have a second row
+                    paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup = 5 //  adds to paddingBottom5 of previous line/group
+                }
+
+                const style_Label: React.CSSProperties = { paddingRight: paddingRight_Labels, paddingBottom: paddingBottom };
+                const style_Value: React.CSSProperties = { textAlign: "right", paddingBottom: paddingBottom, paddingLeft: paddingLeft_Values };
+
+                {
+                    const perLevel_TotalIonCurrent_DisplayEntry = (
+                        <div
+                            key={scanLevel + "_label"}
+                            style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
+                        >
+                            <div
+                                style={style_Label}
+                            >
+                                Total MS{scanLevel} Ion Current:
+                            </div>
+                        </div>
+                    )
+                    perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                }
+
+                for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
+
+                    const summaryPerScanLevelData :  DataPerSubSearch_PerScanLevel = dataPerSubSearchEntry.dataPerScanLevel_Map_Key_ScanLevel.get( scanLevel );
+
+                    {
+                        let totalIonCurrent_Value = "N/A"
+                        if (summaryPerScanLevelData) {
+                            totalIonCurrent_Value = summaryPerScanLevelData.totalIonCurrent.toExponential(3)
+                        }
+
+                        const perLevel_TotalIonCurrent_DisplayEntry = (
+                            <div
+                                key={scanLevel + "_" + dataPerSubSearchEntry.searchSubGroup_Id}
+                                style={ { paddingTop: paddingTop_TotalIonCurrentMain_OuterDiv_FromPrevGroup } }
+                            >
+                                <div
+                                    style={style_Value}
+                                >
+                                    { totalIonCurrent_Value }
+                                </div>
+                            </div>
+                        )
+                        perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                    }
+                }
+
+                if ( display__totalIonCurrent_ForScanLevel_FilteredScans__Row ) {
+
+                    //  "MS{scanLevel} TIC with PSM" row
+
+                    {
+                        const perLevel_TotalIonCurrent_DisplayEntry = (
+                            <div
+                                key={scanLevel + "_label_TIC with PSM"}
+                            >
+                                <div
+                                    style={style_Label}
+                                >
+                                    MS{scanLevel} TIC with PSM:
+                                </div>
+                            </div>
+                        )
+                        perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                    }
+
+                    for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
+
+                        const summaryPerScanLevelData :  DataPerSubSearch_PerScanLevel = dataPerSubSearchEntry.dataPerScanLevel_Map_Key_ScanLevel.get( scanLevel );
+
+                        {
+                            let value_Display = "N/A";
+                            if ( summaryPerScanLevelData && dataPerSubSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel ) {
+                                const totalIonCurrent_ForScanLevel_FilteredScans = dataPerSubSearchEntry.totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel.get(scanLevel);
+                                if ( totalIonCurrent_ForScanLevel_FilteredScans !== undefined && totalIonCurrent_ForScanLevel_FilteredScans !== null
+                                    && summaryPerScanLevelData.totalIonCurrent !== undefined && summaryPerScanLevelData.totalIonCurrent !== null ) {
+
+                                    value_Display = totalIonCurrent_ForScanLevel_FilteredScans.toExponential(3) +
+                                        " (" +
+                                        ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerScanLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) +
+                                        ")"
+                                }
+                            }
+
+                            const perLevel_TotalIonCurrent_DisplayEntry = (
+                                <div
+                                    key={scanLevel + "_" + dataPerSubSearchEntry.searchSubGroup_Id + "_TIC with PSM"}
+                                >
+                                    <div
+                                        style={style_Value}
+                                    >
+                                        <span>
+                                             {value_Display}
+                                        </span>
+                                    </div>
+                                </div>
+                            )
+                            perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
+                        }
+                    }
+                }
+            }
+
+            //  Number MS{scanLevel} Scans:  Per Scan Level Data
+
             for ( let scanLevel = 1; scanLevel <= this.state.dataComputed.largest_ScanLevel; scanLevel++ ) {
 
                 const style_Label: React.CSSProperties = { paddingRight: paddingRight_Labels, paddingBottom: paddingBottom };
@@ -482,23 +742,18 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                 }
 
                 {
-                    const perLevel_TotalIonCurrent_DisplayEntry = (
-                        <div
-                            key={scanLevel + "_label"}
-                            style={style_Label}
-                        >
-                            Total MS{scanLevel} Ion Current:
-                        </div>
-                    )
-                    perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
-                }
-                {
                     const perLevel_Count_DisplayEntry = (
                         <div
                             key={scanLevel + "_label"}
-                            style={style_Label}
+                            style={ {
+                                paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
+                            } }
                         >
-                            Number MS{scanLevel} Scans:
+                            <div
+                                style={style_Label}
+                            >
+                                Number MS{scanLevel} Scans:
+                            </div>
                         </div>
                     )
                     perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
@@ -506,27 +761,8 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
 
                 for ( const dataPerSubSearchEntry of dataPerSubSearchArray ) {
 
-                    let summaryPerScanLevelData :  DataPerSubSearch_PerScanLevel = undefined;
+                    const summaryPerScanLevelData :  DataPerSubSearch_PerScanLevel = dataPerSubSearchEntry.dataPerScanLevel_Map_Key_ScanLevel.get( scanLevel );
 
-                    // Find summaryPerScanLevelData for scanLevel for this search
-                    for (const summaryPerScanLevelData_ForSearch of dataPerSubSearchEntry.dataPerScanLevel) {
-                        if (summaryPerScanLevelData_ForSearch.scanLevel === scanLevel) {
-                            summaryPerScanLevelData = summaryPerScanLevelData_ForSearch;
-                            break;
-                        }
-                    }
-
-                    {
-                        const perLevel_TotalIonCurrent_DisplayEntry = (
-                            <div
-                                key={scanLevel + "_" + dataPerSubSearchEntry.searchSubGroup_Id}
-                                style={style_Value}
-                            >
-                                { summaryPerScanLevelData.totalIonCurrent.toExponential(3) }
-                            </div>
-                        )
-                        perLevel_TotalIonCurrent_DisplayEntries.push(perLevel_TotalIonCurrent_DisplayEntry);
-                    }
                     {
                         let numberOfScans_Value = "N/A"
                         if (summaryPerScanLevelData) {
@@ -535,9 +771,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                         const perLevel_Count_DisplayEntry = (
                             <div
                                 key={scanLevel + "_" + dataPerSubSearchEntry.searchSubGroup_Id}
-                                style={style_Value}
+                                style={ {
+                                    paddingTop: scanLevel === 1 ? paddingBottom_SeparateSections : 0  //  Space from prev section
+                                } }
                             >
-                                { numberOfScans_Value }
+                                <div
+                                    style={style_Value}
+                                >
+                                    { numberOfScans_Value }
+                                </div>
                             </div>
                         )
                         perLevel_Count_DisplayEntries.push(perLevel_Count_DisplayEntry);
@@ -552,7 +794,6 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                 let scanNumbersCount_For_FilteredPSMs_Percentage_String: string = undefined;
 
                 {
-
                     const percentage = ( dataPerSubSearchEntry.scanCount_PSM_MeetsCutoff / dataPerSubSearchEntry.totalScanCount_AtHighestLevelNumber ) * 100;
 
                     let decimalPlaces = 1;
@@ -564,7 +805,6 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock exte
                     if ( decimalPlaces == 2 && scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( "0" ) ) {
                         scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 1 );
                     }
-
                     if ( scanNumbersCount_For_FilteredPSMs_Percentage_String.endsWith( ".0" ) ) {
                         scanNumbersCount_For_FilteredPSMs_Percentage_String = scanNumbersCount_For_FilteredPSMs_Percentage_String.substring( 0, scanNumbersCount_For_FilteredPSMs_Percentage_String.length - 2 );
                     }
@@ -643,6 +883,7 @@ class DataComputed {
 
     dataPerSubSearchArray: Array<DataPerSubSearch>
     largest_ScanLevel: number
+    allScans_Have_TotalIonCurrent: boolean
 }
 
 class DataPerSubSearch {
@@ -653,8 +894,9 @@ class DataPerSubSearch {
     scanCount_PSM_MeetsCutoff: number
     totalIonCurrent_ForSearch: number
     totalScanCount_AtHighestLevelNumber: number
+    totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel: Map<number, number>
 
-    dataPerScanLevel: Array<DataPerSubSearch_PerScanLevel>
+    dataPerScanLevel_Map_Key_ScanLevel: Map<number, DataPerSubSearch_PerScanLevel>
 }
 
 class DataPerSubSearch_PerScanLevel {

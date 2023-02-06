@@ -26,6 +26,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunner
 import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_and_main.DatabaseCleanup_RemoveData_Thread;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 
@@ -50,13 +51,15 @@ public class ManagerThread extends Thread {
 	
 //	private static final int WAIT_TIME_FOR_CLIENT_STATUS_UPDATE_THREAD_TO_EXIT_IN_SECONDS = 10;
 	
-	//  For shutdown wait for current import to finish
+	//  For shutdown wait for current import to finish, GetImportAndProcessThread and ImportAndPipelineRun_Thread
 	private static final int WAIT_TIME_FOR_GET_IMPORT_THREAD_TO_EXIT_IN_SECONDS = 30 * 60; // X minutes
 	
 	private static final int WAIT_TIME_FOR_CHECK_RUN_CONTROL_FILE_IN_SECONDS = 10;
 	
 	private static final String GET_IMPORT_AND_PROCESS_THREAD = "GetImportAndProcessThread";  // Thread Name
-
+	
+	private static final String IMPORT_AND_PIPELINE_RUN_THREAD = "ImportAndPipelineRun_Thread";  // Thread Name
+	
 	private static final String IMPORT_FILES_DELAYED_REMOVAL_THREAD = "ImportFiles_DelayedRemoval_Thread";  // Thread Name
 
 	private static final String DATABASE_CLEANUP_REMOVE_DATA_THREAD = "DatabaseCleanup_RemoveData_Thread";  // Thread Name
@@ -73,6 +76,9 @@ public class ManagerThread extends Thread {
 	
 	private volatile GetImportAndProcessThread getImportAndProcessThread;
 	private int getImportAndProcessThreadCounter = 2;  // used if need to replace the thread
+	
+	private volatile ImportAndPipelineRun_Thread importAndPipelineRun_Thread;
+	private int importAndPipelineRun_ThreadCounter = 2;  // used if need to replace the thread
 	
 	private volatile ImportFiles_DelayedRemoval_Thread importFiles_DelayedRemoval_Thread;
 	private int importFiles_DelayedRemoval_ThreadCounter = 2;  // used if need to replace the thread
@@ -108,6 +114,7 @@ public class ManagerThread extends Thread {
 	 */
 	private void init() {
 	}
+	
 	/**
 	 * awaken thread to process request
 	 */
@@ -116,6 +123,51 @@ public class ManagerThread extends Thread {
 			notify();
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public void completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread() {
+		
+		if ( importFiles_DelayedRemoval_Thread == null ) {
+
+			try {
+				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
+				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */, dbConnectionParametersProvider );
+				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+				importFiles_DelayedRemoval_Thread.start();
+			} catch (Throwable e) {
+				log.error( "Failed to create first importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
+			}
+		}
+
+		if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
+			
+			if ( databaseCleanup_RemoveData_Thread == null ) {
+
+				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
+				try {
+					databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance( DATABASE_CLEANUP_REMOVE_DATA_THREAD /* name */, dbConnectionParametersProvider );
+					databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					databaseCleanup_RemoveData_Thread.start();
+				} catch (Throwable e) {
+					log.error( "Failed to create first databaseCleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void completedSuccessful_FirstDatabaseSQL_ImportAndPipelineRun_Thread() {
+		
+		//  TODO  Add code here
+		
+		log.warn( "Add code in public void completedSuccessful_FirstDatabaseSQL_ImportAndPipelineRun_Thread");
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
@@ -132,32 +184,17 @@ public class ManagerThread extends Thread {
 //			clientStatusUpdateThread.start();
 
 			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-			getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */ );
+			getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */, this );
 			getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			getImportAndProcessThread.setFirstInstanceOfThisThread(true);
 			getImportAndProcessThread.start();
 
-			try {
-				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */, dbConnectionParametersProvider );
-				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-				importFiles_DelayedRemoval_Thread.start();
-			} catch (Throwable e) {
-				log.error( "Failed to create first importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
-			}
+			//  Any changes here to create thread ALSO need change in code below where replacement thread is created
+			importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance( IMPORT_AND_PIPELINE_RUN_THREAD /* name */, this );
+			importAndPipelineRun_Thread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
+			importAndPipelineRun_Thread.setFirstInstanceOfThisThread(true);
+			importAndPipelineRun_Thread.start();
 
-			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
-				
-				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-				try {
-					databaseCleanup_RemoveData_Thread = DatabaseCleanup_RemoveData_Thread.getNewInstance( DATABASE_CLEANUP_REMOVE_DATA_THREAD /* name */, dbConnectionParametersProvider );
-					databaseCleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
-					databaseCleanup_RemoveData_Thread.start();
-				} catch (Throwable e) {
-					log.error( "Failed to create first databaseCleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
-				}
-			}
-			
 			runProcessLoop( );  // Call main processing loop that will run while keepRunning == true
 			
 			if ( stopProcessingNextImport ) {
@@ -254,14 +291,23 @@ public class ManagerThread extends Thread {
 			//  check health of getImportAndProcessThread, replace thread if dead
 			if ( ! getImportAndProcessThread.isAlive() ) {
 				GetImportAndProcessThread oldGetImportAndProcessThread = getImportAndProcessThread;
-				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */  );
+				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */, this );
 				getImportAndProcessThreadCounter += 1;
 				log.error( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
 				getImportAndProcessThread.start();
 			}
 
+			//  check health of importAndPipelineRun_Thread, replace thread if dead
+			if ( ! importAndPipelineRun_Thread.isAlive() ) {
+				ImportAndPipelineRun_Thread old_importAndPipelineRun_Thread = importAndPipelineRun_Thread;
+				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */, this );
+				importAndPipelineRun_ThreadCounter += 1;
+				log.error( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
+				importAndPipelineRun_Thread.start();
+			}
+			
 			//  check health of importFiles_DelayedRemoval_Thread, replace thread if dead
-			if ( ! importFiles_DelayedRemoval_Thread.isAlive() ) {
+			if ( importFiles_DelayedRemoval_Thread != null && ( ! importFiles_DelayedRemoval_Thread.isAlive() ) ) {
 				
 				ImportFiles_DelayedRemoval_Thread old_importFiles_DelayedRemoval_Thread = importFiles_DelayedRemoval_Thread;
 				
@@ -282,7 +328,7 @@ public class ManagerThread extends Thread {
 			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 
 				//  check health of databaseCleanup_RemoveData_Thread, replace thread if dead
-				if ( ! databaseCleanup_RemoveData_Thread.isAlive() ) {
+				if ( databaseCleanup_RemoveData_Thread != null && ( ! databaseCleanup_RemoveData_Thread.isAlive() ) ) {
 					
 					DatabaseCleanup_RemoveData_Thread old_databaseCleanup_RemoveData_Thread = databaseCleanup_RemoveData_Thread;
 
@@ -370,20 +416,31 @@ public class ManagerThread extends Thread {
 							+ "' has been changed to specify to stop processing new imports and exit when the current import is complete." );
 				}
 				if ( stopRequestedLocal ) {
+					
 					stopProcessingNextImport = true;
-					log.info( "ClientControlFile: Adding to file contents : \n" + RunControlFileConstants.CLIENT_RUN_CONTROL_STOP_REQUEST_ACCEPTED );
+					
+					{
+						StringBuilder contentsSB = new StringBuilder( 2000);
+						for ( String line : RunControlFileConstants.CLIENT_RUN_CONTROL_STOP_REQUEST_ACCEPTED ) {
+							contentsSB.append( line  );
+							contentsSB.append( "\n" );
+						}
+						log.info( "ClientControlFile: Adding to file contents : \n" + contentsSB );
+					}
 					log.info( "ClientControlFile: filename = '" + RunControlFileConstants.CLIENT_RUN_CONTROL_FILENAME + "' filepath is = '" + clientControlFile.getAbsolutePath() + "'." );
+					
 					clientControlFileWriter = new BufferedWriter( new FileWriter( clientControlFile, true /* append */ ) );
 					for ( String line : RunControlFileConstants.CLIENT_RUN_CONTROL_STOP_REQUEST_ACCEPTED ) {
 						clientControlFileWriter.append( line  );
 						clientControlFileWriter.newLine();
 					}
-					try {
+					try {  //  Also close if not null in 'finally' block below
 						clientControlFileReader.close();
 						clientControlFileReader = null;
 					} catch (Throwable e) {
 						log.error( "Exception in checkForStopProcessingJobsRequest(): calling clientControlFileReader.close(); ", e );
 					}
+					
 					processStopProcessingNewImportsRequest( stopRequestType );
 				}
 			}
@@ -427,6 +484,8 @@ public class ManagerThread extends Thread {
 			log.info( "In processStopProcessingNewImportsRequest(): getImportAndProcessThread == null" );
 		}
 		waitForGetImportAndProcessThread();
+		
+		waitFor_ImportAndPipelineRun_Thread();
 	}
 	
 	
@@ -524,6 +583,38 @@ public class ManagerThread extends Thread {
 			log.warn( "INFO: In waitForGetImportAndProcessThread(): getImportAndProcessThread == null" );
 		}
 		log.warn( "INFO: waitForGetImportAndProcessThread():  getImportAndProcessThread IS complete, called getImportAndProcessThread.join() " );
+	}
+
+	/**
+	 * wait For GetImportAndProcessThread To Complete
+	 */
+	private void waitFor_ImportAndPipelineRun_Thread () {
+		
+		log.warn( "INFO: waitFor_ImportAndPipelineRun_Thread(): wait for getImportAndProcessThread to complete, call getImportAndProcessThread.join() " );
+		// wait for getImportAndProcessThread to complete
+		if ( importAndPipelineRun_Thread != null ) {
+//			boolean getJobThreadExited = false;
+//			while ( ! getJobThreadExited ) {
+				try {
+					importAndPipelineRun_Thread.join( WAIT_TIME_FOR_GET_IMPORT_THREAD_TO_EXIT_IN_SECONDS * 1000 );
+				} catch (InterruptedException e) {
+					log.info( "In waitForGetJobThreadToComplete(): call to getJobThread.join() threw InterruptedException " + e.toString(), e );
+				}
+				if ( importAndPipelineRun_Thread.isAlive() ) {
+					log.error( "The thread 'importAndPipelineRun_Thread' has not exited in the allocated time of "
+							+ WAIT_TIME_FOR_GET_IMPORT_THREAD_TO_EXIT_IN_SECONDS
+							+ " seconds.  The thread 'getJobThread' will not be waited for any further." );
+//					log.error( "The thread 'getJobThread' has not exited in the allocated time of "
+//							+ WAIT_TIME_FOR_GET_JOB_THREAD_TO_EXIT_IN_SECONDS
+//							+ " seconds.  The wait for 'getJobThread' to exit will be repeated with the same wait time." );
+				} else {
+//					getJobThreadExited = true;
+				}
+//			}
+		} else {
+			log.warn( "INFO: In waitFor_ImportAndPipelineRun_Thread(): importAndPipelineRun_Thread == null" );
+		}
+		log.warn( "INFO: waitFor_ImportAndPipelineRun_Thread():  importAndPipelineRun_Thread IS complete, called importAndPipelineRun_Thread.join() " );
 	}
 
 	/**

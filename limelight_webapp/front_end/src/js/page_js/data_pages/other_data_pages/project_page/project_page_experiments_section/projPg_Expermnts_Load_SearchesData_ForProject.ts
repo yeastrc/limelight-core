@@ -20,10 +20,6 @@ import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {
-	getSearchesAndFolders_SingleProject,
-	GetSearchesAndFolders_SingleProject_PromiseResponse, GetSearchesAndFolders_SingleProject_PromiseResponse_Item
-} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/single_project_its_searches_and_folders_WebserviceRetrieval_TS_Classes";
-import {
 	AnnotationTypeData_Root,
 	DataPageStateManager,
 	SearchProgramsPerSearchData_Root
@@ -34,15 +30,18 @@ import {
 	defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval,
 	DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 } from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
+import {
+	CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
+	getSearchesSearchTagsAndFolders_SingleProject
+} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
 
 /**
  *
  */
 export class GetSearchesDataForProject_ExperimentProcessing_Result {
 
-	getSearchesAndFolders_SingleProject_PromiseResponse?: GetSearchesAndFolders_SingleProject_PromiseResponse
+	getSearchesAndFolders_SingleProject_PromiseResponse?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
 	noSearchesFound? : boolean
-	searchList_OnlySearches? : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>;
 
 	searchesSubData? : {
 		searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
@@ -61,21 +60,19 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 
 	return new Promise<GetSearchesDataForProject_ExperimentProcessing_Result>( (resolve, reject) => {
 		try {
-			const promise_getSearchesDataFromServer = getSearchesAndFolders_SingleProject({ projectIdentifier });
+			const promise_getSearchesSearchTagsAndFolders_SingleProject = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier });
 
-			promise_getSearchesDataFromServer.catch( (reason) => {
+			promise_getSearchesSearchTagsAndFolders_SingleProject.catch( (reason) => {
 				reject(reason)
 			} );
 
-			promise_getSearchesDataFromServer.then( (getSearchesAndFolders_SingleProject_PromiseResponse) => {
+			promise_getSearchesSearchTagsAndFolders_SingleProject.then( (getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse) => {
 				try {
-					const { noSearchesFound, searchList_OnlySearches } = _getSearchesListFromWebserviceResponse({ getSearchesAndFolders_SingleProject_PromiseResponse });
-
-					if ( noSearchesFound ) {
+					if ( getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse.is_NO_Searches_In_Project() ) {
 
 						const result = new GetSearchesDataForProject_ExperimentProcessing_Result();
 						result.noSearchesFound = true;
-						result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesAndFolders_SingleProject_PromiseResponse;
+						result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse;
 
 						resolve(result);
 
@@ -84,7 +81,7 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 
 					const promise_defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval = defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval({ projectIdentifier });
 
-					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ searchList_OnlySearches });
+					const promise_getSearchesSubDataFromServer = _getSearchesSubDataFromServer({ getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse });
 
 					const promiseAll = Promise.all([ promise_defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval, promise_getSearchesSubDataFromServer ]);
 					promiseAll.catch( (reason) => {
@@ -97,8 +94,7 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 
 							const result = new GetSearchesDataForProject_ExperimentProcessing_Result();
 							result.noSearchesFound = false;
-							result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesAndFolders_SingleProject_PromiseResponse;
-							result.searchList_OnlySearches = searchList_OnlySearches;
+							result.getSearchesAndFolders_SingleProject_PromiseResponse = getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse;
 							result.searchesSubData = { searchProgramsPerSearchData_Root, annotationTypeData_Root };
 							result.defaultFilter_Cutoffs_Overrides_ProjectWide_Root = defaultFilter_Cutoffs_Overrides_ProjectWide_Root;
 
@@ -126,109 +122,13 @@ export const getSearchesDataForProject_ExperimentProcessing = function({ project
 /**
  * 
  */
-const _getSearchesDataFromServer = function({ projectIdentifier }: { projectIdentifier: any }) {
+const _getSearchesSubDataFromServer = function({ getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse } : {
 
-	return new Promise( (resolve, reject) => {
-		try {
-
-			let requestObj = {
-				projectIdentifier : projectIdentifier
-			};
-
-			const url = "d/rws/for-page/project-view-page-search-list";
-
-			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
-
-			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-
-			promise_webserviceCallStandardPost.catch( (reason: any) => { reject(reason) }  );
-
-			promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
-				try {
-					resolve({ responseData });
-				} catch (e) {
-					reportWebErrorToServer.reportErrorObjectToServer({
-						errorException : e
-					});
-					throw e;
-				}
-			});
-		} catch (e) {
-			reportWebErrorToServer.reportErrorObjectToServer({
-				errorException : e
-			});
-			throw e;
-		}
-	});
-}
-
-/**
- * @param responseData from web service call
- */
-const _getSearchesListFromWebserviceResponse = function(
-	{
-		getSearchesAndFolders_SingleProject_PromiseResponse
-	} : {
-		getSearchesAndFolders_SingleProject_PromiseResponse : GetSearchesAndFolders_SingleProject_PromiseResponse
-
-	}) : {
-	noSearchesFound : boolean
-	searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
-} {
-
-	const searchesAndFolders_Items = getSearchesAndFolders_SingleProject_PromiseResponse.items;
-
-	if ( searchesAndFolders_Items.length < 1 ) {
-		//  No Data
-		return { noSearchesFound : true, searchList_OnlySearches: [] }; // EARLY RETURN
-	}
-
-	const searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item> = [];
-
-	//  Copy all searches to single array and sort on search id descending
-
-	for ( const item of searchesAndFolders_Items ) {
-
-		if ( item.isFolder ) {
-			for ( const inFolderItem of item.searchesInFolder ) {
-				searchList_OnlySearches.push( inFolderItem );
-			}
-		} else {
-			searchList_OnlySearches.push( item );
-		}
-	}
-
-	// sort on search id descending
-
-	searchList_OnlySearches.sort( (a,b) => {
-
-		if ( a.searchId < b.searchId ) { 
-			return 1; // descending
-		}
-		if ( a.searchId > b.searchId ) { 
-			return -1; // descending
-		}
-		return 0;
-	});
-
-	return { searchList_OnlySearches, noSearchesFound: false };
-}
-
-/**
- * 
- */
-const _getSearchesSubDataFromServer = function({ searchList_OnlySearches } : {
-
-	searchList_OnlySearches : Array<GetSearchesAndFolders_SingleProject_PromiseResponse_Item>
+	getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
 
 }) : Promise<{ searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root, annotationTypeData_Root : AnnotationTypeData_Root}> {
 
-	const projectSearchIds: Array<number> = [];
-
-	for ( const search of searchList_OnlySearches ) {
-		projectSearchIds.push( search.projectSearchId );
-	}
-
+	const projectSearchIds = Array.from( getSearchesSearchTagsAndFolders_SingleProject_PromiseResponse.get_all_Searches_ProjectSearchIds_Set() );
 
 	return new Promise( (resolve, reject) => {
 		try {
