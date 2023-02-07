@@ -177,7 +177,18 @@ public class Validate_UserSubmitImportPgrogramKey_Access_ToWebservice_ForAccessL
 		if ( userId == null ) {
 			if ( submitImport_Init_Response_PgmXML != null ) {
 				submitImport_Init_Response_PgmXML.setUserSubmitImportProgramKeyNotFound(true);
-				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( "Value for '--user-submit-import-key' is not found." );
+				
+				String userSubmitImportPgrogramKey_FirstCharactersMsg = "";
+				if ( userSubmitImportPgrogramKey != null && userSubmitImportPgrogramKey.length() > 0 ) {
+					String userSubmitImportPgrogramKey_FirstCharacters = userSubmitImportPgrogramKey;
+					if ( userSubmitImportPgrogramKey.length() > 2 ) {
+						userSubmitImportPgrogramKey_FirstCharacters = userSubmitImportPgrogramKey.substring(0, 2);
+					}
+					
+					userSubmitImportPgrogramKey_FirstCharactersMsg = "  The first 2 characters are '" + userSubmitImportPgrogramKey_FirstCharacters + "'.";
+				}
+				String errorMsg = "The supplied submit import key (in param '--user-submit-import-key') is invalid." + userSubmitImportPgrogramKey_FirstCharactersMsg;
+				submitImport_Init_Response_PgmXML.setStatusFail_ErrorMessage( errorMsg );
 			} else {
 				log.warn( "user id not found for userSubmitImportPgrogramKey: " + userSubmitImportPgrogramKey );
 			}
