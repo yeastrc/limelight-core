@@ -1662,8 +1662,6 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                 tag_Added: true
             }
 
-
-
             const promise = _searchTags_TagChange_UpdateServer(searchTagToSave )
 
             promise.catch(reason => {
@@ -1788,6 +1786,13 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                                     ref={ this._inputField_CategorySelect_Ref }
                                     defaultValue={ this.props.searchTagEntry.tag_category_id ? this.props.searchTagEntry.tag_category_id : "" }
                                     title="Change and then click 'Save Tag' to move to different category"
+                                    onChange={ event => {
+                                        //  Clear error message if set
+                                        if ( this._tagString_Duplicate_ErrorMessage ) {
+                                            this._tagString_Duplicate_ErrorMessage = false
+                                            this.setState({ force_Rerender: {} })
+                                        }
+                                    }}
                                 >
                                     <option
                                         value=""
@@ -1898,6 +1903,12 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                             </button>
 
                         </div>
+
+                        { this._tagString_Duplicate_ErrorMessage ? (
+                            <div  className=" error-text" style={ { marginTop: 10 } }>
+                                <span>This Tag Name and Category combination already exists.  Please change the Tag Name and/or Category.</span>
+                            </div>
+                        ) : null }
                     </div>
                     <div></div>
                 </div>
@@ -2867,10 +2878,6 @@ const _searchTags_TagChange_UpdateServer = function(searchTagToSave: Internal_Se
 
             promise_webserviceCallStandardPost.then(({responseData} : {responseData : any}) => {
                 try {
-                    if ( ! responseData.statusSuccess ) {
-                        throw Error("( ! responseData.statusSuccess ): URL: " + url )
-                    }
-
                     resolve({
                         statusSuccess: responseData.statusSuccess,
                         duplicate: responseData.duplicate
