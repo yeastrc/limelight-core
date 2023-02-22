@@ -479,10 +479,8 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
-//				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED();
-
-				webserviceMethod_Internal_Params.maxFileSize = 10;  //  TODO FAKE
 				
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
@@ -503,6 +501,8 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 						+ "Max file size for this file type: " + webserviceMethod_Internal_Params.maxFileSize
 						+ ". Remote filename of file being submitted: "
 						+ webserviceRequestHeaderContents.getFilename() 
+						+ ".  File Upload size from Content Length from HTTP Header: "
+						+ contentLength
 						);
 				
 				//  Return Error
