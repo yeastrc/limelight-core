@@ -479,8 +479,11 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
-				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
+//				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED();
+
+				webserviceMethod_Internal_Params.maxFileSize = 10;  //  TODO FAKE
+				
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED();
@@ -495,6 +498,12 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			///  Check of upload size (using contentLength)
 			
 			if ( contentLength > webserviceMethod_Internal_Params.maxFileSize ) {
+
+				log.warn( "Submit Import: File Uploaded is too large. Encountered while checking upload file declared Content Length from HTTP Header."
+						+ "Max file size for this file type: " + webserviceMethod_Internal_Params.maxFileSize
+						+ ". Remote filename of file being submitted: "
+						+ webserviceRequestHeaderContents.getFilename() 
+						);
 				
 				//  Return Error
 				webserviceResult.setStatusSuccess( false );
@@ -681,6 +690,12 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				}
 			}
 			if ( fileTooLarge ) {
+				
+				log.warn( "Submit Import: File Uploaded is too large. Encountered while copying input stream to local file."
+						+ "Max file size for this file type: " + webserviceMethod_Internal_Params.maxFileSize
+						+ ". Remote filename of file being submitted: "
+						+ webserviceRequestHeaderContents.getFilename() 
+						);
 				
 				if ( ! uploadedFileOnDisk.delete() ) {
 					log.warn("Failed to delete upload file that is canceled since too large.  file: " + uploadedFileOnDisk.getAbsolutePath() );
