@@ -57,12 +57,17 @@ export class ProjectPage_UploadData_UploadFiles__Params {
 
     callback_UpdateAfterSuccessfulSubmit: () => void
 
+    is_uploading_FileObjectStorage_Files: boolean
+
     limelight_import_file_type_limelight_xml_file: number
+    limelight_import_file_type_fasta_file: number
     limelight_import_file_type_scan_file: number
 
     maxFileUploadChunkSize: number
     maxLimelightXMLFileUploadSize: number
     maxLimelightXMLFileUploadSizeFormatted: string
+    maxFASTAFileUploadSize: number
+    maxFASTAFileUploadSizeFormatted: string
     maxScanFileUploadSize: number
     maxScanFileUploadSizeFormatted: string
 
@@ -435,7 +440,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
                             Choose type of data to import:
                         </h1>
                         <ul>
-                            {/*  Import a Limelight XML file and associated scan files (optional).  */}
+                            {/*  Import a Limelight XML file and associated files.  */}
                             <li style={ { fontSize: choose_type_of_data_to_import_Link_FontSize, marginBottom: marginAfter_Main_ImportType } }>
                                 <div>
                                     <span
@@ -449,7 +454,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
                                 </div>
                                 <div style={ { fontSize: choose_type_of_data_to_import_TextBelowLink_FontSize } }>
                                     <div>
-                                        Import a Limelight XML file and associated scan files (optional).
+                                        Import a Limelight XML file and associated files.
                                     </div>
                                     <div>
                                         Please

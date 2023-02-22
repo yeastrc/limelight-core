@@ -139,26 +139,26 @@ public class ScanFileDAO_Importer {
 		}
 	}
 	
-	/**
-	 * @param id
-	 * @throws Exception
-	 */
-	public void delete( int id ) throws Exception {
-
-		final String sql = "DELETE FROM scan_file_tbl WHERE id = ?";
-		
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
-
-			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
-
-				pstmt.setInt( 1, id );
-				pstmt.executeUpdate();
-			}
-		} catch ( Exception e ) {
-			log.error( "ERROR: delete(...) id: " + id + ", sql: " + sql, e );
-			throw e;
-		}
-	}
+//	/**
+//	 * @param id
+//	 * @throws Exception
+//	 */
+//	public void delete( int id ) throws Exception {
+//
+//		final String sql = "DELETE FROM scan_file_tbl WHERE id = ?";
+//		
+//		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+//
+//			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+//
+//				pstmt.setInt( 1, id );
+//				pstmt.executeUpdate();
+//			}
+//		} catch ( Exception e ) {
+//			log.error( "ERROR: delete(...) id: " + id + ", sql: " + sql, e );
+//			throw e;
+//		}
+//	}
 	
 	/**
 	 * @param id

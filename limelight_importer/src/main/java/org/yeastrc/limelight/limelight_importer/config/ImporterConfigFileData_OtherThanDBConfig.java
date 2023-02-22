@@ -31,6 +31,10 @@ public class ImporterConfigFileData_OtherThanDBConfig {
 	private static boolean spectralStorageService_sendScanFileLocation;
 	
 	private static String spectralStorageService_sendScanFileLocation_IfPathStartsWith;
+
+	private static boolean fileObjectStorageService_sendFileLocation;
+	
+	private static String fileObjectStorageService_sendFileLocation_IfPathStartsWith;
 	
 
 	private static boolean configured = false;
@@ -56,6 +60,25 @@ public class ImporterConfigFileData_OtherThanDBConfig {
 	}
 
 
+	public static boolean isFileObjectStorageService_sendFileLocation() {
+		if ( ! configured ) {
+			String msg = "ImporterConfigFileData_OtherThanDBConfig not configured";
+			log.error( msg );
+			throw new IllegalStateException(msg);
+		}
+		return fileObjectStorageService_sendFileLocation;
+	}
+
+
+	public static String getFileObjectStorageService_sendFileLocation_IfPathStartsWith() {
+		if ( ! configured ) {
+			String msg = "ImporterConfigFileData_OtherThanDBConfig not configured";
+			log.error( msg );
+			throw new IllegalStateException(msg);
+		}
+		return fileObjectStorageService_sendFileLocation_IfPathStartsWith;
+	}
+
 	public static boolean isConfigured() {
 		return configured;
 	}
@@ -76,4 +99,17 @@ public class ImporterConfigFileData_OtherThanDBConfig {
 	static void setConfigured(boolean configured) {
 		ImporterConfigFileData_OtherThanDBConfig.configured = configured;
 	}
+
+
+	static void setFileObjectStorageService_sendFileLocation(
+			boolean fileObjectStorageService_sendFileLocation) {
+		ImporterConfigFileData_OtherThanDBConfig.fileObjectStorageService_sendFileLocation = fileObjectStorageService_sendFileLocation;
+	}
+
+
+	static void setFileObjectStorageService_sendFileLocation_IfPathStartsWith(
+			String fileObjectStorageService_sendFileLocation_IfPathStartsWith) {
+		ImporterConfigFileData_OtherThanDBConfig.fileObjectStorageService_sendFileLocation_IfPathStartsWith = fileObjectStorageService_sendFileLocation_IfPathStartsWith;
+	}
+
 }

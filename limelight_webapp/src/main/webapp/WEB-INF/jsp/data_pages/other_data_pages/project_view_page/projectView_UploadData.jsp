@@ -30,6 +30,17 @@
 	<input type="hidden" id="limelight_xml_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>">
 	
     <input type="hidden" id="limelight_import_file_type_limelight_xml_file" value="<%=LimelightSubmit_FileImportFileType.LIMELIGHT_XML_FILE.value()%>">
+    
+    
+	<c:if test="${ configSystemValues.fileObjectStorageFileImportAllowedViaWebSubmit }" >
+	
+	  <input type="hidden" id="limelight_import_file_object_storage_files" value="true" />
+	  
+	  <input type="hidden" id="limelight_import_fasta_file_max_file_upload_size" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE_AS_STRING()%>">
+	  <input type="hidden" id="limelight_import_fasta_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE_FORMATTED()%>">
+	
+	  <input type="hidden" id="limelight_import_file_type_fasta_file" value="<%=LimelightSubmit_FileImportFileType.FASTA_FILE.value()%>">
+	</c:if>
 	
 	<c:if test="${ configSystemValues.scanFileImportAllowedViaWebSubmit }" >
 	  <input type="hidden" id="limelight_import_scan_file_max_file_upload_size" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_AS_STRING()%>">

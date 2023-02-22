@@ -8,7 +8,12 @@ public class SearchDetails_Core_Item {
 
 	private int projectSearchId;
 	private String path;
+	
 	private String fastaFilename;
+	private String fastaFilename_IfLimelightXMLHasDifferentFilename;
+	private Integer fastaFile_FileObjectStorageId;
+	
+	
 	private String formattedLoadTime;
 
 	//  Converter Program Info
@@ -81,5 +86,18 @@ public class SearchDetails_Core_Item {
 	}
 	public void setFormatted_converterProgram_ConversionDate(String formatted_converterProgram_ConversionDate) {
 		this.formatted_converterProgram_ConversionDate = formatted_converterProgram_ConversionDate;
+	}
+	public Integer getFastaFile_FileObjectStorageId() {
+		return fastaFile_FileObjectStorageId;
+	}
+	public void setFastaFile_FileObjectStorageId(Integer fastaFile_FileObjectStorageId) {
+		this.fastaFile_FileObjectStorageId = fastaFile_FileObjectStorageId;
+	}
+	public String getFastaFilename_IfLimelightXMLHasDifferentFilename() {
+		return fastaFilename_IfLimelightXMLHasDifferentFilename;
+	}
+	public void setFastaFilename_IfLimelightXMLHasDifferentFilename(
+			String fastaFilename_IfLimelightXMLHasDifferentFilename) {
+		this.fastaFilename_IfLimelightXMLHasDifferentFilename = fastaFilename_IfLimelightXMLHasDifferentFilename;
 	}
 }

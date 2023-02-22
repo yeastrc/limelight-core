@@ -64,9 +64,12 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
     private readonly _searchName_Ref :  React.RefObject<HTMLInputElement>
     private readonly _searchShortName_Ref :  React.RefObject<HTMLInputElement>
     private readonly _fileInput_LimelightXMLFile_Ref :  React.RefObject<HTMLInputElement>
+    private readonly _fileInput_fastaFile_Ref :  React.RefObject<HTMLInputElement>
     private readonly _fileInput_ScanFile_Ref :  React.RefObject<HTMLInputElement>
 
     private _limelight_XML_File_Data: ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data
+
+    private _fasta_File_Data: ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data
 
     private _scan_Files_Data: Array<ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data> = []
 
@@ -90,6 +93,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
         this._searchName_Ref = React.createRef();
         this._searchShortName_Ref = React.createRef();
         this._fileInput_LimelightXMLFile_Ref = React.createRef();
+        this._fileInput_fastaFile_Ref = React.createRef();
         this._fileInput_ScanFile_Ref = React.createRef();
 
         {
@@ -153,6 +157,43 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
         const filename = file_Selected.name;
 
         this._limelight_XML_File_Data = {
+            filename,
+            file_JS_File_Object: file_Selected,
+            internal_Identifier: ++this._internal_Identifier_PrevValue__For__ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data,
+            fileImportSubmit_Complete: false,
+            fileSendToServer_Complete: false,
+            fileSendToServer_Percentage: undefined,
+            fileSendToServer_ErrorMessage: undefined
+        }
+
+        this.setState({ submitButton_Enabled: true, force_ReRender_Object: {} })
+    }
+
+    /**
+     *
+     */
+    private _fasta_File_InputElement_OnChangeEvent( event: React.ChangeEvent<HTMLInputElement> ) : void {
+
+        const files_Selected = event.target.files;
+
+        if ( files_Selected.length === 0 ) {
+            //  No file selected so just exit
+
+            return; // EARLY RETURN
+        }
+
+        if ( files_Selected.length > 1 ) {
+            //  More than 1 file selected so error message and exit
+            window.alert( "Only 1 file allowed for FASTA file" )
+
+            return; // EARLY RETURN
+        }
+
+        const file_Selected = files_Selected[0];
+
+        const filename = file_Selected.name;
+
+        this._fasta_File_Data = {
             filename,
             file_JS_File_Object: file_Selected,
             internal_Identifier: ++this._internal_Identifier_PrevValue__For__ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data,
@@ -287,47 +328,88 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
             if ( ! error ) {
 
-                //  Upload Scan Files
+                {  //  Upload FASTA file if provided
 
-                for ( const scan_Files_Data_Entry of this._scan_Files_Data ) {
+                    if ( this._fasta_File_Data ) {
 
-                    if ( ! this._component_Mounted ) {
-                        return;  // EARLY RETURN
+                        try {
+                            const result = await this._upload_File({
+                                single_UploadFile_Data: this._fasta_File_Data,
+                                isLimelightXMLFile: false,
+                                fileType: this.props.mainParams.limelight_import_file_type_fasta_file,
+                                init_Upload_Response
+                            });
+
+                            const submit_Upload_Request_Single_File: ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File = {
+                                isLimelightXMLFile : false,
+                                uploadedFilename : this._fasta_File_Data.filename,
+                                fileType: this.props.mainParams.limelight_import_file_type_fasta_file,
+                                fileIndex : this._fasta_File_Data.internal_Identifier
+                            }
+
+                            filesUploaded.push( submit_Upload_Request_Single_File )
+
+                            this._fasta_File_Data.fileSendToServer_Complete = true;
+                            this._fasta_File_Data.fileSendToServer_Percentage = undefined;
+
+                            if ( ! result.sendResult.statusSuccess ) {
+                                this._fasta_File_Data.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                                error = true;
+                            }
+
+                        } catch (e) {
+
+                            this._fasta_File_Data.fileSendToServer_ErrorMessage = "Failed Upload"
+
+                            throw e;
+                        }
                     }
+                }
 
-                    //  Upload a single Scan File
+                if ( ! error ) {
 
-                    try {
-                        const result = await this._upload_File({
-                            single_UploadFile_Data: scan_Files_Data_Entry,
-                            isLimelightXMLFile: false,
-                            fileType: this.props.mainParams.limelight_import_file_type_scan_file,
-                            init_Upload_Response
-                        });
+                    //  Upload Scan Files
 
-                        const submit_Upload_Request_Single_File: ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File = {
-                            isLimelightXMLFile : false,
-                            uploadedFilename : scan_Files_Data_Entry.filename,
-                            fileType: this.props.mainParams.limelight_import_file_type_scan_file,
-                            fileIndex : scan_Files_Data_Entry.internal_Identifier
+                    for ( const scan_Files_Data_Entry of this._scan_Files_Data ) {
+
+                        if ( ! this._component_Mounted ) {
+                            return;  // EARLY RETURN
                         }
 
-                        filesUploaded.push( submit_Upload_Request_Single_File )
+                        //  Upload a single Scan File
 
-                        scan_Files_Data_Entry.fileSendToServer_Complete = true;
-                        scan_Files_Data_Entry.fileSendToServer_Percentage = undefined;
+                        try {
+                            const result = await this._upload_File({
+                                single_UploadFile_Data: scan_Files_Data_Entry,
+                                isLimelightXMLFile: false,
+                                fileType: this.props.mainParams.limelight_import_file_type_scan_file,
+                                init_Upload_Response
+                            });
 
-                        if ( ! result.sendResult.statusSuccess ) {
-                            scan_Files_Data_Entry.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                            const submit_Upload_Request_Single_File: ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File = {
+                                isLimelightXMLFile : false,
+                                uploadedFilename : scan_Files_Data_Entry.filename,
+                                fileType: this.props.mainParams.limelight_import_file_type_scan_file,
+                                fileIndex : scan_Files_Data_Entry.internal_Identifier
+                            }
+
+                            filesUploaded.push( submit_Upload_Request_Single_File )
+
+                            scan_Files_Data_Entry.fileSendToServer_Complete = true;
+                            scan_Files_Data_Entry.fileSendToServer_Percentage = undefined;
+
+                            if ( ! result.sendResult.statusSuccess ) {
+                                scan_Files_Data_Entry.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                                error = true;
+                                break;
+                            }
+                        } catch (e) {
+
+                            scan_Files_Data_Entry.fileSendToServer_ErrorMessage = "Failed Upload"
                             error = true;
-                            break;
+
+                            throw e;
                         }
-                    } catch (e) {
-
-                        scan_Files_Data_Entry.fileSendToServer_ErrorMessage = "Failed Upload"
-                        error = true;
-
-                        throw e;
                     }
                 }
             }
@@ -441,7 +523,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                     </div>
                     <div style={ { fontSize: choose_type_of_data_to_import_TextBelowLink_FontSize } }>
                         <div>
-                            Import a Limelight XML file and associated scan files (optional).
+                            Import a Limelight XML file and associated files.
                         </div>
                         <div>
                             Please
@@ -519,6 +601,13 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                 callbackOn_Delete_Clicked={ () => {
                                     this._limelight_XML_File_Data = undefined;
                                     this.setState({ submitButton_Enabled: false, force_ReRender_Object: {} })
+                                    try {
+                                        if ( this._fileInput_LimelightXMLFile_Ref.current ) {
+                                            this._fileInput_LimelightXMLFile_Ref.current.value = ""
+                                        }
+                                    } catch (e) {
+                                        //  Eat Exception
+                                    }
                                 } }
                                 submit_InProgress={ this._submit_InProgress }
                             />
@@ -544,6 +633,71 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                     )}
 
                 </div>
+
+                { this.props.mainParams.is_uploading_FileObjectStorage_Files ? (
+
+                    <React.Fragment>
+                        {/*  FASTA File  */}
+
+                        <div style={ { marginBottom: 11 } }>
+                            <div>
+                                <input
+                                    ref={ this._fileInput_fastaFile_Ref }
+                                    type="file"
+                                    style={ { display: "none" } }
+                                    onChange={ event => {
+                                        this._fasta_File_InputElement_OnChangeEvent( event );
+                                    }}
+                                />
+                            </div>
+
+                            { this._fasta_File_Data ? (
+                                <div>
+                                    <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
+                                        single_UploadFile_Data={ this._fasta_File_Data }
+                                        callbackOn_Delete_Clicked={ () => {
+                                            this._fasta_File_Data = undefined;
+                                            this.setState({ force_ReRender_Object: {} })
+                                            try {
+                                                if ( this._fileInput_fastaFile_Ref.current ) {
+                                                    this._fileInput_fastaFile_Ref.current.value = ""
+                                                }
+                                            } catch (e) {
+                                                //  Eat Exception
+                                            }
+                                        } }
+                                        submit_InProgress={ this._submit_InProgress }
+                                    />
+                                </div>
+                            ) : ( this._limelight_XML_File_Data && ( ! this._submit_InProgress ) ) ? (
+
+                                // Display "+Add FASTA File" since have Limelight XML file AND NOT Submission in progress
+                                <React.Fragment>
+                                    <div>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ event => {
+                                            if ( this._fileInput_fastaFile_Ref.current ) {
+                                                this._fileInput_fastaFile_Ref.current.click()
+                                            }
+                                        }}
+                                    >+Add FASTA File</span>
+                                    </div>
+                                    <div>
+                                        <div style={ { fontSize: "80%" } }>
+                                            (Optional file.  Max file size:
+                                            { this.props.mainParams.maxFASTAFileUploadSizeFormatted }
+                                            )
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+
+                            ) : null }
+
+                        </div>
+
+                    </React.Fragment>
+                ) : null }
 
                 {/*  Scan Files  */}
 
@@ -601,9 +755,12 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                                 this._fileInput_ScanFile_Ref.current.click()
                                             }
                                         }}
-                                    >+Add Scan File</span>
+                                    >+Add Scan File(s)</span>
                                 </div>
                                 <div>
+                                    <div style={ { fontSize: "80%" } }>
+                                        (Optional. If uploading scan files, all scan files in search must be included.)
+                                    </div>
                                     <div style={ { fontSize: "80%" } }>
                                         (Max file size: { this.props.mainParams.maxScanFileUploadSizeFormatted })
                                     </div>

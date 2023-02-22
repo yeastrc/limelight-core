@@ -30,9 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchCommentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchWebLinksDTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearch_Comments_ForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearch_WebLinks_ForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFileProjectSearch_ForProjectSearchIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams;
+import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_Return_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.SearchFileProjectSearch_ForProjectSearchIds_Item;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.SearchDetails_ProjectPage_Comment_Item;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.SearchDetails_ProjectPage_PerProjectSearchId_Item;
@@ -56,10 +62,16 @@ public class Get_SearchDetails_ProjectPage_For_ProjectSearchIds_Service implemen
 	private SearchFileProjectSearch_ForProjectSearchIdsSearcherIF searchFileProjectSearch_ForProjectSearchIdsSearcher;
 	
 	@Autowired
+	private FileObjectStorage_ForSearch_ForSearchIdsSearcher_IF fileObjectStorage_ForSearch_ForSearchIdsSearcher;
+	
+	@Autowired
 	private ProjectSearch_WebLinks_ForProjectSearchIdsSearcherIF projectSearch_WebLinks_ForProjectSearchIdsSearcher;
 	
 	@Autowired
 	private ProjectSearch_Comments_ForProjectSearchIdsSearcherIF projectSearch_Comments_ForProjectSearchIdsSearcher;
+
+	@Autowired
+	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 	
 	/**
 	 * @param projectSearchIds
@@ -82,9 +94,9 @@ public class Get_SearchDetails_ProjectPage_For_ProjectSearchIds_Service implemen
 
 		Map<Integer, SearchDetails_ProjectPage_PerProjectSearchId_Item> resultsKeyProjectSearchId = new HashMap<>();
 		
-		// Get and Save Search Files
-		
 		{
+			// Get and Save Search Files
+			
 			List<SearchFileProjectSearch_ForProjectSearchIds_Item> searchFileProjectSearch_ForProjectSearchIds_ItemList = 
 					searchFileProjectSearch_ForProjectSearchIdsSearcher
 					.getSearchFileProjectSearch_ForProjectSearchIds( projectSearchIds );
@@ -109,6 +121,88 @@ public class Get_SearchDetails_ProjectPage_For_ProjectSearchIds_Service implemen
 				if ( isProjectOwnerAllowed == IsProjectOwnerAllowed.YES ) {
 					searchDetails_ProjectPage_SearchFile_Item.setCanEdit( true );
 				}
+			}
+		}
+
+		{
+			// Get and Save File Object Storage Files
+			
+			Map<Integer, Integer> searchId_Map_Key_ProjectSearchId = new HashMap<>( projectSearchIds.size() );
+			Map<Integer, List<Integer>> projectSearchIdList_Map_Key_SearchId = new HashMap<>( projectSearchIds.size() );
+			List<Integer> searchIdList = new ArrayList<>( projectSearchIds.size() );
+			
+			for ( Integer projectSearchId : projectSearchIds ) {
+			
+				Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId(projectSearchId);
+				if ( searchId == null ) {
+					String msg = "No searchId for projectSearchId: " + projectSearchId;
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				searchId_Map_Key_ProjectSearchId.put(projectSearchId, searchId);
+				
+				List<Integer> projectSearchIdList = projectSearchIdList_Map_Key_SearchId.get(searchId);
+				if ( projectSearchIdList == null ) {
+					projectSearchIdList = new ArrayList<>(3);
+					projectSearchIdList_Map_Key_SearchId.put(searchId, projectSearchIdList);
+				}
+				projectSearchIdList.add(projectSearchId);
+				
+				searchIdList.add(searchId);
+			}
+			
+			List<FileObjectStorage_ForSearch_ForSearchIdsSearcher_Return_Item> fileObjectStorage_ForSearch_ForSearchIds_ItemList = null;
+			
+			{
+				List<Integer> fileTypeIds_Exclude = new ArrayList<>(1);
+				fileTypeIds_Exclude.add( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE.value() );  // EXCLUDE FASTA file
+				
+				FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams requestParams = new FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams();
+				requestParams.setSearchIds(searchIdList);
+				requestParams.setFileTypeIds_Exclude(fileTypeIds_Exclude);
+				
+				
+				fileObjectStorage_ForSearch_ForSearchIds_ItemList =
+					fileObjectStorage_ForSearch_ForSearchIdsSearcher
+					.getFileObjectStorage_ForSearch_ForSearchIds( requestParams );
+			}
+			
+			for ( FileObjectStorage_ForSearch_ForSearchIdsSearcher_Return_Item item : fileObjectStorage_ForSearch_ForSearchIds_ItemList ) {
+
+				List<Integer> projectSearchIdList = projectSearchIdList_Map_Key_SearchId.get(item.getSearchId());
+				if ( projectSearchIdList == null ) {
+					String msg = "Processing DB response, projectSearchIdList_Map_Key_SearchId.get(item.getSearchId()); returned null";
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
+
+				for ( Integer projectSearchId : projectSearchIdList ) {
+
+					//  Expect only 1 projectSearchId but being safe
+
+					SearchDetails_ProjectPage_PerProjectSearchId_Item perProjSearchItem = resultsKeyProjectSearchId.get( projectSearchId );
+					if ( perProjSearchItem == null ) {
+						perProjSearchItem = new SearchDetails_ProjectPage_PerProjectSearchId_Item();
+						perProjSearchItem.setProjectSearchId( projectSearchId );
+						resultsKeyProjectSearchId.put( projectSearchId, perProjSearchItem );
+					}
+					List<SearchDetails_ProjectPage_SearchFile_Item> searchFileList = perProjSearchItem.getSearchFileList();
+					if ( searchFileList == null ) {
+						searchFileList = new ArrayList<>();
+						perProjSearchItem.setSearchFileList( searchFileList );
+					}
+					SearchDetails_ProjectPage_SearchFile_Item searchDetails_ProjectPage_SearchFile_Item = new SearchDetails_ProjectPage_SearchFile_Item();
+					searchFileList.add( searchDetails_ProjectPage_SearchFile_Item );
+					searchDetails_ProjectPage_SearchFile_Item.setId( item.getId() );
+					searchDetails_ProjectPage_SearchFile_Item.setName( item.getFilename_at_import() );
+					searchDetails_ProjectPage_SearchFile_Item.setEntryIsFileObjectStorageFile(true);
+					//  NEVER allow edit.  Will need more work on Web side (template and JS) if want to allow edit
+					//	if ( isProjectOwnerAllowed == IsProjectOwnerAllowed.YES ) {
+					//		searchDetails_ProjectPage_SearchFile_Item.setCanEdit( true );
+					//	}
+				}
+
 			}
 		}
 		

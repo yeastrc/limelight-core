@@ -50,6 +50,8 @@ public class ImportResults {
 	
 	private File importedLimelightXMLFile;
 	
+	private File fastaFileToImport;
+	
 	private List<File> scanFileList;
 
 	public boolean isImportSuccessStatus() {
@@ -98,6 +100,14 @@ public class ImportResults {
 
 	public void setScanFileList(List<File> scanFileList) {
 		this.scanFileList = scanFileList;
+	}
+
+	public File getFastaFileToImport() {
+		return fastaFileToImport;
+	}
+
+	public void setFastaFileToImport(File fastaFileToImport) {
+		this.fastaFileToImport = fastaFileToImport;
 	}
 	
 

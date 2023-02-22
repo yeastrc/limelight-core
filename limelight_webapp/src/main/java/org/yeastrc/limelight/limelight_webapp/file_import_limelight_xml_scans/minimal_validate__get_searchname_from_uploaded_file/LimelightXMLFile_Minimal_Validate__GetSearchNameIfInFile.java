@@ -29,6 +29,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_import.xsd_element_attr_names_constants.XSD_ElementAttributeNamesConstants;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
@@ -40,6 +42,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 @Component
 public class LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile implements LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF {
 
+	private static final Logger log = LoggerFactory.getLogger(LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile.class);
+	
 	/**
 	 * This does minimal validation of Limelight XML file
 	 * and retrieves search name if in the file
@@ -69,7 +73,7 @@ public class LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile implements
 						StartElement startElement = event.asStartElement();
 						if ( ! startElement.getName().getLocalPart().equals( XSD_ElementAttributeNamesConstants.ROOT_ELEMENT_limelight_INPUT__NAME ) ) {
 							//  The first element found is not the root element in the XSD so this is an error
-							throw new LimelightWebappDataException( "Limelight XML root node is not '" 
+							throw new LimelightWebappDataException( "Limelight XML file invalid.  Root node is not '" 
 									+ XSD_ElementAttributeNamesConstants.ROOT_ELEMENT_limelight_INPUT__NAME
 									+ "'.");
 						}
@@ -89,6 +93,9 @@ public class LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile implements
 						break;  //  Exit Loop since processed first element
 					}
 				}
+			} catch ( XMLStreamException xmlStreamException ) {
+				log.warn("Failed to parse start of submitted Limelight XML file. Will reject file. XMLStreamException String: " + xmlStreamException.getMessage() );
+				throw new LimelightWebappDataException( "Limelight XML file invalid. Fails to parse as XML.");
 			} finally {
 				if ( xmlEventReader != null ) {
 					xmlEventReader.close();

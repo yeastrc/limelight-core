@@ -49,14 +49,18 @@ export const refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Section
 
 //  Config Data loaded from Page DOM Elements
 
+let _uploading_FileObjectStorage_Files: boolean
 let _uploadingScanFiles: boolean = undefined;
 
 let _limelight_import_file_type_limelight_xml_file: number
+let _limelight_import_file_type_fasta_file: number
 let _limelight_import_file_type_scan_file: number
 
 let _maxFileUploadChunkSize: number = undefined;
 let _maxLimelightXMLFileUploadSize: number = undefined;
 let _maxLimelightXMLFileUploadSizeFormatted: string = undefined;
+let _maxFASTAFileUploadSize: number = undefined;
+let _maxFASTAFileUploadSizeFormatted: string = undefined;
 let _maxScanFileUploadSize: number = undefined;
 let _maxScanFileUploadSizeFormatted: string = undefined;
 
@@ -66,6 +70,16 @@ let _maxScanFileUploadSizeFormatted: string = undefined;
  * @private
  */
 const _load_ConfigData_FromPageDOMElements_RenderedInJSP = function() {
+
+    //  Get uploading files to go into File Object Storage (like FASTA file)
+    _uploading_FileObjectStorage_Files = false;
+
+    {
+        const limelight_import_file_object_storage_filesDOM = document.getElementById('limelight_import_file_object_storage_files');
+        if ( limelight_import_file_object_storage_filesDOM ) {
+            _uploading_FileObjectStorage_Files = true;
+        }
+    }
 
     //  Get uploading scan files
     _uploadingScanFiles = false;
@@ -124,6 +138,43 @@ const _load_ConfigData_FromPageDOMElements_RenderedInJSP = function() {
             throw Error( "#limelight_xml_file_max_file_upload_size_formatted input field empty" );
         }
     }
+
+    if ( _uploading_FileObjectStorage_Files ) {
+
+        //  Only upload when File Object Storage is configured
+
+        { //  Get  FASTA file type and max upload size
+
+            let $limelight_import_file_type_fasta_file = $("#limelight_import_file_type_fasta_file");
+            if ( $limelight_import_file_type_fasta_file.length === 0 ) {
+                throw Error( "#limelight_import_file_type_fasta_file input field missing" );
+            }
+            let limelight_import_file_type_fasta_file_val : any = $limelight_import_file_type_fasta_file.val() as string;
+            _limelight_import_file_type_fasta_file = parseInt( limelight_import_file_type_fasta_file_val, 10 );
+            if ( isNaN( _limelight_import_file_type_fasta_file ) ) {_maxFASTAFileUploadSize
+                throw Error( "Unable to parse #limelight_import_file_type_fasta_file: " + limelight_import_file_type_fasta_file_val );
+            }
+
+            let $limelight_import_fasta_file_max_file_upload_size = $("#limelight_import_fasta_file_max_file_upload_size");
+            if ( $limelight_import_fasta_file_max_file_upload_size.length === 0 ) {
+                throw Error( "#limelight_import_fasta_file_max_file_upload_size input field missing" );
+            }
+            let limelight_import_fasta_file_max_file_upload_size_val : any = $limelight_import_fasta_file_max_file_upload_size.val() as string;
+            _maxFASTAFileUploadSize = parseInt( limelight_import_fasta_file_max_file_upload_size_val, 10 );
+            if ( isNaN( _maxFASTAFileUploadSize ) ) {
+                throw Error( "Unable to parse #limelight_import_fasta_file_max_file_upload_size: " + limelight_import_fasta_file_max_file_upload_size_val );
+            }
+            let $limelight_import_fasta_file_max_file_upload_size_formatted = $("#limelight_import_fasta_file_max_file_upload_size_formatted");
+            if ( $limelight_import_fasta_file_max_file_upload_size_formatted.length === 0 ) {
+                throw Error( "#limelight_import_fasta_file_max_file_upload_size_formatted input field missing" );
+            }
+            _maxFASTAFileUploadSizeFormatted = $limelight_import_fasta_file_max_file_upload_size_formatted.val() as string;
+            if ( _maxFASTAFileUploadSizeFormatted === undefined || _maxFASTAFileUploadSizeFormatted === "" ) {
+                throw Error( "#limelight_import_fasta_file_max_file_upload_size_formatted input field empty" );
+            }
+        }
+    }
+
     if ( _uploadingScanFiles ) {
         //  Get  Scan type type and max upload size
 
@@ -389,12 +440,17 @@ export class ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Displa
 
                                 callback_UpdateAfterSuccessfulSubmit,
 
+                                is_uploading_FileObjectStorage_Files: _uploading_FileObjectStorage_Files,
+
                                 limelight_import_file_type_limelight_xml_file: _limelight_import_file_type_limelight_xml_file,
+                                limelight_import_file_type_fasta_file: _limelight_import_file_type_fasta_file,
                                 limelight_import_file_type_scan_file: _limelight_import_file_type_scan_file,
 
                                 maxFileUploadChunkSize: _maxFileUploadChunkSize,
                                 maxLimelightXMLFileUploadSize: _maxLimelightXMLFileUploadSize,
                                 maxLimelightXMLFileUploadSizeFormatted: _maxLimelightXMLFileUploadSizeFormatted,
+                                maxFASTAFileUploadSize: _maxFASTAFileUploadSize,
+                                maxFASTAFileUploadSizeFormatted: _maxFASTAFileUploadSizeFormatted,
                                 maxScanFileUploadSize: _maxScanFileUploadSize,
                                 maxScanFileUploadSizeFormatted: _maxScanFileUploadSizeFormatted,
                                 scanFileSelection_For_FeatureDetectionImport: null,
@@ -1089,6 +1145,18 @@ class Internal__Pending_OR_History_Section__SingleItem__Display_Component extend
                             </>
                         ) : null }
 
+                        { fileImport_TrackingItem.fastafileName ? (
+                            //  Have FASTA Filename so display
+                            <>
+                                <div style={ detailsLine_Label_CSS }>
+                                    FASTA file:
+                                </div>
+                                <div style={ detailsLine_Value_CSS }>
+                                    { fileImport_TrackingItem.fastafileName }
+                                </div>
+                            </>
+                        ) : null }
+
                         { this.props.displayData_FromServer.scanFileImportAllowedViaWebSubmit || fileImport_TrackingItem.scanfileNamesCommaDelim ? (
                             //  Have Scan Filename(s) so display
                             <>
@@ -1526,6 +1594,8 @@ class Internal__FileImportTrackingDisplay {
      * Only populated for status Complete, or Failed
      */
     lastUpdatedDateTime: string;
+
+    fastafileName: string
 
     scanFilenames: Array<string>;
 

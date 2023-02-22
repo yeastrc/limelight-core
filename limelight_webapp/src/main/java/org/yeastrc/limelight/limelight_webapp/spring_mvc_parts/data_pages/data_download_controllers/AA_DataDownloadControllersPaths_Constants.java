@@ -62,6 +62,12 @@ public class AA_DataDownloadControllersPaths_Constants {
 	 */
 	public static final String SEARCH_FILE_DOWNLOAD_CONTROLLER = 
 			"d/dnld/psb/search-file";
+
+	/**
+	 * Download A Single File Object Storage Entry. Used on Project page for a specific search 
+	 */
+	public static final String FILE_OBJECT_STORAGE_ENTRY_DOWNLOAD_CONTROLLER = 
+			"d/dnld/psb/file-object-storage-entry";
 	
 	/**
 	 * Download PSMs for Project Search Ids and Search Criteria. Optional Single Protein.  Used on Protein Page, Single Protein Overlay. 

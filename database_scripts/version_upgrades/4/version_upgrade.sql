@@ -815,6 +815,135 @@ ADD CONSTRAINT fk_project_search_tag_strings_in_project_tbl_2
   ON UPDATE NO ACTION;
 
 
+
+--  Add 'File Object Storage' tables
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_main_entry_file_type_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_main_entry_file_type_lookup_tbl (
+  id INT UNSIGNED NOT NULL,
+  description VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_file_type_lookup_tbl (description ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_main_entry_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_main_entry_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  file_type_id INT UNSIGNED NOT NULL,
+  file_object_storage_api_key VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_file_object_storage_main_entry_tbl_1
+    FOREIGN KEY (file_type_id)
+    REFERENCES file_object_storage_main_entry_file_type_lookup_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_tbl (file_object_storage_api_key ASC) VISIBLE;
+
+CREATE INDEX fk_file_object_storage_main_entry_tbl_1_idx ON file_object_storage_main_entry_tbl (file_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_to_search_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_to_search_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  file_object_storage_main_entry_id_fk INT UNSIGNED NOT NULL,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  filename_at_import VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_file_object_storage_to_search_tbl_1
+    FOREIGN KEY (file_object_storage_main_entry_id_fk)
+    REFERENCES file_object_storage_main_entry_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_object_storage_to_search_tbl_2
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_file_object_storage_to_search_tbl_1_idx ON file_object_storage_to_search_tbl (file_object_storage_main_entry_id_fk ASC) VISIBLE;
+
+CREATE INDEX fk_file_object_storage_to_search_tbl_2_idx ON file_object_storage_to_search_tbl (search_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_source_first_import_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_source_first_import_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  file_object_storage_main_entry_id_fk INT UNSIGNED NOT NULL,
+  search_id INT UNSIGNED NOT NULL,
+  filename_at_import VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  file_size BIGINT NULL,
+  sha1sum VARCHAR(255) NULL,
+  canonical_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  absolute_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  aws_s3_bucket_name VARCHAR(2000) NULL,
+  aws_s3_object_key VARCHAR(2000) NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_file_object_storage_to_search_tbl_10
+    FOREIGN KEY (file_object_storage_main_entry_id_fk)
+    REFERENCES file_object_storage_main_entry_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_file_object_storage_to_search_tbl_1_idx ON file_object_storage_source_first_import_tbl (file_object_storage_main_entry_id_fk ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_to_project_search_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_to_project_search_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  file_object_storage_to_search_id_fk INT UNSIGNED NOT NULL,
+  project_search_id INT UNSIGNED NOT NULL,
+  filename VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_file_object_storage_to_search_tbl_11
+    FOREIGN KEY (file_object_storage_to_search_id_fk)
+    REFERENCES file_object_storage_to_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_object_storage_to_search_tbl_20
+    FOREIGN KEY (project_search_id)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_to_project_search_tbl (filename ASC) VISIBLE;
+
+CREATE INDEX fk_file_object_storage_to_search_tbl_20_idx ON file_object_storage_to_project_search_tbl (project_search_id ASC) VISIBLE;
+
+CREATE INDEX fk_file_object_storage_to_search_tbl_11_idx ON file_object_storage_to_project_search_tbl (file_object_storage_to_search_id_fk ASC) VISIBLE;
+
+
+
+
+--  Add to Lookup tables
+
+
+INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 3, 'FASTA File' );
+
 --  !!!!!!!!!!!!!!!!!!!!!!!!!
 
 --  Update aa_limelight_database_version_tbl  record 'DB Version Current' to version 4

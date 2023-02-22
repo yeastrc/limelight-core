@@ -442,6 +442,10 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 									this._errorMessage_Internal_ReturnedToCaller = "This does not appear to be a Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
 								} else if ( resp.limelightXMLFilerootXMLNodeIncorrect ) {
 									this._errorMessage_Internal_ReturnedToCaller = "This does not appear to be a Limelight XML file.  Please confirm that it is a valid Limelight XML file.";
+								} else if ( resp.fastaFile_InvalidContents ) {
+									this._errorMessage_Internal_ReturnedToCaller = "This does not appear to be a FASTA file.  Please confirm that it is a valid FASTA file.";
+								} else if ( resp.submittedFASTAFileNotAllowed ) {
+									this._errorMessage_Internal_ReturnedToCaller = "FASTA file is no longer allowed.  Please refresh the page.";
 								} else if ( resp.submittedScanFileNotAllowed ) {
 									this._errorMessage_Internal_ReturnedToCaller = "Scan files are no longer allowed.  Please refresh the page.";
 								} else {

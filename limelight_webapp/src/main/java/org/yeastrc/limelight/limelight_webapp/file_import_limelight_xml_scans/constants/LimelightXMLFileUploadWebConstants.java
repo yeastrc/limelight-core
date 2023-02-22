@@ -46,6 +46,8 @@ public class LimelightXMLFileUploadWebConstants {
 	public static final String UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_PREFIX = "uploaded_limelight_xml_file_";
 	public static final String UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_SUFFIX = ".xml";
 
+	public static final String UPLOAD_FASTA_FILE_TEMP_FILENAME_PREFIX = "uploaded_fasta_file_";
+	
 	public static final String UPLOAD_SCAN_FILE_TEMP_FILENAME_PREFIX = "uploaded_scan_file_";
 	
 	

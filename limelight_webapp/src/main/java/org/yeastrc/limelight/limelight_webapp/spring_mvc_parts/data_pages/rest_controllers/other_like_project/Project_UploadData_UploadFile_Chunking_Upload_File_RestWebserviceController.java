@@ -58,9 +58,11 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.co
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.minimal_validate__get_searchname_from_uploaded_file.LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.validate_minimal_uploaded_files.FastaFile_Uploaded_Minimal_Validate_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
@@ -108,6 +110,9 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 	private IsLimelightXMLFileImportFullyConfiguredIF isLimelightXMLFileImportFullyConfigured;
 
 	@Autowired
+	private IsFileObjectStorageFileImportAllowedViaWebSubmit_IF isFileObjectStorageFileImportAllowedViaWebSubmit;
+	
+	@Autowired
 	private IsScanFileImportAllowedViaWebSubmitIF isScanFileImportAllowedViaWebSubmit;
 
 	@Autowired
@@ -118,6 +123,9 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 	
 	@Autowired
 	private LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile;
+	
+	@Autowired
+	private FastaFile_Uploaded_Minimal_Validate_IF fastaFile_Uploaded_Minimal_Validate;
 
 	@Autowired
 	private SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest;
@@ -477,6 +485,27 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 				//  EARLY RETURN
 				return methodResults;
 			}
+			
+
+			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE 
+					&& ( ! isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit() ) ) {
+
+				log.warn( "'fileType' is : FASTA_FILE but File Object Storage files are not allowed via web submit" );
+
+				//  Return Error
+				webserviceResult.setStatusSuccess(false);
+				webserviceResult.setScanFileNotAllowed(true);
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
+			
+			
+			
+			
+			
 			if ( StringUtils.isEmpty( projectIdString ) ) {
 				log.warn( "'projectIdentifier' header JSON is not sent or is empty" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -503,6 +532,9 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED();
+			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE ) {
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE_FORMATTED();
 			} else {
 				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType;
 				log.error( msg );
@@ -791,6 +823,36 @@ public class Project_UploadData_UploadFile_Chunking_Upload_File_RestWebserviceCo
 						//  Return Error -  Status Code 400
 						webserviceResult.setStatusSuccess(false);
 						webserviceResult.setLimelightXMLFilerootXMLNodeIncorrect(true);
+
+						methodResults.returnBadRequestStatusCode = true;
+
+						//  EARLY RETURN
+						return methodResults;
+					}
+				}
+
+			}
+
+			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE ) {
+
+				//  If first chunk of FASTA file or whole file is less than chunk size, minimal validate contents 
+
+				long fileSize = uploadedFileOnDisk.length();
+
+				if ( ( fileSize >= FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE 
+						&& fileSize < ( FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE * 2 ) )
+						|| fileSize >= webserviceRequestHeaderContents.getUploadFileSize() ) {
+
+					try {
+						fastaFile_Uploaded_Minimal_Validate.fastaFile_Uploaded_Minimal_Validate(uploadedFileOnDisk);
+						
+					} catch ( LimelightWebappDataException e) {
+
+						//  File validation failed
+
+						//  Return Error -  Status Code 400
+						webserviceResult.setStatusSuccess(false);
+						webserviceResult.setFastaFile_InvalidContents(true);
 
 						methodResults.returnBadRequestStatusCode = true;
 

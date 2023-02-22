@@ -121,7 +121,7 @@
 						data-config-key="<%=ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_PORT_KEY%>">
 				</div>
 				<div style="margin-bottom: 3px; margin-top: 5px;">
-					SMTP Server Authentication (not always required). Not used if either not configured):
+					SMTP Server Authentication (not always required). (Not used if either not configured):
 				</div>
 				<div style="margin-left: 20px;">
 					<div style="margin-bottom: 3px;">
@@ -236,6 +236,23 @@
 		</div>
 	  </div> 
 	</div>	
+	
+	<div style="margin-bottom: 10px;margin-top: 20px; ">
+	  <div style="margin-bottom: 3px;">
+	  	<div>
+			File Object Storage Service (Not used if not configured):
+		</div>
+		<div style="margin-left: 20px;">
+		
+			<div style="margin-bottom: 3px;">
+				Web Service Base URL (Including Port): 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL %>"
+					data-FOOTER_CENTER_OF_PAGE_HTML="true">
+			</div>
+		</div>
+	  </div> 
+	</div>
 	
 	<div style="margin-bottom: 10px;" >
 		<div style="margin-bottom: 3px;">

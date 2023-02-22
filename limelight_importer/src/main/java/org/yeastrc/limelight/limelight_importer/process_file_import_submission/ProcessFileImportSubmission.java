@@ -37,6 +37,8 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
@@ -46,6 +48,7 @@ import org.yeastrc.limelight.limelight_importer.process_input.Process_ScanFiles_
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ValidateScanFileSuffix;
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
 import org.yeastrc.limelight.limelight_importer.utils.UnmarshalJSON_ToObject;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
@@ -201,13 +204,73 @@ public class ProcessFileImportSubmission {
 		List<FileImportTrackingSingleFileDTO> fileDBRecordList = 
 				FileImportTrackingSingleFileDAO_Importer.getInstance()
 				.getForTrackingId( fileImportTrackingDTO.getId() );
+		
 		FileImportTrackingSingleFileDTO limelightXMLFileDBRecord = null;
-		List<FileImportTrackingSingleFileDTO> scanFilesDBRecords = new ArrayList<>( fileDBRecordList.size() ); 
+		
+		List<FileImportTrackingSingleFileDTO> scanFilesDBRecords = new ArrayList<>( fileDBRecordList.size() );
+		
+		FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries = new FileObjectStorage_FileContainer_AllEntries();
+		
+		
 		for ( FileImportTrackingSingleFileDTO fileDBRecordItem : fileDBRecordList ) {
+			
 			if ( fileDBRecordItem.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
 				limelightXMLFileDBRecord = fileDBRecordItem;
+			
 			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.SCAN_FILE ) {
 				scanFilesDBRecords.add( fileDBRecordItem );
+				
+			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.FASTA_FILE ) {
+				
+				if ( StringUtils.isNotEmpty( fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine() ) ) {
+
+					//  Special code for when the filename with path is passed to the webapp from the submitter
+					
+					String fileString = fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine();
+					File file = new File( fileString );
+					if( ! file.exists() ) {
+						//  The User provided the path to this file 
+						//  when the import was submitted, so this is considered a data error
+						String msg = "Could not find File To Import: " + file.getCanonicalPath();
+						System.err.println( msg );
+						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
+						throw new LimelightImporterErrorProcessingRunIdException(msg);
+
+						//							importResults.setImportSuccessStatus( false ) ;
+						//							
+						//							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						//
+						//							return importResults;  //  EARLY EXIT
+					}
+					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE );
+					fileObjectStorage_FileContainer.setFile( file );
+					fileObjectStorage_FileContainer.setFilename( file.getName() );
+					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
+					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
+
+				} else {
+					
+					//  Standard processing to handle scan file has been copied to the server via the web app
+					
+					String filenameOnDisk_String = fileDBRecordItem.getFilenameOnDisk();
+					String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
+
+					File file = new File( filenameOnDisk_String );
+					if( ! file.exists() ) {
+						System.err.println( "Could not find file: " + file.getAbsolutePath() );
+						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
+						System.err.println( "" );
+						throw new LimelightImporterErrorProcessingRunIdException();
+					}
+					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE );
+					fileObjectStorage_FileContainer.setFile( file );
+					fileObjectStorage_FileContainer.setFilename( filenameInUpload );
+					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
+					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
+				}
+				
 			} else {
 				String msg = "Unexpected value in FileImportTrackingSingleFileDTO.fileType: " + fileDBRecordItem.getFileType();
 				log.error( msg );
@@ -283,11 +346,9 @@ public class ProcessFileImportSubmission {
 		FileImportTrackingSingleFileDAO_Importer.getInstance()
 		.updateFileSizeSHA1Sum(mainXMLFileToImportFileSize, SHA1Sum, limelightXMLFileDBRecord.getId() );
 		
-
 		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries =
 				create_ScanFileFileContainer_AllEntries__Populate_importResults(scanFilesDBRecords, importResults, fileImportRunIdToProcess);
 
-		
 		int insertedSearchId = 
 				importerCoreEntryPoint.doImport(
 						projectId, 
@@ -296,8 +357,9 @@ public class ProcessFileImportSubmission {
 						searchShortName,
 						searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
 						importDirectoryOverrideValue, 
-						mainXMLFileToImport, // LimelightInputForImportParam, 
-						null,
+						mainXMLFileToImport,
+						null, // limelightInputForImportParam
+						fileObjectStorage_FileContainer_AllEntries,
 						scanFileFileContainer_AllEntries,
 						skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB
 						);

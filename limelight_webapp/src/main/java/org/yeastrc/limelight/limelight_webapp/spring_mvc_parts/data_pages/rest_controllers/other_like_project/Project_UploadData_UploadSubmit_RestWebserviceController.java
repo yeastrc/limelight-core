@@ -91,6 +91,7 @@ import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.da
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.database_insert_with_transaction_services.ImportTrackingAndChildren_Save_SingleDBTransactionIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.DeleteDirectoryAndContentsUtilIF;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
@@ -128,6 +129,9 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 	@Autowired
 	private IsLimelightXMLFileImportFullyConfiguredIF isLimelightXMLFileImportFullyConfigured;
 
+	@Autowired
+	private IsFileObjectStorageFileImportAllowedViaWebSubmit_IF isFileObjectStorageFileImportAllowedViaWebSubmit;
+	
 	@Autowired
 	private IsScanFileImportAllowedViaWebSubmitIF isScanFileImportAllowedViaWebSubmit;
 
@@ -634,7 +638,11 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		
+
+		boolean isFileObjectStorageFileImportAllowed = isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit();
+		
 		boolean isScanFileImportAllowed = isScanFileImportAllowedViaWebSubmit.isScanFileImportAllowedViaWebSubmit();
+		
 		List<SubmitImport_FinalSubmit_SingleFileItem> requestFileItemList = webservice_Request_Base.getFileItems();
 		if ( requestFileItemList == null || requestFileItemList.isEmpty() ) {
 			String msg = "No files in request";
@@ -667,6 +675,13 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 				}
 				foundLimelightXMLFile = true;
+
+			} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.FASTA_FILE.value() ) {
+				if ( ! isFileObjectStorageFileImportAllowed ) {
+					webservice_Result_Base.setStatusSuccess( false );
+					webservice_Result_Base.setSubmittedFASTAFileNotAllowed( true );
+					return webserviceMethod_Internal_Results;  //  EARLY EXIT
+				}
 			} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.SCAN_FILE.value() ) {
 				if ( ! isScanFileImportAllowed ) {
 					webservice_Result_Base.setStatusSuccess( false );

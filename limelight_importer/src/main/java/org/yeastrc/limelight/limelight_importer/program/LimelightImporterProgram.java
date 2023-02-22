@@ -41,6 +41,8 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLime
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
 import org.yeastrc.limelight.limelight_importer.importer_core_entry_point.ImporterCoreEntryPoint;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
@@ -52,6 +54,7 @@ import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
@@ -213,10 +216,12 @@ public class LimelightImporterProgram {
 			CmdLineParser.Option inputMainFileStringCommandLineOpt = cmdLineParser.addStringOption( 'i', "import-file" );
 
 			CmdLineParser.Option noLimelightXMLFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-limelight-xml-file" );
+
+			CmdLineParser.Option fastaFileCommandLineOpt = cmdLineParser.addStringOption( 'Z', "fasta-file" );
 			
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
 			CmdLineParser.Option inputScanFileStringCommandLineOpt = cmdLineParser.addStringOption( 's', "scan-file" );
-			
+
 			CmdLineParser.Option dbConfigFileNameCommandLineOpt = cmdLineParser.addStringOption( 'c', "config" );
 			
 			//  'Z' is arbitrary and won't be suggested to user
@@ -285,7 +290,10 @@ public class LimelightImporterProgram {
 			
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 			
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries = new FileObjectStorage_FileContainer_AllEntries();
+			
 			File mainXMLFileToImport = null;
+			File fastaFileToImport = null;
 			List<File> scanFileList = null;
 
 			File configFile = null;
@@ -431,6 +439,10 @@ public class LimelightImporterProgram {
 				noLimelightXMLFileCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noLimelightXMLFileCommandLineOpt, Boolean.FALSE);
 				noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
 				
+				
+				String fastaFileString = (String)cmdLineParser.getOptionValue( fastaFileCommandLineOpt );
+				
+				
 				@SuppressWarnings("rawtypes")
 				Vector inputScanFileStringVector = cmdLineParser.getOptionValues( inputScanFileStringCommandLineOpt );
 				String searchNameOverrideValueFromCommandLine = (String)cmdLineParser.getOptionValue( skipSearchNameOverrideOpt );
@@ -493,6 +505,42 @@ public class LimelightImporterProgram {
 						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
 						return importResults;  //  EARLY EXIT
 					}
+				}
+				
+				if ( StringUtils.isNotEmpty( fastaFileString ) ) {
+
+					if ( noLimelightXMLFileCommandLineOptChosen ) {
+						
+						//  NO Limelight XML file param so CANNOT HAVE FASTA file
+
+						if (StringUtils.isNotEmpty( fastaFileString ) ) {
+							System.err.println( "'FASTA file' param (--fasta-file=) is specified when '--no-limelight-xml-file' is specified.\n" );
+							System.err.println( "" );
+							System.err.println( FOR_HELP_STRING );
+							importResults.setImportSuccessStatus( false) ;
+							importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+							return importResults;  //  EARLY EXIT
+						}
+					}
+					
+					fastaFileToImport = new File( fastaFileString );
+					importResults.setImportedLimelightXMLFile( fastaFileToImport );
+					if( ! fastaFileToImport.exists() ) {
+						System.err.println( "Could not find FASTA File To Import file: " + fastaFileToImport.getAbsolutePath() );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+						importResults.setImportSuccessStatus( false) ;
+						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+						return importResults;  //  EARLY EXIT
+					}
+					
+					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+					
+					fileObjectStorage_FileContainer.setFile(fastaFileToImport);
+					fileObjectStorage_FileContainer.setFilename( fastaFileToImport.getName() );
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(FileObjectStore_FileType_Enum.FASTA_FILE_TYPE);
+					
+					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
 				}
 				
 				//  Process scan files
@@ -751,7 +799,6 @@ public class LimelightImporterProgram {
 				}
 			}
 			
-			
 			//////////////////////////////////////
 			//////////   Do the import
 			
@@ -790,6 +837,7 @@ public class LimelightImporterProgram {
 								importDirectoryOverrideValue, 
 								mainXMLFileToImport, 
 								limelightInputForImportParam,
+								fileObjectStorage_FileContainer_AllEntries,
 								scanFileFileContainer_AllEntries,
 								skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB
 								);
@@ -808,6 +856,10 @@ public class LimelightImporterProgram {
 				} else {
 					System.out.println( "NO Limelight XML File To Import file." ); 
 				}
+				if ( fastaFileToImport != null ) {
+					System.out.println( "FASTA File To Import file: " 
+							+ fastaFileToImport.getAbsolutePath() );
+				} 
 				if ( scanFileList == null || scanFileList.isEmpty() ) {
 					System.out.println( " " );
 					System.out.println( "No Scan files" );

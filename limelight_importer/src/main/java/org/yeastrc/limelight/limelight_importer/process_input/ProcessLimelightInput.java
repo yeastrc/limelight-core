@@ -41,6 +41,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterData
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
@@ -99,6 +100,7 @@ public class ProcessLimelightInput {
 			String searchShortName,
 			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			LimelightInput limelightInput,
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
 			
@@ -114,8 +116,7 @@ public class ProcessLimelightInput {
 			//  Create Internal Holder Object Root that holds LimelightInput limelightInput object
 			
 			Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object = new Input_LimelightXMLFile_InternalHolder_Root_Object(limelightInput);
-			
-			
+						
 			Set<String> scanFilenamesLimelightXMLInputSet =
 					PreprocessValidate_ScanFiles_ScanFilenames.getInstance()
 					.preprocessValidate_ScanFiles_ScanFilenames( limelightInput, scanFileFileContainer_AllEntries );
@@ -224,6 +225,11 @@ public class ProcessLimelightInput {
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries = 
 					Process_ScanFilenames_ScanFiles.getInstance()
 					.process_ScanFilenames_ScanFiles( searchId, scanFilenamesLimelightXMLInputSet, scanFileFileContainer_AllEntries );
+
+			//  Insert File Object Storage files
+			
+			Process_FileObjectStorage_Files_SaveAndAddToDB.getInstance().process_FileObjectStorage_Files_SaveAndAddToDB( searchId, fileObjectStorage_FileContainer_AllEntries);
+			
 			
 			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel = null;
 

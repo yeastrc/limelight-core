@@ -24,7 +24,7 @@
 
                     <div class=" selector_display_search_filename_container ">
                         
-                        <span class=" fake-link  selector_search_filename selector_search_filename_download_fake_link selector_tool_tip_attached " 
+                        <span class=" fake-link  selector_search_filename {{#if searchFile.entryIsFileObjectStorageFile }} selector_file_object_storage_download_fake_link {{else}} selector_search_filename_download_fake_link  {{/if}} selector_tool_tip_attached "
                             title="Download file" 
                             >{{ searchFile.name }}</span>
                         

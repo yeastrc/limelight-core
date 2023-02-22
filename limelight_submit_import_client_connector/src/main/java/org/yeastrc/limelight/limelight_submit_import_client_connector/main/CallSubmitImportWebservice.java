@@ -64,9 +64,9 @@ public class CallSubmitImportWebservice {
 	private static final Charset XML_ENCODING_CHARACTER_SET = StandardCharsets.UTF_8;
 	private static final String XML_ENCODING_CHARACTER_SET_STRING = StandardCharsets.UTF_8.toString();
 	
-	private static final int SUCCESS_HTTP_RETURN_CODE = 200;
+	private static final int HTTP_RETURN_CODE__SUCCESS = 200;
 	
-	private static final int ERROR_REDIRECT_HTTP_RETURN_CODE = 302;
+	private static final int HTTP_RETURN_CODE__ERROR_REDIRECT = 302;
 	
 	private static final String CONTENT_TYPE_SEND_RECEIVE = "application/xml";
 	
@@ -612,14 +612,14 @@ public class CallSubmitImportWebservice {
 			}
 			try {
 				int httpResponseCode = httpURLConnection.getResponseCode();
-				if ( httpResponseCode != SUCCESS_HTTP_RETURN_CODE ) {
+				if ( httpResponseCode != HTTP_RETURN_CODE__SUCCESS ) {
 					byte[] errorStreamContents = null;
 					try {
 						errorStreamContents= getErrorStreamContents( httpURLConnection );
 					} catch ( Exception ex ) {
 					}
 					String msgForStatusCode = "";
-					if ( httpResponseCode == ERROR_REDIRECT_HTTP_RETURN_CODE ) {
+					if ( httpResponseCode == HTTP_RETURN_CODE__ERROR_REDIRECT ) {
 						msgForStatusCode = 
 								".  Status code 302 means that a redirect was returned.  Please the URL in a browser and note what was returned and update the url used based on that (only use first part like in existing URL configuration.  Base URL from main submit program:  " 
 								+ webappServerBaseURL ;

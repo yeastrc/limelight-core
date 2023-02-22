@@ -139,6 +139,7 @@ public class SubmitUploadMain {
 			int retryCountLimit,
 
 			File limelightXMLFile, 
+			File fastaFile,
 
 			List<File> scanFiles,
 
@@ -413,6 +414,63 @@ public class SubmitUploadMain {
 
 
 						System.out.println( "Sent Limelight XML file to server: " + limelightXMLFile.getCanonicalPath() );
+					}
+				}
+
+				if ( fastaFile != null ) {
+					
+					//  Process FASTA file
+
+					fileIndex++;
+
+					SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
+					fileItems.add( submitImport_FinalSubmit_SingleFileItem );
+
+					submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
+					submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.FASTA_FILE.value() );
+					submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( false );
+					submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( fastaFile.getName() );
+
+					if ( submitterSameMachine ) {
+
+						submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( fastaFile.getCanonicalPath() );
+					}
+
+					if ( ! submitterSameMachine ) {
+
+						SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
+
+						webserviceRequest.setProjectIdentifier( projectIdString );
+						webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
+						webserviceRequest.setUploadKey( submitImport_UploadKey );
+						webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
+						webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
+						webserviceRequest.setFilename( fastaFile.getName() );
+						webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( fastaFile.getAbsolutePath() );
+						webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( fastaFile.getCanonicalPath() );
+
+						Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
+						parameters.setUploadFile( fastaFile );
+						parameters.setWebserviceRequest( webserviceRequest );
+
+						//  Make call to server
+						SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
+								callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
+
+						if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
+
+							System.err.println( "FAILED sending FASTA file to server: " + fastaFile.getCanonicalPath() );
+
+							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+
+							submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
+
+							return submitResult;    //  EARLY EXIT
+
+						}
+
+
+						System.out.println( "Sent FASTA file to server: " + fastaFile.getCanonicalPath() );
 					}
 				}
 

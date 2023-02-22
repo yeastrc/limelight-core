@@ -112,6 +112,9 @@ public class Limelight_XML_Importer_Work_Directory_And_SubDirs_Web implements Li
 			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_PREFIX
 					+ fileIndex
 					+ LimelightXMLFileUploadWebConstants.UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_SUFFIX;
+		} else if ( fileType == FileImportFileType.FASTA_FILE ) {
+			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_FASTA_FILE_TEMP_FILENAME_PREFIX
+					+ fileIndex;
 		} else if ( fileType == FileImportFileType.SCAN_FILE ) {
 			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_TEMP_FILENAME_PREFIX
 					+ fileIndex + scanFileSuffix;

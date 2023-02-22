@@ -561,7 +561,7 @@ public class ScanFileToSpectralStorageService_SendFile {
 	 */
 	private UploadScanFile_Submit_Response submitScanFileToSpectralStorageService( 
 			UploadScanFile_Init_Response uploadScanFile_Init_Response,
-			File scanFileWithPath, 
+			File scanFileWithPath, //  ONLY for error messages
 			CallSpectralStorageAcceptImportWebservice callSpectralStorageAcceptImportWebservice ) throws Exception {
 
 		UploadScanFile_Submit_Response response = null;
@@ -571,13 +571,6 @@ public class ScanFileToSpectralStorageService_SendFile {
 		int retryCount = 0;
 
 		while( true ) {  // use 'break;' inside loop to exit
-			
-			if ( ! scanFileWithPath.exists() ) {
-				String msg = "ERROR:::  Send Scan File to Spectral Storage Service: Scan File does not exist: "
-						+ ", Scan File: " + scanFileWithPath.getAbsolutePath();
-				log.error( msg );
-				throw new LimelightImporterSpectralStorageServiceErrorException( msg );
-			}
 			
 			retryCount++;
 

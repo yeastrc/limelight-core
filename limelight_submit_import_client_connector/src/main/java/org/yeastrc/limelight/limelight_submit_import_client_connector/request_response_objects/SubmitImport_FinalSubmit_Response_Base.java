@@ -39,6 +39,8 @@ public abstract class SubmitImport_FinalSubmit_Response_Base extends BaseSubmitI
 	private boolean projectLocked;
 	@XmlAttribute
 	private boolean submittedScanFileNotAllowed;
+	@XmlAttribute
+	private Boolean submittedFASTAFileNotAllowed;
 	
 	public boolean isProjectLocked() {
 		return projectLocked;
@@ -63,6 +65,12 @@ public abstract class SubmitImport_FinalSubmit_Response_Base extends BaseSubmitI
 	}
 	public void setSubmitProgramVersionNumber_Current_Per_Webapp(Integer submitProgramVersionNumber_Current_Per_Webapp) {
 		this.submitProgramVersionNumber_Current_Per_Webapp = submitProgramVersionNumber_Current_Per_Webapp;
+	}
+	public Boolean getSubmittedFASTAFileNotAllowed() {
+		return submittedFASTAFileNotAllowed;
+	}
+	public void setSubmittedFASTAFileNotAllowed(Boolean submittedFASTAFileNotAllowed) {
+		this.submittedFASTAFileNotAllowed = submittedFASTAFileNotAllowed;
 	}
 
 }

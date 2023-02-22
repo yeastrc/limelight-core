@@ -54,6 +54,8 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	@XmlAttribute
 	private boolean limelightXMLFilerootXMLNodeIncorrect;
 	@XmlAttribute
+	private Boolean fastaFile_InvalidContents;
+	@XmlAttribute
 	private boolean scanFileNotAllowed;
 	@XmlAttribute
 	private boolean scanFilenameSuffixNotValid;
@@ -153,6 +155,12 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	}
 	public void setProjectLocked(boolean projectLocked) {
 		this.projectLocked = projectLocked;
+	}
+	public Boolean getFastaFile_InvalidContents() {
+		return fastaFile_InvalidContents;
+	}
+	public void setFastaFile_InvalidContents(Boolean fastaFile_InvalidContents) {
+		this.fastaFile_InvalidContents = fastaFile_InvalidContents;
 	}
 	
 }

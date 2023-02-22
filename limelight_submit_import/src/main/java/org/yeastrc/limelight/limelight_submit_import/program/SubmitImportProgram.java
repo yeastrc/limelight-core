@@ -126,6 +126,10 @@ public class SubmitImportProgram {
 		
 		File limelightXMLFile = null;
 		
+		String fastaFileString = null;
+		
+		File fastaFile = null;
+		
 		List<File> scanFiles = null;
 
 		try {
@@ -140,6 +144,8 @@ public class SubmitImportProgram {
 			CmdLineParser.Option projectIdFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'p', "project-id" );
 
 			CmdLineParser.Option limelightXMLFileFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'i', "limelight-xml-file" );
+
+			CmdLineParser.Option fastaFileFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "fasta-file" );
 
 			CmdLineParser.Option scanFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 's', "scan-file" );
 
@@ -335,6 +341,8 @@ public class SubmitImportProgram {
 			}
 
 			limelightXMLFileString = (String)cmdLineParser.getOptionValue( limelightXMLFileFromCommandLineCommandLineOpt );
+			
+			fastaFileString = (String)cmdLineParser.getOptionValue( fastaFileFromCommandLineCommandLineOpt );
 
 
 			@SuppressWarnings("rawtypes")
@@ -392,6 +400,10 @@ public class SubmitImportProgram {
 					System.err.println( "Limelight XML file NOT ALLOWED when Param for No Limelight XML File is specified." );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
+				if ( StringUtils.isNotEmpty(fastaFileString) ) {
+					System.err.println( "FASTA file NOT ALLOWED when Param for No Limelight XML File is specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
 				if ( authTestCommandLineOptChosen ) {
 					System.err.println( "param for Auth check NOT ALLOWED When Param for No Limelight XML File is specified." );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
@@ -409,6 +421,19 @@ public class SubmitImportProgram {
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 			}
+			
+			if ( StringUtils.isNotEmpty(fastaFileString) ) {
+	
+				fastaFile = new File( fastaFileString );
+	
+				if( ! fastaFile.exists() ) {
+					System.err.println( "Could not find FASTA file: " + fastaFile.getAbsolutePath() );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+			}
+
 
 			if ( inputScanFileStringVector != null && ( ! inputScanFileStringVector.isEmpty() ) ) {
 
@@ -614,6 +639,7 @@ public class SubmitImportProgram {
 								retryCountLimit,
 
 								limelightXMLFile, 
+								fastaFile,
 								scanFiles,
 
 								searchName,
@@ -655,6 +681,7 @@ public class SubmitImportProgram {
 										retryCountLimit,
 
 										limelightXMLFile, //  is null
+										fastaFile, //  is null
 										scanFiles_SingleFileSubmission,
 
 										searchName,

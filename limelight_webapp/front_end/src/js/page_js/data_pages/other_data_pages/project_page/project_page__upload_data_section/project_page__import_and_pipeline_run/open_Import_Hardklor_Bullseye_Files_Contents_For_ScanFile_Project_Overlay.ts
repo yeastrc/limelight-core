@@ -51,12 +51,17 @@ export const open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_O
 
         callback_UpdateAfterSuccessfulSubmit: functionParams.uploadComplete_Callback,
 
+        is_uploading_FileObjectStorage_Files: null,
+
         limelight_import_file_type_limelight_xml_file: null,
+        limelight_import_file_type_fasta_file: null,
         limelight_import_file_type_scan_file: null,
 
         maxFileUploadChunkSize: null,
         maxLimelightXMLFileUploadSize: null,
         maxLimelightXMLFileUploadSizeFormatted: null,
+        maxFASTAFileUploadSizeFormatted: null,
+        maxFASTAFileUploadSize: null,
         maxScanFileUploadSize: null,
         maxScanFileUploadSizeFormatted: null,
         scanFileSelection_For_FeatureDetectionImport,

@@ -41,6 +41,14 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 	private static final String PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION_IF_STARTS_WITH = 
 			"spectral.storage.send.scan.file.location.if.path.starts.with";
 
+
+	private static final String PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION = "file.object.storage.send.file.location";
+
+	private static final String FILE_OBJECT_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE = "true";
+
+	private static final String PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION_IF_STARTS_WITH = 
+			"file.object.storage.send.file.location.if.path.starts.with";
+
 	
 	/**
 	 * private constructor
@@ -75,18 +83,34 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 			Properties configProps = new Properties();
 			configProps.load( propertiesFileAsStream );
 
-			String propertyValue = null;
-
-			propertyValue = configProps.getProperty( PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION );
-			if ( StringUtils.isNotEmpty( propertyValue ) ) {
-				if ( SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE.equals( propertyValue ) ) {
-					ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation(true);
+			{
+				String propertyValue = configProps.getProperty( PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION );
+				if ( StringUtils.isNotEmpty( propertyValue ) ) {
+					if ( SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE.equals( propertyValue ) ) {
+						ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation(true);
+					}
+				}
+			}
+			{
+				String propertyValue = configProps.getProperty( PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION_IF_STARTS_WITH );
+				if ( StringUtils.isNotEmpty( propertyValue ) ) {
+					ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation_IfPathStartsWith( propertyValue );
 				}
 			}
 
-			propertyValue = configProps.getProperty( PROPERTY_NAME__SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION_IF_STARTS_WITH );
-			if ( StringUtils.isNotEmpty( propertyValue ) ) {
-				ImporterConfigFileData_OtherThanDBConfig.setSpectralStorageService_sendScanFileLocation_IfPathStartsWith( propertyValue );
+			{
+				String propertyValue = configProps.getProperty( PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION );
+				if ( StringUtils.isNotEmpty( propertyValue ) ) {
+					if ( FILE_OBJECT_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE.equals( propertyValue ) ) {
+						ImporterConfigFileData_OtherThanDBConfig.setFileObjectStorageService_sendFileLocation(true);
+					}
+				}
+			}
+			{
+				String propertyValue = configProps.getProperty( PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION_IF_STARTS_WITH );
+				if ( StringUtils.isNotEmpty( propertyValue ) ) {
+					ImporterConfigFileData_OtherThanDBConfig.setFileObjectStorageService_sendFileLocation_IfPathStartsWith( propertyValue );
+				}
 			}
 
 			ImporterConfigFileData_OtherThanDBConfig.setConfigured(true);
@@ -105,6 +129,23 @@ public class Process_ConfigFileData_OtherThanDBConfig {
 						+ SPECTRAL_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE
 						+ "'."
 						+ "  So will be sending Scan file location to Spectral Storage Service.  If the location is not accepted, the scan file contents will be sent."
+						);
+			}
+
+			if ( ImporterConfigFileData_OtherThanDBConfig.isFileObjectStorageService_sendFileLocation()
+					&& ImporterConfigFileData_OtherThanDBConfig.getFileObjectStorageService_sendFileLocation_IfPathStartsWith() != null ) {
+
+				log.warn( "INFO: Config file property '" 
+						+ PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION
+						+ "' is set to '" 
+						+ FILE_OBJECT_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE
+						+ "'.  "
+						+ " and config file property '" 
+						+ PROPERTY_NAME__FILE_OBJECT_STORAGE_SEND_FILE_LOCATION_IF_STARTS_WITH
+						+ "' is set to '" 
+						+ FILE_OBJECT_STORAGE_SEND_SCAN_FILE_LOCATION__TRUE
+						+ "'."
+						+ "  So will be sending File location to FIle Object Storage Service.  If the location is not accepted, the file contents will be sent."
 						);
 			}
 			

@@ -44,6 +44,15 @@ public class FileImportTrackingSingleFileDTO {
 	private String sha1Sum;
 	private Long fileSize;
 	
+	@Override
+	public String toString() {
+		return "FileImportTrackingSingleFileDTO [id=" + id + ", fileImportTrackingId=" + fileImportTrackingId
+				+ ", fileType=" + fileType + ", fileUploadStatus=" + fileUploadStatus + ", filenameInUpload="
+				+ filenameInUpload + ", filenameOnDisk=" + filenameOnDisk + ", filenameOnDiskWithPathSubSameMachine="
+				+ filenameOnDiskWithPathSubSameMachine + ", canonicalFilename_W_Path_OnSubmitMachine="
+				+ canonicalFilename_W_Path_OnSubmitMachine + ", absoluteFilename_W_Path_OnSubmitMachine="
+				+ absoluteFilename_W_Path_OnSubmitMachine + ", sha1Sum=" + sha1Sum + ", fileSize=" + fileSize + "]";
+	}
 	
 	public int getId() {
 		return id;

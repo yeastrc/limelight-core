@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,12 +50,14 @@ import org.yeastrc.limelight.limelight_webapp.dao.ProjectDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.db_dto.ProjectDTO;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUploadFileSystemException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.LimelightWebappDataException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
@@ -101,6 +104,9 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 	@Autowired
 	private IsLimelightXMLFileImportFullyConfiguredIF isLimelightXMLFileImportFullyConfigured;
 
+	@Autowired
+	private IsFileObjectStorageFileImportAllowedViaWebSubmit_IF isFileObjectStorageFileImportAllowedViaWebSubmit;
+	
 	@Autowired
 	private IsScanFileImportAllowedViaWebSubmitIF isScanFileImportAllowedViaWebSubmit;
 
@@ -456,6 +462,23 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 				//  EARLY RETURN
 				return methodResults;
 			}
+
+			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE 
+					&& ( ! isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit() ) ) {
+
+				log.warn( "'fileType' is : FASTA_FILE but File Object Storage files are not allowed via web submit" );
+
+				//  Return Error
+				webserviceResult.setStatusSuccess(false);
+				webserviceResult.setScanFileNotAllowed(true);
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
+			
+			
 			if ( StringUtils.isEmpty( projectIdString ) ) {
 				log.warn( "'projectIdentifier' header JSON is not sent or is empty.  uploadKeyString: " + uploadKeyString
 					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
@@ -481,10 +504,14 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED();
-				
+
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.SCAN_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED();
+
+			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE ) {
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE_FORMATTED();
 			} else {
 				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType + ".  uploadKeyString: " + uploadKeyString
 					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 
@@ -680,6 +707,48 @@ public class Project_UploadData_UploadFile_RestWebserviceController {
 					int len;
 					while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
 						fos.write(buf, 0, len);
+						
+						if ( totalBytesCopied == 0 ) {
+							//  First block of bytes read.  Validate the FASTA start of file
+							
+							if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE ) {
+
+								byte[] firstByteRead_Array = new byte[1];
+								firstByteRead_Array[0] = buf[0];
+								
+								try {
+								
+									String firstCharacter = new String( firstByteRead_Array, StandardCharsets.US_ASCII );
+									
+									if ( ! ">".equals( firstCharacter ) ) {
+
+										//  Return Error -  Status Code 400
+										webserviceResult.setStatusSuccess(false);
+										webserviceResult.setFastaFile_InvalidContents( true );
+
+										methodResults.returnBadRequestStatusCode = true;
+
+										//  EARLY RETURN
+										return methodResults;
+									}
+								
+								} catch ( Exception e ) {
+									
+									log.warn( "Failed to create String object from first character in FASTA file." );
+
+									//  Return Error -  Status Code 400
+									webserviceResult.setStatusSuccess(false);
+									webserviceResult.setFastaFile_InvalidContents( true );
+
+									methodResults.returnBadRequestStatusCode = true;
+
+									//  EARLY RETURN
+									return methodResults;
+								}
+								
+							}
+						}
+						
 						totalBytesCopied += len;
 						if ( totalBytesCopied > webserviceMethod_Internal_Params.maxFileSize ) {
 	

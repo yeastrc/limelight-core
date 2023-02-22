@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileSourceFirstImportDTO;
 
 /**
@@ -40,15 +39,15 @@ public class ScanFileSourceFirstImportDAO_Importer {
 	 * @param item
 	 * @throws Exception
 	 */
-	public void saveToDatabase( ScanFileSourceFirstImportDTO item ) throws Exception {
-
-		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
-			saveToDatabase( item, dbConnection );
-		} catch ( Exception e ) {
-			log.error( "ERROR: saveToDatabase( item ) item: " + item, e );
-			throw e;
-		}
-	}
+//	public void saveToDatabase( ScanFileSourceFirstImportDTO item ) throws Exception {
+//
+//		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+//			saveToDatabase( item, dbConnection );
+//		} catch ( Exception e ) {
+//			log.error( "ERROR: saveToDatabase( item ) item: " + item, e );
+//			throw e;
+//		}
+//	}
 
 	private final static String INSERT_SQL = 
 			

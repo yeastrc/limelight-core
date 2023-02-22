@@ -29,7 +29,8 @@ package org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.e
 public enum FileImportFileType {
 
     LIMELIGHT_XML_FILE( 1 ),
-    SCAN_FILE( 2 )
+    SCAN_FILE( 2 ),
+    FASTA_FILE( 3 )
     ;
 
     

@@ -596,10 +596,13 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 				throw new LimelightInternalErrorException( msg );
 			}
 			FileImportTrackingSingleFileDTO importFileEntry = null;
+			FileImportTrackingSingleFileDTO importFile_FASTAFile_Entry = null;
 			List<FileImportTrackingSingleFileDTO> scanFileEntryList = new ArrayList<>();
 			for ( FileImportTrackingSingleFileDTO fileDataEntry : fileDataList ) {
 				if ( fileDataEntry.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
 					importFileEntry = fileDataEntry;
+				} else if ( fileDataEntry.getFileType() == FileImportFileType.FASTA_FILE ) {
+					importFile_FASTAFile_Entry = fileDataEntry;
 				} else if ( fileDataEntry.getFileType() == FileImportFileType.SCAN_FILE ) {
 					scanFileEntryList.add( fileDataEntry );
 				} else {
@@ -619,8 +622,14 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 					importFileEntry = scanFileEntryList.get(0); //  Display Info for first Scan File
 				}
 			}
-			String uploadedFilename = importFileEntry.getFilenameInUpload();
-			displayItem.setUploadedFilename( uploadedFilename );
+			{
+				String uploadedFilename = importFileEntry.getFilenameInUpload();
+				displayItem.setUploadedFilename( uploadedFilename );
+			}
+			if ( importFile_FASTAFile_Entry != null ) {
+				String uploadedFilename = importFile_FASTAFile_Entry.getFilenameInUpload();
+				displayItem.setFastafileName(uploadedFilename);
+			}
 			List<String> scanFilenames = new ArrayList<>( scanFileEntryList.size() );
 			for ( FileImportTrackingSingleFileDTO scanFileEntry : scanFileEntryList ) {
 				String scanFilename = scanFileEntry.getFilenameInUpload();
@@ -1556,6 +1565,8 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 		 */
 		private String lastUpdatedDateTime;
 
+		private String fastafileName;
+
 		private List<String> scanFilenames;
 
 		private String scanfileNamesCommaDelim;
@@ -1683,6 +1694,12 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 		}
 		public String getSearchShortName() {
 			return searchShortName;
+		}
+		public String getFastafileName() {
+			return fastafileName;
+		}
+		public void setFastafileName(String fastafileName) {
+			this.fastafileName = fastafileName;
 		}
 
 	}

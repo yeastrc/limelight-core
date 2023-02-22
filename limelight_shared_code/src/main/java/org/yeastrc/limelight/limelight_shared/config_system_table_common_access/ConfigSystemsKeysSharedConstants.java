@@ -48,7 +48,16 @@ public class ConfigSystemsKeysSharedConstants {
 	public static final String RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH = 
 			"run_feature_detection_service_run_hardklor_bullseye_result_files_base_path";
 	
+
+
+	////  Limelight Store imported files like FASTA file on YRC File Object Storage
 	
+	////       Web Service Base URL - 
+	////             URL used to communicate to YRC File Object Storage
+	
+	public static final String YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = 
+			"yrc_file_object_storage_web_service_base_url";
+
 	
 	
 	////  Limelight XML File Import Set Up keys
@@ -92,5 +101,7 @@ public class ConfigSystemsKeysSharedConstants {
 		
 		textConfigKeys.add( RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL );
 		textConfigKeys.add( RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH );
+		
+		textConfigKeys.add( YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );
 	}
 }

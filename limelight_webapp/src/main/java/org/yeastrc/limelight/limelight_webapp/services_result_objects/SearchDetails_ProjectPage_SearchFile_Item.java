@@ -9,6 +9,7 @@ public class SearchDetails_ProjectPage_SearchFile_Item {
 
 	private int id;
 	private String name;
+	private boolean entryIsFileObjectStorageFile; 
 	private boolean canEdit; 
 
 	public int getId() {
@@ -28,5 +29,11 @@ public class SearchDetails_ProjectPage_SearchFile_Item {
 	}
 	public void setCanEdit(boolean canEdit) {
 		this.canEdit = canEdit;
+	}
+	public boolean isEntryIsFileObjectStorageFile() {
+		return entryIsFileObjectStorageFile;
+	}
+	public void setEntryIsFileObjectStorageFile(boolean entryIsFileObjectStorageFile) {
+		this.entryIsFileObjectStorageFile = entryIsFileObjectStorageFile;
 	}
 }

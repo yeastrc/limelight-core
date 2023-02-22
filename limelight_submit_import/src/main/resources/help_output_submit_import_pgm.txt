@@ -22,11 +22,15 @@ Submit Import Help:
 
 -i (--limelight-xml-file=) <limelightXML file>
 
+--fasta-file=<FASTA file>   : Optional: MUST be same filename as in limelightXML file
+
 -s (--scan-file=)  <scan file>
+   (Optional.  If not have then MUST have '-n' or '--no-scan-files' (parameter listed next)
    (Can have more than one scan file. 
     Repeat the: 
     	-s (--scan-file=)  <scan file>
     for each scan file.)
+   (If ANY scan files are listed, ALL scan filenames in limelightXML file must be listed)
 
 -n (--no-scan-files)  :  If no scan files
 

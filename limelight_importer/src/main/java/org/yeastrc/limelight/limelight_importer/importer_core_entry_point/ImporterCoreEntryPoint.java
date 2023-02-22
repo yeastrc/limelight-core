@@ -47,6 +47,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimelightXML_Statistics;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
@@ -56,6 +57,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatched
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_FastaFilename_Matches_Submitted_FastaFile_Filename;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
@@ -111,6 +113,7 @@ public class ImporterCoreEntryPoint {
 			String importDirectoryOverrideValue,
 			File mainXMLFileToImport,
 			LimelightInput limelightInputForImportParam,
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			Boolean skipPopulatingPathOnSearchLineOptChosen, SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
 			) throws Exception, LimelightImporterProjectNotAllowImportException, LimelightImporterLimelightXMLDeserializeFailException {
@@ -195,6 +198,7 @@ public class ImporterCoreEntryPoint {
 				searchShortName,
 				searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 				limelightInputObjectContainer, 
+				fileObjectStorage_FileContainer_AllEntries,
 				scanFileFileContainer_AllEntries, 
 				importDirectory, 
 				skipPopulatingPathOnSearchLineOptChosen,
@@ -289,6 +293,7 @@ public class ImporterCoreEntryPoint {
 			String searchShortName,
 			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			LimelightInputObjectContainer limelightInputObjectContainer,
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			String importDirectory,
 			Boolean skipPopulatingPathOnSearchLineOptChosen,
@@ -322,6 +327,10 @@ public class ImporterCoreEntryPoint {
 		ProcessLimelightInput processLimelightInput = null; 
 		try {
 			//  TODO  Implement these as needed
+			
+			//   Throws LimelightImporterDataException if data error found
+			Validate_FastaFilename_Matches_Submitted_FastaFile_Filename.getInstance()
+			.validate_FastaFilename_Matches_Submitted_FastaFile_Filename( limelightInputForImport, fileObjectStorage_FileContainer_AllEntries );
 			
 			//   Throws LimelightImporterDataException if data error found
 			ValidateAnnotationTypeRecords.getInstance().validateAnnotationTypeRecords( limelightInputForImport );
@@ -365,6 +374,7 @@ public class ImporterCoreEntryPoint {
 					searchShortName,
 					searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
 					limelightInputForImport,
+					fileObjectStorage_FileContainer_AllEntries,
 					scanFileFileContainer_AllEntries, 
 					importDirectory,
 					skipPopulatingPathOnSearchLineOptChosen, searchStatistics_General_SavedToDB_ToDB

@@ -30,7 +30,8 @@ package org.yeastrc.limelight.limelight_submit_import_client_connector.enum_clas
 public enum LimelightSubmit_FileImportFileType {
 
     LIMELIGHT_XML_FILE( 1 ),
-    SCAN_FILE( 2 )
+    SCAN_FILE( 2 ),
+    FASTA_FILE( 3 )
     ;
 
     

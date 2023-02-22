@@ -684,18 +684,51 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
 
         const objectThis = this;
 
-        const $selector_search_filename_download_fake_linkAll = $selector_search_details_container.find(".selector_search_filename_download_fake_link");
-        $selector_search_filename_download_fake_linkAll.click(function(eventObject) {
-			try {
-				eventObject.preventDefault();
-				objectThis._downloadSearchFileClicked({ projectSearchId, clickedThis : this });
-			} catch (e) {
-				reportWebErrorToServer.reportErrorObjectToServer({
-					errorException : e
-				});
-				throw e;
-			}
-        });
+		{
+			const $selector_download_fasta_file_fake_linkAll = $selector_search_details_container.find(".selector_download_fasta_file_fake_link");
+			$selector_download_fasta_file_fake_linkAll.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._download_FASTA_FileStorageObjectClicked({ projectSearchId, clickedThis : this });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+		}
+
+		{
+			const $selector_search_filename_download_fake_linkAll = $selector_search_details_container.find(".selector_search_filename_download_fake_link");
+			$selector_search_filename_download_fake_linkAll.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._downloadSearchFileClicked({ projectSearchId, clickedThis : this });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+		}
+
+		{
+			const $selector_file_object_storage_download_fake_linkAll = $selector_search_details_container.find(".selector_file_object_storage_download_fake_link");
+			$selector_file_object_storage_download_fake_linkAll.click(function(eventObject) {
+				try {
+					eventObject.preventDefault();
+					objectThis._downloadFileStorageObjectClicked({ projectSearchId, clickedThis : this });
+				} catch (e) {
+					reportWebErrorToServer.reportErrorObjectToServer({
+						errorException : e
+					});
+					throw e;
+				}
+			});
+
+		}
 
 		const $selector_show_command_line_arguments = $selector_search_details_container.find(".selector_show_command_line_arguments");
 		$selector_show_command_line_arguments.click(function(eventObject) {
@@ -773,5 +806,118 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers {
             document.body.removeChild(form);
         }
     }
+
+
+	/**
+	 *
+	 */
+	private _downloadFileStorageObjectClicked({ projectSearchId, clickedThis }) {
+
+		const $selector_display_search_filename_outer_container = $( clickedThis ).closest(".selector_display_search_filename_outer_container");
+		if ( $selector_display_search_filename_outer_container.length === 0 ) {
+			throw Error("Failed to find DOM element with class 'selector_display_search_filename_outer_container'. _downloadFileStorageObjectClicked(...) projectSearchId: " + projectSearchId );
+		}
+
+		//  attr("search_file_project_search_id"); is used for easy compatibility with existing entries
+
+		const search_file_project_search_idString = $selector_display_search_filename_outer_container.attr("search_file_project_search_id");
+		if ( search_file_project_search_idString === undefined || search_file_project_search_idString ===  null || search_file_project_search_idString === "" ) {
+			throw Error("Attr 'search_file_project_search_id' not exist or is empty. _downloadFileStorageObjectClicked(...) projectSearchId: " + projectSearchId );
+		}
+		const search_file_project_search_id = Number.parseInt( search_file_project_search_idString );
+		if ( Number.isNaN( search_file_project_search_id ) ) {
+			throw Error("Attr 'search_file_project_search_id' is not a number. _downloadFileStorageObjectClicked(...). search_file_project_search_id: "
+				+ search_file_project_search_idString
+				+ ", projectSearchId: " + projectSearchId );
+		}
+
+		const requestJSONObject = {
+			projectSearchId: projectSearchId,
+			fileObjectStorageForSearch_Id : search_file_project_search_id  //  attr("search_file_project_search_id"); is used for easy compatibility with existing entries
+		}
+
+		const requestJSONString = JSON.stringify(requestJSONObject);
+
+		//  Create and submit form
+
+		const form = document.createElement("form");
+
+		$(form).hide();
+
+		form.setAttribute("method", "post");
+		form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
+		form.setAttribute("target", "_blank");
+
+		const requestJSONStringField = document.createElement("textarea");
+		requestJSONStringField.setAttribute("name", "requestJSONString");
+
+		$(requestJSONStringField).text(requestJSONString);
+
+		form.appendChild(requestJSONStringField);
+
+		document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+		try {
+			form.submit();
+		} finally {
+
+			document.body.removeChild(form);
+		}
+	}
+
+
+	/**
+	 *
+	 */
+	private _download_FASTA_FileStorageObjectClicked({ projectSearchId, clickedThis }) {
+
+		const file_idString = $( clickedThis ).attr("data-file-id");
+		if ( file_idString === undefined || file_idString ===  null || file_idString === "" ) {
+			throw Error("Attr 'data-file-id' not exist or is empty. _downloadFileStorageObjectClicked(...) projectSearchId: " + projectSearchId );
+		}
+		const file_id = Number.parseInt( file_idString );
+		if ( Number.isNaN( file_id ) ) {
+			throw Error("Attr 'file_id' is not a number. _downloadFileStorageObjectClicked(...). file_id: "
+				+ file_idString
+				+ ", projectSearchId: " + projectSearchId );
+		}
+
+		const requestJSONObject = {
+			projectSearchId: projectSearchId,
+			fileObjectStorageForSearch_Id : file_id
+		}
+
+		const requestJSONString = JSON.stringify(requestJSONObject);
+
+		//  Create and submit form
+
+		const form = document.createElement("form");
+
+		$(form).hide();
+
+		form.setAttribute("method", "post");
+		form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
+		form.setAttribute("target", "_blank");
+
+		const requestJSONStringField = document.createElement("textarea");
+		requestJSONStringField.setAttribute("name", "requestJSONString");
+
+		$(requestJSONStringField).text(requestJSONString);
+
+		form.appendChild(requestJSONStringField);
+
+		document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+		try {
+			form.submit();
+		} finally {
+
+			document.body.removeChild(form);
+		}
+	}
+
+
+
+
 }
 

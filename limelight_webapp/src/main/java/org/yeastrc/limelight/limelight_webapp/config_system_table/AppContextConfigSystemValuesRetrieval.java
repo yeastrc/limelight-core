@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
 import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
 
@@ -30,6 +31,9 @@ public class AppContextConfigSystemValuesRetrieval {
 	
 	@Autowired
 	private IsLimelightXMLFileImportFullyConfiguredIF isLimelightXMLFileImportFullyConfigured;
+	
+	@Autowired
+	private IsFileObjectStorageFileImportAllowedViaWebSubmit_IF isFileObjectStorageFileImportAllowedViaWebSubmit;
 	
 	@Autowired
 	private IsScanFileImportAllowedViaWebSubmitIF isScanFileImportAllowedViaWebSubmit;
@@ -91,6 +95,14 @@ public class AppContextConfigSystemValuesRetrieval {
 	public boolean isLimelightXMLFileImportFullyConfigured() {
 		return isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured();
 	}
+
+	/**
+	 * @return
+	 */
+	public boolean isFileObjectStorageFileImportAllowedViaWebSubmit() {
+		return isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit();
+	}
+	
 	/**
 	 * @return
 	 */
