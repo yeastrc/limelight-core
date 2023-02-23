@@ -34,6 +34,7 @@ import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.X
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Request;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -64,10 +65,12 @@ public class Unmarshal_RestRequest_XML_ToObject implements InitializingBean {
 		jaxbContext = 
 				JAXBContext.newInstance( 
 						SubmitImport_AuthTest_Request_PgmXML.class,
+						SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML.class,
+
 						SubmitImport_Init_Request_PgmXML.class,
 						SubmitImport_UploadFile_Request_Common.class,
 						SubmitImport_FinalSubmit_Request_PgmXML.class,
-						
+
 						RunImporterToWebAppOnComplete_Request.class
 						);
 	}

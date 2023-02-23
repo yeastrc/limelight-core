@@ -24,6 +24,9 @@ Submit Import Help:
 
 --fasta-file=<FASTA file>   : Optional: MUST be same filename as in limelightXML file
 
+--fasta-file-send-only-if-possible   :  Optional:  Only send fasta file if Limelight is configured to accept FASTA file.  
+                                           (If this is not set and --fasta-file=<FASTA file> is set and Limelight is NOT configured to accept FASTA file the submit will fail) 
+
 -s (--scan-file=)  <scan file>
    (Optional.  If not have then MUST have '-n' or '--no-scan-files' (parameter listed next)
    (Can have more than one scan file. 

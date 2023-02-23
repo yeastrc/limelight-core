@@ -50,6 +50,8 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 
 	private List<String> accepted_ScanFilename_Suffix_List; //  Not populated for Submit Program version < 4
 
+	private Boolean fastaFileSubmit_Configured; //  Not populated for Submit Program version < 8
+
 	public String getUploadKey() {
 		return uploadKey;
 	}
@@ -79,6 +81,12 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	}
 	public void setAccepted_ScanFilename_Suffix_List(List<String> accepted_ScanFilename_Suffix_List) {
 		this.accepted_ScanFilename_Suffix_List = accepted_ScanFilename_Suffix_List;
+	}
+	public Boolean getFastaFileSubmit_Configured() {
+		return fastaFileSubmit_Configured;
+	}
+	public void setFastaFileSubmit_Configured(Boolean fastaFileSubmit_Configured) {
+		this.fastaFileSubmit_Configured = fastaFileSubmit_Configured;
 	}
 	
 }

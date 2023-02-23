@@ -128,6 +128,8 @@ public class SubmitImportProgram {
 		
 		String fastaFileString = null;
 		
+		Boolean fastaFile_SendOnlyIfPossible = null;
+		
 		File fastaFile = null;
 		
 		List<File> scanFiles = null;
@@ -147,6 +149,8 @@ public class SubmitImportProgram {
 
 			CmdLineParser.Option fastaFileFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "fasta-file" );
 
+			CmdLineParser.Option fastaFile_SendOnlyIfPossible_CommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "fasta-file-send-only-if-possible" );
+			
 			CmdLineParser.Option scanFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 's', "scan-file" );
 
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
@@ -343,6 +347,8 @@ public class SubmitImportProgram {
 			limelightXMLFileString = (String)cmdLineParser.getOptionValue( limelightXMLFileFromCommandLineCommandLineOpt );
 			
 			fastaFileString = (String)cmdLineParser.getOptionValue( fastaFileFromCommandLineCommandLineOpt );
+			
+			fastaFile_SendOnlyIfPossible = (Boolean)  cmdLineParser.getOptionValue( fastaFile_SendOnlyIfPossible_CommandLineOpt, Boolean.FALSE);
 
 
 			@SuppressWarnings("rawtypes")
@@ -640,6 +646,7 @@ public class SubmitImportProgram {
 
 								limelightXMLFile, 
 								fastaFile,
+								fastaFile_SendOnlyIfPossible,
 								scanFiles,
 
 								searchName,
@@ -682,6 +689,7 @@ public class SubmitImportProgram {
 
 										limelightXMLFile, //  is null
 										fastaFile, //  is null
+										fastaFile_SendOnlyIfPossible,
 										scanFiles_SingleFileSubmission,
 
 										searchName,

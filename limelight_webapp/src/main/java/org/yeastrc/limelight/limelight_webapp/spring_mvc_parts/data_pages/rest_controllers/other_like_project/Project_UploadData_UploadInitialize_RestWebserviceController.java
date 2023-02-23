@@ -54,6 +54,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUplo
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadSubmitterPgmSameMachineConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF;
@@ -95,6 +96,9 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 	
 	@Autowired
 	private SpectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest_IF spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest;
+
+	@Autowired
+	private IsFileObjectStorageFileImportAllowedViaWebSubmit_IF isFileObjectStorageFileImportAllowedViaWebSubmit;
 	
 	@Autowired
 	private Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF limelight_XML_Importer_Work_Directory_And_SubDirs_Web;
@@ -276,9 +280,9 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 					+ ", userSubmitImportProgramKey_First_5_characters: " + userSubmitImportProgramKey_First_5_characters );
 			
 			webserviceResult.setStatusSuccess( false );
-			
-			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
-			
+
+			webserviceResult.setStatusFail_ErrorMessage( "Submit Import Program version is too old.  Get program from limelight webapp submitting to." );
+
 			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
 
 			//  TODO  Return other than 200 code?
@@ -296,8 +300,7 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			webserviceResult.setStatusSuccess( false );
 			webserviceResult.setSubmitProgramVersionNumber_NotAccepted(true);
 			webserviceResult.setSubmitProgramVersionNumber_Current_Per_Webapp( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
-			
-			//  Reason set in validateResult by method validateProjectOwnerAllowed(...)
+			webserviceResult.setStatusFail_ErrorMessage( "Submit Import Program version is too old.  Get program from limelight webapp submitting to." );
 			
 			byte[] responseAsXML = marshal_RestRequest_Object_ToXML.getXMLByteArrayFromObject( webserviceResult );
 
@@ -420,6 +423,20 @@ public class Project_UploadData_UploadInitialize_RestWebserviceController {
 			
 			try {
 				webserviceResult.setAccepted_ScanFilename_Suffix_List( spectralStorageService_Get_Supported_ScanFileSuffixes_OnRequest.get_Supported_ScanFileSuffixes() );
+			} catch ( Throwable t) {
+				// Eat Exception
+			}
+		}
+
+		if ( webserviceRequest.getSubmitProgramVersionNumber() != null && webserviceRequest.getSubmitProgramVersionNumber().intValue() >= 8 ) {
+
+			//  fastaFileSubmit_Configured property added in Submit Program Version 8
+			
+			try {
+				if ( isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit() ) {
+					
+					webserviceResult.setFastaFileSubmit_Configured(true);
+				}
 			} catch ( Throwable t) {
 				// Eat Exception
 			}

@@ -49,6 +49,8 @@ import org.yeastrc.limelight.limelight_submit_import_client_connector.request_re
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_SubPart_SearchTagCategoryAndItsSearchTagsEntry;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_SingleFileItem;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
@@ -140,6 +142,7 @@ public class SubmitUploadMain {
 
 			File limelightXMLFile, 
 			File fastaFile,
+			Boolean fastaFile_SendOnlyIfPossible,
 
 			List<File> scanFiles,
 
@@ -192,8 +195,70 @@ public class SubmitUploadMain {
 				}
 
 				System.out.println( "Connecting to Limelight web app using URL: " + baseURL );
+				
+				boolean sendFastaFile_LOCAL = false;
+				
+				if ( fastaFile != null ) {
+					
+					//  Have fasta file so find out if can send it
+					
+					SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML webserviceRequest = new SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML();
 
+					webserviceRequest.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+					webserviceRequest.setProjectIdentifier( projectIdString );
+					webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
+					
+					SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML webserviceResponse =
+							callSubmitImportWebservice.call_SubmitImport_Get_FASTAFileUploadAccepted_Webservice(webserviceRequest);
 
+					if ( ! webserviceResponse.isStatusSuccess() ) {
+
+						System.err.println( "" );
+						System.err.println( "********************************************************" );
+						System.err.println( "" );
+						System.err.println( "Submit import Failed." );
+
+						if ( StringUtils.isNotBlank( webserviceResponse.getStatusFail_ErrorMessage() ) ) {
+
+							System.err.println( webserviceResponse.getStatusFail_ErrorMessage() );
+							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+							return submitResult;    //  EARLY EXIT
+						}
+
+						System.err.println( "Upload failed at Get FASTA File Upload Accepted.  Please try again." );
+
+						System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+
+						submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+
+						return submitResult;    //  EARLY EXIT
+					}
+
+					if ( webserviceResponse.isFastaFileSubmit_Configured() ) {
+
+						sendFastaFile_LOCAL = true;
+
+					} else {
+
+						if  ( fastaFile_SendOnlyIfPossible == null || ( ! fastaFile_SendOnlyIfPossible.booleanValue() ) ) {
+							
+							System.err.println( "" );
+							System.err.println( "********************************************************" );
+							System.err.println( "" );
+							System.err.println( "Submit import Failed." );
+							System.err.println( "" );
+
+							System.err.println( "--fasta-file=<FASTA File> is specified and --fasta-file-send-only-if-possible is NOT specified and Limelight is NOT configured to accept FASTA file." );
+
+							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+
+							submitResult.exitCode = PROGRAM_EXIT_CODE_INVALID_INPUT;
+
+							return submitResult;    //  EARLY EXIT
+						}
+					}
+				}
+				
 				SubmitImport_Init_Request_PgmXML submitImport_Init_Request = new SubmitImport_Init_Request_PgmXML();
 
 				submitImport_Init_Request.setSubmitProgramVersionNumber( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
@@ -417,7 +482,7 @@ public class SubmitUploadMain {
 					}
 				}
 
-				if ( fastaFile != null ) {
+				if ( fastaFile != null && sendFastaFile_LOCAL ) {
 					
 					//  Process FASTA file
 

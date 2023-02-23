@@ -51,6 +51,8 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 /**
  * For Upload Data, Get Supported Scan Filename Suffixes (called when user opens Upload overlay)
  * 
+ * ONLY Valid for Webapp usage
+ * 
  * WARNING:  The Submit Import Program will show the value of BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage when set
  * 			 and will NO LONGER check the boolean flags (other than statusSuccess).
  * 			 So the property BaseSubmitImportWebserviceResponse.statusFail_ErrorMessage will be REQUIRED to be set for all errors. 

@@ -48,6 +48,8 @@ import org.yeastrc.limelight.limelight_submit_import_client_connector.request_re
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_AuthTest_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_FinalSubmit_Response_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Request_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_Init_Response_PgmXML;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
@@ -75,6 +77,7 @@ public class CallSubmitImportWebservice {
 	//   WARNING:  add '/' to start of controller string copied from webapp
 
 	public static final String SUBMIT_IMPORT_AUTH_TEST_REST_WEBSERVICE_CONTROLLER = "/d/rws/for-page/project-upload-data-upload-submit-pgm-auth-test";
+	public static final String SUBMIT_IMPORT_GET_FASTA_FILE_UPLOAD_ACCEPTED_REST_WEBSERVICE_CONTROLLER = "/d/rws/for-page/project-upload-data-upload-get-fasta-file-upload-accepted-submit-program";
 	private static final String SUBMIT_IMPORT_INIT_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-initialize-from-submit-pgm";
 	private static final String SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-file-from-submit-pgm";
 	private static final String SUBMIT_IMPORT_FINAL_SUBMIT_WEBSERVICE_SUB_URL = "/d/rws/for-page/project-upload-data-upload-submit-from-submit-pgm";
@@ -119,7 +122,9 @@ public class CallSubmitImportWebservice {
 						SubmitImport_UploadFile_Request_Common.class,
 						SubmitImport_UploadFile_Response_PgmXML.class,
 						SubmitImport_FinalSubmit_Request_PgmXML.class,
-						SubmitImport_FinalSubmit_Response_PgmXML.class
+						SubmitImport_FinalSubmit_Response_PgmXML.class,
+						SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML.class,
+						SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML.class
 						);
 		instanceInitialized = true;
 	}
@@ -153,7 +158,45 @@ public class CallSubmitImportWebservice {
 		try {
 			webserviceResponse = (SubmitImport_AuthTest_Response_PgmXML) webserviceResponseAsObject;
 		} catch ( Exception e ) {
-			String msg = "Error. Fail to cast response as SubmitImport_Init_Response: "
+			String msg = "Error. Fail to cast response as SubmitImport_AuthTest_Response_PgmXML: "
+					+ e.toString();
+			LimelightSubmitImportWebserviceCallErrorException exception = new LimelightSubmitImportWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		return webserviceResponse;
+	}
+
+	/////////////////////////////
+
+	/**
+	 * @param webserviceRequest
+	 * @return
+	 * @throws Exception 
+	 */
+	public SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML call_SubmitImport_Get_FASTAFileUploadAccepted_Webservice( SubmitImport_Get_FASTAFileUploadAccepted_Request_PgmXML webserviceRequest ) throws Exception {
+		if ( ! instanceInitialized ) {
+			throw new IllegalStateException( "Not initialized" );
+		}
+		if ( webserviceRequest == null ) {
+			throw new IllegalArgumentException( "webserviceRequest param must not be null in call to call_SubmitImport_AuthTest_Webservice(...)" );
+		}
+
+		String webserviceURL = webappServerBaseURL
+				+ SUBMIT_IMPORT_GET_FASTA_FILE_UPLOAD_ACCEPTED_REST_WEBSERVICE_CONTROLLER;
+		Object webserviceResponseAsObject = callActualWebserviceOnServerSendObject( webserviceRequest, webserviceURL );
+		if ( ! ( webserviceResponseAsObject instanceof SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML ) ) {
+			String msg = "Response unmarshaled to class other than SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML.  "
+					+ " Unmarshaled Class: " + webserviceResponseAsObject.getClass();
+			LimelightSubmitImportWebserviceCallErrorException exception = new LimelightSubmitImportWebserviceCallErrorException( msg );
+			exception.setFailToDecodeDataReceivedFromServer(true);
+			throw exception;
+		}
+		SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML webserviceResponse = null;
+		try {
+			webserviceResponse = (SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML) webserviceResponseAsObject;
+		} catch ( Exception e ) {
+			String msg = "Error. Fail to cast response as SubmitImport_Get_FASTAFileUploadAccepted_Response_PgmXML: "
 					+ e.toString();
 			LimelightSubmitImportWebserviceCallErrorException exception = new LimelightSubmitImportWebserviceCallErrorException( msg );
 			exception.setFailToDecodeDataReceivedFromServer(true);

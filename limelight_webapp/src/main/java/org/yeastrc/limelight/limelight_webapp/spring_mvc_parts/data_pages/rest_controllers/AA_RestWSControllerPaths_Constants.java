@@ -152,8 +152,17 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_SUBMIT_PGM_AUTH_TEST_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-submit-pgm-auth-test";
 
+	/**
+	 * ONLY for Webapp - Validates User Session
+	 */
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_GET_SUPPORTED_SCAN_FILENAME_SUFFIXES_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-get-supported-scan-filename-suffixes";
+
+	/**
+	 * Only for Submit Program - Validates user-submit-import-key
+	 */
+	public static final String PROJECT__UPLOAD_DATA_UPLOAD_GET_FASTA_FILE_UPLOAD_ACCEPTED_SUBMIT_PROGRAM_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-upload-get-fasta-file-upload-accepted-submit-program";
 	
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-initialize";
