@@ -439,7 +439,7 @@ export class ModificationMass_UserSelections_StateObject {
         this._selection__Added__Pre_Set_Callback({
             oldValue_singleProtein_Filter_SelectionType: oldEntry_selectionType,
             newValue_singleProtein_Filter_SelectionType: entry.selectionType,
-            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.PRE_SET
+            pre_post_Set: ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM.POST_SET
         });
 
         this._selection__Updated_Callback();

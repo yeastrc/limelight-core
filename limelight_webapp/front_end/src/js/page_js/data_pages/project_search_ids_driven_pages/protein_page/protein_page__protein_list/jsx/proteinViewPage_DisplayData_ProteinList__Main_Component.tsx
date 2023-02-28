@@ -224,7 +224,8 @@ interface ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearc
 
     proteinListColumnsDisplayContents__showSequenceCoverageOption?: boolean
 
-    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
+    modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections? : ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class
 
     scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject? : object
     scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject? : object;
@@ -345,7 +346,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
     private _anySearches_Have_ScanFilenames: boolean
     private _anySearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData: boolean
 
-    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
+    private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ReporterIonSelections : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
 
     /**
      *
@@ -360,15 +362,25 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             show_proteinPageSearchesSummarySectionData_Root_Link = true;
         }
 
-        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class =
+        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects =
             new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
                 contents_Changed_Callback: this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis,
                 modificationMass_UserSelections_StateObject: props.propsValue.modificationMass_UserSelections_StateObject,
+                reporterIonMass_UserSelections_StateObject: new ReporterIonMass_UserSelections_StateObject()
+            })
+
+        this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ReporterIonSelections =
+            new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
+                contents_Changed_Callback: this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback_BindThis,
+                modificationMass_UserSelections_StateObject: new ModificationMass_UserSelections_StateObject(),
                 reporterIonMass_UserSelections_StateObject: props.propsValue.reporterIonMass_UserSelections_StateObject
             })
 
-        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
-            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ReporterIonSelections.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
 
         const searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =
             ProteinViewPage_DisplayData_ProteinList__Main_Component_nonClass_Functions.compute_searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue({
@@ -501,7 +513,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             saveView_Component_React,
             saveView_Component_Props_Prop,
             proteinListColumnsDisplayContents__showSequenceCoverageOption,
-            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections,
             scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject: {},
             peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject: {},
@@ -1227,10 +1240,16 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
      */
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__Contents_Changed_Callback() {
 
-        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class =
-            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
 
-        this.setState({ modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class });
+        const modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections =
+            this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ReporterIonSelections.get_Current_ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class();
+
+        this.setState({
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects,
+            modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections
+        });
 
         this._modificationMass_Update_modificationMass_UserSelections_ComponentData();
 
@@ -2710,7 +2729,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                                 modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.state.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                                 openModification_OpenSelectMassOverlay_Override_Callback={ this._openModificationMass_OpenUserSelections_Overlay_Override_BindThis }
                                 modificationMass_UserSelections_ComponentData={ this.state.modificationMass_UserSelections_ComponentData } // Only updated when new updated need to push from above
-                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
+                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ModificationSelects }
                                 modificationMass_UserSelections_StateObject={ this.props.propsValue.modificationMass_UserSelections_StateObject } // Updated in the component
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData={ this.state.modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData } // Only updated when new updated need to push from above
                                 modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass={ this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass } // Updated in the component
@@ -2731,7 +2750,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                             <ReporterIonMass_UserSelections
                                 reporterIons_UserSelections_ComponentData={ this.state.reporterIons_UserSelections_ComponentData }
-                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
+                                modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.state.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class__For_ReporterIonSelections }
                                 reporterIonMass_UserSelections_StateObject={ this.props.propsValue.reporterIonMass_UserSelections_StateObject }
                                 updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback={ this._updateMadeTo_reporterIonMass_UserSelections_StateObject_Callback_BindThis }
                             />

@@ -36,12 +36,17 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
     const OR_SEPARATOR_STRING = "OR"
     const NOT_SEPARATOR_STRING = "OR"
 
-    let selection_AND_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_OR_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
-    let selection_NOT_Group_Display_Entries : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_AND_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_OR_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_NOT_Group_Display_Entries__For_ModificationSelects : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
 
     let selection_NOT_UnModified_Variable_Mods_Selected = false;
     let selection_NOT_UnModified_Open_Mods_Selected = false;
+
+
+    let selection_AND_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_OR_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
+    let selection_NOT_Group_Display_Entries__For_ReporterIonSelections : Array<JSX.Element> = new Array<JSX.Element>()  //  Will be set to undefined in next block if empty at end of block
 
     {
         const variable_ModificationSelections_StateObject = modificationMass_UserSelections_StateObject.get_VariableModificationSelections()
@@ -55,11 +60,11 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 const key = "Var_NoMod"
                 const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no variable modification mass(es)</span>
                 if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
-                    selection_OR_Group_Display_Entries.push( display )
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ModificationSelects })
+                    selection_OR_Group_Display_Entries__For_ModificationSelects.push( display )
                 } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
-                    selection_AND_Group_Display_Entries.push( display )
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries__For_ModificationSelects })
+                    selection_AND_Group_Display_Entries__For_ModificationSelects.push( display )
                 } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
                     selection_NOT_UnModified_Variable_Mods_Selected = true;
                 } else {
@@ -82,9 +87,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for ( const selectedModMass of selectedModMasses ) {
                     const key = "Var_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Variable mod: </span><span> </span><span>{ selectedModMass }</span></span>
-                    selection_OR_Group_Display_Entries.push( display )
+                    selection_OR_Group_Display_Entries__For_ModificationSelects.push( display )
                 }
             }
             {
@@ -101,9 +106,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedModMass of selectedModMasses) {
                     const key = "Var_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries})
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={key} style={{whiteSpace: "nowrap"}}><span>Variable mod: </span><span> </span><span>{selectedModMass}</span></span>
-                    selection_AND_Group_Display_Entries.push(display)
+                    selection_AND_Group_Display_Entries__For_ModificationSelects.push(display)
                 }
             }
             {
@@ -120,9 +125,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedModMass of selectedModMasses) {
                     const key = "Var_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries})
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={key} style={{whiteSpace: "nowrap"}}><span>Variable mod: </span><span> </span><span>{selectedModMass}</span></span>
-                    selection_NOT_Group_Display_Entries.push(display)
+                    selection_NOT_Group_Display_Entries__For_ModificationSelects.push(display)
                 }
             }
         }
@@ -135,11 +140,11 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 const key = "Open_NoMod"
                 const display = <span key={ key } style={ { whiteSpace: "nowrap" } }>no open modification mass(es)</span>
                 if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ANY ) {
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
-                    selection_OR_Group_Display_Entries.push( display )
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ModificationSelects })
+                    selection_OR_Group_Display_Entries__For_ModificationSelects.push( display )
                 } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.ALL ) {
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries })
-                    selection_AND_Group_Display_Entries.push( display )
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString: AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries__For_ModificationSelects })
+                    selection_AND_Group_Display_Entries__For_ModificationSelects.push( display )
                 } else if ( no_Modification_SelectionEntry.selectionType === SingleProtein_Filter_SelectionType.NOT ) {
                     selection_NOT_UnModified_Open_Mods_Selected = true;
                 } else {
@@ -162,9 +167,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for ( const selectedModMass of selectedModMasses ) {
                     const key = "Open_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Open mod: </span><span> </span><span>{ selectedModMass }</span></span>
-                    selection_OR_Group_Display_Entries.push( display )
+                    selection_OR_Group_Display_Entries__For_ModificationSelects.push( display )
                 }
             }
             {
@@ -181,9 +186,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedModMass of selectedModMasses) {
                     const key = "Open_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Open mod: </span><span> </span><span>{selectedModMass}</span></span>
-                    selection_AND_Group_Display_Entries.push(display)
+                    selection_AND_Group_Display_Entries__For_ModificationSelects.push(display)
                 }
             }
             {
@@ -200,9 +205,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedModMass of selectedModMasses) {
                     const key = "Open_Mod_" + selectedModMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries__For_ModificationSelects })
                     const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Open mod: </span><span> </span><span>{selectedModMass}</span></span>
-                    selection_NOT_Group_Display_Entries.push(display)
+                    selection_NOT_Group_Display_Entries__For_ModificationSelects.push(display)
                 }
             }
         }
@@ -217,19 +222,19 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
             _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                 staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ANY,
                 seperatorString : OR_SEPARATOR_STRING,
-                selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries
+                selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ModificationSelects
             })
 
             _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                 staticModificationMassesToFilterOn_ANY_or_ALL :  selection_ALL,
                 seperatorString : AND_SEPARATOR_STRING,
-                selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries
+                selection_Group_Display_Entries_Local : selection_AND_Group_Display_Entries__For_ModificationSelects
             })
 
             _userSelectionDisplay_Add_Static_ModificationsFormatted_For_ANY_or_ALL({
                 staticModificationMassesToFilterOn_ANY_or_ALL :  selection_NOT,
                 seperatorString : NOT_SEPARATOR_STRING,
-                selection_Group_Display_Entries_Local : selection_NOT_Group_Display_Entries
+                selection_Group_Display_Entries_Local : selection_NOT_Group_Display_Entries__For_ModificationSelects
             })
         }
 
@@ -248,9 +253,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for ( const selectedReporterIonMass of selectedReporterIonMasses ) {
                     const key = "Reporter_Ion_" + selectedReporterIonMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : OR_SEPARATOR_STRING, selection_Group_Display_Entries_Local : selection_OR_Group_Display_Entries__For_ReporterIonSelections })
                     const display = <span key={ key } style={ { whiteSpace: "nowrap" } }><span >Reporter ion: </span><span> </span><span>{ selectedReporterIonMass }</span></span>
-                    selection_OR_Group_Display_Entries.push( display )
+                    selection_OR_Group_Display_Entries__For_ReporterIonSelections.push( display )
                 }
             }
             {
@@ -267,9 +272,9 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedReporterIonMass of selectedReporterIonMasses) {
                     const key = "Reporter_Ion_" + selectedReporterIonMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries__For_ReporterIonSelections })
                     const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Reporter ion: </span><span> </span><span>{selectedReporterIonMass}</span></span>
-                    selection_AND_Group_Display_Entries.push(display)
+                    selection_AND_Group_Display_Entries__For_ReporterIonSelections.push(display)
                 }
             }
             {
@@ -286,35 +291,56 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
                 })
                 for (const selectedReporterIonMass of selectedReporterIonMasses) {
                     const key = "Reporter_Ion_" + selectedReporterIonMass
-                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries })
+                    _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : NOT_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_NOT_Group_Display_Entries__For_ReporterIonSelections })
                     const display = <span key={ key } style={{whiteSpace: "nowrap"}}><span>Reporter ion: </span><span> </span><span>{selectedReporterIonMass}</span></span>
-                    selection_NOT_Group_Display_Entries.push(display)
+                    selection_NOT_Group_Display_Entries__For_ReporterIonSelections.push(display)
                 }
             }
         }
 
-        if ( selection_OR_Group_Display_Entries.length === 1 && selection_AND_Group_Display_Entries.length > 0 ) {
+        if ( selection_OR_Group_Display_Entries__For_ModificationSelects.length === 1 && selection_AND_Group_Display_Entries__For_ModificationSelects.length > 0 ) {
             //  OR only has 1 entry so move to AND and delete OR
-            _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries })
-            selection_AND_Group_Display_Entries.push( selection_OR_Group_Display_Entries[ 0 ] )
-            selection_OR_Group_Display_Entries = undefined //  delete OR entry
+            _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries__For_ModificationSelects })
+            selection_AND_Group_Display_Entries__For_ModificationSelects.push( selection_OR_Group_Display_Entries__For_ModificationSelects[ 0 ] )
+            selection_OR_Group_Display_Entries__For_ModificationSelects = undefined //  delete OR entry
+        }
+
+        if ( selection_OR_Group_Display_Entries__For_ReporterIonSelections.length === 1 && selection_AND_Group_Display_Entries__For_ReporterIonSelections.length > 0 ) {
+            //  OR only has 1 entry so move to AND and delete OR
+            _add_separatorLabel_IfNeeded_To__selection_Group_Display_Entries_Local({ separatorString : AND_SEPARATOR_STRING, selection_Group_Display_Entries_Local: selection_AND_Group_Display_Entries__For_ReporterIonSelections })
+            selection_AND_Group_Display_Entries__For_ReporterIonSelections.push( selection_OR_Group_Display_Entries__For_ReporterIonSelections[ 0 ] )
+            selection_OR_Group_Display_Entries__For_ReporterIonSelections = undefined //  delete OR entry
         }
 
         //  Set to undefined if empty
-        if ( selection_OR_Group_Display_Entries && selection_OR_Group_Display_Entries.length === 0 ) {
-            selection_OR_Group_Display_Entries = undefined
+        if ( selection_OR_Group_Display_Entries__For_ModificationSelects && selection_OR_Group_Display_Entries__For_ModificationSelects.length === 0 ) {
+            selection_OR_Group_Display_Entries__For_ModificationSelects = undefined
         }
-        if ( selection_AND_Group_Display_Entries && selection_AND_Group_Display_Entries.length === 0 ) {
-            selection_AND_Group_Display_Entries = undefined
+        if ( selection_AND_Group_Display_Entries__For_ModificationSelects && selection_AND_Group_Display_Entries__For_ModificationSelects.length === 0 ) {
+            selection_AND_Group_Display_Entries__For_ModificationSelects = undefined
         }
-        if ( selection_NOT_Group_Display_Entries && selection_NOT_Group_Display_Entries.length === 0 ) {
-            selection_NOT_Group_Display_Entries = undefined
+        if ( selection_NOT_Group_Display_Entries__For_ModificationSelects && selection_NOT_Group_Display_Entries__For_ModificationSelects.length === 0 ) {
+            selection_NOT_Group_Display_Entries__For_ModificationSelects = undefined
+        }
+
+        //  Set to undefined if empty
+        if ( selection_OR_Group_Display_Entries__For_ReporterIonSelections && selection_OR_Group_Display_Entries__For_ReporterIonSelections.length === 0 ) {
+            selection_OR_Group_Display_Entries__For_ReporterIonSelections = undefined
+        }
+        if ( selection_AND_Group_Display_Entries__For_ReporterIonSelections && selection_AND_Group_Display_Entries__For_ReporterIonSelections.length === 0 ) {
+            selection_AND_Group_Display_Entries__For_ReporterIonSelections = undefined
+        }
+        if ( selection_NOT_Group_Display_Entries__For_ReporterIonSelections && selection_NOT_Group_Display_Entries__For_ReporterIonSelections.length === 0 ) {
+            selection_NOT_Group_Display_Entries__For_ReporterIonSelections = undefined
         }
     }
 
-    if ( ( ! selection_AND_Group_Display_Entries )
-        && ( ! selection_OR_Group_Display_Entries )
-        && ( ! selection_NOT_Group_Display_Entries )
+    if ( ( ! selection_AND_Group_Display_Entries__For_ModificationSelects )
+        && ( ! selection_OR_Group_Display_Entries__For_ModificationSelects )
+        && ( ! selection_NOT_Group_Display_Entries__For_ModificationSelects )
+        && ( ! selection_AND_Group_Display_Entries__For_ReporterIonSelections )
+        && ( ! selection_OR_Group_Display_Entries__For_ReporterIonSelections )
+        && ( ! selection_NOT_Group_Display_Entries__For_ReporterIonSelections )
         && ( ! selection_NOT_UnModified_Variable_Mods_Selected )
         && ( ! selection_NOT_UnModified_Open_Mods_Selected )
     ) {
@@ -325,13 +351,23 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
 
     return (
         <React.Fragment key={ _ROOT_REACT_ELEMENT_RETURNED__KEY }>
+            {/*Modifications*/}
             <CurrentFiltersDisplayBlock__Modifications_and_ReporterIons
-                selection_AND_Group_Display_Entries={ selection_AND_Group_Display_Entries }
-                selection_OR_Group_Display_Entries={ selection_OR_Group_Display_Entries }
-                selection_NOT_Group_Display_Entries={ selection_NOT_Group_Display_Entries }
+                selection_AND_Group_Display_Entries={ selection_AND_Group_Display_Entries__For_ModificationSelects }
+                selection_OR_Group_Display_Entries={ selection_OR_Group_Display_Entries__For_ModificationSelects }
+                selection_NOT_Group_Display_Entries={ selection_NOT_Group_Display_Entries__For_ModificationSelects }
 
                 selection_NOT_UnModified_Variable_Mods_Selected={ selection_NOT_UnModified_Variable_Mods_Selected }
                 selection_NOT_UnModified_Open_Mods_Selected={ selection_NOT_UnModified_Open_Mods_Selected }
+            />
+            {/*Reporter Ions*/}
+            <CurrentFiltersDisplayBlock__Modifications_and_ReporterIons
+                selection_AND_Group_Display_Entries={ selection_AND_Group_Display_Entries__For_ReporterIonSelections }
+                selection_OR_Group_Display_Entries={ selection_OR_Group_Display_Entries__For_ReporterIonSelections }
+                selection_NOT_Group_Display_Entries={ selection_NOT_Group_Display_Entries__For_ReporterIonSelections }
+
+                selection_NOT_UnModified_Variable_Mods_Selected={ undefined }
+                selection_NOT_UnModified_Open_Mods_Selected={ undefined }
             />
         </React.Fragment>
     );
@@ -380,23 +416,23 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
             {/*  Special text for "NOT" of Unmodified (Variable and/or Open Modifications)   */}
             { ( selection_NOT_UnModified_Variable_Mods_Selected || selection_NOT_UnModified_Open_Mods_Selected ) ? //  Filter Values "NOT" Unmodified entries
                 <div>
-                            <span>
-                                All peptides must contain
-                            </span>
+                    <span>
+                        All peptides must contain
+                    </span>
                     {(selection_NOT_UnModified_Variable_Mods_Selected) ?
                         <span>
-                                    &nbsp;a variable modification
-                                </span>
+                            &nbsp;a variable modification
+                        </span>
                         : null /* Display nothing */}
                     {(selection_NOT_UnModified_Variable_Mods_Selected && selection_NOT_UnModified_Open_Mods_Selected) ?
                         <span>
-                                    &nbsp;and
-                                </span>
+                            &nbsp;and
+                        </span>
                         : null /* Display nothing */}
                     {(selection_NOT_UnModified_Open_Mods_Selected) ?
                         <span>
-                                    &nbsp;an open modification
-                                </span>
+                            &nbsp;an open modification
+                        </span>
                         : null /* Display nothing */}
                 </div>
                 : null /* Display nothing */}

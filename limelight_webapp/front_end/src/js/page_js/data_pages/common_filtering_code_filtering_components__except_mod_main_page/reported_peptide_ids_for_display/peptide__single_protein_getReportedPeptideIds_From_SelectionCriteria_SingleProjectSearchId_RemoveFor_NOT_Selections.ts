@@ -21,22 +21,22 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
     {
         reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
         OR_AND_Results,    // OR and AND Selected values
-        NOT_Selection_Results,       // NOT Selected values to remove
+        NOT_Selection_Results_Array,       // NOT Selected values to remove
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     } : {
         reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: Array<number>
         OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
-        NOT_Selection_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
+        NOT_Selection_Results_Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId:
             CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 ) : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
 
+    const promises: Array<Promise<void>> = []
+
     //  Get data for processing
 
     let psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder = undefined;
-
-    const promises: Array<Promise<void>> = [];
 
     {  // Get psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder
 
@@ -84,8 +84,8 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
 
         const result = _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections_AfterGetData({
             reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-            OR_AND_Results: OR_AND_Results,    // ANY and AND Selected values
-            NOT_Selection_Results,       // NOT Selected values to remove
+            OR_AND_Results,    // ANY and AND Selected values
+            NOT_Selection_Results_Array,       // NOT Selected values to remove
             psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
         });
 
@@ -104,8 +104,8 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
                 try {
                     const result = _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections_AfterGetData({
                         reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                        OR_AND_Results: OR_AND_Results,    // ANY and AND Selected values
-                        NOT_Selection_Results: NOT_Selection_Results,       // NOT Selected values to remove
+                        OR_AND_Results,    // ANY and AND Selected values
+                        NOT_Selection_Results_Array,       // NOT Selected values to remove
                         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
                     });
 
@@ -134,12 +134,12 @@ const _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_Sing
     {
         reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
         OR_AND_Results,    // ANY and AND Selected values
-        NOT_Selection_Results,       // NOT Selected values to remove
+        NOT_Selection_Results_Array,       // NOT Selected values to remove
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
     } : {
         reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: Array<number>
         OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
-        NOT_Selection_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
+        NOT_Selection_Results_Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
     }
 ) : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS {
@@ -180,82 +180,104 @@ const _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_Sing
         }
     }
 
-    const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
-        noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: false
-    });
+    let resultData: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
 
     const reportedPeptideIds_Copy = Array.from(peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS_ForProcessing.get_Entries_Keys_ReportedPeptideIds());
 
-    for (const reportedPeptideId of reportedPeptideIds_Copy) {
+    //  Initialize Input.  Will be updated at end of for (...NOT_Selection_Results_Array) to be current 'resultData'
+    let inputData = peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS_ForProcessing
 
-        //  main Entry (from 'ANY'/'OR' or 'ALL'/'AND'
-        const entry_MAIN_Selection_For_reportedPeptideId = peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS_ForProcessing.get_Entry_For_ReportedPeptideId( reportedPeptideId )
+    //  NOT_Selection_Results_Array:  Currently entries for NOT Modifications and NOT reporter Ions
 
-        const entry_NOT_Selection_For_reportedPeptideId =
-            NOT_Selection_Results.get_Entry_For_ReportedPeptideId( reportedPeptideId );
+    for ( const NOT_Selection_Results of NOT_Selection_Results_Array ) {
 
-        if (! entry_NOT_Selection_For_reportedPeptideId ) {
+        //  Reset for next trip through loop.   Input is updated at end of loop
 
-            //  Not found in "NOT"/"EXCLUDE" selection so add to result and skip to next entry
+        resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
+            noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: false
+        });
 
-            resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(entry_MAIN_Selection_For_reportedPeptideId);
+        for (const reportedPeptideId of reportedPeptideIds_Copy) {
 
-            continue;  // EARLY CONTINUE
-        }
+            //  main Entry (from 'ANY'/'OR' or 'ALL'/'AND'
+            const entry_MAIN_Selection_For_reportedPeptideId = inputData.get_Entry_For_ReportedPeptideId( reportedPeptideId )
 
-        if ( ! entry_NOT_Selection_For_reportedPeptideId.psmIds_Include ) {
+            if ( ! entry_MAIN_Selection_For_reportedPeptideId ) {
 
-            //  Found in "NOT"/"EXCLUDE" selection
+                //  reportedPeptideId No longer in input so skip
 
-            //  "NOT"/"EXCLUDE" entry does not have 'psmIds_Include' property so Excluding whole entry for reportedPeptideId so skip for whole reportedPeptideId
-
-            continue;  // EARLY CONTINUE
-        }
-
-        //  Excluding only some of the PSM Ids so remove the specified PSM Ids
-
-        //  result_psmIds_Include  will in the end be the PSM IDs after removing the "NOT"/"EXCLUDE" PSM IDs
-
-        let result_psmIds_Include: Set<number> = undefined;
-
-        if ( entry_MAIN_Selection_For_reportedPeptideId.psmIds_Include ) {
-
-            //  Have MAIN entry PSM Ids so copy to result Set to allow deletions
-
-            result_psmIds_Include = new Set( entry_MAIN_Selection_For_reportedPeptideId.psmIds_Include )
-
-        } else {
-
-            //  Not Have MAIN entry PSM Ids so create new Set with All PsmIds for reportedPeptideId at current PSM filters to allow deletions
-
-            const psmIdsForReportedPeptideId = psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(reportedPeptideId);
-            if (!psmIdsForReportedPeptideId) {
-                const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId
-                console.warn(msg)
-                throw Error(msg)
+                continue;  // EARLY CONTINUE
             }
-            result_psmIds_Include = new Set( psmIdsForReportedPeptideId );
+
+
+            const entry_NOT_Selection_For_reportedPeptideId =
+                NOT_Selection_Results.get_Entry_For_ReportedPeptideId( reportedPeptideId );
+
+            if (! entry_NOT_Selection_For_reportedPeptideId ) {
+
+                //  Not found in "NOT"/"EXCLUDE" selection so add to result and skip to next entry
+
+                resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(entry_MAIN_Selection_For_reportedPeptideId);
+
+                continue;  // EARLY CONTINUE
+            }
+
+            if ( ! entry_NOT_Selection_For_reportedPeptideId.psmIds_Include ) {
+
+                //  Found in "NOT"/"EXCLUDE" selection
+
+                //  "NOT"/"EXCLUDE" entry does not have 'psmIds_Include' property so Excluding whole entry for reportedPeptideId so skip for whole reportedPeptideId
+
+                continue;  // EARLY CONTINUE
+            }
+
+            //  Excluding only some of the PSM Ids so remove the specified PSM Ids
+
+            //  result_psmIds_Include  will in the end be the PSM IDs after removing the "NOT"/"EXCLUDE" PSM IDs
+
+            let result_psmIds_Include: Set<number> = undefined;
+
+            if ( entry_MAIN_Selection_For_reportedPeptideId.psmIds_Include ) {
+
+                //  Have MAIN entry PSM Ids so copy to result Set to allow deletions
+
+                result_psmIds_Include = new Set( entry_MAIN_Selection_For_reportedPeptideId.psmIds_Include )
+
+            } else {
+
+                //  Not Have MAIN entry PSM Ids so create new Set with All PsmIds for reportedPeptideId at current PSM filters to allow deletions
+
+                const psmIdsForReportedPeptideId = psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(reportedPeptideId);
+                if (!psmIdsForReportedPeptideId) {
+                    const msg = "psmIdsForReportedPeptideIdMap.get( reportedPeptideId ) NOT return a value. reportedPeptideId: " + reportedPeptideId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+                result_psmIds_Include = new Set( psmIdsForReportedPeptideId );
+            }
+
+            for ( const entry_NOT_psmId of entry_NOT_Selection_For_reportedPeptideId.psmIds_Include ) {
+                result_psmIds_Include.delete( entry_NOT_psmId );
+            }
+
+            if ( result_psmIds_Include.size === 0 ) {
+
+                //  NO PSM Ids left to be included so skip whole reported peptide id
+
+                continue;  // EARLY CONTINUE
+
+            } else {
+
+                //  Add to result with result PSM IDs
+
+                const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
+                    reportedPeptideId, psmIds_Include: result_psmIds_Include
+                });
+                resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(entry);
+            }
         }
 
-        for ( const entry_NOT_psmId of entry_NOT_Selection_For_reportedPeptideId.psmIds_Include ) {
-            result_psmIds_Include.delete( entry_NOT_psmId );
-        }
-
-        if ( result_psmIds_Include.size === 0 ) {
-
-            //  NO PSM Ids left to be included so skip whole reported peptide id
-
-            continue;  // EARLY CONTINUE
-
-        } else {
-
-            //  Add to result with result PSM IDs
-
-            const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
-                reportedPeptideId, psmIds_Include: result_psmIds_Include
-            });
-            resultData.set_Entry_Using_entry_reportedPeptideId_AsKey(entry);
-        }
+        inputData = resultData;  // Move output to input for next time through the loop
     }
 
     return resultData;
