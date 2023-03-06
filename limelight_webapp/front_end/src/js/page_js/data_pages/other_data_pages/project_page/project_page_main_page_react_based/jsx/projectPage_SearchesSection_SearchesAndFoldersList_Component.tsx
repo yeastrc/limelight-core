@@ -108,6 +108,7 @@ export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_
  */
 export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props {
     projectIdentifier : string
+    show_SearchTag_Categories: boolean
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
     searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
     search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
@@ -323,6 +324,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             const searchDisplayListEntry = (
                 <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                     key={searchData.projectSearchId}
+
+                    show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
+
                     expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
                     projectIdentifier={ this.props.projectIdentifier }
                     searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
@@ -372,6 +376,8 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                         folderEntry={folderEntry}
                         expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
 
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
+
                         searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                         search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
                         projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering={ this.props.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering }
@@ -417,6 +423,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                     search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
                     searchDisplayListItem={searchData}
+
+                    show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
+
                     selected={selected}
                     showSeparatorBelow={true}
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
@@ -469,6 +478,8 @@ type SearchEntry_In_Folder_Selected_DeSelected_Callback_Type =
 interface FolderEntry_Props {
     projectIdentifier : string
     folderEntry : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
+
+    show_SearchTag_Categories: boolean
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
 
@@ -672,6 +683,9 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                                 key={searchData.projectSearchId}
                                 projectIdentifier={ this.props.projectIdentifier }
                                 searchDisplayListItem={searchData}
+
+                                show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
+
                                 searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                                 search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root }
                                 expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }

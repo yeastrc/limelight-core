@@ -50,6 +50,9 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearc
  *
  */
 interface Search_Tags_DisplaySearchTags_UnderSearchName_Component_Props {
+
+    show_SearchTag_Categories: boolean
+
     searchTagIds_OnSearch_Set: ReadonlySet<number>
     searchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
     addTag_Clicked_Callback: () => void         //  Not set if not project owner
@@ -118,6 +121,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
         const categoryMap_Key_Id: Map<number, INTERNAL__SingleSearchTagCategory_Entry> = new Map()
         const searchTags_Uncategorized_Array_In_DisplayOrder: Array<INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry> = []
+        const searchTags_All_Array_In_DisplayOrder: Array<INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry> = []
 
         for ( const category of props.searchTagData_Root.searchTagCategory_Array ) {
             if ( categoryMap_Key_Id.has( category.category_id ) ) {
@@ -143,6 +147,8 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             if ( tag_uncategorized ) {
                 searchTags_Uncategorized_Array_In_DisplayOrder.push({ tag_Entry: tag })
             }
+
+            searchTags_All_Array_In_DisplayOrder.push({ tag_Entry: tag })
         }
 
         const searchTagCategory_Array_In_DisplayOrder: Array<INTERNAL__SingleSearchTagCategory_Entry> =
@@ -166,8 +172,12 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam(a.tag_Entry.tagString, b.tag_Entry.tagString)
         })
 
+        searchTags_All_Array_In_DisplayOrder.sort( (a, b) => {
+            return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam(a.tag_Entry.tagString, b.tag_Entry.tagString)
+        })
+
         const searchTagData_Display_Root: INTERNAL__SearchTagData_Display_Root = {
-            searchTagCategory_Array_In_DisplayOrder, searchTags_Uncategorized_Array_In_DisplayOrder
+            searchTagCategory_Array_In_DisplayOrder, searchTags_Uncategorized_Array_In_DisplayOrder, searchTags_All_Array_In_DisplayOrder
         }
 
         return { searchTagData_Display_Root }
@@ -189,12 +199,16 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
         let uncategorizedSearchTags_Element: JSX.Element = null;
 
+        let searchTagsOnly_Element: JSX.Element = null
+
         let add_Change_Tags_Element: JSX.Element
 
         if ( this.props.searchTagIds_OnSearch_Set && this.props.searchTagIds_OnSearch_Set.size > 0 ) {
             //  Have Search Tags on This Search
 
-            {
+            if ( this.props.show_SearchTag_Categories ) {
+                //  Showing the Search Categories
+
                 for ( const categoryEntry of this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
 
                     let searchHasAtLeastOneTagInThisCategory = false;
@@ -206,6 +220,8 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                             break;
                         }
                     }
+
+                    //    Comment out to show categories with no search tags
                     // if ( ! searchHasAtLeastOneTagInThisCategory ) {
                     //     //  Search has NO tag ids in this category so skip category
                     //     continue; // EARLY CONTINUE
@@ -252,39 +268,63 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
                     categoriesAndTheirSearchTags_Elements.push(element)
                 }
-            }
+                {
+                    if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
 
-            {
-                if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder.length > 0 ) {
+                        const searchTags_Elements: Array<JSX.Element> = [];
 
-                    const searchTags_Elements: Array<JSX.Element> = [];
+                        for ( const tagEntry of this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder ) {
 
-                    for ( const tagEntry of this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder ) {
+                            if ( ! this.props.searchTagIds_OnSearch_Set.has( tagEntry.tag_Entry.tagId ) ) {
+                                //  Search does not have this tag id so skip
+                                continue;
+                            }
 
-                        if ( ! this.props.searchTagIds_OnSearch_Set.has( tagEntry.tag_Entry.tagId ) ) {
+                            const tagElement = this._render_SingleSearchTag(tagEntry);
+                            searchTags_Elements.push(tagElement)
+                        }
+
+                        if ( searchTags_Elements.length > 0 ) {
+                            uncategorizedSearchTags_Element = (
+                                <React.Fragment>
+                                    {/*  column 1:  Category Label  */}
+                                    <div style={ categoryLabel_Style }>
+                                        Uncategorized:
+                                    </div>
+                                    {/*  column 2:  Search Tags  */}
+                                    <div>
+                                        { searchTags_Elements }
+                                    </div>
+                                </React.Fragment>
+                            )
+                        }
+
+                    }
+                }
+
+            } else {
+                //  NOT showing Categories.  ONLY showing search tags
+
+                if ( this.state.searchTagData_Display_Root.searchTags_All_Array_In_DisplayOrder.length > 0 ) {
+
+                    const searchTag_ElementArray: Array<JSX.Element> = []
+
+                    for (const tagEntry of this.state.searchTagData_Display_Root.searchTags_All_Array_In_DisplayOrder) {
+
+                        if (!this.props.searchTagIds_OnSearch_Set.has(tagEntry.tag_Entry.tagId)) {
                             //  Search does not have this tag id so skip
                             continue;
                         }
 
                         const tagElement = this._render_SingleSearchTag(tagEntry);
-                        searchTags_Elements.push(tagElement)
+                        searchTag_ElementArray.push(tagElement)
                     }
 
-                    if ( searchTags_Elements.length > 0 ) {
-                        uncategorizedSearchTags_Element = (
-                            <React.Fragment>
-                                {/*  column 1:  Category Label  */}
-                                <div style={ categoryLabel_Style }>
-                                    Uncategorized:
-                                </div>
-                                {/*  column 2:  Search Tags  */}
-                                <div>
-                                    { searchTags_Elements }
-                                </div>
-                            </React.Fragment>
-                        )
-                    }
-
+                    searchTagsOnly_Element = (
+                        <div>
+                            { searchTag_ElementArray }
+                        </div>
+                    )
                 }
             }
 
@@ -322,17 +362,32 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             }
         }
 
+        if ( this.props.show_SearchTag_Categories ) {
+
+            return (  //  EARLY RETURN
+
+                <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }>
+                    {/*  2 Column Grid.  Column 1: Category Label or 'Uncategorized'.  Column 2: Tags  */}
+
+                    { categoriesAndTheirSearchTags_Elements.length > 0 ? (
+
+                        categoriesAndTheirSearchTags_Elements
+
+                    ) : null }
+
+                    { uncategorizedSearchTags_Element }
+                    { add_Change_Tags_Element }
+                </div>
+            )
+        }
+
+        //  NOT show categories
+
         return (
-            <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }>
-                {/*  2 Column Grid.  Column 1: Category Label or 'Uncategorized'.  Column 2: Tags  */}
 
-                { categoriesAndTheirSearchTags_Elements.length > 0 ? (
-
-                    categoriesAndTheirSearchTags_Elements
-
-                ) : null }
-
-                { uncategorizedSearchTags_Element }
+            <div >
+                {/*  All tags.  No Categories  */}
+                { searchTagsOnly_Element }
                 { add_Change_Tags_Element }
             </div>
         )
@@ -372,6 +427,8 @@ class INTERNAL__SearchTagData_Display_Root {
     searchTagCategory_Array_In_DisplayOrder: Array<INTERNAL__SingleSearchTagCategory_Entry>
 
     searchTags_Uncategorized_Array_In_DisplayOrder: Array<INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry>
+
+    searchTags_All_Array_In_DisplayOrder: Array<INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry>
 }
 
 class INTERNAL__SingleSearchTagCategory_Entry {

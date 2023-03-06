@@ -32,6 +32,7 @@ import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
+import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 
 /////
 
@@ -125,6 +126,7 @@ interface Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayCompone
 interface Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent_State {
 
     show_Saving_Message?: boolean
+    show_SearchTag_Categories?: boolean
     force_Rerender?: object
 }
 
@@ -221,7 +223,9 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
             this._search_Tags_SelectSearchTags_Component_SearchTagData_Root = search_Tags_SelectSearchTags_Component_SearchTagData_Root;
         }
 
-        this.state = { force_Rerender : {} };
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
+        this.state = { show_SearchTag_Categories, force_Rerender : {} };
     }
 
     /**
@@ -433,6 +437,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                         searchDisplayListItem={searchEntry}
                         searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                         selected={selected}
+                        show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                         showSeparatorBelow={showSeparatorBelow}
                         search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this._search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                         callbackOn_entry_Clicked={ callbackOn_entry_Clicked }
@@ -562,6 +567,20 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                              style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
                             // style={ { padding : 6 } }
                         >
+                            <div style={ { marginBottom: 10 } }>
+                                 <span
+                                     style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                                 >Verbose view: </span>
+                                <span>
+                                    <input
+                                        type="checkbox"
+                                        checked={ this.state.show_SearchTag_Categories }
+                                        onChange={ event => {
+                                            this.setState({ show_SearchTag_Categories: event.target.checked })
+                                        }}
+                                    />
+                                </span>
+                            </div>
 
                             <div>
                                 <span
@@ -747,6 +766,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 interface SearchEntry_Props {
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     selected : boolean
+    show_SearchTag_Categories: boolean
     showSeparatorBelow : boolean
     search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
     searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
@@ -808,6 +828,7 @@ class SearchEntryComponent extends React.Component< SearchEntry_Props, SearchEnt
                     <Search_Tags_DisplaySearchTags_UnderSearchName_Component
                         searchTagIds_OnSearch_Set={ this.props.searchDisplayListItem.searchTagIds_Set }
                         searchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root  }
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         addTag_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }
                         changeTags_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }
                     />

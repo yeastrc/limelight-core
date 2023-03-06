@@ -57,10 +57,20 @@ import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
+import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 
+
+//  Put here since used in multiple places
+
+//  Used below on all searches
+const _Verbose_View_ContainerDiv_MarginBottom_AllSearches = 0
+//  Added only on Multiple Searches
+const _Verbose_View_ContainerDiv_MarginBottom_MultipleSearchAddition = 4
+
+const _Verbose_View_ContainerSpan_Style: React.CSSProperties = { whiteSpace: "nowrap" }
 
 /**
- * Internal class for function passed to child components
+ * class for function passed to child components
  */
 export class SearchDetailsAndFilterBlock_UserInputInOverlay_OpenUserChangeFiltersOverlay_Params {
     projectSearchId_UserClickedIn : number
@@ -357,7 +367,7 @@ interface SingleSearch_Only_Root_Props {
  */
 interface SingleSearch_Only_Root_State {
 
-    placeholder?
+    show_SearchTag_Categories?: boolean
 }
 
 /**
@@ -371,7 +381,9 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
     constructor(props : SingleSearch_Only_Root_Props) {
         super(props);
 
-        this.state = {};
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
+        this.state = { show_SearchTag_Categories };
     }
 
     ////////////////////////////////////////
@@ -429,12 +441,38 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                         <div>
                             Search:
                         </div>
+                    </td>
+                    <td colSpan={ 2 }>
+
+                        <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches } }>
+                             <span
+                                 style={ _Verbose_View_ContainerSpan_Style }
+                             >Verbose view: </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    checked={ this.state.show_SearchTag_Categories }
+                                    onChange={ event => {
+                                        const show_SearchTag_Categories = event.target.checked
+
+                                        this.setState({ show_SearchTag_Categories })
+
+                                        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
+                                    }}
+                                />
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr >
+                    <td style={ { verticalAlign : "top" } }>
                         { changeSearchesJSX }
                     </td>
                     <SearchNameAndDetails_Root //   Inserts 2 columns in table
                         propValue={ this.props.propValue }
                         projectSearchId={ projectSearchId }
                         multipleSearchEntry={ false }
+                        show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                     />
                 </tr>
                 <FiltersFor_A_Search__PSM_Peptide_Protein_Root
@@ -479,7 +517,7 @@ interface MultipleSearch_Only_Root_Props {
  */
 interface MultipleSearch_Only_Root_State {
 
-    placeholder?
+    show_SearchTag_Categories?: boolean
 }
 
 /**
@@ -493,7 +531,9 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
     constructor(props : MultipleSearch_Only_Root_Props) {
         super(props);
 
-        this.state = {};
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
+        this.state = { show_SearchTag_Categories };
     }
 
     ////////////////////////////////////////
@@ -550,6 +590,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                                 propValue={ this.props.propValue }
                                 projectSearchId={ projectSearchId }
                                 multipleSearchEntry={ true }
+                                show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                             />
                         </tr>
 
@@ -614,6 +655,26 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                         { reorderSearchesJSX }
                     </td>
                     <td style={ { verticalAlign : "top" } }>
+
+                        <div style={ { marginBottom: _Verbose_View_ContainerDiv_MarginBottom_AllSearches + _Verbose_View_ContainerDiv_MarginBottom_MultipleSearchAddition } }>
+                             <span
+                                 style={ _Verbose_View_ContainerSpan_Style }
+                             >Verbose view: </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    checked={ this.state.show_SearchTag_Categories }
+                                    onChange={ event => {
+                                        const show_SearchTag_Categories = event.target.checked
+
+                                        this.setState({ show_SearchTag_Categories })
+
+                                        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
+                                    }}
+                                />
+                            </span>
+                        </div>
+
                         { singleSearchesInsideSearchesBlock }
                     </td>
                 </tr>
@@ -734,6 +795,7 @@ interface SearchNameAndDetails_Root_Props {
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
     projectSearchId : number
     multipleSearchEntry : boolean
+    show_SearchTag_Categories: boolean
 }
 
 /**
@@ -1077,6 +1139,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                                 //  Have Search Tags for Search
                                 <div>
                                     <Search_Tags_DisplaySearchTags_UnderSearchName_Component
+                                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                                         searchTagIds_OnSearch_Set={ searchTagIds_OnSearch_Set }
                                         searchTagData_Root={ search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root  }
                                         addTag_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }

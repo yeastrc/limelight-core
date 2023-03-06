@@ -38,6 +38,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry,
     Search_Tags_SelectSearchTags_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
+import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 
 /**
  *
@@ -56,6 +57,8 @@ export interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFil
 interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_State {
 
     show_LoadingData_Message?: boolean
+
+    show_SearchTag_Categories?: boolean
 
     scanFile_Entry_CombinedEntries_Array?: Array<ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry >
     runFeatureDetection_IsFullyConfigured?: boolean
@@ -76,8 +79,11 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     constructor(props: ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props) {
         super(props)
 
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
         this.state = {
-            show_LoadingData_Message: true
+            show_LoadingData_Message: true,
+            show_SearchTag_Categories
         }
     }
 
@@ -135,6 +141,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             runFeatureDetection_IsFullyConfigured={ this.state.runFeatureDetection_IsFullyConfigured }
                             projectIdentifier={ this.props.projectIdentifier }
                             projectIsLocked={ this.props.projectIsLocked }
+                            show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                             get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                             projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
@@ -157,10 +164,32 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                         No scan files in this project.
                     </div>
                 ) : (
-                    <div style={ { display: "grid", gridTemplateColumns: "16px auto" } }>
-                        {/*  2 Column Grid  */}
-                        { scanFile_Element_List }
-                    </div>
+                    <React.Fragment>
+
+                        <div style={ { marginBottom: 10 } }>
+                             <span
+                                 style={ { whiteSpace: "nowrap", fontSize: 18, fontWeight: "bold" } }
+                             >Verbose view: </span>
+                            <span>
+                                <input
+                                    type="checkbox"
+                                    checked={ this.state.show_SearchTag_Categories }
+                                    onChange={ event => {
+                                        const show_SearchTag_Categories = event.target.checked
+
+                                        this.setState({ show_SearchTag_Categories })
+
+                                        Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
+                                    }}
+                                />
+                            </span>
+                        </div>
+
+                        <div style={ { display: "grid", gridTemplateColumns: "16px auto" } }>
+                            {/*  2 Column Grid  */}
+                            { scanFile_Element_List }
+                        </div>
+                    </React.Fragment>
                 ) }
             </div>
         )
@@ -180,6 +209,7 @@ interface ScanFileEntry_Component_Props {
     runFeatureDetection_IsFullyConfigured: boolean
     projectIdentifier : string
     projectIsLocked : boolean
+    show_SearchTag_Categories: boolean
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
@@ -403,6 +433,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 scanFile_Entry={ this.props.scanFile_Entry }
                                 projectIdentifier={ this.props.projectIdentifier }
                                 projectIsLocked={ this.props.projectIsLocked }
+                                show_SearchTag_Categories={ this.props.show_SearchTag_Categories  }
                                 get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                                 projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
@@ -432,6 +463,9 @@ interface ScanFile_Details_Component_Props {
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     projectIdentifier : string
     projectIsLocked : boolean
+
+    show_SearchTag_Categories: boolean
+
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
@@ -498,6 +532,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
             || prevProps.projectIdentifier === this.props.projectIdentifier
             || prevProps.projectIsLocked === this.props.projectIsLocked
             || prevProps.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions === this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
+            || prevProps.show_SearchTag_Categories === this.props.show_SearchTag_Categories
             || prevState.scanFile_Details_FromServer_Root !== this.state.scanFile_Details_FromServer_Root
             // || prevState.forceRerender !== this.state.forceRerender
         ) {
@@ -693,6 +728,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                         search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                         expand_All_Folders__ShowSearchDetailsTo_Global_Force={ null }
                         selected={ null }
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         showSeparatorBelow={ showSeparatorBelow }
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                         projectPage_SearchesAdmin={ null }

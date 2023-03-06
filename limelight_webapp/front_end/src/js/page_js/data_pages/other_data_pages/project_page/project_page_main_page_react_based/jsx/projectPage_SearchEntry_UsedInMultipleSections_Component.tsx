@@ -53,6 +53,9 @@ export type ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSear
 interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
     projectIdentifier : string
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
+
+    show_SearchTag_Categories: boolean
+
     searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
     search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root: Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
@@ -477,6 +480,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             searchTags_Block = (
                 <div>
                     <Search_Tags_DisplaySearchTags_UnderSearchName_Component
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         searchTagIds_OnSearch_Set={ searchDisplayListItem.searchTagIds_Set }
                         searchTagData_Root={ this.props.search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root  }
                         addTag_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }

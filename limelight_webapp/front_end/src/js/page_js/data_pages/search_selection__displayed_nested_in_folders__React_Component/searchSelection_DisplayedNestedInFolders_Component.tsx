@@ -34,6 +34,7 @@ import {
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
+import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 
 
 
@@ -155,6 +156,8 @@ interface SearchSelection_DisplayedNestedInFolders_Component_State {
     showNoSearchesMessage_NoSearchesLoadedFromServer?: boolean
     showNoSearchesMessage_NoSearches_AfterPossibleFiltering?: boolean
 
+    show_SearchTag_Categories?: boolean
+
     force_Rerender?: object
 }
 
@@ -218,10 +221,13 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
             show_LoadingData_Message = false
         }
 
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
         this.state = {
             search_Tags_SelectSearchTags_Component_SearchTagData_Root, //  Populated here if props.searchesSearchTagsFolders_Result_Root is populated
             show_LoadingData_Message,
-            showNoSearchesMessage_NoSearches_AfterPossibleFiltering: false
+            showNoSearchesMessage_NoSearches_AfterPossibleFiltering: false,
+            show_SearchTag_Categories
         };
     }
 
@@ -493,6 +499,8 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                         key={folderEntry.folderId}
                         folderEntry={folderEntry}
 
+                        show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
+
                         //  Experiment ONLY:  The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
                         projectSearchIds_ContainedInAllOtherExperimentCells={ this.props.projectSearchIds_ContainedInAllOtherExperimentCells }
 
@@ -539,6 +547,8 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                     //  Experiment ONLY:  The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
                     projectSearchIds_ContainedInAllOtherExperimentCells={ this.props.projectSearchIds_ContainedInAllOtherExperimentCells }
 
+                    show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
+
                     searchesSearchTagsFolders_Result_Root={ this._searchesSearchTagsFolders_Result_Root }
                     search_Tags_SelectSearchTags_Component_SearchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                     selected={selected}
@@ -554,6 +564,20 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                 // style={ { padding : 6 } }
             >
 
+                <div style={ { marginBottom: 10 } }>
+                     <span
+                         style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                     >Verbose view: </span>
+                    <span>
+                        <input
+                            type="checkbox"
+                            checked={ this.state.show_SearchTag_Categories }
+                            onChange={ event => {
+                                this.setState({ show_SearchTag_Categories: event.target.checked })
+                            }}
+                        />
+                    </span>
+                </div>
                 <div>
                     <span
                         style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
@@ -723,6 +747,7 @@ interface SearchEntry_Props {
     searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
     search_Tags_SelectSearchTags_Component_SearchTagData_Root: Search_Tags_SelectSearchTags_Component_SearchTagData_Root
     selected : boolean
+    show_SearchTag_Categories: boolean
     showSeparatorBelow : boolean
     callbackOn_Search_Selection_Changed: Internal__Callback_From_SearchEntry_On_Selection_Changed
 }
@@ -881,6 +906,7 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             searchTags_Block = (
                 <div>
                     <Search_Tags_DisplaySearchTags_UnderSearchName_Component
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         searchTagIds_OnSearch_Set={ this.props.searchDisplayListItem.searchTagIds_Set }
                         searchTagData_Root={ this.props.search_Tags_SelectSearchTags_Component_SearchTagData_Root  }
                         addTag_Clicked_Callback={ add_Change_SearchTags_Clicked_BindThis }
@@ -943,6 +969,8 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
  */
 interface FolderEntry_Props {
     folderEntry: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
+
+    show_SearchTag_Categories: boolean
 
     //  Experiment ONLY:  The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
     projectSearchIds_ContainedInAllOtherExperimentCells : Set<number>
@@ -1051,6 +1079,7 @@ class Internal_Component__FolderEntry extends React.Component< FolderEntry_Props
                         searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                         search_Tags_SelectSearchTags_Component_SearchTagData_Root={ this.props.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                         selected={selected}
+                        show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         showSeparatorBelow={ showSeparatorBelow }
                         callbackOn_Search_Selection_Changed={this.props.callbackOn_Search_Selection_Changed }
                     />

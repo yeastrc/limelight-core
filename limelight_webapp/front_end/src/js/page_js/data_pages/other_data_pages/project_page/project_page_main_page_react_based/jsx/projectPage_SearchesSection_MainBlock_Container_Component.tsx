@@ -39,6 +39,7 @@ import {
 import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet";
 import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
+import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 
 /**
  *
@@ -73,6 +74,8 @@ interface ProjectPage_SearchesSection_MainBlock_Component_State {
 
     showNoSearchesMessage_NoSearchesLoadedFromServer?: boolean
     showNoSearchesMessage_NoSearches_AfterPossibleFiltering?: boolean
+
+    show_SearchTag_Categories: boolean
 
     force_Rerender?: object
 }
@@ -130,6 +133,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             }
         }
 
+        const show_SearchTag_Categories = Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.get_Value()
+
         this.state = {
             selected_Searches_Data_Object: null, // Nothing selected if null
             expand_All_Folders__ShowSearchDetailsTo_Global_Force: null,
@@ -138,7 +143,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             show_LoadingMessage_InitialLoad: true,
             show_UpdatingMessage: false,
             showNoSearchesMessage_NoSearchesLoadedFromServer: false,
-            showNoSearchesMessage_NoSearches_AfterPossibleFiltering: false
+            showNoSearchesMessage_NoSearches_AfterPossibleFiltering: false,
+            show_SearchTag_Categories
         }
     }
 
@@ -806,6 +812,29 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                     <div style={ { marginBottom: 10 } }>
 
+                        { ( ! this.state.showNoSearchesMessage_NoSearchesLoadedFromServer ) ? (
+
+                                <div style={ { marginBottom: 10 } }>
+                                     <span
+                                         style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                                     >Verbose view: </span>
+                                    <span>
+                                        <input
+                                            type="checkbox"
+                                            checked={ this.state.show_SearchTag_Categories }
+                                            onChange={ event => {
+                                                const show_SearchTag_Categories = event.target.checked
+
+                                                this.setState({ show_SearchTag_Categories })
+
+                                                Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage.save_Value(show_SearchTag_Categories)
+                                            }}
+                                        />
+                                    </span>
+                                </div>
+
+                        ) : null }
+
                         {/*  Filter Searches: User Input: Filter On search name, search id, and search tags  */}
 
                         { ( ! this.state.showNoSearchesMessage_NoSearchesLoadedFromServer ) ? (
@@ -975,6 +1004,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                             <ProjectPage_SearchesSection_SearchesAndFoldersList_Component
                                 projectIdentifier={ this.props.projectIdentifier }
+                                show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                                 searchesSearchTagsFolders_Result_Root={ this._searchesSearchTagsFolders_Result_Root }
                                 search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                 projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering={ this.state.projectSearchIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering }   //  null if no filtering
