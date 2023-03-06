@@ -47,6 +47,11 @@ import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "pa
 import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {Peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ModificationSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_ANY_OR_Selections__For_ModificationSelections";
 import {Peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ReporterIonSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_For_ANY_OR_Selections__For_ReporterIonSelections";
+import {
+    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main,
+    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn,
+    Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_DataClasses";
 
 
 /////////   Returned Classes
@@ -463,17 +468,22 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      *
      */
     peptide__single_protein_getReportedPeptideIdsForDisplay_SingleProjectSearchId(
-        functionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+        {
+            main_FunctionParams, reportedPeptideIds_Override__FromFirstFilteringRun
+        } : {
+            main_FunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
 
+            reportedPeptideIds_Override__FromFirstFilteringRun: Array<number>  //  Override reported peptide ids used as starting point for filtering
+        }
     ): GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
 
             //  !!!!!!!!!!  TODO   WHAT IS THIS,   Likely an optimization on Single Protein Overlay when user enters sequence that is not in the protein
 
-        if ((!functionParams.not_filtered_position_modification_selections)
-            && functionParams.userSearchString_LocationsOn_ProteinSequence_Root
-            && (!functionParams.userSearchString_LocationsOn_ProteinSequence_Root.noUserSearchString)
-            && ((!functionParams.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries)
-                || functionParams.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries.length === 0)) {
+        if ((!main_FunctionParams.not_filtered_position_modification_selections)
+            && main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root
+            && (!main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root.noUserSearchString)
+            && ((!main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries)
+                || main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root.userSearchString_LocationsOn_ProteinSequence_Entries.length === 0)) {
             //  Have User Protein Sequence Search String but it is not found in the protein sequence
             //  Return empty array
             return {    // EARLY RETURN
@@ -486,17 +496,57 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             };
         }
 
+        //   Use passed in reported peptide ids override if provided
+
+        if ( reportedPeptideIds_Override__FromFirstFilteringRun ) {
+
+            const reportedPeptideIds_ProteinId_Params_PassedIn = new Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn({
+                reportedPeptideIds_StartingPointForFiltering: reportedPeptideIds_Override__FromFirstFilteringRun,
+                proteinSequenceVersionId: undefined,
+                reportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum:
+                Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum.OTHER_FILTERED__FROM_FIRST_FILTERING_RUN
+            })
+
+            const filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main = {
+
+                not_filtered_position_modification_selections: main_FunctionParams.not_filtered_position_modification_selections,
+                dataPage_common_Flags_SingleSearch: main_FunctionParams.dataPage_common_Flags_SingleSearch,
+
+                reportedPeptideIds_ProteinId_Params_PassedIn,
+
+                searchSubGroup_Ids_Selected: main_FunctionParams.searchSubGroup_Ids_Selected,
+                modificationMass_UserSelections_StateObject: main_FunctionParams.modificationMass_UserSelections_StateObject,
+                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: main_FunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                reporterIonMass_UserSelections_StateObject: main_FunctionParams.reporterIonMass_UserSelections_StateObject,
+                scanFilenameId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+                scan_RetentionTime_MZ_UserSelection_StateObject: main_FunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
+                peptideUnique_UserSelection_StateObject: main_FunctionParams.peptideUnique_UserSelection_StateObject,
+                psm_Charge_Filter_UserSelection_StateObject : main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject,
+                psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : main_FunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
+                peptideSequence_UserSelections_StateObject: main_FunctionParams.peptideSequence_UserSelections_StateObject,
+                peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
+                proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
+                userSearchString_LocationsOn_ProteinSequence_Root: main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root,
+            }
+
+            const result_processing_TopLevel = this._processing_TopLevel__With__FilteringParams_Object({
+                filtering_Params_Main
+            })
+            return result_processing_TopLevel;  //  EARLY RETURN
+
+        }
+
         //  Get Top level data and then call this._processing_TopLevel(...) to process it
 
         const result_processing_TopLevel__GetData = _processing_TopLevel__GetData({
-            mainfunctionParams: functionParams,
+            main_FunctionParams,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         })
         if ( result_processing_TopLevel__GetData.result ) {
-            const result_processing_TopLevel = this._processing_TopLevel__WithData({
-                mainfunctionParams: functionParams,
-                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: result_processing_TopLevel__GetData.result.reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                dataPage_common_Flags_SingleSearch: functionParams.dataPage_common_Flags_SingleSearch
+            const result_processing_TopLevel = this._processing_TopLevel__With_Retrieved_reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId({
+                main_FunctionParams,
+                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: result_processing_TopLevel__GetData.result.reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
             })
             return result_processing_TopLevel;  //  EARLY RETURN
 
@@ -507,10 +557,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 promise: new Promise<GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnContents_Class>((resolve, reject) => {
                     result_processing_TopLevel__GetData.promise.catch(reason => {reject(reason)})
                     result_processing_TopLevel__GetData.promise.then(topLevelData => {try {
-                        const result_processing_TopLevel = this._processing_TopLevel__WithData({
-                            mainfunctionParams: functionParams,
-                            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: topLevelData.reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                            dataPage_common_Flags_SingleSearch: functionParams.dataPage_common_Flags_SingleSearch
+                        const result_processing_TopLevel = this._processing_TopLevel__With_Retrieved_reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId({
+                            main_FunctionParams,
+                            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: topLevelData.reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
                         })
                         if ( result_processing_TopLevel.data ) {
                             resolve( result_processing_TopLevel.data );  //   resolve
@@ -534,29 +583,80 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     }
 
     /**
+     *
+     */
+    private _processing_TopLevel__With_Retrieved_reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId(
+        {
+            main_FunctionParams,
+            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
+        } : {
+            main_FunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+
+        }) : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
+
+        let reportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum =
+            Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum.ALL_FOR_SEARCH
+
+        if ( main_FunctionParams.proteinSequenceVersionId !== undefined && main_FunctionParams.proteinSequenceVersionId !== null ) {
+            reportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum =
+                Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum.ALL_FOR_SINGLE_PROTEIN_IN_SEARCH
+        }
+
+        const reportedPeptideIds_ProteinId_Params_PassedIn = new Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn({
+            reportedPeptideIds_StartingPointForFiltering: reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            proteinSequenceVersionId: main_FunctionParams.proteinSequenceVersionId,
+            reportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum
+        })
+
+        const filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main = {
+
+            not_filtered_position_modification_selections: main_FunctionParams.not_filtered_position_modification_selections,
+            dataPage_common_Flags_SingleSearch: main_FunctionParams.dataPage_common_Flags_SingleSearch,
+
+            reportedPeptideIds_ProteinId_Params_PassedIn,
+
+            searchSubGroup_Ids_Selected: main_FunctionParams.searchSubGroup_Ids_Selected,
+            modificationMass_UserSelections_StateObject: main_FunctionParams.modificationMass_UserSelections_StateObject,
+            modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: main_FunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+            reporterIonMass_UserSelections_StateObject: main_FunctionParams.reporterIonMass_UserSelections_StateObject,
+            scanFilenameId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+            scan_RetentionTime_MZ_UserSelection_StateObject: main_FunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
+            peptideUnique_UserSelection_StateObject: main_FunctionParams.peptideUnique_UserSelection_StateObject,
+            psm_Charge_Filter_UserSelection_StateObject : main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject,
+            psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : main_FunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
+            peptideSequence_UserSelections_StateObject: main_FunctionParams.peptideSequence_UserSelections_StateObject,
+            peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
+            proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
+            userSearchString_LocationsOn_ProteinSequence_Root: main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root,
+        }
+
+        return this._processing_TopLevel__With__FilteringParams_Object({ filtering_Params_Main })
+    }
+
+    /**
      * Top level processing.
      *
      * Create the combined (ANY, ALL, NOT) AKA (OR,AND,EXCLUDE)  and then convert to final output (populating Sub search data as needed)
      */
-    private _processing_TopLevel__WithData(
+    private _processing_TopLevel__With__FilteringParams_Object(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-            dataPage_common_Flags_SingleSearch
+            filtering_Params_Main
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
-            dataPage_common_Flags_SingleSearch: DataPage_common_Flags_SingleSearch
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
 
         }) : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
 
+
+
         const result_create__Combined__OR_AND_EXCLUDE = this._create__Combined__OR_AND_EXCLUDE({
-            mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId, dataPage_common_Flags_SingleSearch
+            filtering_Params_Main
         })
         if ( result_create__Combined__OR_AND_EXCLUDE.result ) {
 
             return this._convertToFinalResult({
-                mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                filtering_Params_Main,
                 peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final: result_create__Combined__OR_AND_EXCLUDE.result
             })
         } else if ( result_create__Combined__OR_AND_EXCLUDE.promise ) {
@@ -564,7 +664,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 result_create__Combined__OR_AND_EXCLUDE.promise.catch(reason => { reject(reason)})
                 result_create__Combined__OR_AND_EXCLUDE.promise.then(value_result_create__Combined__OR_AND_EXCLUDE => {try {
                     const result_convertToFinalResult = this._convertToFinalResult({
-                        mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                        filtering_Params_Main,
                         peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final: value_result_create__Combined__OR_AND_EXCLUDE
                     })
                     if ( result_convertToFinalResult.data ) {
@@ -592,15 +692,13 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      */
     private _create__Combined__OR_AND_EXCLUDE(
         {
-            mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId, dataPage_common_Flags_SingleSearch
+            filtering_Params_Main
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
-            dataPage_common_Flags_SingleSearch: DataPage_common_Flags_SingleSearch
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
         }
     ) : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
 
-        if ( mainfunctionParams.not_filtered_position_modification_selections ) {
+        if ( filtering_Params_Main.not_filtered_position_modification_selections ) {
 
             //  NO Filtering requested by calling function (likely for "Download All"
 
@@ -612,13 +710,12 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
         }
 
         const OR_AND_Result = this._create__Combined__OR_AND({
-            mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId, dataPage_common_Flags_SingleSearch
+            filtering_Params_Main
         })
 
         const merge__EXCLUDE_AKA_NOT__Result = this._process_OR_AND__Result__Apply__EXCLUDE_AKA_NOT__UserSelectionsIfPresent___Process_Result_Promise__From__OR_AND__Result({
             OR_AND_Result,
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
+            filtering_Params_Main
         })
 
         return merge__EXCLUDE_AKA_NOT__Result;
@@ -629,11 +726,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      */
     private _create__Combined__OR_AND(
         {
-            mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId, dataPage_common_Flags_SingleSearch
+            filtering_Params_Main
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
-            dataPage_common_Flags_SingleSearch: DataPage_common_Flags_SingleSearch
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
         }
     ) : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
 
@@ -647,10 +742,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 this._for_OR_ANY_Processing__peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ModificationSelections.
                 peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together__For_ModificationSelections({
                 singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ANY, // Select type ANY
-                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                proteinSequenceVersionId: mainfunctionParams.proteinSequenceVersionId,
-                modificationMass_UserSelections_StateObject: mainfunctionParams.modificationMass_UserSelections_StateObject,
-                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: mainfunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+                reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                modificationMass_UserSelections_StateObject: filtering_Params_Main.modificationMass_UserSelections_StateObject,
+                modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
             });
             if (!result) {
                 const msg = "result is null or undefined from peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together(...)";
@@ -666,8 +760,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 this._for_OR_ANY_Processing__peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ReporterIonSelections.
                 peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together__For_ReporterIonSelections({
                     singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.ANY, // Select type ANY
-                    reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                    reporterIonMass_UserSelections_StateObject: mainfunctionParams.reporterIonMass_UserSelections_StateObject
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    reporterIonMass_UserSelections_StateObject: filtering_Params_Main.reporterIonMass_UserSelections_StateObject
                 });
             if (!result) {
                 const msg = "result is null or undefined from peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together(...)";
@@ -678,16 +772,14 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
         }
 
 
-
         { //  "ALL"/"AND" - Explicit "ALL"/"AND" filtering
             const resultArray =
                 this._peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together_Class.
                 peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Explicit__ALL_AND__Selections__INTERSECTION_Together({
-                    reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,    //  NOT (always) Used when proteinSequenceVersionId is populated
-                    proteinSequenceVersionId: mainfunctionParams.proteinSequenceVersionId,  //  OPTIONAL - Restrict results to this proteinSequenceVersionId
-                    modificationMass_UserSelections_StateObject: mainfunctionParams.modificationMass_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: mainfunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
-                    reporterIonMass_UserSelections_StateObject: mainfunctionParams.reporterIonMass_UserSelections_StateObject,
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    modificationMass_UserSelections_StateObject: filtering_Params_Main.modificationMass_UserSelections_StateObject,
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                    reporterIonMass_UserSelections_StateObject: filtering_Params_Main.reporterIonMass_UserSelections_StateObject,
                 });
 
             for (const result of resultArray) {
@@ -704,20 +796,19 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             const resultArray =
                 this._peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together_Class.
                 peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs__For__Implicit__ALL_AND__Selections__INTERSECTION_Together({
-                    reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,    //  NOT (always) Used when proteinSequenceVersionId is populated
-                    proteinSequenceVersionId: mainfunctionParams.proteinSequenceVersionId,  //  OPTIONAL - Restrict results to this proteinSequenceVersionId
-                    dataPage_common_Flags_SingleSearch,
-                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject: mainfunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    scan_RetentionTime_MZ_UserSelection_StateObject: mainfunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
-                    psm_Charge_Filter_UserSelection_StateObject: mainfunctionParams.psm_Charge_Filter_UserSelection_StateObject,
-                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: mainfunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
-                    peptideUnique_UserSelection_StateObject: mainfunctionParams.peptideUnique_UserSelection_StateObject,
-                    peptideSequence_UserSelections_StateObject: mainfunctionParams.peptideSequence_UserSelections_StateObject,
-                    peptideSequence_MissedCleavageCount_UserSelections_StateObject: mainfunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-                    proteinSequenceWidget_StateObject: mainfunctionParams.proteinSequenceWidget_StateObject,
-                    proteinPositionFilter_UserSelections_StateObject: mainfunctionParams.proteinPositionFilter_UserSelections_StateObject,
-                    userSearchString_LocationsOn_ProteinSequence_Root: mainfunctionParams.userSearchString_LocationsOn_ProteinSequence_Root,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: mainfunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    dataPage_common_Flags_SingleSearch: filtering_Params_Main.dataPage_common_Flags_SingleSearch,
+                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject: filtering_Params_Main.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+                    scan_RetentionTime_MZ_UserSelection_StateObject: filtering_Params_Main.scan_RetentionTime_MZ_UserSelection_StateObject,
+                    psm_Charge_Filter_UserSelection_StateObject: filtering_Params_Main.psm_Charge_Filter_UserSelection_StateObject,
+                    psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: filtering_Params_Main.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
+                    peptideUnique_UserSelection_StateObject: filtering_Params_Main.peptideUnique_UserSelection_StateObject,
+                    peptideSequence_UserSelections_StateObject: filtering_Params_Main.peptideSequence_UserSelections_StateObject,
+                    peptideSequence_MissedCleavageCount_UserSelections_StateObject: filtering_Params_Main.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                    proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
+                    proteinPositionFilter_UserSelections_StateObject: filtering_Params_Main.proteinPositionFilter_UserSelections_StateObject,
+                    userSearchString_LocationsOn_ProteinSequence_Root: filtering_Params_Main.userSearchString_LocationsOn_ProteinSequence_Root,
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
                 });
 
@@ -747,7 +838,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     /**
      *
      * @param OR_AND_Result  --  From OR/AND selections
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param numPsmsForReportedPeptideIdMap
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @private
@@ -755,20 +846,17 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     private _process_OR_AND__Result__Apply__EXCLUDE_AKA_NOT__UserSelectionsIfPresent___Process_Result_Promise__From__OR_AND__Result(
         {
             OR_AND_Result,
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
+            filtering_Params_Main
         } : {
             OR_AND_Result: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
         }
     ) : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
 
         if ( OR_AND_Result.result )  {
 
             const result_From_Not_Exclude = this._process_OR_AND__Result__Apply__EXCLUDE_AKA_NOT__UserSelectionsIfPresent___DoActualExclude({
-                mainfunctionParams,
-                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                filtering_Params_Main,
                 OR_AND_Results: OR_AND_Result.result,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId,
             })
@@ -785,8 +873,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     OR_AND_Result.promise.then(value => {
                         try {
                             const result_From_Not_Exclude = this._process_OR_AND__Result__Apply__EXCLUDE_AKA_NOT__UserSelectionsIfPresent___DoActualExclude({
-                                mainfunctionParams,
-                                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                                filtering_Params_Main,
                                 OR_AND_Results: value,
                                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId,
                             })
@@ -837,20 +924,18 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     /**
      * Actual   EXCLUDE processing
      *
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param numPsmsForReportedPeptideIdMap
      * @private
      */
     private _process_OR_AND__Result__Apply__EXCLUDE_AKA_NOT__UserSelectionsIfPresent___DoActualExclude(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             OR_AND_Results,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
 
@@ -890,10 +975,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 this._for_EXCLUDE_NOT_Processing__peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ModificationSelections.
                 peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together__For_ModificationSelections({
                     singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.NOT, // Select type NOT
-                    reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                    proteinSequenceVersionId: mainfunctionParams.proteinSequenceVersionId,
-                    modificationMass_UserSelections_StateObject: mainfunctionParams.modificationMass_UserSelections_StateObject,
-                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: mainfunctionParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    modificationMass_UserSelections_StateObject: filtering_Params_Main.modificationMass_UserSelections_StateObject,
+                    modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: filtering_Params_Main.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
                 });
 
             NOT_Selection_Results__FUNCTION_RESULT__Array.push( NOT_Selection_Results__Modifications )
@@ -904,16 +988,15 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 this._for_EXCLUDE_NOT_Processing__peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together_Class__For_ReporterIonSelections.
                 peptide__single_protein_get_reportedPeptideIds_AndTheir_PSM_IDs__For__ANY_OR__Selections__UNION_Together__For_ReporterIonSelections({
                     singleProtein_Filter_SelectionType_Requested: SingleProtein_Filter_SelectionType.NOT, // Select type NOT
-                    reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
-                    reporterIonMass_UserSelections_StateObject: mainfunctionParams.reporterIonMass_UserSelections_StateObject
+                    reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
+                    reporterIonMass_UserSelections_StateObject: filtering_Params_Main.reporterIonMass_UserSelections_StateObject
                 });
 
             NOT_Selection_Results__FUNCTION_RESULT__Array.push( NOT_Selection_Results )
         }
 
         return this._removeEntries_for_NOT_EXCLUDE_Selections({
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             OR_AND_Results,
             NOT_Selection_Results__FUNCTION_RESULT__Array,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -923,7 +1006,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
     /**
      *
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param OR_AND_Results
      * @param NOT_Selection_Results
@@ -932,14 +1015,12 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      */
     private _removeEntries_for_NOT_EXCLUDE_Selections(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             OR_AND_Results,
             NOT_Selection_Results__FUNCTION_RESULT__Array,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
             NOT_Selection_Results__FUNCTION_RESULT__Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS>
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -980,8 +1061,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
         if ( promises.length === 0 ) {
 
             const result_removeEntries_for_NOT_EXCLUDE_Selections__AFTER_ResolvePromises = this._removeEntries_for_NOT_EXCLUDE_Selections__AFTER_ResolvePromises({
-                mainfunctionParams,
-                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                filtering_Params_Main,
                 OR_AND_Results,    // ANY and AND Selected values
                 NOT_Selection_Results_Array,       // NOT Selected values to remove
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -1000,8 +1080,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 promises_All.then(noValue => {
                     try {
                         const result_removeEntries_for_NOT_EXCLUDE_Selections__AFTER_ResolvePromises = this._removeEntries_for_NOT_EXCLUDE_Selections__AFTER_ResolvePromises({
-                            mainfunctionParams,
-                            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                            filtering_Params_Main,
                             OR_AND_Results,    // ANY and AND Selected values
                             NOT_Selection_Results_Array,       // NOT Selected values to remove
                             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -1038,7 +1117,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
     /**
      *
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param OR_AND_Results
      * @param NOT_Selection_Results
@@ -1047,14 +1126,12 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      */
     private _removeEntries_for_NOT_EXCLUDE_Selections__AFTER_ResolvePromises(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             OR_AND_Results,
             NOT_Selection_Results_Array,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
             NOT_Selection_Results_Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -1094,7 +1171,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
         const resultsAfterRemoval =
             peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections({
 
-                reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                reportedPeptideIds_ProteinId_Params_PassedIn: filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn,
 
                 OR_AND_Results,   // OR and AND Selected values
 
@@ -1109,26 +1186,23 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     ///////////////////
 
     /**
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param numPsmsForReportedPeptideIdMap
      * @private
      */
     private _convertToFinalResult(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final:
                 Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
         } ) : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
 
         const result_convertToFinalResult_MainPart = this._convertToFinalResult_MainPart({
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final
         })
 
@@ -1137,7 +1211,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
         if ( result_convertToFinalResult_MainPart.data ) {
             const result_createNew_FinalResult__FilterOn_SearchSubGroup_Ids = this._createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data({
                 finalResultFormat__Input: result_convertToFinalResult_MainPart.data,
-                mainfunctionParams
+                filtering_Params_Main
             })
             //  Return if has data or has promise
             return result_createNew_FinalResult__FilterOn_SearchSubGroup_Ids;  // !!  EARLY RETURN
@@ -1147,7 +1221,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     result_convertToFinalResult_MainPart.promise.then(value_result_convertToFinalResult_MainPart => { try {
                         const result_createNew_FinalResult__FilterOn_SearchSubGroup_Ids = this._createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data({
                             finalResultFormat__Input: value_result_convertToFinalResult_MainPart,
-                            mainfunctionParams
+                            filtering_Params_Main
                         })
                         if ( result_createNew_FinalResult__FilterOn_SearchSubGroup_Ids.data ) {
                             resolve(result_createNew_FinalResult__FilterOn_SearchSubGroup_Ids.data);  //    !! resolve
@@ -1168,30 +1242,28 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     }
 
     /**
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param numPsmsForReportedPeptideIdMap
      * @private
      */
     private _convertToFinalResult_MainPart(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
 
         } ) : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
 
         const result__convertToFinalResult_MainPart__GetData = _convertToFinalResult_MainPart__GetData({
-            mainfunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            filtering_Params_Main, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         })
 
         if ( result__convertToFinalResult_MainPart__GetData.result ) {
             return { promise: undefined, data: this._convertToFinalResult_MainPart_WithData({
-                    mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                    filtering_Params_Main,
                     peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final,
                     numPsmsForReportedPeptideIdMap: result__convertToFinalResult_MainPart__GetData.result.numPsmsForReportedPeptideIdMap
             }) }
@@ -1200,7 +1272,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 result__convertToFinalResult_MainPart__GetData.promise.catch(reason => { reject(reason)})
                 result__convertToFinalResult_MainPart__GetData.promise.then(value_result__convertToFinalResult_MainPart__GetData => { try {
                     const result_convertToFinalResult_MainPart_WithData = this._convertToFinalResult_MainPart_WithData({
-                        mainfunctionParams, reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                        filtering_Params_Main,
                         peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final,
                         numPsmsForReportedPeptideIdMap: value_result__convertToFinalResult_MainPart__GetData.numPsmsForReportedPeptideIdMap
                     })
@@ -1216,20 +1288,18 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     }
 
     /**
-     * @param mainfunctionParams
+     * @param filtering_Params_Main
      * @param reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
      * @param numPsmsForReportedPeptideIdMap
      * @private
      */
     private _convertToFinalResult_MainPart_WithData(
         {
-            mainfunctionParams,
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            filtering_Params_Main,
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final,
             numPsmsForReportedPeptideIdMap
         } : {
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
             numPsmsForReportedPeptideIdMap: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType
 
@@ -1244,7 +1314,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             if (peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final.is_noFilter_OR_FilterHasNoData()
                 || peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final.is_includeAll_ReportedPeptideIds()) {
 
-                for (const reportedPeptideId of reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId) {
+                for (const reportedPeptideId of filtering_Params_Main.reportedPeptideIds_ProteinId_Params_PassedIn.reportedPeptideIds_StartingPointForFiltering) {
 
                     let numPsms = numPsmsForReportedPeptideIdMap.get(reportedPeptideId)
                     if (numPsms === undefined || numPsms === null) {
@@ -1324,15 +1394,15 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     private _createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data(
         {
             finalResultFormat__Input,
-            mainfunctionParams
+            filtering_Params_Main
         }: {
             finalResultFormat__Input : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnContents_Class
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
 
         }): GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnObject_Class {
 
         //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
-        const searchSubGroup_Ids_Selected : Set<number> = mainfunctionParams.searchSubGroup_Ids_Selected;
+        const searchSubGroup_Ids_Selected : Set<number> = filtering_Params_Main.searchSubGroup_Ids_Selected;
 
         if ( ! searchSubGroup_Ids_Selected ) {
 
@@ -1351,12 +1421,12 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
         const getData_Result = _createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data__GetData({
             load__subGroupIdMap_Key_PsmId_KeyReportedPeptideId,
-            mainfunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            filtering_Params_Main, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         })
 
         if ( getData_Result.result ) {
             return { promise: undefined, data: this._createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data__WithData({
-                finalResultFormat__Input, mainfunctionParams,
+                finalResultFormat__Input, filtering_Params_Main,
                 num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.result.num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder,
                 searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
             })}
@@ -1365,7 +1435,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 getData_Result.promise.catch(reason => { reject(reason)})
                 getData_Result.promise.then(value_getData_Result => {try {
                     const createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Result = this._createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data__WithData({
-                        finalResultFormat__Input, mainfunctionParams,
+                        finalResultFormat__Input, filtering_Params_Main,
                         num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder,
                         searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
                     });
@@ -1383,16 +1453,16 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
      */
     private _createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data__WithData(
         {
-            finalResultFormat__Input, mainfunctionParams, num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder, searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
+            finalResultFormat__Input, filtering_Params_Main, num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder, searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
         }: {
             finalResultFormat__Input : GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnContents_Class
-            mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+            filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
             num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder
             searchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_ID__For_ReportedPeptideId_For_MainFilters_Holder
 
         }): GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_ReturnContents_Class {
 
-        const searchSubGroup_Ids_Selected = mainfunctionParams.searchSubGroup_Ids_Selected;
+        const searchSubGroup_Ids_Selected = filtering_Params_Main.searchSubGroup_Ids_Selected;
 
         const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Result =  new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
             projectSearchId: this._projectSearchId,
@@ -1515,11 +1585,11 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
     }
 
 
-}   //   End of Class
+}   //   End of MAIN Class
 
-////////////////////////////////////////////
-////////////////////////////////////////////
-////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////    NON-Class Functions
 
@@ -1531,9 +1601,9 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
  */
 const _processing_TopLevel__GetData = function(
     {
-        mainfunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+        main_FunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     } : {
-        mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+        main_FunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 ) : {
@@ -1552,7 +1622,7 @@ const _processing_TopLevel__GetData = function(
     {
         //  Use All reportedPeptideIds that meet cutoff unless proteinSequenceVersionId is passed in for Protein Page
 
-        if (mainfunctionParams.proteinSequenceVersionId !== undefined && mainfunctionParams.proteinSequenceVersionId !== null) {
+        if (main_FunctionParams.proteinSequenceVersionId !== undefined && main_FunctionParams.proteinSequenceVersionId !== null) {
 
             //  For Single Protein Overlay
 
@@ -1564,7 +1634,7 @@ const _processing_TopLevel__GetData = function(
                 get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch()
             if (get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data) {
                 const reportedPeptideIds_For_ProteinSequenceVersionId =
-                    get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(mainfunctionParams.proteinSequenceVersionId)
+                    get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(main_FunctionParams.proteinSequenceVersionId)
                 if (!reportedPeptideIds_For_ProteinSequenceVersionId) {
                     //  No reported Peptides for this proteinSequenceVersionId for this project search id
                     //  Return empty array
@@ -1579,7 +1649,7 @@ const _processing_TopLevel__GetData = function(
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                     get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.then(result => { try {
                         const reportedPeptideIds_For_ProteinSequenceVersionId =
-                            result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(mainfunctionParams.proteinSequenceVersionId)
+                            result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(main_FunctionParams.proteinSequenceVersionId)
                         if (!reportedPeptideIds_For_ProteinSequenceVersionId) {
                             //  No reported Peptides for this proteinSequenceVersionId for this project search id
                             //  Return empty array
@@ -1697,9 +1767,9 @@ const _processing_TopLevel__GetData = function(
  */
 const _convertToFinalResult_MainPart__GetData = function(
     {
-        mainfunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+        filtering_Params_Main, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     } : {
-        mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+        filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 ) : {
@@ -1801,10 +1871,10 @@ const _convertToFinalResult_MainPart__GetData = function(
 const _createNew_FinalResult__FilterOn_SearchSubGroup_Ids_Selected__Add_SearchSubGroup_Data__GetData = function(
     {
         load__subGroupIdMap_Key_PsmId_KeyReportedPeptideId,
-        mainfunctionParams, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+        filtering_Params_Main, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     } : {
         load__subGroupIdMap_Key_PsmId_KeyReportedPeptideId: boolean
-        mainfunctionParams: GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Parameters
+        filtering_Params_Main: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_Params_Main
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 ) : {

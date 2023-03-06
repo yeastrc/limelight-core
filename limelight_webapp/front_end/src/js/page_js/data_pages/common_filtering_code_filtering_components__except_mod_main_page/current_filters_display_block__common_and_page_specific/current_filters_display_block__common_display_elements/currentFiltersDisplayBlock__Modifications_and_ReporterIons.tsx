@@ -25,7 +25,6 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
     {
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject
-
     } : {
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
@@ -343,6 +342,12 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
         && ( ! selection_NOT_Group_Display_Entries__For_ReporterIonSelections )
         && ( ! selection_NOT_UnModified_Variable_Mods_Selected )
         && ( ! selection_NOT_UnModified_Open_Mods_Selected )
+
+        //  NOT display "Include all modified and unmodified versions of peptides found using modification filters.
+        //   I.E.:
+        //    Ignore if no mods selected
+            // ( modificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections_StateObject &&
+            //     modificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections_StateObject.getSelected() )
     ) {
         //  Nothing to display
 
@@ -359,6 +364,8 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
 
                 selection_NOT_UnModified_Variable_Mods_Selected={ selection_NOT_UnModified_Variable_Mods_Selected }
                 selection_NOT_UnModified_Open_Mods_Selected={ selection_NOT_UnModified_Open_Mods_Selected }
+
+                modificationMass_UserSelections_StateObject={ modificationMass_UserSelections_StateObject }
             />
             {/*Reporter Ions*/}
             <CurrentFiltersDisplayBlock__Modifications_and_ReporterIons
@@ -368,6 +375,8 @@ export const currentFiltersDisplayBlock__Modifications_and_ReporterIons = functi
 
                 selection_NOT_UnModified_Variable_Mods_Selected={ undefined }
                 selection_NOT_UnModified_Open_Mods_Selected={ undefined }
+
+                modificationMass_UserSelections_StateObject={ undefined }
             />
         </React.Fragment>
     );
@@ -384,7 +393,9 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
         selection_NOT_Group_Display_Entries,
 
         selection_NOT_UnModified_Variable_Mods_Selected,
-        selection_NOT_UnModified_Open_Mods_Selected
+        selection_NOT_UnModified_Open_Mods_Selected,
+
+        modificationMass_UserSelections_StateObject
 
     } : {
         selection_AND_Group_Display_Entries : Array<JSX.Element>
@@ -393,6 +404,8 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
 
         selection_NOT_UnModified_Variable_Mods_Selected
         selection_NOT_UnModified_Open_Mods_Selected
+
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
 
     }
 ) : JSX.Element {
@@ -443,6 +456,18 @@ const CurrentFiltersDisplayBlock__Modifications_and_ReporterIons = function(
                 </div>
                 : null /* Display nothing */ }
 
+            { ( modificationMass_UserSelections_StateObject &&
+                modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() &&
+                (
+                    selection_AND_Group_Display_Entries || selection_OR_Group_Display_Entries || selection_NOT_Group_Display_Entries ||
+                    selection_NOT_UnModified_Variable_Mods_Selected || selection_NOT_UnModified_Open_Mods_Selected
+                )
+            ) ? (
+                    <div>
+                        Include all modified and unmodified versions of peptides found using modification filters.
+                    </div>
+
+            ) : null }
         </React.Fragment>
     );
 }

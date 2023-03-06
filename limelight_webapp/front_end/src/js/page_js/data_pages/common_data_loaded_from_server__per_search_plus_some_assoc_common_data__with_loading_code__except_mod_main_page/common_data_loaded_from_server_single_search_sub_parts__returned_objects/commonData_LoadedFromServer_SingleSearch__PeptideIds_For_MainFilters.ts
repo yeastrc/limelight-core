@@ -21,15 +21,18 @@ import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_F
 export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder {
 
     private _peptideId_Data_Map_Key_ReportedPeptideId: Map<number,{ peptideId: number, reportedPeptideId:number }>
+    private _reportedPeptideIdEntries_Data_Map_Key_PeptideId: Map<number,Set<number>>
 
     constructor(
         {
-            peptideId_Data_Map_Key_ReportedPeptideId
+            peptideId_Data_Map_Key_ReportedPeptideId, reportedPeptideIdEntries_Data_Map_Key_PeptideId
         } : {
             peptideId_Data_Map_Key_ReportedPeptideId: Map<number,{ peptideId: number, reportedPeptideId:number }>
+            reportedPeptideIdEntries_Data_Map_Key_PeptideId: Map<number,Set<number>>
         }
     ) {
         this._peptideId_Data_Map_Key_ReportedPeptideId = peptideId_Data_Map_Key_ReportedPeptideId;
+        this._reportedPeptideIdEntries_Data_Map_Key_PeptideId = reportedPeptideIdEntries_Data_Map_Key_PeptideId;
     }
 
     /**
@@ -46,6 +49,10 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
 
     get_All_PeptideId_ReportedPeptideId_Data() {
         return this._peptideId_Data_Map_Key_ReportedPeptideId.values()
+    }
+
+    get_ReportedPeptideIdEntries_For_PeptideId( peptideId: number ) : ReadonlySet<number> {
+        return this._reportedPeptideIdEntries_Data_Map_Key_PeptideId.get(peptideId)
     }
 }
 
@@ -292,9 +299,10 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
      */
     private _createEmpty_No_ReportedPeptideIds() {
 
-        const peptideId_Data_Map_Key_ReportedPeptideId: Map<number,{ peptideId: number, reportedPeptideId:number }> = new Map()
-
-        const peptideIds_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder({ peptideId_Data_Map_Key_ReportedPeptideId });
+        const peptideIds_For_MainFilters_Holder =
+            new CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder({
+                peptideId_Data_Map_Key_ReportedPeptideId: new Map() , reportedPeptideIdEntries_Data_Map_Key_PeptideId: new Map()
+            });
 
         this._get_PeptideIdsHolder__FunctionResult = {
             peptideIds_For_MainFilters_Holder
@@ -312,14 +320,25 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
         }
 
         const peptideId_Data_Map_Key_ReportedPeptideId: Map<number,{ peptideId: number, reportedPeptideId:number }> = new Map()
+        const reportedPeptideIdEntries_Data_Map_Key_PeptideId: Map<number,Set<number>> = new Map()
 
         for ( const peptideIdReportedPeptideIdMappingEntry of responseData.resultList ) {
 
             const data = { peptideId: peptideIdReportedPeptideIdMappingEntry.peptideId, reportedPeptideId: peptideIdReportedPeptideIdMappingEntry.reportedPeptideId };
             peptideId_Data_Map_Key_ReportedPeptideId.set( peptideIdReportedPeptideIdMappingEntry.reportedPeptideId, data )
+
+            let reportedPeptideIdEntries_Data = reportedPeptideIdEntries_Data_Map_Key_PeptideId.get( data.peptideId );
+            if ( ! reportedPeptideIdEntries_Data ) {
+                reportedPeptideIdEntries_Data = new Set()
+                reportedPeptideIdEntries_Data_Map_Key_PeptideId.set( data.peptideId, reportedPeptideIdEntries_Data )
+            }
+            reportedPeptideIdEntries_Data.add( data.reportedPeptideId )
         }
 
-        const peptideIds_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder({ peptideId_Data_Map_Key_ReportedPeptideId });
+        const peptideIds_For_MainFilters_Holder =
+            new CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder({
+                peptideId_Data_Map_Key_ReportedPeptideId, reportedPeptideIdEntries_Data_Map_Key_PeptideId
+            });
 
         this._get_PeptideIdsHolder__FunctionResult = {
             peptideIds_For_MainFilters_Holder

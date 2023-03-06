@@ -18,7 +18,7 @@ import {ModificationMass_UserSelections_Variable_or_Open_Modifications} from './
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
-
+import {ModificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass__show_other_peptides_where_peptide_sequence_match_peptides_meet_mod_filters/jsx/modificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections";
 
 /**
  * 
@@ -131,12 +131,12 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
      * 
      */    
     render() {
-
-        const modificationMass_UserSelections_ComponentData = this.props.modificationMass_UserSelections_ComponentData;
-
-        const variableModificationsData = modificationMass_UserSelections_ComponentData.variableModificationsData;
-        const open_ModificationsData = modificationMass_UserSelections_ComponentData.open_ModificationsData;
-        const staticModificationsData = modificationMass_UserSelections_ComponentData.staticModificationsData;
+        //
+        // const modificationMass_UserSelections_ComponentData = this.props.modificationMass_UserSelections_ComponentData;
+        //
+        // const variableModificationsData = modificationMass_UserSelections_ComponentData.variableModificationsData;
+        // const open_ModificationsData = modificationMass_UserSelections_ComponentData.open_ModificationsData;
+        // const staticModificationsData = modificationMass_UserSelections_ComponentData.staticModificationsData;
 
         return (
                 
@@ -148,7 +148,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     open_Modifications_DISPLAY={ false }
                     modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                     openSelectMassOverlay_Override_Callback={ undefined }
-                    variable_or_Open_ModificationsData={ variableModificationsData }
+                    variable_or_Open_ModificationsData={ this.props.modificationMass_UserSelections_ComponentData.variableModificationsData }
                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_VariableModificationSelections() }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
@@ -171,7 +171,7 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
                     open_Modifications_DISPLAY={ true }
                     modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange={ this.props.modificationMassSelections_AlwaysShow__ClearOn_ObjectReferenceChange }
                     openSelectMassOverlay_Override_Callback={ this.props.openModification_OpenSelectMassOverlay_Override_Callback }
-                    variable_or_Open_ModificationsData={ open_ModificationsData }
+                    variable_or_Open_ModificationsData={ this.props.modificationMass_UserSelections_ComponentData.open_ModificationsData }
                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject.get_OpenModificationSelections() }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
@@ -190,10 +190,17 @@ export class ModificationMass_UserSelections_Root extends React.Component< Modif
 
                 {/* Static Modifications --}} */}
                 <ModificationMass_UserSelections_StaticModifications
-                    staticModificationsData={ staticModificationsData }
+                    staticModificationsData={ this.props.modificationMass_UserSelections_ComponentData.staticModificationsData }
                     modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class={ this.props.modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class }
                     modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
                     updateMadeTo_modificationMass_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
+                />
+
+                {/*  Checkbox for show other peptides ...  */}
+                <ModificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections
+                    modificationMass_UserSelections_StateObject={ this.props.modificationMass_UserSelections_StateObject }
+                    modificationMass_UserSelections_ComponentData={ this.props.modificationMass_UserSelections_ComponentData }
+                    updateMadeTo_modificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelections_StateObject_Callback={ this.props.updateMadeTo_modificationMass_UserSelections_StateObject_Callback }
                 />
 
             </React.Fragment>

@@ -27,6 +27,7 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
     variableModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData
     open_ModificationsData : ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData
     staticModificationsData : ModificationMass_UserSelections_ComponentData_StaticModificationsData
+    showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection_Data : boolean
 }
 
 /**

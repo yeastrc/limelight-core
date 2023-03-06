@@ -49,6 +49,7 @@ const _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING
 
 const _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME = 'e';
 const _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME = 'f';
+const _ENCODED_DATA__SHOW_OTHER_PEPTIDES__ETC__SELECTION_TYPE__NOT__PROPERTY_NAME = "g"
 
 //  Sub parts of Static Mod Mass Selection
 const _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME = "a"
@@ -76,6 +77,8 @@ export class ModificationMass_UserSelections_StateObject {
 
     //  Map of Selected Static Modification Residue Letter And Mass <String, Map<Number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> <Residue Letter, <Mass, Entry>>
     private _staticModificationsSelected : Map<string, Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry>> = new Map();  // call .clear() to reset the selected
+
+    private _showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection : boolean = undefined; //  Set to undefined if not selected or false
 
     //////
 
@@ -171,6 +174,7 @@ export class ModificationMass_UserSelections_StateObject {
         this._variableModificationsSelected.clear_selectedModifications(); // Reset to None
         this._openModificationsSelected.clear_selectedModifications(); // Reset to None
         this._staticModificationsSelected.clear(); // Reset to None
+        this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection = undefined
 
         this._selection__Updated_Callback();
     }
@@ -251,6 +255,27 @@ export class ModificationMass_UserSelections_StateObject {
     }
 
     //////////////////////////////////
+
+    /**
+     * return true if any modification selected of any type (variable, open, static) of any condition (OR, AND, NOT)
+     */
+    is_Any_Modification_Selected() : boolean {
+        if ( this._variableModificationsSelected ) {
+            if ( this._variableModificationsSelected.is_Any_Modification_Selected() ) {
+                return true; // EARLY RETURN
+            }
+        }
+        if ( this._openModificationsSelected ) {
+            if ( this._openModificationsSelected.is_Any_Modification_Selected() ) {
+                return true; // EARLY RETURN
+            }
+        }
+        if ( this.is_Any_StaticModification_Selected() ) {
+            return true; // EARLY RETURN
+        }
+
+        return  false;
+    }
 
     //   Variable Mods External
 
@@ -470,6 +495,16 @@ export class ModificationMass_UserSelections_StateObject {
         this._selection__Updated_Callback();
     }
 
+    get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() {
+        return this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection
+    }
+
+    set_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection( value: boolean ) {
+        this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection = value
+
+        this._selection__Updated_Callback();
+    }
+
 
     //////////////////////////////////////
 
@@ -502,9 +537,11 @@ export class ModificationMass_UserSelections_StateObject {
             const openModificationsSelected_Encoded = this._openModificationsSelected.getEncodedStateData();
 
             if ( openModificationsSelected_Encoded ) {
-                // @ts-ignore
                 result[ _ENCODED_DATA__OPEN_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] = openModificationsSelected_Encoded;
             }
+        }
+        if ( this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection ) {
+            result[ _ENCODED_DATA__SHOW_OTHER_PEPTIDES__ETC__SELECTION_TYPE__NOT__PROPERTY_NAME ] = this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection;
         }
 
         // this._staticModificationsSelected: Map of Selected Static Modification Residue Letter And Mass <String, Set<Number>> <Residue Letter, <Mass>>
@@ -665,7 +702,14 @@ export class ModificationMass_UserSelections_StateObject {
                 this._staticModificationsSelected = local_staticModificationsSelected;
             }
         }
-	}
+
+        {  //  _showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection
+            if ( encodedStateData[ _ENCODED_DATA__SHOW_OTHER_PEPTIDES__ETC__SELECTION_TYPE__NOT__PROPERTY_NAME ] ) {
+
+                this._showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection = encodedStateData[ _ENCODED_DATA__SHOW_OTHER_PEPTIDES__ETC__SELECTION_TYPE__NOT__PROPERTY_NAME ]
+            }
+        }
+    }
 
 }
 

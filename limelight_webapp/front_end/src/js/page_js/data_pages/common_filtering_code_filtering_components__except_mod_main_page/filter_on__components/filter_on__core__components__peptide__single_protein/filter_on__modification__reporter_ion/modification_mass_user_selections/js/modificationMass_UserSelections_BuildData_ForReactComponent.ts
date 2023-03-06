@@ -145,12 +145,16 @@ const modificationMass_UserSelections_BuildData_ForReactComponent = function({
                 }
             }
 
+            const showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection_Data =
+                modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection()
+
             if ( promises.length === 0 ) {
 
                 const result : ModificationMass_UserSelections_ComponentData = {
                     staticModificationsData,
                     variableModificationsData,
-                    open_ModificationsData
+                    open_ModificationsData,
+                    showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection_Data
                 }
 
                 resolve_TopLevel(result);
@@ -168,7 +172,8 @@ const modificationMass_UserSelections_BuildData_ForReactComponent = function({
                     const result : ModificationMass_UserSelections_ComponentData = {
                         staticModificationsData,
                         variableModificationsData,
-                        open_ModificationsData
+                        open_ModificationsData,
+                        showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection_Data
                     }
 
                     resolve_TopLevel(result);

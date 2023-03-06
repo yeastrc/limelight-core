@@ -13,18 +13,19 @@ import {
 import {CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
+import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_DataClasses";
 
 /**
  * Remove from reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId for selected NOT
  */
 export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections = function (
     {
-        reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+        reportedPeptideIds_ProteinId_Params_PassedIn,
         OR_AND_Results,    // OR and AND Selected values
         NOT_Selection_Results_Array,       // NOT Selected values to remove
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     } : {
-        reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: Array<number>
+        reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
         OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
         NOT_Selection_Results_Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId:
@@ -83,7 +84,7 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
     if ( promises.length === 0 ) {
 
         const result = _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections_AfterGetData({
-            reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+            reportedPeptideIds_ProteinId_Params_PassedIn,
             OR_AND_Results,    // ANY and AND Selected values
             NOT_Selection_Results_Array,       // NOT Selected values to remove
             psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
@@ -103,7 +104,7 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
             promises_All.then(noValue => {
                 try {
                     const result = _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections_AfterGetData({
-                        reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+                        reportedPeptideIds_ProteinId_Params_PassedIn,
                         OR_AND_Results,    // ANY and AND Selected values
                         NOT_Selection_Results_Array,       // NOT Selected values to remove
                         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
@@ -132,12 +133,12 @@ export const peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
  */
 const _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_RemoveFor_NOT_Selections_AfterGetData = function (
     {
-        reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId,
+        reportedPeptideIds_ProteinId_Params_PassedIn,
         OR_AND_Results,    // ANY and AND Selected values
         NOT_Selection_Results_Array,       // NOT Selected values to remove
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
     } : {
-        reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId: Array<number>
+        reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
         OR_AND_Results: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS
         NOT_Selection_Results_Array: Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>
         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
@@ -169,7 +170,7 @@ const _peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_Sing
 
         //  populate for reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId
         {
-            for (const reportedPeptideId of reportedPeptideIds_All_ForSearch_Or_All_For_SingleProteinSequenceVersionId) {
+            for (const reportedPeptideId of reportedPeptideIds_ProteinId_Params_PassedIn.reportedPeptideIds_StartingPointForFiltering) {
 
                 const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
                     reportedPeptideId, psmIds_Include: undefined

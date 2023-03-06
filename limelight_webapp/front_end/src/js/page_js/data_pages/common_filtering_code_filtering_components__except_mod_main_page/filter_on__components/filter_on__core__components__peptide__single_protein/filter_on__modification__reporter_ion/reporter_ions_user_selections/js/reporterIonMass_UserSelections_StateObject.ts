@@ -22,6 +22,7 @@ import {
 	ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Set__Pre_Post_Set_ENUM,
 	ModificationMass_ReporterIon__UserSelections__Coordinator__Selection__Updated__Callback,
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinator_Class";
+import {CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 
 
 ///  Constants for encoding/decoding state for storage on URL
@@ -174,6 +175,15 @@ export class ReporterIonMass_UserSelections_StateObject {
 	 */
 	is_ReporterIon_Selected(mass: number): boolean {
 		return this._reporterIonsSelected.has(mass);
+	}
+
+	get_ReporterIon_SelectionEntries() : Array<{ mass: number, selectionType: SingleProtein_Filter_PerUniqueIdentifier_Entry  }> {
+
+		const result : Array<{ mass: number, selectionType: SingleProtein_Filter_PerUniqueIdentifier_Entry  }> = []
+		for ( const mapEntry of this._reporterIonsSelected.entries() ) {
+			result.push({ mass: mapEntry[0], selectionType: mapEntry[1] })
+		}
+		return result;
 	}
 
 	/**

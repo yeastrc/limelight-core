@@ -12,7 +12,14 @@ import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceCoverageData_Fo
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 
-/////////  AT FILE BOTTOM:  export class Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON
+/////////   CURRENTLY AT FILE BOTTOM:
+
+// export class Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON {
+//
+//     static getReportedPeptideIdsForDisplay_ProteinPositionsSelected = _getReportedPeptideIdsForDisplay_ProteinPositionsSelected
+//     static getReportedPeptideIdsForDisplay_ProteinPositionsSelected_ReturnPromise = _getReportedPeptideIdsForDisplay_ProteinPositionsSelected_ReturnPromise
+// }
+
 
 
 /**
