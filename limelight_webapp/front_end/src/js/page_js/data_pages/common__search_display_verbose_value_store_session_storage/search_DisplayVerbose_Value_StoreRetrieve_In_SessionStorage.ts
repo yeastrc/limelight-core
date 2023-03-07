@@ -18,7 +18,7 @@ export class Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage {
      */
     static get_Value() : boolean {
 
-        let verbose = true // default to true
+        let verbose = false // default to false
 
         const storedValueJSON = window.sessionStorage.getItem(_SESSION_STORAGE_KEY__limelight_search_display_verbose_value )
         if ( ! storedValueJSON ) {
