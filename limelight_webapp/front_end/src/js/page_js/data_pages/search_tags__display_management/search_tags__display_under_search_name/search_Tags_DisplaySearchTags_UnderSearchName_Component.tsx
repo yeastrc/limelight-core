@@ -13,6 +13,8 @@ import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensiti
 
 /////
 
+const _UNCATEGORIZED_LABEL_CONSTANT = "Uncategorized"
+
 /**
  * Currently same as class Search_Tags_SelectSearchTags_Component_SearchTagData_Root
  * so can receive same data.
@@ -238,7 +240,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                                 continue;
                             }
 
-                            const tagElement = this._render_SingleSearchTag(tagEntry);
+                            const tagElement = this._render_SingleSearchTag({ tag_Internal: tagEntry, category_label: categoryEntry.tagCategory_Entry.category_label });
                             searchTags_Elements.push(tagElement)
                         }
                     } else {
@@ -280,7 +282,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                                 continue;
                             }
 
-                            const tagElement = this._render_SingleSearchTag(tagEntry);
+                            const tagElement = this._render_SingleSearchTag({ tag_Internal: tagEntry, category_label: _UNCATEGORIZED_LABEL_CONSTANT });
                             searchTags_Elements.push(tagElement)
                         }
 
@@ -289,7 +291,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
                                 <React.Fragment>
                                     {/*  column 1:  Category Label  */}
                                     <div style={ categoryLabel_Style }>
-                                        Uncategorized:
+                                        { _UNCATEGORIZED_LABEL_CONSTANT + ":"  }
                                     </div>
                                     {/*  column 2:  Search Tags  */}
                                     <div>
@@ -309,15 +311,33 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
 
                     const searchTag_ElementArray: Array<JSX.Element> = []
 
-                    for (const tagEntry of this.state.searchTagData_Display_Root.searchTags_All_Array_In_DisplayOrder) {
+                    if ( this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
+                        for ( const categoryEntry of this.state.searchTagData_Display_Root.searchTagCategory_Array_In_DisplayOrder ) {
 
-                        if (!this.props.searchTagIds_OnSearch_Set.has(tagEntry.tag_Entry.tagId)) {
-                            //  Search does not have this tag id so skip
-                            continue;
+                            for (const tagEntry of categoryEntry.all_SearchTags_InCategory_In_DisplayOrder) {
+
+                                if (!this.props.searchTagIds_OnSearch_Set.has(tagEntry.tag_Entry.tagId)) {
+                                    //  Search does not have this tag id so skip
+                                    continue;
+                                }
+
+                                const tagElement = this._render_SingleSearchTag({ tag_Internal: tagEntry, category_label: categoryEntry.tagCategory_Entry.category_label });
+                                searchTag_ElementArray.push(tagElement)
+                            }
                         }
+                    }
+                    if ( this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder ) {
 
-                        const tagElement = this._render_SingleSearchTag(tagEntry);
-                        searchTag_ElementArray.push(tagElement)
+                        for (const tagEntry of this.state.searchTagData_Display_Root.searchTags_Uncategorized_Array_In_DisplayOrder) {
+
+                            if (!this.props.searchTagIds_OnSearch_Set.has(tagEntry.tag_Entry.tagId)) {
+                                //  Search does not have this tag id so skip
+                                continue;
+                            }
+
+                            const tagElement = this._render_SingleSearchTag({ tag_Internal: tagEntry, category_label: _UNCATEGORIZED_LABEL_CONSTANT });
+                            searchTag_ElementArray.push(tagElement)
+                        }
                     }
 
                     searchTagsOnly_Element = (
@@ -398,7 +418,13 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
      * @param tag_Internal
      * @private
      */
-    private _render_SingleSearchTag( tag_Internal: INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry ) : JSX.Element {
+    private _render_SingleSearchTag(
+        {
+            tag_Internal, category_label
+        } : {
+            tag_Internal: INTERNAL__Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry
+            category_label: string
+        }) : JSX.Element {
 
         const tag_Entry = tag_Internal.tag_Entry
 
@@ -410,6 +436,7 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             <div
                 key={ tag_Entry.tagId }
                 style={ div_Outer_Style }
+                title={ "Category: " + category_label + "\n" + "Tag: " + tag_Entry.tagString }
             >
                 <div
                     className=" search-tag-display-everywhere "
