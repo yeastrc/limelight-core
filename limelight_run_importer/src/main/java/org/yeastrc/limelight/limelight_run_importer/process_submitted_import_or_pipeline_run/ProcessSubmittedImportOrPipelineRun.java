@@ -26,11 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.constants.RunImporterToImporterParameterNamesConstants;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.import_and_pipeline_run.database_update_with_transaction_services.Update_FileImportAndPipelineRun_TrackingTrackingRunRecordsDBTransaction;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.constants.RunImporterCommandConstants;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_run_importer.on_import_finish.On_ImportOrRunPipeline_Finish_CallWebService;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommand;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommandResponse;
@@ -76,6 +78,8 @@ public class ProcessSubmittedImportOrPipelineRun {
 	private volatile boolean shutdownRequested = false;
 	private volatile RunSystemCommand runSystemCommand;
 	
+	private volatile ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main;
+	
 	/**
 	 * awaken thread to allow shutdown
 	 */
@@ -101,6 +105,16 @@ public class ProcessSubmittedImportOrPipelineRun {
 		} catch ( NullPointerException e ) {
 			//  Eat the NullPointerException since that meant that nothing had to be done.
 		}
+		
+		try {
+			if ( importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main != null ) {
+				importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.shutdown();
+			}
+			
+		} catch ( Throwable t ) {
+			
+		}
+		
 		log.error( "shutdown() called. Called runSystemCommand.shutdown() Now calling awaken()");
 		awaken();
 	}
@@ -115,6 +129,29 @@ public class ProcessSubmittedImportOrPipelineRun {
 			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_Start();
 			
 			processSubmittedImport__MainInternal(FileImport_AndPipelineRun_TrackingDTOTrackingRunDTOPairfileImport_AndPipelineRun_TrackingDTOTrackingRunDTOPair);
+
+
+			if ( ! shutdownRequested ) {  
+				
+				//  Delete All Status Success Except Last 2, All Status Failed Except Last 2
+				
+				//  Should be at most 1 delete here since this is also called from a background thread on startup and every 24 hours after that
+				
+				try {
+					ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
+							
+					importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main = ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance();
+					
+					importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
+					
+				} catch ( Throwable t ) {
+					
+					log.error( "Failed to call importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);", t);
+					
+				} finally {
+					importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main = null;
+				}
+			}
 			
 		} finally {
 			

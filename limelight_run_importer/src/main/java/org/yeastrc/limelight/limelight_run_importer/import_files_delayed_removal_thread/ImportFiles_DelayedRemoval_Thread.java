@@ -24,6 +24,8 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_vers
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main_and_searcher.ImportFiles_DelayedRemoval_Main;
 
 /**
@@ -156,6 +158,9 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 		synchronized (this) {
 			this.keepRunning = false;
 		}
+		
+		this.shutdown();
+		
 		this.awaken();
 	}
 
@@ -168,6 +173,10 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 		keepRunning = false;
 		
 		ImportFiles_DelayedRemoval_Main.getSingletonInstance().shutdown();
+		
+		ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance().shutdown();
+		
+		ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main.getSingletonInstance().shutdown();
 	
 		awaken();
 		log.warn( "Exiting shutdown()" );
@@ -255,6 +264,11 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 				
 				ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
 				
+				//  Do same processing for Import and Pipeline Run
+
+				ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance().importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
+				
+				ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
 				
 				///////////////
 				
