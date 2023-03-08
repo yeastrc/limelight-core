@@ -13,6 +13,7 @@ import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 
 /**
@@ -124,6 +125,43 @@ public class ImportFiles_DelayedRemoval_Main {
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
+
+		{  //  Delete All Status Success Except Last 2
+			
+			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
+					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
+					.getAll_TrackingId_For_Status( FileImportStatus.COMPLETE, importRunImporterDBConnectionFactory);
+			
+			//  Delete last 2 entries if exist
+			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
+				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			}
+			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
+				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			}
+			
+			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
+		}
+
+		{  //  Delete All Status Fail Except Last 2
+			
+			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
+					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
+					.getAll_TrackingId_For_Status( FileImportStatus.FAILED, importRunImporterDBConnectionFactory);
+
+			//  Delete last 2 entries if exist
+			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
+				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			}
+			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
+				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			}
+			
+			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
+		}
+		
+		
+		
 		if ( keepRunning ){
 			
 			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
@@ -134,12 +172,16 @@ public class ImportFiles_DelayedRemoval_Main {
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
+		
+		
 		if ( keepRunning ){
 		
 			//  Delete SubDirs that are NOT in the Tracking Table
 			
 			delete_Directories_NOT_IN_trackingIdList(importRunImporterDBConnectionFactory);
 		}
+		
+		
 		if ( keepRunning ){
 			
 			//  Delete SubDirs under upload_file_temp_base_dir that are over 15 days old
