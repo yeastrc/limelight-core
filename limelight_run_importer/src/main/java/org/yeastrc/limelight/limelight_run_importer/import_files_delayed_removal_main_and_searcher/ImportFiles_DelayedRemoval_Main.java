@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
+import org.yeastrc.limelight.limelight_run_importer.import_files_remove_success_failed_except_last_2_main_and_searcher.ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 
 /**
@@ -45,6 +45,8 @@ public class ImportFiles_DelayedRemoval_Main {
 	}
 	
 	/////////////
+	
+	private volatile ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main importFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
 
 	private volatile boolean keepRunning = true;
 	/**
@@ -52,6 +54,17 @@ public class ImportFiles_DelayedRemoval_Main {
 	 */
 	public void shutdown() {
 		log.debug( "shutdown() Called" );
+		
+	
+		try {
+			if ( importFiles_Remove_SuccessFailed_ExceptLastTwo_Main != null ) {
+				importFiles_Remove_SuccessFailed_ExceptLastTwo_Main.shutdown();
+			}
+			
+		} catch ( Throwable t ) {
+			
+		}
+		
 		keepRunning = false;
 		awaken();
 		log.info( "Exiting shutdown()" );
@@ -126,43 +139,21 @@ public class ImportFiles_DelayedRemoval_Main {
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
 
-		{  //  Delete All Status Success Except Last 2
+		if ( keepRunning ) {  //  Delete All Status Success Except Last 2, All Status Failed Except Last 2
 			
-			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
-					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
-					.getAll_TrackingId_For_Status( FileImportStatus.COMPLETE, importRunImporterDBConnectionFactory);
-			
-			//  Delete last 2 entries if exist
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			try {
+				importFiles_Remove_SuccessFailed_ExceptLastTwo_Main = ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance();
+				
+				importFiles_Remove_SuccessFailed_ExceptLastTwo_Main.importFiles_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
+				
+			} finally {
+				importFiles_Remove_SuccessFailed_ExceptLastTwo_Main = null;
 			}
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
-			}
-			
-			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
-		}
-
-		{  //  Delete All Status Fail Except Last 2
-			
-			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
-					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
-					.getAll_TrackingId_For_Status( FileImportStatus.FAILED, importRunImporterDBConnectionFactory);
-
-			//  Delete last 2 entries if exist
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
-			}
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
-			}
-			
-			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}
 		
 		
 		
-		if ( keepRunning ){
+		if ( keepRunning ) {
 			
 			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
 			
@@ -174,7 +165,7 @@ public class ImportFiles_DelayedRemoval_Main {
 		}
 		
 		
-		if ( keepRunning ){
+		if ( keepRunning ) {
 		
 			//  Delete SubDirs that are NOT in the Tracking Table
 			
@@ -182,11 +173,11 @@ public class ImportFiles_DelayedRemoval_Main {
 		}
 		
 		
-		if ( keepRunning ){
+		if ( keepRunning ) {
 			
-			//  Delete SubDirs under upload_file_temp_base_dir that are over 15 days old
+			//  Delete SubDirs under upload_file_temp_base_dir that are over X days old
 			
-			delete_Directories_In_FileUploadSubDir__Over_15_Days_Old();
+			delete_Directories_In_FileUploadSubDir__Over_X_Days_Old();
 		}
 	}
 	
@@ -312,9 +303,11 @@ public class ImportFiles_DelayedRemoval_Main {
 	 * @throws Exception 
 	 * 
 	 */
-	private void delete_Directories_In_FileUploadSubDir__Over_15_Days_Old() throws Exception {
+	private void delete_Directories_In_FileUploadSubDir__Over_X_Days_Old() throws Exception {
+		
+		final long NUMBER_OF_DAYS_TO_WAIT_TO_DELETE = 1;  // 1 since now Webapp only uploads files once user clicks "Submit Upload" to submit everything
 
-		long now_Minus_15_Days = System.currentTimeMillis() - ( 15 * TWENTY_FOUR_HOURS__IN_MILLISECONDS );
+		long now_Minus_X_Days = System.currentTimeMillis() - ( NUMBER_OF_DAYS_TO_WAIT_TO_DELETE * TWENTY_FOUR_HOURS__IN_MILLISECONDS );
 		
 		File limelight_XML_Importer_Work_Directory =
 				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
@@ -330,28 +323,28 @@ public class ImportFiles_DelayedRemoval_Main {
 		
 		for ( File subDir : uploadFileBaseDir.listFiles() ) {
 			
-			//  delete it if it was last modified before 15 days ago
+			//  delete it if it was last modified before X days ago
 
-			boolean lastModified_Before_15_DaysAgo = false;
+			boolean lastModified_Before_X_DaysAgo = false;
 
-			if ( subDir.lastModified() < now_Minus_15_Days ) {
+			if ( subDir.lastModified() < now_Minus_X_Days ) {
 
-				//  subDir Last Modified before 15 days ago 
+				//  subDir Last Modified before X days ago 
 
-				lastModified_Before_15_DaysAgo = true;
+				lastModified_Before_X_DaysAgo = true;
 
-				//  Last Modified before 15 days ago so confirm all contents at root level also before 5 days ago
+				//  Last Modified before X days ago so confirm all contents at root level also before 5 days ago
 
 				for ( File subDir_Entry : subDir.listFiles() ) {
 
-					if ( subDir_Entry.lastModified() > now_Minus_15_Days ) {
+					if ( subDir_Entry.lastModified() > now_Minus_X_Days ) {
 
-						lastModified_Before_15_DaysAgo = false; // Set back false since after 5 days ago
+						lastModified_Before_X_DaysAgo = false; // Set back false since after 5 days ago
 						break;
 					}
 				}
 			}
-			if ( lastModified_Before_15_DaysAgo ) {
+			if ( lastModified_Before_X_DaysAgo ) {
 
 				DeleteDirectoryAndContents.getInstance().deleteDirectoryAndContents(subDir);
 			}

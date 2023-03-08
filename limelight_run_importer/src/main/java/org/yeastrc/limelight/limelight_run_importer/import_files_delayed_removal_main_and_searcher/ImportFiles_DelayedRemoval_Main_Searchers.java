@@ -124,54 +124,7 @@ public class ImportFiles_DelayedRemoval_Main_Searchers {
 
 		return results;
 	}
-		
-	/////
-
-	private static final String GET_ID_FOR_STATUS___SQL = 
 			
-			"SELECT id, last_updated_date_time FROM file_import_tracking_tbl "
-			+ " WHERE status_id = ? "
-			+ " ORDER BY id ";
-
-	/**
-	 * Get import tracking item id list of items in COMPLETE or FAILED status
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Integer> getAll_TrackingId_For_Status( FileImportStatus fileImportStatus, ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory ) throws Exception {
-
-
-		List<Integer> results = new ArrayList<>( 100000 );
-
-		final String sql = GET_ID_FOR_STATUS___SQL;
-
-
-		try ( Connection dbConnection = importRunImporterDBConnectionFactory.getConnection() ) {
-
-			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
-				
-				pstmt.setInt( 1, fileImportStatus.value() );
-
-				try ( ResultSet rs = pstmt.executeQuery() ) {
-
-					while ( rs.next() ) {
-
-						results.add( rs.getInt( "id" ) );
-					}
-				}
-			}
-		} catch ( Exception e ) {
-
-			String msg = "getAll_TrackingId_For_Status(...), sql: " + sql;
-
-			log.error( msg, e );
-
-			throw e;
-		}
-
-		return results;
-	}
-	
 	////
 
 	private static final String GET_STATUS__STARTED__OVER_15_DAYS_AGO_SQL = 

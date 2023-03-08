@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.constants.RunImporterToImporterParameterNamesConstants;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.database_update_with_transaction_services.UpdateTrackingTrackingRunRecordsDBTransaction;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
@@ -34,6 +35,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigD
 import org.yeastrc.limelight.limelight_run_importer.constants.RunImporterCommandConstants;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
+import org.yeastrc.limelight.limelight_run_importer.import_files_remove_success_failed_except_last_2_main_and_searcher.ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_run_importer.on_import_finish.On_ImportLimelightXMLScanFile_Finish_CallWebService;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommand;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommandResponse;
@@ -77,7 +79,9 @@ public class ProcessSubmittedImport {
 	
 	private volatile boolean shutdownRequested = false;
 	private volatile RunSystemCommand runSystemCommand;
-	
+
+	private volatile ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main importFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
+
 	/**
 	 * awaken thread to allow shutdown
 	 */
@@ -100,9 +104,19 @@ public class ProcessSubmittedImport {
 			if ( runSystemCommand != null ) {
 				runSystemCommand.shutdown();
 			}
-		} catch ( NullPointerException e ) {
+		} catch ( Throwable e ) {
 			//  Eat the NullPointerException since that meant that nothing had to be done.
 		}
+
+		try {
+			if ( importFiles_Remove_SuccessFailed_ExceptLastTwo_Main != null ) {
+				importFiles_Remove_SuccessFailed_ExceptLastTwo_Main.shutdown();
+			}
+			
+		} catch ( Throwable t ) {
+			
+		}
+		
 		log.error( "shutdown() called. Called runSystemCommand.shutdown() Now calling awaken()");
 		awaken();
 	}
@@ -117,11 +131,36 @@ public class ProcessSubmittedImport {
 			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_Start();
 			
 			processSubmittedImport__MainInternal(trackingDTOTrackingRunDTOPair);
+
+
+			if ( ! shutdownRequested ) {  
+				
+				//  Delete All Status Success Except Last 2, All Status Failed Except Last 2
+				
+				//  Should be at most 1 delete here since this is also called from a background thread on startup and every 24 hours after that
+				
+				try {
+					ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.getMainSingletonInstance();
+							
+					importFiles_Remove_SuccessFailed_ExceptLastTwo_Main = ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance();
+					
+					importFiles_Remove_SuccessFailed_ExceptLastTwo_Main.importFiles_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
+					
+				} catch ( Throwable t ) {
+					
+					log.error( "Failed to call importFiles_Remove_SuccessFailed_ExceptLastTwo_Main.importFiles_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);", t);
+					
+				} finally {
+					importFiles_Remove_SuccessFailed_ExceptLastTwo_Main = null;
+				}
+			}
 			
 		} finally {
 			
 			Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().importerIsRunning_End();
 		}
+		
+		
 	}
 	
 	/**
