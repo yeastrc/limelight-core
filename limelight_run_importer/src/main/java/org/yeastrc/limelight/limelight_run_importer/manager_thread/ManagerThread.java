@@ -483,6 +483,18 @@ public class ManagerThread extends Thread {
 		} else {
 			log.info( "In processStopProcessingNewImportsRequest(): getImportAndProcessThread == null" );
 		}
+
+		//  call importAndPipelineRun_Thread.stopRunningAfterProcessingImport();
+		if ( importAndPipelineRun_Thread != null ) {
+			try {
+				importAndPipelineRun_Thread.stopRunningAfterProcessingImport();
+			} catch (Throwable e) {
+				log.error( "In processStopProcessingNewImportsRequest(): call to importAndPipelineRun_Thread.stopRunningAfterProcessingImport() threw Throwable " + e.toString(), e );
+			}
+		} else {
+			log.info( "In processStopProcessingNewImportsRequest(): importAndPipelineRun_Thread == null" );
+		}
+		
 		waitForGetImportAndProcessThread();
 		
 		waitFor_ImportAndPipelineRun_Thread();
@@ -509,6 +521,18 @@ public class ManagerThread extends Thread {
 		} else {
 			log.info( "In processStopProcessingNewImportsRequest(): getImportAndProcessThread == null" );
 		}
+		
+		//  call importAndPipelineRun_Thread.shutdown();
+		if ( importAndPipelineRun_Thread != null ) {
+			try {
+				importAndPipelineRun_Thread.shutdown();
+			} catch (Throwable e) {
+				log.error( "In processStopProcessingNewImportsRequest(): call to importAndPipelineRun_Thread.shutdown() threw Throwable " + e.toString(), e );
+			}
+		} else {
+			log.info( "In processStopProcessingNewImportsRequest(): importAndPipelineRun_Thread == null" );
+		}
+				
 		keepRunning = false;  // Set thread of the current object to exit main processing loop.
 		awaken();  // send notify() to to the thread of the current object to start it so it will exit.
 		boolean managerThreadExited = false;
@@ -526,7 +550,13 @@ public class ManagerThread extends Thread {
 				managerThreadExited = true;
 			}
 		}
+		
 		waitForGetImportAndProcessThread();
+		
+		waitFor_ImportAndPipelineRun_Thread();
+		
+		log.warn( "INFO::  Shutdown and wait for finish of threads getImportAndProcessThread and importAndPipelineRun_Thread is COMPLETE ");
+		
 		//  TODO   Update process status in DB to about to shut down or shut down
 	}
 
