@@ -116,20 +116,6 @@ public class ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers {
 			+ " INNER JOIN file_import_tracking_run_tbl ON file_import_tracking_tbl.id = file_import_tracking_run_tbl.file_import_tracking_id "
 			+ " WHERE file_import_tracking_tbl.status_id = ?";
 	
-//	CREATE TABLE IF NOT EXISTS `limelight`.`file_import_tracking_tbl` (
-//			  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-//			  `project_id` INT UNSIGNED NOT NULL,
-//			  `priority` TINYINT NOT NULL,
-//			  `user_id` INT UNSIGNED NOT NULL,
-//			  `status_id` TINYINT UNSIGNED NOT NULL,
-//			  
-//			  CREATE TABLE IF NOT EXISTS `limelight`.`file_import_tracking_run_tbl` (
-//					  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-//					  `file_import_tracking_id` INT UNSIGNED NOT NULL,
-//					  `current_run` TINYINT UNSIGNED NULL,
-//					  `status_id` TINYINT UNSIGNED NOT NULL,
-//					  `importer_sub_status_id` TINYINT UNSIGNED NULL,			  
-
 	/**
 	 * Get import tracking item id list of items in COMPLETE or FAILED status
 	 * @return

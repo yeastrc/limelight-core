@@ -1,14 +1,21 @@
 package org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.constants.FileImportPipelineRunCommonConstants;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.enum_classes.FileImportAndPipelineRun_SubStatus;
 
 /**
  * 
@@ -102,20 +109,78 @@ public class ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main {
 		}
 
 		if ( keepRunning ) {  //  Delete All Status Fail Except Last 2
-			
-			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
-					ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers.getSingletonInstance()
-					.getAll_TrackingId_For_Status( FileImportStatus.FAILED, importRunImporterDBConnectionFactory);
 
-			//  Delete last 2 entries if exist
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
-			}
-			if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
-				fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+			List<Integer> fileImportTrackingIddList_To_Delete_Directories = null;
+			
+			{
+				List<Integer> fileImportTrackingIddList_ForFailedStatus =
+						ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers.getSingletonInstance()
+						.getAll_TrackingId_For_Status( FileImportStatus.FAILED, importRunImporterDBConnectionFactory);
+
+				if ( ! fileImportTrackingIddList_ForFailedStatus.isEmpty() ) {
+
+					//  Remove/SKIP all fileImportTrackingId where last run is System Error
+
+					Map<Integer, ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem> trackingId_TrackingRunId_SubStatus_Map_Key_TrackingId = 
+							new HashMap<>( fileImportTrackingIddList_ForFailedStatus.size() );
+
+					List<ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem> getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultList = 
+							ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers.getSingletonInstance()
+							.getAll_TrackingId_TrackingRunId_SubStatus_For_Status( FileImportStatus.FAILED, importRunImporterDBConnectionFactory);
+
+					for ( ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem trackingId_TrackingRunId_SubStatus_Entry : getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultList ) {
+						
+						ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem entryFromMap = 
+								trackingId_TrackingRunId_SubStatus_Map_Key_TrackingId.get( trackingId_TrackingRunId_SubStatus_Entry.trackingId );
+						if ( entryFromMap == null ) {
+							trackingId_TrackingRunId_SubStatus_Map_Key_TrackingId.put( trackingId_TrackingRunId_SubStatus_Entry.trackingId, trackingId_TrackingRunId_SubStatus_Entry );
+						} else {
+							if ( trackingId_TrackingRunId_SubStatus_Entry.trackingRunId > entryFromMap.trackingRunId ) {
+								//   New entry has larger run id (later run) so replace entry in map with new entry
+								trackingId_TrackingRunId_SubStatus_Map_Key_TrackingId.put( trackingId_TrackingRunId_SubStatus_Entry.trackingId, trackingId_TrackingRunId_SubStatus_Entry );
+							}
+						}
+					}
+					
+					fileImportTrackingIddList_To_Delete_Directories = new ArrayList<>( fileImportTrackingIddList_ForFailedStatus.size() );
+					
+					for ( Integer fileImportTrackingId_FailedStatus : fileImportTrackingIddList_ForFailedStatus ) {
+						
+						boolean deleteDirFor__fileImportTrackingId_FailedStatus = true;
+						
+						{
+							ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem entryFromMap = 
+									trackingId_TrackingRunId_SubStatus_Map_Key_TrackingId.get( fileImportTrackingId_FailedStatus );
+
+							if ( entryFromMap != null && entryFromMap.trackingRun_SubStatusId == FileImportAndPipelineRun_SubStatus.SYSTEM_ERROR.value() ) {
+
+								deleteDirFor__fileImportTrackingId_FailedStatus = false;  // NOT delete System Error
+							}
+						}
+						
+						if ( deleteDirFor__fileImportTrackingId_FailedStatus ) {
+							fileImportTrackingIddList_To_Delete_Directories.add( fileImportTrackingId_FailedStatus );
+						}
+					}
+				}
 			}
 			
-			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
+			if ( fileImportTrackingIddList_To_Delete_Directories != null ) {
+				
+				//  Sort in ascending order
+				
+				Collections.sort( fileImportTrackingIddList_To_Delete_Directories );
+
+				//  Delete last 2 entries if exist
+				if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 2 ) {
+					fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+				}
+				if ( fileImportTrackingIddList_To_Delete_Directories.size() >= 1 ) {
+					fileImportTrackingIddList_To_Delete_Directories.remove( fileImportTrackingIddList_To_Delete_Directories.size() - 1 );
+				}
+
+				delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
+			}
 		}
 	}
 	
