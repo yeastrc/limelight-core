@@ -69,6 +69,8 @@ public class CallSubmitImportWebservice {
 	private static final int HTTP_RETURN_CODE__SUCCESS = 200;
 	
 	private static final int HTTP_RETURN_CODE__ERROR_REDIRECT = 302;
+
+	private static final int HTTP_RETURN_CODE__ERROR_BAD_INPUT = 400;
 	
 	private static final String CONTENT_TYPE_SEND_RECEIVE = "application/xml";
 	
@@ -653,6 +655,14 @@ public class CallSubmitImportWebservice {
 					}
 				}
 			}
+
+			System.out.println( "webserviceURL: " + webserviceURL );
+			
+			System.out.println( "fileToSendAsStream: " + fileToSendAsStream );
+			if ( fileToSendAsStream != null ) {
+				System.out.println( "fileToSendAsStream.getAbsolutePath() : " + fileToSendAsStream.getAbsolutePath() );
+			}
+			
 			try {
 				int httpResponseCode = httpURLConnection.getResponseCode();
 				if ( httpResponseCode != HTTP_RETURN_CODE__SUCCESS ) {
@@ -665,16 +675,27 @@ public class CallSubmitImportWebservice {
 					if ( httpResponseCode == HTTP_RETURN_CODE__ERROR_REDIRECT ) {
 						msgForStatusCode = 
 								".  Status code 302 means that a redirect was returned.  Please the URL in a browser and note what was returned and update the url used based on that (only use first part like in existing URL configuration.  Base URL from main submit program:  " 
-								+ webappServerBaseURL ;
+										+ webappServerBaseURL ;
 					}
-					LimelightSubmitImportWebserviceCallErrorException wcee = 
-							new LimelightSubmitImportWebserviceCallErrorException( "Unsuccessful HTTP response code of " + httpResponseCode
-									+ " connecting to server at URL: " + webserviceURL + msgForStatusCode );
-					wcee.setBadHTTPStatusCode(true);
-					wcee.setHttpStatusCode( httpResponseCode );
-					wcee.setWebserviceURL( webserviceURL );
-					wcee.setErrorStreamContents( errorStreamContents );
-					throw wcee;
+					if ( httpResponseCode != HTTP_RETURN_CODE__ERROR_BAD_INPUT 
+							|| 
+							( httpResponseCode != HTTP_RETURN_CODE__ERROR_BAD_INPUT 
+							&& ( ! SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL.equals( webserviceURL ) ) ) ) {
+						
+						//  NOT performed when 400 status and URL is SUBMIT_IMPORT_UPLOAD_FILE_WEBSERVICE_SUB_URL since a response is returned from that webservice when 400 error
+						
+						LimelightSubmitImportWebserviceCallErrorException wcee = 
+								new LimelightSubmitImportWebserviceCallErrorException( "Unsuccessful HTTP response code of " + httpResponseCode
+										+ " connecting to server at URL: " + webserviceURL + msgForStatusCode );
+						wcee.setBadHTTPStatusCode(true);
+						wcee.setHttpStatusCode( httpResponseCode );
+						wcee.setWebserviceURL( webserviceURL );
+						wcee.setErrorStreamContents( errorStreamContents );
+						throw wcee;
+					}
+					
+					return errorStreamContents;
+					
 				}
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
@@ -689,6 +710,11 @@ public class CallSubmitImportWebservice {
 				wcee.setErrorStreamContents( errorStreamContents );
 				throw wcee;
 			}
+			
+			System.out.println( "webserviceURL: " + webserviceURL );
+			
+			System.out.println( "httpURLConnection.getContentLength(): " + httpURLConnection.getContentLength() );
+			
 			//  Get response XML from server
 			ByteArrayOutputStream outputStreamBufferOfServerResponse = new ByteArrayOutputStream( 1000000 );
 			InputStream inputStream = null;

@@ -468,6 +468,11 @@ public class SubmitUploadMain {
 						if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
 
 							System.err.println( "FAILED sending Limelight XML file to server: " + limelightXMLFile.getCanonicalPath() );
+							
+							if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
+							
+								System.err.println( "Limelight XML file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+							}
 
 							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
 
@@ -525,6 +530,15 @@ public class SubmitUploadMain {
 						if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
 
 							System.err.println( "FAILED sending FASTA file to server: " + fastaFile.getCanonicalPath() );
+
+							if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
+							
+								System.err.println( "FASTA file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+							}
+							if ( submitImport_UploadFile_Response.getFastaFile_InvalidContents() != null &&  submitImport_UploadFile_Response.getFastaFile_InvalidContents().booleanValue() ) {
+
+								System.err.println( "FASTA file is invalid.  It does not start with '>' or is not ASCII text." );
+							}
 
 							System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
 
@@ -585,6 +599,11 @@ public class SubmitUploadMain {
 							if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
 
 								System.err.println( "FAILED sending Scan file to server: " + scanFile.getCanonicalPath() );
+								
+								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
+								
+									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+								}
 
 								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
 
