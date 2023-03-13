@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+##    Runs limelightSubmitImport.jar
+
+#  Works when run through a sym link:
+path_of_script="$(dirname "$(readlink -f "$0")")"
+
+#  Jar File to run
+jarFileToRun=limelightSubmitImport.jar
+
+#  Java JVM parameters
+default_params='-Xmx512m '
+jvm_parameters=${LIMELIGHT_SUBMIT_JAVA_PARAMS:-$default_params}
+
+# "$@"  is all command line arguments
+
+java ${jvm_parameters} -Drun_dir=`pwd` -jar ${path_of_script}/${jarFileToRun} \
+ "$@"
