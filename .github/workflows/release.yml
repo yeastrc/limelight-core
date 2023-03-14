@@ -40,6 +40,7 @@ jobs:
     - name: Login to quay.io
       uses: docker/login-action@v1
       with:
+        registry: ${{ env.QUAY_REPO_REGISTRY }}
         username: ${{ secrets.QUAY_USER }}
         password: ${{ secrets.QUAY_PASSWORD }}
     - name: Docker meta for webapp
