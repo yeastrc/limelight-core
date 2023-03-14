@@ -38,6 +38,21 @@ services:
     volumes:
       - ${BLIB_DESTINATION_DIR}:/data/app/blibdir
       - ${BLIB_WORK_DIR}:/data/app/workdir
+  feature-detection:
+    image: mriffle/limelight-feature-detection-service:1
+    container_name: limelight-feature-detection-service
+    restart: always
+    labels:
+      - traefik.enable=false
+    environment:
+      SPECTR_GET_SCAN_DATA_URL: http://spectr:8080/spectral_storage_get_data/query/getScanDataFromScanNumbers_JSON
+      SPECTR_GET_SCAN_NUMBERS_URL: http://spectr:8080/spectral_storage_get_data/query/getScanNumbers_JSON
+      SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
+      WEBAPP_PORT: 3434
+      APP_CLEAN_WORKDIR: ${FEATURE_DETECTION_CLEAN_WORKDIR:-yes}
+    volumes:
+      - ${FEATURE_DETECTION_FINALDIR:/data/app/finaldir
+      - ${FEATURE_DETECTION_WORKDIR}:/data/app/workdir
   importer:
     image: mriffle/limelight-importer:3
     container_name: limelight-importer
