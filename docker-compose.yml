@@ -64,7 +64,7 @@ services:
       - feature_detection_finaldir:/data/app/finaldir
       - feature_detection_workdir:/data/app/workdir
   importer:
-    image: mriffle/limelight-importer:4
+    image: mriffle/limelight-importer:4.0.0-rc.1
     container_name: limelight-importer
     restart: always
     depends_on:
@@ -79,7 +79,7 @@ services:
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
   limelight:
-    image: mriffle/limelight-webapp:4
+    image: mriffle/limelight-webapp:4.0.0-rc.1
     container_name: limelight-webapp
     restart: always
     depends_on:
