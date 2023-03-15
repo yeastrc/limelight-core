@@ -577,7 +577,7 @@ public class Limelight_FeatureDetection_Run_Import_Program {
 
 			return importResults;  //  EARLY EXIT
 			
-		} catch ( Exception e ) {
+		} catch ( Throwable e ) {
 			if ( ! shutdownReceivedViaShutdownHook ) {
 				System.out.println( "Exception in processing" );
 				System.err.println( "Exception in processing" );

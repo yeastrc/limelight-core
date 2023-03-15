@@ -20,7 +20,7 @@ import org.yeastrc.limelight.limelight_shared.dto.FeatureDetection_Map_Persisten
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
 /**
- * 
+ *   See file bottom for Pseudo code
  *
  */
 public class Insert_Mapping_Singular_Persistent_ToDB {
@@ -311,3 +311,68 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
     
     
 }
+
+
+
+
+//		Feature Detection Run Id:  int featureDetectionRootId = params.featureDetectionRootId; 
+//		
+//		
+//		Get all Singular Feature Detection Entries for Feature Detection Run Id
+//		
+//		Get all Persistent Feature Detection Entries for Feature Detection Run Id
+//		
+//		Create List of Persistent Feature Detection Internal data objects with each has:
+//			Persistent Feature Detection Entry from DB
+//			Computed values for upper/lower range for mz and RT
+//			
+//			created:  List<Internal__PersistentFeatureData_Item> internal__PersistentFeatureData_Item_List
+//			
+//			Sort this list on lower mz ascending
+//		
+//		Group the Singular Feature Detection Entries by their MS1 scan number
+//		
+//			created:  Map<Integer, Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item> singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber
+//		
+//		
+//		Loop to Process All Singular Features for a MS1 scan:
+//			(loop through singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber values)
+//			
+//			Loop through Persistent Features:
+//		
+//				Loop through individual Singular Features, all for same MS1 scan number:
+//		
+//					If Singular feature Monoisopic Mass < Persistent Feature lower mz range, skip to next Singular feature
+//						(probably remove this)
+//					
+//					If Singular Feature (SF) Monoisopic Mass within Persistent Feature (PF) lower mz range and upper mz range
+//						( SF Monoisopic Mass >= PF lower mz range && SF Monoisopic Mass <= PF upper mz range)
+//						
+//						Get Scan data for Singular Feature MS1 Scan Number
+//							
+//						If Scan data Retention Time within Persistent Feature (PF) lower rt range and upper rt range
+//							( SF Monoisopic Mass >= PF lower rt range && SF Monoisopic Mass <= PF upper rt range)
+//						
+//							compute difference between Singular Feature Monoisotopic Mass and Persistent Feature Monoisotopic Mass
+//							
+//							if not saved a Singular Feature match yet, 
+//								save the Singular Feature
+//								save the Monoisotopic Mass difference
+//							else
+//								if the current Monoisotopic Mass difference is less than saved difference
+//									//  Have a "better" match so save instead
+//									save the Singular Feature
+//									save the Monoisotopic Mass difference
+//		
+//					If have a Singular Feature Match
+//					
+//						Create Singular to Persistent Feature Mapping record object
+//						
+//						Add to List of objects to insert in a batch
+//						
+//						If batch size is reached, insert to DB and clear the List
+//						
+//		If the batch list has anything in it, insert them.
+//		
+//		
+//		
