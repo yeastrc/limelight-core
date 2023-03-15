@@ -71,6 +71,7 @@ services:
       - db
     volumes:
       - limelight_upload:/data/limelight_upload
+      - feature_detection_finaldir:/data/feature_detection/finaldir
     environment:
       LIMELIGHT_DB_USER: ${MYSQL_USER}
       LIMELIGHT_DB_PASSWORD: ${MYSQL_PASSWORD}
@@ -88,7 +89,6 @@ services:
     volumes:
       - limelight_upload:/data/limelight_upload
       - limelight_blib_downloads:/data/limelight_downloads/blib_exports
-      - feature_detection_finaldir:/data/feature_detection/finaldir
     environment:
       LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}

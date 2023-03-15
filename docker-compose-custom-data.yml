@@ -61,6 +61,7 @@ services:
       - db
     volumes:
       - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
+      - ${FEATURE_DETECTION_FINALDIR}:/data/feature_detection/finaldir
     environment:
       LIMELIGHT_DB_USER: ${MYSQL_USER}
       LIMELIGHT_DB_PASSWORD: ${MYSQL_PASSWORD}
