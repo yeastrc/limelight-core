@@ -30,6 +30,7 @@ jobs:
       run: |
         cp deploy/limelightImporter_XMLFile_ScanFiles.jar docker/importer/
         cp deploy/limelightRunImporter.jar docker/importer/
+        cp deploy/limelight_FeatureDetection_Run_Import.jar docker/importer/
         cp deploy/limelight.war docker/webapp/
         cp deploy/limelightSubmitImport.jar docker/submit-import/
     - name: Login to DockerHub

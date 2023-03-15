@@ -68,6 +68,7 @@ services:
       LIMELIGHT_DB_HOST_PORT: 3306
       LIMELIGHT_DB_NAME: limelight
       LIMELIGHT_JAVA_EXECUTE_PARAMS: ${IMPORTER_JAVA_OPTIONS}
+      LIMELIGHT_FEATURE_DETECTION_PROGRAM_JAVA_EXECUTE_PARAMS: ${FEATURE_DETECTION_IMPORTER_JAVA_OPTIONS}
   limelight:
     image: mriffle/limelight-webapp:4
     container_name: limelight-webapp

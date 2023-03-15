@@ -18,6 +18,7 @@
    cd docker/importer
    cp ../../deploy/limelightImporter_XMLFile_ScanFiles.jar ./
    cp ../../deploy/limelightRunImporter.jar ./
+   cp ../../deploy/limelight_FeatureDetection_Run_Import.jar ./
    ```
 
 3. Build the Docker image
