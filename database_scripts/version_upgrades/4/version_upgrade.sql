@@ -953,3 +953,8 @@ INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) 
 INSERT INTO aa_limelight_database_version_tbl (row_label, limelight_database_version_number)
 VALUES ('DB Version Current', 4)
     ON DUPLICATE KEY UPDATE limelight_database_version_number = 4;
+
+-- Add necessary records for docker-compose install for blib export function
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_feature_detection_service_run_hardklor_bullseye_web_service_base_url', 'http://feature-detection:3434');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_feature_detection_service_run_hardklor_bullseye_result_files_base_path', '/data/feature_detection/finaldir');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('yrc_file_object_storage_web_service_base_url', 'http://file-object-storage:3434');
