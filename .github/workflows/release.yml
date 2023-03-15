@@ -92,7 +92,7 @@ jobs:
       with:
         context: docker/submit-import
         push: true
-        tags: ${{ steps.meta_importer.outputs.tags }}
+        tags: ${{ steps.meta_submit_import.outputs.tags }}
 
   github_deploy:
 
