@@ -9,7 +9,7 @@ MYSQL_USER=limelight_db_user
 
 # This manages the memory usage of components of Limelight
 IMPORTER_JAVA_OPTIONS=-Xmx3g -Xms500m
-FEATURE_DETECTION_IMPORTER_JAVA_OPTIONS=-Xmx1g -Xms250m
+FEATURE_DETECTION_IMPORTER_JAVA_OPTIONS=-Xmx3g -Xms500m
 WEBAPP_JAVA_OPTIONS=-Xms2024m -Xmx2024m
 
 # This manages optimization settings for MySQL
@@ -32,12 +32,16 @@ SMTP_PASSWORD=smtp_password
 # SPECTR_MAX_SCAN_BATCH_SIZE=200
 
 # Settings for .blib (Bibliospec spectral library export) service in Limelight
-# yes = always delete working directory, no = never delete, "on success" = only delete on successful requests
+# yes = always delete working directory (default), no = never delete, "on success" = only delete on successful requests
 # BLIB_APP_CLEAN_WORKDIR=yes
 
 # The number of threads to use for simultaneous processing of scan files for exporting .blib spectral libraries
 # Setting to a higher number will improve performance for multi-scan-file exports.
 # MS2_MAX_THREADS=1
+
+# Settings for feature detection service in Limelight
+# yes = always delete working directory (default), no = never delete, "on success" = only delete on successful requests
+# FEATURE_DETECTION_CLEAN_WORKDIR=yes
 
 #
 # End Optional config options
