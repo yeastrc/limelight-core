@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureEntry_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetection_Map_PersistentToSingularFeatureDAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item;
@@ -131,11 +132,11 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 //		long insertDB_Only_Time = 0;
 		
 		
-		for ( int[] ids_ForSingle_MS1_ScanNumber: featureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result.getIds_ForSingle_MS1_ScanNumber__ForEach_MS1_ScanNumber() ) {
+		for ( int[] singularFeature_Ids_ForSingle_MS1_ScanNumber: featureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result.getIds_ForSingle_MS1_ScanNumber__ForEach_MS1_ScanNumber() ) {
 			
 
 			List<FeatureDetectionSingularFeatureEntryDTO> featureDetectionSingularFeatureEntryDTO_List = 
-					FeatureDetectionSingularFeatureEntry_DAO.getInstance().getAll_For_FeatureDetectionRootId(ids_ForSingle_MS1_ScanNumber);
+					FeatureDetectionSingularFeatureEntry_DAO.getInstance().getAll_For_FeatureDetectionRootId(singularFeature_Ids_ForSingle_MS1_ScanNumber);
 
 			
 			//  Process All Singular Features for a MS1 scan
@@ -184,6 +185,14 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 								log.warn(msg);
 								throw new LimelightImporterDataException(msg);
 							}
+						}
+						
+						if ( singleScan_SubResponse_FOR_singularFeatureEntry_MS_1_ScanNumber.getScanNumber() != singularFeatureEntry.getMs_1_scanNumber() ) {
+							String msg = "BUG in Code: singularFeature_Ids_ForSingle_MS1_ScanNumber contain more than one unique MS1 Scan Number. First Singular Feature MS1 Scan Number:"
+									+ singleScan_SubResponse_FOR_singularFeatureEntry_MS_1_ScanNumber.getScanNumber()
+									+ ", Current Singular Feature MS1 Scan Number: " + singularFeatureEntry.getMs_1_scanNumber() ;
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
 						}
 
 						if ( singleScan_SubResponse_FOR_singularFeatureEntry_MS_1_ScanNumber.getRetentionTime() >= internal__PersistentFeatureData_Item.persistentFeature_RT_Start_Seconds_Minus_30 
