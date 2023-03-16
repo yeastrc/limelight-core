@@ -957,4 +957,4 @@ VALUES ('DB Version Current', 4)
 -- Add necessary records for docker-compose install for blib export function
 INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_feature_detection_service_run_hardklor_bullseye_web_service_base_url', 'http://feature-detection:3434');
 INSERT INTO config_system_tbl (config_key, config_value) VALUES ('run_feature_detection_service_run_hardklor_bullseye_result_files_base_path', '/data/feature_detection/finaldir');
-INSERT INTO config_system_tbl (config_key, config_value) VALUES ('yrc_file_object_storage_web_service_base_url', 'http://file-object-store:8080');
+INSERT INTO config_system_tbl (config_key, config_value) VALUES ('yrc_file_object_storage_web_service_base_url', 'http://file-object-store:8080/file_object_storage');
