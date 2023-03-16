@@ -9,6 +9,7 @@ volumes:
   blib_export_workdir:
   feature_detection_workdir:
   feature_detection_finaldir:
+  file_object_store_dir:
 
 services:
   db:
@@ -34,6 +35,12 @@ services:
       - spectr_upload:/data/upload
       - spectr_storage:/data/storage
       - limelight_upload:/data/limelight_upload
+  file-object-store:
+    image: mriffle/file-object-store:1
+    container_name: limelight-file-object-store
+    restart: always
+    volumes:
+      - file_object_store_dir:/data/fob
   blib-export:
     image: mriffle/limelight-export-blib-service:1
     container_name: limelight-export-blib-service

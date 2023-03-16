@@ -24,6 +24,12 @@ services:
       - ${SPECTR_UPLOAD_DIRECTORY}:/data/upload
       - ${SPECTR_STORAGE_DIRECTORY}:/data/storage
       - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
+  file-object-store:
+    image: mriffle/file-object-store:1
+    container_name: limelight-file-object-store
+    restart: always
+    volumes:
+      - ${FILE_OBJECT_STORE_DIR}:/data/fob
   blib-export:
     image: mriffle/limelight-export-blib-service:1
     container_name: limelight-export-blib-service
