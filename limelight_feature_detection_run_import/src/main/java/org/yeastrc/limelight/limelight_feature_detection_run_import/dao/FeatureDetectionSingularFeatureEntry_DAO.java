@@ -48,25 +48,83 @@ public class FeatureDetectionSingularFeatureEntry_DAO {
 
 	////////////////////////
 
-	private static final String SELECT_SQL_ALL_FOR__feature_detection_root_id = 
+//	private static final String SELECT_SQL_ALL_FOR__feature_detection_root_id = 
+//			"SELECT * FROM feature_detection_singular_feature_entry_tbl "
+//			+ " WHERE feature_detection_root_id = ? ";
+//	
+//	/**
+//	 * @param featureDetectionRootId
+//	 * @return
+//	 * @throws SQLException 
+//	 */
+//	public List<FeatureDetectionSingularFeatureEntryDTO> getAll_For_FeatureDetectionRootId( int featureDetectionRootId ) throws SQLException {
+//		
+//		List<FeatureDetectionSingularFeatureEntryDTO> resultList = new ArrayList<>();
+//		
+//		final String querySQL = SELECT_SQL_ALL_FOR__feature_detection_root_id;
+//		
+//		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
+//			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
+//			
+//			preparedStatement.setInt( 1, featureDetectionRootId );
+//			
+//			try ( ResultSet rs = preparedStatement.executeQuery() ) {
+//				while ( rs.next() ) {
+//					FeatureDetectionSingularFeatureEntryDTO result = getResultObject(rs);
+//					resultList.add(result);
+//				}
+//			}
+//		} catch ( RuntimeException e ) {
+//			String msg = "SQL: " + querySQL;
+//			log.error( msg, e );
+//			throw e;
+//		} catch ( SQLException e ) {
+//			String msg = "SQL: " + querySQL;
+//			log.error( msg, e );
+//			throw e;
+//		}
+//		
+//		return resultList;
+//	}
+
+	////////////////////////
+
+	private static final String SELECT_SQL_ALL_FOR__Ids__START = 
 			"SELECT * FROM feature_detection_singular_feature_entry_tbl "
-			+ " WHERE feature_detection_root_id = ? ";
+			+ " WHERE id IN ( ";
 	
 	/**
 	 * @param featureDetectionRootId
 	 * @return
 	 * @throws SQLException 
 	 */
-	public List<FeatureDetectionSingularFeatureEntryDTO> getAll_For_FeatureDetectionRootId( int featureDetectionRootId ) throws SQLException {
+	public List<FeatureDetectionSingularFeatureEntryDTO> getAll_For_FeatureDetectionRootId( int[] ids ) throws SQLException {
 		
 		List<FeatureDetectionSingularFeatureEntryDTO> resultList = new ArrayList<>();
 		
-		final String querySQL = SELECT_SQL_ALL_FOR__feature_detection_root_id;
+		StringBuilder sqlSB = new StringBuilder( 100000 );
+		
+		sqlSB.append( SELECT_SQL_ALL_FOR__Ids__START );
+		
+		for ( int count = 1; count <= ids.length; count++ ) {
+			if ( count > 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( "?" );
+		}
+		sqlSB.append( ")" );
+		
+		final String querySQL = sqlSB.toString();
 		
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
 			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
 			
-			preparedStatement.setInt( 1, featureDetectionRootId );
+			int paramCounter = 0;
+			
+			for ( int id : ids ) {
+				paramCounter++;
+				preparedStatement.setInt( paramCounter, id );
+			}
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {

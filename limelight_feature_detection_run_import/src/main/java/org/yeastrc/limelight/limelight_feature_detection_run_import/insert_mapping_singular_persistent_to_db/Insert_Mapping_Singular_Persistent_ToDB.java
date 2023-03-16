@@ -3,7 +3,6 @@ package org.yeastrc.limelight.limelight_feature_detection_run_import.insert_mapp
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,8 @@ import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.L
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.FeatureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher.FeatureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionSingularFeatureEntryDTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetection_Map_PersistentToSingularFeatureDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
@@ -61,9 +62,9 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 
 		Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber = params.ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber;
 		
-
-		List<FeatureDetectionSingularFeatureEntryDTO> featureDetectionSingularFeatureEntryDTO_List = 
-				FeatureDetectionSingularFeatureEntry_DAO.getInstance().getAll_For_FeatureDetectionRootId(featureDetectionRootId);
+		
+		FeatureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result featureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result =
+				FeatureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher.getInstance().getForFeatureDetectionRootId(featureDetectionRootId);
 
 		FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
 				FeatureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher.getInstance().getForFeatureDetectionRootId(featureDetectionRootId);
@@ -129,25 +130,13 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 //		
 //		long insertDB_Only_Time = 0;
 		
-
-	    Map<Integer, Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item> singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber = new HashMap<>( featureDetectionSingularFeatureEntryDTO_List.size() );
-	    	
-
-		for ( FeatureDetectionSingularFeatureEntryDTO singularFeatureEntry : featureDetectionSingularFeatureEntryDTO_List ) {
-			
-			Integer ms_1_scanNumber = singularFeatureEntry.getMs_1_scanNumber();
-			
-			Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item singularFeatureData_Entries_For_One_MS1_Scan_Item = singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber.get(ms_1_scanNumber);
-			if ( singularFeatureData_Entries_For_One_MS1_Scan_Item == null ) {
-				singularFeatureData_Entries_For_One_MS1_Scan_Item = new Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item();
-				singularFeatureData_Entries_For_One_MS1_Scan_Item.ms_1_ScanNumber = ms_1_scanNumber;
-				singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber.put(ms_1_scanNumber, singularFeatureData_Entries_For_One_MS1_Scan_Item );
-			}
-			
-			singularFeatureData_Entries_For_One_MS1_Scan_Item.singularFeatureEntries.add(singularFeatureEntry);
-		}
 		
-		for ( Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item singularFeatureData_Entries_For_One_MS1_Scan_Item : singularFeatureData_Entries_For_One_MS1_Scan_Item_Map_Key_MS1_ScanNumber.values() ) {
+		for ( int[] ids_ForSingle_MS1_ScanNumber: featureDetection_SingularFeature_Id_MS1_ScanNumber_For_FeatureDetectionRootId_Searcher_Result.getIds_ForSingle_MS1_ScanNumber__ForEach_MS1_ScanNumber() ) {
+			
+
+			List<FeatureDetectionSingularFeatureEntryDTO> featureDetectionSingularFeatureEntryDTO_List = 
+					FeatureDetectionSingularFeatureEntry_DAO.getInstance().getAll_For_FeatureDetectionRootId(ids_ForSingle_MS1_ScanNumber);
+
 			
 			//  Process All Singular Features for a MS1 scan
 			
@@ -161,11 +150,11 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 				//   "Best" Singular Feature entry to match this Persistent Feature Entry within this MS1 Scan
 				FeatureDetectionSingularFeatureEntryDTO singularFeatureEntry_BestEntry = null;
 				
-				double singularFeatureEntry_BestEntry__MonoisotopicMass_Difference_AbsoluteValue = 0;;
+				double singularFeatureEntry_BestEntry__MonoisotopicMass_Difference_AbsoluteValue = 0;
 				
 				
 				
-				for ( FeatureDetectionSingularFeatureEntryDTO singularFeatureEntry : singularFeatureData_Entries_For_One_MS1_Scan_Item.singularFeatureEntries ) {
+				for ( FeatureDetectionSingularFeatureEntryDTO singularFeatureEntry : featureDetectionSingularFeatureEntryDTO_List ) {
 
 					//  Process Each Singular Feature for the MS1 scan
 
@@ -300,15 +289,6 @@ public class Insert_Mapping_Singular_Persistent_ToDB {
 		float persistentFeature_RT_Start_Seconds_Minus_30;
 		float persistentFeature_RT_End_Seconds_Plus_30;
     }
-    
-
-    private static class Internal__SingularFeatureData_Entries_For_One_MS1_Scan_Item {
-    	
-    	List<FeatureDetectionSingularFeatureEntryDTO> singularFeatureEntries = new ArrayList<>( 100 );
-
-    	int ms_1_ScanNumber;
-    }
-    
     
 }
 
