@@ -85,9 +85,11 @@ services:
     volumes:
       - ${LIMELIGHT_UPLOAD_DIRECTORY}:/data/limelight_upload
       - ${BLIB_DESTINATION_DIR}:/data/limelight_downloads/blib_exports
+      - ${LIMELIGHT_CACHE_DIR}:/data/limelight_cache
     environment:
       LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      LIMELIGHT_CACHED_WS_RESP_DATA_DIR: /data/limelight_cache
     ports:
       - 8080:8080
   smtp:

@@ -6,6 +6,7 @@ volumes:
   spectr_storage:
   limelight_upload:
   limelight_blib_downloads:
+  limelight_cache_dir:
   blib_export_workdir:
   feature_detection_workdir:
   feature_detection_finaldir:
@@ -96,9 +97,11 @@ services:
     volumes:
       - limelight_upload:/data/limelight_upload
       - limelight_blib_downloads:/data/limelight_downloads/blib_exports
+      - limelight_cache_dir:/data/limelight_cache
     environment:
       LIMELIGHT_MYSQL_USER: ${MYSQL_USER}
       LIMELIGHT_MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      LIMELIGHT_CACHED_WS_RESP_DATA_DIR: /data/limelight_cache
     ports:
       - 8080:8080
   smtp:
