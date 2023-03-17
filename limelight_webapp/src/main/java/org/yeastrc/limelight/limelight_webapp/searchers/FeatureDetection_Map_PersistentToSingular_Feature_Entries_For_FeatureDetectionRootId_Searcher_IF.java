@@ -4,7 +4,11 @@ import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Map_Per
 
 public interface FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_IF {
 
-	FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result getForFeatureDetectionRootId(
-			int featureDetectionRootId) throws Exception;
+	FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_Limit_Offset_Limit_Count( 
+			
+			int featureDetectionRootId,
+			Integer limit_Offset, Integer limit_Count
+			
+			) throws Exception;
 
 }

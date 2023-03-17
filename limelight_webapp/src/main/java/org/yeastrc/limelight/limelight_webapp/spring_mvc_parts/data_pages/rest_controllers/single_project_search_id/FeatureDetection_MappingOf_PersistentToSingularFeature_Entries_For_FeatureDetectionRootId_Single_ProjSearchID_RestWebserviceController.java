@@ -41,7 +41,6 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_IF;
@@ -77,13 +76,17 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
 	 */
 	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
 
+	
+	public final static int MAX_LIMIT_COUNT__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController =
+			800000; // 0.8 million
+	
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -197,6 +200,26 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
+    		if ( ( webserviceRequest.limit_Offset != null && webserviceRequest.limit_Count == null ) 
+    				||  ( webserviceRequest.limit_Offset == null && webserviceRequest.limit_Count != null ) ) {
+    			log.warn( "limit_Offset and limit_Count must both be assigned/null or not assigned/null" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+    		if ( webserviceRequest.limit_Offset != null ) {
+        		if ( webserviceRequest.limit_Offset < 0 ) {
+        			log.warn( "limit_Offset cannot be < 0. limit_Offset: " + webserviceRequest.limit_Offset );
+        			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        		}
+    		}
+    		if ( webserviceRequest.limit_Count != null ) {
+    			if ( webserviceRequest.limit_Count > MAX_LIMIT_COUNT__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController ) {
+    				log.warn( "limit_Count exceeds max value. limit_Count: " + webserviceRequest.limit_Count
+    						+ ", Max Limit Count: " + MAX_LIMIT_COUNT__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    		}    		
+    		
+
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
 
@@ -246,30 +269,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		
 			FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
-					featureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.getForFeatureDetectionRootId(feature_detection_root_Id_Result.getFeature_detection_root_id());
-
-			List<FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item> featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List =
-					featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getEntries();
-			
-			
-
-	    	//  One "Result Entry" is an entry in each of the lists with the same index
-
-	    	List<Integer> featureDetection_PersistentFeatureEntry_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
-	    	List<Integer> featureDetection_SingularFeatureEntry_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
-	    	List<Integer> featureDetection_Root_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
-
-			for ( FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item persistentFeature_ResultItem : featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List ) {
-
-				featureDetection_PersistentFeatureEntry_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_PersistentFeatureEntry_Id() );
-				featureDetection_SingularFeatureEntry_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_SingularFeatureEntry_Id() );
-				featureDetection_Root_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_Root_Id() );
-			}
+					featureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.getForFeatureDetectionRootId_Limit_Offset_Limit_Count(
+							feature_detection_root_Id_Result.getFeature_detection_root_id(),
+							webserviceRequest.limit_Offset,
+							webserviceRequest.limit_Count
+							);
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
-    		webserviceResult.featureDetection_PersistentFeatureEntry_Id_List = featureDetection_PersistentFeatureEntry_Id_List;
-    		webserviceResult.featureDetection_SingularFeatureEntry_Id_List = featureDetection_SingularFeatureEntry_Id_List;
-    		webserviceResult.featureDetection_Root_Id_List = featureDetection_Root_Id_List;
+    		webserviceResult.featureDetection_PersistentFeatureEntry_Id_List = featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getFeatureDetection_PersistentFeatureEntry_Id_List();
+    		webserviceResult.featureDetection_SingularFeatureEntry_Id_List = featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getFeatureDetection_SingularFeatureEntry_Id_List();
+    		webserviceResult.featureDetection_Root_Id_List = featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getFeatureDetection_Root_Id_List();
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -314,6 +323,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
     	private Integer projectSearchId;
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
+    	private Integer limit_Offset; 
+    	private Integer limit_Count;
 
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
@@ -321,6 +332,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		public void setFeature_detection_root__project_scnfl_mapping_tbl__id(
 				Integer feature_detection_root__project_scnfl_mapping_tbl__id) {
 			this.feature_detection_root__project_scnfl_mapping_tbl__id = feature_detection_root__project_scnfl_mapping_tbl__id;
+		}
+		public void setLimit_Offset(Integer limit_Offset) {
+			this.limit_Offset = limit_Offset;
+		}
+		public void setLimit_Count(Integer limit_Count) {
+			this.limit_Count = limit_Count;
 		}
     }
     

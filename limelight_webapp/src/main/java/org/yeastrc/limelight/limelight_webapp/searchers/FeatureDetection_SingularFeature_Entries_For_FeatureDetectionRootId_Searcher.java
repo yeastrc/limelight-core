@@ -43,78 +43,81 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 	 *
 	 */
 	public static class FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result {
-		private List<FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item> entries;
 
-		public List<FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item> getEntries() {
-			return entries;
+    	private List<Integer> id_List;
+    	private List<Integer> ms_1_scan_number_List;
+
+		private List<Double> monoisotopic_mass_List;
+		private List<Integer> charge_List;
+		private List<Double> intensity_List;
+		private List<Double> base_isotope_peak_List;
+		private List<Double> analysis_window_start_m_z_List;
+		private List<Double> analysis_window_end_m_z_List;
+		private List<Double> correlation_score_List;
+		
+		public List<Integer> getId_List() {
+			return id_List;
+		}
+		public List<Integer> getMs_1_scan_number_List() {
+			return ms_1_scan_number_List;
+		}
+		public List<Double> getMonoisotopic_mass_List() {
+			return monoisotopic_mass_List;
+		}
+		public List<Integer> getCharge_List() {
+			return charge_List;
+		}
+		public List<Double> getIntensity_List() {
+			return intensity_List;
+		}
+		public List<Double> getBase_isotope_peak_List() {
+			return base_isotope_peak_List;
+		}
+		public List<Double> getAnalysis_window_start_m_z_List() {
+			return analysis_window_start_m_z_List;
+		}
+		public List<Double> getAnalysis_window_end_m_z_List() {
+			return analysis_window_end_m_z_List;
+		}
+		public List<Double> getCorrelation_score_List() {
+			return correlation_score_List;
 		}
 	}
 
-	/**
-	 * 
-	 *
-	 */
-	public static class FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item {
-    	
-		private int id;
-    	private int ms_1_scan_number;
-
-		private Double monoisotopic_mass;
-		private Integer charge;
-		private Double intensity;
-		private Double base_isotope_peak;
-		private Double analysis_window_start_m_z;
-		private Double analysis_window_end_m_z;
-		private Double correlation_score;
-		
-		public int getId() {
-			return id;
-		}
-		public int getMs_1_scan_number() {
-			return ms_1_scan_number;
-		}
-		public Double getMonoisotopic_mass() {
-			return monoisotopic_mass;
-		}
-		public Integer getCharge() {
-			return charge;
-		}
-		public Double getIntensity() {
-			return intensity;
-		}
-		public Double getBase_isotope_peak() {
-			return base_isotope_peak;
-		}
-		public Double getAnalysis_window_start_m_z() {
-			return analysis_window_start_m_z;
-		}
-		public Double getAnalysis_window_end_m_z() {
-			return analysis_window_end_m_z;
-		}
-		public Double getCorrelation_score() {
-			return correlation_score;
-		}
-		
-	}
 	
 	private static final String QUERY_SQL = 
 			"SELECT "
 			+ " * "
 			+ " FROM "
 			+ " feature_detection_singular_feature_entry_tbl "
-			+ " WHERE feature_detection_root_id = ?";
+			+ " WHERE feature_detection_root_id = ?"
+			+ " AND id >= ? AND id <= ? ";
 
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_IF#getForFeatureDetectionRootId(int)
 	 */
 	@Override
-	public FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId( int featureDetectionRootId ) throws Exception {
+	public FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_StartId_EndId(
+			
+			int featureDetectionRootId, int startId, int endId 
+			
+			) throws Exception {
 
 		FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result result = new FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result();
 		
-		List<FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item> entries = new ArrayList<>();
-		result.entries = entries;
-		
+		int potentialRecordCount = endId - startId + 2;
+
+    	result.id_List = new ArrayList<>(  potentialRecordCount );
+    	result.ms_1_scan_number_List = new ArrayList<>(  potentialRecordCount );
+
+		result.monoisotopic_mass_List = new ArrayList<>(  potentialRecordCount );
+		result.charge_List = new ArrayList<>(  potentialRecordCount );
+		result.intensity_List = new ArrayList<>(  potentialRecordCount );
+		result.base_isotope_peak_List = new ArrayList<>(  potentialRecordCount );
+		result.analysis_window_start_m_z_List = new ArrayList<>(  potentialRecordCount );
+		result.analysis_window_end_m_z_List = new ArrayList<>(  potentialRecordCount );
+		result.correlation_score_List = new ArrayList<>(  potentialRecordCount );
+				
 		final String querySQL = QUERY_SQL;
 				
 		try ( Connection connection = super.getDBConnection();
@@ -124,57 +127,72 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 			
 			counter++;
 			preparedStatement.setInt( counter, featureDetectionRootId );
+			counter++;
+			preparedStatement.setInt( counter, startId );
+			counter++;
+			preparedStatement.setInt( counter, endId );
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
-					FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item entry = new FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item();
 					
-					entry.id = rs.getInt( "id" );
-					entry.ms_1_scan_number = rs.getInt( "ms_1_scan_number" );
+					result.id_List.add( rs.getInt( "id" ) );
+					result.ms_1_scan_number_List.add( rs.getInt( "ms_1_scan_number" ) );
 					{
 						double fieldValue = rs.getDouble( "monoisotopic_mass" );
 						if ( ! rs.wasNull() ) {
-							entry.monoisotopic_mass = fieldValue;
+							result.monoisotopic_mass_List.add( fieldValue );
+						} else {
+							result.monoisotopic_mass_List.add( null );
 						}
 					}
 					{
 						int fieldValue = rs.getInt( "charge" );
 						if ( ! rs.wasNull() ) {
-							entry.charge = fieldValue;
+							result.charge_List.add( fieldValue );
+						} else {
+							result.charge_List.add( null );
 						}
 					}
 					{
 						double fieldValue = rs.getDouble( "intensity" );
 						if ( ! rs.wasNull() ) {
-							entry.intensity = fieldValue;
+							result.intensity_List.add( fieldValue );
+						} else {
+							result.intensity_List.add( null );
 						}
 					}
 					{
 						double fieldValue = rs.getDouble( "base_isotope_peak" );
 						if ( ! rs.wasNull() ) {
-							entry.base_isotope_peak = fieldValue;
+							result.base_isotope_peak_List.add( fieldValue );
+						} else {
+							result.base_isotope_peak_List.add( null );
 						}
 					}
 					{
 						double fieldValue = rs.getDouble( "analysis_window_start_m_z" );
 						if ( ! rs.wasNull() ) {
-							entry.analysis_window_start_m_z = fieldValue;
+							result.analysis_window_start_m_z_List.add( fieldValue );
+						} else {
+							result.analysis_window_start_m_z_List.add( null );
 						}
 					}
 					{
 						double fieldValue = rs.getDouble( "analysis_window_end_m_z" );
 						if ( ! rs.wasNull() ) {
-							entry.analysis_window_end_m_z = fieldValue;
+							result.analysis_window_end_m_z_List.add( fieldValue );
+						} else {
+							result.analysis_window_end_m_z_List.add( null );
 						}
 					}
 					{
 						double fieldValue = rs.getDouble( "correlation_score" );
 						if ( ! rs.wasNull() ) {
-							entry.correlation_score = fieldValue;
+							result.correlation_score_List.add( fieldValue );
+						} else {
+							result.correlation_score_List.add( null );
 						}
 					}
-					
-					entries.add( entry );
 				}
 			}
 		} catch ( SQLException e ) {

@@ -4,7 +4,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Singula
 
 public interface FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher_IF {
 
-	FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result getForFeatureDetectionRootId(
-			int searchId) throws Exception;
+	FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result getForFeatureDetectionRootId_StartId_EndId(
+			int featureDetectionRootId, int startId, int endId) throws Exception;
 
 }

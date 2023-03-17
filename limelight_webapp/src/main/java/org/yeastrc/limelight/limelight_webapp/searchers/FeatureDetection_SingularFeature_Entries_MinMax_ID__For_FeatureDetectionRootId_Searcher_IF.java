@@ -1,0 +1,14 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result;
+
+public interface FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF {
+
+	/**
+	 * @param featureDetectionRootId
+	 * @return
+	 * @throws Exception
+	 */
+	FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result get_MinMax_ID_ForFeatureDetectionRootId(int featureDetectionRootId) throws Exception;
+
+}

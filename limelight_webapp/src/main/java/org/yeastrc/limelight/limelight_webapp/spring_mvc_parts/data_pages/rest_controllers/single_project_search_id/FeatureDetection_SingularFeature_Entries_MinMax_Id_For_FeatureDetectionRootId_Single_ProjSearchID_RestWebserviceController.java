@@ -40,9 +40,9 @@ import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Ca
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
@@ -58,7 +58,7 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
  * 
  * 
- * Feature Detection Singular Feature entries for Feature Detection Root Id Project Search ID
+ * Feature Detection Singular Feature entries Min and Max ID for Feature Detection Root Id Project Search ID
  * 
  * Contents of main uploaded Feature Detection File
  * 
@@ -66,27 +66,24 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  *
  */
 @RestController
-public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController 
+public class FeatureDetection_SingularFeature_Entries_MinMax_Id_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController 
 
 implements
 InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
 {
   
-	private static final Logger log = LoggerFactory.getLogger( FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( FeatureDetection_SingularFeature_Entries_MinMax_Id_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController.class );
 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0003;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MIN_MAX_ID_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
 	 */
 	private static final String CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT = Cached_WebserviceResponse_Management_Utils.translate_ControllerPath_For_CachedResponseMgmt( CONTROLLER_PATH );
 
-	
-	public final static int MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController =
-			800000; // 0.8 million
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -107,7 +104,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_IF feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher;
 
 	@Autowired
-	private FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher_IF featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher;
+	private FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF featureDetection_SingularFeature_Entries_COUNT__For_FeatureDetectionRootId_Searcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -118,7 +115,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     /**
 	 * 
 	 */
-	public FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController() {
+	public FeatureDetection_SingularFeature_Entries_MinMax_Id_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -199,20 +196,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			log.warn( "feature_detection_root__project_scnfl_mapping_tbl__id is not assigned" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-    		if ( webserviceRequest.startId == null ) {
-    			log.warn( "startId is not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		if ( webserviceRequest.endId == null ) {
-    			log.warn( "endId is not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		
-    		if ( ( webserviceRequest.endId.intValue() - webserviceRequest.startId.intValue() + 1 ) > MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController ) {
-    			log.warn( "Too many entries requested.  ( endId - startId + 1 ) > " + MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-
 
     		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
@@ -264,25 +247,14 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		}
     		
     		
-    		FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
-    				featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher
-    				.getForFeatureDetectionRootId_StartId_EndId(
-    						feature_detection_root_Id_Result.getFeature_detection_root_id(), 
-    						webserviceRequest.startId, 
-    						webserviceRequest.endId );
-			
-    		WebserviceResult webserviceResult = new WebserviceResult();
-    		
-    		webserviceResult.id_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getId_List();
-    		webserviceResult.ms_1_scan_number_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getMs_1_scan_number_List();
+    		FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result searcherResult =
+    				featureDetection_SingularFeature_Entries_COUNT__For_FeatureDetectionRootId_Searcher
+    				.get_MinMax_ID_ForFeatureDetectionRootId(feature_detection_root_Id_Result.getFeature_detection_root_id());
 
-    		webserviceResult.monoisotopic_mass_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getMonoisotopic_mass_List();
-    		webserviceResult.charge_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getCharge_List();
-    		webserviceResult.intensity_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getIntensity_List();
-    		webserviceResult.base_isotope_peak_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getBase_isotope_peak_List();
-    		webserviceResult.analysis_window_start_m_z_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getAnalysis_window_start_m_z_List();
-    		webserviceResult.analysis_window_end_m_z_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getAnalysis_window_end_m_z_List();
-    		webserviceResult.correlation_score_List = featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getCorrelation_score_List();
+    		WebserviceResult webserviceResult = new WebserviceResult();
+    		webserviceResult.minId = searcherResult.getMinId();
+    		webserviceResult.maxId = searcherResult.getMaxId();
+
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -328,8 +300,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
     	private Integer projectSearchId;
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
-    	private Integer startId;
-    	private Integer endId;
 
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
@@ -338,57 +308,23 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				Integer feature_detection_root__project_scnfl_mapping_tbl__id) {
 			this.feature_detection_root__project_scnfl_mapping_tbl__id = feature_detection_root__project_scnfl_mapping_tbl__id;
 		}
-		public void setStartId(Integer startId) {
-			this.startId = startId;
-		}
-		public void setEndId(Integer endId) {
-			this.endId = endId;
-		}
     }
     
     public static class WebserviceResult {
     	
-    	//  One "Result Entry" is an entry in each of the lists with the same index
-    	
-    	private List<Integer> id_List;
-    	private List<Integer> ms_1_scan_number_List;
-
-		private List<Double> monoisotopic_mass_List;
-		private List<Integer> charge_List;
-		private List<Double> intensity_List;
-		private List<Double> base_isotope_peak_List;
-		private List<Double> analysis_window_start_m_z_List;
-		private List<Double> analysis_window_end_m_z_List;
-		private List<Double> correlation_score_List;
+		private int minId;
+		private int maxId;
+		private final int max_StartEnd_Id_DifferenceInclusive_Allowed = FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController.MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController;
 		
-		public List<Integer> getId_List() {
-			return id_List;
+		public int getMinId() {
+			return minId;
 		}
-		public List<Integer> getMs_1_scan_number_List() {
-			return ms_1_scan_number_List;
+		public int getMaxId() {
+			return maxId;
 		}
-		public List<Double> getMonoisotopic_mass_List() {
-			return monoisotopic_mass_List;
+		public int getMax_StartEnd_Id_DifferenceInclusive_Allowed() {
+			return max_StartEnd_Id_DifferenceInclusive_Allowed;
 		}
-		public List<Integer> getCharge_List() {
-			return charge_List;
-		}
-		public List<Double> getIntensity_List() {
-			return intensity_List;
-		}
-		public List<Double> getBase_isotope_peak_List() {
-			return base_isotope_peak_List;
-		}
-		public List<Double> getAnalysis_window_start_m_z_List() {
-			return analysis_window_start_m_z_List;
-		}
-		public List<Double> getAnalysis_window_end_m_z_List() {
-			return analysis_window_end_m_z_List;
-		}
-		public List<Double> getCorrelation_score_List() {
-			return correlation_score_List;
-		}
-
     }
 }
 

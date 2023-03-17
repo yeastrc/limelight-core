@@ -509,8 +509,11 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	//  Scan File Feature Detection Singular Feature Entries for Project Search Id and feature_detection_root__project_scnfl_mapping_tbl__id  
 	
-	public static final String SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
-			"d/rws/for-page/scan-file-feature-detection-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
+	public static final String SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0003 =
+			"d/rws/for-page/scan-file-feature-detection-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0003";
+
+	public static final String SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MIN_MAX_ID_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =
+			"d/rws/for-page/scan-file-feature-detection-singular-feature-entries-min-max-id--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
 	//  Scan File Feature Detection Persistent Feature Entries for Project Search Id and FeatureDetection Root Id
 	
@@ -519,8 +522,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 	//  Scan File Feature Detection Map Persistent To Singular Feature Entries for Project Search Id and FeatureDetection Root Id
 	
-	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
-			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
+	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_COUNT_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
+			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+
+	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0003 =
+			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0003";
 	
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =
