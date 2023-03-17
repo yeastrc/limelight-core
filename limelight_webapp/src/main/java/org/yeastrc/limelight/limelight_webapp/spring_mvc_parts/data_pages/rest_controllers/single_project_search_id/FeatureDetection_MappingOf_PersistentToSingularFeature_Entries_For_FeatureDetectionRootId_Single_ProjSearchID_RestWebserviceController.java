@@ -77,7 +77,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -250,21 +250,26 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 			List<FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item> featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List =
 					featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result.getEntries();
+			
+			
 
-			List<WebserviceResult_Entry> result_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
+	    	//  One "Result Entry" is an entry in each of the lists with the same index
+
+	    	List<Integer> featureDetection_PersistentFeatureEntry_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
+	    	List<Integer> featureDetection_SingularFeatureEntry_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
+	    	List<Integer> featureDetection_Root_Id_List = new ArrayList<>(  featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List.size() );
 
 			for ( FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item persistentFeature_ResultItem : featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result_Item_List ) {
 
-				WebserviceResult_Entry featureDetection_Entry = new WebserviceResult_Entry();
-				featureDetection_Entry.featureDetection_PersistentFeatureEntry_Id= persistentFeature_ResultItem.getFeatureDetection_PersistentFeatureEntry_Id();
-				featureDetection_Entry.featureDetection_SingularFeatureEntry_Id= persistentFeature_ResultItem.getFeatureDetection_SingularFeatureEntry_Id();
-				featureDetection_Entry.featureDetection_Root_Id= persistentFeature_ResultItem.getFeatureDetection_Root_Id();
-				
-				result_List.add(featureDetection_Entry);
+				featureDetection_PersistentFeatureEntry_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_PersistentFeatureEntry_Id() );
+				featureDetection_SingularFeatureEntry_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_SingularFeatureEntry_Id() );
+				featureDetection_Root_Id_List.add( persistentFeature_ResultItem.getFeatureDetection_Root_Id() );
 			}
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
-    		webserviceResult.result_List = result_List;
+    		webserviceResult.featureDetection_PersistentFeatureEntry_Id_List = featureDetection_PersistentFeatureEntry_Id_List;
+    		webserviceResult.featureDetection_SingularFeatureEntry_Id_List = featureDetection_SingularFeatureEntry_Id_List;
+    		webserviceResult.featureDetection_Root_Id_List = featureDetection_Root_Id_List;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -320,32 +325,24 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     }
     
     public static class WebserviceResult {
+
+    	//  One "Result Entry" is an entry in each of the lists with the same index
+
+    	private List<Integer> featureDetection_PersistentFeatureEntry_Id_List;
+    	private List<Integer> featureDetection_SingularFeatureEntry_Id_List;
+    	private List<Integer> featureDetection_Root_Id_List;
     	
-    	private List<WebserviceResult_Entry> result_List;
-
-		public List<WebserviceResult_Entry> getResult_List() {
-			return result_List;
+		public List<Integer> getFeatureDetection_PersistentFeatureEntry_Id_List() {
+			return featureDetection_PersistentFeatureEntry_Id_List;
 		}
+		public List<Integer> getFeatureDetection_SingularFeatureEntry_Id_List() {
+			return featureDetection_SingularFeatureEntry_Id_List;
+		}
+		public List<Integer> getFeatureDetection_Root_Id_List() {
+			return featureDetection_Root_Id_List;
+		};
     }
 
-    public static class WebserviceResult_Entry {
-
-		private int featureDetection_PersistentFeatureEntry_Id;
-		private int featureDetection_SingularFeatureEntry_Id;
-		private int featureDetection_Root_Id;
-		
-		public int getFeatureDetection_PersistentFeatureEntry_Id() {
-			return featureDetection_PersistentFeatureEntry_Id;
-		}
-		public int getFeatureDetection_SingularFeatureEntry_Id() {
-			return featureDetection_SingularFeatureEntry_Id;
-		}
-		public int getFeatureDetection_Root_Id() {
-			return featureDetection_Root_Id;
-		}
-		
-		
-    }
 }
 
 

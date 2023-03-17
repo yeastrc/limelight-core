@@ -451,7 +451,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
 
         const featureDetection_SingularFeature_EntriesList : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry> = [];
 
-        const responseData_Array_Lengths = responseData.id_List.length;
+        const responseData_Array_Lengths = id_List.length;
 
         for ( let index = 0; index < responseData_Array_Lengths; index++ ) {
 

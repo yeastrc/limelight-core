@@ -182,9 +182,6 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_SUBMIT_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-submit-from-submit-pgm";
 
-	public static final String PROJECT__UPLOAD_DATA_UPLOAD_REMOVE_ABANDONED_REST_WEBSERVICE_CONTROLLER =
-			"d/rws/for-page/project-upload-data-upload-remove-abandoned";
-
 	///////////////////////
 
 	//  Feature Detection - Import
@@ -522,8 +519,8 @@ public class AA_RestWSControllerPaths_Constants {
 
 	//  Scan File Feature Detection Map Persistent To Singular Feature Entries for Project Search Id and FeatureDetection Root Id
 	
-	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =
-			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+	public static final String SCAN_FILE_FEATURE_DETECTION_MAP_PERSISTENT_TO_SINGULAR_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0002 =
+			"d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
 	
 	//  Static Mods for Project Search Id
 	public static final String STATIC_MODS_SINGLE_PROJECT_SEARCH_ID =

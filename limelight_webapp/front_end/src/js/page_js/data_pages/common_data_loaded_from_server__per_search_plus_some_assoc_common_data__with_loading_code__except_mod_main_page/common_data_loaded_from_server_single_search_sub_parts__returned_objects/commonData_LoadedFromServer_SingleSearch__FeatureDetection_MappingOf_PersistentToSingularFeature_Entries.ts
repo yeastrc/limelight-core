@@ -234,7 +234,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
                         feature_detection_root__project_scnfl_mapping_tbl__id
                     };
 
-                    const url = "d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url = "d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
@@ -278,52 +278,114 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
      */
     private _process_WebserviceResponse({ responseData, feature_detection_root__project_scnfl_mapping_tbl__id }: { responseData: any, feature_detection_root__project_scnfl_mapping_tbl__id: number }) : void {
 
-        const result_List = responseData.result_List;
+        const responseData__Cast : {
+            featureDetection_PersistentFeatureEntry_Id_List: Array<number>;
+            featureDetection_SingularFeatureEntry_Id_List: Array<number>;
+            featureDetection_Root_Id_List: Array<number>;
+        } = responseData;
 
-        if ( ! ( result_List instanceof  Array ) ) {
-            const msg = "result_List is not an Array";
-            console.warn( msg + ". featureDetection_MappingOf_PersistentToSingularFeature_EntriesList_FromWebservice: ", result_List )
+        const featureDetection_PersistentFeatureEntry_Id_List = responseData__Cast.featureDetection_PersistentFeatureEntry_Id_List;
+        const featureDetection_SingularFeatureEntry_Id_List = responseData__Cast.featureDetection_SingularFeatureEntry_Id_List;
+        const featureDetection_Root_Id_List = responseData__Cast.featureDetection_Root_Id_List;
+
+        if ( ! featureDetection_PersistentFeatureEntry_Id_List ) {
+            const msg = "featureDetection_PersistentFeatureEntry_Id_List is null or undefined";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_PersistentFeatureEntry_Id_List ", featureDetection_PersistentFeatureEntry_Id_List )
+            throw Error(msg);
+        }
+        if ( ! ( featureDetection_PersistentFeatureEntry_Id_List instanceof  Array ) ) {
+            const msg = "featureDetection_PersistentFeatureEntry_Id_List is not an Array";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_PersistentFeatureEntry_Id_List ", featureDetection_PersistentFeatureEntry_Id_List )
             throw Error(msg);
         }
 
+        if ( ! featureDetection_SingularFeatureEntry_Id_List ) {
+            const msg = "featureDetection_SingularFeatureEntry_Id_List is null or undefined";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_SingularFeatureEntry_Id_List ", featureDetection_SingularFeatureEntry_Id_List )
+            throw Error(msg);
+        }
+        if ( ! ( featureDetection_SingularFeatureEntry_Id_List instanceof  Array ) ) {
+            const msg = "featureDetection_SingularFeatureEntry_Id_List is not an Array";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_SingularFeatureEntry_Id_List ", featureDetection_SingularFeatureEntry_Id_List )
+            throw Error(msg);
+        }
+
+        if ( ! featureDetection_Root_Id_List ) {
+            const msg = "featureDetection_Root_Id_List is null or undefined";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_Root_Id_List ", featureDetection_Root_Id_List )
+            throw Error(msg);
+        }
+        if ( ! ( featureDetection_Root_Id_List instanceof  Array ) ) {
+            const msg = "featureDetection_Root_Id_List is not an Array";
+            console.warn( msg + ". featureDetection_SingularFeature_EntriesList_FromWebservice: featureDetection_Root_Id_List ", featureDetection_Root_Id_List )
+            throw Error(msg);
+        }
+
+        //   ALL Arrays MUST be the SAME length
+
+        if ( featureDetection_PersistentFeatureEntry_Id_List.length !== featureDetection_SingularFeatureEntry_Id_List.length ) {
+            const msg = "responseData Array Lengths NOT Match: featureDetection_PersistentFeatureEntry_Id_List.length !== featureDetection_SingularFeatureEntry_Id_List.length.  featureDetection_PersistentFeatureEntry_Id_List.length: " +
+                featureDetection_PersistentFeatureEntry_Id_List.length +
+                ", featureDetection_SingularFeatureEntry_Id_List.length: " +
+                featureDetection_SingularFeatureEntry_Id_List.length;
+            console.warn( msg )
+            throw Error(msg);
+        }
+
+
+        if ( featureDetection_PersistentFeatureEntry_Id_List.length !== featureDetection_Root_Id_List.length ) {
+            const msg = "responseData Array Lengths NOT Match: featureDetection_PersistentFeatureEntry_Id_List.length !== featureDetection_Root_Id_List.length.  featureDetection_PersistentFeatureEntry_Id_List.length: " +
+                featureDetection_PersistentFeatureEntry_Id_List.length +
+                ", featureDetection_Root_Id_List.length: " +
+                featureDetection_Root_Id_List.length;
+            console.warn( msg )
+            throw Error(msg);
+        }
+
+        //  Copy all into results array
+
         const featureDetection_MappingOf_PersistentToSingularFeature_EntriesList : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry> = [];
 
-        //  Validate each entry is a number
+        const responseData_Array_Lengths = featureDetection_PersistentFeatureEntry_Id_List.length;
 
-        for ( const result_Entry of result_List ) {
+        for ( let index = 0; index < responseData_Array_Lengths; index++ ) {
 
-            const entry = result_Entry as CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry;
+            const entry: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry = {
+                featureDetection_PersistentFeatureEntry_Id: featureDetection_PersistentFeatureEntry_Id_List[ index ],
+                featureDetection_SingularFeatureEntry_Id: featureDetection_SingularFeatureEntry_Id_List[ index ],
+                featureDetection_Root_Id: featureDetection_Root_Id_List[ index ]
+            };
 
             if ( entry.featureDetection_PersistentFeatureEntry_Id === undefined || entry.featureDetection_PersistentFeatureEntry_Id === null ) {
                 const msg = "entry.featureDetection_PersistentFeatureEntry_Id is undefined or null. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
             if ( ! variable_is_type_number_Check( entry.featureDetection_PersistentFeatureEntry_Id ) ) {
                 const msg = "entry.featureDetection_PersistentFeatureEntry_Id in result_List is not a number. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
 
             if ( entry.featureDetection_SingularFeatureEntry_Id === undefined || entry.featureDetection_SingularFeatureEntry_Id === null ) {
                 const msg = "entry.feature_detection_root__project_scnfl_mapping_tbl__id is undefined or null. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
             if ( ! variable_is_type_number_Check( entry.featureDetection_SingularFeatureEntry_Id ) ) {
                 const msg = "entry.featureDetection_SingularFeatureEntry_Id in result_List is not a number. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
 
             if ( entry.featureDetection_Root_Id === undefined || entry.featureDetection_Root_Id === null ) {
                 const msg = "entry.featureDetection_Root_Id is undefined or null. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
             if ( ! variable_is_type_number_Check( entry.featureDetection_Root_Id ) ) {
                 const msg = "entry.featureDetection_Root_Id in result_List is not a number. ";
-                console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
+                console.warn( msg + "entry: " + entry )
                 throw Error(msg);
             }
 
