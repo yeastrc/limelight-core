@@ -1254,7 +1254,10 @@ const _sortPsmPeptideListOnSortOrder = function(
 						}
 						//  Values match so go to next ann type values
 					} else {
-						throw Error( "filterDirectionBelow, filterDirectionAbove: Neither is true. annotationTypeId: " + annotationTypeId );
+						//  Not a filterable annotation type (assumed) (is a descriptive annotation type) so do nothing and go to next ann type values
+
+						//  Removed.  Coded when assumed all were filterable annotation types
+						// throw Error( "filterDirectionBelow, filterDirectionAbove: Neither is true. annotationTypeId: " + annotationTypeId );
 					}
 				}
 			}
