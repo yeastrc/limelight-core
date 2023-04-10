@@ -248,14 +248,18 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
     getReportedPeptideIdsForDisplay_AllProjectSearchIds(requestParams: GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_RequestParams )
         : GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_ReturnObject_Class {
 
-        if ( (
-            ( ! requestParams.modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() )
-            || ( ! requestParams.modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() )
-        ) || ( ! requestParams.modificationMass_UserSelections_StateObject.is_Any_Modification_Selected() )
+        if ( ( ! requestParams.modificationMass_UserSelections_StateObject )
+            || (
+                (
+                    ( ! requestParams.modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() )
+                    || ( ! requestParams.modificationMass_UserSelections_StateObject.get_showOtherPeptidesWherePeptideSequenceMatchPeptidesMeetModFilters_UserSelection() )
+                )
+            ) || ( ! requestParams.modificationMass_UserSelections_StateObject.is_Any_Modification_Selected() )
         ) {
             //  Do if:
-            //   1) User NOT selected "Show other peptides..."
-            //   2) User NOT select any modifications (or Unmodified) for filtering (AND/OR/NOT)
+            //   1) NO modifications State object passed in
+            //   2) User NOT selected "Show other peptides..."
+            //   3) User NOT select any modifications (or Unmodified) for filtering (AND/OR/NOT)
 
             //   No additional processing required so just return this result
 
