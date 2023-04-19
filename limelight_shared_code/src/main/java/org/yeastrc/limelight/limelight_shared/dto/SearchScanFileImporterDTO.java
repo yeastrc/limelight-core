@@ -34,11 +34,13 @@ public class SearchScanFileImporterDTO {
 	
 	private String awsBucketName;
 	private String awsObjectKey;
+	private String awsRegion;
 
 	private String spectralStorageProcessKey;
 	private String spectralStorageAPIKey;
 
 	private Integer scanFileId;
+
 
 	@Override
 	public String toString() {
@@ -46,10 +48,9 @@ public class SearchScanFileImporterDTO {
 				+ fileSize + ", sha1sum=" + sha1sum + ", canonicalFilename_W_Path_OnSubmitMachine="
 				+ canonicalFilename_W_Path_OnSubmitMachine + ", absoluteFilename_W_Path_OnSubmitMachine="
 				+ absoluteFilename_W_Path_OnSubmitMachine + ", awsBucketName=" + awsBucketName + ", awsObjectKey="
-				+ awsObjectKey + ", spectralStorageProcessKey=" + spectralStorageProcessKey + ", spectralStorageAPIKey="
-				+ spectralStorageAPIKey + ", scanFileId=" + scanFileId + "]";
+				+ awsObjectKey + ", awsRegion=" + awsRegion + ", spectralStorageProcessKey=" + spectralStorageProcessKey
+				+ ", spectralStorageAPIKey=" + spectralStorageAPIKey + ", scanFileId=" + scanFileId + "]";
 	}
-
 
 	public int getId() {
 		return id;
@@ -137,6 +138,14 @@ public class SearchScanFileImporterDTO {
 
 	public void setAwsObjectKey(String awsObjectKey) {
 		this.awsObjectKey = awsObjectKey;
+	}
+
+	public String getAwsRegion() {
+		return awsRegion;
+	}
+
+	public void setAwsRegion(String awsRegion) {
+		this.awsRegion = awsRegion;
 	}
 
 }

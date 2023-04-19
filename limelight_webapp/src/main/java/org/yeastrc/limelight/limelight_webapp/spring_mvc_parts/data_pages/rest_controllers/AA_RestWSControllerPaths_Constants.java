@@ -163,6 +163,8 @@ public class AA_RestWSControllerPaths_Constants {
 	 */
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_GET_FASTA_FILE_UPLOAD_ACCEPTED_SUBMIT_PROGRAM_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-get-fasta-file-upload-accepted-submit-program";
+
+	//   Initialize Submit An Import
 	
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-initialize";
@@ -170,11 +172,45 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_INITIALIZE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-initialize-from-submit-pgm";
 
-	public static final String PROJECT__UPLOAD_DATA_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER =
-			"d/rws/for-page/project-upload-data-upload-file";
+	//   Upload a Single File
+	
+	//         Initialize Single File
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-initialize";
 
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_INITIALIZE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-initialize-from-submit-pgm";
+
+	//         Send Data
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_CHUNKING_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-chunking-upload-file";
+
+	//         'Submit' (complete) Single File
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_SUBMIT_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-submit";
+
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_SUBMIT_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-submit-from-submit-pgm";
+
+	//         'Cancel' 'Delete' Single File
+	
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_CANCEL_DELETE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-cancel-delete";
+
+	public static final String PROJECT__UPLOAD_DATA_V2_UPLOAD_FILE_CANCEL_DELETE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-upload-data-v2-upload-file-cancel-delete-from-submit-pgm";
+
+	
+	/**
+	 * Upload a Single File - OLD V1
+	 * 
+	 * ***  KEPT to support OLD Submit Import Program (and current Submit Import Program since not yet updated)
+	 */
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_FILE_FROM_SUBMIT_PGM_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-file-from-submit-pgm";
+	
+	
+	//  Final Submit of overall Upload request
 
 	public static final String PROJECT__UPLOAD_DATA_UPLOAD_SUBMIT_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-upload-data-upload-submit";

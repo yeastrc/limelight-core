@@ -35,6 +35,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigD
 import org.yeastrc.limelight.limelight_run_importer.constants.RunImporterCommandConstants;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
+import org.yeastrc.limelight.limelight_run_importer.import_files__delete_s3_objects_for_db_single_file_records.ImportFiles_Delete_S3Objects_For_DB_SingleFile_Records;
 import org.yeastrc.limelight.limelight_run_importer.import_files_remove_success_failed_except_last_2_main_and_searcher.ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_run_importer.on_import_finish.On_ImportLimelightXMLScanFile_Finish_CallWebService;
 import org.yeastrc.limelight.limelight_run_importer.run_system_command.RunSystemCommand;
@@ -653,6 +654,7 @@ public class ProcessSubmittedImport {
 		FileImportTrackingDTO currentTrackingDTO = FileImportTracking_Shared_Get_DAO.getInstance().getItem( trackingId );
 		if ( currentTrackingDTO.getStatus() != FileImportStatus.COMPLETE ) {
 			//  Status is not COMPLETE so NO DELETION
+			System.out.println( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) currentTrackingDTO.getStatus() != FileImportStatus.COMPLETE so return. currentTrackingDTO.getStatus(): " + currentTrackingDTO.getStatus() );
 			return;  //  EARLY EXIT
 		}
 		// Get configuration item
@@ -662,12 +664,16 @@ public class ProcessSubmittedImport {
 					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES );
 			if ( ! ConfigSystemsValuesSharedConstants.TRUE.equals( deleteFilesConfigValue ) ) {
 				//  Config value in table is not true string.
+				System.out.println( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) IMPORT_DELETE_UPLOADED_FILES config value NOT TRUE so return. config value: " + deleteFilesConfigValue );
 				return;  //  EARLY EXIT
 			}
 		} catch ( IllegalStateException e ) {
 			//  Config key not in table.  Assume don't want files deleted
 			return;  //  EARLY EXIT
 		}
+
+		ImportFiles_Delete_S3Objects_For_DB_SingleFile_Records.getInstance().delete_S3Objects_For_DB_SingleFile_Records(  fileImportTrackingDTO.getId() );
+		
 		DeleteDirectoryAndContents.getInstance().deleteDirectoryAndContents( subdirForThisTrackingId );
 	}
 

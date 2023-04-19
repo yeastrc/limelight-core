@@ -162,6 +162,24 @@
 					>
 			</div>
 			<div>
+				Store uploaded files on AWS S3 instead of in the local file system (Region from AWS Account configuration on system if not set here)
+			</div>
+			
+			<div style="margin-bottom: 3px;">
+				AWS S3 Bucket: 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY %>"
+					>
+			</div>
+			
+			<div style="margin-bottom: 3px;">
+				AWS S3 Region: 
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY %>"
+					>
+			</div>
+			
+			<div>
 				Allow Scan file Upload: 
 				<input type="checkbox" class=" config_checkbox_inputs_jq "  id="allow_scan_file_upload_checkbox"
 					data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY %>"

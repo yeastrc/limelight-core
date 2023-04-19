@@ -17,9 +17,13 @@
 */
 package org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -39,6 +43,24 @@ public abstract class SubmitImport_Init_Request_Base extends BaseSubmitImportWeb
 
 	@XmlAttribute
 	private String projectIdentifier;
+	
+	
+	//  These 'search...' will NOT be populated for OLD Submit Import Program versions
+
+	@XmlAttribute
+	private String searchName;
+	@XmlAttribute
+	private String searchShortName;
+	@XmlAttribute
+	private String searchPath;
+	
+	//  'files_InSubmitImport' will NOT be populated for OLD Submit Import Program versions
+
+	@XmlElementWrapper(name="files_InSubmitImport")
+	@XmlElement(name="file_InSubmitImport")
+	private List<SubmitImport_Init_Request_SubPart_SingleFileUploadEntry> files_InSubmitImport;
+	
+	
 
 	public String getProjectIdentifier() {
 		return projectIdentifier;
@@ -51,6 +73,31 @@ public abstract class SubmitImport_Init_Request_Base extends BaseSubmitImportWeb
 	}
 	public void setSubmitProgramVersionNumber(Integer submitProgramVersionNumber) {
 		this.submitProgramVersionNumber = submitProgramVersionNumber;
+	}
+	public String getSearchName() {
+		return searchName;
+	}
+	public void setSearchName(String searchName) {
+		this.searchName = searchName;
+	}
+	public String getSearchShortName() {
+		return searchShortName;
+	}
+	public void setSearchShortName(String searchShortName) {
+		this.searchShortName = searchShortName;
+	}
+	public String getSearchPath() {
+		return searchPath;
+	}
+	public void setSearchPath(String searchPath) {
+		this.searchPath = searchPath;
+	}
+	public List<SubmitImport_Init_Request_SubPart_SingleFileUploadEntry> getFiles_InSubmitImport() {
+		return files_InSubmitImport;
+	}
+	public void setFiles_InSubmitImport(
+			List<SubmitImport_Init_Request_SubPart_SingleFileUploadEntry> files_InSubmitImport) {
+		this.files_InSubmitImport = files_InSubmitImport;
 	}
 	
 }

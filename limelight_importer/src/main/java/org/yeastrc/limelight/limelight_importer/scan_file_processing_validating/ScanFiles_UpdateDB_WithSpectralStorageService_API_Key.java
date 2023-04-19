@@ -83,6 +83,7 @@ public class ScanFiles_UpdateDB_WithSpectralStorageService_API_Key {
 				scanFileSourceFirstImportDTO.setAbsoluteFilename_W_Path_OnSubmitMachine( searchScanFileImporterDTO.getCanonicalFilename_W_Path_OnSubmitMachine() );
 				scanFileSourceFirstImportDTO.setAwsBucketName( searchScanFileImporterDTO.getAwsBucketName() );
 				scanFileSourceFirstImportDTO.setAwsObjectKey( searchScanFileImporterDTO.getAwsObjectKey() );
+				scanFileSourceFirstImportDTO.setAwsRegion( searchScanFileImporterDTO.getAwsRegion() );
 				
 				ScanFileDTO scanFileDTO_FromInsert =
 						ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded.getInstance()
@@ -186,6 +187,7 @@ public class ScanFiles_UpdateDB_WithSpectralStorageService_API_Key {
 				project_ScanFile_Importer_DTO.setAbsoluteFilename_W_Path_OnSubmitMachine( searchScanFileImporterDTO.getCanonicalFilename_W_Path_OnSubmitMachine() );
 				project_ScanFile_Importer_DTO.setAwsBucketName( searchScanFileImporterDTO.getAwsBucketName() );
 				project_ScanFile_Importer_DTO.setAwsObjectKey( searchScanFileImporterDTO.getAwsObjectKey() );
+				project_ScanFile_Importer_DTO.setAwsRegion( searchScanFileImporterDTO.getAwsRegion() );
 
 				
 				{

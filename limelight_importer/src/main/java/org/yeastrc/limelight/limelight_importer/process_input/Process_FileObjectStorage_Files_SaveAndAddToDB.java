@@ -7,6 +7,7 @@ import org.yeastrc.limelight.limelight_importer.dao.FileObjectStorage_MainEntry_
 import org.yeastrc.limelight.limelight_importer.dao.FileObjectStorage_MainEntry_FileTypeLookup_DAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.FileObjectStorage_SourceFirstImport_DAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.FileObjectStorage_ToSearch_DAO_Importer;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterFileObjectStorageServiceErrorException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
@@ -14,11 +15,22 @@ import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileCo
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
 import org.yeastrc.limelight.limelight_importer.yrc_file_object_storage_interface.FileToYRCFileObjectStorageService_SendFile;
 import org.yeastrc.limelight.limelight_importer.yrc_file_object_storage_interface.FileToYRCFileObjectStorageService_SendFile.FileToYRCFileObjectStorageService_SendFile__Result;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
+import org.yeastrc.limelight.limelight_importer.yrc_file_object_storage_interface.FileToYRCFileObjectStorageService_Send_AWS_S3_Location;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.dto.FileObjectStorage_MainEntry_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FileObjectStorage_MainEntry_FileTypeLookup_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FileObjectStorage_SourceFirstImport_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FileObjectStorage_ToSearch_DTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * 
@@ -45,6 +57,8 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 		
 		FileToYRCFileObjectStorageService_SendFile fileToYRCFileObjectStorageService_SendFile = FileToYRCFileObjectStorageService_SendFile.getNewInstance();
 		
+		FileToYRCFileObjectStorageService_Send_AWS_S3_Location fileToYRCFileObjectStorageService_Send_AWS_S3_Location = FileToYRCFileObjectStorageService_Send_AWS_S3_Location.getNewInstance();
+		
 		
 		for ( FileObjectStorage_FileContainer fileObjectStorage_FileContainer : fileObjectStorage_FileContainer_AllEntries.get_FileObjectStorage_FileContainer_List() ) {
 			
@@ -55,9 +69,26 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 
 					gzipCompressContents = true;
 				}
+				
+				FileToYRCFileObjectStorageService_SendFile__Result sendResult_SentTo_YRCFileObjectStorageService = null;
+				
+				if ( fileObjectStorage_FileContainer.getFile() != null ) {
 
-				FileToYRCFileObjectStorageService_SendFile__Result sendResult_SentTo_YRCFileObjectStorageService =
-						fileToYRCFileObjectStorageService_SendFile.sendFileToYRCFileObjectStorageService(fileObjectStorage_FileContainer.getFile(), gzipCompressContents);
+					sendResult_SentTo_YRCFileObjectStorageService =
+							fileToYRCFileObjectStorageService_SendFile.sendFileToYRCFileObjectStorageService(fileObjectStorage_FileContainer.getFile(), gzipCompressContents);
+				
+				} else if ( fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO() != null ) {
+					
+					sendResult_SentTo_YRCFileObjectStorageService =
+							fileToYRCFileObjectStorageService_Send_AWS_S3_Location.sendToYRCFileObjectStorageService(
+									fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO(), gzipCompressContents);
+					
+				} else {
+					
+					String msg = "fileObjectStorage_FileContainer.getFile() == null AND fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO() == null";
+					log.error(msg);
+					throw new LimelightImporterInternalException(msg);
+				}
 				
 				if ( sendResult_SentTo_YRCFileObjectStorageService.isNotConfigured() ) {
 					//  NOT Configured so exit
@@ -151,22 +182,87 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 				if ( fileObjectStorage_MainEntry_NewlyInserted ) {
 
 					//  File Object Store - Main Entry First Insert tracking entry
-					
 
-					String sha1Sum =
-							SHA1SumCalculator.getInstance().getSHA1Sum( fileObjectStorage_FileContainer.getFile() );
-					
 					FileObjectStorage_SourceFirstImport_DTO fileObjectStorage_SourceFirstImport_DTO = new FileObjectStorage_SourceFirstImport_DTO();
-					
+
 					fileObjectStorage_SourceFirstImport_DTO.setFileObjectStorage_MainEntry_Id( fileObjectStorage_MainEntry_Id );
 					fileObjectStorage_SourceFirstImport_DTO.setSearch_Id(searchId);
 					fileObjectStorage_SourceFirstImport_DTO.setFilenameAtImport( fileObjectStorage_FileContainer.getFilename() );
-
-					fileObjectStorage_SourceFirstImport_DTO.setFileSize( fileObjectStorage_FileContainer.getFile().length() );
-					fileObjectStorage_SourceFirstImport_DTO.setSha1Sum(sha1Sum);
+					
 					if ( fileObjectStorage_FileContainer.getFile() != null ) {
+
+						fileObjectStorage_SourceFirstImport_DTO.setFileSize( fileObjectStorage_FileContainer.getFile().length() );
+						fileObjectStorage_SourceFirstImport_DTO.setSha1Sum( SHA1SumCalculator.getInstance().getSHA1Sum( fileObjectStorage_FileContainer.getFile() ) );
 						fileObjectStorage_SourceFirstImport_DTO.setCanonicalFilename_W_Path_OnSubmitMachine( fileObjectStorage_FileContainer.getFile().getCanonicalPath() );
 						fileObjectStorage_SourceFirstImport_DTO.setAbsoluteFilename_W_Path_OnSubmitMachine( fileObjectStorage_FileContainer.getFile().getAbsolutePath() );
+					
+					} else if ( fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO() != null ) {
+						
+						S3Client amazonS3_Client = null;
+
+						{  // Use Region from Config, otherwise SDK use from Environment Variable
+
+							String amazonS3_RegionName = fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO().getAws_s3_region();
+
+							if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+										
+								amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+							}
+
+							if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+								
+								Region aws_S3_Region = Region.of(amazonS3_RegionName);
+								
+								amazonS3_Client = 
+										S3Client.builder()
+										.region( aws_S3_Region )
+										.httpClientBuilder(ApacheHttpClient.builder())
+										.build();
+								
+							} else {
+								//  SDK use Region from Environment Variable
+								
+								amazonS3_Client = 
+										S3Client.builder()
+										.httpClientBuilder(ApacheHttpClient.builder())
+										.build(); 
+							}
+						}
+
+						GetObjectRequest getObjectRequest = 
+								GetObjectRequest
+								.builder()
+								.bucket(fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO().getAws_s3_bucket_name())
+								.key( fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO().getAws_s3_object_key() )
+								.build();
+						
+						try ( ResponseInputStream<GetObjectResponse> getObjectResponse_UsableAsInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+
+							GetObjectResponse getObjectResponse = getObjectResponse_UsableAsInputStream.response();
+							
+							if ( getObjectResponse.contentLength() != null ) {
+								fileObjectStorage_SourceFirstImport_DTO.setFileSize( getObjectResponse.contentLength() );
+							}
+
+							String sha1Sum = SHA1SumCalculator.getInstance().getSHA1Sum_ForInputStream(getObjectResponse_UsableAsInputStream);
+							
+							fileObjectStorage_SourceFirstImport_DTO.setSha1Sum(sha1Sum);;
+							
+						} catch ( NoSuchKeyException e ) {
+							
+							//  Throw Data Exception if externally passed in object key and bucket name
+							
+							System.err.println( "Could not find S3 Object to send to File Object Storage.  ObjectKey: " 
+									+ fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO().getAws_s3_object_key() 
+									+ ", Object Bucket: " 
+									+ fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO().getAws_s3_bucket_name() );
+							throw new LimelightImporterErrorProcessingRunIdException(e);
+						}
+						
+					} else {
+						String msg = "fileObjectStorage_FileContainer.getFile() == null && fileObjectStorage_FileContainer.getFileImportTrackingSingleFileDTO() == null";
+						log.error(msg);
+						throw new LimelightImporterInternalException(msg);
 					}
 					
 					FileObjectStorage_SourceFirstImport_DAO_Importer fileObjectStorage_SourceFirstImport_DAO_Importer  = FileObjectStorage_SourceFirstImport_DAO_Importer.getInstance();

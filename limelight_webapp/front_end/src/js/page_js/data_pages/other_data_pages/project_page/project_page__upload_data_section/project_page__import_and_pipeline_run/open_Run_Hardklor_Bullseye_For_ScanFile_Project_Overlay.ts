@@ -57,7 +57,6 @@ export const open_Run_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Over
         limelight_import_file_type_fasta_file: null,
         limelight_import_file_type_scan_file: null,
 
-        maxFileUploadChunkSize: null,
         maxLimelightXMLFileUploadSize: null,
         maxLimelightXMLFileUploadSizeFormatted: null,
         maxFASTAFileUploadSize: null,

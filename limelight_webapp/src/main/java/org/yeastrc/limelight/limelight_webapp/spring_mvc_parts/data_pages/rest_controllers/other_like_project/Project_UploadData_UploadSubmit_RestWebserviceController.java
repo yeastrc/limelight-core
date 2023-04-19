@@ -20,26 +20,17 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,17 +42,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSONBlob_DTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategories_AndTheir_SearchTagStrings__Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagCategory_AndIts_SearchTagStrings__SingleCategoryEntry__Version_Number_001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSON_Contents_Version_Number_001.FileImportTrackingDataJSON_Contents__SearchTagStrings__Version_Number_001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
@@ -87,14 +76,12 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadSubmitterPgmSameMachineConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingFileIdCreatorDAO_IF;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.database_insert_with_transaction_services.ImportTrackingAndChildren_Save_SingleDBTransactionIF;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.objects.LimelightUploadTempDataFileContents;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.DeleteDirectoryAndContentsUtilIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsScanFileImportAllowedViaWebSubmitIF;
-import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF;
 import org.yeastrc.limelight.limelight_webapp.services.SendEmailForSubmitImportServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Marshal_RestRequest_Object_ToXML;
@@ -137,15 +124,12 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 
 	@Autowired
 	private ProjectDAO_IF projectDAO;
+
+	@Autowired
+	private FileImportTrackingDAO_IF fileImportTrackingDAO;
 	
 	@Autowired
-	private FileImportTrackingFileIdCreatorDAO_IF fileImportTrackingFileIdCreatorDAO;
-	
-	@Autowired
-	private ImportTrackingAndChildren_Save_SingleDBTransactionIF importTrackingAndChildren_Save_SingleDBTransaction;
-	
-	@Autowired
-	private Limelight_XML_Importer_Work_Directory_And_SubDirs_WebIF limelight_XML_Importer_Work_Directory_And_SubDirs_Web;
+	private FileImportTrackingSingleFileDAO_IF fileImportTrackingSingleFileDAO;
 	
 	@Autowired
 	private DeleteDirectoryAndContentsUtilIF deleteDirectoryAndContentsUtil;
@@ -229,9 +213,9 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			int projectId = getProjectId( webserviceRequest );
 
 
-			long uploadKey = -1;
+			int uploadKey = -1;
 			try {
-				uploadKey = Long.parseLong( webserviceRequest.getUploadKey() );
+				uploadKey = Integer.parseInt( webserviceRequest.getUploadKey() );
 			} catch ( Exception e ) {
 				String msg = "Provided uploadKey is invalid. fails to parse: " + webserviceRequest.getUploadKey();
 				log.warn( msg );
@@ -399,11 +383,11 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 
 			int projectId = getProjectId( webserviceRequest );
 
-			long uploadKey = -1;
+			int uploadKey = -1;
 			try {
-				uploadKey = Long.parseLong( webserviceRequest.getUploadKey() );
+				uploadKey = Integer.parseInt( webserviceRequest.getUploadKey() );
 			} catch ( Exception e ) {
-				String msg = "Provided uploadKey is invalid";
+				String msg = "Provided uploadKey is invalid. fails to parse: " + webserviceRequest.getUploadKey();
 				log.warn( msg );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
@@ -512,6 +496,11 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		return projectId;
     }
 
+    ///////////////////////////////////////////
+    ///////////////////////////////////////////
+
+    ///  internal method 'processWebRequest':  called for all webservice calls
+    
 	/**
 	 *  
 	 * 
@@ -526,7 +515,8 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 
 
 		int projectId = webserviceMethod_Internal_Params.projectId;
-		long uploadKey = webserviceMethod_Internal_Params.uploadKey;
+		int uploadKey = webserviceMethod_Internal_Params.uploadKey;
+		int importTrackingId = uploadKey;
 		SubmitImport_FinalSubmit_Request_Base webservice_Request_Base = webserviceMethod_Internal_Params.webservice_Request_Base;
 		int userId = webserviceMethod_Internal_Params.userId;
 		SubmitImport_FinalSubmit_Response_Base webservice_Result_Base = webserviceMethod_Internal_Params.webservice_Result_Base;
@@ -554,6 +544,43 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			
 			return webserviceMethod_Internal_Results;  //  EARLY EXIT
 		}
+
+
+		//  Main File Import Tracking Object
+		FileImportTrackingDTO fileImportTrackingDTO = fileImportTrackingDAO.getForId(importTrackingId);
+
+		if ( fileImportTrackingDTO == null ) {
+			String msg = "importTrackingId does NOT exist in DB: " + importTrackingId;
+			log.warn( msg );
+
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			
+//			webservice_Result_Base.setStatusSuccess(false);
+////			webservice_Result_Base.setStatusFail_ErrorMessage(statusFail_ErrorMessage);
+//			
+//			webservice_Result_Base.set
+//
+//			//  EARLY RETURN
+//			return webserviceMethod_Internal_Results;
+		}
+		
+		if ( fileImportTrackingDTO.getUserId() != webserviceMethod_Internal_Params.userId ) {
+			String msg = " user id for importTrackingId does NOT match current user id. importTrackingId: " 
+					+ importTrackingId 
+					+ ", current user id: " + webserviceMethod_Internal_Params.userId ;
+			log.warn( msg );
+
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			
+//			webservice_Result_Base.setStatusSuccess(false);
+////			webservice_Result_Base.setStatusFail_ErrorMessage(statusFail_ErrorMessage);
+//			
+//			webservice_Result_Base.setUploadKeyNotValid( true );
+//
+//			//  EARLY RETURN
+//			return webserviceMethod_Internal_Results;
+		}
+
 		
 		//  Truncate Search Tags and Search Tag Categories if too Long
 		
@@ -615,29 +642,6 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		String remoteUserIpAddress = httpServletRequest.getRemoteHost();
 		File importer_Work_Directory = Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().get_Limelight_XML_Importer_Work_Directory();
 		
-		//  Get the File object for the Base Subdir used to temporarily store the files in this request 
-		String uploadFileTempDirString =
-				limelight_XML_Importer_Work_Directory_And_SubDirs_Web.getDirForUploadFileTempDir();
-		File uploadFileTempDir = new File( importer_Work_Directory, uploadFileTempDirString );
-		if ( ! uploadFileTempDir.exists() ) {
-			String msg = "uploadFileTempDir does not exist.  uploadFileTempDir: " 
-					+ uploadFileTempDir.getAbsolutePath();
-			log.error( msg );
-			throw new LimelightWebappFileUploadFileSystemException(msg);
-		}
-		File tempSubdir =
-				limelight_XML_Importer_Work_Directory_And_SubDirs_Web
-				.getSubDirForUploadFileTempDir( userId, uploadKey, uploadFileTempDir );
-		if ( ! tempSubdir.exists() ) {
-			if ( log.isInfoEnabled() ) {
-				String infoMsg = "tempSubdir does not exist.  tempSubdir: " 
-						+ uploadFileTempDir.getAbsolutePath();
-				log.info( infoMsg );
-			}
-//			String webErrorMsg = "No Data for uploadKey: " + uploadKey;
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-		
 
 		boolean isFileObjectStorageFileImportAllowed = isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit();
 		
@@ -657,64 +661,74 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		
 		boolean foundLimelightXMLFile = false;
 		
-		for ( SubmitImport_FinalSubmit_SingleFileItem requestFileItem : requestFileItemList ) {
-			if ( requestFileItem.getFileIndex() == null ) {
-				String msg = "requestFileItem.fileIndex == null";
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			if ( requestFileItem.getFileType() == null ) {
-				String msg = "requestFileItem.fileType == null";
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			if ( requestFileItem.getFileType().intValue() == FileImportFileType.LIMELIGHT_XML_FILE.value() ) {
-				if ( foundLimelightXMLFile ) {
-					String msg = "More than one Limelight XML file";
-					log.warn( msg );
-					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-				}
-				foundLimelightXMLFile = true;
+		{
+			Set<Integer> fileIndexes_Set = new HashSet<>();  // Check for duplicate FileIndex
 
-			} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.FASTA_FILE.value() ) {
-				if ( ! isFileObjectStorageFileImportAllowed ) {
-					webservice_Result_Base.setStatusSuccess( false );
-					webservice_Result_Base.setSubmittedFASTAFileNotAllowed( true );
-					return webserviceMethod_Internal_Results;  //  EARLY EXIT
-				}
-			} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.SCAN_FILE.value() ) {
-				if ( ! isScanFileImportAllowed ) {
-					webservice_Result_Base.setStatusSuccess( false );
-					webservice_Result_Base.setSubmittedScanFileNotAllowed( true );
-					return webserviceMethod_Internal_Results;  //  EARLY EXIT
-				}
-			} else {
-				String msg = "File Type is unknown: " + requestFileItem.getFileType().intValue();
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			if ( requestFileItem.getUploadedFilename() == null ) {
-				String msg = "requestFileItem.uploadedFilename == null";
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			if ( ! filenamesSet.add( requestFileItem.getUploadedFilename() ) ) {
-				String msg = "Duplicate filename: " + requestFileItem.getUploadedFilename();
-				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			{
-				String filename_NoSuffix = FilenameUtils.removeExtension( requestFileItem.getUploadedFilename() );
-				if ( ! filenames_NoSuffixes_Set.add( filename_NoSuffix ) ) {
-					String msg = "Duplicate filename (checking without filename suffix): " 
-							+ requestFileItem.getUploadedFilename()
-							+ ", filename without suffix: "
-							+ filename_NoSuffix;
+			for ( SubmitImport_FinalSubmit_SingleFileItem requestFileItem : requestFileItemList ) {
+				if ( requestFileItem.getFileIndex() == null ) {
+					String msg = "requestFileItem.fileIndex == null";
 					log.warn( msg );
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( ! fileIndexes_Set.add( requestFileItem.getFileIndex() ) ) {
+					String msg = "requestFileItem.fileIndex duplicate value: " + requestFileItem.getFileIndex();
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( requestFileItem.getFileType() == null ) {
+					String msg = "requestFileItem.fileType == null";
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( requestFileItem.getFileType().intValue() == FileImportFileType.LIMELIGHT_XML_FILE.value() ) {
+					if ( foundLimelightXMLFile ) {
+						String msg = "More than one Limelight XML file";
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+					foundLimelightXMLFile = true;
+
+				} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.FASTA_FILE.value() ) {
+					if ( ! isFileObjectStorageFileImportAllowed ) {
+						webservice_Result_Base.setStatusSuccess( false );
+						webservice_Result_Base.setSubmittedFASTAFileNotAllowed( true );
+						return webserviceMethod_Internal_Results;  //  EARLY EXIT
+					}
+				} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.SCAN_FILE.value() ) {
+					if ( ! isScanFileImportAllowed ) {
+						webservice_Result_Base.setStatusSuccess( false );
+						webservice_Result_Base.setSubmittedScanFileNotAllowed( true );
+						return webserviceMethod_Internal_Results;  //  EARLY EXIT
+					}
+				} else {
+					String msg = "File Type is unknown: " + requestFileItem.getFileType().intValue();
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( requestFileItem.getUploadedFilename() == null ) {
+					String msg = "requestFileItem.uploadedFilename == null";
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				if ( ! filenamesSet.add( requestFileItem.getUploadedFilename() ) ) {
+					String msg = "Duplicate filename: " + requestFileItem.getUploadedFilename();
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+				{
+					String filename_NoSuffix = FilenameUtils.removeExtension( requestFileItem.getUploadedFilename() );
+					if ( ! filenames_NoSuffixes_Set.add( filename_NoSuffix ) ) {
+						String msg = "Duplicate filename (checking without filename suffix): " 
+								+ requestFileItem.getUploadedFilename()
+								+ ", filename without suffix: "
+								+ filename_NoSuffix;
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
 				}
 			}
 		}
+		
 		//  Determine search name, starting with search name in Submit request
 		String searchName = webservice_Request_Base.getSearchName();
 		if ( StringUtils.isEmpty( searchName ) ) {
@@ -750,60 +764,110 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			//  No Search path in upload request
 			searchPath= null; // make null if it is the empty string
 		}
-		List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTOList = new ArrayList<>( 1 );
-		List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocDataList = null;
+
+		//  Get the File object for the Base Subdir used to store the files in this request 
+		File importFilesBaseDir = new File( importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
+		if ( ! importFilesBaseDir.exists() ) {
+//				boolean mkdirResult = 
+			importFilesBaseDir.mkdir();
+		}
+		if ( ! importFilesBaseDir.exists() ) {
+			String msg = "importFilesBaseDir does not exist after testing for it and attempting to create it.  importFilesBaseDir: " 
+					+ importFilesBaseDir.getAbsolutePath();
+			log.error( msg );
+			throw new LimelightWebappFileUploadFileSystemException(msg);
+		}
+		
+		String dirNameForImportTrackingId =
+				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( importTrackingId );
+		File dirForImportTrackingId  =  new File( importFilesBaseDir , dirNameForImportTrackingId );
+		if ( ! dirForImportTrackingId.exists() ) {
+			String msg = "dirForImportTrackingId NOT already exists: " + dirForImportTrackingId.getAbsolutePath();
+			log.warn( msg );
+			throw new Exception(msg);
+		}
+		
+//		List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocDataList = null;
 		
 		if ( ! webserviceMethod_Internal_Params.submitterSameMachine ) {
 			
 			//  Not Flag set in Request for Submitter Same Machine so:
 			
 			//  "Normal Submit" Processing
+
+			//  Validate that submitted files exist and are in fileImportTrackingSingleFileDTOList in DB
+			List<SubmitImport_FinalSubmit_SingleFileItem> fileItemList = webservice_Request_Base.getFileItems();
 			
-			ProcessFilesInTempUploadDirResult processFilesInTempUploadDirResult =
-					processFilesInTempUploadDir(
-							tempSubdir, requestFileItemList);
-			
-			limelightUploadTempDataFileContentsAndAssocDataList =
-					processFilesInTempUploadDirResult.limelightUploadTempDataFileContentsAndAssocDataList;
-			
-			FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO = null;
-			//  fileImportTrackingSingleFileDTO entry for Uploaded file(s)
-			for (  LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocData : limelightUploadTempDataFileContentsAndAssocDataList ) {
-				LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = limelightUploadTempDataFileContentsAndAssocData.limelightUploadTempDataFileContents;
-				fileImportTrackingSingleFileDTO = new FileImportTrackingSingleFileDTO();
-				fileImportTrackingSingleFileDTOList.add( fileImportTrackingSingleFileDTO );
-				fileImportTrackingSingleFileDTO.setFilenameInUpload( limelightUploadTempDataFileContents.getUploadedFilename() );
-				fileImportTrackingSingleFileDTO.setFilenameOnDisk( limelightUploadTempDataFileContents.getSavedToDiskFilename() );
-				fileImportTrackingSingleFileDTO.setFileType( limelightUploadTempDataFileContents.getFileType() );
-				fileImportTrackingSingleFileDTO.setFileSize( limelightUploadTempDataFileContentsAndAssocData.fileLength );
-				fileImportTrackingSingleFileDTO.setCanonicalFilename_W_Path_OnSubmitMachine( limelightUploadTempDataFileContents.getCanonicalFilename_W_Path_OnSubmitMachine() );
-				fileImportTrackingSingleFileDTO.setAbsoluteFilename_W_Path_OnSubmitMachine( limelightUploadTempDataFileContents.getAbsoluteFilename_W_Path_OnSubmitMachine() );
-				fileImportTrackingSingleFileDTO.setFileUploadStatus( ImportSingleFileUploadStatus.FILE_UPLOAD_COMPLETE );
-				if ( limelightUploadTempDataFileContents.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
-					String searchNameFromLimelightXMLFile = limelightUploadTempDataFileContents.getSearchNameInFile();
-					if ( StringUtils.isEmpty( searchName )
-							&& ( StringUtils.isNotEmpty( searchNameFromLimelightXMLFile ) )) {
-						//  No Search name in upload request AND Search name in Limelight XML file
-						searchName = searchNameFromLimelightXMLFile;
+			{
+				Map<Integer, SubmitImport_FinalSubmit_SingleFileItem> fileItem_FromRequest_Map_Key_FileIndex = new HashMap<>( fileItemList.size() );
+
+				for ( SubmitImport_FinalSubmit_SingleFileItem fileItem : fileItemList ) {
+
+					fileItem_FromRequest_Map_Key_FileIndex.put( fileItem.getFileIndex(), fileItem );
+				}
+
+				List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTO_List =
+						fileImportTrackingSingleFileDAO.getFor_TrackingId(importTrackingId);
+
+				for ( FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO : fileImportTrackingSingleFileDTO_List ) {
+
+					if ( fileImportTrackingSingleFileDTO.getFileUploadStatus() != ImportSingleFileUploadStatus.FILE_UPLOAD_COMPLETE ) {
+						String msg = "Single File Upload in DB NOT in status COMPLETE. Index: "
+								+ fileImportTrackingSingleFileDTO.getFileIndex()
+								+ ", id: " + fileImportTrackingSingleFileDTO.getId()
+								+ ", status: " + fileImportTrackingSingleFileDTO.getFileUploadStatus();
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 					}
 				}
+
+				for ( FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO : fileImportTrackingSingleFileDTO_List ) {
+
+					//  'remove' from map 
+					SubmitImport_FinalSubmit_SingleFileItem fileItem_FromRequest = fileItem_FromRequest_Map_Key_FileIndex.remove( fileImportTrackingSingleFileDTO.getFileIndex() );
+					if ( fileItem_FromRequest == null ) {
+						//  Mismatch
+						String msg = "Single File Upload in DB NOT in Submit request. " + fileImportTrackingSingleFileDTO.getFileIndex();
+						log.warn( msg );
+						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+					}
+				}
+				
+				if ( ! fileItem_FromRequest_Map_Key_FileIndex.isEmpty() ) {
+					//  Mismatch
+					SubmitImport_FinalSubmit_SingleFileItem fileItem_FromRequest = fileItem_FromRequest_Map_Key_FileIndex.values().iterator().next();
+					String msg = "Single File Upload in Submit request NOT in DB. " + fileItem_FromRequest.getFileIndex();
+					log.warn( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				
+				}
 			}
+			
 		} else {
 			
 			//  validateSubmitterKeyForSubmitSameMachine.submitterSameMachine true
 			// validate submitterKey
 
-			boolean isValid = validateSubmitterKeyForSubmitSameMachine( webserviceMethod_Internal_Params.submitterKey, tempSubdir );
+			
+			boolean isValid = validateSubmitterKeyForSubmitSameMachine( webserviceMethod_Internal_Params.submitterKey, dirForImportTrackingId );
 			if ( ! isValid ) {
 				//  Submitter Key is not valid so remove the tmp upload subdir, making the upload key unusable
 				//   This will remove the submitter key file, making the submitter key unusable
-				deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+//				deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+				
 				String msg = "Submitter Key Not Valid";
 				log.warn( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				
+				webservice_Result_Base.setStatusFail_ErrorMessage( "Submitter Key Not Valid" );
+				
+				return webserviceMethod_Internal_Results;
 			}
+			
 			//  Validate that submitted files exist and add to fileImportTrackingSingleFileDTOList
 			List<SubmitImport_FinalSubmit_SingleFileItem> fileItemList = webservice_Request_Base.getFileItems();
+
+			List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTOList = new ArrayList<>( fileItemList.size() );
+			
 			for ( SubmitImport_FinalSubmit_SingleFileItem fileItem : fileItemList ) {
 				FileImportFileType fileImportFileType = null;
 				try {
@@ -835,87 +899,82 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 //				}
 				
 				FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO = new FileImportTrackingSingleFileDTO();
-				fileImportTrackingSingleFileDTOList.add( fileImportTrackingSingleFileDTO );
+				fileImportTrackingSingleFileDTO.setFileImportTrackingId(importTrackingId);
+				fileImportTrackingSingleFileDTO.setFileIndex( fileItem.getFileIndex() );
 				fileImportTrackingSingleFileDTO.setFilenameInUpload( fileItemFile.getName() );
 				fileImportTrackingSingleFileDTO.setFilenameOnDisk( fileItemFile.getName() );
 				fileImportTrackingSingleFileDTO.setFilenameOnDiskWithPathSubSameMachine( fileItem.getFilenameOnDiskWithPathSubSameMachine() );
+				fileImportTrackingSingleFileDTO.setFileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem(true);
+				fileImportTrackingSingleFileDTO.setFileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport(false);
 				fileImportTrackingSingleFileDTO.setFileType( fileImportFileType );
 				fileImportTrackingSingleFileDTO.setFileSize( fileSize );
 				fileImportTrackingSingleFileDTO.setCanonicalFilename_W_Path_OnSubmitMachine( fileItemFile.getCanonicalPath() );
+				fileImportTrackingSingleFileDTO.setAbsoluteFilename_W_Path_OnSubmitMachine( fileItemFile.getAbsolutePath() );
 				fileImportTrackingSingleFileDTO.setFileUploadStatus( ImportSingleFileUploadStatus.FILE_UPLOAD_COMPLETE );
-			}
-		}
-		
-		//  Get the File object for the Base Subdir used to store the files in this request 
-		File importFilesBaseDir = new File( importer_Work_Directory, FileUploadCommonConstants.IMPORT_BASE_DIR );
-		if ( ! importFilesBaseDir.exists() ) {
-//				boolean mkdirResult = 
-			importFilesBaseDir.mkdir();
-		}
-		if ( ! importFilesBaseDir.exists() ) {
-			String msg = "importFilesBaseDir does not exist after testing for it and attempting to create it.  importFilesBaseDir: " 
-					+ importFilesBaseDir.getAbsolutePath();
-			log.error( msg );
-			throw new LimelightWebappFileUploadFileSystemException(msg);
-		}
-		
-		int importTrackingId = fileImportTrackingFileIdCreatorDAO.getNextId();
-		
-		String dirNameForImportTrackingId =
-				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( importTrackingId );
-		File dirForImportTrackingId  =  new File( importFilesBaseDir , dirNameForImportTrackingId );
-		if ( dirForImportTrackingId.exists() ) {
-			String msg = "dirForImportTrackingId already exists: " + dirForImportTrackingId.getAbsolutePath();
-			log.error( msg );
-			throw new Exception(msg);
-		}
-		if ( ! dirForImportTrackingId.mkdir() ) {
-			String msg = "Failed to make dirForImportTrackingId: " + dirForImportTrackingId.getAbsolutePath();
-			log.error( msg );
-			throw new Exception(msg);
-		}
-		if ( webserviceMethod_Internal_Params.submitterSameMachine ) {
-			//  submitterSameMachine  true so create file with list of file names with paths to be imported
-			File importFileListFile = 
-					new File( dirForImportTrackingId, LimelightXMLFileUploadWebConstants.IMPORT_FILE_LIST_FILE );
-			BufferedWriter writer = null;
-			try {
-				writer = new BufferedWriter( new FileWriter( importFileListFile ) );
-				writer.write( "List of files to be imported" );
-				writer.newLine();
-				for ( FileImportTrackingSingleFileDTO item : fileImportTrackingSingleFileDTOList ) {
-					writer.write( item.getFilenameOnDiskWithPathSubSameMachine() );
-					writer.newLine();
-				}
-			} finally {
-				if ( writer != null ) {
-					writer.close();
-				}
-			}
-		}
-		if ( ! webserviceMethod_Internal_Params.submitterSameMachine ) {
-			//  Files were uploaded so move from temp dir to import dir (import dir name based on tracking id) 
-			moveUploadedFilesToWorkDirectory(
-					tempSubdir,
-					limelightUploadTempDataFileContentsAndAssocDataList,
-					dirForImportTrackingId );
-		}
-		
-		try {
-			//  Remove the subdir the uploaded file(s) were in
-			deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
-		} catch ( Exception e ) {
-			String directoryCanonicalPath = "";
-			try {
-				directoryCanonicalPath = ", tempSubdir.getCanonicalPath: " + tempSubdir.getCanonicalPath();
-			} catch ( Exception e2 ) {
 				
-				// Swallow Exception since NOT mission critical
+
+				fileImportTrackingSingleFileDAO.save(fileImportTrackingSingleFileDTO);
+				
+				fileImportTrackingSingleFileDTOList.add( fileImportTrackingSingleFileDTO );
 			}
 			
-			String msg = "Failed to delete directory: " + tempSubdir.getAbsolutePath() + directoryCanonicalPath;
-			log.error( msg );
-			// Swallow Exception since NOT mission critical
+			try {
+
+				File importFileListFile = 
+						new File( dirForImportTrackingId, LimelightXMLFileUploadWebConstants.IMPORT_FILE_LIST_FILE );
+				BufferedWriter writer = null;
+				try {
+					writer = new BufferedWriter( new FileWriter( importFileListFile ) );
+					writer.write( "List of files to be imported" );
+					writer.newLine();
+					for ( FileImportTrackingSingleFileDTO item : fileImportTrackingSingleFileDTOList ) {
+						writer.write( item.getFilenameOnDiskWithPathSubSameMachine() );
+						writer.newLine();
+					}
+				} finally {
+					if ( writer != null ) {
+						writer.close();
+					}
+				}
+			} catch ( Throwable t ) {
+				//  Eat exception since this is just a nice to have
+				log.error( "Failed to create 'List of files to be imported' file which is INFO ONLY.", t );
+			}
+		}
+		
+		{  //  Clean up tempSubdir since Maybe created in initialize (needed for Same Machine Upload)
+			
+			
+			//  Clean Up under FileUploadCommonConstants.UPLOAD_FILE_TEMP_BASE_DIR since that is where OLD Submit Import expects this file
+
+			//  Get the File object for the Base Subdir used to temporarily store the files in this request 
+
+			File uploadFileTempDir = new File( importer_Work_Directory, FileUploadCommonConstants.UPLOAD_FILE_TEMP_BASE_DIR );
+			
+			if ( uploadFileTempDir.exists() ) {
+
+				File tempSubdir = new File( uploadFileTempDir, dirNameForImportTrackingId );  //  Use same Subdir name as for main import
+
+				if ( tempSubdir.exists() ) {
+
+					try {
+						//  Remove the subdir the uploaded file(s) were in
+						deleteDirectoryAndContentsUtil.deleteDirectoryAndContents( tempSubdir );
+					} catch ( Exception e ) {
+						String directoryCanonicalPath = "";
+						try {
+							directoryCanonicalPath = ", tempSubdir.getCanonicalPath: " + tempSubdir.getCanonicalPath();
+						} catch ( Exception e2 ) {
+
+							// Swallow Exception since NOT mission critical
+						}
+
+						String msg = "Failed to delete directory: " + tempSubdir.getAbsolutePath() + directoryCanonicalPath;
+						log.error( msg );
+						// Swallow Exception since NOT mission critical
+					}
+				}
+			}
 		}
 		
 		FileImportTrackingDataJSONBlob_DTO fileImportTrackingDataJSONBlob_DTO = null;
@@ -966,28 +1025,19 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			fileImportTrackingDataJSONBlob_DTO.setJsonContents(jsonContents);
 		}
 		
-
-		//  Main File Import Tracking Object
-		FileImportTrackingDTO fileImportTrackingDTO = new FileImportTrackingDTO();
-		fileImportTrackingDTO.setId( importTrackingId );
-		fileImportTrackingDTO.setStatus( FileImportStatus.QUEUED );
-		fileImportTrackingDTO.setPriority( FileUploadCommonConstants.PRIORITY_STANDARD );
-		fileImportTrackingDTO.setProjectId( projectId );
-		fileImportTrackingDTO.setUserId( userId );
+//		//  Main File Import Tracking Object. Update for Submit
+		
 		fileImportTrackingDTO.setSearchName( searchName );
 		fileImportTrackingDTO.setSearchShortName( searchShortName );
 		fileImportTrackingDTO.setSearchPath( searchPath );
-		fileImportTrackingDTO.setInsertRequestURL( requestURL );
-		fileImportTrackingDTO.setRemoteUserIpAddress( remoteUserIpAddress );
+
+		fileImportTrackingDAO.set_FieldsUpdatedInSubmit_ForId(fileImportTrackingDTO);
 		
-		//  Save to the DB
-		importTrackingAndChildren_Save_SingleDBTransaction
-		.saveImportTrackingAndChildrenInSingleDBTransaction( fileImportTrackingDTO, fileImportTrackingDataJSONBlob_DTO, fileImportTrackingSingleFileDTOList );
+		/////////////////////
 		
-		if ( webserviceMethod_Internal_Params.submitterSameMachine ) {
-			//  submitterSameMachine true, return the subdir name for import
-			webserviceMethod_Internal_Results.importerSubDir = dirNameForImportTrackingId;
-		}
+		//  ALWAYS execute this method: fileImportTrackingDAO.set_Status_Queued_Submitted_ForId
+		
+		fileImportTrackingDAO.set_Status_Queued_Submitted_ForId( remoteUserIpAddress, requestURL, importTrackingId );
 		
 		webservice_Result_Base.setStatusSuccess( true );
 		
@@ -1023,187 +1073,6 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		
 		
 		return webserviceMethod_Internal_Results;
-	}
-
-
-	/**
-	 * @param tempSubdir
-	 * @param requestFileItemList
-	 * @return
-	 * @throws JAXBException
-	 * @throws LimelightWebappFileUploadFileSystemException
-	 * @throws IOException
-	 */
-	private ProcessFilesInTempUploadDirResult processFilesInTempUploadDir(
-			File tempSubdir, 
-			List<SubmitImport_FinalSubmit_SingleFileItem> requestFileItemList )
-			throws JAXBException, IOException, LimelightWebappFileUploadFileSystemException {
-		ProcessFilesInTempUploadDirResult processFilesInTempUploadDirResult = new ProcessFilesInTempUploadDirResult();
-		
-		//  Process files from tempSubdir, matching to request
-		List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocData_OnDisk_List =
-				getLimelightUploadTempDataFileContentsListForTempSubdir( tempSubdir );
-		
-		//  Only process files sent in submit request
-		List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocDataList = new ArrayList<>( limelightUploadTempDataFileContentsAndAssocData_OnDisk_List.size() );
-		for ( SubmitImport_FinalSubmit_SingleFileItem requestFileItem : requestFileItemList ) {
-			
-			LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocDataForRequestFileItem = null;
-			
-			for ( LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocData  : 
-				limelightUploadTempDataFileContentsAndAssocData_OnDisk_List ) {
-				
-				LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = limelightUploadTempDataFileContentsAndAssocData.limelightUploadTempDataFileContents;
-				
-				if ( requestFileItem.getFileIndex().intValue() == limelightUploadTempDataFileContents.getFileIndex() 
-						&& requestFileItem.getFileType().intValue() == limelightUploadTempDataFileContents.getFileType().value() 
-						&& requestFileItem.getUploadedFilename().equals( limelightUploadTempDataFileContents.getUploadedFilename() ) ) { 
-					
-					if ( limelightUploadTempDataFileContentsAndAssocDataForRequestFileItem != null ) {
-						String msg = "Found more than one file on disk match for file index: " + requestFileItem.getFileIndex().intValue() 
-								+ ", file type: " + requestFileItem.getFileType().intValue()
-								+ ", uploaded filename: " + requestFileItem.getUploadedFilename();
-						log.error( msg );
-						throw new LimelightWebappFileUploadFileSystemException( msg );
-					}
-					//  Save off limelightUploadTempDataFileContentsAndAssocData since it matches the file index and file type and filename
-					limelightUploadTempDataFileContentsAndAssocDataForRequestFileItem = limelightUploadTempDataFileContentsAndAssocData;
-				}
-			}
-			if ( limelightUploadTempDataFileContentsAndAssocDataForRequestFileItem == null ) {
-				String msg = "No file on disk matched for file index: " + requestFileItem.getFileIndex().intValue() 
-						+ ", file type: " + requestFileItem.getFileType().intValue()
-						+ ", uploaded filename: " + requestFileItem.getUploadedFilename();
-				log.error( msg );
-				throw new LimelightWebappFileUploadFileSystemException(msg);
-			}
-			limelightUploadTempDataFileContentsAndAssocDataList.add( limelightUploadTempDataFileContentsAndAssocDataForRequestFileItem );
-		}
-		//  Ensure exactly one Limelight XML file is processed
-		boolean processedLimelightXMLFile = false;
-		for (  LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocData : limelightUploadTempDataFileContentsAndAssocDataList ) {
-			LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = limelightUploadTempDataFileContentsAndAssocData.limelightUploadTempDataFileContents;
-			if ( limelightUploadTempDataFileContents.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
-				if ( processedLimelightXMLFile ) {
-					String msg = "More than one Limelight XML file";
-					log.warn( msg );
-					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-				}
-				processedLimelightXMLFile = true;
-			}
-		}
-		
-		//  NOW allow without Limelight XML File
-		
-//		if ( ! processedLimelightXMLFile ) {
-//			String msg = "Missing Limelight XML file";
-//			log.warn( msg );
-//			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-//		}
-		
-		
-		processFilesInTempUploadDirResult.limelightUploadTempDataFileContentsAndAssocDataList = limelightUploadTempDataFileContentsAndAssocData_OnDisk_List;
-		return processFilesInTempUploadDirResult;
-	}
-	
-	/**
-	 * @param tempSubdir
-	 * @param limelightUploadTempDataFileContentsAndAssocDataList
-	 * @param dirForImportTrackingId
-	 * @throws LimelightWebappFileUploadFileSystemException
-	 */
-	private void moveUploadedFilesToWorkDirectory(
-			File tempSubdir,
-			List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocDataList,
-			File dirForImportTrackingId)
-			throws LimelightWebappFileUploadFileSystemException {
-		///   move the uploaded file(s) into importer work dir.
-		for (  LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocData : limelightUploadTempDataFileContentsAndAssocDataList ) {
-			LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = limelightUploadTempDataFileContentsAndAssocData.limelightUploadTempDataFileContents;
-			File uploadedTempFileOnDisk = new File( tempSubdir, limelightUploadTempDataFileContents.getSavedToDiskFilename() );
-			File uploadedFile_In_dirForImportTrackingId = new File( dirForImportTrackingId, limelightUploadTempDataFileContents.getSavedToDiskFilename() );
-			try {
-				FileUtils.moveFile( uploadedTempFileOnDisk, uploadedFile_In_dirForImportTrackingId );
-			} catch ( Exception e ) {
-				String msg = "Failed to move uploaded file to dirForImportTrackingId.  Src file: " + uploadedTempFileOnDisk
-						+ ", dest file: " + uploadedFile_In_dirForImportTrackingId;
-				log.error( msg, e );
-				throw new LimelightWebappFileUploadFileSystemException(msg, e);
-			}
-		}
-	}
-	
-
-	/**
-	 * @param tempSubdir
-	 * @return List of LimelightUploadTempDataFileContents
-	 * @throws JAXBException 
-	 * @throws LimelightWebappFileUploadFileSystemException 
-	 * @throws IOException 
-	 */
-	private List<LimelightUploadTempDataFileContentsAndAssocData> getLimelightUploadTempDataFileContentsListForTempSubdir( File tempSubdir ) throws JAXBException, LimelightWebappFileUploadFileSystemException, IOException {
-		
-		List<LimelightUploadTempDataFileContentsAndAssocData> limelightUploadTempDataFileContentsAndAssocDataList = new ArrayList<>();
-		
-		File[] tempSubdirFiles = tempSubdir.listFiles();
-		if ( tempSubdirFiles.length > 0 ) {
-			//  At least 1 file in subdir.  
-			
-			// Process files that filename start with LimelightXMLFileUploadWebConstants.UPLOAD_FILE_DATA_FILE_PREFIX
-			
-			JAXBContext jaxbContext = JAXBContext.newInstance( LimelightUploadTempDataFileContents.class );
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			for ( File tempSubdirFile : tempSubdirFiles ) {
-				String tempSubdirFilename = tempSubdirFile.getName();
-				if ( tempSubdirFilename.startsWith( LimelightXMLFileUploadWebConstants.UPLOAD_FILE_DATA_FILE_PREFIX ) ) {
-					//  Unmarshal (read) the object from the file
-					LimelightUploadTempDataFileContents limelightUploadTempDataFileContents = null;
-					Object objectFromFile = null;
-					InputStream inputStream = null;
-					try {
-						inputStream = new FileInputStream( tempSubdirFile );
-						XMLInputFactory xmlInputFactory = XMLInputFactory_XXE_Safe_Creator.xmlInputFactory_XXE_Safe_Creator();
-						XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(new StreamSource( inputStream ) );
-						objectFromFile = unmarshaller.unmarshal( xmlStreamReader );
-					} catch ( Exception e ) {
-						String msg = "Failed to read and unmarshall data from file: " + tempSubdirFile.getCanonicalPath();
-						log.error( msg );
-						throw new LimelightWebappFileUploadFileSystemException(msg,e);
-					} finally {
-						if ( inputStream != null ) {
-							inputStream.close();
-						}
-					}
-					if ( ! ( objectFromFile instanceof LimelightUploadTempDataFileContents ) ) {
-						String msg = "object unmarshalled from file is incorrect type: " + objectFromFile.getClass().getCanonicalName();
-						log.error( msg );
-						throw new LimelightWebappFileUploadFileSystemException(msg);
-					}
-					try {
-						limelightUploadTempDataFileContents = 
-								(LimelightUploadTempDataFileContents) objectFromFile;
-					} catch ( Exception e ) {
-						String msg = "object unmarshalled from file is incorrect type: " + objectFromFile.getClass().getCanonicalName();
-						log.error( msg );
-						throw new LimelightWebappFileUploadFileSystemException(msg, e);
-					}
-					LimelightUploadTempDataFileContentsAndAssocData limelightUploadTempDataFileContentsAndAssocData = new LimelightUploadTempDataFileContentsAndAssocData(); 
-					limelightUploadTempDataFileContentsAndAssocData.limelightUploadTempDataFileContents = limelightUploadTempDataFileContents;
-					//  Get length of uploaded file
-					File uploadedFile = null;
-					try {
-						uploadedFile = new File( tempSubdir, limelightUploadTempDataFileContents.getSavedToDiskFilename() );
-						limelightUploadTempDataFileContentsAndAssocData.fileLength = uploadedFile.length();
-					} catch ( Exception e ) {
-						String msg = "Error getting length of uploaded file: " + uploadedFile.getAbsolutePath();
-						log.error( msg );
-						throw new LimelightWebappFileUploadFileSystemException(msg, e);
-					}
-					limelightUploadTempDataFileContentsAndAssocDataList.add( limelightUploadTempDataFileContentsAndAssocData );
-				}
-			}
-		}
-		return limelightUploadTempDataFileContentsAndAssocDataList;
 	}
 
 	/**
@@ -1247,7 +1116,6 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 	/////////////////////////////////
 	/////   Classes for internal holders
 	private static class LimelightUploadTempDataFileContentsAndAssocData {
-		LimelightUploadTempDataFileContents limelightUploadTempDataFileContents;
 		long fileLength;
 	}
 	private static class ProcessFilesInTempUploadDirResult {
@@ -1266,7 +1134,7 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 		SubmitImport_FinalSubmit_Request_PgmXML submitImport_FinalSubmit_Request_PgmXML;
 
 		int projectId = -1;
-		long uploadKey = -1;
+		int uploadKey = -1;
 		
 		int userId;
 		

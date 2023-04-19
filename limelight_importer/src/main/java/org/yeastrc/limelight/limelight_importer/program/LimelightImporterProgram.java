@@ -44,6 +44,7 @@ import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchSt
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ImportResults;
+import org.yeastrc.limelight.limelight_importer.objects.LimelightXMLFile_FileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
@@ -292,6 +293,7 @@ public class LimelightImporterProgram {
 			
 			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries = new FileObjectStorage_FileContainer_AllEntries();
 			
+			LimelightXMLFile_FileContainer limelightXMLFile_FileContainer = new LimelightXMLFile_FileContainer();
 			File mainXMLFileToImport = null;
 			File fastaFileToImport = null;
 			List<File> scanFileList = null;
@@ -495,8 +497,13 @@ public class LimelightImporterProgram {
 						importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
 						return importResults;  //  EARLY EXIT
 					}
+					
 					mainXMLFileToImport = new File( inputLimelightFileString );
 					importResults.setImportedLimelightXMLFile( mainXMLFileToImport );
+					limelightXMLFile_FileContainer.setLimelightXMLFile(mainXMLFileToImport);
+					limelightXMLFile_FileContainer.setFilename( mainXMLFileToImport.getName() );
+					limelightXMLFile_FileContainer.setFileSize( mainXMLFileToImport.length() );
+					
 					if( ! mainXMLFileToImport.exists() ) {
 						System.err.println( "Could not find main XML File To Import file: " + mainXMLFileToImport.getAbsolutePath() );
 						System.err.println( "" );
@@ -623,6 +630,7 @@ public class LimelightImporterProgram {
 						ScanFileFileContainer scanFileFileContainer = new ScanFileFileContainer();
 						scanFileFileContainer.setScanFile( scanFile );
 						scanFileFileContainer.setScanFilename( scanFilename );
+						scanFileFileContainer.setFileSize( scanFile.length() );
 						
 						scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
 
@@ -835,7 +843,7 @@ public class LimelightImporterProgram {
 								null, // searchShortName
 								searchTags_SearchTagCategories_Root_And_SubParts_InputData, 
 								importDirectoryOverrideValue, 
-								mainXMLFileToImport, 
+								limelightXMLFile_FileContainer, 
 								limelightInputForImportParam,
 								fileObjectStorage_FileContainer_AllEntries,
 								scanFileFileContainer_AllEntries,

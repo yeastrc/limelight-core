@@ -23,8 +23,6 @@
 		<input type="hidden" id="limelight_xml_file_upload_overlay_upload_scan_files" value="true">
 	
 	</c:if>
-	  
-	<input type="hidden" id="limelight_max_file_upload_chunk_size" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FILE_UPLOAD_CHUNK_SIZE%>">
 	
 	<input type="hidden" id="limelight_xml_file_max_file_upload_size" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_AS_STRING()%>">
 	<input type="hidden" id="limelight_xml_file_max_file_upload_size_formatted" value="<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_FORMATTED()%>">

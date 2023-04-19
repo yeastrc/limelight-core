@@ -21,6 +21,7 @@ import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureD
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.ScanFileDAO_Partial;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterConfigurationException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.utils.Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
@@ -31,6 +32,7 @@ import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionPersistentFeat
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionPersistentFeature_FileHeaderContents_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetection_PersistentFeature_UploadedFileStatsDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ScanFileAPI_Key_NotFound;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanNumbers_Request;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanNumbers_Response;
@@ -39,6 +41,14 @@ import org.yeastrc.spectral_storage.get_data_webapp.webservice_connect.main.Call
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * 
@@ -59,16 +69,13 @@ public class ImportFile_Bullseye_Results {
 
 	public static class ImportFile_Bullseye_Results__Params {
 
-		int projectId;
 		int scanFileId;
 		int featureDetectionRootId;
 		String filename_Uploaded;
 		File fileToImport;
+		FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results;
 		int userId;
 
-		public void setProjectId(int projectId) {
-			this.projectId = projectId;
-		}
 		public void setFeatureDetectionRootId(int featureDetectionRootId) {
 			this.featureDetectionRootId = featureDetectionRootId;
 		}
@@ -84,6 +91,10 @@ public class ImportFile_Bullseye_Results {
 		public void setScanFileId(int scanFileId) {
 			this.scanFileId = scanFileId;
 		}
+		public void setFileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results(
+				FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results) {
+			this.fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results = fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results;
+		}
 	}
 
 
@@ -96,11 +107,16 @@ public class ImportFile_Bullseye_Results {
 			ImportFile_Bullseye_Results__Params params
 			) throws Exception {
 
-		int projectId = params.projectId;
 		int scanFileId = params.scanFileId;
 		int featureDetectionRootId = params.featureDetectionRootId;
+		
+		FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results = params.fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results;
+		
+		//  OR
+		
 		String filename_Uploaded = params.filename_Uploaded;
 		File fileToImport = params.fileToImport;
+		
 		int userId = params.userId;
 
 
@@ -179,6 +195,12 @@ public class ImportFile_Bullseye_Results {
 			ms_2_ScanNumbers = new HashSet<>( scanNumbersList );
 		}
 
+		int uploadedFileSize = 0;
+		
+		if ( fileToImport != null ) {
+			uploadedFileSize = (int)fileToImport.length();
+		}
+		
 
 		//  "Top Level" DB Record
 
@@ -189,92 +211,190 @@ public class ImportFile_Bullseye_Results {
 		featureDetection_PersistentFeature_UploadedFileStatsDTO.setFileFullyInserted(false);
 		featureDetection_PersistentFeature_UploadedFileStatsDTO.setFeaturedetectionProgramName( FeatureDetectionProgramName_Values_Constants.BULLSEYE );
 		featureDetection_PersistentFeature_UploadedFileStatsDTO.setUploadedFilename(filename_Uploaded);
-		featureDetection_PersistentFeature_UploadedFileStatsDTO.setUploadedFileSize((int)fileToImport.length());
+		featureDetection_PersistentFeature_UploadedFileStatsDTO.setUploadedFileSize(uploadedFileSize);
 
 		featureDetection_PersistentFeature_UploadedFileStatsDTO.setCreatedBy_UserId(userId);
 		featureDetection_PersistentFeature_UploadedFileStatsDTO.setUpdatedBy_UserId(userId);
 
 
-		try ( InputStream httpServletRequest__InputStream = new BufferedInputStream( new FileInputStream( fileToImport ) ) ) {
+		if ( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results != null ) {
+			
+			if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getFilenameOnDisk() ) ) {
 
-			Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component read_InputStream_Into_ASCII_CharacterString_OneLineAtATime = 
-					Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component.getNewInstance(httpServletRequest__InputStream);
+				try ( InputStream inputStream = new BufferedInputStream( new FileInputStream( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getFilenameOnDisk() ) ) ) {
 
-
-			//  Process Uploaded File: Header Section --  Updates: featureDetection_PersistentFeature_UploadedFileStatsDTO object
-			String headerLines_NewLineDelim = process_File_HeaderSection(read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, featureDetection_PersistentFeature_UploadedFileStatsDTO);
-
-			//  Insert "Top Level" DB Record
-			FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().save(featureDetection_PersistentFeature_UploadedFileStatsDTO);
-
-			{   //  Insert File Header Contents
-
-				FeatureDetectionPersistentFeature_FileHeaderContents_DTO featureDetectionPersistentFeature_FileHeaderContents_DTO = new FeatureDetectionPersistentFeature_FileHeaderContents_DTO();
-
-				featureDetectionPersistentFeature_FileHeaderContents_DTO.setFeatureDetectionPersistentFeatureUploadedFileStatsId(
-						featureDetection_PersistentFeature_UploadedFileStatsDTO.getId() );
-
-				featureDetectionPersistentFeature_FileHeaderContents_DTO.setFileHeaderContents(headerLines_NewLineDelim);
-
-				FeatureDetectionPersistentFeature_FileHeaderContents_DAO.getInstance().save(featureDetectionPersistentFeature_FileHeaderContents_DTO);
-			}
-
-			///
-
-			//  Process Uploaded File: Main Content Lines
-			process_File_MainContentLines(read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, ms_2_ScanNumbers, featureDetection_PersistentFeature_UploadedFileStatsDTO);
-
-
-			String sha1_Of_PostBody = null;
-			String sha384_Of_PostBody = null;
-
-			{  // sha1_Of_PostBody
-				byte[] mdbytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_1_Of_StreamContents().digest();
-
-				//convert the byte to hex format
-				StringBuffer sb = new StringBuffer("");
-				for (int i = 0; i < mdbytes.length; i++) {
-					sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+					process_UploadedContents_InputStream( featureDetection_PersistentFeature_UploadedFileStatsDTO, ms_2_ScanNumbers, inputStream);
 				}
-
-				sha1_Of_PostBody = sb.toString();
+				
+				return; // EARLY RETURN
 			}
+			
+			if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_bucket_name() ) ) {
 
-			{  // sha384_Of_PostBody
-				byte[] hashBytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_384_Of_StreamContents().digest();
 
-				StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+				//  Not a local file.  Get from AWS S3
 
-				for ( int i = 0; i < hashBytes.length; i++ ) {
-					String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
-					if ( byteAsHex.length() == 1 ) {
-						hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+				S3Client amazonS3_Client = null;
+
+				{  // Use Region from fileImportAndPipelineRunTrackingSingleFileDTO, otherwise Config, otherwise SDK use from Environment Variable
+
+					String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_region();
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+								
+						amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 					}
-					hashBytesAsHexSB.append( byteAsHex );
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+						Region aws_S3_Region = Region.of(amazonS3_RegionName);
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.region( aws_S3_Region )
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build();
+						
+					} else {
+						//  SDK use Region from Environment Variable
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build(); 
+					}
 				}
 
-				sha384_Of_PostBody = hashBytesAsHexSB.toString();
+				GetObjectRequest getObjectRequest = 
+						GetObjectRequest
+						.builder()
+						.bucket(fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_bucket_name())
+						.key( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_object_key() )
+						.build();
+				
+				try ( ResponseInputStream<GetObjectResponse> getObjectResponse_UsableAsInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+					
+					process_UploadedContents_InputStream( featureDetection_PersistentFeature_UploadedFileStatsDTO, ms_2_ScanNumbers, getObjectResponse_UsableAsInputStream);
 
-				//  WAS - which is equivalent, except for the added "0" when a hex pair starts with "0"
+					return;
+					
+				} catch ( NoSuchKeyException e ) {
 
-				//				//convert the byte to hex format
-				//				StringBuffer sb = new StringBuffer("");
-				//				for (int i = 0; i < mdbytes.length; i++) {
-				//					sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-				//				}
-				//
-				//				sha384_Of_PostBody = sb.toString();
+					//  Throw Data Exception if externally passed in object key and bucket name
+
+					System.err.println( "Could not find S3 Object.  ObjectKey: " 
+							+ fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_object_key() 
+							+ ", Object Bucket: " 
+							+ fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getAws_s3_bucket_name() );
+					throw new LimelightImporterInternalException(e);
+				}
+			
 			}
+			
+			String msg = "fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results != null. fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getFilenameOnDisk() AND fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results.getFilenameOnDisk() ARE Empty";
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		try ( InputStream inputStream = new BufferedInputStream( new FileInputStream( fileToImport ) ) ) {
 
-			FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().set_uploaded_file_sha1_sum_sha384_sum(
-					sha1_Of_PostBody, 
-					sha384_Of_PostBody, 
+			process_UploadedContents_InputStream(featureDetection_PersistentFeature_UploadedFileStatsDTO, ms_2_ScanNumbers, inputStream);
+		}
+
+	}
+	
+	/**
+	 * @param featureDetection_PersistentFeature_UploadedFileStatsDTO
+	 * @param ms_2_ScanNumbers
+	 * @param inputStream
+	 * @throws Exception
+	 */
+	private void process_UploadedContents_InputStream(
+			
+			FeatureDetection_PersistentFeature_UploadedFileStatsDTO featureDetection_PersistentFeature_UploadedFileStatsDTO,
+			Set<Integer> ms_2_ScanNumbers,
+			
+			InputStream inputStream
+			
+			) throws Exception {
+		
+		Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component read_InputStream_Into_ASCII_CharacterString_OneLineAtATime = 
+				Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component.getNewInstance(inputStream);
+
+
+		//  Process Uploaded File: Header Section --  Updates: featureDetection_PersistentFeature_UploadedFileStatsDTO object
+		String headerLines_NewLineDelim = process_File_HeaderSection(read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, featureDetection_PersistentFeature_UploadedFileStatsDTO);
+
+		//  Insert "Top Level" DB Record
+		FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().save(featureDetection_PersistentFeature_UploadedFileStatsDTO);
+
+		{   //  Insert File Header Contents
+
+			FeatureDetectionPersistentFeature_FileHeaderContents_DTO featureDetectionPersistentFeature_FileHeaderContents_DTO = new FeatureDetectionPersistentFeature_FileHeaderContents_DTO();
+
+			featureDetectionPersistentFeature_FileHeaderContents_DTO.setFeatureDetectionPersistentFeatureUploadedFileStatsId(
 					featureDetection_PersistentFeature_UploadedFileStatsDTO.getId() );
 
-			/////////  Inserts are Complete.  Mark File Fully Inserted
+			featureDetectionPersistentFeature_FileHeaderContents_DTO.setFileHeaderContents(headerLines_NewLineDelim);
 
-			FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().set_True_FileFullyInserted( featureDetection_PersistentFeature_UploadedFileStatsDTO.getId(), featureDetection_PersistentFeature_UploadedFileStatsDTO.getCreatedBy_UserId() );
+			FeatureDetectionPersistentFeature_FileHeaderContents_DAO.getInstance().save(featureDetectionPersistentFeature_FileHeaderContents_DTO);
 		}
+
+		///
+
+		//  Process Uploaded File: Main Content Lines
+		process_File_MainContentLines(read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, ms_2_ScanNumbers, featureDetection_PersistentFeature_UploadedFileStatsDTO);
+
+
+		String sha1_Of_PostBody = null;
+		String sha384_Of_PostBody = null;
+
+		{  // sha1_Of_PostBody
+			byte[] mdbytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_1_Of_StreamContents().digest();
+
+			//convert the byte to hex format
+			StringBuffer sb = new StringBuffer("");
+			for (int i = 0; i < mdbytes.length; i++) {
+				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+
+			sha1_Of_PostBody = sb.toString();
+		}
+
+		{  // sha384_Of_PostBody
+			byte[] hashBytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_384_Of_StreamContents().digest();
+
+			StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+
+			for ( int i = 0; i < hashBytes.length; i++ ) {
+				String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
+				if ( byteAsHex.length() == 1 ) {
+					hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+				}
+				hashBytesAsHexSB.append( byteAsHex );
+			}
+
+			sha384_Of_PostBody = hashBytesAsHexSB.toString();
+
+			//  WAS - which is equivalent, except for the added "0" when a hex pair starts with "0"
+
+			//				//convert the byte to hex format
+			//				StringBuffer sb = new StringBuffer("");
+			//				for (int i = 0; i < mdbytes.length; i++) {
+			//					sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+			//				}
+			//
+			//				sha384_Of_PostBody = sb.toString();
+		}
+
+		FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().set_uploaded_file_sha1_sum_sha384_sum(
+				sha1_Of_PostBody, 
+				sha384_Of_PostBody, 
+				featureDetection_PersistentFeature_UploadedFileStatsDTO.getId() );
+
+		/////////  Inserts are Complete.  Mark File Fully Inserted
+
+		FeatureDetectionPersistentFeatureUploadedFileStatsDAO.getInstance().set_True_FileFullyInserted( featureDetection_PersistentFeature_UploadedFileStatsDTO.getId(), featureDetection_PersistentFeature_UploadedFileStatsDTO.getCreatedBy_UserId() );
 
 	}
 

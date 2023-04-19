@@ -33,6 +33,12 @@ public class ScanFileFileContainer {
 	
 	private String scanFilename_NoSuffix;  // Computed in setScanFile
 
+	private String aws_s3_bucket_name;
+	private String aws_s3_object_key;
+	private String aws_s3_region;
+		
+	private String sha1Sum;
+	private Long fileSize;
 
 	/**
 	 * Populated when running the Import from the Run Importer Process
@@ -83,6 +89,61 @@ public class ScanFileFileContainer {
 
 	public void setScanFileDBRecord(FileImportTrackingSingleFileDTO scanFileDBRecord) {
 		this.scanFileDBRecord = scanFileDBRecord;
+	}
+
+
+	public String getAws_s3_bucket_name() {
+		return aws_s3_bucket_name;
+	}
+
+
+	public void setAws_s3_bucket_name(String aws_s3_bucket_name) {
+		this.aws_s3_bucket_name = aws_s3_bucket_name;
+	}
+
+
+	public String getAws_s3_object_key() {
+		return aws_s3_object_key;
+	}
+
+
+	public void setAws_s3_object_key(String aws_s3_object_key) {
+		this.aws_s3_object_key = aws_s3_object_key;
+	}
+
+
+	public String getAws_s3_region() {
+		return aws_s3_region;
+	}
+
+
+	public void setAws_s3_region(String aws_s3_region) {
+		this.aws_s3_region = aws_s3_region;
+	}
+
+
+	public String getSha1Sum() {
+		return sha1Sum;
+	}
+
+
+	public void setSha1Sum(String sha1Sum) {
+		this.sha1Sum = sha1Sum;
+	}
+
+
+	public Long getFileSize() {
+		return fileSize;
+	}
+
+
+	public void setFileSize(Long fileSize) {
+		this.fileSize = fileSize;
+	}
+
+
+	public void setScanFilename_NoSuffix(String scanFilename_NoSuffix) {
+		this.scanFilename_NoSuffix = scanFilename_NoSuffix;
 	}
 
 

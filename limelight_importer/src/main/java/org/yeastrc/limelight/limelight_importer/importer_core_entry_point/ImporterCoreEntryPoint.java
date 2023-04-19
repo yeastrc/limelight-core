@@ -42,6 +42,7 @@ import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterLimelightXMLDeserializeFailException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterProjectNotAllowImportException;
@@ -49,6 +50,7 @@ import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchSt
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.LogLimelightXML_Statistics;
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.LimelightInputObjectContainer;
+import org.yeastrc.limelight.limelight_importer.objects.LimelightXMLFile_FileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchTags_SearchTagCategories_Root_And_SubParts_InputData;
@@ -66,7 +68,18 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_Report
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 
@@ -111,7 +124,7 @@ public class ImporterCoreEntryPoint {
 			String searchShortName,
 			SearchTags_SearchTagCategories_Root_And_SubParts_InputData searchTags_SearchTagCategories_Root_And_SubParts_InputData,
 			String importDirectoryOverrideValue,
-			File mainXMLFileToImport,
+			LimelightXMLFile_FileContainer limelightXMLFile_FileContainer,
 			LimelightInput limelightInputForImportParam,
 			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries,
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
@@ -125,9 +138,9 @@ public class ImporterCoreEntryPoint {
 		String importDirectory = null; 
 		if ( StringUtils.isNotEmpty( importDirectoryOverrideValue ) ) {
 			importDirectory = importDirectoryOverrideValue;
-		} else {
+		} else if ( limelightXMLFile_FileContainer.getLimelightXMLFile() != null ) {
 			try {
-				File importFileCanonicalFile = mainXMLFileToImport.getCanonicalFile();
+				File importFileCanonicalFile = limelightXMLFile_FileContainer.getLimelightXMLFile().getCanonicalFile();
 				if ( importFileCanonicalFile != null ) {
 					File importFileParent = importFileCanonicalFile.getParentFile();
 					if ( importFileParent != null ) {
@@ -136,7 +149,7 @@ public class ImporterCoreEntryPoint {
 						importDirectory = importFileCanonicalFile.getCanonicalPath();
 					}
 				} else {
-					importDirectory = mainXMLFileToImport.getCanonicalPath();
+					importDirectory = limelightXMLFile_FileContainer.getLimelightXMLFile().getCanonicalPath();
 				}
 			} catch ( Exception e ) {
 				String msg = "Error mainXMLFileToImport.getCanonicalPath() or importFileCanonicalFile.getParentFile() or importFileParent.getCanonicalPath()";
@@ -145,24 +158,13 @@ public class ImporterCoreEntryPoint {
 			}
 		}
 		if ( limelightInputForImport == null ) {
-			//  main import file not provided as an object so unmarshall the file
-			try ( InputStream inputStream = new FileInputStream( mainXMLFileToImport ) ) {
-				limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream );
-			} catch ( Exception e ) {
-				System.out.println( "Exception in deserializing the primary input XML file" );
-				System.err.println( "Exception in deserializing the primary input XML file" );
-				e.printStackTrace( System.out );
-				e.printStackTrace( System.err );
-				throw e;
-			} finally {
-			}
+			//  Limelight XML data not provided as an object so unmarshall the file
+			
+			limelightInputForImport = deserializeLimelightInputFrom_LimelightXMLFile_FileContainer(limelightXMLFile_FileContainer);
 		}
 		
 		try {
-			long limelightXMLFileToImport_Size = 0;
-			if ( mainXMLFileToImport != null ) {
-				limelightXMLFileToImport_Size = mainXMLFileToImport.length();
-			}
+			long limelightXMLFileToImport_Size = limelightXMLFile_FileContainer.getFileSize();
 
 			searchStatistics_General_SavedToDB.set_limelightXMLFileToImport_Size(limelightXMLFileToImport_Size);
 			
@@ -207,6 +209,96 @@ public class ImporterCoreEntryPoint {
 		return insertedSearchId;
 	}
 
+	/**
+	 * Utility method to get the LimelightInput from an LimelightXMLFile_FileContainer object
+	 * 
+	 * @param inputStream
+	 * @return
+	 * @throws Exception
+	 */
+	public LimelightInput deserializeLimelightInputFrom_LimelightXMLFile_FileContainer( 
+			LimelightXMLFile_FileContainer limelightXMLFile_FileContainer
+			) throws Exception, LimelightImporterLimelightXMLDeserializeFailException {
+
+		if ( limelightXMLFile_FileContainer.getLimelightXMLFile() != null ) {
+
+			try ( InputStream inputStream = new FileInputStream( limelightXMLFile_FileContainer.getLimelightXMLFile() ) ) {
+
+				LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream );
+
+				return limelightInputForImport;  // EARLY RETURN
+
+			} catch ( Exception e ) {
+				System.out.println( "Exception in deserializing the primary input XML file" );
+				System.err.println( "Exception in deserializing the primary input XML file" );
+				e.printStackTrace( System.out );
+				e.printStackTrace( System.err );
+				throw e;
+			} finally {
+			}
+		}
+		
+		//  Not a local file.  Get from AWS S3
+
+		S3Client amazonS3_Client = null;
+
+		{  // Use Region from limelightXMLFile_FileContainer, otherwise Config, otherwise SDK use from Environment Variable
+
+			String amazonS3_RegionName = limelightXMLFile_FileContainer.getAws_s3_region();
+
+			if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+				amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+			}
+
+			if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+				
+				Region aws_S3_Region = Region.of(amazonS3_RegionName);
+				
+				amazonS3_Client = 
+						S3Client.builder()
+						.region( aws_S3_Region )
+						.httpClientBuilder(ApacheHttpClient.builder())
+						.build();
+				
+			} else {
+				//  SDK use Region from Environment Variable
+				
+				amazonS3_Client = 
+						S3Client.builder()
+						.httpClientBuilder(ApacheHttpClient.builder())
+						.build(); 
+			}
+		}
+
+		GetObjectRequest getObjectRequest = 
+				GetObjectRequest
+				.builder()
+				.bucket(limelightXMLFile_FileContainer.getAws_s3_bucket_name())
+				.key( limelightXMLFile_FileContainer.getAws_s3_object_key() )
+				.build();
+		
+		try ( ResponseInputStream<GetObjectResponse> responseInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+			
+			InputStream inputStream = responseInputStream;
+
+			LimelightInput limelightInputForImport = deserializeLimelightInputFromInputStream( inputStream );
+
+			return limelightInputForImport;  // EARLY RETURN
+
+		} catch ( NoSuchKeyException e ) {
+			
+			//  Throw Data Exception if externally passed in object key and bucket name
+			
+			System.err.println( "Could not find mainXMLFileToImport S3 Object.  ObjectKey: " 
+					+ limelightXMLFile_FileContainer.getAws_s3_object_key() 
+					+ ", Object Bucket: " 
+					+ limelightXMLFile_FileContainer.getAws_s3_bucket_name() );
+			throw new LimelightImporterErrorProcessingRunIdException(e);
+		}
+		
+	}
+	
 	/**
 	 * Utility method to get the LimelightInput from an input stream
 	 * 

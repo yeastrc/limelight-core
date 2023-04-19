@@ -58,7 +58,6 @@ export class ProjectPage_SavedViews_Section_AllUsersInteraction {
 		projectIdentifierFromURL : string
 		projectPage_SavedViews_Section_LoggedInUsersInteraction? : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 	}) {
-
 		this._projectIdentifierFromURL = projectIdentifierFromURL;
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction = projectPage_SavedViews_Section_LoggedInUsersInteraction;
 

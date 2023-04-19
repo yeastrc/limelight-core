@@ -7,15 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main_Searchers__getAll_TrackingId_TrackingRunId_SubStatus_For_Status_ResultItem;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.constants.FileImportPipelineRunCommonConstants;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.enum_classes.FileImportAndPipelineRun_SubStatus;
+
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
 /**
  * 
@@ -207,7 +217,73 @@ public class ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main {
 				
 				break;  //  EARLY BREAK
 			}
+			
+			List<FileImportAndPipelineRunTrackingSingleFileDTO> dbResultList = 
+					FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO.getInstance().getFor_TrackingId(fileImportTrackingId);
+
+			for ( FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO : dbResultList ) {
+				
+				try {
+					if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name() ) ) {
+
+						//  Delete from S3
+
+						S3Client amazonS3_Client = null;
+
+						{  // Use Region from fileImportAndPipelineRunTrackingSingleFileDTO, otherwise Config, otherwise SDK use from Environment Variable
+
+							String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_region();
+
+							if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+
+								amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+							}
+
+							if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+
+								Region aws_S3_Region = Region.of(amazonS3_RegionName);
+
+								amazonS3_Client = 
+										S3Client.builder()
+										.region( aws_S3_Region )
+										.httpClientBuilder(ApacheHttpClient.builder())
+										.build();
+
+							} else {
+								//  SDK use Region from Environment Variable
+
+								amazonS3_Client = 
+										S3Client.builder()
+										.httpClientBuilder(ApacheHttpClient.builder())
+										.build(); 
+							}
+						}
 						
+						DeleteObjectRequest deleteObjectRequest = 
+								DeleteObjectRequest
+								.builder()
+								.bucket( fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name() )
+								.key(fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_object_key())
+								.build();
+
+						amazonS3_Client.deleteObject(deleteObjectRequest);
+					}
+					
+				} catch (Throwable t ) {
+					
+					log.error( "Exception Ignored: Failed to delete from S3 for old object.  bucket: " 
+							+ fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name()
+							+ ", Object Key: " + fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_object_key()
+							+ ", Region: " + fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_region(),
+							t );
+					
+					//  Eat Exception
+					
+				} finally {
+					
+				}
+			}
+									
 			String subdirNameForThisTrackingId =
 					Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( fileImportTrackingId );
 			

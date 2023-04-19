@@ -20,15 +20,9 @@ package org.yeastrc.limelight.limelight_importer.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
-import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 
 /**
  * table file_import_tracking_single_file_tbl
@@ -41,57 +35,6 @@ public class FileImportTrackingSingleFileDAO_Importer {
 	private FileImportTrackingSingleFileDAO_Importer() { }
 	public static FileImportTrackingSingleFileDAO_Importer getInstance() { return new FileImportTrackingSingleFileDAO_Importer(); }
 	
-
-	/**
-	 * @param trackingId
-	 * @return 
-	 * @throws Exception
-	 */
-	public List<FileImportTrackingSingleFileDTO> getForTrackingId( int trackingId ) throws Exception {
-		
-		List<FileImportTrackingSingleFileDTO> resultList = new ArrayList<>();
-		
-		final String sql = "SELECT * FROM file_import_tracking_single_file_tbl WHERE file_import_tracking_id = ?";
-
-		try ( Connection connection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
-			
-			preparedStatement.setInt( 1, trackingId );
-
-			try ( ResultSet rs = preparedStatement.executeQuery() ) {
-				while ( rs.next() ) {
-					FileImportTrackingSingleFileDTO result = populateResultObject( rs );
-					resultList.add(result);
-				}
-			}
-		} catch ( Exception e ) {
-			String msg = "Failed to select FileImportTrackingSingleFileDTO, id: " + trackingId + ", sql: " + sql;
-			log.error( msg, e );
-			throw e;
-		}
-		return resultList;
-	}
-	
-	/**
-	 * @param rs
-	 * @return
-	 * @throws SQLException
-	 */
-	public FileImportTrackingSingleFileDTO populateResultObject( ResultSet rs ) throws SQLException {
-		FileImportTrackingSingleFileDTO returnItem = new FileImportTrackingSingleFileDTO();
-		returnItem.setId( rs.getInt( "id" ) );
-		returnItem.setFileImportTrackingId( rs.getInt( "file_import_tracking_id" ) );
-		returnItem.setFileType( FileImportFileType.fromValue( rs.getInt( "file_type_id" ) ) );
-		returnItem.setFilenameInUpload( rs.getString( "filename_in_upload" ) );
-		returnItem.setFilenameOnDisk( rs.getString( "filename_on_disk" ) );
-		returnItem.setFilenameOnDiskWithPathSubSameMachine( rs.getString( "filename_on_disk_with_path_sub_same_machine" ) );
-		returnItem.setCanonicalFilename_W_Path_OnSubmitMachine( rs.getString( "canonical_filename_w_path_on_submit_machine" ) );
-		returnItem.setAbsoluteFilename_W_Path_OnSubmitMachine( rs.getString( "absolute_filename_w_path_on_submit_machine" ) );
-		
-		return returnItem;
-	}
-	
-
 	/**
 	 * @param fileSize
 	 * @param sha1Sum

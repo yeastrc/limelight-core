@@ -37,6 +37,7 @@ public class ScanFileSourceFirstImportDTO {
 	
 	private String awsBucketName;
 	private String awsObjectKey;
+	private String awsRegion;
 	
 
 	public int getScanFileId() {
@@ -109,6 +110,14 @@ public class ScanFileSourceFirstImportDTO {
 
 	public void setAwsObjectKey(String awsObjectKey) {
 		this.awsObjectKey = awsObjectKey;
+	}
+
+	public String getAwsRegion() {
+		return awsRegion;
+	}
+
+	public void setAwsRegion(String awsRegion) {
+		this.awsRegion = awsRegion;
 	}
 
 }

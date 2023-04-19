@@ -18,15 +18,29 @@
 package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_SendFile;
+import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_SendFile_In_AWS_S3;
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * Send Scan files to Spectral Storage Service - When Not processing a Limelight XML file so ONLY Scan Files
@@ -64,6 +78,9 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 		ScanFileFileContainer scanFileFileContainer;
 		String sha1sum;
 		
+		String aws_RegionUsed;
+		long fileSize_From_FileOrS3Object;
+		
 		public String getSpectralStorageProcessKey() {
 			return spectralStorageProcessKey;
 		}
@@ -72,6 +89,12 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 		}
 		public String getSha1sum() {
 			return sha1sum;
+		}
+		public String getAws_RegionUsed() {
+			return aws_RegionUsed;
+		}
+		public long getFileSize_From_FileOrS3Object() {
+			return fileSize_From_FileOrS3Object;
 		}
 	}
 	
@@ -88,30 +111,110 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 		for ( ScanFileFileContainer scanFileFileContainer : scanFileFileContainer_AllEntries.get_ScanFileFileContainer_List() ) {
 			
 			String scanFilename = scanFileFileContainer.getScanFilename();
-			
-			File scanFile = scanFileFileContainer.getScanFile();
-			
-			String sha1sum =
-					SHA1SumCalculator.getInstance().getSHA1Sum( scanFile );
 
-			//  Send the scan file to Spectral Storage Service and get back a "Process Key"
-			
-			String spectralStorageProcessKey = 
-					ScanFileToSpectralStorageService_SendFile.getInstance()
-					.sendScanFileToSpectralStorageService( scanFile );
-			
-			//  TODO !!!!!!!!!!!! Populate with AWS S3 info, if applicable
-			
-//			searchScanFileImporterDTO.setAwsBucketName(  );
-//			searchScanFileImporterDTO.setAwsObjectKey(  );
-			
-			
 			ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result_Item resultItem = new ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result_Item();
 			result_List.add(resultItem);
-			
+
 			resultItem.scanFileFileContainer = scanFileFileContainer;
-			resultItem.spectralStorageProcessKey = spectralStorageProcessKey;
-			resultItem.sha1sum = sha1sum;
+			
+			
+			if ( StringUtils.isNotEmpty( scanFileFileContainer.getAws_s3_object_key() ) ) {
+									
+				//  Scan file in AWS S3
+
+				if ( StringUtils.isEmpty( scanFileFileContainer.getAws_s3_bucket_name() ) ) {
+					System.err.println( "Aws_s3_object_key populated but Aws_s3_bucket_name NOT populated.  Aws_s3_object_key: " + scanFileFileContainer.getAws_s3_object_key() );
+					throw new LimelightImporterErrorProcessingRunIdException();
+				}
+
+				S3Client amazonS3_Client = null;
+
+				String amazonS3_RegionName = scanFileFileContainer.getAws_s3_region();
+
+				{  // Use Region from Config, otherwise SDK use from Environment Variable
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+								
+						amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+					}
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+						Region aws_S3_Region = Region.of( amazonS3_RegionName );
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.region( aws_S3_Region )
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build();
+
+						resultItem.aws_RegionUsed = amazonS3_RegionName;
+
+					} else {
+						//  SDK use Region from Environment Variable
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build(); 
+					}
+				}
+								
+				GetObjectRequest getObjectRequest = 
+						GetObjectRequest
+						.builder()
+						.bucket(scanFileFileContainer.getAws_s3_bucket_name())
+						.key( scanFileFileContainer.getAws_s3_object_key() )
+						.build();
+				
+				try ( ResponseInputStream<GetObjectResponse> responseInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+					
+					GetObjectResponse getObjectResponse = responseInputStream.response();
+					
+					Long fileSize = getObjectResponse.contentLength();
+					if ( fileSize == null ) {
+						System.err.println( "Scan File S3 Object GetObjectResponse contentLength() returned null.  ObjectKey: " 
+								+ scanFileFileContainer.getAws_s3_object_key() 
+								+ ", Object Bucket: " 
+								+ scanFileFileContainer.getAws_s3_bucket_name() );
+						throw new LimelightImporterErrorProcessingRunIdException();
+					}
+					
+					resultItem.fileSize_From_FileOrS3Object = fileSize.longValue();
+				
+					InputStream inputStream = responseInputStream;
+
+					resultItem.sha1sum = SHA1SumCalculator.getInstance().getSHA1Sum_ForInputStream(inputStream);
+
+				} catch ( NoSuchKeyException e ) {
+					
+					//  Throw Data Exception if externally passed in object key and bucket name
+					
+					System.err.println( "Could not find Scan File S3 Object.  ObjectKey: " 
+							+ scanFileFileContainer.getAws_s3_object_key() 
+							+ ", Object Bucket: " 
+							+ scanFileFileContainer.getAws_s3_bucket_name() );
+					throw new LimelightImporterErrorProcessingRunIdException(e);
+				}
+
+				resultItem.spectralStorageProcessKey = 
+						ScanFileToSpectralStorageService_SendFile_In_AWS_S3.getInstance().sendScanFileToSpectralStorageService(scanFileFileContainer);
+				
+			} else {
+			
+				//  Scan file in Local File System
+					
+				File scanFile = scanFileFileContainer.getScanFile();
+				
+				resultItem.sha1sum =
+						SHA1SumCalculator.getInstance().getSHA1Sum( scanFile );
+	
+				//  Send the scan file to Spectral Storage Service and get back a "Process Key"
+				
+				resultItem.spectralStorageProcessKey = 
+						ScanFileToSpectralStorageService_SendFile.getInstance()
+						.sendScanFileToSpectralStorageService( scanFile );
+			}
 		}
 		
 		ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result result = new ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result();

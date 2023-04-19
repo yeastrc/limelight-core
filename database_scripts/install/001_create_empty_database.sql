@@ -1034,13 +1034,16 @@ CREATE TABLE  file_import_tracking_tbl (
   priority TINYINT NOT NULL,
   user_id INT UNSIGNED NOT NULL,
   status_id TINYINT UNSIGNED NOT NULL,
-  remote_user_ip_address VARCHAR(45) NOT NULL,
+  remote_user_ip_address_init VARCHAR(45) NULL,
+  remote_user_ip_address_submit VARCHAR(45) NULL,
   marked_for_deletion TINYINT UNSIGNED NOT NULL DEFAULT 0,
   search_name VARCHAR(2000) NULL,
   search_short_name VARCHAR(50) NULL,
   search_path VARCHAR(2000) NULL,
-  insert_request_url VARCHAR(255) NOT NULL,
-  record_insert_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  init_request_url VARCHAR(255) NULL,
+  submit_request_url VARCHAR(255) NULL,
+  record_init_date_time TIMESTAMP NULL,
+  record_submit_date_time TIMESTAMP NULL,
   last_updated_date_time TIMESTAMP NULL,
   import_start_date_time DATETIME NULL,
   import_end_date_time DATETIME NULL,
@@ -1161,15 +1164,22 @@ ENGINE = InnoDB;
 CREATE TABLE  file_import_tracking_single_file_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   file_import_tracking_id INT UNSIGNED NOT NULL,
-  file_type_id TINYINT UNSIGNED NOT NULL,
+  file_index INT NULL,
   file_upload_status_id TINYINT UNSIGNED NOT NULL,
+  file_type_id TINYINT UNSIGNED NOT NULL,
   filename_in_upload VARCHAR(500) NOT NULL,
-  filename_on_disk VARCHAR(500) NOT NULL,
+  filename_on_disk VARCHAR(500) NULL,
   file_size BIGINT(20) UNSIGNED NULL,
   sha1_sum VARCHAR(255) NULL,
-  filename_on_disk_with_path_sub_same_machine VARCHAR(4000) NULL,
-  canonical_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
-  absolute_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
+  filename_on_disk_with_path_sub_same_machine MEDIUMTEXT NULL,
+  canonical_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  absolute_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  aws_s3_bucket_name MEDIUMTEXT NULL,
+  aws_s3_object_key MEDIUMTEXT NULL,
+  aws_s3_region VARCHAR(255) NULL,
+  unique_request_identifier_from_submitter VARCHAR(255) NULL COMMENT 'tied to this file_import_tracking_id and file_index',
+  file_location_or_aws_s3_object_provided_from_external_system TINYINT NOT NULL DEFAULT 0 COMMENT 'NULL for old existing records',
+  file_location_or_aws_s3_obj_prov_fm_ext_sys_delete_af_imprt TINYINT NOT NULL DEFAULT 0 COMMENT 'file_location_or_aws_s3_object_provided_from_external_system Delete after Import whether Import success or fail',
   PRIMARY KEY (id),
   CONSTRAINT file_imprt_trkng_sngl_fl_id
     FOREIGN KEY (file_import_tracking_id)
@@ -1193,6 +1203,8 @@ CREATE INDEX file_imprt_trkng_stats_hist_id_idx ON file_import_tracking_single_f
 CREATE INDEX file_imprt_trkng_sngl_fl_type_id_idx ON file_import_tracking_single_file_tbl (file_type_id ASC) VISIBLE;
 
 CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON file_import_tracking_single_file_tbl (file_upload_status_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX file_import_tracking_id_file_index_unique ON file_import_tracking_single_file_tbl (file_import_tracking_id ASC, file_index ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -1524,6 +1536,7 @@ CREATE TABLE  scan_file_source_first_import_tbl (
   absolute_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
   aws_s3_bucket_name VARCHAR(2000) NULL,
   aws_s3_object_key VARCHAR(2000) NULL,
+  aws_s3_region VARCHAR(200) NULL,
   PRIMARY KEY (scan_file_id),
   CONSTRAINT scan_file_source_pk_fk
     FOREIGN KEY (scan_file_id)
@@ -1614,6 +1627,7 @@ CREATE TABLE  search_scan_file_importer_tbl (
   absolute_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
   aws_s3_bucket_name VARCHAR(2000) NULL,
   aws_s3_object_key VARCHAR(2000) NULL,
+  aws_s3_region VARCHAR(200) NULL,
   spectral_storage_process_key VARCHAR(300) NOT NULL COMMENT 'Key while scan file is importing into Spectral Storage Service.',
   spectral_storage_api_key VARCHAR(300) NULL,
   scan_file_id INT UNSIGNED NULL,
@@ -3139,6 +3153,7 @@ CREATE TABLE  project_scan_file_importer_tbl (
   absolute_filename_w_path_on_submit_machine VARCHAR(4000) NULL,
   aws_s3_bucket_name VARCHAR(2000) NULL,
   aws_s3_object_key VARCHAR(2000) NULL,
+  aws_s3_region VARCHAR(200) NULL,
   PRIMARY KEY (project_scan_file_id),
   CONSTRAINT prjct_scn_filenm_srch_scn_file_id
     FOREIGN KEY (project_scan_file_id)
@@ -3618,6 +3633,144 @@ CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_to
 CREATE INDEX fk_file_object_storage_to_search_tbl_20_idx ON file_object_storage_to_project_search_tbl (project_search_id ASC) VISIBLE;
 
 CREATE INDEX fk_file_object_storage_to_search_tbl_11_idx ON file_object_storage_to_project_search_tbl (file_object_storage_to_search_id_fk ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_import_tracking_data_from_init_json_blob_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import_tracking_data_from_init_json_blob_tbl (
+  file_import_tracking_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (file_import_tracking_id),
+  CONSTRAINT file_import_tracking_data_from_init_json_blob_fk
+    FOREIGN KEY (file_import_tracking_id)
+    REFERENCES file_import_tracking_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import_tracking_single_file_init_json_blob_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import_tracking_single_file_init_json_blob_tbl (
+  file_import_tracking_single_file_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (file_import_tracking_single_file_id),
+  CONSTRAINT fk_file_import_tracking_single_file_init_json_blob_fk
+    FOREIGN KEY (file_import_tracking_single_file_id)
+    REFERENCES file_import_tracking_single_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import_tracking_single_file_complete_json_blob_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import_tracking_single_file_complete_json_blob_tbl (
+  file_import_tracking_single_file_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (file_import_tracking_single_file_id),
+  CONSTRAINT fk_file_import_tracking_single_file_cplt_json_blob_fk
+    FOREIGN KEY (file_import_tracking_single_file_id)
+    REFERENCES file_import_tracking_single_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import_tracking_single_file_s3_upload_part_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import_tracking_single_file_s3_upload_part_tbl (
+  file_import_tracking_single_file_id INT UNSIGNED NOT NULL,
+  s3_upload_part_number SMALLINT UNSIGNED NOT NULL,
+  s3_upload_part_start_byte_zero_based BIGINT UNSIGNED NOT NULL,
+  s3_upload_part_end_byte_zero_based BIGINT UNSIGNED NOT NULL,
+  s3_upload_part_etag VARCHAR(500) NOT NULL,
+  PRIMARY KEY (file_import_tracking_single_file_id, s3_upload_part_number),
+  CONSTRAINT fk_file_import_tracking_single_file_s3_upload_part_tbl_1
+    FOREIGN KEY (file_import_tracking_single_file_id)
+    REFERENCES file_import_tracking_single_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_tracking_single_file_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_tracking_single_file_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  import_and_pipeline_run_tracking_id INT UNSIGNED NOT NULL,
+  file_index INT NULL,
+  file_upload_status_id TINYINT UNSIGNED NOT NULL,
+  file_type_id TINYINT UNSIGNED NOT NULL,
+  filename_in_upload VARCHAR(500) NOT NULL,
+  filename_on_disk VARCHAR(500) NULL,
+  file_size BIGINT UNSIGNED NULL,
+  sha1_sum VARCHAR(255) NULL,
+  filename_on_disk_with_path_sub_same_machine MEDIUMTEXT NULL,
+  canonical_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  absolute_filename_w_path_on_submit_machine MEDIUMTEXT NULL,
+  aws_s3_bucket_name MEDIUMTEXT NULL,
+  aws_s3_object_key MEDIUMTEXT NULL,
+  aws_s3_region VARCHAR(255) NULL,
+  unique_request_identifier_from_submitter VARCHAR(255) NULL COMMENT 'tied to this file_import_tracking_id and file_index',
+  file_location_or_aws_s3_object_provided_from_external_system TINYINT NOT NULL DEFAULT 0 COMMENT 'NULL for old existing records',
+  file_location_or_aws_s3_obj_prov_fm_ext_sys_delete_af_imprt TINYINT NOT NULL DEFAULT 0 COMMENT 'file_location_or_aws_s3_object_provided_from_external_system Delete after Import whether Import success or fail',
+  PRIMARY KEY (id),
+  CONSTRAINT imprt_ppl_rn_trkng_sngl_fl_up_st_id
+    FOREIGN KEY (file_upload_status_id)
+    REFERENCES file_import_tracking_single_file_upload_status_lookup_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT imprt_ppl_rn_trkng_sngl_fl_prnt_id
+    FOREIGN KEY (import_and_pipeline_run_tracking_id)
+    REFERENCES import_and_pipeline_run_tracking_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX file_imprt_trkng_sngl_fl_up_st_id_idx ON import_and_pipeline_run_tracking_single_file_tbl (file_upload_status_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX file_import_tracking_id_file_index_unique ON import_and_pipeline_run_tracking_single_file_tbl (import_and_pipeline_run_tracking_id ASC, file_index ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_trckg_snglfl_complt_json_blb_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_trckg_snglfl_complt_json_blb_tbl (
+  import_and_pipeline_run_trckng_single_file_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (import_and_pipeline_run_trckng_single_file_id),
+  CONSTRAINT import_and_pplnrun_trckg_snglfl_cp_id_fk
+    FOREIGN KEY (import_and_pipeline_run_trckng_single_file_id)
+    REFERENCES import_and_pipeline_run_tracking_single_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table import_and_pipeline_run_trckg_snglfl_init_json_blb_tbl
+-- -----------------------------------------------------
+CREATE TABLE  import_and_pipeline_run_trckg_snglfl_init_json_blb_tbl (
+  import_and_pipeline_run_trckng_single_file_id INT UNSIGNED NOT NULL,
+  json_contents_format_version SMALLINT UNSIGNED NOT NULL,
+  json_contents LONGTEXT NOT NULL,
+  PRIMARY KEY (import_and_pipeline_run_trckng_single_file_id),
+  CONSTRAINT import_and_pplnrun_trckg_snglfl_in_blb_id_fk
+    FOREIGN KEY (import_and_pipeline_run_trckng_single_file_id)
+    REFERENCES import_and_pipeline_run_tracking_single_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

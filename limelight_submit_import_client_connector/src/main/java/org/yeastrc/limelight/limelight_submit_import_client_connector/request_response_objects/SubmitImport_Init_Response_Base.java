@@ -22,6 +22,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -46,11 +48,19 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	@XmlAttribute
 	private boolean projectLocked; 
 	
-	//  NO added properties should use Java Objects, NOT primitives (int, boolean)  so that previous versions of the Submitter Program are supported.
+	//  ALL added properties should use Java Objects, NOT primitives (int, boolean)  so that previous versions of the Submitter Program are supported.
 
 	private List<String> accepted_ScanFilename_Suffix_List; //  Not populated for Submit Program version < 4
 
 	private Boolean fastaFileSubmit_Configured; //  Not populated for Submit Program version < 8
+	
+
+	//  'files_InSubmitImport' will NOT be populated  if not in the request for OR for OLD Submit Import Program versions
+
+	@XmlElementWrapper(name="files_InSubmitImport")
+	@XmlElement(name="file_InSubmitImport")
+	private List<SubmitImport_Init_Response_SubPart_SingleFileUploadEntry> files_InSubmitImport;
+	
 
 	public String getUploadKey() {
 		return uploadKey;
@@ -87,6 +97,13 @@ public abstract class SubmitImport_Init_Response_Base extends BaseSubmitImportWe
 	}
 	public void setFastaFileSubmit_Configured(Boolean fastaFileSubmit_Configured) {
 		this.fastaFileSubmit_Configured = fastaFileSubmit_Configured;
+	}
+	public List<SubmitImport_Init_Response_SubPart_SingleFileUploadEntry> getFiles_InSubmitImport() {
+		return files_InSubmitImport;
+	}
+	public void setFiles_InSubmitImport(
+			List<SubmitImport_Init_Response_SubPart_SingleFileUploadEntry> files_InSubmitImport) {
+		this.files_InSubmitImport = files_InSubmitImport;
 	}
 	
 }

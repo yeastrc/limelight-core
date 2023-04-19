@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
 
 /**
  * @author danj
@@ -44,6 +45,21 @@ public interface FileImportTrackingSingleFileDAO_IF {
 	List<FileImportTrackingSingleFileDTO> getForTrackingId(int trackingId) throws Exception;
 
 	/**
+	 * @param trackingId
+	 * @return
+	 * @throws Exception
+	 */
+	List<FileImportTrackingSingleFileDTO> getFor_TrackingId( int trackingId ) throws Exception;
+	
+	/**
+	 * @param trackingId
+	 * @param fileIndex
+	 * @return
+	 * @throws Exception
+	 */
+	List<FileImportTrackingSingleFileDTO> getFor_TrackingId_FileIndex( int trackingId, int fileIndex ) throws Exception;
+	
+	/**
 	 * @param rs
 	 * @return
 	 * @throws SQLException
@@ -54,4 +70,15 @@ public interface FileImportTrackingSingleFileDAO_IF {
 	 * @param item
 	 */
 	void save( FileImportTrackingSingleFileDTO item );
+	
+	/**
+	 * @param fileUploadStatus
+	 * @param id
+	 */
+	public void update_file_upload_status_id_For_Id( ImportSingleFileUploadStatus fileUploadStatus, int id );
+	
+	/**
+	 * @param id
+	 */
+	void delete_For_Id( int id );
 }

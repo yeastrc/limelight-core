@@ -33,6 +33,7 @@ public class Project_ScanFile_Importer_DTO {
 	
 	private String awsBucketName;
 	private String awsObjectKey;
+	private String awsRegion;
 
 	@Override
 	public String toString() {
@@ -40,10 +41,9 @@ public class Project_ScanFile_Importer_DTO {
 				+ ", sha1sum=" + sha1sum + ", canonicalFilename_W_Path_OnSubmitMachine="
 				+ canonicalFilename_W_Path_OnSubmitMachine + ", absoluteFilename_W_Path_OnSubmitMachine="
 				+ absoluteFilename_W_Path_OnSubmitMachine + ", awsBucketName=" + awsBucketName + ", awsObjectKey="
-				+ awsObjectKey + "]";
+				+ awsObjectKey + ", awsRegion=" + awsRegion + "]";
 	}
 
-	
 	public int getProjectScanFileId() {
 		return projectScanFileId;
 	}
@@ -85,6 +85,12 @@ public class Project_ScanFile_Importer_DTO {
 	}
 	public void setAwsObjectKey(String awsObjectKey) {
 		this.awsObjectKey = awsObjectKey;
+	}
+	public String getAwsRegion() {
+		return awsRegion;
+	}
+	public void setAwsRegion(String awsRegion) {
+		this.awsRegion = awsRegion;
 	}
 }
 

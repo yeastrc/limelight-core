@@ -56,7 +56,6 @@ let _limelight_import_file_type_limelight_xml_file: number
 let _limelight_import_file_type_fasta_file: number
 let _limelight_import_file_type_scan_file: number
 
-let _maxFileUploadChunkSize: number = undefined;
 let _maxLimelightXMLFileUploadSize: number = undefined;
 let _maxLimelightXMLFileUploadSizeFormatted: string = undefined;
 let _maxFASTAFileUploadSize: number = undefined;
@@ -92,19 +91,6 @@ const _load_ConfigData_FromPageDOMElements_RenderedInJSP = function() {
                 //  Only populated when true
                 _uploadingScanFiles = true;
             }
-        }
-    }
-
-
-    { //  Get max File upload Chunk size
-        let $limelight_max_file_upload_chunk_size = $("#limelight_max_file_upload_chunk_size");
-        if ( $limelight_max_file_upload_chunk_size.length === 0 ) {
-            throw Error( "#limelight_max_file_upload_chunk_size input field missing" );
-        }
-        let limelight_max_file_upload_chunk_size_val = $limelight_max_file_upload_chunk_size.val() as string;
-        _maxFileUploadChunkSize = parseInt( limelight_max_file_upload_chunk_size_val, 10 );
-        if ( isNaN( _maxFileUploadChunkSize ) ) {
-            throw Error( "Unable to parse #limelight_max_file_upload_chunk_size: " + limelight_max_file_upload_chunk_size_val );
         }
     }
 
@@ -446,7 +432,6 @@ export class ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Displa
                                 limelight_import_file_type_fasta_file: _limelight_import_file_type_fasta_file,
                                 limelight_import_file_type_scan_file: _limelight_import_file_type_scan_file,
 
-                                maxFileUploadChunkSize: _maxFileUploadChunkSize,
                                 maxLimelightXMLFileUploadSize: _maxLimelightXMLFileUploadSize,
                                 maxLimelightXMLFileUploadSizeFormatted: _maxLimelightXMLFileUploadSizeFormatted,
                                 maxFASTAFileUploadSize: _maxFASTAFileUploadSize,

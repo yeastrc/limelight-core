@@ -18,7 +18,6 @@
 package org.yeastrc.limelight.limelight_importer.objects;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * 
@@ -52,8 +51,6 @@ public class ImportResults {
 	
 	private File fastaFileToImport;
 	
-	private List<File> scanFileList;
-
 	public boolean isImportSuccessStatus() {
 		return importSuccessStatus;
 	}
@@ -92,14 +89,6 @@ public class ImportResults {
 
 	public void setImportedLimelightXMLFile(File importedLimelightXMLFile) {
 		this.importedLimelightXMLFile = importedLimelightXMLFile;
-	}
-
-	public List<File> getScanFileList() {
-		return scanFileList;
-	}
-
-	public void setScanFileList(List<File> scanFileList) {
-		this.scanFileList = scanFileList;
 	}
 
 	public File getFastaFileToImport() {

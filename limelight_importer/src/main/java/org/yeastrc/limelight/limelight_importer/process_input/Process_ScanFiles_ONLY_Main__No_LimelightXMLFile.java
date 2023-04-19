@@ -52,7 +52,7 @@ public class Process_ScanFiles_ONLY_Main__No_LimelightXMLFile {
 			ScanFileFileContainer scanFileFileContainer = 	resultItem.getScanFileFileContainer();
 			String sha1sum = resultItem.getSha1sum();
 
-			long scanFile_Size = scanFileFileContainer.getScanFile().length();
+			long scanFile_Size = resultItem.getFileSize_From_FileOrS3Object();
 			
 			String spectralStorage_API_Key =
 					ScanFileToSpectralStorageService_GetAPIKey__NO_SearchData.getInstance()
@@ -68,11 +68,15 @@ public class Process_ScanFiles_ONLY_Main__No_LimelightXMLFile {
 			scanFileSourceFirstImportDTO.setFilename( scanFileFileContainer.getScanFilename() );
 			scanFileSourceFirstImportDTO.setFileSize( scanFile_Size );
 			scanFileSourceFirstImportDTO.setSha1sum( sha1sum );
-			scanFileSourceFirstImportDTO.setCanonicalFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getAbsolutePath() );
-			scanFileSourceFirstImportDTO.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getCanonicalPath() );
-			scanFileSourceFirstImportDTO.setAwsBucketName( null );
-			scanFileSourceFirstImportDTO.setAwsObjectKey( null );
-			
+			scanFileSourceFirstImportDTO.setAwsBucketName( scanFileFileContainer.getAws_s3_bucket_name() );
+			scanFileSourceFirstImportDTO.setAwsObjectKey( scanFileFileContainer.getAws_s3_object_key() );
+			scanFileSourceFirstImportDTO.setAwsRegion( scanFileFileContainer.getAws_s3_region() );
+
+			if ( scanFileFileContainer.getScanFile() != null ) {
+				scanFileSourceFirstImportDTO.setCanonicalFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getAbsolutePath() );
+				scanFileSourceFirstImportDTO.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getCanonicalPath() );
+			}
+
 			ScanFileDTO scanFileDTO_FromInsert =
 					ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded.getInstance()
 					.scanFile_Insert_scan_file_tbl_AndChildren_IfNeeded( scanFileDTO_ForInsert, scanFileSourceFirstImportDTO );
@@ -151,10 +155,13 @@ public class Process_ScanFiles_ONLY_Main__No_LimelightXMLFile {
 			project_ScanFile_Importer_DTO.setProjectScanFileId( project_ScanFile_DTO.getId() );
 			project_ScanFile_Importer_DTO.setFileSize( scanFile_Size );
 			project_ScanFile_Importer_DTO.setSha1sum(sha1sum);
-			project_ScanFile_Importer_DTO.setCanonicalFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getAbsolutePath() );
-			project_ScanFile_Importer_DTO.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getCanonicalPath() );
-			project_ScanFile_Importer_DTO.setAwsBucketName(null);
-			project_ScanFile_Importer_DTO.setAwsObjectKey(null);
+			if ( scanFileFileContainer.getScanFile() != null ) {
+				project_ScanFile_Importer_DTO.setCanonicalFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getAbsolutePath() );
+				project_ScanFile_Importer_DTO.setAbsoluteFilename_W_Path_OnSubmitMachine( scanFileFileContainer.getScanFile().getCanonicalPath() );
+			}
+			project_ScanFile_Importer_DTO.setAwsBucketName( scanFileFileContainer.getAws_s3_bucket_name() );
+			project_ScanFile_Importer_DTO.setAwsObjectKey( scanFileFileContainer.getAws_s3_object_key() );
+			project_ScanFile_Importer_DTO.setAwsRegion( scanFileFileContainer.getAws_s3_region() );
 			
 			{
 				Integer project_scan_file_id_FirstRetrieval = Project_ScanFile_Importer_DAO_Importer.getInstance().get_project_scan_file_id_For_project_scan_file_id( project_ScanFile_DTO.getId() );

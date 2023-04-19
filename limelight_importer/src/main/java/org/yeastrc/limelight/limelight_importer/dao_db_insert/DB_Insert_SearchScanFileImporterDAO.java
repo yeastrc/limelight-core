@@ -62,9 +62,9 @@ public class DB_Insert_SearchScanFileImporterDAO {
 			"INSERT INTO search_scan_file_importer_tbl "
 			+ "( search_scan_file_id, file_size, sha1sum, "
 			+   " canonical_filename_w_path_on_submit_machine, absolute_filename_w_path_on_submit_machine, "
-			+   " aws_s3_bucket_name, aws_s3_object_key, "
+			+   " aws_s3_bucket_name, aws_s3_object_key, aws_s3_region, "
 			+   " spectral_storage_process_key ) "
-					+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+					+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 	
 	/**
 	 * @param item
@@ -93,6 +93,8 @@ public class DB_Insert_SearchScanFileImporterDAO {
 			pstmt.setString( counter, item.getAwsBucketName() );
 			counter++;
 			pstmt.setString( counter, item.getAwsObjectKey() );
+			counter++;
+			pstmt.setString( counter, item.getAwsRegion() );
 			counter++;
 			pstmt.setString( counter, item.getSpectralStorageProcessKey() );
 

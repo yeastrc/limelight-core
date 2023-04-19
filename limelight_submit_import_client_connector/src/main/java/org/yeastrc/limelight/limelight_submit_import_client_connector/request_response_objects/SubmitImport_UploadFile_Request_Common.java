@@ -46,11 +46,6 @@ public class SubmitImport_UploadFile_Request_Common {
 	@XmlAttribute
 	private String filename;
 
-	@XmlAttribute
-	private Long uploadFileSize;
-	@XmlAttribute
-	private Long fileChunk_StartByte;
-	
 	//  Attributes only for submitting from a program
 	@XmlAttribute
 	private String userSubmitImportProgramKey;
@@ -107,18 +102,6 @@ public class SubmitImport_UploadFile_Request_Common {
 	}
 	public void setUserSubmitImportProgramKey(String userSubmitImportProgramKey) {
 		this.userSubmitImportProgramKey = userSubmitImportProgramKey;
-	}
-	public Long getFileChunk_StartByte() {
-		return fileChunk_StartByte;
-	}
-	public void setFileChunk_StartByte(Long fileChunk_StartByte) {
-		this.fileChunk_StartByte = fileChunk_StartByte;
-	}
-	public Long getUploadFileSize() {
-		return uploadFileSize;
-	}
-	public void setUploadFileSize(Long uploadFileSize) {
-		this.uploadFileSize = uploadFileSize;
 	}
 	
 }

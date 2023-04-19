@@ -64,6 +64,10 @@ public class ConfigSystemsKeysSharedConstants {
 
 	public static final String file_import_limelight_xml_scans_TEMP_DIR_KEY = "file_import_limelight_xml_scans_temp_dir";
 
+	public static final String file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY = "file_import_limelight_xml_scans_aws_s3_bucket";
+
+	public static final String file_import_limelight_xml_scans_AWS_S3_REGION_KEY = "file_import_limelight_xml_scans_aws_s3_region";
+
 	public static final String SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY = "scan_file_import_allowed_via_web_submit";
 
 	////              Delete uploaded files after Import key  -  Specific Values allowed
@@ -95,6 +99,10 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( SPECTRAL_STORAGE_SERVICE_ACCEPT_IMPORT_BASE_URL );
 		textConfigKeys.add( SPECTRAL_STORAGE_SERVICE_GET_DATA_BASE_URL );
 		textConfigKeys.add( file_import_limelight_xml_scans_TEMP_DIR_KEY );
+
+		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY );
+		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+
 		textConfigKeys.add( SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY );
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL );
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH );

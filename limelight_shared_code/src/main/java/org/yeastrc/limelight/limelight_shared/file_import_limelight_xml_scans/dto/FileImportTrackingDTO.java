@@ -33,32 +33,37 @@ public class FileImportTrackingDTO {
 	private int userId;
 	private FileImportStatus status;
 	
-	private String remoteUserIpAddress;
+	private String remoteUserIpAddressInit;
+	private String remoteUserIpAddressSubmit;
 	private boolean markedForDeletion;
 	private String searchName;
 	private String searchShortName;
 	private String searchPath;
-	private String insertRequestURL;
+	private String initRequestURL;
+	private String submitRequestURL;
 	
-	private Date recordInsertDateTime;
+	private Date recordInitDateTime;
+	private Date recordSubmitDateTime;
 	private Date importStartDateTime;
 	private Date importEndDateTime;
 	private Date lastUpdatedDateTime;
 
 	private Integer deletedByUserId;
 	private Date deletedDateTime;
-	
+
 	@Override
 	public String toString() {
 		return "FileImportTrackingDTO [id=" + id + ", projectId=" + projectId + ", priority=" + priority + ", userId="
-				+ userId + ", status=" + status + ", remoteUserIpAddress=" + remoteUserIpAddress
-				+ ", markedForDeletion=" + markedForDeletion + ", searchName=" + searchName + ", searchShortName="
-				+ searchShortName + ", searchPath=" + searchPath + ", insertRequestURL=" + insertRequestURL
-				+ ", recordInsertDateTime=" + recordInsertDateTime + ", importStartDateTime=" + importStartDateTime
-				+ ", importEndDateTime=" + importEndDateTime + ", lastUpdatedDateTime=" + lastUpdatedDateTime
-				+ ", deletedByUserId=" + deletedByUserId + ", deletedDateTime=" + deletedDateTime + "]";
+				+ userId + ", status=" + status + ", remoteUserIpAddressInit=" + remoteUserIpAddressInit
+				+ ", remoteUserIpAddressSubmit=" + remoteUserIpAddressSubmit + ", markedForDeletion="
+				+ markedForDeletion + ", searchName=" + searchName + ", searchShortName=" + searchShortName
+				+ ", searchPath=" + searchPath + ", initRequestURL=" + initRequestURL + ", submitRequestURL="
+				+ submitRequestURL + ", recordInitDateTime=" + recordInitDateTime + ", recordSubmitDateTime="
+				+ recordSubmitDateTime + ", importStartDateTime=" + importStartDateTime + ", importEndDateTime="
+				+ importEndDateTime + ", lastUpdatedDateTime=" + lastUpdatedDateTime + ", deletedByUserId="
+				+ deletedByUserId + ", deletedDateTime=" + deletedDateTime + "]";
 	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -89,11 +94,11 @@ public class FileImportTrackingDTO {
 	public void setStatus(FileImportStatus status) {
 		this.status = status;
 	}
-	public String getRemoteUserIpAddress() {
-		return remoteUserIpAddress;
+	public String getRemoteUserIpAddressSubmit() {
+		return remoteUserIpAddressSubmit;
 	}
-	public void setRemoteUserIpAddress(String remoteUserIpAddress) {
-		this.remoteUserIpAddress = remoteUserIpAddress;
+	public void setRemoteUserIpAddressSubmit(String remoteUserIpAddressSubmit) {
+		this.remoteUserIpAddressSubmit = remoteUserIpAddressSubmit;
 	}
 	public boolean isMarkedForDeletion() {
 		return markedForDeletion;
@@ -113,17 +118,17 @@ public class FileImportTrackingDTO {
 	public void setSearchPath(String searchPath) {
 		this.searchPath = searchPath;
 	}
-	public String getInsertRequestURL() {
-		return insertRequestURL;
+	public String getSubmitRequestURL() {
+		return submitRequestURL;
 	}
-	public void setInsertRequestURL(String insertRequestURL) {
-		this.insertRequestURL = insertRequestURL;
+	public void setSubmitRequestURL(String submitRequestURL) {
+		this.submitRequestURL = submitRequestURL;
 	}
-	public Date getRecordInsertDateTime() {
-		return recordInsertDateTime;
+	public Date getRecordSubmitDateTime() {
+		return recordSubmitDateTime;
 	}
-	public void setRecordInsertDateTime(Date recordInsertDateTime) {
-		this.recordInsertDateTime = recordInsertDateTime;
+	public void setRecordSubmitDateTime(Date recordSubmitDateTime) {
+		this.recordSubmitDateTime = recordSubmitDateTime;
 	}
 	public Date getImportStartDateTime() {
 		return importStartDateTime;
@@ -161,5 +166,28 @@ public class FileImportTrackingDTO {
 	public void setSearchShortName(String searchShortName) {
 		this.searchShortName = searchShortName;
 	}
-	
+
+	public String getRemoteUserIpAddressInit() {
+		return remoteUserIpAddressInit;
+	}
+
+	public void setRemoteUserIpAddressInit(String remoteUserIpAddressInit) {
+		this.remoteUserIpAddressInit = remoteUserIpAddressInit;
+	}
+
+	public String getInitRequestURL() {
+		return initRequestURL;
+	}
+
+	public void setInitRequestURL(String initRequestURL) {
+		this.initRequestURL = initRequestURL;
+	}
+
+	public Date getRecordInitDateTime() {
+		return recordInitDateTime;
+	}
+
+	public void setRecordInitDateTime(Date recordInitDateTime) {
+		this.recordInitDateTime = recordInitDateTime;
+	}
 }

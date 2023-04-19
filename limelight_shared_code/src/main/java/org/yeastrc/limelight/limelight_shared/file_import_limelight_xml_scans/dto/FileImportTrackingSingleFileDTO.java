@@ -30,6 +30,10 @@ public class FileImportTrackingSingleFileDTO {
 
 	private int fileImportTrackingId;
 	
+	private String unique_request_identifier_from_submitter;  // Value from Submitter
+	
+	private Integer fileIndex;  // null in old records.  the 'index' as tracked by submitter
+	
 	private FileImportFileType fileType;
 	private ImportSingleFileUploadStatus fileUploadStatus; 
 	
@@ -41,19 +45,33 @@ public class FileImportTrackingSingleFileDTO {
 	private String canonicalFilename_W_Path_OnSubmitMachine;
 	private String absoluteFilename_W_Path_OnSubmitMachine;
 	
+	private String aws_s3_bucket_name;
+	private String aws_s3_object_key;
+	private String aws_s3_region;
+		
 	private String sha1Sum;
 	private Long fileSize;
 	
+	private boolean fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem;
+	private boolean fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport;
+
 	@Override
 	public String toString() {
 		return "FileImportTrackingSingleFileDTO [id=" + id + ", fileImportTrackingId=" + fileImportTrackingId
-				+ ", fileType=" + fileType + ", fileUploadStatus=" + fileUploadStatus + ", filenameInUpload="
-				+ filenameInUpload + ", filenameOnDisk=" + filenameOnDisk + ", filenameOnDiskWithPathSubSameMachine="
-				+ filenameOnDiskWithPathSubSameMachine + ", canonicalFilename_W_Path_OnSubmitMachine="
-				+ canonicalFilename_W_Path_OnSubmitMachine + ", absoluteFilename_W_Path_OnSubmitMachine="
-				+ absoluteFilename_W_Path_OnSubmitMachine + ", sha1Sum=" + sha1Sum + ", fileSize=" + fileSize + "]";
+				+ ", unique_request_identifier_from_submitter=" + unique_request_identifier_from_submitter
+				+ ", fileIndex=" + fileIndex + ", fileType=" + fileType + ", fileUploadStatus=" + fileUploadStatus
+				+ ", filenameInUpload=" + filenameInUpload + ", filenameOnDisk=" + filenameOnDisk
+				+ ", filenameOnDiskWithPathSubSameMachine=" + filenameOnDiskWithPathSubSameMachine
+				+ ", canonicalFilename_W_Path_OnSubmitMachine=" + canonicalFilename_W_Path_OnSubmitMachine
+				+ ", absoluteFilename_W_Path_OnSubmitMachine=" + absoluteFilename_W_Path_OnSubmitMachine
+				+ ", aws_s3_bucket_name=" + aws_s3_bucket_name + ", aws_s3_object_key=" + aws_s3_object_key
+				+ ", aws_s3_region=" + aws_s3_region + ", sha1Sum=" + sha1Sum + ", fileSize=" + fileSize
+				+ ", fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem="
+				+ fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem
+				+ ", fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport="
+				+ fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport + "]";
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -120,5 +138,62 @@ public class FileImportTrackingSingleFileDTO {
 	public void setFileImportTrackingId(int fileImportTrackingId) {
 		this.fileImportTrackingId = fileImportTrackingId;
 	}
-	
+
+	public Integer getFileIndex() {
+		return fileIndex;
+	}
+
+	public void setFileIndex(Integer fileIndex) {
+		this.fileIndex = fileIndex;
+	}
+
+	public String getAws_s3_bucket_name() {
+		return aws_s3_bucket_name;
+	}
+
+	public void setAws_s3_bucket_name(String aws_s3_bucket_name) {
+		this.aws_s3_bucket_name = aws_s3_bucket_name;
+	}
+
+	public String getAws_s3_object_key() {
+		return aws_s3_object_key;
+	}
+
+	public void setAws_s3_object_key(String aws_s3_object_key) {
+		this.aws_s3_object_key = aws_s3_object_key;
+	}
+
+	public String getAws_s3_region() {
+		return aws_s3_region;
+	}
+
+	public void setAws_s3_region(String aws_s3_region) {
+		this.aws_s3_region = aws_s3_region;
+	}
+
+	public String getUnique_request_identifier_from_submitter() {
+		return unique_request_identifier_from_submitter;
+	}
+
+	public void setUnique_request_identifier_from_submitter(String unique_request_identifier_from_submitter) {
+		this.unique_request_identifier_from_submitter = unique_request_identifier_from_submitter;
+	}
+
+	public boolean isFileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem() {
+		return fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem;
+	}
+
+	public void setFileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem(
+			boolean fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem) {
+		this.fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem = fileLocation_Or_AWS_S3_Object_ProvidedFrom_ExternalSystem;
+	}
+
+	public boolean isFileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport() {
+		return fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport;
+	}
+
+	public void setFileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport(
+			boolean fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport) {
+		this.fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport = fileLocation_Or_AWS_S3_Object_From_ExternalSystem_DeleteAfterImport;
+	}
 }

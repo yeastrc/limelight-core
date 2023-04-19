@@ -31,8 +31,12 @@ import {
 import {
     projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightXMLFile_AndOr_ScanFile,
     ProjectPage_UploadData_UploadFiles__Common_Init_Upload__LimelightXMLFile_AndOr_ScanFile_Response,
+    ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile,
+    projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Cancel_Delete__LimelightXMLFile_AndOr_ScanFile,
+    projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initialize__LimelightXMLFile_AndOr_ScanFile,
+    projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Submit__LimelightXMLFile_AndOr_ScanFile,
     projectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile,
-    ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File
+    ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File,
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles__Common_Init_AND_Submit_Upload__LimelightXMLFile_AndOr_ScanFile";
 import {SearchName_SearchShortName_Max_FieldLengths_Constants} from "page_js/constants_across_webapp/search_name_search_short_name/searchName_SearchShortName_Max_FieldLengths_Constants";
 
@@ -284,19 +288,84 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
         try {
             let error = false;
 
-            const filesUploaded: Array<ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File> = []
+            let searchName = undefined;
+            let searchShortName = undefined;
 
-            const init_Upload_Response = await projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightXMLFile_AndOr_ScanFile({ projectIdentifier: this.props.mainParams.projectIdentifierFromURL });
+            if ( this._searchName_Ref.current && this._searchName_Ref.current.value !== "" ) {
+                searchName = this._searchName_Ref.current.value
+            }
+            if ( this._searchShortName_Ref.current && this._searchShortName_Ref.current.value !== "" ) {
+                searchShortName = this._searchShortName_Ref.current.value
+            }
+
+            const files_InSubmitImport: Array<ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile> = []
+            {
+                let fileIndex = 0;
+
+                {  //  Limelight XML file
+                    fileIndex++;
+
+                    const file_InSubmitImport: ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile = {
+                        fileIndex,
+                        fileType: this.props.mainParams.limelight_import_file_type_limelight_xml_file,
+                        filename: this._limelight_XML_File_Data.filename,
+                        uploadFileSize: this._limelight_XML_File_Data.file_JS_File_Object.size
+                    }
+                    files_InSubmitImport.push(file_InSubmitImport)
+                }
+                if ( this._fasta_File_Data ) {  //  FASTA file if provided
+
+                    fileIndex++;
+
+                    const file_InSubmitImport: ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile = {
+                        fileIndex,
+                        fileType: this.props.mainParams.limelight_import_file_type_fasta_file,
+                        filename: this._fasta_File_Data.filename,
+                        uploadFileSize: this._fasta_File_Data.file_JS_File_Object.size
+                    }
+                    files_InSubmitImport.push(file_InSubmitImport)
+                }
+                {  //  Scan file(s) if provided
+
+                    for ( const scan_Files_Data_Entry of this._scan_Files_Data ) {
+
+                        //  single Scan File
+
+                        fileIndex++;
+
+                        const file_InSubmitImport: ProjectPage_UploadData_UploadFiles__Common_Init_Upload_Request_SingleFile = {
+                            fileIndex,
+                            fileType: this.props.mainParams.limelight_import_file_type_scan_file,
+                            filename: scan_Files_Data_Entry.filename,
+                            uploadFileSize: scan_Files_Data_Entry.file_JS_File_Object.size
+                        }
+                        files_InSubmitImport.push(file_InSubmitImport)
+                    }
+                }
+            }
+
+            const init_Upload_Response = await projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightXMLFile_AndOr_ScanFile({
+                projectIdentifier: this.props.mainParams.projectIdentifierFromURL,
+                searchName, searchShortName, files_InSubmitImport
+            });
 
             if ( ! this._component_Mounted ) {
                 return;  // EARLY RETURN
             }
 
+            const filesUploaded: Array<ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File> = []
+
+            let fileIndex = 0;
+
             {  //  Upload Limelight XML file
                 try {
+                    fileIndex++;
+
                     const result = await this._upload_File({
+                        projectIdentifier: this.props.mainParams.projectIdentifierFromURL,
                         single_UploadFile_Data: this._limelight_XML_File_Data,
                         isLimelightXMLFile: true,
+                        fileIndex,
                         fileType: this.props.mainParams.limelight_import_file_type_limelight_xml_file,
                         init_Upload_Response
                     });
@@ -313,8 +382,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                     this._limelight_XML_File_Data.fileSendToServer_Complete = true;
                     this._limelight_XML_File_Data.fileSendToServer_Percentage = undefined;
 
-                    if ( ! result.sendResult.statusSuccess ) {
-                        this._limelight_XML_File_Data.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                    if ( ! result.statusSuccess ) {
+                        this._limelight_XML_File_Data.fileSendToServer_ErrorMessage  = result.errorMessage
                         error = true;
                     }
 
@@ -332,10 +401,14 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
                     if ( this._fasta_File_Data ) {
 
+                        fileIndex++;
+
                         try {
                             const result = await this._upload_File({
+                                projectIdentifier: this.props.mainParams.projectIdentifierFromURL,
                                 single_UploadFile_Data: this._fasta_File_Data,
                                 isLimelightXMLFile: false,
+                                fileIndex,
                                 fileType: this.props.mainParams.limelight_import_file_type_fasta_file,
                                 init_Upload_Response
                             });
@@ -352,8 +425,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                             this._fasta_File_Data.fileSendToServer_Complete = true;
                             this._fasta_File_Data.fileSendToServer_Percentage = undefined;
 
-                            if ( ! result.sendResult.statusSuccess ) {
-                                this._fasta_File_Data.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                            if ( ! result.statusSuccess ) {
+                                this._fasta_File_Data.fileSendToServer_ErrorMessage  = result.errorMessage
                                 error = true;
                             }
 
@@ -378,10 +451,14 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
                         //  Upload a single Scan File
 
+                        fileIndex++;
+
                         try {
                             const result = await this._upload_File({
+                                projectIdentifier: this.props.mainParams.projectIdentifierFromURL,
                                 single_UploadFile_Data: scan_Files_Data_Entry,
                                 isLimelightXMLFile: false,
+                                fileIndex,
                                 fileType: this.props.mainParams.limelight_import_file_type_scan_file,
                                 init_Upload_Response
                             });
@@ -398,8 +475,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                             scan_Files_Data_Entry.fileSendToServer_Complete = true;
                             scan_Files_Data_Entry.fileSendToServer_Percentage = undefined;
 
-                            if ( ! result.sendResult.statusSuccess ) {
-                                scan_Files_Data_Entry.fileSendToServer_ErrorMessage  = result.sendResult.errorMessage
+                            if ( ! result.statusSuccess ) {
+                                scan_Files_Data_Entry.fileSendToServer_ErrorMessage  = result.errorMessage
                                 error = true;
                                 break;
                             }
@@ -459,20 +536,51 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
      */
     private async _upload_File(
         {
-            single_UploadFile_Data, isLimelightXMLFile, fileType, init_Upload_Response
+            projectIdentifier, single_UploadFile_Data, isLimelightXMLFile, fileIndex, fileType, init_Upload_Response
         } : {
+            projectIdentifier: string
             single_UploadFile_Data: ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data
             isLimelightXMLFile: boolean
+            fileIndex: number
             fileType: number
             init_Upload_Response: ProjectPage_UploadData_UploadFiles__Common_Init_Upload__LimelightXMLFile_AndOr_ScanFile_Response
         }
     ) : Promise<{
-        sendResult: ProjectPage_UploadData_SendUploadFileToServer__Send_Response
+        statusSuccess: boolean
+        errorMessage: string
     }> {
+
+        let uniqueRequestIdentifier_ForThisFile = "";
+        {
+            const now = new Date()
+
+            uniqueRequestIdentifier_ForThisFile = "MS" + now.getTime().toString()
+        }
+
         try {
             single_UploadFile_Data.fileSendToServer_Percentage = 1; // start at 1 percent
 
             this.setState({ force_ReRender_Object: {} })
+
+            //  Reloads page if any error
+            const initializeResult = await projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initialize__LimelightXMLFile_AndOr_ScanFile({
+                projectIdentifier,
+                uniqueRequestIdentifier_ForThisFile,
+                uploadKey: init_Upload_Response.uploadKey,
+                fileIndex,
+                fileType,
+                filename: single_UploadFile_Data.filename,
+                uploadFileSize: single_UploadFile_Data.file_JS_File_Object.size,
+            })
+
+            if ( ! initializeResult.statusSuccess  ) {
+
+                //  EARLY RETURN
+                return {
+                    statusSuccess: initializeResult.statusSuccess,
+                    errorMessage: initializeResult.errorMessage
+                }
+            }
 
             const progress_Callback: ProjectPage_UploadData_SendUploadFileToServer__Progress_Callback =
                 (params: ProjectPage_UploadData_SendUploadFileToServer__Progress_Callback_Params) : void => {
@@ -484,25 +592,73 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
             this._projectPage_UploadData_SendUploadFileToServer__InProgress = new ProjectPage_UploadData_SendUploadFileToServer({
                 projectIdentifierFromURL: this.props.mainParams.projectIdentifierFromURL,
-                maxFileUploadChunkSize: this.props.mainParams.maxFileUploadChunkSize,
+
+                maxFileUploadChunkSize: initializeResult.maxFileUploadChunkSize,
+
                 isLimelightXMLFile,
                 fileToUpload: single_UploadFile_Data.file_JS_File_Object,
-                fileIndex: single_UploadFile_Data.internal_Identifier,
+                fileIndex,
                 fileType,
                 filename: single_UploadFile_Data.filename,
                 uploadKey: init_Upload_Response.uploadKey,
+                requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: initializeResult.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified,
                 progress_Callback
             })
 
-            try {
-                const sendResult = await this._projectPage_UploadData_SendUploadFileToServer__InProgress.projectPage_UploadData_SendUploadFileToServer();
+            let sendResult: ProjectPage_UploadData_SendUploadFileToServer__Send_Response
 
-                return { sendResult };
+
+            try {
+                sendResult = await this._projectPage_UploadData_SendUploadFileToServer__InProgress.projectPage_UploadData_SendUploadFileToServer({
+                    uniqueRequestIdentifier_ForThisFile
+                });
 
             } catch (e) {
 
+            } finally {
+
                 this._projectPage_UploadData_SendUploadFileToServer__InProgress = undefined;
             }
+
+            if ( ! sendResult.statusSuccess  ) {
+
+                try {
+                    const cancelDeleteOfFile = await projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Cancel_Delete__LimelightXMLFile_AndOr_ScanFile({
+                        projectIdentifier,
+                        uniqueRequestIdentifier_ForThisFile,
+                        uploadKey: init_Upload_Response.uploadKey,
+                        fileIndex,
+                        fileType,
+                        filename: single_UploadFile_Data.filename
+                    });
+
+                } catch (e) {
+                }
+
+                //  EARLY RETURN
+                return {
+                    statusSuccess: sendResult.statusSuccess,
+                    errorMessage: sendResult.errorMessage
+                }
+            }
+
+            /////////////////////
+
+            //  Reloads page if any error
+            const submitFinalOfFile = await projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Submit__LimelightXMLFile_AndOr_ScanFile({
+                projectIdentifier,
+                uniqueRequestIdentifier_ForThisFile,
+                uploadKey: init_Upload_Response.uploadKey,
+                fileIndex,
+                fileType,
+                filename: single_UploadFile_Data.filename,
+                uploadFileSize: single_UploadFile_Data.file_JS_File_Object.size
+            })
+
+            return {
+                statusSuccess: submitFinalOfFile.statusSuccess,
+                errorMessage: submitFinalOfFile.errorMessage
+            };
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }

@@ -53,10 +53,12 @@ import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.
 import org.yeastrc.limelight.limelight_shared.constants.FeatureDetectionTypeLabel_Values_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRootDTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRoot_ProjectScanFile_Mapping_DTO;
-import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants;
+import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.shared_objects.FeatureDetection_HardklorBullseye_Import_RequestData_V001;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnIonInjectionTimeData;
@@ -195,24 +197,57 @@ public class Import_CoreEntryPoint {
 
 			FeatureDetectionRootDAO.getInstance().save( featureDetectionRootDTO );
 
+			
+			FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results = null;
+			FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf = null;
+			FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results = null;
+			
 			{
-				String hardklor_Results_Filename_WithPath = 
-						FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILENAME;
-
-				File hardklor_Results_File = new File( hardklor_Results_Filename_WithPath );
-
-
+				List<FileImportAndPipelineRunTrackingSingleFileDTO> dbResultList = 
+						FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO.getInstance().getFor_TrackingId(fileImportAndPipelineRunTrackingDTO.getId());
+			
+				for ( FileImportAndPipelineRunTrackingSingleFileDTO item : dbResultList ) {
+					
+					if ( item.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILE_TYPE_ID ) {
+						fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results = item;
+					} else if ( item.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILE_TYPE_ID ) {
+						fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf = item;
+					} else if ( item.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILE_TYPE_ID ) {
+						fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results = item;
+					} else {
+						String msg = "Unexpected FileTypeId on FileImportAndPipelineRunTrackingSingleFileDTO record. FileTypeId: "
+								+ item.getFileTypeId()
+								+ ", id: "
+								+ item.getId();
+						log.error(msg);
+						System.out.println(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
+					
+				}
+			}
+			
+			{
 				//  Import Hardklor Results file
 
 				ImportFile_Hardklor_Results__Params importFile_Hardklor_Results__Params = new ImportFile_Hardklor_Results__Params();
 
-				importFile_Hardklor_Results__Params.setProjectId(projectId);
-				importFile_Hardklor_Results__Params.setScanFileId(scanFileId);
 				importFile_Hardklor_Results__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
-				importFile_Hardklor_Results__Params.setFilename_Uploaded(hardklor_Results_File.getName());
-				importFile_Hardklor_Results__Params.setFileToImport(hardklor_Results_File);
-				importFile_Hardklor_Results__Params.setUserId(userIdInsertingRecords);
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results != null ) {
+				
+					importFile_Hardklor_Results__Params.setFileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results(fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results);
+				} else {
+					String hardklor_Results_Filename_WithPath = 
+							FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILENAME;
 
+					File hardklor_Results_File = new File( hardklor_Results_Filename_WithPath );
+
+					importFile_Hardklor_Results__Params.setFilename_Uploaded(hardklor_Results_File.getName());
+					importFile_Hardklor_Results__Params.setFileToImport(hardklor_Results_File);
+				}
+				
+				importFile_Hardklor_Results__Params.setUserId(userIdInsertingRecords);
+				
 				importFile_Hardklor_Results__Params.setMs_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber(ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber);
 
 				ImportFile_Hardklor_Results.getInstance().importFile_Hardklor_Results(importFile_Hardklor_Results__Params);
@@ -222,19 +257,25 @@ public class Import_CoreEntryPoint {
 			///
 
 			{
-				String bullseye_Results_Filename_WithPath = 
-					FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILENAME;
-
-				File bullseye_Results_File = new File( bullseye_Results_Filename_WithPath );
-
 				//  Import Bullseye Results file
 
 				ImportFile_Bullseye_Results__Params importFile_Bullseye_Results__Params = new ImportFile_Bullseye_Results__Params();
-				importFile_Bullseye_Results__Params.setProjectId(projectId);
 				importFile_Bullseye_Results__Params.setScanFileId(scanFileId);
 				importFile_Bullseye_Results__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
-				importFile_Bullseye_Results__Params.setFilename_Uploaded(bullseye_Results_File.getName());
-				importFile_Bullseye_Results__Params.setFileToImport(bullseye_Results_File);
+				
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results != null ) {
+					
+					importFile_Bullseye_Results__Params.setFileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results(fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Results);;
+				} else {
+					String bullseye_Results_Filename_WithPath = 
+							FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILENAME;
+
+					File bullseye_Results_File = new File( bullseye_Results_Filename_WithPath );
+
+					importFile_Bullseye_Results__Params.setFilename_Uploaded(bullseye_Results_File.getName());
+					importFile_Bullseye_Results__Params.setFileToImport(bullseye_Results_File);
+				}
+				
 				importFile_Bullseye_Results__Params.setUserId(userIdInsertingRecords);
 
 				ImportFile_Bullseye_Results.getInstance().importFile_Bullseye_Results(importFile_Bullseye_Results__Params);
@@ -253,18 +294,23 @@ public class Import_CoreEntryPoint {
 
 			{   //  Insert Hardklor Conf file
 
-				String hardklor_Conf_Filename = 
-						FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME;
-
-				File hardklor_Conf_File = new File( hardklor_Conf_Filename );
-
 				ImportFile_Hardklor_Conf_File__Params importFile_Hardklor_Conf_File__Params = new ImportFile_Hardklor_Conf_File__Params();
 
 				importFile_Hardklor_Conf_File__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
-				importFile_Hardklor_Conf_File__Params.setLimelight_InternalFilename( hardklor_Conf_Filename );
 				
-				importFile_Hardklor_Conf_File__Params.setFilename_Uploaded(featureDetection_HardklorBullseye_Import_RequestData_V001.getHardklor_ConfFile_UploadedFilename());
-				importFile_Hardklor_Conf_File__Params.setFileToImport(hardklor_Conf_File);
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf != null ) {
+
+					importFile_Hardklor_Conf_File__Params.setFileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf(fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf);
+					
+				} else {
+
+					importFile_Hardklor_Conf_File__Params.setFilename_Uploaded(featureDetection_HardklorBullseye_Import_RequestData_V001.getHardklor_ConfFile_UploadedFilename());
+				}
+
+				//  Always set since stored in DB table
+				importFile_Hardklor_Conf_File__Params.setLimelight_InternalFilename( 
+						FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
+				
 				importFile_Hardklor_Conf_File__Params.setUserId(userIdInsertingRecords);
 
 				ImportFile_Hardklor_Conf_File.getInstance().importFile_Hardklor_Conf_File(importFile_Hardklor_Conf_File__Params);
@@ -284,6 +330,7 @@ public class Import_CoreEntryPoint {
 
 			FeatureDetectionRoot_ProjectScanFile_Mapping_DAO.getInstance().save( featureDetectionRoot_ProjectScanFile_Mapping_DTO );
 
+			System.out.println( "Import of Hardklor/Bullseye results is COMPLETE Successful" );
 
 //				TODO  Update Tracking record with success
 

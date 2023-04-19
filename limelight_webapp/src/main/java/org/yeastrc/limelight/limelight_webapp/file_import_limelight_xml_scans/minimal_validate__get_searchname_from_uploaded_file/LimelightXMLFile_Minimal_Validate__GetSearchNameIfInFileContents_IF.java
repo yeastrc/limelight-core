@@ -17,8 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.minimal_validate__get_searchname_from_uploaded_file;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -28,7 +28,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
  * @author danj
  *
  */
-public interface LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF {
+public interface LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFileContents_IF {
 
 	/**
 	 * This does minimal validation of Limelight XML file
@@ -40,7 +40,7 @@ public interface LimelightXMLFile_Minimal_Validate__GetSearchNameIfInFile_IF {
 	 * @throws IOException
 	 * @throws LimelightWebappDataException
 	 */
-	String limelightXMLFile_Minimal_Validate__GetSearchNameIfInFile(File limelightXMLFile)
+	String limelightXMLFile_Minimal_Validate__GetSearchNameIfInFileContents(InputStream limelightXMLFile_InputStream)
 
 			throws LimelightWebappDataException, XMLStreamException, IOException;
 

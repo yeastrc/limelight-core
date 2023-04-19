@@ -25,12 +25,26 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.en
  *
  */
 public interface FileImportTrackingDAO_IF {
+	
+	FileImportTrackingDTO getForId( int id ) throws Exception;
 
 	/**
 	 * @param item
 	 */
 	public void save( FileImportTrackingDTO item );
 	
+	/**
+	 * @param item
+	 */
+	void set_FieldsUpdatedInSubmit_ForId( FileImportTrackingDTO item );
+	
+	/**
+	 * @param remote_user_ip_address_submit
+	 * @param submit_request_url
+	 * @param id
+	 */
+	void set_Status_Queued_Submitted_ForId( String remote_user_ip_address_submit, String submit_request_url, int id );
+		
 	
 	/**
 	 * @param id

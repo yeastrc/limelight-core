@@ -54,9 +54,9 @@ public class ScanFileSourceFirstImportDAO_Importer {
 			"INSERT INTO scan_file_source_first_import_tbl "
 			+ "( scan_file_id, search_scan_file_id, filename, file_size, sha1sum, "
 			+   " canonical_filename_w_path_on_submit_machine, absolute_filename_w_path_on_submit_machine, "
-			+   " aws_s3_bucket_name, aws_s3_object_key ) "
+			+   " aws_s3_bucket_name, aws_s3_object_key, aws_s3_region ) "
 
-			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	/**
 	 * @param item
@@ -86,6 +86,8 @@ public class ScanFileSourceFirstImportDAO_Importer {
 			pstmt.setString( counter, item.getAwsBucketName() );
 			counter++;
 			pstmt.setString( counter, item.getAwsObjectKey() );
+			counter++;
+			pstmt.setString( counter, item.getAwsRegion() );
 
 			pstmt.executeUpdate();
 

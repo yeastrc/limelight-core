@@ -58,7 +58,7 @@ public class FileImportTracking_PopulateDTO {
 
 		returnItem.setStatus( FileImportStatus.fromValue( rs.getInt( "status_id" ) ) );
 		
-		returnItem.setRemoteUserIpAddress( rs.getString( "remote_user_ip_address" ) );
+		returnItem.setRemoteUserIpAddressSubmit( rs.getString( "remote_user_ip_address_submit" ) );
 		
 		int markedForDeletionInt = rs.getInt( "marked_for_deletion" );
 		
@@ -74,9 +74,9 @@ public class FileImportTracking_PopulateDTO {
 		
 		returnItem.setSearchPath( rs.getString( "search_path" ) );
 		
-		returnItem.setInsertRequestURL( rs.getString( "insert_request_url" ) );
+		returnItem.setSubmitRequestURL( rs.getString( "submit_request_url" ) );
 		
-		returnItem.setRecordInsertDateTime( rs.getTimestamp("record_insert_date_time" ) );
+		returnItem.setRecordSubmitDateTime( rs.getTimestamp("record_submit_date_time" ) );
 		returnItem.setImportStartDateTime( rs.getTimestamp( "import_start_date_time" ) );
 		returnItem.setImportEndDateTime( rs.getTimestamp( "import_end_date_time" ) );
 		returnItem.setLastUpdatedDateTime( rs.getTimestamp( "last_updated_date_time" ) );

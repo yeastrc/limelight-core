@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.delete_directory_and_contents.DeleteDirectoryAndContents;
+import org.yeastrc.limelight.limelight_run_importer.import_files__delete_s3_objects_for_db_single_file_records.ImportFiles_Delete_S3Objects_For_DB_SingleFile_Records;
 import org.yeastrc.limelight.limelight_run_importer.import_files_remove_success_failed_except_last_2_main_and_searcher.ImportFiles_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
@@ -205,6 +206,8 @@ public class ImportFiles_DelayedRemoval_Main {
 				
 				break;  //  EARLY BREAK
 			}
+			
+			ImportFiles_Delete_S3Objects_For_DB_SingleFile_Records.getInstance().delete_S3Objects_For_DB_SingleFile_Records( fileImportTrackingId );
 						
 			String subdirNameForThisTrackingId =
 					Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( fileImportTrackingId );

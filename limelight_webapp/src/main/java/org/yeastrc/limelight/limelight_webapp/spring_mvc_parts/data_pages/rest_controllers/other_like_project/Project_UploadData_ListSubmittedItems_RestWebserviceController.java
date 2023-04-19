@@ -332,6 +332,12 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 			@Override
 			public int compare(InternalHolder__Single_WebserviceResult_DisplayItem o1, InternalHolder__Single_WebserviceResult_DisplayItem o2) {
 
+				if ( o1.processingEnd_DateTime_In_Milliseconds == null ) {
+					return -1;
+				}
+				if ( o2.processingEnd_DateTime_In_Milliseconds == null ) {
+					return 1;
+				}
 				return - o1.processingEnd_DateTime_In_Milliseconds.compareTo( o2.processingEnd_DateTime_In_Milliseconds );
 			}
 		});
@@ -638,8 +644,8 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 			String scanfileNamesCommaDelim = StringUtils.join( scanFilenames, ", " );
 			displayItem.setScanFilenames( scanFilenames );
 			displayItem.setScanfileNamesCommaDelim( scanfileNamesCommaDelim );
-			if ( trackingItem.getRecordInsertDateTime() != null ) {
-				displayItem.setImportSubmitDateTime( dateTimeFormat.format( trackingItem.getRecordInsertDateTime() ) );
+			if ( trackingItem.getRecordSubmitDateTime() != null ) {
+				displayItem.setImportSubmitDateTime( dateTimeFormat.format( trackingItem.getRecordSubmitDateTime() ) );
 			}
 			if ( trackingItem.getStatus() == FileImportStatus.STARTED 
 					|| trackingItem.getStatus() == FileImportStatus.COMPLETE

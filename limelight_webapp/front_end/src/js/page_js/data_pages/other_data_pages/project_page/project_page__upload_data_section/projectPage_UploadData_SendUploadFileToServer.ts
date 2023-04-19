@@ -69,6 +69,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 	private _fileType: number
 	private _filename: string
 	private _uploadKey: string
+	private _requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: number;  //  Populated when store on S3.  Each uploaded chunk except last one MUST be this size
 	private _progress_Callback: ProjectPage_UploadData_SendUploadFileToServer__Progress_Callback
 
 	private uploadFile_UploadInProgress_Canceled: boolean = false
@@ -81,7 +82,9 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 		{
 			projectIdentifierFromURL, maxFileUploadChunkSize,
 
-			isLimelightXMLFile, fileToUpload, fileIndex, fileType, filename, uploadKey, progress_Callback
+			isLimelightXMLFile, fileToUpload, fileIndex, fileType, filename, uploadKey,
+			requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified,
+			progress_Callback
 		} : {
 			projectIdentifierFromURL: string
 			maxFileUploadChunkSize: number
@@ -91,6 +94,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 			fileType: number
 			filename: string
 			uploadKey: string
+			requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: number;  //  Populated when store on S3.  Each uploaded chunk except last one MUST be this size
 			progress_Callback: ProjectPage_UploadData_SendUploadFileToServer__Progress_Callback
 		}
 	) {
@@ -103,6 +107,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 		this._fileType = fileType
 		this._filename = filename
 		this._uploadKey = uploadKey
+		this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified = requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified;
 		this._progress_Callback = progress_Callback
 	}
 
@@ -126,7 +131,13 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 	/**
 	 * !!!  WARNING:  Promise will resolve when there are ERRORS.  Need to check the result of the resolve.  !!!
 	 */
-	projectPage_UploadData_SendUploadFileToServer() : Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response> {
+	projectPage_UploadData_SendUploadFileToServer(
+		{
+			uniqueRequestIdentifier_ForThisFile
+		} : {
+			uniqueRequestIdentifier_ForThisFile: string
+		}
+	) : Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response> {
 
 		return new Promise<ProjectPage_UploadData_SendUploadFileToServer__Send_Response>( (resolve, reject) => { try {
 
@@ -138,11 +149,25 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 
 			let sendData_BlockSize = Math.trunc( this.maxFileUploadChunkSize * STARTING_SEND_DATA_BLOCK_SIZE__AS_FRACTION_OF_MAX_SIZE ) ;   // size of one chunk/block to send to the server.  this.maxFileUploadChunkSize  from server max size
 
+			let sendData_BlockSize__CanChange = true;
+
+			//  this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified: number;  //  Populated when store on S3.  Each uploaded chunk except last one MUST be this size
+
+			if ( this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== undefined
+				&& this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== null ) {
+
+				sendData_BlockSize = this._requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified;
+
+				sendData_BlockSize__CanChange = false;  // MUST always send this block size except last block
+			}
+
 			const totalFileSize = this._fileToUpload.size;  // total size of file
 
 
 
 			let processedBytes_OfFile = 0;  //  Used as StartByte of Next Block to send
+
+			let fileChunk_SequenceNumber = 1; // start at 1
 
 			const reader = new FileReader();
 			const blob = this._fileToUpload.slice(sendData_StartByte, sendData_BlockSize); //a single chunk in starting of step size
@@ -160,7 +185,9 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 					this._uploadFile_Send_A_Block_HandleResponse_HighLevel(
 						{
 							uploadFileSize: totalFileSize,
+							uniqueRequestIdentifier_ForThisFile,
 							fileChunk_StartByte: processedBytes_OfFile,
+							fileChunk_SequenceNumber,
 							contentToSend
 						}
 					);
@@ -188,6 +215,8 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 						return;  //  EARLY RETURN
 					}
 
+					fileChunk_SequenceNumber++;
+
 					processedBytes_OfFile += sendData_BlockSize;
 
 					if ( processedBytes_OfFile <= totalFileSize ) {
@@ -201,24 +230,27 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 							this._progress_Callback( { progressPercent : progressPercent }  );
 						}
 
-						//  Compute new sendData_BlockSize based on the send time of the last block sent.  Optimal send time is SEND_DATA_AJAX_CALL_PREFERRED_LENGTH__IN_SECONDS
+						if ( sendData_BlockSize__CanChange ) {
 
-						{
-							const prevSendTimePerByte_Milliseconds = sendData_BlockSize / result.sendTime_Milliseconds;
-							const new_sendData_BlockSize_UnTruncated = prevSendTimePerByte_Milliseconds * SEND_DATA_AJAX_CALL_PREFERRED_MAX_DURATION__IN_SECONDS * 1000
+							//  Compute new sendData_BlockSize based on the send time of the last block sent.  Optimal send time is SEND_DATA_AJAX_CALL_PREFERRED_LENGTH__IN_SECONDS
 
-							let new_sendData_BlockSize = Math.trunc(new_sendData_BlockSize_UnTruncated)
+							{
+								const prevSendTimePerByte_Milliseconds = sendData_BlockSize / result.sendTime_Milliseconds;
+								const new_sendData_BlockSize_UnTruncated = prevSendTimePerByte_Milliseconds * SEND_DATA_AJAX_CALL_PREFERRED_MAX_DURATION__IN_SECONDS * 1000
 
-							if ( new_sendData_BlockSize > this.maxFileUploadChunkSize ) {
-								new_sendData_BlockSize = this.maxFileUploadChunkSize  //  limit to max size
+								let new_sendData_BlockSize = Math.trunc(new_sendData_BlockSize_UnTruncated)
+
+								if ( new_sendData_BlockSize > this.maxFileUploadChunkSize ) {
+									new_sendData_BlockSize = this.maxFileUploadChunkSize  //  limit to max size
+								}
+								if ( new_sendData_BlockSize < sendData_BlockSize_MINIMUM ) {
+									new_sendData_BlockSize = sendData_BlockSize_MINIMUM  //  Limit to Min size
+								}
+
+								// console.warn( "result.sendTime_Milliseconds: " + result.sendTime_Milliseconds.toLocaleString() + ", old sendData_BlockSize: " + sendData_BlockSize.toLocaleString() + " , new_sendData_BlockSize: " + new_sendData_BlockSize.toLocaleString() )
+
+								sendData_BlockSize = new_sendData_BlockSize;
 							}
-							if ( new_sendData_BlockSize < sendData_BlockSize_MINIMUM ) {
-								new_sendData_BlockSize = sendData_BlockSize_MINIMUM  //  Limit to Min size
-							}
-
-							// console.warn( "result.sendTime_Milliseconds: " + result.sendTime_Milliseconds.toLocaleString() + ", old sendData_BlockSize: " + sendData_BlockSize.toLocaleString() + " , new_sendData_BlockSize: " + new_sendData_BlockSize.toLocaleString() )
-
-							sendData_BlockSize = new_sendData_BlockSize;
 						}
 
 						//  Get next block of file to send.  The reader.on will be executed when the block is read
@@ -251,11 +283,15 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 	private async _uploadFile_Send_A_Block_HandleResponse_HighLevel(
 		{
 			uploadFileSize,
+			uniqueRequestIdentifier_ForThisFile,
 			fileChunk_StartByte,
+			fileChunk_SequenceNumber,
 			contentToSend
 		} : {
 			uploadFileSize: number
+			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
+			fileChunk_SequenceNumber: number
 			contentToSend
 		}
 	) : Promise<{
@@ -279,7 +315,9 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 				const midLevel_Response = await this._uploadFile_Send_A_Block_HandleResponse_MidLevel(
 					{
 						uploadFileSize,
+						uniqueRequestIdentifier_ForThisFile,
 						fileChunk_StartByte,
+						fileChunk_SequenceNumber,
 						contentToSend
 					});
 
@@ -322,10 +360,14 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 		{
 			uploadFileSize,
 			fileChunk_StartByte,
+			uniqueRequestIdentifier_ForThisFile,
+			fileChunk_SequenceNumber,
 			contentToSend
 		} : {
 			uploadFileSize: number
+			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
+			fileChunk_SequenceNumber: number
 			contentToSend: any
 		}
 	) : Promise<{
@@ -339,7 +381,9 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 				const promise_send =
 					this._uploadFile_ActualSend_Block({
 						uploadFileSize,
+						uniqueRequestIdentifier_ForThisFile,
 						fileChunk_StartByte,
+						fileChunk_SequenceNumber,
 						contentToSend
 					});
 
@@ -389,11 +433,15 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 	private _uploadFile_ActualSend_Block(
 		{
 			uploadFileSize,
+			uniqueRequestIdentifier_ForThisFile,
 			fileChunk_StartByte,
+			fileChunk_SequenceNumber,
 			contentToSend
 		} : {
 			uploadFileSize: number
+			uniqueRequestIdentifier_ForThisFile: string
 			fileChunk_StartByte: number
+			fileChunk_SequenceNumber: number
 			contentToSend: any
 		}) {
 
@@ -537,7 +585,7 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 
 				const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
 
-				let postURL = "d/rws/for-page/project-upload-data-upload-file";
+				let postURL = "d/rws/for-page/project-upload-data-v2-upload-file-chunking-upload-file";
 
 				xmlHttpRequest.open('POST', postURL);
 
@@ -555,8 +603,10 @@ export class ProjectPage_UploadData_SendUploadFileToServer {
 					fileIndex : this._fileIndex,
 					fileType : this._fileType,
 					filename : this._filename,
+					uniqueRequestIdentifier_ForThisFile,
 					uploadFileSize,
-					fileChunk_StartByte
+					fileChunk_StartByte,
+					fileChunk_SequenceNumber
 				}
 				let uploadFileHeaderParamsJSON = JSON.stringify( uploadFileHeaderParams );
 

@@ -71,10 +71,12 @@ import org.yeastrc.limelight.limelight_shared.constants.FeatureDetectionTypeLabe
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRootDTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRoot_ProjectScanFile_Mapping_DTO;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_RunResult_Filenames_Constants;
-import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants;
+import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.shared_objects.FeatureDetection_HardklorBullseye_Run_RequestData_V001;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnIonInjectionTimeData;
@@ -87,6 +89,12 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 import org.yeastrc.spectral_storage.get_data_webapp.webservice_connect.main.CallSpectralStorageGetDataWebservice;
 import org.yeastrc.spectral_storage.get_data_webapp.webservice_connect.main.CallSpectralStorageGetDataWebserviceInitParameters;
+
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * 
@@ -198,20 +206,66 @@ public class Run_And_Import_CoreEntryPoint {
 
 			RunFeatureDetectionService_GetStatus_ReceiveObject runFeatureDetectionService_GetStatus_ReceiveObject = null;
 
+			byte[] hardklorConfFile_Contents_ByteArray = null;
+			byte[] bullseyeConfFile_Contents_ByteArray = null;
+			
 			//  TODO  remove 'if ( false ) ' to stop testing
 			
 			if ( true ) {
 
-				String hardklorConfFile_Contents_String = get_FileContents_ReturnAsString( FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
-				String bullseyeConfFile_Contents_String = get_FileContents_ReturnAsString( FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILENAME );
+				FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf = null;
+				FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Conf = null;
+				
+				{
+					List<FileImportAndPipelineRunTrackingSingleFileDTO> dbResultList = 
+							FileImportAndPipelineRunTrackingSingleFile_Shared_Get_DAO.getInstance().getFor_TrackingId(fileImportAndPipelineRunTrackingDTO.getId());
+				
+					for ( FileImportAndPipelineRunTrackingSingleFileDTO item : dbResultList ) {
+						
+						if ( item.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILE_TYPE_ID ) {
+							fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf = item;
+						} else if ( item.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILE_TYPE_ID ) {
+							fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Conf = item;
+						} else {
+							String msg = "Unexpected FileTypeId on FileImportAndPipelineRunTrackingSingleFileDTO record. FileTypeId: "
+									+ item.getFileTypeId()
+									+ ", id: "
+									+ item.getId();
+							log.error(msg);
+							System.out.println(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+						
+					}
+				}
+				
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf != null ) {
+					
+					hardklorConfFile_Contents_ByteArray = get_FileContentsLocalFile_OR_AWS_S3_Object_Contents_ReturnAsByteArray(fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Conf);
+				} else {
+					hardklorConfFile_Contents_ByteArray = get_FileContentsLocalFile_ReturnAsByteArray( FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
+				}
 
-
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Conf != null ) {
+					
+					bullseyeConfFile_Contents_ByteArray = get_FileContentsLocalFile_OR_AWS_S3_Object_Contents_ReturnAsByteArray(fileImportAndPipelineRunTrackingSingleFileDTO__Bullseye_Conf);
+				} else {
+					bullseyeConfFile_Contents_ByteArray = get_FileContentsLocalFile_ReturnAsByteArray( FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILENAME );
+				}
+				
 				RunFeatureDetectionService_SubmitRequest_SendObject runFeatureDetectionService_SubmitRequest_SendObject = new RunFeatureDetectionService_SubmitRequest_SendObject();
 
 				runFeatureDetectionService_SubmitRequest_SendObject.setProject_id(projectId);
 				runFeatureDetectionService_SubmitRequest_SendObject.setSpectr_file_id(spectralStorageAPIKey);
-				runFeatureDetectionService_SubmitRequest_SendObject.setHardklor_conf(hardklorConfFile_Contents_String); // File contents
-				runFeatureDetectionService_SubmitRequest_SendObject.setBullseye_conf(bullseyeConfFile_Contents_String); // File contents
+
+				{
+					String contents_String = new String(hardklorConfFile_Contents_ByteArray, StandardCharsets.US_ASCII);
+					runFeatureDetectionService_SubmitRequest_SendObject.setHardklor_conf(contents_String); // File contents
+				}
+				{
+					String contents_String = new String(bullseyeConfFile_Contents_ByteArray, StandardCharsets.US_ASCII);
+					runFeatureDetectionService_SubmitRequest_SendObject.setBullseye_conf(contents_String); // File contents
+				}
 
 				RunFeatureDetectionService_SubmitRequest_ReceiveObject runFeatureDetectionService_SubmitRequest_ReceiveObject = 
 						RunFeatureDetectionService_Communication.getInstance().call_Submit_Webservice(runFeatureDetectionService_SubmitRequest_SendObject);
@@ -393,8 +447,6 @@ public class Run_And_Import_CoreEntryPoint {
 
 					ImportFile_Hardklor_Results__Params importFile_Hardklor_Results__Params = new ImportFile_Hardklor_Results__Params();
 					
-					importFile_Hardklor_Results__Params.setProjectId(projectId);
-					importFile_Hardklor_Results__Params.setScanFileId(scanFileId);
 					importFile_Hardklor_Results__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
 					importFile_Hardklor_Results__Params.setFilename_Uploaded(hardklor_Results_File.getName());
 					importFile_Hardklor_Results__Params.setFileToImport(hardklor_Results_File);
@@ -423,7 +475,6 @@ public class Run_And_Import_CoreEntryPoint {
 					//  Import Bullseye Results file
 
 					ImportFile_Bullseye_Results__Params importFile_Bullseye_Results__Params = new ImportFile_Bullseye_Results__Params();
-					importFile_Bullseye_Results__Params.setProjectId(projectId);
 					importFile_Bullseye_Results__Params.setScanFileId(scanFileId);
 					importFile_Bullseye_Results__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
 					importFile_Bullseye_Results__Params.setFilename_Uploaded(bullseye_Results_File.getName());
@@ -445,19 +496,18 @@ public class Run_And_Import_CoreEntryPoint {
 				}
 
 				{   //  Insert Hardklor Conf file
-
-					String hardklor_Conf_Filename = 
-							FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME;
-
-					File hardklor_Conf_File = new File( hardklor_Conf_Filename );
-
 					ImportFile_Hardklor_Conf_File__Params importFile_Hardklor_Conf_File__Params = new ImportFile_Hardklor_Conf_File__Params();
 					
 					importFile_Hardklor_Conf_File__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
-					importFile_Hardklor_Conf_File__Params.setLimelight_InternalFilename( hardklor_Conf_Filename );
+
+					//  Always set since stored in DB table
+					importFile_Hardklor_Conf_File__Params.setLimelight_InternalFilename( 
+							FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
 					
 					importFile_Hardklor_Conf_File__Params.setFilename_Uploaded(featureDetection_HardklorBullseye_Run_RequestData_V1.getHardklor_ConfFile_UploadedFilename());
-					importFile_Hardklor_Conf_File__Params.setFileToImport(hardklor_Conf_File);
+					
+					importFile_Hardklor_Conf_File__Params.setHardklorConfFile_Contents_ByteArray(hardklorConfFile_Contents_ByteArray);
+					
 					importFile_Hardklor_Conf_File__Params.setUserId(userIdInsertingRecords);
 					
 					ImportFile_Hardklor_Conf_File.getInstance().importFile_Hardklor_Conf_File(importFile_Hardklor_Conf_File__Params);
@@ -465,18 +515,17 @@ public class Run_And_Import_CoreEntryPoint {
 
 				{   //  Insert Bullseye Conf file
 
-					String bullseye_Conf_Filename = 
-							FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILENAME;
-
-					File bullseye_Conf_File = new File( bullseye_Conf_Filename );
-
 					ImportFile_Bullseye_Conf_File__Params importFile_Bullseye_Conf_File__Params = new ImportFile_Bullseye_Conf_File__Params();
 					
 					importFile_Bullseye_Conf_File__Params.setFeatureDetectionRootId(featureDetectionRootDTO.getId());
-					importFile_Bullseye_Conf_File__Params.setLimelight_InternalFilename( bullseye_Conf_Filename ); 
+
+					//  Always set since stored in DB table
+					importFile_Bullseye_Conf_File__Params.setLimelight_InternalFilename( 
+							FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILENAME );
+					
+					importFile_Bullseye_Conf_File__Params.setBullseyeConfFile_Contents_ByteArray__Param(bullseyeConfFile_Contents_ByteArray);
 							
 					importFile_Bullseye_Conf_File__Params.setFilename_Uploaded(featureDetection_HardklorBullseye_Run_RequestData_V1.getBullseye_ConfFile_UploadedFilename());
-					importFile_Bullseye_Conf_File__Params.setFileToImport(bullseye_Conf_File);
 					importFile_Bullseye_Conf_File__Params.setUserId(userIdInsertingRecords);
 					
 					ImportFile_Bullseye_Conf_File.getInstance().importFile_Bullseye_Conf_File(importFile_Bullseye_Conf_File__Params);
@@ -521,11 +570,88 @@ public class Run_And_Import_CoreEntryPoint {
 
 
 	/**
+	 * @param fileImportAndPipelineRunTrackingSingleFileDTO
+	 * @return
+	 * @throws IOException
+	 * @throws Exception 
+	 */
+	private byte[] get_FileContentsLocalFile_OR_AWS_S3_Object_Contents_ReturnAsByteArray( FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO) throws IOException, Exception {
+		
+		if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO.getFilenameOnDisk() ) ) {
+			
+			return get_FileContentsLocalFile_ReturnAsByteArray( fileImportAndPipelineRunTrackingSingleFileDTO.getFilenameOnDisk() ) ;
+		}
+		
+		if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name() ) ) {
+			
+			//  Not a local file.  Get from AWS S3
+
+			S3Client amazonS3_Client = null;
+
+			{  // Use Region from fileImportAndPipelineRunTrackingSingleFileDTO, otherwise Config, otherwise SDK use from Environment Variable
+
+				String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_region();
+
+				if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+							
+					amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+				}
+
+				if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+					
+					Region aws_S3_Region = Region.of(amazonS3_RegionName);
+					
+					amazonS3_Client = 
+							S3Client.builder()
+							.region( aws_S3_Region )
+							.httpClientBuilder(ApacheHttpClient.builder())
+							.build();
+					
+				} else {
+					//  SDK use Region from Environment Variable
+					
+					amazonS3_Client = 
+							S3Client.builder()
+							.httpClientBuilder(ApacheHttpClient.builder())
+							.build(); 
+				}
+			}
+
+			GetObjectRequest getObjectRequest = 
+					GetObjectRequest
+					.builder()
+					.bucket(fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name())
+					.key( fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_object_key() )
+					.build();
+			try {
+				byte[] confFile_Contents_ByteArray = amazonS3_Client.getObjectAsBytes(getObjectRequest).asByteArray();
+
+				return confFile_Contents_ByteArray;
+				
+			} catch ( NoSuchKeyException e ) {
+
+				//  Throw Data Exception if externally passed in object key and bucket name
+
+				System.err.println( "Could not find S3 Object.  ObjectKey: " 
+						+ fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_object_key() 
+						+ ", Object Bucket: " 
+						+ fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name() );
+				throw new LimelightImporterInternalException(e);
+			}
+
+		}
+		
+		String msg = "fileImportAndPipelineRunTrackingSingleFileDTO.getFilenameOnDisk() AND fileImportAndPipelineRunTrackingSingleFileDTO.getAws_s3_bucket_name() are BOTH Empty";
+		log.error(msg);
+		throw new LimelightImporterInternalException(msg);
+	}
+
+	/**
 	 * @param filename
 	 * @return
 	 * @throws IOException 
 	 */
-	private String get_FileContents_ReturnAsString( String filename ) throws IOException {
+	private byte[] get_FileContentsLocalFile_ReturnAsByteArray( String filename ) throws IOException {
 
 		File confFile = new File( filename );  //  Load from directory the program runs in
 
@@ -533,13 +659,9 @@ public class Run_And_Import_CoreEntryPoint {
 
 		byte[] confFile_Contents_ByteArray = Files.readAllBytes(confFile_Path);
 
-		String result = new String(confFile_Contents_ByteArray, StandardCharsets.US_ASCII);
-
-		return result;
+		return confFile_Contents_ByteArray;
 	}
 	
-
-
 	/**
 	 * @param webserviceMethod_Internal_Params
 	 * @return

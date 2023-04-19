@@ -59,13 +59,16 @@ public class FileToYRCFileObjectStorageService_SendFile {
 	
 	/**
 	 * Result from main method call
+	 * 
+	 * 
+	 * !!!  Also returned from method in class FileToYRCFileObjectStorageService_Send_AWS_S3_Location
 	 *
 	 */
 	public static class FileToYRCFileObjectStorageService_SendFile__Result {
 		
-		private String ApiKey_Assigned;
+		public String ApiKey_Assigned;
 		
-		private boolean notConfigured;
+		public boolean notConfigured;
 
 		public String getApiKey_Assigned() {
 			return ApiKey_Assigned;

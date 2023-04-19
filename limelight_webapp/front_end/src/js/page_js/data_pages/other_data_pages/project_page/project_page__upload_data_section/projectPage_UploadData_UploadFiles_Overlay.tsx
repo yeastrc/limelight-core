@@ -63,7 +63,6 @@ export class ProjectPage_UploadData_UploadFiles__Params {
     limelight_import_file_type_fasta_file: number
     limelight_import_file_type_scan_file: number
 
-    maxFileUploadChunkSize: number
     maxLimelightXMLFileUploadSize: number
     maxLimelightXMLFileUploadSizeFormatted: string
     maxFASTAFileUploadSize: number

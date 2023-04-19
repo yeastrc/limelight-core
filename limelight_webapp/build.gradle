@@ -93,6 +93,19 @@ dependencies {
 	
 	compile project(":limelight_submit_import_client_connector")
 	
+	//   AWS  S3
+	
+	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
+	compile group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
+	
+	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
+	compile group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
+	
+	
+	//   OLD V1
+	// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+	// compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.12.416'
+
 	
 	//  Mail
 	

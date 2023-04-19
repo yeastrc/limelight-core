@@ -16,11 +16,23 @@ import org.yeastrc.limelight.limelight_feature_detection_run_import.constants.Fe
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureEntry_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureUploadedFileStatsDAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.utils.Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionSingularFeatureEntryDTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetection_SingularFeature_UploadedFileStatsDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
+
+import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * Insert Upload Hardklor program Results File 
@@ -36,18 +48,14 @@ public class ImportFile_Hardklor_Results {
 
 	public static class ImportFile_Hardklor_Results__Params {
 		
-		int projectId;
-		int scanFileId;
 		int featureDetectionRootId;
 		String filename_Uploaded;
 		File fileToImport;
+		FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results;
 		int userId;
 		
 		Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber;
 		
-		public void setProjectId(int projectId) {
-			this.projectId = projectId;
-		}
 		public void setFeatureDetectionRootId(int featureDetectionRootId) {
 			this.featureDetectionRootId = featureDetectionRootId;
 		}
@@ -60,12 +68,13 @@ public class ImportFile_Hardklor_Results {
 		public void setUserId(int userId) {
 			this.userId = userId;
 		}
-		public void setScanFileId(int scanFileId) {
-			this.scanFileId = scanFileId;
-		}
 		public void setMs_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber(
 				Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber) {
 			this.ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber = ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber;
+		}
+		public void setFileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results(
+				FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results) {
+			this.fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results = fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results;
 		}
 	}
 
@@ -78,14 +87,22 @@ public class ImportFile_Hardklor_Results {
 			ImportFile_Hardklor_Results__Params params
 			) throws Exception {
 		
-		int projectId = params.projectId;
-		int scanFileId = params.scanFileId;
 		int featureDetectionRootId = params.featureDetectionRootId;
+		
+		FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results = params.fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results;
+		
+		//  OR
+		
 		String filename_Uploaded = params.filename_Uploaded;
 		File fileToImport = params.fileToImport;
+		
 		int userId = params.userId;
 		
-		Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber = params.ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber;
+		int uploadedFileSize = 0;
+		
+		if ( fileToImport != null ) {
+			uploadedFileSize = (int)fileToImport.length();
+		}
 		
 		//  Insert "Top Level" DB Record
 
@@ -96,79 +113,178 @@ public class ImportFile_Hardklor_Results {
 		featureDetection_SingularFeature_UploadedFileStatsDTO.setFileFullyInserted(false);
 		featureDetection_SingularFeature_UploadedFileStatsDTO.setFeaturedetectionProgramName( FeatureDetectionProgramName_Values_Constants.HARDKLOR );
 		featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFilename(filename_Uploaded);
-		featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFileSize((int)fileToImport.length());
+		featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFileSize(uploadedFileSize);
 
 		featureDetection_SingularFeature_UploadedFileStatsDTO.setCreatedBy_UserId(userId);
 		featureDetection_SingularFeature_UploadedFileStatsDTO.setUpdatedBy_UserId(userId);
 
 		FeatureDetectionSingularFeatureUploadedFileStatsDAO.getInstance().save(featureDetection_SingularFeature_UploadedFileStatsDTO);
 		
-		try ( InputStream fileInputStream = new BufferedInputStream( new FileInputStream( fileToImport ) ) ) {
-
-			Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component read_InputStream_Into_ASCII_CharacterString_OneLineAtATime = 
-					Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component.getNewInstance(fileInputStream);
-
-			//  Main Process of Uploaded file
-			process_File_InputStream(
-					read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, 
-					ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber, 
-					featureDetection_SingularFeature_UploadedFileStatsDTO);
-
+		if ( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results != null ) {
 			
-			String sha1_Of_PostBody = null;
-			String sha384_Of_PostBody = null;
+			if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getFilenameOnDisk() ) ) {
 
-			{  // sha1_Of_PostBody
-				byte[] mdbytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_1_Of_StreamContents().digest();
+				try ( InputStream inputStream = new BufferedInputStream( new FileInputStream( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getFilenameOnDisk() ) ) ) {
 
-				//convert the byte to hex format
-				StringBuffer sb = new StringBuffer("");
-				for (int i = 0; i < mdbytes.length; i++) {
-					sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+					process_UploadedContents_InputStream(params, featureDetection_SingularFeature_UploadedFileStatsDTO, inputStream);
 				}
-
-				sha1_Of_PostBody = sb.toString();
+				
+				return; // EARLY RETURN
 			}
+			
+			if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_bucket_name() ) ) {
 
-			{  // sha384_Of_PostBody
-				byte[] hashBytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_384_Of_StreamContents().digest();
 
-				StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+				//  Not a local file.  Get from AWS S3
 
-				for ( int i = 0; i < hashBytes.length; i++ ) {
-					String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
-					if ( byteAsHex.length() == 1 ) {
-						hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+				S3Client amazonS3_Client = null;
+
+				{  // Use Region from fileImportAndPipelineRunTrackingSingleFileDTO, otherwise Config, otherwise SDK use from Environment Variable
+
+					String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_region();
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+								
+						amazonS3_RegionName = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 					}
-					hashBytesAsHexSB.append( byteAsHex );
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+						Region aws_S3_Region = Region.of(amazonS3_RegionName);
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.region( aws_S3_Region )
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build();
+						
+					} else {
+						//  SDK use Region from Environment Variable
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build(); 
+					}
 				}
 
-				sha384_Of_PostBody = hashBytesAsHexSB.toString();
+				GetObjectRequest getObjectRequest = 
+						GetObjectRequest
+						.builder()
+						.bucket(fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_bucket_name())
+						.key( fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_object_key() )
+						.build();
+				
+				try ( ResponseInputStream<GetObjectResponse> getObjectResponse_UsableAsInputStream = amazonS3_Client.getObject(getObjectRequest) ) {
+					
+					process_UploadedContents_InputStream(params, featureDetection_SingularFeature_UploadedFileStatsDTO, getObjectResponse_UsableAsInputStream);
 
-				//  WAS - which is equivalent, except for the added "0" when a hex pair starts with "0"
+					return;
+					
+				} catch ( NoSuchKeyException e ) {
 
-				//			//convert the byte to hex format
-				//			StringBuffer sb = new StringBuffer("");
-				//			for (int i = 0; i < mdbytes.length; i++) {
-				//				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-				//			}
-				//
-				//			sha384_Of_PostBody = sb.toString();
+					//  Throw Data Exception if externally passed in object key and bucket name
+
+					System.err.println( "Could not find S3 Object.  ObjectKey: " 
+							+ fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_object_key() 
+							+ ", Object Bucket: " 
+							+ fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getAws_s3_bucket_name() );
+					throw new LimelightImporterInternalException(e);
+				}
+			
+			}
+			
+			String msg = "fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results != null. fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getFilenameOnDisk() AND fileImportAndPipelineRunTrackingSingleFileDTO__Hardklor_Results.getFilenameOnDisk() ARE Empty";
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		try ( InputStream inputStream = new BufferedInputStream( new FileInputStream( fileToImport ) ) ) {
+
+			process_UploadedContents_InputStream(params, featureDetection_SingularFeature_UploadedFileStatsDTO, inputStream);
+		}
+	}
+	
+	/**
+	 * @param params
+	 * @param featureDetection_SingularFeature_UploadedFileStatsDTO
+	 * @param inputStream
+	 * @throws Exception
+	 */
+	private void process_UploadedContents_InputStream(
+			
+			ImportFile_Hardklor_Results__Params params,
+			FeatureDetection_SingularFeature_UploadedFileStatsDTO featureDetection_SingularFeature_UploadedFileStatsDTO,
+			
+			InputStream inputStream
+			
+			) throws Exception {
+
+		Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber = params.ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber;
+
+
+		Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component read_InputStream_Into_ASCII_CharacterString_OneLineAtATime = 
+				Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component.getNewInstance(inputStream);
+
+		//  Main Process of Uploaded file
+		process_UploadedContents_OneLineAtATTime(
+				read_InputStream_Into_ASCII_CharacterString_OneLineAtATime, 
+				ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber, 
+				featureDetection_SingularFeature_UploadedFileStatsDTO);
+
+		String sha1_Of_PostBody = null;
+		String sha384_Of_PostBody = null;
+
+		{  // sha1_Of_PostBody
+			byte[] mdbytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_1_Of_StreamContents().digest();
+
+			//convert the byte to hex format
+			StringBuffer sb = new StringBuffer("");
+			for (int i = 0; i < mdbytes.length; i++) {
+				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 			}
 
-			featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFile_Sha1_Sum(sha1_Of_PostBody);
-			featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFile_Sha384_zero_in_second_digit(sha384_Of_PostBody);
-
-
-			FeatureDetectionSingularFeatureUploadedFileStatsDAO.getInstance().set_uploaded_file_sha1_sum_sha384_sum(
-					featureDetection_SingularFeature_UploadedFileStatsDTO.getUploadedFile_Sha1_Sum(), 
-					featureDetection_SingularFeature_UploadedFileStatsDTO.getUploadedFile_Sha384_zero_in_second_digit(), 
-					featureDetection_SingularFeature_UploadedFileStatsDTO.getId() );
-
-			/////////  Inserts are Complete.  Mark File Fully Inserted
-
-			FeatureDetectionSingularFeatureUploadedFileStatsDAO.getInstance().set_True_FileFullyInserted( featureDetection_SingularFeature_UploadedFileStatsDTO.getId(), featureDetection_SingularFeature_UploadedFileStatsDTO.getCreatedBy_UserId() );
+			sha1_Of_PostBody = sb.toString();
 		}
+
+		{  // sha384_Of_PostBody
+			byte[] hashBytes = read_InputStream_Into_ASCII_CharacterString_OneLineAtATime.get_messageDigest_SHA_384_Of_StreamContents().digest();
+
+			StringBuilder hashBytesAsHexSB = new StringBuilder( hashBytes.length * 2 + 2 );
+
+			for ( int i = 0; i < hashBytes.length; i++ ) {
+				String byteAsHex = Integer.toHexString( Byte.toUnsignedInt( hashBytes[ i ] ) );
+				if ( byteAsHex.length() == 1 ) {
+					hashBytesAsHexSB.append( "0" ); //  Leading zero dropped by 'toHexString' so add here
+				}
+				hashBytesAsHexSB.append( byteAsHex );
+			}
+
+			sha384_Of_PostBody = hashBytesAsHexSB.toString();
+
+			//  WAS - which is equivalent, except for the added "0" when a hex pair starts with "0"
+
+			//			//convert the byte to hex format
+			//			StringBuffer sb = new StringBuffer("");
+			//			for (int i = 0; i < mdbytes.length; i++) {
+			//				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+			//			}
+			//
+			//			sha384_Of_PostBody = sb.toString();
+		}
+
+		featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFile_Sha1_Sum(sha1_Of_PostBody);
+		featureDetection_SingularFeature_UploadedFileStatsDTO.setUploadedFile_Sha384_zero_in_second_digit(sha384_Of_PostBody);
+
+
+		FeatureDetectionSingularFeatureUploadedFileStatsDAO.getInstance().set_uploaded_file_sha1_sum_sha384_sum(
+				featureDetection_SingularFeature_UploadedFileStatsDTO.getUploadedFile_Sha1_Sum(), 
+				featureDetection_SingularFeature_UploadedFileStatsDTO.getUploadedFile_Sha384_zero_in_second_digit(), 
+				featureDetection_SingularFeature_UploadedFileStatsDTO.getId() );
+
+		/////////  Inserts are Complete.  Mark File Fully Inserted
+
+		FeatureDetectionSingularFeatureUploadedFileStatsDAO.getInstance().set_True_FileFullyInserted( featureDetection_SingularFeature_UploadedFileStatsDTO.getId(), featureDetection_SingularFeature_UploadedFileStatsDTO.getCreatedBy_UserId() );
 	}
 	
 
@@ -181,7 +297,7 @@ public class ImportFile_Hardklor_Results {
 	 * @throws LimelightImporterDataException 
 	 * @throws IOException 
 	 */
-	private void process_File_InputStream( 
+	private void process_UploadedContents_OneLineAtATTime( 
 			
 			Read_InputStream_Into_ASCII_CharacterString_OneLineAtATime_Util_NOT_Spring_Component read_InputStream_Into_ASCII_CharacterString_OneLineAtATime,
 			Map<Integer, SingleScan_SubResponse> ms_1_Scans__scanData_From_SpectralStorage_Map_Key_Ms_1_ScanNumber,

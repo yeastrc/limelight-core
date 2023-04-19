@@ -2,6 +2,7 @@ package org.yeastrc.limelight.limelight_importer.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
 
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class SHA1SumCalculator {
 	public static SHA1SumCalculator getInstance() { 
 		return new SHA1SumCalculator(); 
 	}
-	
+
 	public String getSHA1Sum( File f ) throws Exception {
 
 		if ( log.isInfoEnabled() ) {
@@ -42,53 +43,46 @@ public class SHA1SumCalculator {
 			log.info( "Computing SHA1 Sum for file: " + f.getAbsolutePath() );
 		}
 		
-		String result = null;
-		
 		if ( fakeSHA1Sum != null ) {
 			
 			return fakeSHA1Sum;
 		}
 		
-		FileInputStream fis = null;
-		
-		try {
+		try ( FileInputStream fis = new FileInputStream( f ) ) {
+			
+			String result = this.getSHA1Sum_ForInputStream(fis);
 
-			MessageDigest md = MessageDigest.getInstance("SHA1");
-			fis = new FileInputStream( f );
-			byte[] dataBytes = new byte[1024];
+			if ( log.isInfoEnabled() ) {
 
-			int nread = 0; 
-
-			while ((nread = fis.read(dataBytes)) != -1) {
-				md.update(dataBytes, 0, nread);
-			};
-
-			byte[] mdbytes = md.digest();
-
-			//convert the byte to hex format
-			StringBuffer sb = new StringBuffer("");
-			for (int i = 0; i < mdbytes.length; i++) {
-				sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+				log.info( "SHA1 Sum for file: " + f.getAbsolutePath() + " is: " + result );
 			}
 			
-			result = sb.toString();
-			
-		} finally {
-			
-			if ( fis != null ) {
-				
-				fis.close();
-			}
+			return result;
 		}
-		
-		
-		if ( log.isInfoEnabled() ) {
+	}
+	
+	public String getSHA1Sum_ForInputStream( InputStream inputStream ) throws Exception {
 
-			log.info( "SHA1 Sum for file: " + f.getAbsolutePath() + " is: " + result );
+		MessageDigest md = MessageDigest.getInstance("SHA1");
+		byte[] dataBytes = new byte[1024];
+
+		int nread = 0; 
+
+		while ((nread = inputStream.read(dataBytes)) != -1) {
+			md.update(dataBytes, 0, nread);
+		};
+
+		byte[] mdbytes = md.digest();
+
+		//convert the byte to hex format
+		StringBuffer sb = new StringBuffer("");
+		for (int i = 0; i < mdbytes.length; i++) {
+			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
-		
-		
-	    return result;
+
+		String result = sb.toString();
+
+		return result;
 	}
 	
 }

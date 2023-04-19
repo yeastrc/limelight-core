@@ -40,12 +40,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
-import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants;
+import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.shared_objects.FeatureDetection_HardklorBullseye_Import_RequestData_V001;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.constants.FileImportPipelineRunCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.shared_objects.FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.shared_objects.FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001.FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
@@ -56,11 +58,18 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUplo
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingSingleFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
+
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 /**
  * Feature Detection Run -  Import Feature Detection (Hardklor and Bullseye) for the selected scan file given the uploaded Hardklor and Bullseye data files and optional Hardklor.conf file.
@@ -103,6 +112,9 @@ public class Project_FeatureDetection_Import_Request_Submit_RestWebserviceContro
 	
 	@Autowired
 	private ProjectScanFileDAO_IF projectScanFileDAO;
+
+	@Autowired
+	private FileImportAndPipelineRunTrackingSingleFileDAO_IF fileImportAndPipelineRunTrackingSingleFileDAO;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -322,37 +334,167 @@ public class Project_FeatureDetection_Import_Request_Submit_RestWebserviceContro
 		}
 		
 		//  Confirm uploaded files exist
+
+		List<FileImportAndPipelineRunTrackingSingleFileDTO> fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List = 
+				fileImportAndPipelineRunTrackingSingleFileDAO.getFor_TrackingId(fileImportAndPipelineRunTrackingDTO.getId());
 		
-		{
-			File hardklor_Results_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILENAME );
+		if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List.isEmpty() ) {
+			
+			//  OLD request so validate using the filenames
+	
+			{
+				File hardklor_Results_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILENAME );
+	
+				if ( ! hardklor_Results_File.exists() ) {
+					String msg = "hardklor_Results_File NOT exist: " + hardklor_Results_File.getAbsolutePath();
+					log.error( msg );
+					throw new Exception(msg);
+				}
+			}
+	
+			{
+				File bullseye_Results_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILENAME );
+	
+				if ( ! bullseye_Results_File.exists() ) {
+					String msg = "bullseye_Results_File NOT exist: " + bullseye_Results_File.getAbsolutePath();
+					log.error( msg );
+					throw new Exception(msg);
+				}
+			}
+	
+			if ( StringUtils.isNotEmpty( webserviceRequest.hardklor_Conf_Filename ) ) {
+	
+				File hardklor_Conf_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
+	
+				if ( ! hardklor_Conf_File.exists() ) {
+					String msg = "hardklor_Conf_File NOT exist: " + hardklor_Conf_File.getAbsolutePath();
+					log.error( msg );
+					throw new Exception(msg);
+				}
+			}
+			
+		} else {
+			
 
-			if ( ! hardklor_Results_File.exists() ) {
-				String msg = "hardklor_Results_File NOT exist: " + hardklor_Results_File.getAbsolutePath();
+			boolean found_Type_HardklorConf_File = false;
+			boolean found_Type_HardklorResults_File = false;
+			boolean found_Type_Bullseye_Results_File = false;
+
+			for ( FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO_From_DB : fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List ) {
+
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileUploadStatus() != ImportSingleFileUploadStatus.FILE_UPLOAD_COMPLETE ) {
+					String msg = "Single File File Upload Status is NOT COMPLETE. Single file id: "
+							+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getId()
+							+ ", for tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILE_TYPE_ID ) {
+					
+					if ( found_Type_HardklorConf_File ) {
+						String msg = "More than one hardklor_Conf_File in the tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+					found_Type_HardklorConf_File = true;
+					
+				} else if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_RESULT_FILE_FILE_TYPE_ID ) {
+					
+					if ( found_Type_HardklorResults_File ) {
+						String msg = "More than one bullseye_Results_File in the tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+					found_Type_HardklorResults_File = true;
+					
+				} else if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILE_TYPE_ID ) {
+					
+					if ( found_Type_Bullseye_Results_File ) {
+						String msg = "More than one bullseye_Results_File in the tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+					found_Type_Bullseye_Results_File = true;
+					
+				} else {
+					String msg = "Unknown Single File file type: "
+							+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId()
+							+ ", Single file id: "
+							+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getId()
+							+ ", for tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+
+				if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name() ) ) {
+					
+					//  Validate is in S3
+
+					S3Client amazonS3_Client = null;
+
+					String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_region();
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+						Region aws_S3_Region = Region.of(amazonS3_RegionName);
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.region( aws_S3_Region )
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build();
+						
+					} else {
+						//  SDK use Region from Environment Variable
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build(); 
+					}
+					
+					HeadObjectRequest headObjectRequest= 
+							HeadObjectRequest
+							.builder()
+							.bucket( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name() )
+							.key( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_object_key() )
+							.build();
+
+					try {
+						amazonS3_Client.headObject(headObjectRequest);
+					} catch ( NoSuchKeyException e ) {
+						String msg = "Single File File Upload NOT in AWS S3. Single file id: "
+								+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getId()
+								+ ", for tracking id: " + fileImportAndPipelineRunTrackingDTO.getId()
+								+ ", S3 Bucket Name: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name()
+								+ ", S3 Object Key: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_object_key()
+								+ ", S3 Region: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_region();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+				} else {
+					
+					File conf_File = new File( dirForImportTrackingId, fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFilenameOnDisk() );
+
+					if ( ! conf_File.exists() ) {
+						String msg = "Uploaded file NOT exist: " + conf_File.getAbsolutePath();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+				}
+			
+			}
+
+			if ( ( ! found_Type_HardklorConf_File ) 
+					|| ( ! found_Type_HardklorResults_File )
+					|| ( ! found_Type_Bullseye_Results_File ) ) {
+				String msg = "hardklor_Conf_File or hardklor results file or Bullseye results File NOT exist";
 				log.error( msg );
-				throw new Exception(msg);
+				throw new LimelightInternalErrorException(msg);
 			}
 		}
-
-		{
-			File bullseye_Results_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.BULLSEYE_RESULT_FILE_FILENAME );
-
-			if ( ! bullseye_Results_File.exists() ) {
-				String msg = "bullseye_Results_File NOT exist: " + bullseye_Results_File.getAbsolutePath();
-				log.error( msg );
-				throw new Exception(msg);
-			}
-		}
-
-		if ( StringUtils.isNotEmpty( webserviceRequest.hardklor_Conf_Filename ) ) {
-
-			File hardklor_Conf_File = new File( dirForImportTrackingId, FeatureDetection_HardklorBullseye_Upload_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME );
-
-			if ( ! hardklor_Conf_File.exists() ) {
-				String msg = "hardklor_Conf_File NOT exist: " + hardklor_Conf_File.getAbsolutePath();
-				log.error( msg );
-				throw new Exception(msg);
-			}
-		}
+		
 		//  Update:  Main File Import Tracking Object:  Set Request Data and Status
 		
 		{
