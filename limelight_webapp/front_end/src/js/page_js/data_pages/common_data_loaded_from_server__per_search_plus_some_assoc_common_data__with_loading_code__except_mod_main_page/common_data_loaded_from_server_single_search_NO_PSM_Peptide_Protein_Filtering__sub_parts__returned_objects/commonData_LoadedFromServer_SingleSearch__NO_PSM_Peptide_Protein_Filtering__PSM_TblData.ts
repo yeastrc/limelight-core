@@ -507,7 +507,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     let psmTblData_Map_Key_PsmId_for_ReportedPeptideId = psmTblData_Map_Key_PsmId__Map_Key_ReportedPeptideId__Exclude_DecoyPSM.get( psm.reportedPeptideId );
                     if ( ! psmTblData_Map_Key_PsmId_for_ReportedPeptideId ) {
                         psmTblData_Map_Key_PsmId_for_ReportedPeptideId = new Map();
-                        psmTblData_Map_Key_PsmId__Map_Key_ReportedPeptideId__Include_DecoyPSM.set( psm.reportedPeptideId, psmTblData_Map_Key_PsmId_for_ReportedPeptideId );
+                        psmTblData_Map_Key_PsmId__Map_Key_ReportedPeptideId__Exclude_DecoyPSM.set( psm.reportedPeptideId, psmTblData_Map_Key_PsmId_for_ReportedPeptideId );
                     }
                     psmTblData_Map_Key_PsmId_for_ReportedPeptideId.set( psm.psmId, psm );
 
