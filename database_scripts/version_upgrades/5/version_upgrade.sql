@@ -50,11 +50,13 @@ ADD COLUMN file_index INT NULL AFTER file_import_tracking_id,
 ADD COLUMN aws_s3_bucket_name MEDIUMTEXT NULL AFTER absolute_filename_w_path_on_submit_machine,
 ADD COLUMN aws_s3_object_key MEDIUMTEXT NULL AFTER aws_s3_bucket_name,
 ADD COLUMN aws_s3_region VARCHAR(255) NULL AFTER aws_s3_object_key,
-ADD COLUMN unique_request_identifier_from_submitter VARCHAR(255) NULL AFTER aws_s3_object_key,
-ADD COLUMN file_location_or_aws_s3_object_provided_from_external_system TINYINT NOT NULL DEFAULT 0 AFTER unique_request_identifier_from_submitter,
-ADD COLUMN file_location_or_aws_s3_obj_prov_fm_ext_sys_delete_af_imprt TINYINT NOT NULL DEFAULT 0 AFTER file_location_or_aws_s3_object_provided_from_external_system;
-ADD COLUMN file_location_or_aws_s3_object_provided_from_external_system TINYINT NOT NULL DEFAULT 0 AFTER unique_request_identifier_from_submitter,
-ADD COLUMN file_location_or_aws_s3_obj_prov_fm_ext_sys_delete_af_imprt TINYINT NOT NULL DEFAULT 0 AFTER file_location_or_aws_s3_object_provided_from_external_system,
+ADD COLUMN unique_request_identifier_from_submitter VARCHAR(255) NULL COMMENT 'tied to this file_import_tracking_id and file_index'
+	AFTER aws_s3_region,
+ADD COLUMN file_location_or_aws_s3_object_provided_from_external_system TINYINT NOT NULL DEFAULT 0  COMMENT 'NULL for old existing records'
+	AFTER unique_request_identifier_from_submitter,
+ADD COLUMN file_location_or_aws_s3_obj_prov_fm_ext_sys_delete_af_imprt TINYINT NOT NULL DEFAULT 0 
+	COMMENT 'file_location_or_aws_s3_object_provided_from_external_system Delete after Import whether Import success or fail'
+	AFTER file_location_or_aws_s3_object_provided_from_external_system,
 CHANGE COLUMN filename_on_disk filename_on_disk VARCHAR(500) NULL ,
 CHANGE COLUMN filename_on_disk_with_path_sub_same_machine filename_on_disk_with_path_sub_same_machine MEDIUMTEXT NULL DEFAULT NULL ,
 CHANGE COLUMN canonical_filename_w_path_on_submit_machine canonical_filename_w_path_on_submit_machine MEDIUMTEXT NULL DEFAULT NULL ,
@@ -223,7 +225,6 @@ VALUES ('DB Version Current', 5)
     ON DUPLICATE KEY UPDATE limelight_database_version_number = 5;
 
 
----   !!!!    All SQL should be added above the SQL statement direct above inserting or updating 'DB Version Current'  !!!
+--   !!!!    All SQL should be added above the SQL statement direct above inserting or updating 'DB Version Current'  !!!
 
----   !!!!    NO SQL should be added below this point  !!!
-
+--   !!!!    NO SQL should be added below this point  !!!
