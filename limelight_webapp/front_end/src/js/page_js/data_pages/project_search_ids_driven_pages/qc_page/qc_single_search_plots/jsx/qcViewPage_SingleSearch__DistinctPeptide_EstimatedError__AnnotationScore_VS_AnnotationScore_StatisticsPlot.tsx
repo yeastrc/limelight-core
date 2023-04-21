@@ -428,7 +428,7 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError__Annotation
             }
         }
 
-        let psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder;
+        let psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_TblData_Holder;
         {
             const get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result =
                 commonData_LoadedFromServer_PerSearch__NO_PSM_Peptide_Protein_Filtering__For_ProjectSearchId.
@@ -436,12 +436,12 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError__Annotation
                 get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder();
 
             if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data ) {
-                psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder = get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.data.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
             } else if ( get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise ) {
                 const promise = new Promise<void>( (resolve, reject) => { try {
                     get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.catch(reason => { reject(reason) })
                     get_PSM_TblData_Unfiltered__Exclude_DecoyPSMs__Holder_Result.promise.then(value => { try {
-                        psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder = value.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
+                        psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder = value.psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder;
                         resolve(null);
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -624,15 +624,17 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError__Annotation
 
                             if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
 
-                                const psmTblData_Unfiltered_For_ReportedPeptideId = psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId);
-                                if ( ! psmTblData_Unfiltered_For_ReportedPeptideId ) {
-                                    const msg = "( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) AND ( ! psmTblData_Unfiltered_For_ReportedPeptideId.psmIdsSet ).  reportedPeptideId: " + reportedPeptideId;
-                                    console.warn(msg)
-                                    throw Error(msg)
-                                }
-                                for ( const psmTblData_Entry of psmTblData_Unfiltered_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
+                                const psmTblData_Unfiltered_For_ReportedPeptideId = psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId);
+                                // if ( ! psmTblData_Unfiltered_For_ReportedPeptideId ) {
+                                //     const msg = "( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) AND ( ! psmTblData_Unfiltered_For_ReportedPeptideId.psmIdsSet ).  reportedPeptideId: " + reportedPeptideId;
+                                //     console.warn(msg)
+                                //     throw Error(msg)
+                                // }
+                                if ( psmTblData_Unfiltered_For_ReportedPeptideId ) {
+                                    for ( const psmTblData_Entry of psmTblData_Unfiltered_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
 
-                                    psmTblData_Entries_InitialCollect.push( psmTblData_Entry );
+                                        psmTblData_Entries_InitialCollect.push( psmTblData_Entry );
+                                    }
                                 }
                             } else {
                                 if ( ! dataPerReportedPeptideId.psmIdsSet ) {
@@ -643,13 +645,15 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError__Annotation
 
                                 for ( const psmId of dataPerReportedPeptideId.psmIdsSet ) {
 
-                                    const psmTblData_Entry = psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId(psmId)
-                                    if ( ! psmTblData_Entry ) {
-                                        const msg = "psmTblData__NO_PSM_Peptide_Protein_Filtering__Holder.get_PsmTblData_For_PsmId(psmId) returned Nothing. psmId: " + psmId + ", reportedPeptideId: " + reportedPeptideId;
-                                        console.warn(msg)
-                                        throw Error(msg)
+                                    const psmTblData_Entry = psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder.get_PsmTblData_For_PsmId(psmId)
+                                    // if ( ! psmTblData_Entry ) {
+                                    //     const msg = "psmTblData__NO_PSM_Peptide_Protein_Filtering__Exclude_DecoyPSMs__Holder.get_PsmTblData_For_PsmId(psmId) returned Nothing. psmId: " + psmId + ", reportedPeptideId: " + reportedPeptideId;
+                                    //     console.warn(msg)
+                                    //     throw Error(msg)
+                                    // }
+                                    if ( psmTblData_Entry ) {
+                                        psmTblData_Entries_InitialCollect.push( psmTblData_Entry );
                                     }
-                                    psmTblData_Entries_InitialCollect.push( psmTblData_Entry );
                                 }
                             }
 

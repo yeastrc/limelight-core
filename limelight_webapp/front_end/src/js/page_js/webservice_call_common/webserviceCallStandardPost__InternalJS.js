@@ -142,6 +142,14 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
                 failure: function(errMsg) {
 
                     try {
+                        console.warn( "webserviceCallStandardPost_INTERNALONLY(...):: AJAX call results in 'failure' callback function being called.  URL: " + url +
+                            ", errMsg: " + errMsg
+                        );
+                    } catch (e) {
+                        // eat/swallow exception
+                    }
+
+                    try {
                         requestComplete_Callback()
                     } catch (e) {
                         // eat/swallow exception
@@ -170,6 +178,18 @@ const webserviceCallStandardPost_INTERNALONLY = function ({ requestParams, api, 
 
                 },
                 error : function(jqXHR, textStatus, errorThrown) {
+
+                    try {
+                        console.warn( "webserviceCallStandardPost_INTERNALONLY(...):: Log Msg 1 of 2 :: AJAX call results in 'error' callback function being called.  URL: " + url +
+                            ", jqXHR.status: " + jqXHR.status +
+                            ", jqXHR.responseText: " + jqXHR.responseText
+                        );
+                        console.warn( "webserviceCallStandardPost_INTERNALONLY(...):: Log Msg 2 of 2 ::  AJAX call results in 'error' callback function being called.  URL: " + url +
+                            ", jqXHR: ", jqXHR
+                        );
+                    } catch (e) {
+                        // eat/swallow exception
+                    }
 
                     try {
                         requestComplete_Callback()
