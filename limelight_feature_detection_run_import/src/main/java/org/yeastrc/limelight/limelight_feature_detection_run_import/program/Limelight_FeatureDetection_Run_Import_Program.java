@@ -247,26 +247,26 @@ public class Limelight_FeatureDetection_Run_Import_Program {
 			
 			String configFileName = (String)cmdLineParser.getOptionValue( dbConfigFileNameCommandLineOpt );
 			
-			if ( StringUtils.isEmpty( configFileName ) ) {
-				System.err.println( "No value for Config file.");
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				importResults.setImportSuccessStatus( false) ;
-				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-				return importResults;  //  EARLY EXIT
-			}
-
-//			if ( StringUtils.isNotEmpty( configFileName ) ) {
-			configFile = new File( configFileName );
-			if( ! configFile.exists() ) {
-				System.err.println( "Could not find Config File: " + configFile.getAbsolutePath() );
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				importResults.setImportSuccessStatus( false) ;
-				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-				return importResults;  //  EARLY EXIT
-			}
+//			if ( StringUtils.isEmpty( configFileName ) ) {
+//				System.err.println( "No value for Config file.");
+//				System.err.println( "" );
+//				System.err.println( FOR_HELP_STRING );
+//				importResults.setImportSuccessStatus( false) ;
+//				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+//				return importResults;  //  EARLY EXIT
 //			}
+
+			if ( StringUtils.isNotEmpty( configFileName ) ) {
+				configFile = new File( configFileName );
+				if( ! configFile.exists() ) {
+					System.err.println( "Could not find Config File: " + configFile.getAbsolutePath() );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					importResults.setImportSuccessStatus( false) ;
+					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+					return importResults;  //  EARLY EXIT
+				}
+			}
 
 			
 			//  Specific value from "Run Importer" Program

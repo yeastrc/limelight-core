@@ -306,26 +306,26 @@ public class LimelightImporterProgram {
 			
 			String configFileName = (String)cmdLineParser.getOptionValue( dbConfigFileNameCommandLineOpt );
 			
-			if ( StringUtils.isEmpty( configFileName ) ) {
-				System.err.println( "No value for Config file.");
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				importResults.setImportSuccessStatus( false) ;
-				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-				return importResults;  //  EARLY EXIT
-			}
-
-//			if ( StringUtils.isNotEmpty( configFileName ) ) {
-			configFile = new File( configFileName );
-			if( ! configFile.exists() ) {
-				System.err.println( "Could not find Config File: " + configFile.getAbsolutePath() );
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				importResults.setImportSuccessStatus( false) ;
-				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-				return importResults;  //  EARLY EXIT
-			}
+//			if ( StringUtils.isEmpty( configFileName ) ) {
+//				System.err.println( "No value for Config file.");
+//				System.err.println( "" );
+//				System.err.println( FOR_HELP_STRING );
+//				importResults.setImportSuccessStatus( false) ;
+//				importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+//				return importResults;  //  EARLY EXIT
 //			}
+
+			if ( StringUtils.isNotEmpty( configFileName ) ) {
+				configFile = new File( configFileName );
+				if( ! configFile.exists() ) {
+					System.err.println( "Could not find Config File: " + configFile.getAbsolutePath() );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					importResults.setImportSuccessStatus( false) ;
+					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+					return importResults;  //  EARLY EXIT
+				}
+			}
 				
 			Process_ConfigFileData_OtherThanDBConfig.getInstance().processConfigFile( configFile );
 

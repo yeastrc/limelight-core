@@ -110,12 +110,12 @@ public class RunImporterProgram {
 				System.out.println( "processed command line parameter: --" + MAX_TRACKING_RECORD_PRIORITY_TO_RETRIEVE_CMD_LINE_PARAM_STRING 
 						+ "=" + maxTrackingRecordPriorityToRetrieve );
 			}
-			if ( StringUtils.isEmpty( configFileFromCommandLineFileName ) ) {
-				System.err.println( "Config file is required." );
-				System.err.println( "" );
-				System.err.println( FOR_HELP_STRING );
-				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
-			}
+//			if ( StringUtils.isEmpty( configFileFromCommandLineFileName ) ) {
+//				System.err.println( "Config file is required." );
+//				System.err.println( "" );
+//				System.err.println( FOR_HELP_STRING );
+//				System.exit( PROGRAM_EXIT_CODE_INVALID_INPUT );
+//			}
 			File configFileFromCommandLine = null;
 			if ( StringUtils.isNotEmpty( configFileFromCommandLineFileName ) ) {
 				configFileFromCommandLine = new File( configFileFromCommandLineFileName );
