@@ -1241,7 +1241,7 @@ class SelectTag_Category_Entry_OverlayComponent extends React.Component< SelectT
                                     <img
                                         src="static/images/icon-circle-delete.png"
                                         className="icon-small clickable  "
-                                        title="Delete category"
+                                        title="Delete category.  This will delete all tags under this category."
                                         onClick={ event => {
                                             this.props.callbackOn_DeleteTagCategoryId_Clicked( this.props.searchTagCategoryEntry.tagCategoryId );
                                         }}
@@ -1414,6 +1414,11 @@ class SelectTag_Category_Entry_OverlayComponent extends React.Component< SelectT
     }
 }
 
+/////////////////////////////////
+
+//   Select Search Tag
+
+///////////
 
 /**
  *
@@ -1558,9 +1563,11 @@ class SelectTagEntry_OverlayComponent extends React.Component< SelectTagEntry_Co
 }
 
 
-
+/////////////////////////////////
 
 //   Edit Search Tag
+
+///////////
 
 class MoveTagToCategoryId_Params {
     tagId: number

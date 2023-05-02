@@ -135,10 +135,11 @@ public class SearchTags_Update_SingleSearchTag_For_TagId_RestWebservice {
     			log.warn( "webserviceRequest.tag_Color_Background is null or empty" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-    		if ( StringUtils.isEmpty( webserviceRequest.tag_Color_Font ) ) {
-    			log.warn( "webserviceRequest.tag_Color_Font is null or empty" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
+    		//  Some existing records have null so need to allow null
+//    		if ( StringUtils.isEmpty( webserviceRequest.tag_Color_Font ) ) {
+//    			log.warn( "webserviceRequest.tag_Color_Font is null or empty" );
+//    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//    		}
     		
     		Integer projectId = projectSearch_TagStringInProject_DAO.getProjectId_For_Id( webserviceRequest.tagId );
     		
