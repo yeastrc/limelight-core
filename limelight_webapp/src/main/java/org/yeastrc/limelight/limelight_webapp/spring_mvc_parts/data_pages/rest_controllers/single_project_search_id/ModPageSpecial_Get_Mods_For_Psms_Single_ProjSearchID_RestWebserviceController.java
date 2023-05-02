@@ -19,11 +19,14 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +51,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
@@ -145,12 +150,19 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
+	
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
 
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
+	
+	
+	
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
 
     /**
 	 * Constructor
@@ -170,6 +182,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	public void afterPropertiesSet() throws Exception {
 		try {
 			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
 			
 		} catch (Exception e) {
 			String msg = "In afterPropertiesSet(): Exception in processing";
@@ -301,30 +320,28 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     		List<Integer> reportedPeptideIds_InitialSelection_List = new ArrayList<>( peptideMinimalObjectsList.size() );
 
-    		List<Integer> reportedPeptideIds_List_GetReportedPeptideVariableMods = new ArrayList<>( peptideMinimalObjectsList.size() );
+//    		List<Integer> reportedPeptideIds_List_GetReportedPeptideVariableMods = new ArrayList<>( peptideMinimalObjectsList.size() );
     		
     		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry peptideMinimalObject : peptideMinimalObjectsList ) {
     			
     			reportedPeptideIds_InitialSelection_List.add( peptideMinimalObject.getReportedPeptideId() );
 
-        		if ( ( ! searchFlags_anyPsmHas_VariableDynamicModifications ) && ( peptideMinimalObject.isReportedPeptideHas_DynamicModifications() ) ) {
-        			reportedPeptideIds_List_GetReportedPeptideVariableMods.add( peptideMinimalObject.getReportedPeptideId() );
-        		}
+//        		if ( ( ! searchFlags_anyPsmHas_VariableDynamicModifications ) && ( peptideMinimalObject.isReportedPeptideHas_DynamicModifications() ) ) {
+//        			reportedPeptideIds_List_GetReportedPeptideVariableMods.add( peptideMinimalObject.getReportedPeptideId() );
+//        		}
     		}
     		
-    		Map<Integer, Set<Integer>> variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = null;
+    		final Map<Integer, Set<Integer>> variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = new HashMap<>( peptideMinimalObjectsList.size() );
 
     		if ( ! searchFlags_anyPsmHas_VariableDynamicModifications ) {
     		
-    			variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = new HashMap<>();
-	
 	    		//  Get Reported Peptide Level Variable/Dynamic Mods 
 	    		DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
 	    				modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher
 	    				.getDynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIds( searchId, reportedPeptideIds_InitialSelection_List );
 	    		Map<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> dynamicMods_results_Key_ReportedPeptideId =
 	    				searcherResult.getResults_Key_ReportedPeptideId();
-	    		
+
 	    		for ( Map.Entry<Integer,List<DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item>> entry : dynamicMods_results_Key_ReportedPeptideId.entrySet() ) {
 	    			
 	    			Integer reportedPeptideId = entry.getKey();
@@ -350,140 +367,116 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         	/**
         	 *  Map< Reported Peptide Id, ...> 
         	 */
-        	Map<Integer, List<WebserviceResultItem>> webserviceResultItem_List_Map_Key_ReportedPeptideId = new HashMap<>();
+        	ConcurrentHashMap<Integer, InternalClass_WebserviceResult_Entry> webserviceResultItem_List_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds_InitialSelection_List.size() );
+        	
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+        		
+//    			for ( Integer reportedPeptideId : reportedPeptideIds_InitialSelection_List ) {
+        		
+        		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
 
-    		for ( Integer reportedPeptideId : reportedPeptideIds_InitialSelection_List ) {
+        			//  YES execute in parallel
 
-        		//  Get PSM open Mods and variable mods
-        		/**
-            	 * Map< PSM Id, Object{ variable: Set<mod mass rounded>, open : Set<mod mass rounded> } >
-            	 */
-        		Map<Long, WebserviceResultItem> modMassesPerScan_Key_PsmId = new HashMap<>();
+        			reportedPeptideIds_InitialSelection_List.parallelStream().forEach( reportedPeptideId -> { 
 
-    			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
-    			
-    			Map<Long, PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_Map_Key_PsmId = new HashMap<>( psmWebDisplayWebServiceResult_List.size() );
-
-				List<Long> psmIdList = new ArrayList<>( psmWebDisplayWebServiceResult_List.size() );
-    			
-    			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
-    				psmWebDisplayWebServiceResult_Map_Key_PsmId.put( psmWebDisplayWebServiceResult.getPsmId(), psmWebDisplayWebServiceResult );
-    				psmIdList.add( psmWebDisplayWebServiceResult.getPsmId() );
-    			}
-    			
-    			if ( searchFlags_anyPsmHas_VariableDynamicModifications ) {
-
-	    			List<PsmDynamicModificationDTO> psmDynamicModificationDTO_List = psmDynamicModification_For_PsmIdList_Searcher.getPsmDynamicModification_For_PsmIdList( psmIdList );
-	    			
-	    			for ( PsmDynamicModificationDTO psmDynamicModificationDTO : psmDynamicModificationDTO_List  ) {
-
-        				Long psmId = psmDynamicModificationDTO.getPsmId();
-        				
-	    				long variableModMassRounded_Long = Math.round( psmDynamicModificationDTO.getMass() );
-		    			if ( variableModMassRounded_Long > Integer.MAX_VALUE ) {
-		    				String msg = "Math.round( PsmDynamicModificationDTO.mass ) > Integer.MAX_VALUE, is: " + variableModMassRounded_Long;
-		    				log.error(msg);
-		    				throw new LimelightInternalErrorException(msg);
-		    			}
-		    			int variableModMassRounded = (int) variableModMassRounded_Long;
-		    			
-	    				PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult = psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmId );
-	    				if ( psmWebDisplayWebServiceResult == null ) {
-		    				String msg = "psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmDynamicModificationDTO.getPsmId() ) return null.  psmDynamicModificationDTO.getPsmId(): " + psmId;
-		    				log.error(msg);
-		    				throw new LimelightInternalErrorException(msg);
-	    				}
-	    				
-	    				WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
-	    				if ( webserviceResultItem == null ) {
-	    					webserviceResultItem = new WebserviceResultItem();
-	    					modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
-
-	    					webserviceResultItem.psmId = psmId;
-	    				}
-	    				
-	    				webserviceResultItem.variable.add( variableModMassRounded );
-	    			}
-	
-    			} else {
-    				
-    				//  Add in Variable/Dynamic Mod masses from Reported Peptide Level
-    				
-    				Set<Integer> variableModMassesRounded_AtReportedPeptideLevel = variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId.get( reportedPeptideId );
-    				if ( variableModMassesRounded_AtReportedPeptideLevel != null ) {
-	    				
-	        			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
-	
-	        				Long psmId = psmWebDisplayWebServiceResult.getPsmId();
+        				try {
+	        				List<WebserviceResultItem> psms_List_Result = 
+	        				get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
+	        						reportedPeptideId, 
+	        						searchId, 
+	        						searcherCutoffValuesSearchLevel, 
+	        						searchFlags_anyPsmHas_VariableDynamicModifications, 
+	        						searchFlags_anyPsmHas_OpenModifications,
+	        						variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId
+	        						);
 	        				
-		    				WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
-		    				if ( webserviceResultItem == null ) {
-		    					webserviceResultItem = new WebserviceResultItem();
-		    					modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
+	        				if ( psms_List_Result != null ) {
+	
+	        					InternalClass_WebserviceResult_Entry entry = new InternalClass_WebserviceResult_Entry();
+	        					entry.reportedPeptideId = reportedPeptideId;
+	        					entry.webserviceResultItem_List = psms_List_Result;
+        						InternalClass_WebserviceResult_Entry prev_Entry_ForKey = webserviceResultItem_List_Map_Key_ReportedPeptideId.put( reportedPeptideId, entry );
+        						if ( prev_Entry_ForKey != null ) {
+        							String msg = "webserviceResultItem_List_Map_Key_ReportedPeptideId ALREADY Had entry for reportedPeptideId: " + reportedPeptideId;
+        							log.error(msg);
+        							throw new LimelightInternalErrorException(msg);
+        						}
+	        				}
 
-		    					webserviceResultItem.psmId = psmId;
-		    				}
-		    				
-		    				for ( Integer variableModMassRounded : variableModMassesRounded_AtReportedPeptideLevel ) {
-		    					webserviceResultItem.variable.add( variableModMassRounded );
-		    				}
-	        			}
-    				}
-    			}
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds_InitialSelection_List: reportedPeptideId" + reportedPeptideId, t);
 
-    			if ( searchFlags_anyPsmHas_OpenModifications ) {
-
-    				List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
-    						psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
-    						.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
-
-					for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry entry : psmOpenModificationMassesList ) {
-
-						Long psmId = entry.getPsmId();
-						long openModMass_Long = Math.round( entry.getOpenModificationMass() );
-		    			if ( openModMass_Long > Integer.MAX_VALUE ) {
-		    				String msg = "Math.round( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry.mass ) > Integer.MAX_VALUE, is: " + openModMass_Long;
-		    				log.error(msg);
-		    				throw new LimelightInternalErrorException(msg);
-		    			}
-		    			Integer openModMass  = (int) openModMass_Long;
-
-	    				PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult = psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmId );
-	    				if ( psmWebDisplayWebServiceResult == null ) {
-		    				String msg = "psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmDynamicModificationDTO.getPsmId() ) return null.  entry.getPsmId(): " + entry.getPsmId();
-		    				log.error(msg);
-		    				throw new LimelightInternalErrorException(msg);
-	    				}
-
-	    				WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
-	    				if ( webserviceResultItem == null ) {
-	    					webserviceResultItem = new WebserviceResultItem();
-	    					modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
-
-	    					webserviceResultItem.psmId = psmId;
-	    				}
-	    				
-	    				webserviceResultItem.open.add( openModMass );
-    				}
-    			}
-
-        		//  Convert Map to List
-        		
-        		List<WebserviceResultItem> psms = new ArrayList<>( modMassesPerScan_Key_PsmId.size() + 10 );
-        		
-        		//  Map< PSM Id, Object{ variable: Set<mod mass rounded>, open : Set<mod mass rounded> } >
-
-        		for ( Map.Entry<Long, WebserviceResultItem> entry : modMassesPerScan_Key_PsmId.entrySet() ) {
-        				
-    				psms.add( entry.getValue() );
-        		}
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
         			
-        		webserviceResultItem_List_Map_Key_ReportedPeptideId.put( reportedPeptideId, psms );
-    		}
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			reportedPeptideIds_InitialSelection_List.forEach( reportedPeptideId -> { 
+
+        				try {
+        					List<WebserviceResultItem> psms_List_Result = 
+        							get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
+        									reportedPeptideId, 
+        									searchId, 
+        									searcherCutoffValuesSearchLevel, 
+        									searchFlags_anyPsmHas_VariableDynamicModifications, 
+        									searchFlags_anyPsmHas_OpenModifications,
+        									variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId
+        									);
+
+        					if ( psms_List_Result != null ) {
+
+        						InternalClass_WebserviceResult_Entry entry = new InternalClass_WebserviceResult_Entry();
+        						entry.reportedPeptideId = reportedPeptideId;
+        						entry.webserviceResultItem_List = psms_List_Result;
+        						InternalClass_WebserviceResult_Entry prev_Entry_ForKey = webserviceResultItem_List_Map_Key_ReportedPeptideId.put( reportedPeptideId, entry );
+        						if ( prev_Entry_ForKey != null ) {
+        							String msg = "webserviceResultItem_List_Map_Key_ReportedPeptideId ALREADY Had entry for reportedPeptideId: " + reportedPeptideId;
+        							log.error(msg);
+        							throw new LimelightInternalErrorException(msg);
+        						}
+        					}
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing reportedPeptideIds_InitialSelection_List.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing reportedPeptideIds_InitialSelection_List" );
+        		}
+        	}
 
     		WebserviceResult result = new WebserviceResult();
-    		result.resultRoot = webserviceResultItem_List_Map_Key_ReportedPeptideId;
+    		
+    		{
+    			Map<Integer, List<WebserviceResultItem>> resultRoot = new HashMap<>( webserviceResultItem_List_Map_Key_ReportedPeptideId.size() );
+    			
+    			for ( InternalClass_WebserviceResult_Entry entry_Internal : webserviceResultItem_List_Map_Key_ReportedPeptideId.values() ) {
+    				
+    				resultRoot.put( entry_Internal.reportedPeptideId, entry_Internal.webserviceResultItem_List );
+    			}
+    			
+    			result.resultRoot = resultRoot;
+    		}
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -522,6 +515,171 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }
+    
+    //////////////////////////
+    
+    /**
+     * !!  WARNING  !!!
+     * 
+     * This method may be called in parallel if
+     * 
+     * 
+     * @param reportedPeptideId
+     * @param searchId
+     * @param searcherCutoffValuesSearchLevel
+     * @param searchFlags_anyPsmHas_VariableDynamicModifications
+     * @param searchFlags_anyPsmHas_OpenModifications
+     * @param variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId
+     * @param webserviceResultItem_List_Map_Key_ReportedPeptideId
+     * @param thrownInsideStream_List
+     */
+    private List<WebserviceResultItem> get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
+    		
+    		Integer reportedPeptideId,
+    		
+    		Integer searchId,
+    		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel,
+    		boolean searchFlags_anyPsmHas_VariableDynamicModifications,
+    		boolean searchFlags_anyPsmHas_OpenModifications,
+    		Map<Integer, Set<Integer>> variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId
+    		) throws Exception {
+    	
+    	List<WebserviceResultItem> psms_List_Result = null;
+
+		try {
+
+			//  Get PSM open Mods and variable mods
+			/**
+			 * Map< PSM Id, Object{ variable: Set<mod mass rounded>, open : Set<mod mass rounded> } >
+			 */
+			Map<Long, WebserviceResultItem> modMassesPerScan_Key_PsmId = new HashMap<>();
+
+			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
+					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
+
+			Map<Long, PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_Map_Key_PsmId = new HashMap<>( psmWebDisplayWebServiceResult_List.size() );
+
+			List<Long> psmIdList = new ArrayList<>( psmWebDisplayWebServiceResult_List.size() );
+
+			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
+				psmWebDisplayWebServiceResult_Map_Key_PsmId.put( psmWebDisplayWebServiceResult.getPsmId(), psmWebDisplayWebServiceResult );
+				psmIdList.add( psmWebDisplayWebServiceResult.getPsmId() );
+			}
+
+			if ( searchFlags_anyPsmHas_VariableDynamicModifications ) {
+
+				List<PsmDynamicModificationDTO> psmDynamicModificationDTO_List = psmDynamicModification_For_PsmIdList_Searcher.getPsmDynamicModification_For_PsmIdList( psmIdList );
+
+				for ( PsmDynamicModificationDTO psmDynamicModificationDTO : psmDynamicModificationDTO_List  ) {
+
+					Long psmId = psmDynamicModificationDTO.getPsmId();
+
+					long variableModMassRounded_Long = Math.round( psmDynamicModificationDTO.getMass() );
+					if ( variableModMassRounded_Long > Integer.MAX_VALUE ) {
+						String msg = "Math.round( PsmDynamicModificationDTO.mass ) > Integer.MAX_VALUE, is: " + variableModMassRounded_Long;
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+					int variableModMassRounded = (int) variableModMassRounded_Long;
+
+					PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult = psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmId );
+					if ( psmWebDisplayWebServiceResult == null ) {
+						String msg = "psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmDynamicModificationDTO.getPsmId() ) return null.  psmDynamicModificationDTO.getPsmId(): " + psmId;
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+
+					WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
+					if ( webserviceResultItem == null ) {
+						webserviceResultItem = new WebserviceResultItem();
+						modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
+
+						webserviceResultItem.psmId = psmId;
+					}
+
+					webserviceResultItem.variable.add( variableModMassRounded );
+				}
+
+			} else {
+
+				//  Add in Variable/Dynamic Mod masses from Reported Peptide Level
+
+				Set<Integer> variableModMassesRounded_AtReportedPeptideLevel = variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId.get( reportedPeptideId );
+				if ( variableModMassesRounded_AtReportedPeptideLevel != null ) {
+
+					for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
+
+						Long psmId = psmWebDisplayWebServiceResult.getPsmId();
+
+						WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
+						if ( webserviceResultItem == null ) {
+							webserviceResultItem = new WebserviceResultItem();
+							modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
+
+							webserviceResultItem.psmId = psmId;
+						}
+
+						for ( Integer variableModMassRounded : variableModMassesRounded_AtReportedPeptideLevel ) {
+							webserviceResultItem.variable.add( variableModMassRounded );
+						}
+					}
+				}
+			}
+
+			if ( searchFlags_anyPsmHas_OpenModifications ) {
+
+				List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
+						psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
+						.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+
+				for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry entry : psmOpenModificationMassesList ) {
+
+					Long psmId = entry.getPsmId();
+					long openModMass_Long = Math.round( entry.getOpenModificationMass() );
+					if ( openModMass_Long > Integer.MAX_VALUE ) {
+						String msg = "Math.round( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry.mass ) > Integer.MAX_VALUE, is: " + openModMass_Long;
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+					Integer openModMass  = (int) openModMass_Long;
+
+					PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult = psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmId );
+					if ( psmWebDisplayWebServiceResult == null ) {
+						String msg = "psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmDynamicModificationDTO.getPsmId() ) return null.  entry.getPsmId(): " + entry.getPsmId();
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+
+					WebserviceResultItem webserviceResultItem = modMassesPerScan_Key_PsmId.get( psmId );
+					if ( webserviceResultItem == null ) {
+						webserviceResultItem = new WebserviceResultItem();
+						modMassesPerScan_Key_PsmId.put( psmId, webserviceResultItem );
+
+						webserviceResultItem.psmId = psmId;
+					}
+
+					webserviceResultItem.open.add( openModMass );
+				}
+			}
+
+			//  Convert Map to List
+
+			psms_List_Result = new ArrayList<>( modMassesPerScan_Key_PsmId.values() );
+			
+		} finally {
+			
+		}
+		
+		return psms_List_Result;
+    }
+
+    private static class InternalClass_WebserviceResult_Entry{
+    	volatile Integer reportedPeptideId;
+    	volatile List<WebserviceResultItem> webserviceResultItem_List;
+    }
+    
+    
+    //////////////////////////////////////////
 
     /**
      * 
@@ -561,8 +719,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
     	/**
     	 *  Map< Reported Peptide Id, ...> 
+    	 *  
+    	 *  
     	 */
-    	Map<Integer, List<WebserviceResultItem>> resultRoot;
+    	volatile Map<Integer, List<WebserviceResultItem>> resultRoot;
 
 		public Map<Integer, List<WebserviceResultItem>> getResultRoot() {
 			return resultRoot;

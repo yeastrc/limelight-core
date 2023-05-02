@@ -13,3 +13,6 @@ limelight_send_email_on_server_javascript_error_configuration.properties
 
 # Added under 'resources' folder for testing only
 limelight_send_extra_email_on_import_finish_success_or_error_configuration.properties
+
+# Added under 'resources' folder for testing only
+limelight_parallelstream_java_processing_enable_configuration.properties
