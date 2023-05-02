@@ -25,8 +25,10 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_shared.file_import_common.Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_file.CachedDataInFileMgmt_Remove_Old_CurrentSubdirs;
 import org.yeastrc.limelight.limelight_webapp.constants.WebConstants;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Get_Supported_ScanFileSuffixes_At_LimelightStartup__Runnable_InThread;
 import org.yeastrc.limelight.limelight_webapp.web_utils.GetJsCssCacheBustString;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_Code;
@@ -114,6 +116,22 @@ public class WebappServletContextListener implements ServletContextListener {
 //			//  already logged
 //			throw new RuntimeException( e );
 //		} 
+
+		try {
+			Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().getValuesAndLog();
+		} catch (Throwable e) {
+			//  Eat Exception
+//			log.error( "Exception in Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().getValuesAndLog():", e  );
+//			throw new RuntimeException( e );
+		} 
+
+		try {
+			FileUploadMaxFileSize_Config_WithConstantsDefaults.getValuesAndLog();
+		} catch (Throwable e) {
+			//  Eat Exception
+//			log.error( "Exception in FileUploadMaxFileSize_Config_WithConstantsDefaults.getValuesAndLog():", e  );
+//			throw new RuntimeException( e );
+		} 
 		
 		log.warn( "INFO:  !!!!!!!!!!!!!!!   Start up of web app  'Limelight' complete  !!!!!!!!!!!!!!!!!!!! " );
 		log.warn( "INFO: Application context values set.  Key = " + WebConstants.APP_CONTEXT_CONTEXT_PATH + ": value = " + contextPath

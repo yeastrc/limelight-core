@@ -7,6 +7,8 @@
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults"%>
+<%@page import="org.yeastrc.limelight.limelight_shared.constants.EnvironmentVariable_Keys_Constants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.constants.UserSignupConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants"%>
 <%@page import="org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants"%>
@@ -164,19 +166,61 @@
 			<div>
 				Store uploaded files on AWS S3 instead of in the local file system (Region from AWS Account configuration on system if not set here)
 			</div>
-			
+
+			<c:if test="${ not empty aws_s3_bucket__from_environment_variable_or_java_dash_d }">
+				<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+					<div style="display: grid; grid-template-columns: min-content 1fr">
+						
+						<div style="color: red; margin-right: 3px;" >*</div>
+						<div>
+							AWS S3 Bucket Value set here is ignored since it is configured via Environment Variable or java -D parameter
+							'<%= EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET %>'
+							with value 
+							'<c:out value="${ aws_s3_bucket__from_environment_variable_or_java_dash_d }"></c:out>'
+						</div>
+					</div>
+				</div>
+			</c:if>
+
 			<div style="margin-bottom: 3px;">
-				AWS S3 Bucket: 
-				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+				<div>
+					AWS S3 Bucket: 
+					<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
 					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY %>"
 					>
+				</div>
+				<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+					(Or use Environment Variable or java -D parameter
+					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET %>')
+				</div>
 			</div>
 			
+			<c:if test="${ not empty aws_s3_region__from_environment_variable_or_java_dash_d }">
+				<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+					<div style="display: grid; grid-template-columns: min-content 1fr">
+						
+						<div style="color: red; margin-right: 3px;" >*</div>
+						<div>
+							AWS S3 Region Value set here is ignored since it is configured via Environment Variable or java -D parameter
+							'<%= EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION %>'
+							with value 
+							'<c:out value="${ aws_s3_region__from_environment_variable_or_java_dash_d }"></c:out>'
+						</div>
+					</div>
+				</div>
+			</c:if>
+			
 			<div style="margin-bottom: 3px;">
-				AWS S3 Region: 
-				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY %>"
+				<div>
+					AWS S3 Region: 
+					<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+						data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY %>"
 					>
+				</div>
+				<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+					(Or use Environment Variable or java -D parameter
+					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION %>')
+				</div>
 			</div>
 			
 			<div>
@@ -250,6 +294,136 @@
 					data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
 					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
 			
+			</div>
+			
+			<div style=" margin-top: 4px; margin-bottom: 3px;">
+				Max File Upload Sizes:
+			</div>
+			
+			<div style="margin-left: 20px">
+			
+				<%--  Limelight XML File - Max Upload File Size --%>
+				
+				<c:if test="${ not empty LimelightXML_FileSize_From_Environment_Or_JVM_dashD_Property }">
+					<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+						<div style="display: grid; grid-template-columns: min-content 1fr">
+							
+							<div style="color: red; margin-right: 3px;" >*</div>
+							<div>
+								Limelight XML File Max Size  Value set here is ignored since it is configured via Environment Variable or java -D parameter
+								'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>'
+								with value 
+								'<c:out value="${ LimelightXML_FileSize_From_Environment_Or_JVM_dashD_Property }"></c:out>'
+							</div>
+						</div>
+					</div>
+				</c:if>
+	
+				<div style="margin-bottom: 3px;" >
+					<div class="config_single_input_root_jq">
+						Limelight XML File Max Size in GB: 
+						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
+							data-config-key="<%= ConfigSystemsKeysSharedConstants.LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						>
+						
+						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
+							An
+							 <span title="A whole number with no decimal point or fraction">integer</span>
+							  is required, or make it an empty field
+						</span>
+						<span
+							style="margin-left: 6px"
+						>
+							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+						</span>
+					</div>
+					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+						(Or use Environment Variable or java -D parameter
+						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>')
+					</div>
+				</div>
+				
+				<%--  FASTA File - Max Upload File Size --%>
+				
+				<c:if test="${ not empty Max_FASTA_FileSize_From_Environment_Or_JVM_dashD_Property }">
+					<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+						<div style="display: grid; grid-template-columns: min-content 1fr">
+							
+							<div style="color: red; margin-right: 3px;" >*</div>
+							<div>
+								FASTA File Max Size  Value set here is ignored since it is configured via Environment Variable or java -D parameter
+								'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FASTA_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>'
+								with value 
+								'<c:out value="${ Max_FASTA_FileSize_From_Environment_Or_JVM_dashD_Property }"></c:out>'
+							</div>
+						</div>
+					</div>
+				</c:if>
+	
+				<div style="margin-bottom: 3px;" >
+					<div class="config_single_input_root_jq">
+						FASTA File Max Size in GB: 
+						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
+							data-config-key="<%= ConfigSystemsKeysSharedConstants.FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						>
+						
+						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
+							An
+							<span title="A whole number with no decimal point or fraction">integer</span>
+							is required, or make it an empty field
+						</span>
+						<span
+							style="margin-left: 6px"
+						>
+							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+						</span>
+					</div>
+					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+						(Or use Environment Variable or java -D parameter
+						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FASTA_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL %>')
+					</div>
+				</div>
+				
+				<%--  Scan File - Max Upload File Size --%>
+				
+				<c:if test="${ not empty Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property }">
+					<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+						<div style="display: grid; grid-template-columns: min-content 1fr">
+							
+							<div style="color: red; margin-right: 3px;" >*</div>
+							<div>
+								Scan File Max Size  Value set here is ignored since it is configured via Environment Variable or java -D parameter
+								'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_SCAN_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>'
+								with value 
+								'<c:out value="${ Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property }"></c:out>'
+							</div>
+						</div>
+					</div>
+				</c:if>
+	
+				<div style="margin-bottom: 3px;" >
+					<div class="config_single_input_root_jq">
+						Scan File Max Size in GB: 
+						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
+						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						>
+						
+						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
+							An
+							 <span title="A whole number with no decimal point or fraction">integer</span>
+							  is required, or make it an empty field
+						</span>
+						<span
+							style="margin-left: 6px"
+						>
+							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+						</span>
+					</div>
+					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+						(Or use Environment Variable or java -D parameter
+						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_SCAN_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>')
+					</div>
+				</div>
 			</div>
 		</div>
 	  </div> 

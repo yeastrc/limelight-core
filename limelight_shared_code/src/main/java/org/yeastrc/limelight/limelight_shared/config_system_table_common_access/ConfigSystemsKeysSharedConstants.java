@@ -69,6 +69,13 @@ public class ConfigSystemsKeysSharedConstants {
 	public static final String file_import_limelight_xml_scans_AWS_S3_REGION_KEY = "file_import_limelight_xml_scans_aws_s3_region";
 
 	public static final String SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY = "scan_file_import_allowed_via_web_submit";
+	
+
+	public static final String LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY = "limelight_xml_file_max_file_size_in_gb";
+
+	public static final String FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY = "fasta_file_max_file_size_in_gb";
+
+	public static final String SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY = "scan_file_max_file_size_in_gb";
 
 	////              Delete uploaded files after Import key  -  Specific Values allowed
 
@@ -99,7 +106,11 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( SPECTRAL_STORAGE_SERVICE_ACCEPT_IMPORT_BASE_URL );
 		textConfigKeys.add( SPECTRAL_STORAGE_SERVICE_GET_DATA_BASE_URL );
 		textConfigKeys.add( file_import_limelight_xml_scans_TEMP_DIR_KEY );
-
+		
+		textConfigKeys.add( LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY );
+		textConfigKeys.add( FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY );
+		textConfigKeys.add( SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY );
+		
 		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY );
 		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 

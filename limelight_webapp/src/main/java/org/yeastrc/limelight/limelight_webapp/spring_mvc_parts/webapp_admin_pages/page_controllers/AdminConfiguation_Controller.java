@@ -24,9 +24,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.yeastrc.limelight.limelight_shared.file_import_common.Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values;
 import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessControl_GetUserSession_RefreshAccessEnabled_IF;
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightPageAcceessErrorException;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF;
@@ -81,6 +83,31 @@ public class AdminConfiguation_Controller {
 			}
 
 			populatePageHeaderData.populatePageHeaderData( null /* projectIds */, userSession, httpServletRequest );
+			
+			httpServletRequest.setAttribute( 
+					"aws_s3_bucket__from_environment_variable_or_java_dash_d", 
+					Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance()
+					.get_S3_Bucket_Configuration_Value_Only_EnvironmentVariable_Or_Java_Dash_D_Param() );
+			
+			httpServletRequest.setAttribute( 
+					"aws_s3_region__from_environment_variable_or_java_dash_d", 
+					Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance()
+					.get_S3_Region_Configuration_Value_Only_EnvironmentVariable_Or_Java_Dash_D_Param() );
+			
+
+			httpServletRequest.setAttribute( 
+					"LimelightXML_FileSize_From_Environment_Or_JVM_dashD_Property", 
+					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_LimelightXML_FileSize_From_Environment_Or_JVM_dashD_Property() );
+			
+			httpServletRequest.setAttribute( 
+					"Max_FASTA_FileSize_From_Environment_Or_JVM_dashD_Property", 
+					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_FASTA_FileSize_From_Environment_Or_JVM_dashD_Property() );
+			
+			httpServletRequest.setAttribute( 
+					"Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property", 
+					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property() );
+			
+			
 
 			return "webapp_administration_pages_and_parts/pages/webappAdminConfiguration.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 

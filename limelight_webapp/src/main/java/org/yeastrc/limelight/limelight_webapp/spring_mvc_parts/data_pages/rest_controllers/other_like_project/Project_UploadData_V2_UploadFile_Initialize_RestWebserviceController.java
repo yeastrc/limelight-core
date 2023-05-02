@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.constants.Limelight__AWS_S3_Constants;
+import org.yeastrc.limelight.limelight_shared.file_import_common.Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataSingleFileInitJSONBlob_DTO;
@@ -746,7 +747,7 @@ public class Project_UploadData_V2_UploadFile_Initialize_RestWebserviceControlle
 		fileImportTrackingDataSingleFileInitJSON_Contents_Version_Number_001.setAbsoluteFilename_W_Path_OnSubmitMachine( submitImport_UploadFile_Initialize_Request_Base.getAbsoluteFilename_W_Path_OnSubmitMachine() );
 
 		
-		final String amazonS3_bucketName = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY );
+		final String amazonS3_bucketName = Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().get_S3_Bucket_Configuration_Value();
 
 		if ( StringUtils.isNotEmpty( amazonS3_bucketName ) ) {
 			
@@ -760,7 +761,7 @@ public class Project_UploadData_V2_UploadFile_Initialize_RestWebserviceControlle
 			
 			{  // Use Region from Config, otherwise SDK use from Environment Variable
 
-				final String amazonS3_RegionName = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
+				final String amazonS3_RegionName = Limelight_UploadFiles_GET_S3_Bucket_Region_Configuration_Values.getInstance().get_S3_Region_Configuration_Value();
 
 				if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
 					

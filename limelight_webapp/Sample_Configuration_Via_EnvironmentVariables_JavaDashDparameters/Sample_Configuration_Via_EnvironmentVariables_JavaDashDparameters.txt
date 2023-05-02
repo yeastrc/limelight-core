@@ -1,0 +1,15 @@
+
+
+See the Sample Configuration Files for matching Environment Variables.
+
+
+Other Environment Variables or Java -D parameters:
+
+Override config table entries set in Webapp ADMIN:
+
+	LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET
+	LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION
+
+	LIMELIGHT_LIMELIGHT_XML_FILE_MAX_SIZE_IN_GB
+	LIMELIGHT_MAX_FASTA_FILE_UPLOAD_SIZE_DEFAULT_IN_GB
+	LIMELIGHT_SCAN_FILE_MAX_SIZE_IN_GB
