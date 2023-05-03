@@ -69,19 +69,27 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
 
         return (
 
-            <div className="  top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right ">
-                <div style={ { marginBottom: 20 } }>
-                    <div style={ { fontSize: 18, fontWeight: "bold" } }>
-                        <span>Select Scan File to import Feature Detection Data for</span>
+            <>
+                <div className="  top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right ">
+                    <div style={ { marginBottom: 10 } }>
+                        <div style={ { fontSize: 18, fontWeight: "bold" } }>
+                            <span>Select Scan File to import Feature Detection Data for</span>
+                        </div>
                     </div>
                 </div>
-
-                {/*  Scan Files  */}
-                <ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_Component
-                    mainParams={ this.props.mainParams }
-                    selectScanFile_Callback={ this.props.selectScanFile_Callback }
-                />
-            </div>
+                <div
+                    className="  top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                    style={ { overflowX: "hidden", overflowY: "auto", borderStyle: "solid", borderWidth: 1 } }
+                >
+                    <div style={ { padding: 8 } }>
+                        {/*  Scan Files  */}
+                        <ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_Component
+                            mainParams={ this.props.mainParams }
+                            selectScanFile_Callback={ this.props.selectScanFile_Callback }
+                        />
+                    </div>
+                </div>
+            </>
         );
     }
 }
