@@ -22,10 +22,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
@@ -35,6 +38,9 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJa
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
@@ -87,7 +93,12 @@ import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearc
  *   search__rep_pept__psm_tgt_id_dcy_dcy_psm_bst_psm_vl_lkp_tbl	- For PSMs that are Target or Independent Decoy or Decoy
  */
 @Component
-public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher extends Limelight_JDBC_Base implements ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcherIF {
+public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher extends Limelight_JDBC_Base 
+
+implements ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcherIF,
+
+InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
 
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher.class );
 	
@@ -97,6 +108,34 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	@Autowired
 	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
+
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
+
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
 	
 	
 	private final String PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS = "psm_fltrbl_tbl_";
@@ -154,7 +193,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 			throw new IllegalArgumentException(msg);
 		}
 
-		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList = new ArrayList<>();
+		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList = null;
 		
 		////
 		
@@ -343,18 +382,149 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 //			}
 			
 			try ( ResultSet rs = pstmt.executeQuery() ) {
+				
+
+				List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList_Temp = new ArrayList<>();
+				
+				
 				while( rs.next() ) {
+					
 					ReportedPeptide_MinimalData_List_FromSearcher_Entry item = 
-							populateFromResultSet( 
-									rs, 
-									searchId,
-									searcherCutoffValuesSearchLevel, 
-									psmCutoffValuesList,
-									minimumNumberOfPSMsPerReportedPeptide,
-									querySQL );
-					if ( item != null ) {
-						resultList.add( item );
+							populateFromResultSet( rs );
+
+					if ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
+							|| minimumNumberOfPSMsPerReportedPeptide > 1 ) {
+
+						// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+						//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
+						
+						int numPsms = 
+								psmCountForSearchIdReportedPeptideIdSearcher
+								.getPsmCountForSearchIdReportedPeptideIdCutoffs( item.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
+						
+						if ( numPsms <= 0 ) {
+							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
+							continue;  //  EARY CONTINUE
+						}
 					}
+						
+					
+					if ( item != null ) {
+						resultList_Temp.add( item );
+					}
+				}
+				
+
+				if ( ( ! resultList_Temp.isEmpty() )
+						&& ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
+								|| minimumNumberOfPSMsPerReportedPeptide > 1 ) ) {
+
+					// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+					//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
+					
+					//  Perform Additional filtering
+
+					List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList_Temp_Filtered = new ArrayList<>( resultList_Temp.size() );
+
+		        	{
+		        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+		        		
+		        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+		        		
+//		        		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
+
+
+			    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+			
+			    			//  YES execute in parallel
+			
+			    			resultList_Temp.parallelStream().forEach( reportedPeptide_MinimalData_List_FromSearcher_Entry -> { 
+
+		        				try {
+
+		    						// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+		    						//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
+		    						
+		    						int numPsms = 
+		    								psmCountForSearchIdReportedPeptideIdSearcher
+		    								.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
+		    						
+		    						if ( numPsms <= 0 ) {
+		    							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
+		    							  //  EARY CONTINUE
+		    						} else {
+		    						
+		    							synchronized(resultList_Temp_Filtered){
+		    								resultList_Temp_Filtered.add( reportedPeptide_MinimalData_List_FromSearcher_Entry );
+		    							}
+		    						}
+
+		        				} catch (Throwable t) {
+		        					
+		        					log.error( "Fail processing resultList_Temp: reportedPeptideId" + reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), t);
+
+		        					anyThrownInsideStreamProcessing.set(true);
+		        					
+		        					thrownInsideStream_List.add(t);
+		        				}
+		        			});
+		        			
+		        		} else {
+		        			
+		        			//  NOT execute in parallel
+
+		        			resultList_Temp.forEach( reportedPeptide_MinimalData_List_FromSearcher_Entry -> {
+		        			
+		        				try {
+
+		    						// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+		    						//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
+		    						
+		    						int numPsms = 
+		    								psmCountForSearchIdReportedPeptideIdSearcher
+		    								.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
+		    						
+		    						if ( numPsms <= 0 ) {
+		    							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
+		    							  //  EARY CONTINUE
+		    						} else {
+		    						
+		    							synchronized(resultList_Temp_Filtered){
+		    								resultList_Temp_Filtered.add( reportedPeptide_MinimalData_List_FromSearcher_Entry );
+		    							}
+		    						}
+
+		        				} catch (Throwable t) {
+		        					
+		        					log.error( "Fail processing resultList_Temp.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), t);
+		        					
+		        					anyThrownInsideStreamProcessing.set(true);
+		        					
+		        					thrownInsideStream_List.add(t);
+		        					
+		        					throw new LimelightInternalErrorException( t );
+		        				}
+		        			});
+		        		}
+
+		        		if ( anyThrownInsideStreamProcessing.get() ) {
+		        			
+		        			throw new LimelightInternalErrorException( "At least 1 exception processing resultList_Temp" );
+		        		}
+		        	}
+		    		
+					
+					synchronized(resultList_Temp_Filtered) {
+					
+						//  Final copy here to ensure copied where main thread can access
+						resultList = new ArrayList<>( resultList_Temp_Filtered );
+					}
+					
+				} else {
+				
+					//  NO Additional Filtering needed
+				
+					resultList = resultList_Temp;
 				}
 			}
 		} catch ( SQLException e ) {
@@ -376,12 +546,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 	 * @throws SQLException
 	 */
 	private ReportedPeptide_MinimalData_List_FromSearcher_Entry populateFromResultSet(
-			ResultSet rs,
-			int searchId,
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel, 
-			List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList,
-			int minimumNumberOfPSMsPerReportedPeptide,
-			String sql
+			ResultSet rs
 			) throws Exception {
 		
 		ReportedPeptide_MinimalData_List_FromSearcher_Entry item = new ReportedPeptide_MinimalData_List_FromSearcher_Entry();
@@ -412,22 +577,6 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher ext
 				item.setAnyPsmHas_ReporterIons(true);
 			}
 		}
-		if ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
-				|| minimumNumberOfPSMsPerReportedPeptide > 1 ) {
-
-			// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
-			//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
-			
-			int numPsms = 
-					psmCountForSearchIdReportedPeptideIdSearcher
-					.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
-			
-			if ( numPsms <= 0 ) {
-				//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
-				return null;  //  EARY EXIT
-			}
-		}
-			
 		return item;
 	}
 	

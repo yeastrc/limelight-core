@@ -19,10 +19,12 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,6 +49,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF;
@@ -120,12 +124,18 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 	@Autowired
 	private PsmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher_IF psmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher;
-	
+
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
+
+	
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
 
     /**
 	 * 
@@ -145,6 +155,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	public void afterPropertiesSet() throws Exception {
 		try {
 			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
 			
 		} catch (Exception e) {
 			String msg = "In afterPropertiesSet(): Exception in processing";
@@ -266,112 +283,88 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		List<WebserviceResult_Per_ReportedPeptideId_Entry> reportedPeptideId_psmOpenModificationMassesList_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		List<WebserviceResult_Per_ReportedPeptideId_Entry> reportedPeptideId_psmOpenModificationMassesList_List_InProgress =
+    				new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
 
-    		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+        		
+//        		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
-    			List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
-    					psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
-    					.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
-    			
-//    			Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
-    			
-//    			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-//    				List<Long> psmIds = new ArrayList<>( psmOpenModificationMassesList.size() );
-//    				for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
-//    					psmIds.add( resultEntry.getPsmId() );
-//    				}
-//    				List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList = 
-//    						psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
-//    				for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem item : psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList ) {
-//    					searchSubGroupIdMap_Key_PsmId.put( item.getPsmId(), item.getSearchSubGroupId() );
-//    				}
-//    			}
 
-    			//  Store results per PsmId and per psm_open_modification_id
-    			Map<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> internalHolder_EntryMap_Key_PsmId = new HashMap<>();
-    			Map<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> internalHolder_EntryMap_Key_psm_open_modification_id = new HashMap<>();
+	    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+	
+	    			//  YES execute in parallel
+	
+	    			webserviceRequest.reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
 
-    			for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
-    				Long psmId = resultEntry.getPsmId();
-    				Long psmOpenModificationId = resultEntry.getPsmOpenModificationId();
-    				if ( internalHolder_EntryMap_Key_PsmId.containsKey( psmId ) ) {
-    					String msg = "Found more than one entry with same PSM Id from psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher: PSM ID: " + psmId;
-    					log.error( msg );
-    					throw new LimelightInternalErrorException(msg);
-    				}
-    				if ( internalHolder_EntryMap_Key_psm_open_modification_id.containsKey( psmOpenModificationId ) ) {
-    					String msg = "Found more than one entry with same psmOpenModificationId psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher: psmOpenModificationId: " + psmOpenModificationId;
-    					log.error( msg );
-    					throw new LimelightInternalErrorException(msg);
-    				}
-    				
-    				WebserviceResult_Per_PsmId_OpenModMass_Entry webserviceResult_Per_PsmId_OpenModMass_Entry = new WebserviceResult_Per_PsmId_OpenModMass_Entry();
-    				webserviceResult_Per_PsmId_OpenModMass_Entry.psmId = psmId;
-    				webserviceResult_Per_PsmId_OpenModMass_Entry.openModificationMass = resultEntry.getOpenModificationMass();
-    				
-//        			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
-//        				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
-//        				if ( searchSubGroupId == null ) {
-//        					String msg = "No searchSubGroupId found for psmId: " + psmId + ", psmOpenModificationId: " + psmOpenModificationId;
-//        					log.error( msg );
-//        					throw new LimelightDatabaseException(msg);
-//        				}
-//        				webserviceResult_Per_PsmId_OpenModMass_Entry.searchSubGroupId = searchSubGroupId;
-//        			}
-    				
-    				InternalHolder__Per_PsmId_psm_open_modification_id_Entry internalHolder = new InternalHolder__Per_PsmId_psm_open_modification_id_Entry();
-    				internalHolder.psmId = psmId;
-    				internalHolder.psm_open_modification_id = psmOpenModificationId;
-    				internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry = webserviceResult_Per_PsmId_OpenModMass_Entry;
-    				
-    				internalHolder_EntryMap_Key_PsmId.put(psmId, internalHolder);
-    				internalHolder_EntryMap_Key_psm_open_modification_id.put(psmOpenModificationId, internalHolder);
-    			}
-    			//  Get Open Mod Mass Positions (Not all entries will have positions.)
-    			{
-    				Set<Long> psmOpenModificationIds = internalHolder_EntryMap_Key_psm_open_modification_id.keySet();
+        				try {
+        					WebserviceResult_Per_ReportedPeptideId_Entry entry = 
+        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
 
-    				List<PsmOpenModificationPositionDTO> resultList = 
-    						psmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher.getPsmOpenModificationPosition( psmOpenModificationIds );
-    				
-    				for ( PsmOpenModificationPositionDTO result : resultList ) {
-    					
-    					InternalHolder__Per_PsmId_psm_open_modification_id_Entry internalHolder = internalHolder_EntryMap_Key_psm_open_modification_id.get( result.getPsmOpenModificationId() );
-    					if ( internalHolder == null ) {
-    						String msg = "No entry in internalHolder_EntryMap_Key_psm_open_modification_id for psmOpenModificationId: " + result.getPsmOpenModificationId();
-        					log.error( msg );
-        					throw new LimelightInternalErrorException(msg);
-    					}
-    					
-    					if ( internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList == null ) {
-    						internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList = new ArrayList<>();
-    					}
-    					WebserviceResult_OpenModMass_Position_Entry positionEntry = new WebserviceResult_OpenModMass_Position_Entry();
-    					positionEntry.openModificationPosition = result.getPosition();
-    					positionEntry.is_N_Terminal = result.isIs_N_Terminal();
-    					positionEntry.is_C_Terminal = result.isIs_C_Terminal();
-    					internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList.add( positionEntry );
-    				}
-    			}
-    			
-				//  Transfer internal Map to Webservice Results
-				
-    			List<WebserviceResult_Per_PsmId_OpenModMass_Entry>  psmId_OpenModMass_EntriesList = new ArrayList<>( internalHolder_EntryMap_Key_PsmId.size() );
+        					synchronized(reportedPeptideId_psmOpenModificationMassesList_List_InProgress){
+        						reportedPeptideId_psmOpenModificationMassesList_List_InProgress.add( entry );
+        					}
 
-				for ( Map.Entry<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> mapEntry : internalHolder_EntryMap_Key_PsmId.entrySet() ) {
-					
-					psmId_OpenModMass_EntriesList.add( mapEntry.getValue().webserviceResult_Per_PsmId_OpenModMass_Entry );
-				}
-    	    	
-    			WebserviceResult_Per_ReportedPeptideId_Entry entry = new WebserviceResult_Per_ReportedPeptideId_Entry();
-    			entry.reportedPeptideId = reportedPeptideId;
-    			entry.psmId_OpenModMass_EntriesList = psmId_OpenModMass_EntriesList;
-    			reportedPeptideId_psmOpenModificationMassesList_List.add( entry );
-    		}
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing webserviceRequest.reportedPeptideIds: reportedPeptideId" + reportedPeptideId, t);
+
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
+        			
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			webserviceRequest.reportedPeptideIds.forEach( reportedPeptideId -> { 
+
+        				try {
+
+        					WebserviceResult_Per_ReportedPeptideId_Entry entry = 
+        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+
+        					synchronized(reportedPeptideId_psmOpenModificationMassesList_List_InProgress){
+        						reportedPeptideId_psmOpenModificationMassesList_List_InProgress.add( entry );
+        					}
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing webserviceRequest.reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing webserviceRequest.reportedPeptideIds" );
+        		}
+        	}
     		
+
+    		List<WebserviceResult_Per_ReportedPeptideId_Entry> reportedPeptideId_psmOpenModificationMassesList_List_Final =
+    				new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		
+			synchronized(reportedPeptideId_psmOpenModificationMassesList_List_InProgress){
+				
+				for ( WebserviceResult_Per_ReportedPeptideId_Entry entry : reportedPeptideId_psmOpenModificationMassesList_List_InProgress ) {
+					reportedPeptideId_psmOpenModificationMassesList_List_Final.add( entry );
+				}
+			}
+        	
     		WebserviceResult result = new WebserviceResult();
-    		result.reportedPeptideId_psmOpenModificationMassesList_List = reportedPeptideId_psmOpenModificationMassesList_List;
+    		result.reportedPeptideId_psmOpenModificationMassesList_List = reportedPeptideId_psmOpenModificationMassesList_List_Final;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -409,6 +402,120 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			log.error( msg, e );
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
+    }
+    
+    /**
+     * @param reportedPeptideId
+     * @param searchId
+     * @param searcherCutoffValuesSearchLevel
+     * @return
+     * @throws Exception
+     */
+    private WebserviceResult_Per_ReportedPeptideId_Entry get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId( 
+    		
+    		Integer reportedPeptideId,
+    		Integer searchId,
+    		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
+
+		List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
+				psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
+				.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+		
+//		Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
+		
+//		if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
+//			List<Long> psmIds = new ArrayList<>( psmOpenModificationMassesList.size() );
+//			for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
+//				psmIds.add( resultEntry.getPsmId() );
+//			}
+//			List<PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem> psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList = 
+//					psmSearchSubGroupIdsForPsmIdsSearcher.getPsmSearchSubGroupIdsForPsmIds( psmIds );
+//			for ( PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem item : psmSearchSubGroupIdsForPsmIdsSearcher_ResultItemList ) {
+//				searchSubGroupIdMap_Key_PsmId.put( item.getPsmId(), item.getSearchSubGroupId() );
+//			}
+//		}
+
+		//  Store results per PsmId and per psm_open_modification_id
+		Map<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> internalHolder_EntryMap_Key_PsmId = new HashMap<>();
+		Map<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> internalHolder_EntryMap_Key_psm_open_modification_id = new HashMap<>();
+
+		for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry resultEntry :  psmOpenModificationMassesList ) {
+			Long psmId = resultEntry.getPsmId();
+			Long psmOpenModificationId = resultEntry.getPsmOpenModificationId();
+			if ( internalHolder_EntryMap_Key_PsmId.containsKey( psmId ) ) {
+				String msg = "Found more than one entry with same PSM Id from psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher: PSM ID: " + psmId;
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			if ( internalHolder_EntryMap_Key_psm_open_modification_id.containsKey( psmOpenModificationId ) ) {
+				String msg = "Found more than one entry with same psmOpenModificationId psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher: psmOpenModificationId: " + psmOpenModificationId;
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+			WebserviceResult_Per_PsmId_OpenModMass_Entry webserviceResult_Per_PsmId_OpenModMass_Entry = new WebserviceResult_Per_PsmId_OpenModMass_Entry();
+			webserviceResult_Per_PsmId_OpenModMass_Entry.psmId = psmId;
+			webserviceResult_Per_PsmId_OpenModMass_Entry.openModificationMass = resultEntry.getOpenModificationMass();
+			
+//			if ( webserviceRequest.getSearchSubGroupIds != null && webserviceRequest.getSearchSubGroupIds.booleanValue() ){
+//				Integer searchSubGroupId = searchSubGroupIdMap_Key_PsmId.get( psmId );
+//				if ( searchSubGroupId == null ) {
+//					String msg = "No searchSubGroupId found for psmId: " + psmId + ", psmOpenModificationId: " + psmOpenModificationId;
+//					log.error( msg );
+//					throw new LimelightDatabaseException(msg);
+//				}
+//				webserviceResult_Per_PsmId_OpenModMass_Entry.searchSubGroupId = searchSubGroupId;
+//			}
+			
+			InternalHolder__Per_PsmId_psm_open_modification_id_Entry internalHolder = new InternalHolder__Per_PsmId_psm_open_modification_id_Entry();
+			internalHolder.psmId = psmId;
+			internalHolder.psm_open_modification_id = psmOpenModificationId;
+			internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry = webserviceResult_Per_PsmId_OpenModMass_Entry;
+			
+			internalHolder_EntryMap_Key_PsmId.put(psmId, internalHolder);
+			internalHolder_EntryMap_Key_psm_open_modification_id.put(psmOpenModificationId, internalHolder);
+		}
+		//  Get Open Mod Mass Positions (Not all entries will have positions.)
+		{
+			Set<Long> psmOpenModificationIds = internalHolder_EntryMap_Key_psm_open_modification_id.keySet();
+
+			List<PsmOpenModificationPositionDTO> resultList = 
+					psmOpenModificationPosition_SetOf_PsmOpenModificationIds_Searcher.getPsmOpenModificationPosition( psmOpenModificationIds );
+			
+			for ( PsmOpenModificationPositionDTO result : resultList ) {
+				
+				InternalHolder__Per_PsmId_psm_open_modification_id_Entry internalHolder = internalHolder_EntryMap_Key_psm_open_modification_id.get( result.getPsmOpenModificationId() );
+				if ( internalHolder == null ) {
+					String msg = "No entry in internalHolder_EntryMap_Key_psm_open_modification_id for psmOpenModificationId: " + result.getPsmOpenModificationId();
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
+				if ( internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList == null ) {
+					internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList = new ArrayList<>();
+				}
+				WebserviceResult_OpenModMass_Position_Entry positionEntry = new WebserviceResult_OpenModMass_Position_Entry();
+				positionEntry.openModificationPosition = result.getPosition();
+				positionEntry.is_N_Terminal = result.isIs_N_Terminal();
+				positionEntry.is_C_Terminal = result.isIs_C_Terminal();
+				internalHolder.webserviceResult_Per_PsmId_OpenModMass_Entry.psmOpenModificationMassPositionsList.add( positionEntry );
+			}
+		}
+		
+		//  Transfer internal Map to Webservice Results
+		
+		List<WebserviceResult_Per_PsmId_OpenModMass_Entry>  psmId_OpenModMass_EntriesList = new ArrayList<>( internalHolder_EntryMap_Key_PsmId.size() );
+
+		for ( Map.Entry<Long, InternalHolder__Per_PsmId_psm_open_modification_id_Entry> mapEntry : internalHolder_EntryMap_Key_PsmId.entrySet() ) {
+			
+			psmId_OpenModMass_EntriesList.add( mapEntry.getValue().webserviceResult_Per_PsmId_OpenModMass_Entry );
+		}
+    	
+		WebserviceResult_Per_ReportedPeptideId_Entry entry = new WebserviceResult_Per_ReportedPeptideId_Entry();
+		entry.reportedPeptideId = reportedPeptideId;
+		entry.psmId_OpenModMass_EntriesList = psmId_OpenModMass_EntriesList;
+		
+		return entry;
     }
 
     /**
@@ -472,8 +579,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult_Per_ReportedPeptideId_Entry {
     	
-    	int reportedPeptideId;
-    	List<WebserviceResult_Per_PsmId_OpenModMass_Entry>  psmId_OpenModMass_EntriesList;
+    	volatile int reportedPeptideId;
+    	volatile List<WebserviceResult_Per_PsmId_OpenModMass_Entry>  psmId_OpenModMass_EntriesList;
     	
 		public int getReportedPeptideId() {
 			return reportedPeptideId;

@@ -19,9 +19,11 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,9 +43,12 @@ import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_object
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
+import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_enable_configuration.ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF;
@@ -108,12 +113,18 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF psmIdsForSearchIdReportedPeptideIdCutoffsSearcher;
-		
+
+	@Autowired
+	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
 	@Autowired
 	private MarshalObjectToJSON marshalObjectToJSON;
+
+	
+	private boolean parallelStream_DefaultThreadPool_Java_Processing_Enabled_True;
 
     /**
 	 * 
@@ -133,6 +144,13 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	public void afterPropertiesSet() throws Exception {
 		try {
 			cached_WebserviceResponse_Management.registerControllerPathForCachedResponse_RequiredToCallAtWebappStartup( CONTROLLER_PATH__FOR_CACHED_RESPONSE_MGMT, this );
+			
+			{
+				ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_ParallelStream_Java_Processing_Enable_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = response.isParallelStream_DefaultThreadPool_Java_Processing_Enabled_True();
+			}
 			
 		} catch (Exception e) {
 			String msg = "In afterPropertiesSet(): Exception in processing";
@@ -253,22 +271,88 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
-    		List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List_InProgress = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
 
-    		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
+        	{
+        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
+        		
+        		List<Throwable> thrownInsideStream_List = Collections.synchronizedList(new ArrayList<>());
+        		
+//        		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
-    			List<Long> psmIdList = 
-    					psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
-    					.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
 
-    			WebserviceResult_Entry entry = new WebserviceResult_Entry();
-    			entry.reportedPeptideId = reportedPeptideId;
-    			entry.psmIdList = psmIdList;
-    			reportedPeptideId_psmIdList_List.add( entry );
-    		}
+	    		if ( this.parallelStream_DefaultThreadPool_Java_Processing_Enabled_True ) {
+	
+	    			//  YES execute in parallel
+	
+	    			webserviceRequest.reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
+
+        				try {
+        					WebserviceResult_Entry entry = 
+        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+
+        					synchronized(reportedPeptideId_psmIdList_List_InProgress){
+        						reportedPeptideId_psmIdList_List_InProgress.add( entry );
+        					}
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing webserviceRequest.reportedPeptideIds: reportedPeptideId" + reportedPeptideId, t);
+
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        				}
+        			});
+        			
+        		} else {
+        			
+        			//  NOT execute in parallel
+
+        			webserviceRequest.reportedPeptideIds.forEach( reportedPeptideId -> { 
+
+        				try {
+
+        					WebserviceResult_Entry entry = 
+        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+
+        					synchronized(reportedPeptideId_psmIdList_List_InProgress){
+        						reportedPeptideId_psmIdList_List_InProgress.add( entry );
+        					}
+
+        				} catch (Throwable t) {
+        					
+        					log.error( "Fail processing webserviceRequest.reportedPeptideIds.  Rethrow in class LimelightInternalErrorException: reportedPeptideId" + reportedPeptideId, t);
+        					
+        					anyThrownInsideStreamProcessing.set(true);
+        					
+        					thrownInsideStream_List.add(t);
+        					
+        					throw new LimelightInternalErrorException( t );
+        				}
+        			});
+        		}
+
+        		if ( anyThrownInsideStreamProcessing.get() ) {
+        			
+        			throw new LimelightInternalErrorException( "At least 1 exception processing webserviceRequest.reportedPeptideIds" );
+        		}
+        	}
+    		
+
+    		List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List_Final =
+    				new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		
+			synchronized(reportedPeptideId_psmIdList_List_InProgress){
+				
+				for ( WebserviceResult_Entry entry : reportedPeptideId_psmIdList_List_InProgress ) {
+					reportedPeptideId_psmIdList_List_Final.add( entry );
+				}
+			}
+        	
     		
     		WebserviceResult result = new WebserviceResult();
-    		result.reportedPeptideId_psmIdList_List = reportedPeptideId_psmIdList_List;
+    		result.reportedPeptideId_psmIdList_List = reportedPeptideId_psmIdList_List_Final;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -308,6 +392,29 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	}
     }
 
+    /**
+     * @param reportedPeptideId
+     * @param searchId
+     * @param searcherCutoffValuesSearchLevel
+     * @return
+     * @throws Exception
+     */
+    private WebserviceResult_Entry get_WebserviceResult_Entry_For_ONE_ReportedPeptideId( 
+    		
+    		Integer reportedPeptideId,
+    		Integer searchId,
+    		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
+
+		List<Long> psmIdList = 
+				psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
+				.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+
+		WebserviceResult_Entry entry = new WebserviceResult_Entry();
+		entry.reportedPeptideId = reportedPeptideId;
+		entry.psmIdList = psmIdList;
+		
+		return entry;
+    }
 
     /**
      * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
@@ -350,8 +457,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult_Entry {
     	
-    	int reportedPeptideId;
-    	List<Long> psmIdList;
+    	volatile int reportedPeptideId;
+    	volatile List<Long> psmIdList;
     	
 		public int getReportedPeptideId() {
 			return reportedPeptideId;
