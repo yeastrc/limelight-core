@@ -419,17 +419,6 @@ public class ProcessImporterRunnerConfigFileEnvironmentVariables {
 						if ( valueFoundInLabel_String != null ) {
 							valueFoundInLabel_String = valueFoundInLabel_String.trim();
 						}
-
-						if ( StringUtils.isNotEmpty( valueFoundInLabel_String ) ) {
-
-							ImporterRunnerConfigData.setJavaExecutableWithPath( valueFoundInLabel_String );
-
-							log.warn( "INFO: Config file property '" 
-									+ PROPERTY_NAME__FEATURE_DETECTION_PROGRAM_JAVA_EXECUTABLE_PARAMETERS
-									+ "' has value: '" 
-									+ valueFoundInLabel_String
-									+ "' " );
-						}
 					}
 				}
 
