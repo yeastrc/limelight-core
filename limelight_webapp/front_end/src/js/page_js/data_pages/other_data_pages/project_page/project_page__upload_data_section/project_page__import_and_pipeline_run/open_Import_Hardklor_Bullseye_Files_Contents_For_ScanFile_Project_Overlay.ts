@@ -41,8 +41,8 @@ export const open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_O
 
     const scanFileSelection_For_FeatureDetectionImport: ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection = {
 
-        projectScanFileId: functionParams.component_Params.projectScanFileId,
-        scanFilename_Array: functionParams.component_Params.scanFilename_Array
+        projectScanFileId_List: [ functionParams.component_Params.projectScanFileId ],
+        scanFilename_Array_Array: [ functionParams.component_Params.scanFilename_Array ]
     }
 
     const projectPage_UploadData_UploadFiles__Params: ProjectPage_UploadData_UploadFiles__Params = {

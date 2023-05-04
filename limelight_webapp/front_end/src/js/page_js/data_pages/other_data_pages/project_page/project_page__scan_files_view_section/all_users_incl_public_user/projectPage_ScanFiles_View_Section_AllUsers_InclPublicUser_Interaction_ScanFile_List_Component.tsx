@@ -62,6 +62,8 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
 
     scanFile_Entry_CombinedEntries_Array?: Array<ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry >
     runFeatureDetection_IsFullyConfigured?: boolean
+
+    force_ReRender?: object
 }
 
 /**
@@ -69,9 +71,18 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
  */
 export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component extends React.Component< ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props, ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_State > {
 
+    private _updateFor_ScanFileSelection_Change_BindThis = this._updateFor_ScanFileSelection_Change.bind(this)
+    private _run_FeatureDetection_For_Selected_ScanFiles_BindThis = this._run_FeatureDetection_For_Selected_ScanFiles.bind(this)
+
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
+        const scanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction = this._updateFor_ScanFileSelection_Change
     }
+
+    private _scanFiles_Selected_ProjectScanFileId_Set: Set<number> = new Set();
+
+    private _buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled: boolean = true //  start out with NO Scan File Selections
+
 
     /**
      *
@@ -83,7 +94,8 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 
         this.state = {
             show_LoadingData_Message: true,
-            show_SearchTag_Categories
+            show_SearchTag_Categories,
+            force_ReRender: {}
         }
     }
 
@@ -120,6 +132,77 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     /**
      *
      */
+    private _updateFor_ScanFileSelection_Change(params: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Params) {
+
+        if ( params.checked ) {
+            this._scanFiles_Selected_ProjectScanFileId_Set.add( params.projectScanFileId )
+        } else {
+            this._scanFiles_Selected_ProjectScanFileId_Set.delete( params.projectScanFileId )
+        }
+
+        this._updateFor__scanFiles_Selected_ProjectScanFileId_Set_Change()
+    }
+
+    /**
+     *
+     */
+    private _updateFor__scanFiles_Selected_ProjectScanFileId_Set_Change() {
+
+        if ( this._scanFiles_Selected_ProjectScanFileId_Set.size > 0 ) {
+            if ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) {
+                //  Changed
+                this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled = false;
+                this.setState({ force_ReRender: {} })
+            }
+        } else {
+            if ( ! this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) {
+                //  Changed
+                this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled = true;
+                this.setState({ force_ReRender: {} })
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private _run_FeatureDetection_For_Selected_ScanFiles() {
+
+        if ( this._scanFiles_Selected_ProjectScanFileId_Set.size === 0 ) {
+            //  NO Selection so exit
+            return; // EARLY RETURN
+        }
+
+        const projectScanFileId_List: Array<number> = []
+        const scanFilename_Array_Array: Array<Array<string>> = []
+
+        for ( const scanFile_Entry of this.state.scanFile_Entry_CombinedEntries_Array ) {
+
+            if ( this._scanFiles_Selected_ProjectScanFileId_Set.has( scanFile_Entry.projectScanFileId ) ) {
+                projectScanFileId_List.push( scanFile_Entry.projectScanFileId )
+                scanFilename_Array_Array.push( scanFile_Entry.scanFilename_Array )
+            }
+        }
+
+        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
+        getFunction__open_Run_Hardklor_File_Contents_For_ScanFile_Project_Overlay__Function()({
+            component_Params: {
+                projectIdentifier: this.props.projectIdentifier,
+                projectScanFileId_List,
+                scanFilename_Array_Array
+            },
+            uploadComplete_Callback: () : void => {
+
+                refresh_ProjectPage_UploadData_MainPage_Main_Component()
+
+                refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
+            }
+        })
+    }
+
+    /**
+     *
+     */
     render() {
 
         let no_ScanFiles_Found = false;
@@ -145,6 +228,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                             projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
+                            selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
                         />
                     )
 
@@ -185,10 +269,33 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             </span>
                         </div>
 
-                        <div style={ { display: "grid", gridTemplateColumns: "16px auto" } }>
-                            {/*  2 Column Grid  */}
+                        <div style={ { display: "grid", gridTemplateColumns: "min-content min-content auto" } }>
+                            {/*  3 Column Grid  */}
                             { scanFile_Element_List }
                         </div>
+
+
+                        <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
+
+                            {/*  Run Feature Detection */}
+                            <div style={ { position: "relative", display: "inline-block" } }>
+                                <button
+                                    title="Run Feature Detection on selected scan files"
+                                    disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
+                                    onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                                >
+                                    Run Feature Detection
+                                </button>
+                                { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
+                                    // overlay when button is disabled to show tooltip
+                                    <div
+                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                        title="Select 1 or more scan files to run Feature Detection for"
+                                    ></div>
+                                ): null }
+                            </div>
+                        </div>
+
                     </React.Fragment>
                 ) }
             </div>
@@ -200,6 +307,15 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 ////////////////////////////////////////////
 
 //  Component for Single Scan File - not exported
+
+interface ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Params {
+
+    projectScanFileId: number
+    checked: boolean
+}
+
+type ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction =
+    (params: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Params) => void
 
 /**
  *
@@ -213,6 +329,8 @@ interface ScanFileEntry_Component_Props {
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
+
+    selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
 }
 
 /**
@@ -318,11 +436,29 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
         const scanFile_Entry = this.props.scanFile_Entry;
 
         return (
-            //  2 Column Grid
+            //  3 Column Grid
             <React.Fragment>
 
-                {/*  Column 1 of Grid  -  Triangle Icon for details open/closed  */}
+                {/*  Column 1 of Grid  -  Checkbox  */}
+                <div style={ { width: 16, marginRight: 8, position: "relative" } }>
+                    <div style={ { position: "absolute", top: -2 } }>
+                        <input
+                            type="checkbox"
+                            onChange={ event => {
+                                if ( this.props.selectionCheckboxChanged_CallbackFunction ) {
+                                    this.props.selectionCheckboxChanged_CallbackFunction({
+                                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+                                        checked: event.target.checked
+                                    })
+                                }
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {/*  Column 2 of Grid  -  Triangle Icon for details open/closed  */}
                 <div
+                    style={ { width: 16 } }
                     onClick={ this._iconOrMainRowClicked_BindThis }
                 >
                     { ( ! this.state.show_DetailsBlock ) ? (
@@ -332,7 +468,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                     )}
                 </div>
 
-                {/*  Column 2 of Grid  - Main Contents (Scan File Name(s) AND the links to the right */}
+                {/*  Column 3 of Grid  - Main Contents (Scan File Name(s) AND the links to the right */}
 
                 <div>
                     {/* 2 Column Grid */}
@@ -370,8 +506,8 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                         getFunction__open_Run_Hardklor_File_Contents_For_ScanFile_Project_Overlay__Function()({
                                                             component_Params: {
                                                                 projectIdentifier: this.props.projectIdentifier,
-                                                                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
-                                                                scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array
+                                                                projectScanFileId_List: [ this.props.scanFile_Entry.projectScanFileId ],
+                                                                scanFilename_Array_Array: [ this.props.scanFile_Entry.scanFilename_Array ]
                                                             },
                                                             uploadComplete_Callback: () : void => {
 

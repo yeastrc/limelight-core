@@ -86,6 +86,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
                         <ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_Component
                             mainParams={ this.props.mainParams }
                             selectScanFile_Callback={ this.props.selectScanFile_Callback }
+                            scanFileCheckboxSelectionChange_CallbackFunction={ undefined } // Not applicable
                         />
                     </div>
                 </div>

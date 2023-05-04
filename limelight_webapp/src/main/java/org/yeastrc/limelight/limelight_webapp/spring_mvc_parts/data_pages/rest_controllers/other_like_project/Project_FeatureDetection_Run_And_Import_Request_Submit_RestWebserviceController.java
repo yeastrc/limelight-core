@@ -18,6 +18,9 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,12 +46,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.constants.FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants;
 import org.yeastrc.limelight.limelight_shared.feature_detection_run_import_hardklor_bullseye.shared_objects.FeatureDetection_HardklorBullseye_Run_RequestData_V001;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.constants.FileUploadCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.constants.FileImportPipelineRunCommonConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.enum_classes.FileImportAndPipelineRun_RequestType;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.shared_objects.FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.shared_objects.FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001.FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIdsIF;
@@ -58,6 +64,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightWebappFileUplo
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingIdCreatorDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_pipeline_run.dao.FileImportAndPipelineRunTrackingSingleFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -68,6 +75,7 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
@@ -95,6 +103,8 @@ import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebserviceController {
 
 	private static final Logger log = LoggerFactory.getLogger( Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebserviceController.class );
+
+	private static final int COPY_FILE_ARRAY_SIZE = 32 * 1024;
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -113,6 +123,9 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 	
 	@Autowired
 	private ProjectScanFileDAO_IF projectScanFileDAO;
+	
+	@Autowired
+	private FileImportAndPipelineRunTrackingIdCreatorDAO_IF fileImportAndPipelineRunTrackingIdCreatorDAO;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -182,8 +195,12 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		
-		if ( webserviceRequest.projectScanFileId == null ) {
-			log.warn( "webserviceRequest.projectScanFileId is null" );
+		if ( webserviceRequest.projectScanFileId_List == null ) {
+			log.warn( "webserviceRequest.projectScanFileId_List is null" );
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		if ( webserviceRequest.projectScanFileId_List.isEmpty() ) {
+			log.warn( "webserviceRequest.projectScanFileId_List is empty" );
 			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 		}
 		if ( StringUtils.isEmpty( webserviceRequest.displayLabel ) ) {
@@ -290,18 +307,24 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 		
 		WebserviceResponse webserviceResponse = new WebserviceResponse();
 		
-		
-		Project_ScanFile_DTO project_ScanFile_DTO = projectScanFileDAO.getById( webserviceRequest.projectScanFileId );
-		if ( project_ScanFile_DTO == null ) {
-			String msg = "webserviceRequest.projectScanFileId NOT in DB: " + webserviceRequest.projectScanFileId;
-			log.error( msg );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-		}
-		
-		if ( project_ScanFile_DTO.getProjectId() != fileImportAndPipelineRunTrackingDTO.getProjectId() ) {
-			String msg = "( project_ScanFile_DTO.getProjectId() != fileImportAndPipelineRunTrackingDTO.getProjectId() ):  webserviceRequest.projectScanFileId: " + webserviceRequest.projectScanFileId;
-			log.error( msg );
-			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		{
+			//   Validate projectScanFileId_List are in the project this request is submitted for
+			
+			for ( Integer projectScanFileId : webserviceRequest.projectScanFileId_List ) {
+
+				Project_ScanFile_DTO project_ScanFile_DTO = projectScanFileDAO.getById( projectScanFileId );
+				if ( project_ScanFile_DTO == null ) {
+					String msg = "webserviceRequest.projectScanFileId_List Entry NOT in DB. projectScanFileId: " + projectScanFileId;
+					log.error( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+
+				if ( project_ScanFile_DTO.getProjectId() != fileImportAndPipelineRunTrackingDTO.getProjectId() ) {
+					String msg = "( project_ScanFile_DTO.getProjectId() != fileImportAndPipelineRunTrackingDTO.getProjectId() ):  projectScanFileId_List Entry: " + projectScanFileId;
+					log.error( msg );
+					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+				}
+			}
 		}
 
 		//  Upload Directory for files
@@ -477,7 +500,7 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 			FeatureDetection_HardklorBullseye_Run_RequestData_V001 featureDetection_HardklorBullseye_Run_RequestData_V1 = new FeatureDetection_HardklorBullseye_Run_RequestData_V001();
 
 			featureDetection_HardklorBullseye_Run_RequestData_V1.setProjectId(fileImportAndPipelineRunTrackingDTO.getProjectId());
-			featureDetection_HardklorBullseye_Run_RequestData_V1.setProjectScanFileId(webserviceRequest.projectScanFileId);
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setProjectScanFileId(webserviceRequest.projectScanFileId_List.get(0));
 			featureDetection_HardklorBullseye_Run_RequestData_V1.setLabel(webserviceRequest.displayLabel);
 			featureDetection_HardklorBullseye_Run_RequestData_V1.setDescription(webserviceRequest.description);
 			featureDetection_HardklorBullseye_Run_RequestData_V1.setHardklor_ConfFile_UploadedFilename(webserviceRequest.hardklor_Conf_Filename);
@@ -547,11 +570,373 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 
 		fileImportAndPipelineRunTrackingDAO.update__request_data( fileImportAndPipelineRunTrackingDTO );
 		
-		fileImportAndPipelineRunTrackingDAO.updateStatus(FileImportStatus.QUEUED, fileImportAndPipelineRunTrackingDTO.getId());
+		List<Integer> trackingIds_ToUpdateToQueued = new ArrayList<>( webserviceRequest.projectScanFileId_List.size() );
+		
+		trackingIds_ToUpdateToQueued.add( fileImportAndPipelineRunTrackingDTO.getId() );
+		
+		if ( webserviceRequest.projectScanFileId_List.size() > 1 ) {
+			
+			List<Integer> insertedTrackingIds = 
+					insert_TrackingEntries_For_OtherThanFirst_ProjectScanFileId(
+							fileImportAndPipelineRunTrackingDTO.getId(), // importTrackingId__FIRST__ProjectScanFileId
+							fileImportAndPipelineRunTrackingDTO.getProjectId(), // projectId, 
+							userId,
+							webserviceRequest, 
+							uploadFileDir, 
+							dirForImportTrackingId, // dirForImportTrackingId__FIRST__ProjectScanFileId,
+							httpServletRequest);
+			
+			trackingIds_ToUpdateToQueued.addAll(insertedTrackingIds);
+		}
+		
+		
+		//   Probably update status for all id here in single SQL statement
+		
+		fileImportAndPipelineRunTrackingDAO.updateStatus_All_IdList( FileImportStatus.QUEUED, trackingIds_ToUpdateToQueued );
 		
 		webserviceResponse.statusSuccess = true;
 				
 		return webserviceResponse;
+	}
+	
+	///////////////
+	
+	/**
+	 * @param importTrackingId__FIRST__ProjectScanFileId
+	 * @param projectId
+	 * @param userId
+	 * @param webserviceRequest
+	 * @param uploadFileDir
+	 * @param dirForImportTrackingId__FIRST__ProjectScanFileId
+	 * @param httpServletRequest
+	 * @return - Inserted Tracking Ids
+	 * @throws Exception
+	 */
+	private List<Integer> insert_TrackingEntries_For_OtherThanFirst_ProjectScanFileId( 
+			
+			int importTrackingId__FIRST__ProjectScanFileId,
+			
+			Integer projectId,
+			Integer userId,
+			
+			WebserviceRequest webserviceRequest,
+			File uploadFileDir,
+			File dirForImportTrackingId__FIRST__ProjectScanFileId, 
+			HttpServletRequest httpServletRequest
+			
+			) throws Exception {
+		
+		List<Integer> insertedTrackingIds = new ArrayList( webserviceRequest.projectScanFileId_List.size() );
+		
+		//  Loop over all entries in projectScanFileId_List EXCEPT first one.  First one was processed above
+		for ( int index = 1; index < webserviceRequest.projectScanFileId_List.size(); index++  ) {
+			
+			Integer projectScanFileId_ToInsert = webserviceRequest.projectScanFileId_List.get(index);
+			
+			Integer insertedTrackingId =
+					insert_TrackingEntries_For_A_Single_ProjectScanFileId(
+
+							projectScanFileId_ToInsert, 
+							importTrackingId__FIRST__ProjectScanFileId,
+							projectId, userId, webserviceRequest, uploadFileDir, dirForImportTrackingId__FIRST__ProjectScanFileId, httpServletRequest);
+			
+			insertedTrackingIds.add(insertedTrackingId);
+		}
+		
+		return insertedTrackingIds;
+	}
+
+	/**
+	 * @param projectScanFileId_ToInsert
+	 * @param importTrackingId__FIRST__ProjectScanFileId
+	 * @param projectId
+	 * @param userId
+	 * @param webserviceRequest
+	 * @param uploadFileDir
+	 * @param dirForImportTrackingId__FIRST__ProjectScanFileId
+	 * @param httpServletRequest
+	 * @return - Inserted TrackingId
+	 * @throws Exception
+	 */
+	private int insert_TrackingEntries_For_A_Single_ProjectScanFileId( 
+			
+			Integer projectScanFileId_ToInsert,
+			
+			int importTrackingId__FIRST__ProjectScanFileId,
+			
+			Integer projectId,
+			Integer userId,
+			
+			WebserviceRequest webserviceRequest,
+			File uploadFileDir,
+			File dirForImportTrackingId__FIRST__ProjectScanFileId, 
+			HttpServletRequest httpServletRequest
+			
+			) throws Exception {
+
+		String requestURL = httpServletRequest.getRequestURL().toString();
+		String remoteUserIpAddress = httpServletRequest.getRemoteAddr();
+		
+		//  Create a new Submission for each Project Scan File Id
+		
+
+		int importTrackingId = fileImportAndPipelineRunTrackingIdCreatorDAO.getNextId();
+		
+		String dirNameForImportTrackingId =
+				Limelight_XML_ImporterWrkDirAndSbDrsCmmn.getInstance().getDirForImportTrackingId( importTrackingId );
+		File dirForImportTrackingId  =  new File( uploadFileDir , dirNameForImportTrackingId );
+		if ( dirForImportTrackingId.exists() ) {
+			String msg = "dirForImportTrackingId already exists: " + dirForImportTrackingId.getAbsolutePath();
+			log.error( msg );
+			throw new Exception(msg);
+		}
+		if ( ! dirForImportTrackingId.mkdir() ) {
+			String msg = "Failed to make dirForImportTrackingId: " + dirForImportTrackingId.getAbsolutePath();
+			log.error( msg );
+			throw new Exception(msg);
+		}
+		
+		//  Main File Import Tracking Object
+		FileImportAndPipelineRunTrackingDTO fileImportAndPipelineRunTrackingDTO = new FileImportAndPipelineRunTrackingDTO();
+		fileImportAndPipelineRunTrackingDTO.setId( importTrackingId );
+		fileImportAndPipelineRunTrackingDTO.setRequestType( FileImportAndPipelineRun_RequestType.FEATURE_DETECTION_HARDKLOR_BULLSEYE_RUN_AND_IMPORT );
+		fileImportAndPipelineRunTrackingDTO.setStatus( FileImportStatus.INIT_INSERT_PRE_QUEUED );
+		fileImportAndPipelineRunTrackingDTO.setPriority( FileUploadCommonConstants.PRIORITY_STANDARD );
+		fileImportAndPipelineRunTrackingDTO.setProjectId( projectId );
+		fileImportAndPipelineRunTrackingDTO.setUserId( userId );
+		fileImportAndPipelineRunTrackingDTO.setInsertRequestURL( requestURL );
+		fileImportAndPipelineRunTrackingDTO.setInsertRequest_RemoteUserIpAddress( remoteUserIpAddress );
+
+		
+		//  Save to the DB
+		fileImportAndPipelineRunTrackingDAO.save(fileImportAndPipelineRunTrackingDTO);
+		
+
+		List<FileImportAndPipelineRunTrackingSingleFileDTO> fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List = 
+				fileImportAndPipelineRunTrackingSingleFileDAO.getFor_TrackingId( importTrackingId__FIRST__ProjectScanFileId );
+		
+		if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List.isEmpty() ) {
+			
+			//  ONLY Supporting NEW submission so this should NEVER be empty
+			
+			String msg = "Processing > 1 ProjectScanFileId:: fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List from DB is empty";
+			log.error(msg);
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		{  //  Copy all entries in fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List for current ProjectScanFileId for current inserting Tracking Id
+
+
+			for ( FileImportAndPipelineRunTrackingSingleFileDTO fileImportAndPipelineRunTrackingSingleFileDTO_From_DB : fileImportAndPipelineRunTrackingSingleFileDTO_From_DB_List ) {
+				
+				//  Update to current Tracking Id
+				fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.setFileImportAndPipelineRunTracking_Id(fileImportAndPipelineRunTrackingDTO.getId());
+				
+
+				try {    // Initial Save
+				
+					fileImportAndPipelineRunTrackingSingleFileDAO.save(fileImportAndPipelineRunTrackingSingleFileDTO_From_DB);
+					
+				} catch ( DuplicateKeyException e ) {
+					
+					throw e;
+				}
+
+				String uploadedFile_StoreOnDiskFileObject_FilenameOnly = null;
+				
+				if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILE_TYPE_ID ) {
+
+					uploadedFile_StoreOnDiskFileObject_FilenameOnly = FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.HARDKLOR_CONF_FILE_FILENAME;
+					
+				} else if ( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId() == FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILE_TYPE_ID ) {
+
+					uploadedFile_StoreOnDiskFileObject_FilenameOnly = FeatureDetection_HardklorBullseye_Upload_FileTypeIdsInDB_FilenamesOnDisk_Constants.BULLSEYE_CONF_FILE_FILENAME;
+					
+				} else {
+					String msg = "Unknown Single File file type: "
+							+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFileTypeId()
+							+ ", Single file id: "
+							+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getId()
+							+ ", for tracking id: " + fileImportAndPipelineRunTrackingDTO.getId();
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+
+				if ( StringUtils.isNotEmpty( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name() ) ) {
+					
+					//  Copy to new Object in S3
+
+					S3Client amazonS3_Client = null;
+
+					String amazonS3_RegionName = fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_region();
+
+					if ( StringUtils.isNotEmpty( amazonS3_RegionName ) ) {
+						
+						Region aws_S3_Region = Region.of(amazonS3_RegionName);
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.region( aws_S3_Region )
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build();
+						
+					} else {
+						//  SDK use Region from Environment Variable
+						
+						amazonS3_Client = 
+								S3Client.builder()
+								.httpClientBuilder(ApacheHttpClient.builder())
+								.build(); 
+					}
+					
+
+					String s3_Object_Key_NewObject = 
+							FileImportPipelineRunCommonConstants.IMPORT_AND_PIPELINE_RUN__BASE_DIR
+							+ "/" + dirNameForImportTrackingId 
+							+ "/" + uploadedFile_StoreOnDiskFileObject_FilenameOnly;
+					
+					CopyObjectRequest copyObjectRequest = 
+							CopyObjectRequest
+							.builder()
+							.sourceBucket( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name() )
+							.sourceKey(fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_object_key() )
+							.destinationBucket( fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name() )
+							.destinationKey(s3_Object_Key_NewObject)
+							.build();
+					
+					try {
+						amazonS3_Client.copyObject(copyObjectRequest);
+						
+					} catch ( NoSuchKeyException e ) {
+						String msg = "Single File File Upload NOT in AWS S3. Single file id: "
+								+ fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getId()
+								+ ", for tracking id: " + fileImportAndPipelineRunTrackingDTO.getId()
+								+ ", S3 Bucket Name: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_bucket_name()
+								+ ", S3 Object Key: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_object_key()
+								+ ", S3 Region: " + fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getAws_s3_region();
+						log.error( msg );
+						throw new LimelightInternalErrorException(msg);
+					}
+					
+					fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.setAws_s3_object_key( s3_Object_Key_NewObject );
+
+					fileImportAndPipelineRunTrackingSingleFileDAO.update_AWS_S3_Fields(fileImportAndPipelineRunTrackingSingleFileDTO_From_DB);
+
+				} else {
+					
+					//  Copy to new Disk file
+					
+					File uploadedFileOnDisk_OLD_TrackingId = new File( dirForImportTrackingId__FIRST__ProjectScanFileId, fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.getFilenameOnDisk() );
+
+					File uploadedFileOnDisk_NEW_TrackingId = new File( dirForImportTrackingId, uploadedFile_StoreOnDiskFileObject_FilenameOnly );
+					
+					//  Copy InputStream containing POST body into file on disk
+					{
+						long totalBytesCopied = 0;
+
+						try ( InputStream inputStreamFromPOSTLocal = new FileInputStream( uploadedFileOnDisk_OLD_TrackingId ) ) {
+
+							try ( FileOutputStream fos = new FileOutputStream( uploadedFileOnDisk_NEW_TrackingId )) {
+								byte[] buf = new byte[ COPY_FILE_ARRAY_SIZE ];
+								int len;
+								while ((len = inputStreamFromPOSTLocal.read(buf)) > 0){
+									fos.write(buf, 0, len);
+									totalBytesCopied += len;
+								}
+							}
+						}
+						
+					}
+
+					fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.setCanonicalFilename_W_Path_OnSubmitMachine( uploadedFileOnDisk_NEW_TrackingId.getCanonicalPath() );
+					fileImportAndPipelineRunTrackingSingleFileDTO_From_DB.setAbsoluteFilename_W_Path_OnSubmitMachine( uploadedFileOnDisk_NEW_TrackingId.getAbsolutePath() );
+					
+					
+					fileImportAndPipelineRunTrackingSingleFileDAO.update_LocalFile_Fields(fileImportAndPipelineRunTrackingSingleFileDTO_From_DB);
+
+				}
+			
+			}
+
+		}
+		
+		//  Update:  Main File Import Tracking Object:  Set Request Data and Status
+		
+		{
+			FeatureDetection_HardklorBullseye_Run_RequestData_V001 featureDetection_HardklorBullseye_Run_RequestData_V1 = new FeatureDetection_HardklorBullseye_Run_RequestData_V001();
+
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setProjectId(fileImportAndPipelineRunTrackingDTO.getProjectId());
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setProjectScanFileId( projectScanFileId_ToInsert );
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setLabel(webserviceRequest.displayLabel);
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setDescription(webserviceRequest.description);
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setHardklor_ConfFile_UploadedFilename(webserviceRequest.hardklor_Conf_Filename);
+			featureDetection_HardklorBullseye_Run_RequestData_V1.setBullseye_ConfFile_UploadedFilename(webserviceRequest.bullseye_Conf_Filename);
+
+
+			JAXBContext jaxbContext = JAXBContext.newInstance( FeatureDetection_HardklorBullseye_Run_RequestData_V001.class );
+
+			Writer requestData_Writer = new StringWriter( 100000000 );
+
+			try {
+				Marshaller marshaller = jaxbContext.createMarshaller();
+				marshaller.marshal( featureDetection_HardklorBullseye_Run_RequestData_V1, requestData_Writer );
+			} catch ( JAXBException e ) {
+				final String msg = "Failed to marshal to XML: " + featureDetection_HardklorBullseye_Run_RequestData_V1.toString();
+				log.error( msg, e );
+				throw new LimelightInternalErrorException( msg );
+			}
+
+			String requestData = requestData_Writer.toString();
+
+			fileImportAndPipelineRunTrackingDTO.setRequestData_AsString(requestData);
+			fileImportAndPipelineRunTrackingDTO.setRequestData_Format_VersionNumber( FeatureDetection_HardklorBullseye_Run_RequestData_V001.VERSION_NUMBER );
+			fileImportAndPipelineRunTrackingDTO.setRequestData_Content_VersionNumber( 1 );
+		}
+
+		{   
+			//   Create JSON for Label/Value pairs for display in webapp and in email sent when Import is finishes
+
+			List<FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001> labelValueList = new ArrayList<>( 10 );
+
+			{
+				FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001 labelValuePair = new FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001();
+				labelValueList.add( labelValuePair );
+				labelValuePair.setLabel( "Label" );
+				labelValuePair.setValue( webserviceRequest.displayLabel );
+			}
+			{
+				FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001 labelValuePair = new FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001();
+				labelValueList.add( labelValuePair );
+				labelValuePair.setLabel( "Description" );
+				labelValuePair.setValue( webserviceRequest.description );
+			}
+			{
+				FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001 labelValuePair = new FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001();
+				labelValueList.add( labelValuePair );
+				labelValuePair.setLabel( "Hardklor Conf Filename" );
+				labelValuePair.setValue( webserviceRequest.hardklor_Conf_Filename );
+			}
+			{
+				FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001 labelValuePair = new FileImportPipelineRun_LabelValuePairs_JSON_Contents_SingleEntry_V001();
+				labelValueList.add( labelValuePair );
+				labelValuePair.setLabel( "Bullseye Conf Filename" );
+				labelValuePair.setValue( webserviceRequest.bullseye_Conf_Filename );
+			}			
+
+			FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001 fileImportPipelineRun_LabelValuePairs_JSON_Contents_V001 = new FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001();
+
+			fileImportPipelineRun_LabelValuePairs_JSON_Contents_V001.setLabelValueList(labelValueList);
+			
+			String requestData_LabelValuePairs_JSON_AsString = marshalObjectToJSON.getJSONString(fileImportPipelineRun_LabelValuePairs_JSON_Contents_V001);
+
+			fileImportAndPipelineRunTrackingDTO.setRequestData_LabelValuePairs_JSON_AsString(requestData_LabelValuePairs_JSON_AsString);
+			fileImportAndPipelineRunTrackingDTO.setRequestData_LabelValuePairs_JSON_Format_VersionNumber( FileImportPipelineRun_LabelValuePairs_JSON_Contents_V001.VERSION_NUMBER );
+			fileImportAndPipelineRunTrackingDTO.setRequestData_LabelValuePairs_JSON_Content_VersionNumber( 1 );
+		}
+
+		fileImportAndPipelineRunTrackingDAO.update__request_data( fileImportAndPipelineRunTrackingDTO );
+		
+		return fileImportAndPipelineRunTrackingDTO.getId();
 	}
 
 	
@@ -562,7 +947,7 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 		private String uploadKey;
 		private String hardklor_Conf_Filename;
 		private String bullseye_Conf_Filename;
-		private Integer projectScanFileId;
+		private List<Integer> projectScanFileId_List;
 		private String displayLabel;
 		private String description;
 		
@@ -575,14 +960,14 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 		public void setBullseye_Conf_Filename(String bullseye_Conf_Filename) {
 			this.bullseye_Conf_Filename = bullseye_Conf_Filename;
 		}
-		public void setProjectScanFileId(Integer projectScanFileId) {
-			this.projectScanFileId = projectScanFileId;
-		}
 		public void setDisplayLabel(String displayLabel) {
 			this.displayLabel = displayLabel;
 		}
 		public void setDescription(String description) {
 			this.description = description;
+		}
+		public void setProjectScanFileId_List(List<Integer> projectScanFileId_List) {
+			this.projectScanFileId_List = projectScanFileId_List;
 		} 
 		
 	}

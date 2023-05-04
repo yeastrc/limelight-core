@@ -564,8 +564,8 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
                     <ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_SubmitImport_Component
                         mainParams={ this.props.mainParams }
-                        projectScanFileId={ this._scanFileSelection.projectScanFileId}
-                        scanFilename_Array={ this._scanFileSelection.scanFilename_Array }
+                        projectScanFileId={ this._scanFileSelection.projectScanFileId_List[0]}
+                        scanFilename_Array={ this._scanFileSelection.scanFilename_Array_Array[0] }
                         callbackOn_Cancel_Close_Clicked={ this._close_Cancel_Clicked_BindThis }
                     />
 
@@ -581,8 +581,8 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
                     <ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_Component_Component
                         mainParams={ this.props.mainParams }
-                        projectScanFileId={ this._scanFileSelection.projectScanFileId}
-                        scanFilename_Array={ this._scanFileSelection.scanFilename_Array }
+                        projectScanFileId_List={ this._scanFileSelection.projectScanFileId_List}
+                        scanFilename_Array_Array={ this._scanFileSelection.scanFilename_Array_Array }
                         callbackOn_Save_Clicked={ null } // TODO  set to a value
                         callbackOn_Cancel_Close_Clicked={ this._close_Cancel_Clicked_BindThis }
                     />

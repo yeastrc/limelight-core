@@ -27,19 +27,22 @@ export class Upload_FeatureDetection_Submit_CallWebservice_Response {
 export const projectPage_UploadData_FeatureDetection_Run_Submit_CallWebservice = function(
     {
         uploadKey, hardklor_Conf_Filename, bullseye_Conf_Filename,
-        projectScanFileId, displayLabel, description
+        projectScanFileId_List, displayLabel, description
     } : {
         uploadKey: string
         hardklor_Conf_Filename: string;
         bullseye_Conf_Filename: string;
-        projectScanFileId: number
+        projectScanFileId_List: Array<number>
         displayLabel: string
         description: string
     }
 ) : Promise<Upload_FeatureDetection_Submit_CallWebservice_Response> {
 
-    if ( projectScanFileId === undefined || projectScanFileId === null ) {
-        throw Error("( projectScanFileId === undefined || projectScanFileId === null )")
+    if ( projectScanFileId_List === undefined || projectScanFileId_List === null ) {
+        throw Error("( projectScanFileId_List === undefined || projectScanFileId_List === null )")
+    }
+    if ( projectScanFileId_List.length === 0 ) {
+        throw Error("( projectScanFileId_List.length === 0 )")
     }
     if ( displayLabel === undefined || displayLabel === null || displayLabel === "" ) {
         throw Error("( displayLabel === undefined || displayLabel === null || displayLabel === \"\" )")
@@ -52,7 +55,8 @@ export const projectPage_UploadData_FeatureDetection_Run_Submit_CallWebservice =
 
         const requestObject = {
             uploadKey, hardklor_Conf_Filename, bullseye_Conf_Filename,
-            projectScanFileId, displayLabel, description
+            projectScanFileId_List,
+            displayLabel, description
         };
 
         const url = "d/rws/for-page/project-feature-detection-run-and-import-submit";

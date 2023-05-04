@@ -21,7 +21,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -201,6 +203,65 @@ public class FileImportAndPipelineRunTrackingDAO extends Limelight_JDBC_Base imp
 		}
 		
 		return recordUpdated;
+	}
+
+	/**
+	 * @param status
+	 * @param id
+	 * @return true if record updated, false otherwise
+	 * @throws Exception
+	 */
+	
+	@Override
+	public void updateStatus_All_IdList( FileImportStatus status, List<Integer> id_List ) throws Exception {
+		
+		final String sql_Start = "UPDATE import_and_pipeline_run_tracking_tbl "
+				+ " SET "
+				+ " status_id = ?, last_updated_date_time = NOW() "
+				+ " WHERE id IN (";
+		
+		StringBuilder sqlSB = new StringBuilder(10000);
+		sqlSB.append( sql_Start );
+		for ( int counter = 1; counter <= id_List.size(); counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( "?" );
+		}
+		sqlSB.append( ")" );
+
+		final String sqlFinal = sqlSB.toString();
+
+		// Use Spring JdbcTemplate so Transactions work properly
+		
+		try {
+			int rowsUpdated = this.getJdbcTemplate().update(
+					new PreparedStatementCreator() {
+						@Override
+						public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+							PreparedStatement pstmt =
+									connection.prepareStatement( sqlFinal );
+							int counter = 0;
+							counter++;
+							pstmt.setInt( counter, status.value() );
+							for ( Integer id : id_List ) {
+								counter++;
+								pstmt.setInt( counter, id );
+							}
+							return pstmt;
+						}
+					});
+
+//			if ( rowsUpdated > 0 ) {
+//				recordUpdated = true;
+//			}
+
+		} catch ( RuntimeException e ) {
+			String msg = "updateStatus_All_IdList(...) id_List: " + StringUtils.join( id_List, ", " ) + ", SQL: " + sqlFinal;
+			log.error( msg, e );
+			throw e;
+		}
 	}
 	
 	/**

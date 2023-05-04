@@ -31,10 +31,10 @@ export class ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data {
 }
 
 /**
- * User Selected a scan file in Limelight to import or process data for
+ * User Selected a scan file(s) in Limelight to import or process data for
  */
 export class ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection {
 
-    projectScanFileId: number
-    scanFilename_Array: Array<string> // Since can be > 1 scan filename for projectScanFileId
+    projectScanFileId_List: Array<number>
+    scanFilename_Array_Array: Array<Array<string>> // Since can be > 1 scan filename for projectScanFileId.  Can be multiple projectScanFileId
 }

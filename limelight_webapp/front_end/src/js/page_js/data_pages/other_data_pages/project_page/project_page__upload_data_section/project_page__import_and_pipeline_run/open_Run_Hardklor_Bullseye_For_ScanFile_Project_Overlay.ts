@@ -22,8 +22,8 @@ export class Open_Run_Hardklor_Bullseye_For_ScanFile_Project_Overlay__FunctionPa
 
     component_Params: {
         projectIdentifier : string
-        projectScanFileId: number
-        scanFilename_Array: Array<string> // Since can be > 1 scan filename for projectScanFileId
+        projectScanFileId_List: Array<number>
+        scanFilename_Array_Array: Array<Array<string>> // Since can be > 1 scan filename for projectScanFileId.  Can be multiple projectScanFileId
     }
     uploadComplete_Callback: () => void
 }
@@ -41,8 +41,8 @@ export const open_Run_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Over
 
     const scanFileSelection_For_FeatureDetectionRun: ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection = {
 
-        projectScanFileId: functionParams.component_Params.projectScanFileId,
-        scanFilename_Array: functionParams.component_Params.scanFilename_Array
+        projectScanFileId_List: functionParams.component_Params.projectScanFileId_List,
+        scanFilename_Array_Array: functionParams.component_Params.scanFilename_Array_Array
     }
 
     const projectPage_UploadData_UploadFiles__Params: ProjectPage_UploadData_UploadFiles__Params = {

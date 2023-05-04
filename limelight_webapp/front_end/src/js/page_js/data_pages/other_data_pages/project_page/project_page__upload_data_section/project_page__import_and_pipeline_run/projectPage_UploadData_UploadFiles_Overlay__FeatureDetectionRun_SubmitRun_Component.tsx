@@ -38,8 +38,8 @@ class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_
 
     mainParams: ProjectPage_UploadData_UploadFiles__Params
 
-    projectScanFileId: number
-    scanFilename_Array: Array<string> // Since can be > 1 scan filename for projectScanFileId
+    projectScanFileId_List: Array<number>
+    scanFilename_Array_Array: Array<Array<string>> // Since can be > 1 scan filename for projectScanFileId.  Can be multiple projectScanFileId
     callbackOn_Cancel_Close_Clicked: () => void
     callbackOn_Save_Clicked: () => void
 }
@@ -61,8 +61,8 @@ class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_
     hardklor_And_Bullseye_Files_FileUpload_CompleteSuccess?: boolean
     hardklor_And_Bullseye_Files_FileUpload_Failed?: boolean
 
-    hardklorFile_Upload_ErrorMessage?: string
-    bullseyeFile_Upload_ErrorMessage?: string
+    // hardklorFile_Upload_ErrorMessage?: string
+    // bullseyeFile_Upload_ErrorMessage?: string
 }
 
 /**
@@ -302,7 +302,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_Sub
                 uploadKey,
                 hardklor_Conf_Filename: fileToSend_Hardklor_Conf.name,
                 bullseye_Conf_Filename: fileToSend_Bullseye_Conf.name,
-                projectScanFileId: this.props.projectScanFileId,
+                projectScanFileId_List: this.props.projectScanFileId_List,
                 displayLabel: this._displayLabel_InputElement_Ref.current.value,
                 description: this._description_InputElement_Ref.current.value
             })
@@ -330,12 +330,16 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_Sub
                     <div style={ { fontSize: 18, fontWeight: "bold", marginBottom: 6 } }>
                         Submit Hardklor/Bullseye Run
                     </div>
-
-                    <div >
-                        <span>Use this form to run the Hardklor/Bullseye feature detection pipeline on </span>
-                        <span>{ this.props.scanFilename_Array.join( ", " ) }</span>
+                    <div style={ { marginBottom: 3 } }>
+                        Use this form to run the Hardklor/Bullseye feature detection pipeline on:
                     </div>
-
+                    { this.props.scanFilename_Array_Array.map( ( scanFilename_Array, index, array ) => {
+                        return (
+                            <div >
+                                { scanFilename_Array.join( ", " ) }
+                            </div>
+                        )
+                    } ) }
                 </div>
 
                 {
