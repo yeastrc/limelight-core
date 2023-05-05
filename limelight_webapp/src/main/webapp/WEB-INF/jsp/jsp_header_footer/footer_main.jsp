@@ -13,7 +13,7 @@
 			<span><img id="footer-logo-img" src="static/images/header-footer-logo.png"></span>
 		</div>
 		<div class="footer-right-container">
-			&copy; 2022 University of Washington
+			&copy; 2023 University of Washington
 			<%--
 				When Add Terms of Service, update link to page
 			
