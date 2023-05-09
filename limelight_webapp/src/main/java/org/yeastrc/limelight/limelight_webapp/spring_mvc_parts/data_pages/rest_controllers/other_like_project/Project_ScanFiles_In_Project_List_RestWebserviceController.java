@@ -170,9 +170,9 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
 			
-			if ( ! webSessionAuthAccessLevel.isAssistantProjectOwnerIfProjectNotLockedAllowed() ) {
+			if ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() ) {
 				
-				String msg = "( ! webSessionAuthAccessLevel.isAssistantProjectOwnerIfProjectNotLockedAllowed() )  Throw Limelight_WS_AuthError_Unauthorized_Exception";
+				String msg = "( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )  Throw Limelight_WS_AuthError_Unauthorized_Exception";
 				log.info( msg );
 				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
