@@ -11,6 +11,7 @@
 
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
+import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 
 
 
@@ -32,7 +33,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
 
     private _current__folderIds_ExpandedFolders : Set<number>
 
-    private _current__SearchTagIds_Selected : Set<number>
+    private _current__SearchTagIds_Selected : Search_Tags_Selections_Object
 
     private _current__SearchName_SearchId_FilterValue: string
 
@@ -106,7 +107,9 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
      */
     private _initialize__current__SearchTagIds_Selected() {
 
-        this._current__SearchTagIds_Selected = new Set();
+        let searchTagIdsSelected_Boolean__OR: Set<number> = new Set()
+        let searchTagIdsSelected_Boolean__AND: Set<number> = new Set()
+        let searchTagIdsSelected_Boolean__NOT: Set<number> = new Set()
 
         const storedValueJSON = window.sessionStorage.getItem(_SESSION_STORAGE_KEY__limelight_project_page_search_tag_ids_selected )
         if ( ! storedValueJSON ) {
@@ -122,18 +125,49 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
             }
             if ( storageValue ) {
                 if ( storageValue.projectIdentifier === this._projectIdentifierFromURL ) {
+                    if ( storageValue.searchTagIds_Selected_V2 ) {
+                        if ( storageValue.searchTagIds_Selected_V2.filter_OR && ( storageValue.searchTagIds_Selected_V2.filter_OR instanceof Array )) {
 
-                    if ( storageValue.searchTagIds_Selected && ( storageValue.searchTagIds_Selected instanceof Array )) {
+                            for ( const entry of storageValue.searchTagIds_Selected_V2.filter_OR ) {
+                                if ( variable_is_type_number_Check(entry) ) {
+                                    searchTagIdsSelected_Boolean__OR.add(entry)
+                                }
+                            }
+                        }
+                        if ( storageValue.searchTagIds_Selected_V2.filter_AND && ( storageValue.searchTagIds_Selected_V2.filter_AND instanceof Array )) {
+
+                            for ( const entry of storageValue.searchTagIds_Selected_V2.filter_AND ) {
+                                if ( variable_is_type_number_Check(entry) ) {
+                                    searchTagIdsSelected_Boolean__AND.add(entry)
+                                }
+                            }
+                        }
+                        if ( storageValue.searchTagIds_Selected_V2.filter_NOT && ( storageValue.searchTagIds_Selected_V2.filter_NOT instanceof Array )) {
+
+                            for ( const entry of storageValue.searchTagIds_Selected_V2.filter_NOT ) {
+                                if ( variable_is_type_number_Check(entry) ) {
+                                    searchTagIdsSelected_Boolean__NOT.add(entry)
+                                }
+                            }
+                        }
+
+                    } else if ( storageValue.searchTagIds_Selected && ( storageValue.searchTagIds_Selected instanceof Array )) {
+
+                        //  Secondary is original filtering
 
                         for ( const entry of storageValue.searchTagIds_Selected ) {
                             if ( variable_is_type_number_Check(entry) ) {
-                                this._current__SearchTagIds_Selected.add(entry)
+                                searchTagIdsSelected_Boolean__AND.add(entry)
                             }
                         }
                     }
                 }
             }
         }
+
+        this._current__SearchTagIds_Selected = new Search_Tags_Selections_Object({
+            searchTagIdsSelected_Boolean__OR, searchTagIdsSelected_Boolean__AND, searchTagIdsSelected_Boolean__NOT
+        })
 
         this._save_searchTagIds_Selected_To_SessionStorage( this._current__SearchTagIds_Selected );
     };
@@ -215,7 +249,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
 
     ////
 
-    get_SearchTagIds_Selected() : ReadonlySet<number> {
+    get_SearchTagIds_Selected() {
         return this._current__SearchTagIds_Selected
     }
 
@@ -227,26 +261,38 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
         {
             updated_SearchTagIds_Selected
         } : {
-            updated_SearchTagIds_Selected : Set<number>
+            updated_SearchTagIds_Selected : Search_Tags_Selections_Object
         }
     ) {
 
-        this._current__SearchTagIds_Selected = updated_SearchTagIds_Selected;
+        this._current__SearchTagIds_Selected = updated_SearchTagIds_Selected.clone();
 
         this._save_searchTagIds_Selected_To_SessionStorage( updated_SearchTagIds_Selected )
     }
 
-    private _save_searchTagIds_Selected_To_SessionStorage( updated_SearchTagIds_Selected_Set : Set<number> ) {
+    private _save_searchTagIds_Selected_To_SessionStorage( updated_SearchTagIds_Selected : Search_Tags_Selections_Object ) {
 
         window.setTimeout( () => {
 
-            let updated_SearchTagIds_Selected: Array<number> = [];
-            if ( updated_SearchTagIds_Selected_Set ) {
-                updated_SearchTagIds_Selected = Array.from( updated_SearchTagIds_Selected_Set )
+            let filter_OR: Array<number> = [];
+            let filter_AND: Array<number> = [];
+            let filter_NOT: Array<number> = [];
+
+            if ( updated_SearchTagIds_Selected && updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__OR ) {
+                filter_OR = Array.from( updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__OR )
+            }
+            if ( updated_SearchTagIds_Selected && updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__AND ) {
+                filter_AND = Array.from( updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__AND )
+            }
+            if ( updated_SearchTagIds_Selected && updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__NOT ) {
+                filter_NOT = Array.from( updated_SearchTagIds_Selected.searchTagIdsSelected_Boolean__NOT )
             }
 
             const storageValue: Internal__SearchTagIds_Selected__SessionStorageObject = {
-                searchTagIds_Selected: updated_SearchTagIds_Selected,
+                searchTagIds_Selected: undefined,
+                searchTagIds_Selected_V2: {
+                    filter_OR, filter_AND, filter_NOT
+                },
                 projectIdentifier: this._projectIdentifierFromURL
             }
             const storedValueJSON = JSON.stringify( storageValue );
@@ -306,7 +352,12 @@ interface Internal__FolderIds_ExpandedFolders__SessionStorageObject {
 }
 
 interface Internal__SearchTagIds_Selected__SessionStorageObject {
-    searchTagIds_Selected: Array<number>
+    searchTagIds_Selected: Array<number>  //  Original 'AND' filtering on search tag ids
+    searchTagIds_Selected_V2: {
+        filter_OR: Array<number>
+        filter_AND: Array<number>
+        filter_NOT: Array<number>
+    }
     projectIdentifier: string
 }
 

@@ -33,6 +33,7 @@ import {
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 
 /////
 
@@ -151,10 +152,9 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
     private _folderWasAdded: boolean = false;
 
+    private _search_Tags_Selections_Object: Search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
-    private _searchTag_Filter_SelectedTagIds: Set<number> = new Set()
-
-    private _always_show_selected_searches = false
+    // private _always_show_selected_searches = false
 
     private _searchName_SearchId_Filter_UserInput = ""
 
@@ -314,7 +314,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
     private _searchesAndFolders_Update_FilterOnSearchTags() : void {
 
         if ( this._searchName_SearchId_Filter_UserInput.length === 0 &&
-            this._searchTag_Filter_SelectedTagIds.size === 0 ) {
+            ( ! this._search_Tags_Selections_Object.is_any_selections() ) ) {
 
             this._projectSearchIds_ForSearchesPassFilter = new Set( this.props.searchesSearchTagsFolders_Result_Root.get_all_Searches_ProjectSearchIds_Set() )
         }
@@ -333,6 +333,8 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
             let foundAllFilteringOn = true;
 
+            //   Filter on Search Name
+
             if ( this._searchName_SearchId_Filter_UserInput.length > 0 ) {
                 if ( ( ! searchEntry.searchName.toLocaleLowerCase().includes( this._searchName_SearchId_Filter_UserInput.toLocaleLowerCase() ) )
                     && ( ! searchEntry.searchId.toString().includes( this._searchName_SearchId_Filter_UserInput ) ) ) {
@@ -343,10 +345,40 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
             if ( foundAllFilteringOn ) {
 
-                for ( const filterOn_SelectedTagId of this._searchTag_Filter_SelectedTagIds ) {
-                    if ( ! searchEntry.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
-                        foundAllFilteringOn = false;
-                        break
+                //  Filter on Search Tags
+
+                {  //  Filter on the 'AND' filters
+                    if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.size > 0 ) {
+                        for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND ) {
+                            if ( ! searchEntry.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                foundAllFilteringOn = false
+                                break;
+                            }
+                        }
+                    }
+                }
+                if ( foundAllFilteringOn ) { //  Filter on the 'NOT' filters
+                    if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT.size > 0 ) {
+                        for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT ) {
+                            if ( searchEntry.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                foundAllFilteringOn = false
+                                break;
+                            }
+                        }
+                    }
+                }
+                if ( foundAllFilteringOn ) { //  Filter on the 'OR' filters
+                    if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR.size > 0 ) {
+                        let foundAny_Of_OR_Tags = false;
+                        for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR ) {
+                            if ( searchEntry.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                foundAny_Of_OR_Tags = true
+                                break;
+                            }
+                        }
+                        if ( ! foundAny_Of_OR_Tags ) {
+                            foundAllFilteringOn = false
+                        }
                     }
                 }
             }
@@ -612,10 +644,10 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
                                         <Search_Tags_SelectSearchTags_Component
                                             searchTagData_Root={ this._search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                            searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                            search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                             searchTagsSelected_Changed_Callback={ (params) => {
 
-                                                this._searchTag_Filter_SelectedTagIds = params.searchTagIdsSelected;
+                                                this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
 
                                                 this._searchesAndFolders_Update_FilterOnSearchTags()
 
@@ -631,7 +663,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
                             {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
 
-                            { this._searchName_SearchId_Filter_UserInput.length > 0 || this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                            { this._searchName_SearchId_Filter_UserInput.length > 0 || this._search_Tags_Selections_Object.is_any_selections() ? (
 
                                 <div
                                     className=" filter-on-tags--currently-filtering "
@@ -639,7 +671,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                                 >
                                     { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
                                         <div  //  Add marginBottom if also have Search Tags to display
-                                            style={ { marginTop: 7, marginBottom : this._searchTag_Filter_SelectedTagIds.size > 0 ? 5 : null } }
+                                            style={ { marginTop: 7, marginBottom : this._search_Tags_Selections_Object.is_any_selections() ? 5 : null } }
                                         >
                                         <span
                                             style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
@@ -666,24 +698,44 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                                         </div>
                                     ) : null }
 
-                                    { this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                                    { this._search_Tags_Selections_Object.is_any_selections() ? (
 
                                         <div
                                             style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
                                         >
                                             <div style={ { marginTop: 2 } }>
-                                                <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
-                                                >
-                                                    Filtering on tags:
-                                                </span>
+                                                <div>
+                                                    <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
+                                                    >
+                                                        Filtering on tags:
+                                                    </span>
+                                                </div>
+                                                <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                                    <span
+                                                        className=" fake-link "
+                                                        style={ { fontSize: 10 } }
+                                                        title="Clear tag filters"
+                                                        onClick={ () => {
+
+                                                            this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
+
+                                                            this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                            this.setState({ force_Rerender: {} })
+                                                        } }
+                                                    >
+                                                        clear
+                                                    </span>
+                                                </div>
+
                                             </div>
                                             <div>
                                                 <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
                                                     searchTagData_Root={ this._search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                                    searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                                    search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                                     clearSelection_Callback={ () => {
 
-                                                        this._searchTag_Filter_SelectedTagIds = new Set();
+                                                        this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
                                                         this._searchesAndFolders_Update_FilterOnSearchTags()
 
@@ -704,7 +756,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                                         No searches in this project match current filters.
                                     </span>
 
-                                    {/* Error Message broken out by what filtering on
+                                    {/*  Message broken out by what filtering on
 
                                     { this._searchName_SearchId_Filter_UserInput.length > 0 && this._searchTag_Filter_SelectedTagIds.size > 0 ? (
                                         <span>

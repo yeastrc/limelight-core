@@ -40,6 +40,7 @@ import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} 
 import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 
 /**
  *
@@ -111,7 +112,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
     private _searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
 
-    private _searchTag_Filter_SelectedTagIds: Set<number> = new Set()
+    private _search_Tags_Selections_Object: Search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
     private _searchName_SearchId_Filter_UserInput = ""
 
@@ -227,27 +228,39 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam( a.tagString, b.tagString )
         })
 
-        let searchTagIds_Selected_Copy: Set<number>
+        {  //   Set Current Search Tag Filters from the stored entries in Browser Session Storage if any exist and for current project id
 
-        {  //  Remove tagId in this.props.searchTagIds_Selected_InitialValue that is NOT in searchTagStrings_AllSearches_ArraySorted
+            const fromSessionStorage_SearchTagIds_Selected = this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_SearchTagIds_Selected();
+            if ( fromSessionStorage_SearchTagIds_Selected ) {
 
-            {
-                const fromSessionStorage_SearchTagIds_Selected = this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_SearchTagIds_Selected();
-                if ( fromSessionStorage_SearchTagIds_Selected ) {
-                    searchTagIds_Selected_Copy = new Set(fromSessionStorage_SearchTagIds_Selected)
-                } else {
-                    searchTagIds_Selected_Copy = new Set()
+                //   this._searchTag_Filter_SelectedTagIds set to default empty at object instantiation so only continue if have saved values
+
+                //   Then remove filters for tags NOT currently in the list of searches.  Then Set that as the current search tag filters.
+
+                const filterFor_OR_AND_or_NOT = (inputFilterTagIds: ReadonlySet<number>) : Set<number> => {
+                    if ( ! inputFilterTagIds ) {
+                        return new Set()
+                    }
+
+                    const output_Filter_TagIds = new Set( inputFilterTagIds )
+
+                    for ( const searchTagId_Selected_Input of inputFilterTagIds ) {
+                        if ( ! searchesSearchTagsFolders_Result_Root.get_SearchTags_InProject_For_TagId( searchTagId_Selected_Input ) ) {
+                            output_Filter_TagIds.delete( searchTagId_Selected_Input );
+                        }
+                    }
+                    return output_Filter_TagIds;
                 }
 
+                //   Then Set that as the current search tag filters.
+
+                this._search_Tags_Selections_Object = new Search_Tags_Selections_Object({
+                    searchTagIdsSelected_Boolean__OR: filterFor_OR_AND_or_NOT(fromSessionStorage_SearchTagIds_Selected.searchTagIdsSelected_Boolean__OR),
+                    searchTagIdsSelected_Boolean__AND: filterFor_OR_AND_or_NOT(fromSessionStorage_SearchTagIds_Selected.searchTagIdsSelected_Boolean__AND),
+                    searchTagIdsSelected_Boolean__NOT: filterFor_OR_AND_or_NOT(fromSessionStorage_SearchTagIds_Selected.searchTagIdsSelected_Boolean__NOT)
+                });
             }
 
-            const searchTagIds_Selected_InitialValue_COPY = Array.from( searchTagIds_Selected_Copy );
-
-            for ( const searchTagId_Selected_InitialValue_COPY of searchTagIds_Selected_InitialValue_COPY ) {
-                if ( ! searchesSearchTagsFolders_Result_Root.get_SearchTags_InProject_For_TagId( searchTagId_Selected_InitialValue_COPY ) ) {
-                    searchTagIds_Selected_Copy.delete( searchTagId_Selected_InitialValue_COPY );
-                }
-            }
         }
 
         const searchTagCategory_Array_Filter_AllEntries: Array<Search_Tags_SelectSearchTags_Component_SingleSearchTagCategory_Entry> = []
@@ -269,8 +282,6 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
             searchTagEntries_Filter_AllEntries.push(tagEntry)
         }
-
-        this._searchTag_Filter_SelectedTagIds = new Set( searchTagIds_Selected_Copy );  //  Copy in defaults
 
         let showNoSearchesMessage_NoSearchesLoadedFromServer = false;
 
@@ -298,7 +309,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      */
     private _searchesAndFolders_Update_FilterOnSearchTags() : void {
         try {
-            if ( this._searchName_SearchId_Filter_UserInput.length === 0 && this._searchTag_Filter_SelectedTagIds.size === 0 ) {
+            if ( this._searchName_SearchId_Filter_UserInput.length === 0 && ( ! this._search_Tags_Selections_Object.is_any_selections() ) ) {
                 //  NO Filtering on Search Name, Search Id, or Search Tags so just put this._searchesAndFolders_Unfiltered_FromWebservice in State
 
                 this.setState({
@@ -326,6 +337,8 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                 let foundAllFilteringOn = true;
 
+                //   Filter on Search Name
+
                 if ( this._searchName_SearchId_Filter_UserInput.length > 0 ) {
                     if ( ( ! searchData.searchName.toLocaleLowerCase().includes( this._searchName_SearchId_Filter_UserInput.toLocaleLowerCase() ) )
                         && ( ! searchData.searchId.toString().includes( this._searchName_SearchId_Filter_UserInput ) ) ) {
@@ -334,17 +347,48 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                     }
                 }
 
-                if ( ! searchData.searchTagIds_Set ) {
-                    const msg = "searchData.searchTagIds_Set NOT Populated for projectSearchId: " + projectSearchId;
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
                 if ( foundAllFilteringOn ) {
-                    for ( const filterOn_SelectedTagId of this._searchTag_Filter_SelectedTagIds ) {
-                        if ( ! searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
-                            foundAllFilteringOn = false
-                            break;
+
+                    //  Filter on Search Tags
+
+                    if ( ! searchData.searchTagIds_Set ) {
+                        const msg = "searchData.searchTagIds_Set NOT Populated for projectSearchId: " + projectSearchId;
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    {  //  Filter on the 'AND' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.size > 0 ) {
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND ) {
+                                if ( ! searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAllFilteringOn = false
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if ( foundAllFilteringOn ) { //  Filter on the 'NOT' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT.size > 0 ) {
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT ) {
+                                if ( searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAllFilteringOn = false
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if ( foundAllFilteringOn ) { //  Filter on the 'OR' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR.size > 0 ) {
+                            let foundAny_Of_OR_Tags = false;
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR ) {
+                                if ( searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAny_Of_OR_Tags = true
+                                    break;
+                                }
+                            }
+                            if ( ! foundAny_Of_OR_Tags ) {
+                                foundAllFilteringOn = false
+                            }
                         }
                     }
                 }
@@ -873,17 +917,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                     <Search_Tags_SelectSearchTags_Component
                                         searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                        searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                        search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                         searchTagsSelected_Changed_Callback={ (params) => {
 
-                                            this._searchTag_Filter_SelectedTagIds = params.searchTagIdsSelected;
+                                            this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
 
                                             this._searchesAndFolders_Update_FilterOnSearchTags()
 
                                             this.setState({ force_Rerender: {} })
 
                                             this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
-                                            update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._searchTag_Filter_SelectedTagIds })
+                                            update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object })
                                         } }
                                     />
 
@@ -895,7 +939,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                         {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
 
-                        { this._searchName_SearchId_Filter_UserInput.length > 0 || this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                        { this._searchName_SearchId_Filter_UserInput.length > 0 || this._search_Tags_Selections_Object.is_any_selections() ? (
 
                             <div
                                 className=" filter-on-tags--currently-filtering "
@@ -903,7 +947,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                             >
                                 { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
                                     <div  //  Add marginBottom if also have Search Tags to display
-                                        style={ { marginTop: 7, marginBottom : this._searchTag_Filter_SelectedTagIds.size > 0 ? 5 : null } }
+                                        style={ { marginTop: 7, marginBottom : this._search_Tags_Selections_Object.is_any_selections() ? 5 : null } }
                                     >
                                         <span
                                             style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
@@ -933,31 +977,53 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     </div>
                                 ) : null }
 
-                                { this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                                { this._search_Tags_Selections_Object.is_any_selections() ? (
 
                                     <div
                                         style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
                                     >
                                         <div>
-                                            <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
-                                            >
-                                                Filtering on tags:
-                                            </span>
+                                            <div>
+                                                <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
+                                                >
+                                                    Filtering on tags:
+                                                </span>
+                                            </div>
+                                            <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                                <span
+                                                    className=" fake-link "
+                                                    style={ { fontSize: 10 } }
+                                                    title="Clear tag filters"
+                                                    onClick={ () => {
+
+                                                        this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
+
+                                                        this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                        this.setState({ force_Rerender: {} })
+
+                                                        this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+                                                        update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object })
+                                                    } }
+                                                >
+                                                    clear
+                                                </span>
+                                            </div>
                                         </div>
                                         <div>
                                             <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
                                                 searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                                searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                                search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                                 clearSelection_Callback={ () => {
 
-                                                    this._searchTag_Filter_SelectedTagIds = new Set();
+                                                    this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
                                                     this._searchesAndFolders_Update_FilterOnSearchTags()
 
                                                     this.setState({ force_Rerender: {} })
 
                                                     this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
-                                                    update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._searchTag_Filter_SelectedTagIds })
+                                                    update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object })
                                                 } }
                                             />
                                         </div>

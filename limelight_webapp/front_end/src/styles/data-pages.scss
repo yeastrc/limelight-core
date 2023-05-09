@@ -17,6 +17,26 @@
      padding: 4px;
      border-radius: 10px;
      margin-right: 2px;
+
+   }
+
+   .search-tag-display-everywhere--not-selection {
+     position: relative;
+   }
+   .search-tag-display-everywhere--not-selection:before {
+     position: absolute;
+     content: "";
+     left: 0;
+     top: 50%;
+     right: 0;
+     border-top: 1px solid;
+     border-color: inherit;
+
+     -webkit-transform:rotate(-5deg);
+     -moz-transform:rotate(-5deg);
+     -ms-transform:rotate(-5deg);
+     -o-transform:rotate(-5deg);
+     transform:rotate(-5deg);
    }
 
    //   Filter On Tags

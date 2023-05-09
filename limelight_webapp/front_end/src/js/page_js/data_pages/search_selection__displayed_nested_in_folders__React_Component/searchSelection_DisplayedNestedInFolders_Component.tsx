@@ -35,6 +35,7 @@ import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensiti
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 
 
 
@@ -180,7 +181,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
     private _search_Selected_InProgress : Internal__All_SearchSelectionData = new Internal__All_SearchSelectionData()
 
-    private _searchTag_Filter_SelectedTagIds: Set<number> = new Set()
+    private _search_Tags_Selections_Object: Search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
 
     private _searchName_SearchId_Filter_UserInput = ""
 
@@ -375,7 +376,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
      */
     private _searchesAndFolders_Update_FilterOnSearchTags() : void {
         try {
-            if ( this._searchName_SearchId_Filter_UserInput.length === 0 && this._searchTag_Filter_SelectedTagIds.size === 0 ) {
+            if ( this._searchName_SearchId_Filter_UserInput.length === 0 && ( ! this._search_Tags_Selections_Object.is_any_selections() ) ) {
                 //  NO Filtering on Search Name, Search Id, or Search Tags so just put this._searchesAndFolders_Unfiltered_FromWebservice in State
 
                 this.setState({
@@ -403,6 +404,8 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
                 let foundAllFilteringOn = true;
 
+                //   Filter on Search Name
+
                 if ( this._searchName_SearchId_Filter_UserInput.length > 0 ) {
                     if ( ( ! searchData.searchName.toLocaleLowerCase().includes( this._searchName_SearchId_Filter_UserInput.toLocaleLowerCase() ) )
                         && ( ! searchData.searchId.toString().includes( this._searchName_SearchId_Filter_UserInput ) ) ) {
@@ -411,17 +414,48 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                     }
                 }
 
-                if ( ! searchData.searchTagIds_Set ) {
-                    const msg = "searchData.searchTagIds_Set NOT Populated for projectSearchId: " + projectSearchId;
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-
                 if ( foundAllFilteringOn ) {
-                    for ( const filterOn_SelectedTagId of this._searchTag_Filter_SelectedTagIds ) {
-                        if ( ! searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
-                            foundAllFilteringOn = false
-                            break;
+
+                    //  Filter on Search Tags
+
+                    if ( ! searchData.searchTagIds_Set ) {
+                        const msg = "searchData.searchTagIds_Set NOT Populated for projectSearchId: " + projectSearchId;
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    {  //  Filter on the 'AND' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.size > 0 ) {
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND ) {
+                                if ( ! searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAllFilteringOn = false
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if ( foundAllFilteringOn ) { //  Filter on the 'NOT' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT.size > 0 ) {
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT ) {
+                                if ( searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAllFilteringOn = false
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if ( foundAllFilteringOn ) { //  Filter on the 'OR' filters
+                        if ( this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR.size > 0 ) {
+                            let foundAny_Of_OR_Tags = false;
+                            for ( const filterOn_SelectedTagId of this._search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR ) {
+                                if ( searchData.searchTagIds_Set.has( filterOn_SelectedTagId ) ) {
+                                    foundAny_Of_OR_Tags = true
+                                    break;
+                                }
+                            }
+                            if ( ! foundAny_Of_OR_Tags ) {
+                                foundAllFilteringOn = false
+                            }
                         }
                     }
                 }
@@ -608,10 +642,10 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
                             <Search_Tags_SelectSearchTags_Component
                                 searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                 searchTagsSelected_Changed_Callback={ (params) => {
 
-                                    this._searchTag_Filter_SelectedTagIds = params.searchTagIdsSelected;
+                                    this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
 
                                     this._searchesAndFolders_Update_FilterOnSearchTags()
 
@@ -627,7 +661,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
                 {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
 
-                { this._searchName_SearchId_Filter_UserInput.length > 0 || this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                { this._searchName_SearchId_Filter_UserInput.length > 0 || ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
 
                     <div
                         className=" filter-on-tags--currently-filtering "
@@ -635,7 +669,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                     >
                         { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
                             <div  //  Add marginBottom if also have Search Tags to display
-                                style={ { marginTop: 7, marginBottom : this._searchTag_Filter_SelectedTagIds.size > 0 ? 5 : null } }
+                                style={ { marginTop: 7, marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() ) ? 5 : null } }
                             >
                                         <span
                                             style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
@@ -662,24 +696,43 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                             </div>
                         ) : null }
 
-                        { this._searchTag_Filter_SelectedTagIds.size > 0 ? (
+                        { ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
 
                             <div
                                 style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
                             >
                                 <div style={ { marginTop: 2 } }>
-                                    <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
-                                    >
-                                        Filtering on tags:
-                                    </span>
+                                    <div>
+                                        <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
+                                        >
+                                            Filtering on tags:
+                                        </span>
+                                    </div>
+                                    <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                        <span
+                                            className=" fake-link "
+                                            style={ { fontSize: 10 } }
+                                            title="Clear tag filters"
+                                            onClick={  () => {
+
+                                                this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
+
+                                                this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                this.setState({ force_Rerender: {} })
+                                            }  }
+                                        >
+                                            clear
+                                        </span>
+                                    </div>
                                 </div>
                                 <div>
                                     <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
                                         searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                        searchTagIdsSelected={ this._searchTag_Filter_SelectedTagIds }
+                                        search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
                                         clearSelection_Callback={ () => {
 
-                                            this._searchTag_Filter_SelectedTagIds = new Set();
+                                            this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
 
                                             this._searchesAndFolders_Update_FilterOnSearchTags()
 
