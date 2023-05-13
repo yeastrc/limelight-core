@@ -38,6 +38,12 @@
       		<!-- Roll over the log file based on time  -->
         <TimeBasedTriggeringPolicy/>
       </Policies>
+        <DefaultRolloverStrategy>
+        <Delete basePath="logs_RunImporter" maxDepth="1">
+          <IfFileName glob="limelight_RunImporter-*.log.gz" />
+          <IfLastModified age="P20D" />
+        </Delete>
+      </DefaultRolloverStrategy>
       <DefaultRolloverStrategy max="20" />
     </RollingFile>
         
