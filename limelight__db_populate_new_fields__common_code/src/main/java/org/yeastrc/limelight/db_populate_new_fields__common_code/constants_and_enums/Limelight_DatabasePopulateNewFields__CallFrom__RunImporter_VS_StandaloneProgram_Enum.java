@@ -1,0 +1,7 @@
+package org.yeastrc.limelight.db_populate_new_fields__common_code.constants_and_enums;
+
+public enum Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum {
+
+	LIMELIGHT__RUN_IMPORTER_PROGRAM,
+	STANDALONE_PROGRAM
+}

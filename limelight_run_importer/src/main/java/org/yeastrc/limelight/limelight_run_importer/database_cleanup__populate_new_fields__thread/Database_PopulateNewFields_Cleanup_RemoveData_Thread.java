@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.yeastrc.limelight.limelight_run_importer.database_cleanup__thread_and_main;
+package org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread;
 
 import java.util.Calendar;
 
@@ -26,28 +26,36 @@ import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_Data
 import org.yeastrc.limelight.database_cleanup.constants_and_enums.Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum;
 import org.yeastrc.limelight.database_cleanup.main_entry_point.Limelight_DatabaseCleanup__Main_EntryPoint;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.common.database_connection.Limelight_DatabasePopulateNewFields__DatabaseConnection_Provider_DatabasePopulateNewFieldsCode;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.constants_and_enums.Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.main_entry_point.Limelight_DatabasePopulateNewFields__Main_EntryPoint;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
+import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_populate_new_fields__common_code.RunImporter__Limelight_Database_PopulateNewFields__DBConnectionProvider_Provider;
 import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
 
 /**
- * Remove import files from disk after a delayed time of 3 days thread
+ * Database Main thread - Populate new fields and remove database records to clean up database
  * 
- * Skip running if DB Schema Version Number in DB  NOT  match DB Schema Version Number in Code. 
+ * Skip running if DB Schema Version Number in DB  NOT  match DB Schema Version Number in Code.
+ * 
+ *  See class method this.wait_Until_10PM_Tomorrow() for when will run next
  *
  */
-public class DatabaseCleanup_RemoveData_Thread extends Thread {
+public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread {
 
-	private static final String className = DatabaseCleanup_RemoveData_Thread.class.getSimpleName();
+	private static final String className = Database_PopulateNewFields_Cleanup_RemoveData_Thread.class.getSimpleName();
+	
+	// See class method this.wait_Until_10PM_Tomorrow() for when will run next
 
-	private static final long TWENTY_FOUR_HOURS = 24;  // Run every 24 hours
-		
-	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
+//	private static final long TWENTY_FOUR_HOURS = 24;  // Run every 24 hours
+//		
+//	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
 
-	private static final Logger log = LoggerFactory.getLogger( DatabaseCleanup_RemoveData_Thread.class );
+	private static final Logger log = LoggerFactory.getLogger( Database_PopulateNewFields_Cleanup_RemoveData_Thread.class );
 
 
 	/**
@@ -108,7 +116,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static DatabaseCleanup_RemoveData_Thread getNewInstance( 
+	public static Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance( 
 
 			String threadLabel, 
 			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
@@ -129,7 +137,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
 		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 
-		DatabaseCleanup_RemoveData_Thread instance = new DatabaseCleanup_RemoveData_Thread(threadLabel);
+		Database_PopulateNewFields_Cleanup_RemoveData_Thread instance = new Database_PopulateNewFields_Cleanup_RemoveData_Thread(threadLabel);
 		instance.init();
 		return instance;
 	}
@@ -137,7 +145,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	/**
 	 * default Constructor
 	 */
-	private DatabaseCleanup_RemoveData_Thread() {
+	private Database_PopulateNewFields_Cleanup_RemoveData_Thread() {
 		//  Set a name for the thread
 		String threadName = className;
 		setName( threadName );
@@ -146,7 +154,7 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 	 * Constructor
 	 * @param s
 	 */
-	private DatabaseCleanup_RemoveData_Thread( String threadLabel ) {
+	private Database_PopulateNewFields_Cleanup_RemoveData_Thread( String threadLabel ) {
 		super(threadLabel);
 	}
 
@@ -207,6 +215,9 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 		log.debug( "run() entered" );
 
 		try {
+			Limelight_DatabasePopulateNewFields__DatabaseConnection_Provider_DatabasePopulateNewFieldsCode.getSingletonInstance()
+			.setDatabasePopulateNewFields_DBConnectionProvider_Provider_IF(
+					RunImporter__Limelight_Database_PopulateNewFields__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory));
 
 			Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
 			.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
@@ -262,10 +273,18 @@ public class DatabaseCleanup_RemoveData_Thread extends Thread {
 					}
 
 					///////////////
+					
+					// Populate new Database fields
+
+					log.warn( "INFO:: STARTING: Database Populate New Fields.  When completed it will wait before it runs again" );
+
+					Limelight_DatabasePopulateNewFields__Main_EntryPoint.getSingletonInstance()
+					.limelight_DatabasePopulateNewFields__Main_EntryPoint(
+							Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM );
+
+					//  Database Cleanup
 
 					log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait before it runs again" );
-
-					//  Main Processing
 
 					Limelight_DatabaseCleanup__Main_EntryPoint.getSingletonInstance()
 					.limelight_DatabaseCleanup__Main_EntryPoint(

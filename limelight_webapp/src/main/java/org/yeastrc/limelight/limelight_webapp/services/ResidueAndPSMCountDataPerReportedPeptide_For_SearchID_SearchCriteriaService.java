@@ -25,10 +25,10 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ResidueAndPSMCountDataPerReportedPeptide_Root;
@@ -51,7 +51,7 @@ public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteri
 	private PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF psmCountForSearchIdReportedPeptideIdSearcher;
 
 	@Autowired
-	private ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF proteinCoverage_For_SearchIdReportedPeptideId_Searcher;
+	private ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_IF proteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher;
 		
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.services.Psm_Count_For_Residues_For_SearchID_SearchCriteriaServiceIF#getPsm_Count_For_Residues_For_SearchID_SearchCriteriaService(java.util.List, int, org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel)
@@ -125,17 +125,19 @@ public class ResidueAndPSMCountDataPerReportedPeptide_For_SearchID_SearchCriteri
 			
 			Map<Integer, List<Integer>> proteinSequenceVersionIdsPeptidePositions = new HashMap<>();
 					
-			List<ProteinCoverageDTO> proteinVersionIdsForSearchIdReportedPeptideId = 
-					proteinCoverage_For_SearchIdReportedPeptideId_Searcher
-					.getProteinCoverage_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
+			{
+				List<ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem> proteinVersionIdsForSearchIdReportedPeptideId = 
+						proteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher
+						.getProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
 
-			for ( ProteinCoverageDTO item : proteinVersionIdsForSearchIdReportedPeptideId ) {
-				List<Integer> peptidePositions = proteinSequenceVersionIdsPeptidePositions.get( item.getProteinSequenceVersionId() );
-				if ( peptidePositions == null ) {
-					peptidePositions = new ArrayList<>();
-					proteinSequenceVersionIdsPeptidePositions.put( item.getProteinSequenceVersionId(), peptidePositions );
+				for ( ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem item : proteinVersionIdsForSearchIdReportedPeptideId ) {
+					List<Integer> peptidePositions = proteinSequenceVersionIdsPeptidePositions.get( item.getProteinSequenceVersionId() );
+					if ( peptidePositions == null ) {
+						peptidePositions = new ArrayList<>();
+						proteinSequenceVersionIdsPeptidePositions.put( item.getProteinSequenceVersionId(), peptidePositions );
+					}
+					peptidePositions.add( item.getProteinStartPosition() );
 				}
-				peptidePositions.add( item.getProteinStartPosition() );
 			}
 			
 			if ( ! perResidueCounts.isEmpty() ) {

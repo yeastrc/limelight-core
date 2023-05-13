@@ -17,7 +17,6 @@
 */
 package org.yeastrc.limelight.limelight_shared.dto;
 
-
 /**
  * 
  * table protein_coverage_tbl
@@ -34,13 +33,19 @@ public class ProteinCoverageDTO {
 	private boolean peptideProteinMatchNotExactMatch; //  Caused by "I" "L" equivalent and other causes
 	private boolean protein_IsDecoy;
 	private boolean protein_IsIndependentDecoy;
-
+	private String protein_PreResidue;  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+	private String protein_PostResidue; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
+	private Boolean peptideAtProteinStart_Flag;  //  peptide at start of protein.  null until computed
+	private Boolean peptideAtProteinEnd_Flag;  //  peptide at end of protein.  null until computed
+		
 	//  id is not part of equals or hashCode
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((peptideAtProteinEnd_Flag == null) ? 0 : peptideAtProteinEnd_Flag.hashCode());
+		result = prime * result + ((peptideAtProteinStart_Flag == null) ? 0 : peptideAtProteinStart_Flag.hashCode());
 		result = prime * result + peptideIdInfoOnly;
 		result = prime * result + (peptideProteinMatchNotExactMatch ? 1231 : 1237);
 		result = prime * result + proteinEndPosition;
@@ -48,11 +53,12 @@ public class ProteinCoverageDTO {
 		result = prime * result + proteinStartPosition;
 		result = prime * result + (protein_IsDecoy ? 1231 : 1237);
 		result = prime * result + (protein_IsIndependentDecoy ? 1231 : 1237);
+		result = prime * result + ((protein_PostResidue == null) ? 0 : protein_PostResidue.hashCode());
+		result = prime * result + ((protein_PreResidue == null) ? 0 : protein_PreResidue.hashCode());
 		result = prime * result + reportedPeptideId;
 		result = prime * result + searchId;
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -62,6 +68,16 @@ public class ProteinCoverageDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		ProteinCoverageDTO other = (ProteinCoverageDTO) obj;
+		if (peptideAtProteinEnd_Flag == null) {
+			if (other.peptideAtProteinEnd_Flag != null)
+				return false;
+		} else if (!peptideAtProteinEnd_Flag.equals(other.peptideAtProteinEnd_Flag))
+			return false;
+		if (peptideAtProteinStart_Flag == null) {
+			if (other.peptideAtProteinStart_Flag != null)
+				return false;
+		} else if (!peptideAtProteinStart_Flag.equals(other.peptideAtProteinStart_Flag))
+			return false;
 		if (peptideIdInfoOnly != other.peptideIdInfoOnly)
 			return false;
 		if (peptideProteinMatchNotExactMatch != other.peptideProteinMatchNotExactMatch)
@@ -76,23 +92,34 @@ public class ProteinCoverageDTO {
 			return false;
 		if (protein_IsIndependentDecoy != other.protein_IsIndependentDecoy)
 			return false;
+		if (protein_PostResidue == null) {
+			if (other.protein_PostResidue != null)
+				return false;
+		} else if (!protein_PostResidue.equals(other.protein_PostResidue))
+			return false;
+		if (protein_PreResidue == null) {
+			if (other.protein_PreResidue != null)
+				return false;
+		} else if (!protein_PreResidue.equals(other.protein_PreResidue))
+			return false;
 		if (reportedPeptideId != other.reportedPeptideId)
 			return false;
 		if (searchId != other.searchId)
 			return false;
 		return true;
 	}
-	
-	/////
-	
 	@Override
 	public String toString() {
 		return "ProteinCoverageDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
 				+ ", peptideIdInfoOnly=" + peptideIdInfoOnly + ", proteinSequenceVersionId=" + proteinSequenceVersionId
 				+ ", proteinStartPosition=" + proteinStartPosition + ", proteinEndPosition=" + proteinEndPosition
 				+ ", peptideProteinMatchNotExactMatch=" + peptideProteinMatchNotExactMatch + ", protein_IsDecoy="
-				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy + "]";
+				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy
+				+ ", protein_PreResidue=" + protein_PreResidue + ", protein_PostResidue=" + protein_PostResidue
+				+ ", peptideAtProteinStart_Flag=" + peptideAtProteinStart_Flag + ", peptideAtProteinEnd_Flag="
+				+ peptideAtProteinEnd_Flag + "]";
 	}
+
 
 	/////
 	
@@ -156,6 +183,28 @@ public class ProteinCoverageDTO {
 	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
 		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
 	}
-
-	
+	public String getProtein_PreResidue() {
+		return protein_PreResidue;
+	}
+	public void setProtein_PreResidue(String protein_PreResidue) {
+		this.protein_PreResidue = protein_PreResidue;
+	}
+	public String getProtein_PostResidue() {
+		return protein_PostResidue;
+	}
+	public void setProtein_PostResidue(String protein_PostResidue) {
+		this.protein_PostResidue = protein_PostResidue;
+	}
+	public Boolean getPeptideAtProteinStart_Flag() {
+		return peptideAtProteinStart_Flag;
+	}
+	public void setPeptideAtProteinStart_Flag(Boolean peptideAtProteinStart_Flag) {
+		this.peptideAtProteinStart_Flag = peptideAtProteinStart_Flag;
+	}
+	public Boolean getPeptideAtProteinEnd_Flag() {
+		return peptideAtProteinEnd_Flag;
+	}
+	public void setPeptideAtProteinEnd_Flag(Boolean peptideAtProteinEnd_Flag) {
+		this.peptideAtProteinEnd_Flag = peptideAtProteinEnd_Flag;
+	}	
 }

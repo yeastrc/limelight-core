@@ -20,7 +20,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 
 	private static final Logger log = LoggerFactory.getLogger( ImportRunImporterDBConnectionFactory.class );
 	
-	private static final int MAX_TOTAL_DB_CONNECTIONS = 2;
+	private static final int MAX_TOTAL_DB_CONNECTIONS = 3;
 	
 	private static final String DEFAULT_DATABASE_NAME = "limelight";
 	

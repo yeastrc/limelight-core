@@ -27,6 +27,13 @@ rootProject.name = 'limelight'
 project(":limelight_shared_code").projectDir = new File( settingsDir, "../limelight_shared_code")
  
 /*
+ *  Specify dependency on Limelight limelight__db_populate_new_fields__common_code Code
+ */
+ 
+ include "limelight__db_populate_new_fields__common_code"
+project(":limelight__db_populate_new_fields__common_code").projectDir = new File( settingsDir, "../limelight__db_populate_new_fields__common_code")
+ 
+/*
  *  Specify dependency on limelight_submit_import_client_connector to get Webservice Request and Response Java Classes
  */
  

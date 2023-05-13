@@ -15,6 +15,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
  *
@@ -51,7 +52,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique,
             per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
         } : {
-            proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
+            proteinCoverage_KeyReportedPeptideId : Map<number, Array<{
+                reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean
+                
+                //  NOT YET RETURNED
+//                protein_PreResidue: string, protein_PostResidue: string, peptideAtProteinStart_Flag: boolean, peptideAtProteinEnd_Flag: boolean
+            }>>;
             proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
             proteinSequenceVersionIdsUnique : Set<number>; // - Set <integer> : <proteinSequenceVersionIds>
 
@@ -435,7 +441,13 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
      */
     private _process_WebserviceResponse({ responseData }: { responseData: any }) : void {
 
-        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>> = new Map();
+        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<{
+            reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean,
+
+            //  NOT YET RETURNED
+            
+//            protein_PreResidue: string, protein_PostResidue: string, peptideAtProteinStart_Flag: boolean, peptideAtProteinEnd_Flag: boolean
+        }>> = new Map();
 
         const proteinSequenceVersionIds_KeyReportedPeptideId : Map<number, Set<number>> = new Map();
 
@@ -456,6 +468,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             // this.pSPs = item.getProteinStartPosition();
             // this.pEPs = item.getProteinEndPosition();
             // this.iipdc = item.isProteinIsIndependentDecoy();  // If is undefined or null, it is false
+        	
+        	//   NOT YET RETURNED
+            // this.ppr = item.getProtein_PreResidue();
+            // this.pop = item.getProtein_PostResidue();
+            // this.pps = item.getPeptideAtProteinStart_Flag();
+            // this.ppe = item.getPeptideAtProteinEnd_Flag();
 
             if ( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ) {
                 const msg = "( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ): _processProteinCoverageFromServer_Populate_loadedData";
@@ -503,12 +521,63 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
                 proteinCoverage.iipdc = false;
             }
 
+            //  NOT YET RETURNED
+            
+//            if ( proteinCoverage.ppr === undefined || proteinCoverage.ppr === null ) {
+//                const msg = "( proteinCoverage.ppr === undefined || proteinCoverage.ppr === null ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            if ( ! limelight__IsVariableAString( proteinCoverage.ppr ) ) {
+//                const msg = "( ! limelight__IsVariableAString( proteinCoverage.ppr ) ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            if ( proteinCoverage.pop === undefined || proteinCoverage.pop === null ) {
+//                const msg = "( proteinCoverage.pop === undefined || proteinCoverage.pop === null ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            if ( ! limelight__IsVariableAString( proteinCoverage.pop ) ) {
+//                const msg = "( ! limelight__IsVariableAString( proteinCoverage.pop ) ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            if ( proteinCoverage.pps === undefined || proteinCoverage.pps === null ) {
+//                const msg = "( proteinCoverage.pps === undefined || proteinCoverage.pps === null ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            if ( proteinCoverage.ppe === undefined || proteinCoverage.ppe === null ) {
+//                const msg = "( proteinCoverage.ppe === undefined || proteinCoverage.ppe === null ): _processProteinCoverageFromServer_Populate_loadedData";
+//                console.warn( msg );
+//                throw Error( msg );
+//            }
+//            //  Make sure is true or false
+//            if ( proteinCoverage.pps ) {
+//                proteinCoverage.pps = true;
+//            } else {
+//                proteinCoverage.pps = false;
+//            }
+//            if ( proteinCoverage.ppe ) {
+//                proteinCoverage.ppe = true;
+//            } else {
+//                proteinCoverage.ppe = false;
+//            }
+
             const entry = {
                 reportedPeptideId : proteinCoverage.rPId,
                 proteinSequenceVersionId : proteinCoverage.pSVId,
                 proteinStartPosition : proteinCoverage.pSPs,
                 proteinEndPosition : proteinCoverage.pEPs,
-                proteinIsIndependentDecoy: proteinCoverage.iipdc
+                proteinIsIndependentDecoy: proteinCoverage.iipdc,
+
+                //  NOT YET RETURNED
+                
+//                protein_PreResidue: proteinCoverage.ppr,
+//                protein_PostResidue: proteinCoverage.pop,
+//                peptideAtProteinStart_Flag: proteinCoverage.pps,
+//                peptideAtProteinEnd_Flag: proteinCoverage.ppe
             };
 
             let proteinCoverageList_ForReportedPeptideId = proteinCoverage_KeyReportedPeptideId.get( entry.reportedPeptideId );

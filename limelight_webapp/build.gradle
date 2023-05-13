@@ -89,6 +89,10 @@ dependencies {
 	
 	compile project(":limelight_shared_code")
 	
+//  Specify dependency on Limelight limelight__db_populate_new_fields__common_code Code
+	
+	compile project(":limelight__db_populate_new_fields__common_code")
+	
 //  Specify dependency on limelight_submit_import_client_connector to get Webservice Request and Response Java Classes
 	
 	compile project(":limelight_submit_import_client_connector")

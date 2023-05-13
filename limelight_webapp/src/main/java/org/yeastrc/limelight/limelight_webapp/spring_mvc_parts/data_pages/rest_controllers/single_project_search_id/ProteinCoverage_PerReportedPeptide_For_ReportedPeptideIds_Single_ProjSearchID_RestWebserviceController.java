@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,16 +36,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects;
+import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcher.ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcher.ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -61,6 +63,8 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
  * 
+ *  !!  WARNING::  Comment out fields 'protein_pre_residue', 'protein_post_residue', 'peptide_at_protein_start_flag', 'peptide_at_protein_end_flag'
+ * 					Until update the Webservice to return new format and update Javascript and Page in general to display the new data.
  * 
  * 
  * Retrieve Protein Coverage Per Reported Peptide Id for Reported Peptide Ids, Project Search ID
@@ -239,24 +243,72 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
     		
-    		ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
-    				proteinCoverageForSearchIdReportedPeptideIdsSearcher
-    				.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
-    		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId =
-    				searcherResult.getResults_Key_ReportedPeptideId();
+    		List<ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item> dbItemList = null;
     		
-    		List<WebserviceResult_Item> proteinCoverageList_WebserviceResponse = new ArrayList<>( searcherResult.getItemCount() + 5 );
-
-    		for ( Map.Entry<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> entry : results_Key_ReportedPeptideId.entrySet() ) {
-
-    			List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item> dbItemList = entry.getValue();
+    		{
+    			{
+    				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
+    						proteinCoverageForSearchIdReportedPeptideIdsSearcher
+    						.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
+    				dbItemList = searcherResult.getResults();
+    			}
     			
+//    			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> populateDB_RequestItemList = new ArrayList<>( dbItemList.size() );
+//    			
+//    			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+//    				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
+//    						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
+//    					
+//    					Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem populateDB_RequestItem = new Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem();
+//    					populateDB_RequestItem.setProtein_coverage_tbl__id( dbItem.getProtein_coverage_tbl__id() );
+//    					populateDB_RequestItem.setProteinSequenceVersionId( dbItem.getProteinSequenceVersionId() );
+//    					populateDB_RequestItem.setProteinStartPosition( dbItem.getProteinStartPosition() );
+//    					populateDB_RequestItem.setProteinEndPosition( dbItem.getProteinEndPosition() );
+//    					populateDB_RequestItemList.add( populateDB_RequestItem );
+//    				}
+//    			}
+//    			
+//    			if ( ! populateDB_RequestItemList.isEmpty() ) {
+//    				
+//    				//  Update the DB with the Pre and Post Protein Residue
+//    				
+//    				dbItemList = null;  // Clear prev values since will populate next
+//    				
+//    				Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects
+//    				.getSingletonInstance()
+//    				.limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
+//    						populateDB_RequestItemList
+//    						);
+//    				
+//    				
+//    				//  Re-query the data
+//    				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
+//        					proteinCoverageForSearchIdReportedPeptideIdsSearcher
+//        					.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
+//        			dbItemList = searcherResult.getResults();
+//        			
+//        			//  Validate ALL Pre and Post residue populated
+//        			
+//        			
+//        			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+//        				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
+//        						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
+//        				
+//        					String msg = "Populate DB ProteinCoverageTbl FOR NewFields ProteinPrePostResidue FAILED to populate for all records.  id: " + dbItem.getProtein_coverage_tbl__id();
+//        					log.error(msg);
+//        					throw new LimelightInternalErrorException(msg);
+//        				}
+//        			}
+//    			}
+    		}
+    		
+    		List<WebserviceResult_Item> proteinCoverageList_WebserviceResponse = new ArrayList<>( dbItemList.size() );
+
     			//  Result from WS
     			
-    			for ( ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item dbItem : dbItemList ) {
-    				WebserviceResult_Item wsItem = new WebserviceResult_Item( dbItem );
-    				proteinCoverageList_WebserviceResponse.add( wsItem );
-    			}
+    		for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+    			WebserviceResult_Item wsItem = new WebserviceResult_Item( dbItem );
+    			proteinCoverageList_WebserviceResponse.add( wsItem );
     		}
     			
     		WebserviceResult result = new WebserviceResult();
@@ -343,14 +395,26 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	private int pEPs;
     	private boolean iipdc;
     	
+//    	private String ppr;
+//    	private String pop;
+//
+//		private boolean pps;  // peptideAtProteinStart_Flag  peptide at start of protein
+//		private boolean ppe;  // peptideAtProteinEnd_Flag peptide at end of protein
+		
+    	
     	public WebserviceResult_Item() {}
     	
-    	public WebserviceResult_Item( ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item item ) {
+    	public WebserviceResult_Item( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item item ) {
     		this.rPId = item.getReportedPeptideId();
     		this.pSVId = item.getProteinSequenceVersionId();
     		this.pSPs = item.getProteinStartPosition();
     		this.pEPs = item.getProteinEndPosition();
     		this.iipdc = item.isProteinIsIndependentDecoy();
+    		
+//    		this.ppr = item.getProtein_PreResidue();
+//    		this.pop = item.getProtein_PostResidue();
+//    		this.pps = item.getPeptideAtProteinStart_Flag();
+//    		this.ppe = item.getPeptideAtProteinEnd_Flag();
     	}
     	
 		public int getrPId() {
@@ -369,6 +433,22 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		public boolean isIipdc() {
 			return iipdc;
 		}
+
+//		public String getPpr() {
+//			return ppr;
+//		}
+//
+//		public String getPop() {
+//			return pop;
+//		}
+//
+//		public boolean getPps() {
+//			return pps;
+//		}
+//
+//		public boolean getPpe() {
+//			return ppe;
+//		}
 
     	
     }

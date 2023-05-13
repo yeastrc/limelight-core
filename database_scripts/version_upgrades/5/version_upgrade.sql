@@ -16,6 +16,16 @@ VALUES ('DB Version In Progress', 5)
 
 
 
+--   protein_coverage_tbl
+
+ALTER TABLE protein_coverage_tbl 
+ADD COLUMN protein_pre_residue CHAR(1) CHARACTER SET 'latin1' NULL COMMENT 'protein residue before peptide or \'n\' if peptide at start of protein.  null until computed' AFTER protein_is_independent_decoy,
+ADD COLUMN protein_post_residue CHAR(1) CHARACTER SET 'latin1' NULL COMMENT 'protein residue after peptide or \'c\' if peptide at end of protein.  null until computed' AFTER protein_pre_residue,
+ADD COLUMN peptide_at_protein_start_flag TINYINT UNSIGNED NULL COMMENT 'peptide is at start of protein sequence.   null until computed' AFTER protein_post_residue,
+ADD COLUMN peptide_at_protein_end_flag TINYINT UNSIGNED NULL COMMENT 'peptide is at end of protein sequence.   null until computed' AFTER peptide_at_protein_start_flag;
+
+
+
 --   search_scan_file_importer_tbl
 
 ALTER TABLE search_scan_file_importer_tbl 
@@ -200,6 +210,51 @@ CREATE TABLE  import_and_pipeline_run_trckg_snglfl_init_json_blb_tbl (
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table aa_limelight_db_updates_in_run_imprtr_or_pgm_root_tbl
+-- -----------------------------------------------------
+CREATE TABLE  aa_limelight_db_updates_in_run_imprtr_or_pgm_root_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  label_short_key VARCHAR(60) NOT NULL,
+  label VARCHAR(400) NOT NULL COMMENT '\'key\' for the record. unique index.',
+  updates_complete TINYINT UNSIGNED NOT NULL COMMENT '1 when complete.',
+  updates_complete_date_time DATETIME NULL,
+  created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = ascii
+COMMENT = 'Track DB Updates - Root Table';
+
+CREATE UNIQUE INDEX label_short_key_unique ON aa_limelight_db_updates_in_run_imprtr_or_pgm_root_tbl (label_short_key ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table aa_limelight_db_updates_in_run_importer_or_pgm_cmplt_fr_srch_tbl
+-- -----------------------------------------------------
+CREATE TABLE  aa_limelight_db_updates_in_run_importer_or_pgm_cmplt_fr_srch_tbl (
+  root_table_id_fk INT UNSIGNED NOT NULL,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (root_table_id_fk, search_id),
+  CONSTRAINT fk_aa_limelight_db_updates_in_runiproridpm_cmpltfrsrchidtbl_1
+    FOREIGN KEY (root_table_id_fk)
+    REFERENCES aa_limelight_db_updates_in_run_imprtr_or_pgm_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_aa_limelight_db_updates_in_runiproridpm_cmpltfrsrchidtbl_2
+    FOREIGN KEY (search_id)
+    REFERENCES search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = ascii
+COMMENT = 'Track DB Updates - Table tracking Completion for a search id';
+
+CREATE INDEX fk_aa_limelight_db_updates_in_runiproridpm_cmpltfrsrchidtbl_idx ON aa_limelight_db_updates_in_run_importer_or_pgm_cmplt_fr_srch_tbl (search_id ASC) VISIBLE;
+
 
 -- --------------------------
 

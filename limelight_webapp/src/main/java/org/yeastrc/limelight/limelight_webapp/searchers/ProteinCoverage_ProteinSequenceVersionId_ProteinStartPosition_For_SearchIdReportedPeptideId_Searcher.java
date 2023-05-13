@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
-import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
@@ -38,26 +37,43 @@ import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearc
  *
  */
 @Component
-public class ProteinCoverage_For_SearchIdReportedPeptideId_Searcher extends Limelight_JDBC_Base implements ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF {
+public class ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher extends Limelight_JDBC_Base implements ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_IF {
 
-	private static final Logger log = LoggerFactory.getLogger( ProteinCoverage_For_SearchIdReportedPeptideId_Searcher.class );
+	private static final Logger log = LoggerFactory.getLogger( ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher.class );
 
 	@Autowired
 	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
+	
+	public static class ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem {
+		
+		private int proteinSequenceVersionId;
+		private int proteinStartPosition;
+		
+		public int getProteinSequenceVersionId() {
+			return proteinSequenceVersionId;
+		}
+		public int getProteinStartPosition() {
+			return proteinStartPosition;
+		}
+	}
+	
+	//  WARNING::  Fields 'protein_pre_residue' and 'protein_post_residue' were added and may be null/Not Populated.
+	//					If these fields are needed here, 
+	//					see how results from class ProteinCoverageForSearchIdReportedPeptideIdsSearcher are handled.
 
 	private static final String QUERY_SQL = 
-			"SELECT * "
+			"SELECT protein_sequence_version_id, protein_start_position "
 			+ " FROM "
 			+ " protein_coverage_tbl "
 			+ " WHERE search_id = ? AND reported_peptide_id = ?";
 
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF#getProteinCoverage_For_SearchIdReportedPeptideId(int, int)
-	 */
+	
 	@Override
-	public List<ProteinCoverageDTO>  getProteinCoverage_For_SearchIdReportedPeptideId( int searchId, int reportedPeptideId ) throws Exception {
+	public List<ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem> 
+	
+	getProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId( int searchId, int reportedPeptideId ) throws Exception {
 
-		List<ProteinCoverageDTO> resultList = new ArrayList<>();
+		List<ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem> resultList = new ArrayList<>();
 
 		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 		
@@ -76,14 +92,10 @@ public class ProteinCoverage_For_SearchIdReportedPeptideId_Searcher extends Lime
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {
-					ProteinCoverageDTO item = new ProteinCoverageDTO();
-					item.setId( rs.getInt( "id" ) );
-					item.setSearchId( searchId );
-					item.setReportedPeptideId( reportedPeptideId );
-					item.setPeptideIdInfoOnly( rs.getInt( "peptide_id_info_only" ) );
-					item.setProteinSequenceVersionId( rs.getInt( "protein_sequence_version_id" ) );
-					item.setProteinStartPosition( rs.getInt( "protein_start_position" ) );
-					item.setProteinEndPosition( rs.getInt( "protein_end_position" ) );
+					ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem item = new ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem();
+					item.proteinSequenceVersionId = rs.getInt( "protein_sequence_version_id" );
+					item.proteinStartPosition = rs.getInt( "protein_start_position" );
+
 					resultList.add( item );
 				}
 

@@ -51,14 +51,14 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideSequenceStringsForSearchIdReportedPeptideIdsSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReportedPeptideStrings_For_ReportedPeptideIds_SearchIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcher.ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PeptideSequenceStringsForSearchIdReportedPeptideId_Item;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptideStrings_For_ReportedPeptideIds_SearchIds_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
@@ -154,7 +154,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private PeptideSequenceStringsForSearchIdReportedPeptideIdsSearcherIF peptideSequenceStringsForSearchIdReportedPeptideIdsSearcher;
 	
 	@Autowired
-	private ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF proteinCoverageForSearchIdReportedPeptideIdsSearcher;
+	private ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher;
 	
 	@Autowired
 	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
@@ -391,39 +391,34 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 			{  // Process Protein Coverage
 
-	    		ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
-	    				proteinCoverageForSearchIdReportedPeptideIdsSearcher
-	    				.getProteinCoverageForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
-	    		Map<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> results_Key_ReportedPeptideId =
-	    				searcherResult.getResults_Key_ReportedPeptideId();
-	    		
-	    		for ( Map.Entry<Integer,List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item>> entry : results_Key_ReportedPeptideId.entrySet() ) {
+				ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
+	    				proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher
+	    				.getProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
+	    		List<ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item> dbItemList =
+	    				searcherResult.getResults();
+    		
+    			for ( ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+    				
+    				Integer reportedPeptideId = dbItem.getReportedPeptideId();
+    				Integer proteinSequenceVersionId = dbItem.getProteinSequenceVersionId();
 
-	    			List<ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item> dbItemList = entry.getValue();
-	    			
-	    			for ( ProteinCoverageForSearchIdReportedPeptideIdSearcher_Item dbItem : dbItemList ) {
-	    				
-	    				Integer reportedPeptideId = dbItem.getReportedPeptideId();
-	    				Integer proteinSequenceVersionId = dbItem.getProteinSequenceVersionId();
-
-						WebserviceResult_Per_ReportedPeptideId_MapValue resultRootMapValue = resultRoot_Key_ReportedPeptideId.get( reportedPeptideId );
-						if ( resultRootMapValue == null ) {
-							resultRootMapValue = new WebserviceResult_Per_ReportedPeptideId_MapValue();
-							resultRoot_Key_ReportedPeptideId.put( reportedPeptideId, resultRootMapValue );
-							resultRootMapValue.proteinMatches = new HashMap<>();
-						}
-						if ( resultRootMapValue.proteinMatches == null ) {
-							resultRootMapValue.proteinMatches = new HashMap<>();
-						}
-						
-						Set<Integer> positions = resultRootMapValue.proteinMatches.get( proteinSequenceVersionId );
-						if ( positions == null ) {
-							positions = new HashSet<>();
-							resultRootMapValue.proteinMatches.put( proteinSequenceVersionId, positions );
-						}
-						positions.add( dbItem.getProteinStartPosition() );
-	    			}
-	    		}
+					WebserviceResult_Per_ReportedPeptideId_MapValue resultRootMapValue = resultRoot_Key_ReportedPeptideId.get( reportedPeptideId );
+					if ( resultRootMapValue == null ) {
+						resultRootMapValue = new WebserviceResult_Per_ReportedPeptideId_MapValue();
+						resultRoot_Key_ReportedPeptideId.put( reportedPeptideId, resultRootMapValue );
+						resultRootMapValue.proteinMatches = new HashMap<>();
+					}
+					if ( resultRootMapValue.proteinMatches == null ) {
+						resultRootMapValue.proteinMatches = new HashMap<>();
+					}
+					
+					Set<Integer> positions = resultRootMapValue.proteinMatches.get( proteinSequenceVersionId );
+					if ( positions == null ) {
+						positions = new HashSet<>();
+						resultRootMapValue.proteinMatches.put( proteinSequenceVersionId, positions );
+					}
+					positions.add( dbItem.getProteinStartPosition() );
+    			}
 			}
 
 			{  // Process Variable/Dynamic Mods

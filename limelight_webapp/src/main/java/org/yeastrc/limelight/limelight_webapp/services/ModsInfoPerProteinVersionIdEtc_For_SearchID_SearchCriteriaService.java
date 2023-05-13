@@ -27,11 +27,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPeptDynamicModDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher.ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPerPerProteinSeqVersionIdRoot;
 import org.yeastrc.limelight.limelight_webapp.services_result_objects.ModsInfoPerPerProteinSeqVersionIdRoot.PerModMassEntry;
@@ -50,10 +50,10 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 
 	@Autowired
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
-	
+
 	@Autowired
-	private ProteinCoverage_For_SearchIdReportedPeptideId_SearcherIF proteinCoverage_For_SearchIdReportedPeptideId_Searcher;
-	
+	private ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_IF proteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher;
+		
 	@Autowired
 	private SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF srchRepPept_DynamicMod_For_SearchIdReportedPeptideId_Searcher;
 	
@@ -99,9 +99,9 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 
 			Map<Integer, PerModMassEntry> dataPer_ModMass = new HashMap<>();
 
-			List<ProteinCoverageDTO> proteinVersionIdsForSearchIdReportedPeptideId = 
-					proteinCoverage_For_SearchIdReportedPeptideId_Searcher
-					.getProteinCoverage_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
+			List<ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem> proteinVersionIdsForSearchIdReportedPeptideId = 
+					proteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher
+					.getProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId( searchId, reportedPeptideId );
 
 			//  Process Dynamic Mods on Reported Peptide
 			for ( SrchRepPeptDynamicModDTO srchRepPeptDynamicModDTOEntry : srchRepPeptDynamicModDTOList ) {
@@ -117,13 +117,13 @@ public class ModsInfoPerProteinVersionIdEtc_For_SearchID_SearchCriteriaService i
 				
 				perModMassEntry.addToModMassReportedPeptidePositions( mod_ReportedPeptide_Position );
 
-				for ( ProteinCoverageDTO proteinCoverageDTO : proteinVersionIdsForSearchIdReportedPeptideId ) {
+				for ( ProteinCoverage_ProteinSequenceVersionId_ProteinStartPosition_For_SearchIdReportedPeptideId_Searcher_ResultItem proteinCoverage_Item : proteinVersionIdsForSearchIdReportedPeptideId ) {
 
-					Integer proteinSequenceVersionId = proteinCoverageDTO.getProteinSequenceVersionId();
+					Integer proteinSequenceVersionId = proteinCoverage_Item.getProteinSequenceVersionId();
 
 					Integer mod_proteinPosition = 
 							mod_ReportedPeptide_Position
-							+ proteinCoverageDTO.getProteinStartPosition()
+							+ proteinCoverage_Item.getProteinStartPosition()
 							- 1;
 					
 					/**

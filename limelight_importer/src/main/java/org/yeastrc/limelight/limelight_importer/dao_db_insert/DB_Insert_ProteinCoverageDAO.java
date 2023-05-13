@@ -46,11 +46,14 @@ public class DB_Insert_ProteinCoverageDAO {
 	private static final String INSERT_SQL = "INSERT INTO protein_coverage_tbl "
 
 			+ " ( search_id, reported_peptide_id, peptide_id_info_only, "
-			+   " protein_sequence_version_id, protein_start_position, protein_end_position,"
-			+   " peptide_protein_match_not_exact_match, protein_is_decoy, protein_is_independent_decoy )"
+			+   " protein_sequence_version_id, protein_start_position, protein_end_position, "
+			+   " peptide_protein_match_not_exact_match, protein_is_decoy, protein_is_independent_decoy, "
+			+   " protein_pre_residue, protein_post_residue,"
+			+   " peptide_at_protein_start_flag, peptide_at_protein_end_flag )"
 
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-	
+			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+
+
 	/**
 	 * Save the associated data to the database
 	 * @param item
@@ -102,6 +105,29 @@ public class DB_Insert_ProteinCoverageDAO {
 					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 				}
 
+				counter++;
+				pstmt.setString( counter, item.getProtein_PreResidue() );
+				counter++;
+				pstmt.setString( counter, item.getProtein_PostResidue() );
+
+				counter++;
+				if ( item.getPeptideAtProteinStart_Flag() == null ) {
+					pstmt.setNull( counter, java.sql.Types.INTEGER );	
+				} else if ( item.getPeptideAtProteinStart_Flag().booleanValue() ) {	
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+
+				counter++;
+				if ( item.getPeptideAtProteinEnd_Flag() == null ) {
+					pstmt.setNull( counter, java.sql.Types.INTEGER );	
+				} else if ( item.getPeptideAtProteinEnd_Flag().booleanValue() ) {	
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				
 				pstmt.executeUpdate();
 
 				try ( ResultSet rs = pstmt.getGeneratedKeys() ) {

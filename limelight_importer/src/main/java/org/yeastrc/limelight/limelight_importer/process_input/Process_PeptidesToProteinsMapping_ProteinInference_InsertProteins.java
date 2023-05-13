@@ -60,6 +60,8 @@ import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.protein_coverage_common.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util;
+import org.yeastrc.limelight.limelight_shared.protein_coverage_common.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util__Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 
 /**
@@ -241,6 +243,27 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 					//  Insert PeptideProteinPositionDTO record for protein coverage
 					for ( Integer peptidePositionInProtein : peptidePositionsInProtein ) {
+
+						final String proteinSequence = proteinImporterContainer.getProteinSequenceDTO().getSequence();
+						
+						final int peptideStartPosition_InProtein = peptidePositionInProtein.intValue();
+
+						//   Position of end of peptide in protein 
+						final int peptideEndPosition_InProtein = peptidePositionInProtein + peptideLength - 1;
+						
+						Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util__Result result__Peptide_Pre_Post_Residues =
+								Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util
+								.compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util(
+										proteinSequence, 
+										peptideStartPosition_InProtein, 
+										peptideEndPosition_InProtein
+										);
+
+						String protein_PreResidue = result__Peptide_Pre_Post_Residues.getProtein_PreResidue();
+						String protein_PostResidue = result__Peptide_Pre_Post_Residues.getProtein_PostResidue();
+						boolean peptideAtProteinStart_Flag = result__Peptide_Pre_Post_Residues.isPeptideAtProteinStart_Flag();
+						boolean peptideAtProteinEnd_Flag = result__Peptide_Pre_Post_Residues.isPeptideAtProteinEnd_Flag();
+						
 						ProteinCoverageDTO proteinCoverageDTO = new ProteinCoverageDTO();
 						proteinCoverageDTO.setSearchId( searchId );
 						proteinCoverageDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
@@ -251,6 +274,11 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 						proteinCoverageDTO.setPeptideProteinMatchNotExactMatch( peptideProteinMatchNotExactMatch );
 						proteinCoverageDTO.setProtein_IsDecoy(protein_IsDecoy);
 						proteinCoverageDTO.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
+						proteinCoverageDTO.setProtein_PreResidue(protein_PreResidue);
+						proteinCoverageDTO.setProtein_PostResidue(protein_PostResidue);
+						proteinCoverageDTO.setPeptideAtProteinStart_Flag(peptideAtProteinStart_Flag);
+						proteinCoverageDTO.setPeptideAtProteinEnd_Flag(peptideAtProteinEnd_Flag);
+						
 						ProteinCoverageDTO_SaveToDB_NoDups.getInstance().proteinCoverageDTO_SaveToDB_NoDups( proteinCoverageDTO );
 					}
 

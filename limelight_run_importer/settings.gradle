@@ -15,6 +15,13 @@ project(":limelight_shared_code").projectDir = new File( settingsDir, "../limeli
 include "limelight_importer_run_importer_shared"
 project(":limelight_importer_run_importer_shared").projectDir = new File( settingsDir, "../limelight_importer_run_importer_shared")
 
+/*
+ *  Specify dependency on Limelight limelight__db_populate_new_fields__common_code Code
+ */
+ 
+ include "limelight__db_populate_new_fields__common_code"
+project(":limelight__db_populate_new_fields__common_code").projectDir = new File( settingsDir, "../limelight__db_populate_new_fields__common_code")
+ 
 
 include "limelight__database_cleanup__common_code__remove_data_from_database"
 project(":limelight__database_cleanup__common_code__remove_data_from_database").projectDir = new File( settingsDir, "../limelight__database_cleanup__common_code__remove_data_from_database")
