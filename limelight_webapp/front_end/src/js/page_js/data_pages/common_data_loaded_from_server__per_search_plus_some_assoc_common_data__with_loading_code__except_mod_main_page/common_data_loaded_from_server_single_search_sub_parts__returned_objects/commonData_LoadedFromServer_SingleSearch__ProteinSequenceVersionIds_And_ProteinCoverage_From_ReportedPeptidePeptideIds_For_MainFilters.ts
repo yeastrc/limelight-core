@@ -17,6 +17,20 @@ import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_F
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
+
+class ProteinCoverage_Entry {
+    reportedPeptideId : number
+    proteinSequenceVersionId : number
+    proteinStartPosition : number
+    proteinEndPosition : number
+    proteinIsIndependentDecoy: boolean
+    protein_PreResidue: string
+    protein_PostResidue: string
+    peptideAtProteinStart_Flag: boolean
+    peptideAtProteinEnd_Flag: boolean
+}
+
+
 /**
  *
  */
@@ -24,12 +38,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
     //  	Protein Coverage Data Per Reported Peptide Id
     // 					- Map <integer,[Object]> <Reported Peptide Id, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
+    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>>;
 
     //  Created when requested
     //  	Protein Coverage Data Per ProteinSequenceVersionId
     // 					- Map <integer,[Object]> <ProteinSequenceVersionId, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<{ reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean }>>;
+    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<ProteinCoverage_Entry>>;
 
     //    proteinSequenceVersionIds  Per Reported Peptide Id
     private _proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
@@ -52,12 +66,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique,
             per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
         } : {
-            proteinCoverage_KeyReportedPeptideId : Map<number, Array<{
-                reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean
-                
-                //  NOT YET RETURNED
-//                protein_PreResidue: string, protein_PostResidue: string, peptideAtProteinStart_Flag: boolean, peptideAtProteinEnd_Flag: boolean
-            }>>;
+            proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>>;
             proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
             proteinSequenceVersionIdsUnique : Set<number>; // - Set <integer> : <proteinSequenceVersionIds>
 
@@ -395,7 +404,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
                     console.log("AJAX Call to get protein-coverage-per-reported-peptide-id START, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0001";
+                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0002";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 
@@ -406,12 +415,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
                     promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
                         console.log("AJAX Call to get protein-coverage-per-reported-peptide-id END, Now: " + new Date() );
 
-                        if ( ! responseData.proteinCoverageList ) {
-                            const msg = "responseData.proteinCoverageList has no value after webservice call to " + url;
-                            console.warn( msg );
-                            throw Error( msg )
-                        }
                         this._process_WebserviceResponse({ responseData });
+
                         resolve( this._get_ProteinSequenceVersionIds_And_ProteinCoverage__FunctionResult );
 
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -441,13 +446,22 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
      */
     private _process_WebserviceResponse({ responseData }: { responseData: any }) : void {
 
-        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<{
-            reportedPeptideId : number, proteinSequenceVersionId : number, proteinStartPosition : number, proteinEndPosition : number, proteinIsIndependentDecoy: boolean,
+        const responseData_Cast : {
+            protein_coverage_tbl__id_Array: Array<number>
+            reportedPeptideId_Array: Array<number>
+            proteinSequenceVersionId_Array: Array<number>
+            proteinStartPosition_Array: Array<number>
+            proteinEndPosition_Array: Array<number>
+            proteinIsIndependentDecoy_Array: Array<boolean>
 
-            //  NOT YET RETURNED
-            
-//            protein_PreResidue: string, protein_PostResidue: string, peptideAtProteinStart_Flag: boolean, peptideAtProteinEnd_Flag: boolean
-        }>> = new Map();
+            protein_PreResidue_Array: Array<string>
+            protein_PostResidue_Array: Array<string>
+
+            peptideAtProteinStart_Flag_Array: Array<boolean>
+            peptideAtProteinEnd_Flag_Array: Array<boolean>
+        } = responseData;
+
+        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>> = new Map();
 
         const proteinSequenceVersionIds_KeyReportedPeptideId : Map<number, Set<number>> = new Map();
 
@@ -460,157 +474,260 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
         //   All ProteinSequenceVersionId_Entries have IndependentDecoy_True for Reported Peptide Id
         const all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId: Map<number, boolean> = new Map();
 
+        //  responseData
 
-        for ( const proteinCoverage of responseData.proteinCoverageList ) {
+        if ( responseData_Cast.protein_coverage_tbl__id_Array === undefined || responseData_Cast.protein_coverage_tbl__id_Array === null ) {
+            const msg = "( responseData_Cast.protein_coverage_tbl__id_Array === undefined || responseData_Cast.protein_coverage_tbl__id_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.protein_coverage_tbl__id_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.protein_coverage_tbl__id_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-            // this.rPId = item.getReportedPeptideId();
-            // this.pSVId = item.getProteinSequenceVersionId();
-            // this.pSPs = item.getProteinStartPosition();
-            // this.pEPs = item.getProteinEndPosition();
-            // this.iipdc = item.isProteinIsIndependentDecoy();  // If is undefined or null, it is false
-        	
-        	//   NOT YET RETURNED
-            // this.ppr = item.getProtein_PreResidue();
-            // this.pop = item.getProtein_PostResidue();
-            // this.pps = item.getPeptideAtProteinStart_Flag();
-            // this.ppe = item.getPeptideAtProteinEnd_Flag();
+        if ( responseData_Cast.reportedPeptideId_Array === undefined || responseData_Cast.reportedPeptideId_Array === null ) {
+            const msg = "( responseData_Cast.reportedPeptideId_Array === undefined || responseData_Cast.reportedPeptideId_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.reportedPeptideId_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.reportedPeptideId_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-            if ( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ) {
-                const msg = "( proteinCoverage.rPId === undefined || proteinCoverage.rPId === null ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( proteinCoverage.pSVId === undefined || proteinCoverage.pSVId === null ) {
-                const msg = "( proteinCoverage.pSVId === undefined || proteinCoverage.pSVId === null ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( proteinCoverage.pSPs === undefined || proteinCoverage.pSPs === null ) {
-                const msg = "( proteinCoverage.pSPs === undefined || proteinCoverage.pSPs === null ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( proteinCoverage.pEPs === undefined || proteinCoverage.pEPs === null ) {
-                const msg = "( proteinCoverage.pEPs === undefined || proteinCoverage.pEPs === null ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( ! variable_is_type_number_Check( proteinCoverage.rPId ) ) {
-                const msg = "( ! variable_is_type_number_Check( proteinCoverage.rPId ) ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( ! variable_is_type_number_Check( proteinCoverage.pSVId ) ) {
-                const msg = "( ! variable_is_type_number_Check( proteinCoverage.pSVId ) ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( ! variable_is_type_number_Check( proteinCoverage.pSPs ) ) {
-                const msg = "( ! variable_is_type_number_Check( proteinCoverage.pSPs ) ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( ! variable_is_type_number_Check( proteinCoverage.pEPs ) ) {
-                const msg = "( ! variable_is_type_number_Check( proteinCoverage.pEPs ) ): _processProteinCoverageFromServer_Populate_loadedData";
-                console.warn( msg );
-                throw Error( msg );
-            }
-            if ( proteinCoverage.iipdc ) {
-                proteinCoverage.iipdc = true;
-            } else {
-                proteinCoverage.iipdc = false;
-            }
+        if ( responseData_Cast.proteinSequenceVersionId_Array === undefined || responseData_Cast.proteinSequenceVersionId_Array === null ) {
+            const msg = "( responseData_Cast.proteinSequenceVersionId_Array === undefined || responseData_Cast.proteinSequenceVersionId_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.proteinSequenceVersionId_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.proteinSequenceVersionId_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-            //  NOT YET RETURNED
-            
-//            if ( proteinCoverage.ppr === undefined || proteinCoverage.ppr === null ) {
-//                const msg = "( proteinCoverage.ppr === undefined || proteinCoverage.ppr === null ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            if ( ! limelight__IsVariableAString( proteinCoverage.ppr ) ) {
-//                const msg = "( ! limelight__IsVariableAString( proteinCoverage.ppr ) ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            if ( proteinCoverage.pop === undefined || proteinCoverage.pop === null ) {
-//                const msg = "( proteinCoverage.pop === undefined || proteinCoverage.pop === null ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            if ( ! limelight__IsVariableAString( proteinCoverage.pop ) ) {
-//                const msg = "( ! limelight__IsVariableAString( proteinCoverage.pop ) ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            if ( proteinCoverage.pps === undefined || proteinCoverage.pps === null ) {
-//                const msg = "( proteinCoverage.pps === undefined || proteinCoverage.pps === null ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            if ( proteinCoverage.ppe === undefined || proteinCoverage.ppe === null ) {
-//                const msg = "( proteinCoverage.ppe === undefined || proteinCoverage.ppe === null ): _processProteinCoverageFromServer_Populate_loadedData";
-//                console.warn( msg );
-//                throw Error( msg );
-//            }
-//            //  Make sure is true or false
-//            if ( proteinCoverage.pps ) {
-//                proteinCoverage.pps = true;
-//            } else {
-//                proteinCoverage.pps = false;
-//            }
-//            if ( proteinCoverage.ppe ) {
-//                proteinCoverage.ppe = true;
-//            } else {
-//                proteinCoverage.ppe = false;
-//            }
+        if ( responseData_Cast.proteinStartPosition_Array === undefined || responseData_Cast.proteinStartPosition_Array === null ) {
+            const msg = "( responseData_Cast.proteinStartPosition_Array === undefined || responseData_Cast.proteinStartPosition_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.proteinStartPosition_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.proteinStartPosition_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-            const entry = {
-                reportedPeptideId : proteinCoverage.rPId,
-                proteinSequenceVersionId : proteinCoverage.pSVId,
-                proteinStartPosition : proteinCoverage.pSPs,
-                proteinEndPosition : proteinCoverage.pEPs,
-                proteinIsIndependentDecoy: proteinCoverage.iipdc,
+        if ( responseData_Cast.proteinEndPosition_Array === undefined || responseData_Cast.proteinEndPosition_Array === null ) {
+            const msg = "( responseData_Cast.proteinEndPosition_Array === undefined || responseData_Cast.proteinEndPosition_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.proteinEndPosition_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.proteinEndPosition_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-                //  NOT YET RETURNED
-                
-//                protein_PreResidue: proteinCoverage.ppr,
-//                protein_PostResidue: proteinCoverage.pop,
-//                peptideAtProteinStart_Flag: proteinCoverage.pps,
-//                peptideAtProteinEnd_Flag: proteinCoverage.ppe
+        if ( responseData_Cast.proteinIsIndependentDecoy_Array === undefined || responseData_Cast.proteinIsIndependentDecoy_Array === null ) {
+            const msg = "( responseData_Cast.proteinIsIndependentDecoy_Array === undefined || responseData_Cast.proteinIsIndependentDecoy_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.proteinIsIndependentDecoy_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.proteinIsIndependentDecoy_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        if ( responseData_Cast.protein_PreResidue_Array === undefined || responseData_Cast.protein_PreResidue_Array === null ) {
+            const msg = "( responseData_Cast.protein_PreResidue_Array === undefined || responseData_Cast.protein_PreResidue_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.protein_PreResidue_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.protein_PreResidue_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        if ( responseData_Cast.protein_PostResidue_Array === undefined || responseData_Cast.protein_PostResidue_Array === null ) {
+            const msg = "( responseData_Cast.protein_PostResidue_Array === undefined || responseData_Cast.protein_PostResidue_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.protein_PostResidue_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.protein_PostResidue_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        if ( responseData_Cast.peptideAtProteinStart_Flag_Array === undefined || responseData_Cast.peptideAtProteinStart_Flag_Array === null ) {
+            const msg = "( responseData_Cast.peptideAtProteinStart_Flag_Array === undefined || responseData_Cast.peptideAtProteinStart_Flag_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.peptideAtProteinStart_Flag_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.peptideAtProteinStart_Flag_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        if ( responseData_Cast.peptideAtProteinEnd_Flag_Array === undefined || responseData_Cast.peptideAtProteinEnd_Flag_Array === null ) {
+            const msg = "( responseData_Cast.peptideAtProteinEnd_Flag_Array === undefined || responseData_Cast.peptideAtProteinEnd_Flag_Array === null ): _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( responseData_Cast.peptideAtProteinEnd_Flag_Array instanceof Array ) ) {
+            const msg = "( ! ( responseData_Cast.peptideAtProteinEnd_Flag_Array instanceof Array ) ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        const responseData_Cast_AnyItem_ArrayLength = responseData_Cast.protein_coverage_tbl__id_Array.length;
+
+        //  Validate all arrays are same length
+
+        if ( ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.reportedPeptideId_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.proteinSequenceVersionId_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.proteinStartPosition_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.proteinEndPosition_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.proteinIsIndependentDecoy_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.protein_PreResidue_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.protein_PostResidue_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.peptideAtProteinStart_Flag_Array.length )
+            || ( responseData_Cast.protein_coverage_tbl__id_Array.length !== responseData_Cast.peptideAtProteinEnd_Flag_Array.length )
+        ) {
+            const msg = "( responseData_Cast Arrays are NOT the same length ) in _processProteinCoverageFromServer_Populate_loadedData";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
+        for ( let responseData_Cast_AnyItem_Array_Index = 0; responseData_Cast_AnyItem_Array_Index < responseData_Cast_AnyItem_ArrayLength; responseData_Cast_AnyItem_Array_Index++ ) {
+
+            const proteinCoverage_Entry: ProteinCoverage_Entry = {
+                reportedPeptideId : responseData_Cast.reportedPeptideId_Array[ responseData_Cast_AnyItem_Array_Index ],
+                proteinSequenceVersionId : responseData_Cast.proteinSequenceVersionId_Array[ responseData_Cast_AnyItem_Array_Index ],
+                proteinStartPosition : responseData_Cast.proteinStartPosition_Array[ responseData_Cast_AnyItem_Array_Index ],
+                proteinEndPosition : responseData_Cast.proteinEndPosition_Array[ responseData_Cast_AnyItem_Array_Index ],
+                proteinIsIndependentDecoy: responseData_Cast.proteinIsIndependentDecoy_Array[ responseData_Cast_AnyItem_Array_Index ],
+                protein_PreResidue: responseData_Cast.protein_PreResidue_Array[ responseData_Cast_AnyItem_Array_Index ],
+                protein_PostResidue: responseData_Cast.protein_PostResidue_Array[ responseData_Cast_AnyItem_Array_Index ],
+                peptideAtProteinStart_Flag: responseData_Cast.peptideAtProteinStart_Flag_Array[ responseData_Cast_AnyItem_Array_Index ],
+                peptideAtProteinEnd_Flag: responseData_Cast.peptideAtProteinEnd_Flag_Array[ responseData_Cast_AnyItem_Array_Index ]
             };
 
-            let proteinCoverageList_ForReportedPeptideId = proteinCoverage_KeyReportedPeptideId.get( entry.reportedPeptideId );
+            if ( proteinCoverage_Entry.reportedPeptideId === undefined || proteinCoverage_Entry.reportedPeptideId === null ) {
+                const msg = "( proteinCoverage_Entry.reportedPeptideId === undefined || proteinCoverage_Entry.reportedPeptideId === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! variable_is_type_number_Check( proteinCoverage_Entry.reportedPeptideId ) ) {
+                const msg = "( ! variable_is_type_number_Check( proteinCoverage_Entry.reportedPeptideId ) ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( proteinCoverage_Entry.proteinSequenceVersionId === undefined || proteinCoverage_Entry.proteinSequenceVersionId === null ) {
+                const msg = "( proteinCoverage_Entry.proteinSequenceVersionId === undefined || proteinCoverage_Entry.proteinSequenceVersionId === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinSequenceVersionId ) ) {
+                const msg = "( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinSequenceVersionId ) ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( proteinCoverage_Entry.proteinStartPosition === undefined || proteinCoverage_Entry.proteinStartPosition === null ) {
+                const msg = "( proteinCoverage_Entry.proteinStartPosition === undefined || proteinCoverage_Entry.proteinStartPosition === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinStartPosition ) ) {
+                const msg = "( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinStartPosition ) ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( proteinCoverage_Entry.proteinEndPosition === undefined || proteinCoverage_Entry.proteinEndPosition === null ) {
+                const msg = "( proteinCoverage_Entry.proteinEndPosition === undefined || proteinCoverage_Entry.proteinEndPosition === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinEndPosition ) ) {
+                const msg = "( ! variable_is_type_number_Check( proteinCoverage_Entry.proteinEndPosition ) ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( proteinCoverage_Entry.proteinIsIndependentDecoy ) {
+                proteinCoverage_Entry.proteinIsIndependentDecoy = true;
+            } else {
+                proteinCoverage_Entry.proteinIsIndependentDecoy = false
+            }
+
+            if ( proteinCoverage_Entry.protein_PreResidue === undefined || proteinCoverage_Entry.protein_PreResidue === null ) {
+                const msg = "( proteinCoverage_Entry.protein_PreResidue === undefined || proteinCoverage_Entry.protein_PreResidue === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! limelight__IsVariableAString( proteinCoverage_Entry.protein_PreResidue ) ) {
+               const msg = "( ! limelight__IsVariableAString( proteinCoverage_Entry.protein_PreResidue ) ): _processProteinCoverageFromServer_Populate_loadedData";
+               console.warn( msg );
+               throw Error( msg );
+            }
+            if ( proteinCoverage_Entry.protein_PostResidue === undefined || proteinCoverage_Entry.protein_PostResidue === null ) {
+                const msg = "( proteinCoverage_Entry.protein_PostResidue === undefined || proteinCoverage_Entry.protein_PostResidue === null ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! limelight__IsVariableAString( proteinCoverage_Entry.protein_PostResidue ) ) {
+                const msg = "( ! limelight__IsVariableAString( proteinCoverage_Entry.protein_PostResidue ) ): _processProteinCoverageFromServer_Populate_loadedData";
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            if ( proteinCoverage_Entry.peptideAtProteinStart_Flag ) {
+                proteinCoverage_Entry.peptideAtProteinStart_Flag = true;
+            } else {
+                proteinCoverage_Entry.peptideAtProteinStart_Flag = false
+            }
+            if ( proteinCoverage_Entry.peptideAtProteinEnd_Flag ) {
+                proteinCoverage_Entry.peptideAtProteinEnd_Flag = true;
+            } else {
+                proteinCoverage_Entry.peptideAtProteinEnd_Flag = false
+            }
+
+            let proteinCoverageList_ForReportedPeptideId = proteinCoverage_KeyReportedPeptideId.get( proteinCoverage_Entry.reportedPeptideId );
             if ( ! proteinCoverageList_ForReportedPeptideId ) {
                 proteinCoverageList_ForReportedPeptideId = [];
-                proteinCoverage_KeyReportedPeptideId.set( entry.reportedPeptideId, proteinCoverageList_ForReportedPeptideId );
+                proteinCoverage_KeyReportedPeptideId.set( proteinCoverage_Entry.reportedPeptideId, proteinCoverageList_ForReportedPeptideId );
             }
-            proteinCoverageList_ForReportedPeptideId.push( entry );
+            proteinCoverageList_ForReportedPeptideId.push( proteinCoverage_Entry );
 
             {
-                let proteinSequenceVersionIds = proteinSequenceVersionIds_KeyReportedPeptideId.get( entry.reportedPeptideId );
+                let proteinSequenceVersionIds = proteinSequenceVersionIds_KeyReportedPeptideId.get( proteinCoverage_Entry.reportedPeptideId );
                 if ( ! proteinSequenceVersionIds ) {
                     proteinSequenceVersionIds = new Set();
-                    proteinSequenceVersionIds_KeyReportedPeptideId.set( entry.reportedPeptideId, proteinSequenceVersionIds );
+                    proteinSequenceVersionIds_KeyReportedPeptideId.set( proteinCoverage_Entry.reportedPeptideId, proteinSequenceVersionIds );
                 }
-                proteinSequenceVersionIds.add( entry.proteinSequenceVersionId );
+                proteinSequenceVersionIds.add( proteinCoverage_Entry.proteinSequenceVersionId );
             }
             {
-                proteinSequenceVersionIdsUnique.add(entry.proteinSequenceVersionId);
+                proteinSequenceVersionIdsUnique.add(proteinCoverage_Entry.proteinSequenceVersionId);
             }
             { // per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId
-                let per_ProteinSequenceVersionId_Entries = per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.get(entry.reportedPeptideId);
+                let per_ProteinSequenceVersionId_Entries = per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.get(proteinCoverage_Entry.reportedPeptideId);
                 if ( ! per_ProteinSequenceVersionId_Entries ) {
                     per_ProteinSequenceVersionId_Entries = [];
-                    per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.set(entry.reportedPeptideId, per_ProteinSequenceVersionId_Entries );
+                    per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId.set(proteinCoverage_Entry.reportedPeptideId, per_ProteinSequenceVersionId_Entries );
                 }
 
                 let alreadyIn_per_ProteinSequenceVersionId_Entries = false;
                 for ( const per_ProteinSequenceVersionId_Entry of per_ProteinSequenceVersionId_Entries ) {
-                    if ( per_ProteinSequenceVersionId_Entry.proteinSequenceVersionId === entry.proteinSequenceVersionId ) {
+                    if ( per_ProteinSequenceVersionId_Entry.proteinSequenceVersionId === proteinCoverage_Entry.proteinSequenceVersionId ) {
                         alreadyIn_per_ProteinSequenceVersionId_Entries = true;
-                        if ( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== entry.proteinIsIndependentDecoy ) {
-                            const msg = "( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== entry.proteinIsIndependentDecoy ). entry.reportedPeptideId: " + entry.reportedPeptideId + ", entry.proteinSequenceVersionId: " + entry.proteinSequenceVersionId;
+                        if ( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== proteinCoverage_Entry.proteinIsIndependentDecoy ) {
+                            const msg = "( per_ProteinSequenceVersionId_Entry.proteinIsIndependentDecoy !== entry.proteinIsIndependentDecoy ). entry.reportedPeptideId: " + proteinCoverage_Entry.reportedPeptideId + ", entry.proteinSequenceVersionId: " + proteinCoverage_Entry.proteinSequenceVersionId;
                             console.warn(msg)
                             throw Error(msg)
                         }
@@ -618,7 +735,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
                     }
                 }
                 if ( ! alreadyIn_per_ProteinSequenceVersionId_Entries ) {
-                    per_ProteinSequenceVersionId_Entries.push({ proteinSequenceVersionId: entry.proteinSequenceVersionId, proteinIsIndependentDecoy: entry.proteinIsIndependentDecoy })
+                    per_ProteinSequenceVersionId_Entries.push({ proteinSequenceVersionId: proteinCoverage_Entry.proteinSequenceVersionId, proteinIsIndependentDecoy: proteinCoverage_Entry.proteinIsIndependentDecoy })
                 }
             }
         }

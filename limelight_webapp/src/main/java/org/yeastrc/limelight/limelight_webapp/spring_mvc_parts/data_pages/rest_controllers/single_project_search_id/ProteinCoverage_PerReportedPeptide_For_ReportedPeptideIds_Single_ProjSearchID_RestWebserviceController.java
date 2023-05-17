@@ -81,7 +81,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -253,66 +253,106 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				dbItemList = searcherResult.getResults();
     			}
     			
-//    			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> populateDB_RequestItemList = new ArrayList<>( dbItemList.size() );
-//    			
-//    			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
-//    				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
-//    						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
-//    					
-//    					Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem populateDB_RequestItem = new Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem();
-//    					populateDB_RequestItem.setProtein_coverage_tbl__id( dbItem.getProtein_coverage_tbl__id() );
-//    					populateDB_RequestItem.setProteinSequenceVersionId( dbItem.getProteinSequenceVersionId() );
-//    					populateDB_RequestItem.setProteinStartPosition( dbItem.getProteinStartPosition() );
-//    					populateDB_RequestItem.setProteinEndPosition( dbItem.getProteinEndPosition() );
-//    					populateDB_RequestItemList.add( populateDB_RequestItem );
-//    				}
-//    			}
-//    			
-//    			if ( ! populateDB_RequestItemList.isEmpty() ) {
-//    				
-//    				//  Update the DB with the Pre and Post Protein Residue
-//    				
-//    				dbItemList = null;  // Clear prev values since will populate next
-//    				
-//    				Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects
-//    				.getSingletonInstance()
-//    				.limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
-//    						populateDB_RequestItemList
-//    						);
-//    				
-//    				
-//    				//  Re-query the data
-//    				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
-//        					proteinCoverageForSearchIdReportedPeptideIdsSearcher
-//        					.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
-//        			dbItemList = searcherResult.getResults();
-//        			
-//        			//  Validate ALL Pre and Post residue populated
-//        			
-//        			
-//        			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
-//        				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
-//        						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
-//        				
-//        					String msg = "Populate DB ProteinCoverageTbl FOR NewFields ProteinPrePostResidue FAILED to populate for all records.  id: " + dbItem.getProtein_coverage_tbl__id();
-//        					log.error(msg);
-//        					throw new LimelightInternalErrorException(msg);
-//        				}
-//        			}
-//    			}
+    			List<Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem> populateDB_RequestItemList = new ArrayList<>( dbItemList.size() );
+    			
+    			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+    				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
+    						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
+    					
+    					Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem populateDB_RequestItem = new Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem();
+    					populateDB_RequestItem.setProtein_coverage_tbl__id( dbItem.getProtein_coverage_tbl__id() );
+    					populateDB_RequestItem.setProteinSequenceVersionId( dbItem.getProteinSequenceVersionId() );
+    					populateDB_RequestItem.setProteinStartPosition( dbItem.getProteinStartPosition() );
+    					populateDB_RequestItem.setProteinEndPosition( dbItem.getProteinEndPosition() );
+    					populateDB_RequestItemList.add( populateDB_RequestItem );
+    				}
+    			}
+    			
+    			if ( ! populateDB_RequestItemList.isEmpty() ) {
+    				
+    				//  Update the DB with the Pre and Post Protein Residue
+    				
+    				dbItemList = null;  // Clear prev values since will populate next
+    				
+    				Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects
+    				.getSingletonInstance()
+    				.limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_MAIN(
+    						populateDB_RequestItemList
+    						);
+    				
+    				
+    				//  Re-query the data
+    				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
+        					proteinCoverageForSearchIdReportedPeptideIdsSearcher
+        					.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
+        			dbItemList = searcherResult.getResults();
+        			
+        			//  Validate ALL Pre and Post residue populated
+        			
+        			
+        			for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+        				if ( dbItem.getProtein_PreResidue() == null || dbItem.getProtein_PostResidue() == null
+        						|| dbItem.getPeptideAtProteinStart_Flag() == null || dbItem.getPeptideAtProteinEnd_Flag() == null ) {
+        				
+        					String msg = "Populate DB ProteinCoverageTbl FOR NewFields ProteinPrePostResidue FAILED to populate for all records.  id: " + dbItem.getProtein_coverage_tbl__id();
+        					log.error(msg);
+        					throw new LimelightInternalErrorException(msg);
+        				}
+        			}
+    			}
     		}
     		
-    		List<WebserviceResult_Item> proteinCoverageList_WebserviceResponse = new ArrayList<>( dbItemList.size() );
+    	 	
+    		int[] protein_coverage_tbl__id_Array = new int[ dbItemList.size() ]; // protein_coverage_tbl.id
+    		int[] reportedPeptideId_Array = new int[ dbItemList.size() ];
+    		int[] proteinSequenceVersionId_Array = new int[ dbItemList.size() ];
+    		int[] proteinStartPosition_Array = new int[ dbItemList.size() ];
+    		int[] proteinEndPosition_Array = new int[ dbItemList.size() ];
+    		boolean[] proteinIsIndependentDecoy_Array = new boolean[ dbItemList.size() ];
+    		
+    		String[] protein_PreResidue_Array = new String[ dbItemList.size() ];  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+    		String[] protein_PostResidue_Array = new String[ dbItemList.size() ]; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
 
+    		boolean[] peptideAtProteinStart_Flag_Array = new boolean[ dbItemList.size() ];  //  peptide at start of protein.  null until computed
+    		boolean[] peptideAtProteinEnd_Flag_Array = new boolean[ dbItemList.size() ];  //  peptide at end of protein.  null until computed
+    		
     			//  Result from WS
     			
-    		for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
-    			WebserviceResult_Item wsItem = new WebserviceResult_Item( dbItem );
-    			proteinCoverageList_WebserviceResponse.add( wsItem );
+    		{
+    			int index = 0;
+	    		for ( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item dbItem : dbItemList ) {
+	    			
+	    			protein_coverage_tbl__id_Array[ index ] = dbItem.getProtein_coverage_tbl__id(); // protein_coverage_tbl.id
+	        		reportedPeptideId_Array[ index ] = dbItem.getReportedPeptideId();
+	        		proteinSequenceVersionId_Array[ index ] = dbItem.getProteinSequenceVersionId();
+	        		proteinStartPosition_Array[ index ] = dbItem.getProteinStartPosition();
+	        		proteinEndPosition_Array[ index ] = dbItem.getProteinEndPosition();
+	        		proteinIsIndependentDecoy_Array[ index ] = dbItem.isProteinIsIndependentDecoy();
+	        		
+	        		protein_PreResidue_Array[ index ] = dbItem.getProtein_PreResidue();  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+	        		protein_PostResidue_Array[ index ] = dbItem.getProtein_PostResidue(); //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
+
+	        		//  Call .booleanValue() here since cannot be null since if null above after calling population code an Exception is thrown
+	        		peptideAtProteinStart_Flag_Array[ index ] = dbItem.getPeptideAtProteinStart_Flag().booleanValue();  //  peptide at start of protein.  null until computed
+	        		peptideAtProteinEnd_Flag_Array[ index ] = dbItem.getPeptideAtProteinEnd_Flag().booleanValue();  //  peptide at end of protein.  null until computed
+	        		
+	    			index++;
+	    		}
     		}
     			
     		WebserviceResult result = new WebserviceResult();
-    		result.proteinCoverageList = proteinCoverageList_WebserviceResponse;
+    		result.protein_coverage_tbl__id_Array = protein_coverage_tbl__id_Array;
+    		result.reportedPeptideId_Array = reportedPeptideId_Array;
+    		result.proteinSequenceVersionId_Array = proteinSequenceVersionId_Array;
+    		result.proteinStartPosition_Array = proteinStartPosition_Array;
+    		result.proteinEndPosition_Array = proteinEndPosition_Array;
+    		result.proteinIsIndependentDecoy_Array = proteinIsIndependentDecoy_Array;
+
+    		result.protein_PreResidue_Array = protein_PreResidue_Array;  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+    		result.protein_PostResidue_Array = protein_PostResidue_Array; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
+
+    		result.peptideAtProteinStart_Flag_Array = peptideAtProteinStart_Flag_Array;  //  peptide at start of protein.  null until computed
+    		result.peptideAtProteinEnd_Flag_Array = peptideAtProteinEnd_Flag_Array;  //  peptide at end of protein.  null until computed
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
 
@@ -370,6 +410,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			this.reportedPeptideIds = reportedPeptideIds;
 		}
     }
+
+    ///   !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
     
     /**
      * 
@@ -377,81 +419,52 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResult_Item> proteinCoverageList;
-
-		public List<WebserviceResult_Item> getProteinCoverageList() {
-			return proteinCoverageList;
-		}
-    }
-    /**
-     * 
-     *
-     */
-    public static class WebserviceResult_Item {
-    	
-    	private int rPId;
-    	private int pSVId;
-    	private int pSPs;
-    	private int pEPs;
-    	private boolean iipdc;
-    	
-//    	private String ppr;
-//    	private String pop;
-//
-//		private boolean pps;  // peptideAtProteinStart_Flag  peptide at start of protein
-//		private boolean ppe;  // peptideAtProteinEnd_Flag peptide at end of protein
+		private int[] protein_coverage_tbl__id_Array; // protein_coverage_tbl.id
+		private int[] reportedPeptideId_Array;
+		private int[] proteinSequenceVersionId_Array;
+		private int[] proteinStartPosition_Array;
+		private int[] proteinEndPosition_Array;
+		private boolean[] proteinIsIndependentDecoy_Array;
 		
-    	
-    	public WebserviceResult_Item() {}
-    	
-    	public WebserviceResult_Item( ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item item ) {
-    		this.rPId = item.getReportedPeptideId();
-    		this.pSVId = item.getProteinSequenceVersionId();
-    		this.pSPs = item.getProteinStartPosition();
-    		this.pEPs = item.getProteinEndPosition();
-    		this.iipdc = item.isProteinIsIndependentDecoy();
-    		
-//    		this.ppr = item.getProtein_PreResidue();
-//    		this.pop = item.getProtein_PostResidue();
-//    		this.pps = item.getPeptideAtProteinStart_Flag();
-//    		this.ppe = item.getPeptideAtProteinEnd_Flag();
-    	}
-    	
-		public int getrPId() {
-			return rPId;
-		}
-		public int getpSVId() {
-			return pSVId;
-		}
-		public int getpSPs() {
-			return pSPs;
-		}
-		public int getpEPs() {
-			return pEPs;
-		}
+		private String[] protein_PreResidue_Array;  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+		private String[] protein_PostResidue_Array; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
 
-		public boolean isIipdc() {
-			return iipdc;
+		private boolean[] peptideAtProteinStart_Flag_Array;  //  peptide at start of protein.  null until computed
+		private boolean[] peptideAtProteinEnd_Flag_Array;  //  peptide at end of protein.  null until computed
+		
+		public int[] getProtein_coverage_tbl__id_Array() {
+			return protein_coverage_tbl__id_Array;
 		}
-
-//		public String getPpr() {
-//			return ppr;
-//		}
-//
-//		public String getPop() {
-//			return pop;
-//		}
-//
-//		public boolean getPps() {
-//			return pps;
-//		}
-//
-//		public boolean getPpe() {
-//			return ppe;
-//		}
-
-    	
+		public int[] getReportedPeptideId_Array() {
+			return reportedPeptideId_Array;
+		}
+		public int[] getProteinSequenceVersionId_Array() {
+			return proteinSequenceVersionId_Array;
+		}
+		public int[] getProteinStartPosition_Array() {
+			return proteinStartPosition_Array;
+		}
+		public int[] getProteinEndPosition_Array() {
+			return proteinEndPosition_Array;
+		}
+		public boolean[] getProteinIsIndependentDecoy_Array() {
+			return proteinIsIndependentDecoy_Array;
+		}
+		public String[] getProtein_PreResidue_Array() {
+			return protein_PreResidue_Array;
+		}
+		public String[] getProtein_PostResidue_Array() {
+			return protein_PostResidue_Array;
+		}
+		public boolean[] getPeptideAtProteinStart_Flag_Array() {
+			return peptideAtProteinStart_Flag_Array;
+		}
+		public boolean[] getPeptideAtProteinEnd_Flag_Array() {
+			return peptideAtProteinEnd_Flag_Array;
+		}
+		
     }
+    
 }
 
 

@@ -32,10 +32,6 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSe
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
- * !!  WARNING::  Comment out fields 'protein_pre_residue', 'protein_post_residue', 'peptide_at_protein_start_flag', 'peptide_at_protein_end_flag'
- * 					Until update the Webservice to return new format and update Javascript and Page in general to display the new data.
- * 
- * 
  * 
  * !!!   WARNING::  Fields 'protein_pre_residue', 'protein_post_residue', 'peptide_at_protein_start_flag', 'peptide_at_protein_end_flag'
  *						 were added and may be null/Not Populated.
@@ -76,11 +72,11 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 		private int proteinEndPosition;
 		private boolean proteinIsIndependentDecoy;
 		
-//		private String protein_PreResidue;  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
-//		private String protein_PostResidue; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
-//
-//		private Boolean peptideAtProteinStart_Flag;  //  peptide at start of protein.  null until computed
-//		private Boolean peptideAtProteinEnd_Flag;  //  peptide at end of protein.  null until computed
+		private String protein_PreResidue;  //  protein residue before peptide or 'n' if peptide at start of protein.  null until computed
+		private String protein_PostResidue; //  protein residue after peptide or 'c' if peptide at end of protein.  null until computed
+
+		private Boolean peptideAtProteinStart_Flag;  //  peptide at start of protein.  null until computed
+		private Boolean peptideAtProteinEnd_Flag;  //  peptide at end of protein.  null until computed
 		
 		/**
 		 * protein_coverage_tbl.id
@@ -90,36 +86,36 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 			return protein_coverage_tbl__id;
 		}
 
-//		/**
-//		 * null until computed
-//		 * @return
-//		 */
-//		public String getProtein_PreResidue() {
-//			return protein_PreResidue;
-//		}
-//		/**
-//		 * null until computed
-//		 * @return
-//		 */
-//		public String getProtein_PostResidue() {
-//			return protein_PostResidue;
-//		}
-//
-//		/**
-//		 * null until computed
-//		 * @return
-//		 */
-//		public Boolean getPeptideAtProteinStart_Flag() {
-//			return peptideAtProteinStart_Flag;
-//		}
-//
-//		/**
-//		 * null until computed
-//		 * @return
-//		 */
-//		public Boolean getPeptideAtProteinEnd_Flag() {
-//			return peptideAtProteinEnd_Flag;
-//		}
+		/**
+		 * null until computed
+		 * @return
+		 */
+		public String getProtein_PreResidue() {
+			return protein_PreResidue;
+		}
+		/**
+		 * null until computed
+		 * @return
+		 */
+		public String getProtein_PostResidue() {
+			return protein_PostResidue;
+		}
+
+		/**
+		 * null until computed
+		 * @return
+		 */
+		public Boolean getPeptideAtProteinStart_Flag() {
+			return peptideAtProteinStart_Flag;
+		}
+
+		/**
+		 * null until computed
+		 * @return
+		 */
+		public Boolean getPeptideAtProteinEnd_Flag() {
+			return peptideAtProteinEnd_Flag;
+		}
 
 		
 		
@@ -143,9 +139,8 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 	}
 
 	private static final String QUERY_SQL = 
-			"SELECT id, reported_peptide_id, protein_sequence_version_id, protein_start_position, protein_end_position, protein_is_independent_decoy"
-//			+ ","
-//			+ " protein_pre_residue, protein_post_residue, peptide_at_protein_start_flag, peptide_at_protein_end_flag "
+			"SELECT id, reported_peptide_id, protein_sequence_version_id, protein_start_position, protein_end_position, protein_is_independent_decoy,"
+			+ " protein_pre_residue, protein_post_residue, peptide_at_protein_start_flag, peptide_at_protein_end_flag "
 			+ " FROM "
 			+ " protein_coverage_tbl "
 			+ " WHERE search_id = ? AND reported_peptide_id IN ( "; //  Add closing ")" in code
@@ -226,28 +221,28 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 							item.proteinIsIndependentDecoy = true;
 						}
 					}
-//					item.protein_PreResidue = ( rs.getString( "protein_pre_residue" ) );
-//					item.protein_PostResidue = ( rs.getString( "protein_post_residue" ) );
-//					{
-//						int fieldInt = rs.getInt( "peptide_at_protein_start_flag" );
-//						if ( rs.wasNull() ) {
-//							item.peptideAtProteinStart_Flag = null;
-//						} else if ( fieldInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-//							item.peptideAtProteinStart_Flag = true;
-//						} else {
-//							item.peptideAtProteinStart_Flag = false;
-//						}
-//					}
-//					{
-//						int fieldInt = rs.getInt( "peptide_at_protein_end_flag" );
-//						if ( rs.wasNull() ) {
-//							item.peptideAtProteinEnd_Flag = null;
-//						} else if ( fieldInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-//							item.peptideAtProteinEnd_Flag = true;
-//						} else {
-//							item.peptideAtProteinEnd_Flag = false;
-//						}
-//					}
+					item.protein_PreResidue = ( rs.getString( "protein_pre_residue" ) );
+					item.protein_PostResidue = ( rs.getString( "protein_post_residue" ) );
+					{
+						int fieldInt = rs.getInt( "peptide_at_protein_start_flag" );
+						if ( rs.wasNull() ) {
+							item.peptideAtProteinStart_Flag = null;
+						} else if ( fieldInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.peptideAtProteinStart_Flag = true;
+						} else {
+							item.peptideAtProteinStart_Flag = false;
+						}
+					}
+					{
+						int fieldInt = rs.getInt( "peptide_at_protein_end_flag" );
+						if ( rs.wasNull() ) {
+							item.peptideAtProteinEnd_Flag = null;
+						} else if ( fieldInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.peptideAtProteinEnd_Flag = true;
+						} else {
+							item.peptideAtProteinEnd_Flag = false;
+						}
+					}
 					
 					results.add( item );
 				}

@@ -184,8 +184,6 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
 
             let peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder = undefined
 
-            let proteinSequenceString : string = undefined
-
             const peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder> = new Map();
 
             const numPsmsForReportedPeptideIdMap_Key_ProjectSearchId : Map<number, CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_Num_PSMs_For_reportedPeptideIds_ResultDataType> = new Map()
@@ -229,48 +227,6 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                             promises.push(promise)
                         } else {
                             throw Error("get_PeptideSequencesHolder_AllForAllSearches_Result no data or promise")
-                        }
-                    }
-
-                    //  Conditionally loaded items
-
-                    {   //  Protein Sequence String
-
-                        if ( ! forPeptidePage ) {
-
-                            {
-                                const get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result =
-                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer__CommonAcrossSearches().
-                                    get_commonData_LoadedFromServer_CommonAcrossSearches__ProteinSequences().get_ProteinSequencesHolder_For_ProteinSequenceVersionId(proteinSequenceVersionId);
-                                if ( get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.data ) {
-                                    proteinSequenceString =
-                                        get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.data.
-                                        proteinSequences_For_MainFilters_Holder.get_ProteinSequence_For_ProteinSequenceVersionId(proteinSequenceVersionId);
-                                    if ( ! proteinSequenceString ) {
-                                        const msg = "get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.data.proteinSequences_For_MainFilters_Holder.get_ProteinSequence_For_ProteinSequenceVersionId(proteinSequenceVersionId) returned nothing for proteinSequenceVersionId: " + proteinSequenceVersionId;
-                                        console.warn(msg)
-                                        throw Error(msg)
-                                    }
-                                } else if ( get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.promise ) {
-                                    const promise = new Promise<void>((resolve, reject) => { try {
-                                        get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.promise.catch(reason => {reject(reason)})
-                                        get_ProteinSequencesHolder_For_ProteinSequenceVersionId_Result.promise.then( value_get_PeptideSequencesHolder_AllForAllSearches_Result => { try {
-                                            proteinSequenceString =
-                                                value_get_PeptideSequencesHolder_AllForAllSearches_Result.proteinSequences_For_MainFilters_Holder.
-                                                get_ProteinSequence_For_ProteinSequenceVersionId(proteinSequenceVersionId);
-                                            if ( ! proteinSequenceString ) {
-                                                const msg = "value_get_PeptideSequencesHolder_AllForAllSearches_Result.proteinSequences_For_MainFilters_Holder.get_ProteinSequence_For_ProteinSequenceVersionId(proteinSequenceVersionId) returned nothing for proteinSequenceVersionId: " + proteinSequenceVersionId;
-                                                console.warn(msg)
-                                                throw Error(msg)
-                                            }
-                                            resolve()
-                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                                    promises.push(promise)
-                                } else {
-                                    throw Error("get_PeptideSequencesHolder_AllForAllSearches_Result no data or promise")
-                                }
-                            }
                         }
                     }
                 }
@@ -678,7 +634,6 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
                     proteinSequenceVersionId,  // Not Populated on Peptide Page
-                    proteinSequenceString,  // Not Populated on Peptide Page
 
                     projectSearchIds,
 
@@ -722,7 +677,6 @@ export const create_GeneratedReportedPeptideListData__SingleProtein = function(
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
                         proteinSequenceVersionId,  // Not Populated on Peptide Page
-                        proteinSequenceString,  // Not Populated on Peptide Page
 
                         projectSearchIds,
 
@@ -774,7 +728,6 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
         proteinSequenceVersionId,  // Not Populated on Peptide Page
-        proteinSequenceString,
 
         projectSearchIds,
 
@@ -803,7 +756,6 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject
         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
-        proteinSequenceString : string     // Not Populated on Peptide Page
 
         projectSearchIds : Array<number>
 
@@ -980,7 +932,6 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
                     psmIds_ToProcess : psmIds_Include,
 
                     proteinSequenceVersionId,  // Not Populated on Peptide Page,
-                    proteinSequenceString,     // Not Populated on Peptide Page,
                     // Not Populated on Peptide Page
                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1015,7 +966,6 @@ const _internal_TopLevel_Function_AfterDataLoad = function (
                     psmIds_ToAdd : psmIds_Include,
 
                     proteinSequenceVersionId,
-                    proteinSequenceString,
                     // Not Populated on Peptide Page
                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1435,7 +1385,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         psmIds_ToProcess,
 
         proteinSequenceVersionId, // Not Populated on Peptide Page
-        proteinSequenceString,     // Not Populated on Peptide Page
         // Not Populated on Peptide Page
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1461,7 +1410,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
         psmIds_ToProcess : ReadonlySet<number>  // Optional
 
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
-        proteinSequenceString : string     // Not Populated on Peptide Page
         // Not Populated on Peptide Page
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder : CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
 
@@ -1595,7 +1543,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                 psmIds_ToAdd,
 
                 proteinSequenceVersionId,
-                proteinSequenceString,
                 // Not Populated on Peptide Page
                 proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1631,7 +1578,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                     psmIds_ToAdd,
 
                     proteinSequenceVersionId,
-                    proteinSequenceString,
                     // Not Populated on Peptide Page
                     proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1674,7 +1620,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
                             psmIds_ToAdd,
 
                             proteinSequenceVersionId,
-                            proteinSequenceString,
                             // Not Populated on Peptide Page
                             proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1713,7 +1658,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         psmIds_ToAdd,
 
         proteinSequenceVersionId,  //  NOT populated for Peptide page
-        proteinSequenceString,     // Not Populated on Peptide Page
         // Not Populated on Peptide Page
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -1738,7 +1682,6 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         psmIds_ToAdd : ReadonlySet<number>  // Optional
 
         proteinSequenceVersionId : number  // Not Populated on Peptide Page
-        proteinSequenceString: string  // Not Populated on Peptide Page
         // Not Populated on Peptide Page
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder : CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
 
@@ -1872,18 +1815,14 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
         peptideItems_Map_Key_peptideSequenceDisplayString.set( peptideSequenceDisplay, peptideItem );
     }
 
-    if ( ! forPeptidePage ) {
+    _update_peptideItem_Pre_Post_Residues({
+        reportedPeptideId,
+        proteinSequenceVersionId,
 
-        _update_peptideItem_Pre_Post_Residues({
-            reportedPeptideId,
-            proteinSequenceVersionId,
-            proteinSequenceString,
+        proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
-            proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
-
-            peptideItem  // Updated
-        });
-    }
+        peptideItem  // Updated
+    });
 
     if ( numPsms !== undefined ) {
         peptideItem.numPsmsTotal += numPsms;  // TODO  Maybe do something different instead
@@ -1991,8 +1930,7 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM 
 const _update_peptideItem_Pre_Post_Residues = function (
     {
         reportedPeptideId,
-        proteinSequenceVersionId,
-        proteinSequenceString,
+        proteinSequenceVersionId, //  ONLY passed for Single Protein
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder,
 
@@ -2000,7 +1938,6 @@ const _update_peptideItem_Pre_Post_Residues = function (
     } : {
         reportedPeptideId: number
         proteinSequenceVersionId: number
-        proteinSequenceString: string
 
         proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder : CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder
 
@@ -2008,19 +1945,10 @@ const _update_peptideItem_Pre_Post_Residues = function (
     }
 ) : void {
 
-    if ( ! proteinSequenceVersionId ) {
-        throw Error("_update_peptideItem_Pre_Post_Residues: proteinSequenceVersionId is required")
-    }
-    if ( ! proteinSequenceString ) {
-        throw Error("_update_peptideItem_Pre_Post_Residues: proteinSequenceString is required")
-    }
-
-
-    //  Skip if no Protein Sequence loaded -  Protein Sequence loaded only for Single Protein.  Not loaded for Peptide page
     if ( !proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) {
-        //  Coverage Data NOT loaded so Skip
+        //  Coverage Data NOT loaded
 
-        return; // EARLY RETURN
+        throw Error("( !proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) ")
     }
 
     const proteinCoverage_For_ReportedPeptideId =
@@ -2029,7 +1957,8 @@ const _update_peptideItem_Pre_Post_Residues = function (
     if (proteinCoverage_For_ReportedPeptideId) {
         for (const proteinCoverageEntry of proteinCoverage_For_ReportedPeptideId) {
 
-            if ( proteinSequenceVersionId && proteinSequenceVersionId !== proteinCoverageEntry.proteinSequenceVersionId ) {
+            if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null
+                && proteinSequenceVersionId !== proteinCoverageEntry.proteinSequenceVersionId ) {
 
                 //  Processing this function specifically for proteinSequenceVersionId (Single Protein Page)
                 //     AND the proteinSequenceVersionId for this Coverage Entry does NOT match SO SKIP
@@ -2037,25 +1966,20 @@ const _update_peptideItem_Pre_Post_Residues = function (
                 continue;  // EARLY CONTINUE
             }
 
-            const proteinStartPosition = proteinCoverageEntry.proteinStartPosition
-            const proteinEndPosition = proteinCoverageEntry.proteinEndPosition
-
-            if ( proteinStartPosition === 1 ) {
+            if ( proteinCoverageEntry.peptideAtProteinStart_Flag ) {
 
                 peptideItem.protein_Pre_Residue_N_Term = true
             } else {
-                const preResidue_Index = proteinStartPosition -  1 - 1;  //  - 1 for convert from One based to Zero based,  - 1 for get position one before the start of the peptide
-                const preResidue = proteinSequenceString.substring( preResidue_Index, preResidue_Index + 1 );
-                peptideItem.protein_Pre_Residues.add( preResidue );
+
+                peptideItem.protein_Pre_Residues.add( proteinCoverageEntry.protein_PreResidue );
             }
 
-            if ( proteinEndPosition === proteinSequenceString.length ) {
+            if ( proteinCoverageEntry.peptideAtProteinEnd_Flag ) {
 
                 peptideItem.protein_Post_Residue_C_Term = true
             } else {
-                const postResidue_Index = proteinEndPosition - 1 + 1;  //  - 1 for convert from One based to Zero based,  + 1 for get position one after the end of the peptide
-                const postResidue = proteinSequenceString.substring( postResidue_Index, postResidue_Index + 1 );
-                peptideItem.protein_Post_Residues.add( postResidue );
+
+                peptideItem.protein_Post_Residues.add( proteinCoverageEntry.protein_PostResidue );
             }
         }
     }

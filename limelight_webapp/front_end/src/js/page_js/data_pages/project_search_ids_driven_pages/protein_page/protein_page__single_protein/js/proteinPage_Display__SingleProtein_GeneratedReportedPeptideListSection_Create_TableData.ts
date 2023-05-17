@@ -210,7 +210,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     displayName,
                     width : 40,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the n-terminus of this peptide in the protein sequence.'
+                    columnHeader_Tooltip_HTML_TitleAttribute: 'Residue immediately to the n-terminus of this peptide in the protein(s) sequence.'
                 });
                 dataTable_Columns.push( dataTableColumn );
 
@@ -226,7 +226,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     displayName,
                     width : 40,
                     sortable : true,
-                    columnHeader_Tooltip_HTML_TitleAttribute:'Residue immediately to the c-terminus of this peptide in the protein sequence.'
+                    columnHeader_Tooltip_HTML_TitleAttribute: 'Residue immediately to the c-terminus of this peptide in the protein(s) sequence.'
 
                 });
                 dataTable_Columns.push( dataTableColumn );
