@@ -77,6 +77,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.FileUploadSubmitterPgmSameMachineConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.constants.LimelightXMLFileUploadWebConstants;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingDataJSONBlob_DAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.DeleteDirectoryAndContentsUtilIF;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsFileObjectStorageFileImportAllowedViaWebSubmit_IF;
@@ -127,6 +128,9 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 
 	@Autowired
 	private FileImportTrackingDAO_IF fileImportTrackingDAO;
+	
+	@Autowired
+	private FileImportTrackingDataJSONBlob_DAO_IF fileImportTrackingDataJSONBlob_DAO;
 	
 	@Autowired
 	private FileImportTrackingSingleFileDAO_IF fileImportTrackingSingleFileDAO;
@@ -1021,8 +1025,11 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 			String jsonContents = marshalObjectToJSON.getJSONString( fileImportTrackingDataJSON_Contents_Version_Number_001 );
 
 			fileImportTrackingDataJSONBlob_DTO = new FileImportTrackingDataJSONBlob_DTO();
+			fileImportTrackingDataJSONBlob_DTO.setFileImportTrackingId(fileImportTrackingDTO.getId());
 			fileImportTrackingDataJSONBlob_DTO.setJsonContents_FormatVersion(FileImportTrackingDataJSON_Contents_Version_Number_001.VERSION_NUMBER_001);
 			fileImportTrackingDataJSONBlob_DTO.setJsonContents(jsonContents);
+			
+			fileImportTrackingDataJSONBlob_DAO.save(fileImportTrackingDataJSONBlob_DTO);
 		}
 		
 //		//  Main File Import Tracking Object. Update for Submit
