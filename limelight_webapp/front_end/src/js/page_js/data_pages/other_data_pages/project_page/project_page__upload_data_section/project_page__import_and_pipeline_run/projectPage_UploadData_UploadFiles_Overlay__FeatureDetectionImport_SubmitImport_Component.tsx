@@ -544,6 +544,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
                                             maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL }
                                             ref={ this._displayLabel_InputElement_Ref }
                                             onChange={ this._inputFields_Changed_BindThis }
+                                            title={ "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL + " characters" }
+                                            style={ { width: 110 } }
                                         />
                                         { this.state.displayLabelField_Empty ? (
                                             <span style={ { marginLeft: 10, color: "red" }}>
@@ -567,6 +569,9 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
                                             defaultValue={ _DESCRIPTION__DEFAULT_VALUE }
                                             maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION }
                                             ref={ this._description_InputElement_Ref }
+                                            onChange={ this._inputFields_Changed_BindThis }
+                                            title={ "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION + " characters" }
+                                            style={ { width: 450 } }
                                         />
                                     </div>
 
