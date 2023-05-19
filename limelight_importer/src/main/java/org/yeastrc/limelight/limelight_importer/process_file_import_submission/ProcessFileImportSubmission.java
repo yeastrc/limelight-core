@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.FileImportTrackingSingleFileDAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
 import org.yeastrc.limelight.limelight_importer.constants.Importer__InsertedSearchId_When_NoSearchImported_Constants;
 import org.yeastrc.limelight.limelight_importer.dao.FileImportTrackingDataJSONBlob_DAO_Importer;
@@ -55,6 +54,7 @@ import org.yeastrc.limelight.limelight_importer.utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFile_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDataJSONBlob_DTO;
@@ -217,7 +217,7 @@ public class ProcessFileImportSubmission {
 		
 		///  Get the Limelight XML file and Scan files
 		List<FileImportTrackingSingleFileDTO> fileDBRecordList = 
-				FileImportTrackingSingleFileDAO__Importer_RunImporter.getInstance()
+				FileImportTrackingSingleFile_Shared_Get_DAO.getInstance()
 				.getForTrackingId( fileImportTrackingDTO.getId() );
 		
 		FileImportTrackingSingleFileDTO limelightXMLFileDBRecord = null;

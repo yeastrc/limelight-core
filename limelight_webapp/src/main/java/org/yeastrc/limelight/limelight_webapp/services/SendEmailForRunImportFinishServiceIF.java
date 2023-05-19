@@ -17,8 +17,11 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
+import java.util.List;
+
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 
 /**
  * @author danj
@@ -31,7 +34,9 @@ public interface SendEmailForRunImportFinishServiceIF {
 	 * @param fileImportTrackingRunDTO
 	 * @throws Exception
 	 */
-	void sendEmailForRunImportFinishInternalService(FileImportTrackingDTO fileImportTrackingDTO,
-			FileImportTrackingRunDTO fileImportTrackingRunDTO) throws Exception;
+	void sendEmailForRunImportFinishInternalService(
+			FileImportTrackingDTO fileImportTrackingDTO,
+			FileImportTrackingRunDTO fileImportTrackingRunDTO,
+			List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTO_List) throws Exception;
 
 }

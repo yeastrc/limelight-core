@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.FileImportTrackingSingleFileDAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFile_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
@@ -37,7 +37,7 @@ public class ImportFiles_Delete_S3Objects_For_DB_SingleFile_Records {
 			
 			///  Get the Limelight XML file and Scan files
 			List<FileImportTrackingSingleFileDTO> fileDBRecordList = 
-					FileImportTrackingSingleFileDAO__Importer_RunImporter.getInstance()
+					FileImportTrackingSingleFile_Shared_Get_DAO.getInstance()
 					.getForTrackingId( fileImportTrackingId );
 			
 			List<FileImportTrackingSingleFileDTO> fileDBRecord_On_S3_List = new ArrayList<>( fileDBRecordList.size() );

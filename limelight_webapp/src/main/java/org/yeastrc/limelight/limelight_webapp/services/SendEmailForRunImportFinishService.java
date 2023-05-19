@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportRunSubStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 import org.yeastrc.limelight.limelight_webapp.constants.ConfigSystemsKeysConstants;
@@ -78,7 +82,8 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 	@Override
 	public void sendEmailForRunImportFinishInternalService(
 			FileImportTrackingDTO fileImportTrackingDTO,
-			FileImportTrackingRunDTO fileImportTrackingRunDTO
+			FileImportTrackingRunDTO fileImportTrackingRunDTO,
+			List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTO_List
 			) throws Exception {
 		
 		int userId = fileImportTrackingDTO.getUserId();
@@ -135,6 +140,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 					Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
 					fileImportTrackingDTO, 
 					fileImportTrackingRunDTO,
+					fileImportTrackingSingleFileDTO_List,
 					"PlaceHolder_To_Email_Address", // toEmailAddressParam
 					userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
 					importerBaseDir // from config
@@ -155,6 +161,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         			Email_Contents_Control.FOR_USER,
         			fileImportTrackingDTO, 
         			fileImportTrackingRunDTO,
+        			fileImportTrackingSingleFileDTO_List,
         			userMgmtGetUserDataResponse.getEmail(), // toEmailAddressParam
         			null, // userEmailAddressParam
         			null // importerBaseDir
@@ -193,6 +200,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         							Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
         							fileImportTrackingDTO, 
         							fileImportTrackingRunDTO,
+        							fileImportTrackingSingleFileDTO_List,
         							extraEmailAddressesToSendTo, // toEmailAddressParam
         							userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
         							importerBaseDir // from config
@@ -234,6 +242,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
         								Email_Contents_Control.FOR_OTHER, // used when send email to addresses configured in config_system table
         								fileImportTrackingDTO, 
         								fileImportTrackingRunDTO,
+        								fileImportTrackingSingleFileDTO_List,
         								extraEmailAddressesToSendTo, // toEmailAddressParam
         								userMgmtGetUserDataResponse.getEmail(), // userEmailAddressParam
         								importerBaseDir // from config
@@ -268,6 +277,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 			Email_Contents_Control email_Contents_Control,
 			FileImportTrackingDTO fileImportTrackingDTO,
 			FileImportTrackingRunDTO fileImportTrackingRunDTO,
+			List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTO_List,
 			String toEmailAddressParam,
 			String userEmailAddressParam,
 			String importerBaseDir ) throws Exception {
@@ -321,11 +331,17 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 					+ "\n\n"
 					+ "** END Import Failure Message";
 		}
-		String importedShortDescription = null;
-		if ( StringUtils.isNotEmpty( fileImportTrackingDTO.getSearchName() ) ) {
-			importedShortDescription = "Imported short description: " + fileImportTrackingDTO.getSearchName();
+		String importedShortDescription = "";
+		String scanFilenameDisplay = "";
+		
+		if ( fileImportTrackingSingleFileDTO_List.size() == 1 && fileImportTrackingSingleFileDTO_List.get(0).getFileType() == FileImportFileType.SCAN_FILE ) {
+			scanFilenameDisplay = "Scan file: " + fileImportTrackingSingleFileDTO_List.get(0).getFilenameInUpload();
 		} else {
-			importedShortDescription = "No Imported short description";
+			if ( StringUtils.isNotEmpty( fileImportTrackingDTO.getSearchName() ) ) {
+				importedShortDescription = "Imported short description: " + fileImportTrackingDTO.getSearchName();
+			} else {
+				importedShortDescription = "No Imported short description";
+			}
 		}
 			
 		
@@ -334,6 +350,7 @@ public class SendEmailForRunImportFinishService implements SendEmailForRunImport
 				"The Limelight Import has " + statusText
 				+ ".\n\n"
 				+ importedShortDescription
+				+ scanFilenameDisplay
 				+ searchPathWithLabel
 				+ failedMessage
 				+ "\n\n"

@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_importer_runimporter_shared.dao;
+package org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,24 +24,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
+import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
+import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 
 /**
- * table file_import_tracking_single_file_tbl  -  Importer Run Importer SHARED - Get data only
+ * Shared Get Only
+ * 
+ * Table file_import_tracking_single_file_tbl
  *
  */
-public class FileImportTrackingSingleFileDAO__Importer_RunImporter {
+public class FileImportTrackingSingleFile_Shared_Get_DAO {
 
-	private static final Logger log = LoggerFactory.getLogger( FileImportTrackingSingleFileDAO__Importer_RunImporter.class );
-	
-	private FileImportTrackingSingleFileDAO__Importer_RunImporter() { }
-	public static FileImportTrackingSingleFileDAO__Importer_RunImporter getInstance() { return new FileImportTrackingSingleFileDAO__Importer_RunImporter(); }
-	
+	private static final Logger log = LoggerFactory.getLogger( FileImportTrackingSingleFile_Shared_Get_DAO.class );
+
+	//  private constructor
+	private FileImportTrackingSingleFile_Shared_Get_DAO() { }
+	/**
+	 * @return newly created instance
+	 */
+	public static FileImportTrackingSingleFile_Shared_Get_DAO getInstance() { 
+		return new FileImportTrackingSingleFile_Shared_Get_DAO(); 
+	}
+
 
 	/**
 	 * @param trackingId
@@ -54,7 +62,7 @@ public class FileImportTrackingSingleFileDAO__Importer_RunImporter {
 		
 		final String sql = "SELECT * FROM file_import_tracking_single_file_tbl WHERE file_import_tracking_id = ?";
 
-		try ( Connection connection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection();
+		try ( Connection connection = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 			
 			preparedStatement.setInt( 1, trackingId );

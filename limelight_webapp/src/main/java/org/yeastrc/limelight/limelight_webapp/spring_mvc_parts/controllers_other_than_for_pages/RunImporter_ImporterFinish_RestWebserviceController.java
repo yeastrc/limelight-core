@@ -17,6 +17,8 @@
 */
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.controllers_other_than_for_pages;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,9 +33,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFile_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTracking_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingRunDTO;
+import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dto.FileImportTrackingSingleFileDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Request;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.run_importer_to_web_app_objects.RunImporterToWebAppOnComplete_Response;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -151,9 +155,18 @@ public class RunImporter_ImporterFinish_RestWebserviceController {
     			log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		List<FileImportTrackingSingleFileDTO> fileImportTrackingSingleFileDTO_List = 
+    				FileImportTrackingSingleFile_Shared_Get_DAO.getInstance().getForTrackingId( webserviceRequest.getTrackingId() );
+    		if ( fileImportTrackingSingleFileDTO_List.isEmpty() ) {
+    			String msg = "fileImportTrackingSingleFileDTO_List.isEmpty(): webserviceRequest.trackingId: "
+    					+ webserviceRequest.getTrackingId() ;
+    			log.warn( msg );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
 
     		sendEmailForRunImportFinishService
-    		.sendEmailForRunImportFinishInternalService( fileImportTrackingDTO, fileImportTrackingRunDTO );
+    		.sendEmailForRunImportFinishInternalService( fileImportTrackingDTO, fileImportTrackingRunDTO, fileImportTrackingSingleFileDTO_List );
 
     		RunImporterToWebAppOnComplete_Response webserviceResponse = new RunImporterToWebAppOnComplete_Response();
     		webserviceResponse.setStatusSuccess( true );
