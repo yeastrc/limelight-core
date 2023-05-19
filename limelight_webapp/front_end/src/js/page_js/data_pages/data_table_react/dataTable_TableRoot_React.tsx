@@ -1062,8 +1062,17 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
 
                                 { ( this.state.searchInputValue_CurrentValue ) ? (
                                     <span >
-                                    &nbsp;(filtered)
-                                </span>
+                                        &nbsp;(filtered)
+                                    </span>
+                                ) : null }
+
+                                { ( this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== undefined
+                                &&  this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== null ) ? (
+                                    <>
+                                        <span >
+                                            &nbsp;{ this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y }
+                                        </span>
+                                    </>
                                 ) : null }
 
                                 <span className=" fake-link " style={ { marginLeft: 15 } }

@@ -49,6 +49,9 @@ import {
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
 
+const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__Proteins = "Proteins";
+const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__ProteinGroups = "Protein Groups";
+
 //  Strings used in the download of the table
 const _FALSE__DOWNLOAD_STRING = "false";
 const _TRUE__DOWNLOAD_STRING = "true";
@@ -100,8 +103,11 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
     let dataTable_DataGroupRowEntries : Array<DataTable_DataGroupRowEntry> = undefined;
+    let text_Optional_After_CurrentlyShowing_X_Of_Y: string
 
     if ( ! proteinGrouping_CentralStateManagerObjectClass.isGroupProteins_No_Grouping() ) {
+
+        text_Optional_After_CurrentlyShowing_X_Of_Y = _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__ProteinGroups;
 
         //  YES Proteins ARE Grouped
 
@@ -118,6 +124,8 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
 
         //  Proteins are NOT Grouped
 
+        text_Optional_After_CurrentlyShowing_X_Of_Y = _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__Proteins;
+
         const greyOutRow = false;  //  Not pass for not grouped
 
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
@@ -132,7 +140,8 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         columns: dataTable_RootTableDataObject_Both_ColumnArrays.columns,
         columns_tableDownload: dataTable_RootTableDataObject_Both_ColumnArrays.columns_tableDownload,
         dataTable_DataRowEntries,
-        dataTable_DataGroupRowEntries
+        dataTable_DataGroupRowEntries,
+        text_Optional_After_CurrentlyShowing_X_Of_Y
     });
 
     return tableObject;
