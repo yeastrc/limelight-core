@@ -277,7 +277,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_ONLY_ScanFiles_C
                         searchName: undefined,
                         searchShortName: undefined,
                         filesUploaded,
-                        searchTagList: undefined
+                        searchTagList: undefined,
+                        searchTagCategoryAndItsSearchTagsList: undefined
                     })
 
 

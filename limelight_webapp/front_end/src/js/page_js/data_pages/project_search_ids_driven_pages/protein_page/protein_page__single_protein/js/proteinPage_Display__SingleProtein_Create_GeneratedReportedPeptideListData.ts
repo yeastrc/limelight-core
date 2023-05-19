@@ -1972,6 +1972,7 @@ const _update_peptideItem_Pre_Post_Residues = function (
             } else {
 
                 peptideItem.protein_Pre_Residues.add( proteinCoverageEntry.protein_PreResidue );
+
             }
 
             if ( proteinCoverageEntry.peptideAtProteinEnd_Flag ) {

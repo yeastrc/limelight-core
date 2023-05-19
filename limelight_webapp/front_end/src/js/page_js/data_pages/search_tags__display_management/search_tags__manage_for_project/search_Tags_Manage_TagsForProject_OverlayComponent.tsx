@@ -222,7 +222,9 @@ class Search_Tags_Manage_TagsForProject_OverlayComponent extends React.Component
      */
     componentDidMount() {
 
-        this._loadData_SearchTags_SearchTagCategories()
+        try {
+            this._loadData_SearchTags_SearchTagCategories()
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**

@@ -483,9 +483,14 @@ export class ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__Limelight
     searchName: string
     searchShortName: string
     filesUploaded: Array<ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File>
-    searchTagList: Array<string>
+    searchTagList: Array<string>  //  Search Tags NOT in any Category
+    searchTagCategoryAndItsSearchTagsList: Array<ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_SearchTagCategory>
 }
 
+export class ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_SearchTagCategory {
+    searchTagCategoryLabel: string
+    searchTagList: Array<string>
+}
 export class ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File {
 
     isLimelightXMLFile : boolean
@@ -515,7 +520,8 @@ export const projectPage_UploadData_UploadFiles__Common_Submit_Upload__Limelight
             searchName : params.searchName,
             searchShortName : params.searchShortName,
             fileItems : params.filesUploaded,
-            searchTagList: params.searchTagList
+            searchTagList: params.searchTagList,
+            searchTagCategoryAndItsSearchTagsList: params.searchTagCategoryAndItsSearchTagsList
         }
 
         const url = "d/rws/for-page/project-upload-data-upload-submit";

@@ -738,7 +738,7 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
         const borderColor = "black"
         const borderWidth = 6
 
-        let div_title
+        let div_title: string
 
         if ( tagEntry.tag_Selected === Internal__TagSelected.YES_SELECTED__ALL_SEARCHES ) {
 

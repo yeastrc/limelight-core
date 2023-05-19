@@ -37,8 +37,20 @@ import {
     projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Submit__LimelightXMLFile_AndOr_ScanFile,
     projectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile,
     ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File,
+    ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_SearchTagCategory,
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles__Common_Init_AND_Submit_Upload__LimelightXMLFile_AndOr_ScanFile";
 import {SearchName_SearchShortName_Max_FieldLengths_Constants} from "page_js/constants_across_webapp/search_name_search_short_name/searchName_SearchShortName_Max_FieldLengths_Constants";
+import {
+    searchTags__Get_For_ProjectId,
+    SearchTags__Get_For_ProjectId_Result
+} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_project/searchTags__Get_For_ProjectId";
+import {
+    searchTagCategories__Get_For_ProjectId_Or_ProjectIdFromProjectSearchIds,
+    SearchTagCategories__Get_For_ProjectId_Result
+} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_project/search_tag_categories___get__for__project_id__or__project_id_from_project_search_ids";
+import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /**
  *
@@ -55,6 +67,8 @@ class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile_And_Op
  *
  */
 class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile_And_Optional_ScanFiles_Component_State {
+
+    showLoadingMessage?: boolean
 
     submitButton_Enabled?: boolean
     force_ReRender_Object?: object
@@ -84,6 +98,22 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
     private _projectPage_UploadData_SendUploadFileToServer__InProgress: ProjectPage_UploadData_SendUploadFileToServer
 
+
+    /**
+     *   Tag Category
+     *
+     *   New Array Object created when any of contents changes
+     */
+    private _searchTagCategories_DistinctInProject: Array<Internal_SearchTagCategory_Entry>
+
+    //  Tag
+
+    private _searchTags_Uncategorized__DistinctInProject: Array<Internal_SearchTagEntry>
+
+
+    private _searchTagIds_Selected: Set<number> = new Set()
+
+
     private _submit_InProgress: boolean = false;
 
     private _component_Mounted: boolean = false;
@@ -111,15 +141,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
             this._accepted_ScanFilename_Suffixes_CommaDelim = this._accepted_ScanFilename_Suffix_List.join(",");
         }
 
-        this.state = { submitButton_Enabled: false }
-    }
-
-    /**
-     *
-     */
-    componentDidMount() {
-
-        this._component_Mounted = true;
+        this.state = { showLoadingMessage: true, submitButton_Enabled: false }
     }
 
     /**
@@ -135,6 +157,191 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
+
+    /**
+     *
+     */
+    componentDidMount() {
+
+        this._component_Mounted = true;
+
+        try {
+            this._loadData_SearchTags_SearchTagCategories()
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _loadData_SearchTags_SearchTagCategories() {
+        try {
+            //  Load Search Tags for searches
+
+            let searchTags__Get_For_ProjectId_Result: SearchTags__Get_For_ProjectId_Result
+            let searchTagCategories__Get_For_ProjectId_Result: SearchTagCategories__Get_For_ProjectId_Result
+
+            const promises: Array<Promise<void>> = []
+
+            {
+                const promise = new Promise<void>((resolve, reject) => { try {
+
+                    const promise_getSearchTagList = searchTags__Get_For_ProjectId({ projectIdentifier: this.props.mainParams.projectIdentifierFromURL });
+
+                    promise_getSearchTagList.catch(reason => { reject(reason) })
+
+                    promise_getSearchTagList.then( ( searchTags__Get_For_ProjectId_Result__PromiseResolve ) => { try {
+
+                        if ( ! this._component_Mounted ) {
+                            // unmounted so exit
+                            return; // EARLY RETURN
+                        }
+
+                        searchTags__Get_For_ProjectId_Result = searchTags__Get_For_ProjectId_Result__PromiseResolve;
+
+                        resolve()
+
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                promises.push( promise );
+            }
+            {
+                const promise = new Promise<void>((resolve, reject) => { try {
+
+                    const promise_getSearchTagCategoryList =
+                        searchTagCategories__Get_For_ProjectId_Or_ProjectIdFromProjectSearchIds({
+                            projectIdentifier: this.props.mainParams.projectIdentifierFromURL, projectSearchIds: null
+                        });
+
+                    promise_getSearchTagCategoryList.catch(reason => { reject(reason) })
+
+                    promise_getSearchTagCategoryList.then( ( searchTagCategories__Get_For_ProjectId_Result__PromiseResolve ) => { try {
+
+                        if ( ! this._component_Mounted ) {
+                            // unmounted so exit
+                            return; // EARLY RETURN
+                        }
+
+                        searchTagCategories__Get_For_ProjectId_Result = searchTagCategories__Get_For_ProjectId_Result__PromiseResolve;
+
+                        resolve()
+
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                promises.push( promise );
+            }
+
+            const promisesAll = Promise.all( promises );
+
+            promisesAll.catch((reason => {}))
+
+            promisesAll.then( () => { try {
+
+                if ( ! this._component_Mounted ) {
+                    // unmounted so exit
+
+                    return; // EARLY RETURN
+                }
+
+                const searchTagCategories_Map_Key_CategoryId: Map<number, Internal_SearchTagCategory_Entry> = new Map()
+
+                for ( const tagCategoryEntry_DistinctInProject of searchTagCategories__Get_For_ProjectId_Result.tagCategories_DistinctInProject ) {
+
+                    const tagCategory_InProgress: Internal_SearchTagCategory_Entry = {
+
+                        tagCategoryId: tagCategoryEntry_DistinctInProject.category_id,
+                        categoryLabel: tagCategoryEntry_DistinctInProject.category_label,
+                        label_Color_Font: tagCategoryEntry_DistinctInProject.label_Color_Font,
+                        label_Color_Background: tagCategoryEntry_DistinctInProject.label_Color_Background,
+                        label_Color_Border: tagCategoryEntry_DistinctInProject.label_Color_Border,
+
+                        searchTags_DistinctInProject__InCategory: []
+                    }
+
+                    if ( searchTagCategories_Map_Key_CategoryId.has( tagCategory_InProgress.tagCategoryId ) ) {
+                        const msg = "Duplicate tagCategoryId: " + tagCategory_InProgress.tagCategoryId;
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    searchTagCategories_Map_Key_CategoryId.set( tagCategory_InProgress.tagCategoryId, tagCategory_InProgress );
+                }
+
+                const searchTags_Uncategorized__DistinctInProject: Array<Internal_SearchTagEntry> = []
+
+                for ( const tagEntry_DistinctInProject of searchTags__Get_For_ProjectId_Result.tags_DistinctInProject ) {
+
+                    const tag_InProgress: Internal_SearchTagEntry = {
+
+                        tagId: tagEntry_DistinctInProject.tag_id,
+                        tag_category_id: tagEntry_DistinctInProject.tag_category_id,
+                        tagString: tagEntry_DistinctInProject.tag_string,
+                        tag_Color_Font: tagEntry_DistinctInProject.tag_Color_Font,
+                        tag_Color_Background: tagEntry_DistinctInProject.tag_Color_Background,
+                        tag_Color_Border: tagEntry_DistinctInProject.tag_Color_Border,
+                        tag_Added: false
+                    }
+
+                    let tagNotInCategory = true;
+
+                    if ( tag_InProgress.tag_category_id !== undefined && tag_InProgress.tag_category_id !== null ) {
+
+                        const category = searchTagCategories_Map_Key_CategoryId.get( tag_InProgress.tag_category_id )
+                        if ( category ) {
+                            category.searchTags_DistinctInProject__InCategory.push( tag_InProgress );
+                            tagNotInCategory = false;
+                        }
+                    }
+
+                    if ( tagNotInCategory ) {
+                        searchTags_Uncategorized__DistinctInProject.push( tag_InProgress );
+                    }
+                }
+
+                const searchTagCategories_DistinctInProject: Array<Internal_SearchTagCategory_Entry> = []
+
+                for ( const searchTagCategory of searchTagCategories_Map_Key_CategoryId.values() ) {
+                    searchTagCategories_DistinctInProject.push( searchTagCategory );
+
+                    //  Sort tags in each category
+                    searchTagCategory.searchTags_DistinctInProject__InCategory.sort( (a,b ) => {
+                        return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam( a.tagString, b.tagString )
+                    })
+                }
+
+                searchTagCategories_DistinctInProject.sort( (a,b) => {
+                    return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam( a.categoryLabel, b.categoryLabel )
+                })
+
+                //  Sort tags uncategorized
+                searchTags_Uncategorized__DistinctInProject.sort( (a,b ) => {
+                    return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam( a.tagString, b.tagString )
+                })
+
+                this._searchTagCategories_DistinctInProject = searchTagCategories_DistinctInProject;
+
+                this._searchTags_Uncategorized__DistinctInProject = searchTags_Uncategorized__DistinctInProject;
+
+                this.setState({
+                    showLoadingMessage: false,
+                    force_ReRender_Object: {}
+                })
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _sort__searchTagCategories_DistinctInProject() {
+        this._searchTagCategories_DistinctInProject.sort( (a,b) => {
+            return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam(a.categoryLabel, b.categoryLabel)
+        })
+    }
+
 
     /**
      *
@@ -287,6 +494,53 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
     private async _submitUpload_Main() {
         try {
             let error = false;
+
+            /////   Get Search Tags and Search Categories to send
+
+            let searchTagList_Uncategorized_Selected: Array<string> = [] //  Search Tags NOT in any Category
+            let searchTagCategoryAndItsSearchTagsList_Selected: Array<ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_SearchTagCategory> = []
+
+            {
+                //  For In Category
+
+                for ( const searchTagCategory of this._searchTagCategories_DistinctInProject ) {
+
+                    const searchTagList_ForCategory: Array<string> = []
+
+                    for ( const searchTag of searchTagCategory.searchTags_DistinctInProject__InCategory ) {
+                        if ( this._searchTagIds_Selected.has( searchTag.tagId ) ) {
+                            searchTagList_ForCategory.push( searchTag.tagString )
+                        }
+                    }
+
+                    if ( searchTagList_ForCategory.length > 0 ) {
+
+                        const searchTagCategoryAndItsSearchTags_Selected: ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_SearchTagCategory = {
+                            searchTagCategoryLabel: searchTagCategory.categoryLabel,
+                            searchTagList: searchTagList_ForCategory
+                        }
+                        searchTagCategoryAndItsSearchTagsList_Selected.push( searchTagCategoryAndItsSearchTags_Selected )
+                    }
+                }
+
+                if ( searchTagCategoryAndItsSearchTagsList_Selected.length === 0 ) {
+                    searchTagCategoryAndItsSearchTagsList_Selected = undefined
+                }
+
+                //  For Uncategorized
+
+                for ( const searchTag of this._searchTags_Uncategorized__DistinctInProject ) {
+                    if ( this._searchTagIds_Selected.has( searchTag.tagId ) ) {
+                        searchTagList_Uncategorized_Selected.push( searchTag.tagString )
+                    }
+                }
+
+                if ( searchTagList_Uncategorized_Selected.length === 0 ) {
+                    searchTagList_Uncategorized_Selected = undefined
+                }
+            }
+
+            ///////////////
 
             let searchName = undefined;
             let searchShortName = undefined;
@@ -513,7 +767,8 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                     searchName,
                     searchShortName,
                     filesUploaded,
-                    searchTagList: undefined
+                    searchTagList: searchTagList_Uncategorized_Selected,
+                    searchTagCategoryAndItsSearchTagsList: searchTagCategoryAndItsSearchTagsList_Selected
                 })
             }
 
@@ -672,298 +927,537 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
 
         return (
 
-            <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right ">
-                <div style={ { marginBottom: 20 } }>
-                    <div style={ { fontSize: 18, fontWeight: "bold" } }>
-                        <span>Import Search Results </span>
-                    </div>
-                    <div style={ { fontSize: choose_type_of_data_to_import_TextBelowLink_FontSize } }>
-                        <div>
-                            Import a Limelight XML file and associated files.
+            <>
+
+                {/*  Section  */}
+                <div className="  top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right  ">
+
+                    <div style={ { marginBottom: 20 } }>
+                        <div style={ { fontSize: 18, fontWeight: "bold" } }>
+                            <span>Import Search Results </span>
                         </div>
-                        <div>
-                            Please
-                            <span > </span>
-                            <a href="https://limelight-ms.readthedocs.io/en/latest/using-limelight/conversion-guide.html" target="_blank" rel="noopener">read our documentation</a>
-                            <span > </span>
-                            for more information on creating a Limelight XML file from your data.
+                        <div style={ { fontSize: choose_type_of_data_to_import_TextBelowLink_FontSize } }>
+                            <div>
+                                Import a Limelight XML file and associated files.
+                            </div>
+                            <div>
+                                Please
+                                <span > </span>
+                                <a href="https://limelight-ms.readthedocs.io/en/latest/using-limelight/conversion-guide.html" target="_blank" rel="noopener">read our documentation</a>
+                                <span > </span>
+                                for more information on creating a Limelight XML file from your data.
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
-                    {/*  Two Column Grid  */}
-                    {/*  Row 1  */}
-                    <div style={ { marginRight: 20 } }>
-                        <div style={ { whiteSpace: "nowrap" } }>
-                            <span>Description:</span>
-                        </div>
-                    </div>
-                    <div style={ { marginBottom: 6 } }>
-                        <div>
-                            <input
-                                // Keep maxLength in sync with database field size
-                                maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH }
-                                title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH + " characters" }
-                                style={ { width: 450 } }
-                                ref={ this._searchName_Ref }
-                            />
-                        </div>
-                        <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
-                            Brief description of the search.
-                        </div>
-                    </div>
-                    {/*  Row 2  */}
-                    <div style={ { marginRight: 20 } }>
-                        <div style={ { whiteSpace: "nowrap" } }>
-                            <span>Short Label:</span>
-                        </div>
-                    </div>
-                    <div style={ { marginBottom: 10 } }>
-                        <div>
-                            <input
-                                // Keep maxLength in sync with database field size
-                                maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH }
-                                title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH + " characters" }
-                                style={ { width: 110 } }
-                                ref={ this._searchShortName_Ref }
-                            />
-                        </div>
-                        <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
-                            Short label to display when space is limited.
-                        </div>
-                    </div>
-                </div>
+                {/*  Section - Variable Height.  Scrollable Div overflow */}
+                <div
+                    className=" top-level single-entry-variable-height  standard-border-color-medium   modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                    style={ { overflowY: "auto", overflowX: "hidden",
+                        borderStyle: "solid", borderWidth: 1
+                    } }
+                >
 
-                {/*  Limelight XML File  */}
-
-                <div style={ { marginBottom: 11 } }>
-                    <div>
-                        <input
-                            ref={ this._fileInput_LimelightXMLFile_Ref }
-                            type="file"
-                            accept=".xml"
-                            style={ { display: "none" } }
-                            onChange={ event => {
-                                this._limelight_XML_File_InputElement_OnChangeEvent( event );
-                            }}
-                        />
-                    </div>
-
-                    { this._limelight_XML_File_Data ? (
+                    { ( this.state.showLoadingMessage ) ? (
                         <div>
-                            <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
-                                single_UploadFile_Data={ this._limelight_XML_File_Data }
-                                callbackOn_Delete_Clicked={ () => {
-                                    this._limelight_XML_File_Data = undefined;
-                                    this.setState({ submitButton_Enabled: false, force_ReRender_Object: {} })
-                                    try {
-                                        if ( this._fileInput_LimelightXMLFile_Ref.current ) {
-                                            this._fileInput_LimelightXMLFile_Ref.current.value = ""
-                                        }
-                                    } catch (e) {
-                                        //  Eat Exception
-                                    }
-                                } }
-                                submit_InProgress={ this._submit_InProgress }
-                            />
+                            <div style={ { marginTop: 20, textAlign: "center" }}>
+                                LOADING DATA
+                            </div>
+                            <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
+                                <Spinner_Limelight_Component/>
+                            </div>
                         </div>
                     ) : (
-                        <React.Fragment>
-                            <div>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ event => {
-                                        if ( this._fileInput_LimelightXMLFile_Ref.current ) {
-                                            this._fileInput_LimelightXMLFile_Ref.current.click()
-                                        }
-                                    }}
-                                >+Add Limelight XML File</span>
-                            </div>
-                            <div>
-                                <div style={ { fontSize: "80%" } }>
-                                    (Max file size: { this.props.mainParams.maxLimelightXMLFileUploadSizeFormatted })
+
+                        <>
+                            { this._submit_InProgress ? (
+                                <div style={ { fontWeight: "bold", fontSize: 16, marginTop: 10, marginBottom: 10 } }>
+                                    Submitting request to server
                                 </div>
-                            </div>
-                        </React.Fragment>
-                    )}
-
-                </div>
-
-                { this.props.mainParams.is_uploading_FileObjectStorage_Files ? (
-
-                    <React.Fragment>
-                        {/*  FASTA File  */}
-
-                        <div style={ { marginBottom: 11 } }>
-                            <div>
-                                <input
-                                    ref={ this._fileInput_fastaFile_Ref }
-                                    type="file"
-                                    style={ { display: "none" } }
-                                    onChange={ event => {
-                                        this._fasta_File_InputElement_OnChangeEvent( event );
-                                    }}
-                                />
-                            </div>
-
-                            { this._fasta_File_Data ? (
-                                <div>
-                                    <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
-                                        single_UploadFile_Data={ this._fasta_File_Data }
-                                        callbackOn_Delete_Clicked={ () => {
-                                            this._fasta_File_Data = undefined;
-                                            this.setState({ force_ReRender_Object: {} })
-                                            try {
-                                                if ( this._fileInput_fastaFile_Ref.current ) {
-                                                    this._fileInput_fastaFile_Ref.current.value = ""
-                                                }
-                                            } catch (e) {
-                                                //  Eat Exception
-                                            }
-                                        } }
-                                        submit_InProgress={ this._submit_InProgress }
-                                    />
-                                </div>
-                            ) : ( this._limelight_XML_File_Data && ( ! this._submit_InProgress ) ) ? (
-
-                                // Display "+Add FASTA File" since have Limelight XML file AND NOT Submission in progress
-                                <React.Fragment>
-                                    <div>
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ event => {
-                                            if ( this._fileInput_fastaFile_Ref.current ) {
-                                                this._fileInput_fastaFile_Ref.current.click()
-                                            }
-                                        }}
-                                    >+Add FASTA File</span>
-                                    </div>
-                                    <div>
-                                        <div style={ { fontSize: "80%" } }>
-                                            (Optional file.  Max file size:
-                                            { this.props.mainParams.maxFASTAFileUploadSizeFormatted }
-                                            )
-                                        </div>
-                                    </div>
-                                </React.Fragment>
 
                             ) : null }
 
-                        </div>
+                            <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                                {/*  Two Column Grid  */}
+                                {/*  Row 1  */}
+                                <div style={ { marginRight: 20 } }>
+                                    <div style={ { whiteSpace: "nowrap" } }>
+                                        <span>Description:</span>
+                                    </div>
+                                </div>
+                                <div style={ { marginBottom: 6 } }>
+                                    <div>
+                                        <input
+                                            // Keep maxLength in sync with database field size
+                                            maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH }
+                                            title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH + " characters" }
+                                            style={ { width: 450 } }
+                                            ref={ this._searchName_Ref }
+                                        />
+                                    </div>
+                                    <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
+                                        Brief description of the search.
+                                    </div>
+                                </div>
+                                {/*  Row 2  */}
+                                <div style={ { marginRight: 20 } }>
+                                    <div style={ { whiteSpace: "nowrap" } }>
+                                        <span>Short Label:</span>
+                                    </div>
+                                </div>
+                                <div
+                                    style={ { marginBottom: 10 } }
+                                >
+                                    <div>
+                                        <input
+                                            // Keep maxLength in sync with database field size
+                                            maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH }
+                                            title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH + " characters" }
+                                            style={ { width: 110 } }
+                                            ref={ this._searchShortName_Ref }
+                                        />
+                                    </div>
+                                    <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
+                                        Short label to display when space is limited.
+                                    </div>
+                                </div>
+                            </div>
 
-                    </React.Fragment>
-                ) : null }
+                            {/*  Border  */}
 
-                {/*  Scan Files  */}
+                            {/*<div*/}
+                            {/*    className="top-level-label-bottom-border"*/}
+                            {/*    style={ { opacity: 1 } }*/}
+                            {/*></div>*/}
 
-                { this.props.mainParams.limelight_import_file_type_scan_file !== undefined && this.props.mainParams.limelight_import_file_type_scan_file !== null ? (
-                    <div style={ { marginBottom: 11 } }>
-                        <div>
-                            <input
-                                ref={ this._fileInput_ScanFile_Ref }
-                                type="file"
-                                accept={ this._accepted_ScanFilename_Suffixes_CommaDelim }
-                                style={ { display: "none" } }
-                                onChange={ event => {
-                                    this._scanFile_InputElement_OnChangeEvent( event );
-                                }}
-                            />
-                        </div>
-                        <div>
-                            { this._scan_Files_Data.map( scan_Files_Data__Entry_To_Render => {
-                                if ( ! scan_Files_Data__Entry_To_Render ) {
-                                    return null;
-                                }
-                                return (
-                                    <div
-                                        key={ scan_Files_Data__Entry_To_Render.internal_Identifier }
-                                        style={ { marginBottom: 3 } }
-                                    >
+                            <div style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }>
+                                Files to Import
+                            </div>
+
+                            {/*  Limelight XML File  */}
+
+                            <div style={ { marginBottom: 11 } }>
+                                <div>
+                                    <input
+                                        ref={ this._fileInput_LimelightXMLFile_Ref }
+                                        type="file"
+                                        accept=".xml"
+                                        style={ { display: "none" } }
+                                        onChange={ event => {
+                                            this._limelight_XML_File_InputElement_OnChangeEvent( event );
+                                        }}
+                                    />
+                                </div>
+
+                                { this._limelight_XML_File_Data ? (
+                                    <div>
                                         <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
-                                            key={ scan_Files_Data__Entry_To_Render.internal_Identifier }
-                                            single_UploadFile_Data={ scan_Files_Data__Entry_To_Render }
+                                            single_UploadFile_Data={ this._limelight_XML_File_Data }
                                             callbackOn_Delete_Clicked={ () => {
-
-                                                this._scan_Files_Data = this._scan_Files_Data.filter(scan_Files_Data__Entry_To_FilterOn => {
-                                                    if ( scan_Files_Data__Entry_To_FilterOn.internal_Identifier === scan_Files_Data__Entry_To_Render.internal_Identifier ) {
-                                                        return false;
+                                                this._limelight_XML_File_Data = undefined;
+                                                this.setState({ submitButton_Enabled: false, force_ReRender_Object: {} })
+                                                try {
+                                                    if ( this._fileInput_LimelightXMLFile_Ref.current ) {
+                                                        this._fileInput_LimelightXMLFile_Ref.current.value = ""
                                                     }
-                                                    return true;
-                                                })
-
-                                                this.setState({ force_ReRender_Object: {} })
+                                                } catch (e) {
+                                                    //  Eat Exception
+                                                }
                                             } }
                                             submit_InProgress={ this._submit_InProgress }
                                         />
                                     </div>
-                                )
-                            })}
-                        </div>
-                        { this._limelight_XML_File_Data && ( ! this._submit_InProgress ) ? (
-                            // Display "+Add Scan File" since have Limelight XML file AND NOT Submission in progress
-                            <React.Fragment>
-                                <div>
-                                    <span
-                                        className=" fake-link "
-                                        onClick={ event => {
-                                            if ( this._fileInput_ScanFile_Ref.current ) {
-                                                this._fileInput_ScanFile_Ref.current.click()
+                                ) : (
+                                    <React.Fragment>
+                                        <div>
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ event => {
+                                                    if ( this._fileInput_LimelightXMLFile_Ref.current ) {
+                                                        this._fileInput_LimelightXMLFile_Ref.current.click()
+                                                    }
+                                                }}
+                                            >+Add Limelight XML File</span>
+                                        </div>
+                                        <div>
+                                            <div style={ { fontSize: "80%" } }>
+                                                (Max file size: { this.props.mainParams.maxLimelightXMLFileUploadSizeFormatted })
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
+                                )}
+
+                            </div>
+
+                            { this.props.mainParams.is_uploading_FileObjectStorage_Files ? (
+
+                                <React.Fragment>
+                                    {/*  FASTA File  */}
+
+                                    <div style={ { marginBottom: 11 } }>
+                                        <div>
+                                            <input
+                                                ref={ this._fileInput_fastaFile_Ref }
+                                                type="file"
+                                                style={ { display: "none" } }
+                                                onChange={ event => {
+                                                    this._fasta_File_InputElement_OnChangeEvent( event );
+                                                }}
+                                            />
+                                        </div>
+
+                                        { this._fasta_File_Data ? (
+                                            <div>
+                                                <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
+                                                    single_UploadFile_Data={ this._fasta_File_Data }
+                                                    callbackOn_Delete_Clicked={ () => {
+                                                        this._fasta_File_Data = undefined;
+                                                        this.setState({ force_ReRender_Object: {} })
+                                                        try {
+                                                            if ( this._fileInput_fastaFile_Ref.current ) {
+                                                                this._fileInput_fastaFile_Ref.current.value = ""
+                                                            }
+                                                        } catch (e) {
+                                                            //  Eat Exception
+                                                        }
+                                                    } }
+                                                    submit_InProgress={ this._submit_InProgress }
+                                                />
+                                            </div>
+                                        ) : ( this._limelight_XML_File_Data && ( ! this._submit_InProgress ) ) ? (
+
+                                            // Display "+Add FASTA File" since have Limelight XML file AND NOT Submission in progress
+                                            <React.Fragment>
+                                                <div>
+                                                <span
+                                                    className=" fake-link "
+                                                    onClick={ event => {
+                                                        if ( this._fileInput_fastaFile_Ref.current ) {
+                                                            this._fileInput_fastaFile_Ref.current.click()
+                                                        }
+                                                    }}
+                                                >+Add FASTA File</span>
+                                                </div>
+                                                <div>
+                                                    <div style={ { fontSize: "80%" } }>
+                                                        (Optional file.  Max file size:
+                                                        { this.props.mainParams.maxFASTAFileUploadSizeFormatted }
+                                                        )
+                                                    </div>
+                                                </div>
+                                            </React.Fragment>
+
+                                        ) : null }
+
+                                    </div>
+
+                                </React.Fragment>
+                            ) : null }
+
+                            {/*  Scan Files  */}
+
+                            { this.props.mainParams.limelight_import_file_type_scan_file !== undefined && this.props.mainParams.limelight_import_file_type_scan_file !== null ? (
+                                <div style={ { marginBottom: 11 } }>
+                                    <div>
+                                        <input
+                                            ref={ this._fileInput_ScanFile_Ref }
+                                            type="file"
+                                            accept={ this._accepted_ScanFilename_Suffixes_CommaDelim }
+                                            style={ { display: "none" } }
+                                            onChange={ event => {
+                                                this._scanFile_InputElement_OnChangeEvent( event );
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        { this._scan_Files_Data.map( scan_Files_Data__Entry_To_Render => {
+                                            if ( ! scan_Files_Data__Entry_To_Render ) {
+                                                return null;
                                             }
-                                        }}
-                                    >+Add Scan File(s)</span>
+                                            return (
+                                                <div
+                                                    key={ scan_Files_Data__Entry_To_Render.internal_Identifier }
+                                                    style={ { marginBottom: 3 } }
+                                                >
+                                                    <ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Display_Component
+                                                        key={ scan_Files_Data__Entry_To_Render.internal_Identifier }
+                                                        single_UploadFile_Data={ scan_Files_Data__Entry_To_Render }
+                                                        callbackOn_Delete_Clicked={ () => {
+
+                                                            this._scan_Files_Data = this._scan_Files_Data.filter(scan_Files_Data__Entry_To_FilterOn => {
+                                                                if ( scan_Files_Data__Entry_To_FilterOn.internal_Identifier === scan_Files_Data__Entry_To_Render.internal_Identifier ) {
+                                                                    return false;
+                                                                }
+                                                                return true;
+                                                            })
+
+                                                            this.setState({ force_ReRender_Object: {} })
+                                                        } }
+                                                        submit_InProgress={ this._submit_InProgress }
+                                                    />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                    { this._limelight_XML_File_Data && ( ! this._submit_InProgress ) ? (
+                                        // Display "+Add Scan File" since have Limelight XML file AND NOT Submission in progress
+                                        <React.Fragment>
+                                            <div>
+                                                <span
+                                                    className=" fake-link "
+                                                    onClick={ event => {
+                                                        if ( this._fileInput_ScanFile_Ref.current ) {
+                                                            this._fileInput_ScanFile_Ref.current.click()
+                                                        }
+                                                    }}
+                                                >+Add Scan File(s)</span>
+                                            </div>
+                                            <div>
+                                                <div style={ { fontSize: "80%" } }>
+                                                    (Optional. If uploading scan files, all scan files in search must be included.)
+                                                </div>
+                                                <div style={ { fontSize: "80%" } }>
+                                                    (Max file size: { this.props.mainParams.maxScanFileUploadSizeFormatted })
+                                                </div>
+                                            </div>
+                                        </React.Fragment>
+                                    ) : null }
+
                                 </div>
+                            ) : null }
+
+                            { ( this._searchTagCategories_DistinctInProject.length > 0 || this._searchTags_Uncategorized__DistinctInProject.length > 0 ) ? (
                                 <div>
-                                    <div style={ { fontSize: "80%" } }>
-                                        (Optional. If uploading scan files, all scan files in search must be included.)
+
+                                    {/*  Border  */}
+
+                                    {/*<div*/}
+                                    {/*    className="top-level-label-bottom-border"*/}
+                                    {/*    style={ { opacity: 1 } }*/}
+                                    {/*></div>*/}
+
+
+                                    <div style={ { marginTop: 20, marginBottom: 10 } }>
+                                        <div style={ { fontSize: 16, fontWeight: "bold" } }>
+                                            Select Tags
+                                        </div>
+                                        <div style={ { fontSize: "80%" } }>
+                                            To add tags, close this window and click "Manage Tags".
+                                        </div>
                                     </div>
-                                    <div style={ { fontSize: "80%" } }>
-                                        (Max file size: { this.props.mainParams.maxScanFileUploadSizeFormatted })
+
+                                    <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }>
+
+                                        {/*  2 Column Grid.  Column 1 is Search Category.  Column 2 is Search Tags  */}
+
+                                        {/*  List Existing Categories and their tags  */}
+
+                                        { this._searchTagCategories_DistinctInProject.map( (searchTagCategory, index, array) => {
+
+                                            return (
+
+                                                <React.Fragment
+                                                    key={ searchTagCategory.tagCategoryId }
+                                                >
+                                                    {/*  Column 1  */}
+                                                    <div
+                                                        style={ { whiteSpace: "nowrap", paddingTop: 8, paddingBottom: 10, marginRight: 10 } }
+                                                    >
+                                                        {/*  Display the Category Label  */}
+                                                        <span>
+                                                            { searchTagCategory.categoryLabel }
+                                                        </span>
+                                                    </div>
+
+                                                    {/*  Column 2  */}
+                                                    <div>
+                                                        <div>
+                                                            {/*  Search Tags For Category  */}
+                                                            { this._list_SearchTags_For_Array({ searchTags_Array: searchTagCategory.searchTags_DistinctInProject__InCategory }) }
+                                                        </div>
+                                                    </div>
+                                                </React.Fragment>
+                                            )
+                                        })}
+
+                                        {/*  Uncategorized Tags  */}
+
+                                        <div
+                                            style={ { whiteSpace: "nowrap", paddingTop: 8, paddingBottom: 10, marginRight: 10, position: "relative" } }
+                                        >
+                                            Uncategorized:
+                                        </div>
+                                        <div>
+
+                                            {/*  Search Tags For Uncategorized  */}
+                                            { this._list_SearchTags_For_Array({ searchTags_Array: this._searchTags_Uncategorized__DistinctInProject }) }
+
+                                        </div>
                                     </div>
                                 </div>
-                            </React.Fragment>
-                        ) : null }
-
-                    </div>
-                ) : null }
-
-                { this._submit_InProgress ? (
-                    <div style={ { marginTop: 10 } }>
-                        Submitting request to server
-                    </div>
-
-                ) : null }
-
-                <div style={ { marginTop: 10 } }>
-                    { ! this._submit_InProgress ? (
-                        <div style={ { display: "inline-block", position: "relative" } }>
-                            <button
-                                disabled={ ( ! this.state.submitButton_Enabled ) }
-                                onClick={ event => {
-
-                                    this._submitUpload( event );
-                                }}
-                            >
-                                Submit Upload
-                            </button>
-                            {/*  Cover button when disabled so have tooltip  */}
-                            <div id="import_limelight_xml_file_submit_button_disabled_overlay"
-                                 style={ { position: "absolute", inset: 0, display: ( ! this.state.submitButton_Enabled ) ? undefined : "none" } }
-                                 title="Submit Upload. Enabled when Limelight XML file is selected."></div>
-                        </div>
-                    ) : null }
-                    <span> </span>
-                    <button
-                        onClick={ event => {
-                            this.props.callbackOn_Close_Clicked()
-                        }}
-                    >
-                        Cancel
-                    </button>
+                            ) : null }
+                        </>
+                    )}
                 </div>
-            </div>
+
+                {/*  Section  */}
+                <div className="  top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right  ">
+
+                    <div style={ { marginTop: 15 } }>
+                        { ! this._submit_InProgress ? (
+                            <div style={ { display: "inline-block", position: "relative" } }>
+                                <button
+                                    disabled={ ( ! this.state.submitButton_Enabled ) }
+                                    onClick={ event => {
+
+                                        this._submitUpload( event );
+                                    }}
+                                >
+                                    Submit Upload
+                                </button>
+                                {/*  Cover button when disabled so have tooltip  */}
+                                <div id="import_limelight_xml_file_submit_button_disabled_overlay"
+                                     style={ { position: "absolute", inset: 0, display: ( ! this.state.submitButton_Enabled ) ? undefined : "none" } }
+                                     title="Submit Upload. Enabled when Limelight XML file is selected."></div>
+                            </div>
+                        ) : null }
+                        <span> </span>
+                        <button
+                            onClick={ event => {
+                                this.props.callbackOn_Close_Clicked()
+                            }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+
+                </div>
+            </>
         );
+    }
+
+    /**
+     *
+     */
+    private _list_SearchTags_For_Array(
+        {
+            searchTags_Array
+        } : {
+            searchTags_Array: Internal_SearchTagEntry[]
+        }
+    ) : JSX.Element {
+
+        return (
+
+            <React.Fragment>
+                { searchTags_Array.map( (searchTagEntry, index, array) => {
+
+                    const divStyle: React.CSSProperties = {
+                        display: "inline-block",
+                        whiteSpace: "nowrap",
+                        backgroundColor: searchTagEntry.tag_Color_Background,
+                        color: searchTagEntry.tag_Color_Font
+                    }
+
+                    const borderColor = "black"
+                    const borderWidth = 3
+
+                    let div_title: string
+
+                    if ( this._searchTagIds_Selected.has(  searchTagEntry.tagId ) ) {
+
+                        divStyle.borderStyle = "solid"
+                        divStyle.borderColor = borderColor
+                        divStyle.borderWidth = borderWidth
+
+                        divStyle.margin = 0
+
+                        div_title = "Click to Unselect Tag"
+                    } else {
+
+                        div_title = "Click to Select Tag"
+                        divStyle.margin = borderWidth
+                    }
+
+                    return (
+
+                        <div
+                            key={ searchTagEntry.tagId }
+                            style={ { display: "inline-block", whiteSpace: "nowrap", paddingBottom: 5, marginRight: 2 } }
+                        >
+                            <div
+                                // style={ { : 6 } }
+                            >
+                                {/*  Display the Tag  */}
+                                <div
+                                    style={ divStyle }
+                                    className=" clickable search-tag-display-everywhere "
+                                    title={ div_title }
+                                    onClick={ event => {
+
+                                        if ( limelight__IsTextSelected() ) {
+                                            return
+                                        }
+
+                                        if ( this._searchTagIds_Selected.has(  searchTagEntry.tagId ) ) {
+
+                                            this._searchTagIds_Selected.delete( searchTagEntry.tagId )
+
+                                        } else {
+
+                                            this._searchTagIds_Selected.add( searchTagEntry.tagId )
+                                        }
+
+                                        this.setState({ force_ReRender_Object: {} })
+                                    }}
+                                >
+                                    { searchTagEntry.tagString }
+                                </div>
+
+                            </div>
+                        </div>
+                    )
+                })}
+            </React.Fragment>
+        )
+
     }
 }
 
+
+
+////////////////////////
+
+//  Private code
+
+//  SEARCH TAG CATEGORY
+
+class Internal_SearchTagCategory_Entry {
+
+    tagCategoryId: number
+    categoryLabel: string
+    label_Color_Font: string
+    label_Color_Background: string
+    label_Color_Border: string
+
+    searchTags_DistinctInProject__InCategory: Array<Internal_SearchTagEntry>
+}
+
+
+/////////
+
+//  SEARCH TAG
+
+class Internal_SearchTagEntry {
+
+    tagId: number  //  Negative for newly added tags
+    tag_category_id: number;  // null if uncategorized
+    tagString: string
+    tag_Color_Font: string
+    tag_Color_Background: string
+    tag_Color_Border: string
+    tag_Added: boolean
+}
 
