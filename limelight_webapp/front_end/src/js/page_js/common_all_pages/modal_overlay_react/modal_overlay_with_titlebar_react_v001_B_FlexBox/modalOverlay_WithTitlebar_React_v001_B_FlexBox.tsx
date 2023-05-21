@@ -26,47 +26,21 @@ enum Internal__PositionToUse_Fixed_Absolute_Enum {
  */
 export class ModalOverlay_Limelight_Component_v001_B_FlexBox_Props {
 
-    set_CSS_Position_Fixed? : boolean  //  USE WITH CARE:  Setting position: flex;  eliminates the ability to use browser scrollbars to get to parts of modal dialog outside of the viewport
-    heightMaximum : number
-    heightMinimum : number
-    widthMaximum : number
-    widthMinimum : number
-    title : string                  // No Title if null or undefined
-    close_OnBackgroundClick : boolean
-    callbackOnClicked_Close : () => void;
-    titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it
-
-    /**
-     *
-     * @param heightMaximum
-     * @param heightMinimum
-     * @param widthMaximum
-     * @param title
-     * @param hideOnBackgroundClick
-     * @param callbackOnClicked_Close - Don't show "X" if callbackOnClicked_Close is not populated
-     * @param titleBar_LeaveSpaceFor_CloseX - In formatting the title bar, leave space for the Close "X" even if don't show it
-     */
-    constructor( { heightMaximum, heightMinimum, widthMaximum, title, hideOnBackgroundClick, callbackOnClicked_Close, titleBar_LeaveSpaceFor_CloseX } : {
-        heightMaximum : number
-        heightMinimum : number
-        widthMaximum : number
-        title : string
-        hideOnBackgroundClick : boolean
-        callbackOnClicked_Close? : () => void;   // Don't show "X" if callbackOnClicked_Close is not populated
-        titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it
-    }) {
-        this.heightMaximum = heightMaximum
-        this.heightMinimum = heightMinimum
-        this.widthMaximum = widthMaximum
-        this.title = title
-        this.close_OnBackgroundClick = hideOnBackgroundClick
-        this.callbackOnClicked_Close = callbackOnClicked_Close
-    }
+    readonly set_CSS_Position_Fixed? : boolean  //  USE WITH CARE:  Setting position: flex;  eliminates the ability to use browser scrollbars to get to parts of modal dialog outside of the viewport
+    readonly heightMaximum : number
+    readonly heightMinimum : number
+    readonly widthMaximum : number
+    readonly widthMinimum : number
+    readonly title : string                  // No Title if null or undefined
+    readonly title_Component_Callback? : () => JSX.Element   //  ONLY evaluated if 'title' is null or undefined
+    readonly close_OnBackgroundClick : boolean
+    readonly callbackOnClicked_Close : () => void;    //  Don't show "X" if callbackOnClicked_Close is not populated
+    readonly titleBar_LeaveSpaceFor_CloseX?: boolean  //  In formatting the title bar, leave space for the Close "X" even if don't show it
 }
 
 interface ModalOverlay_Limelight_Component_v001_B_FlexBox_State {
 
-    _placeholder
+    _placeholder: unknown
     // modalOverlay_Left? : number;
     // modalOverlay_Top_PositionAbsolute? : number;  // modalOverlay_Top when use position absolute
 }
@@ -307,7 +281,7 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
                     style={ modal_overlay_container_css }
                 >
 
-                    { (this.props.title) ? (
+                    { (this.props.title || this.props.title_Component_Callback) ? (
 
                             <div className="top-level fixed-height modal-overlay-header" style={ { width: "100%" } }>
                                 { ( this.props.callbackOnClicked_Close ) ? (
@@ -316,7 +290,13 @@ export class ModalOverlay_Limelight_Component_v001_B_FlexBox extends React.Compo
                                 { ( ( ! this.props.callbackOnClicked_Close ) && ( this.props.titleBar_LeaveSpaceFor_CloseX ) ) ? (
                                     <h1 className="modal-overlay-X-icon" style={ { visibility: "hidden" } } >X</h1>
                                 ): null }
-                                <h1 className="modal-overlay-header-text">{ this.props.title }</h1>
+                                <h1 className="modal-overlay-header-text">
+                                    { ( this.props.title ) ? (
+                                        this.props.title
+                                    ) : (
+                                        this.props.title_Component_Callback()
+                                    )}
+                                </h1>
                             </div>
                     ): null }
 
