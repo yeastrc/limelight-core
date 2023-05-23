@@ -768,7 +768,7 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                 // '<br><b>Scans</b>: %{y}' +
                 // '<br><b>Retention Time</b>: %{x}<extra></extra>',
                 marker: {
-                    color: "red", // red match sample chart
+                    color: "#696969", // changed from "red", // red match sample chart
                     // color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             });
@@ -978,7 +978,7 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                 // '<br><b>Scans</b>: %{y}' +
                 // '<br><b>Retention Time</b>: %{x}<extra></extra>',
                 marker: {
-                    color: "blue", // blue match sample chart
+                    color: "#1F77B4", // changed from "blue", // blue match sample chart
                     // color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             });
@@ -1069,7 +1069,7 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                 // '<br><b>Scans</b>: %{y}' +
                 // '<br><b>Retention Time</b>: %{x}<extra></extra>',
                 marker: {
-                    color: "purple", // purple match sample chart
+                    color: "#FF0000", // changed from "purple", // purple match sample chart
                     // color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             });

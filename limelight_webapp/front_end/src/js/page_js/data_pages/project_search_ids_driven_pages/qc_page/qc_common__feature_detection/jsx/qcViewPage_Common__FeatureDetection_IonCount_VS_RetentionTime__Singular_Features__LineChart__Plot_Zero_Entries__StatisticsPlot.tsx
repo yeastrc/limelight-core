@@ -808,7 +808,7 @@ export class QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Sing
                 // '<br><b>Scans</b>: %{y}' +
                 // '<br><b>Retention Time</b>: %{x}<extra></extra>',
                 marker: {
-                    color: "green", // green match sample chart
+                    color: "#FF0000", // change from "green", // green match sample chart
                     // color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             });
@@ -1015,7 +1015,7 @@ export class QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Sing
                 // '<br><b>Scans</b>: %{y}' +
                 // '<br><b>Retention Time</b>: %{x}<extra></extra>',
                 marker: {
-                    color: "purple", // purple match sample chart
+                    color: "#1F77B4", // change from "purple", // purple match sample chart
                     // color: chart_Color  // If not populated, ALL the bars for this element in array 'chart_Data' are the same color
                 }
             });
