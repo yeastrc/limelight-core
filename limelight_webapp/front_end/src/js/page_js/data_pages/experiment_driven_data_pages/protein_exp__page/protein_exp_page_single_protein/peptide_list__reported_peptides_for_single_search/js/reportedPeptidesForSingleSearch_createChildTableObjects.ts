@@ -53,6 +53,9 @@ const dataTableId_ThisTable = "Experiment Protein Single Protein Single Peptide 
  */
 export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
 
+    for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+    // for_SingleProtein: boolean              //  Used to control what is displayed
+
     searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
     projectSearchId : number
     reportedPeptideIds_ForDisplay : Set<number>  // reportedPeptideIds specific to ParentPeptide
@@ -67,6 +70,9 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
      */
     constructor(
         {
+            for_MultipleSearches_Overall,
+            // for_SingleProtein,
+
             searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId,
             reportedPeptideIds_ForDisplay,
@@ -76,6 +82,9 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
             commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
             dataPageStateManager
         } : {
+            for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+            // for_SingleProtein: boolean              //  Used to control what is displayed
+
             searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId : number
             reportedPeptideIds_ForDisplay : Set<number>  // reportedPeptideIds specific to ParentPeptide
@@ -85,6 +94,8 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
             searchDataLookupParamsRoot: SearchDataLookupParameters_Root,
             dataPageStateManager : DataPageStateManager
         }) {
+        this.for_MultipleSearches_Overall = for_MultipleSearches_Overall
+        // this.for_SingleProtein = for_SingleProtein
 
         this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
         this.projectSearchId = projectSearchId;
@@ -109,6 +120,15 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
 }) : Promise<DataTable_RootTableObject> /* return a promise */ {
     try {
+
+        let show_Protein_Pre_Post_Residues = false;
+
+        //  reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.dataPageStateManager.get_projectSearchIds()  returns undefined so do not use
+
+        if ( reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_MultipleSearches_Overall ) {
+            show_Protein_Pre_Post_Residues = true;  // Hard code to true
+        }
+
         const searchSubGroup_Ids_Selected : Set<number> = //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.searchSubGroup_Ids_Selected;
 
@@ -149,6 +169,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
         }
 
         const createReportedPeptideDisplayData_result = await createReportedPeptideDisplayData({
+            show_Protein_Pre_Post_Residues,
             reportedPeptideIds_ForDisplay,
             dataPerReportedPeptideId_Map_Key_reportedPeptideId,
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
@@ -198,6 +219,46 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                 const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
                 dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
             }
+
+            if ( show_Protein_Pre_Post_Residues ) {
+
+                //  Protein Pre and Post Residues
+
+                {
+                    const displayName = "Pre";
+
+                    const dataTableColumn = new DataTable_Column({
+                        id : "pre-residue", // Used for tracking sort order. Keep short
+                        displayName,
+                        width : 40,
+                        sortable : true,
+                        columnHeader_Tooltip_HTML_TitleAttribute: 'Residue immediately to the n-terminus of this peptide in the protein(s) sequence.'
+                    });
+                    dataTable_Columns.push( dataTableColumn );
+
+                    const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                    dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                }
+
+                {
+                    const displayName = "Post";
+
+                    const dataTableColumn = new DataTable_Column({
+                        id : "post-residue", // Used for tracking sort order. Keep short
+                        displayName,
+                        width : 40,
+                        sortable : true,
+                        columnHeader_Tooltip_HTML_TitleAttribute: 'Residue immediately to the c-terminus of this peptide in the protein(s) sequence.'
+
+                    });
+                    dataTable_Columns.push( dataTableColumn );
+
+                    const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                    dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                }
+            }
+
+
             {
                 let displayName = "PSMs";
 
@@ -298,6 +359,55 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
                         const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
                         dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+
+                    if ( show_Protein_Pre_Post_Residues ) {
+
+                        // add the Protein pre residue
+                        {
+                            let valueDisplay : string = undefined;
+                            {
+                                const residues = Array.from( peptideEntry.protein_Pre_Residues ).sort();
+                                if ( peptideEntry.protein_Pre_Residue_N_Term ) {
+                                    residues.unshift("n");
+                                }
+                                valueDisplay = residues.join(",");
+                            }
+                            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                                searchTableData,
+                                valueDisplay,
+                                valueSort : valueDisplay
+                            });
+                            columnEntries.push( columnEntry );
+
+                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                        }
+
+                        // add the post residue
+                        {
+                            let valueDisplay : string = undefined;
+                            {
+                                const residues = Array.from( peptideEntry.protein_Post_Residues ).sort();
+                                if ( peptideEntry.protein_Post_Residue_C_Term ) {
+                                    residues.push("c");
+                                }
+                                valueDisplay = residues.join(",");
+                            }
+                            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                                searchTableData,
+                                valueDisplay,
+                                valueSort : valueDisplay
+                            });
+                            columnEntries.push( columnEntry );
+
+                            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                        }
                     }
 
                     { // numPsms

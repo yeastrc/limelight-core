@@ -809,6 +809,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                     const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = (
                         new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
+                            for_MultipleSearches_Overall: projectSearchIds.length > 1,
                             searchSubGroup_Ids_Selected,
                             projectSearchId,
                             reportedPeptideIds_ForDisplay: undefined,

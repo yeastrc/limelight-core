@@ -22,7 +22,6 @@ import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Descriptive_AnnotationValues_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptide_Descriptive_AnnotationValues";
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterable_AnnotationValues_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterable_AnnotationValues";
@@ -32,6 +31,12 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
 export class CreateReportedPeptideDisplayData_PeptideItem {
     reportedPeptideId : number
+
+    protein_Pre_Residues : Set<string> = new Set()
+    protein_Pre_Residue_N_Term : boolean
+    protein_Post_Residues : Set<string> = new Set()
+    protein_Post_Residue_C_Term : boolean
+
     peptideUnique : boolean
     proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     reportedPeptideSequence? : string
@@ -56,19 +61,19 @@ class CreateReportedPeptideDisplayData_Result_Class {
 
 //   Input Function Parameter class
 
-/**
- * Parameters passed in to main function createReportedPeptideDisplayData
- */
-class Internal_MainFunction_InputParameters {
-    projectSearchId : number
-    reportedPeptideIds_ForDisplay : Set<number>
-    dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
-    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
-    proteinSequenceVersionId : number // Only for error reporting
-    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-    dataPageStateManager : DataPageStateManager
-}
+// /**
+//  * Parameters passed in to main function createReportedPeptideDisplayData
+//  */
+// class Internal_MainFunction_InputParameters {
+//     projectSearchId : number
+//     reportedPeptideIds_ForDisplay : Set<number>
+//     dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
+//     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+//     proteinSequenceVersionId : number // Only for error reporting
+//     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+//     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+//     dataPageStateManager : DataPageStateManager
+// }
 
 
 /**
@@ -85,6 +90,7 @@ class Internal_MainFunction_InputParameters {
  */
 export const createReportedPeptideDisplayData = async function(
     {
+        show_Protein_Pre_Post_Residues,
         projectSearchId,
         reportedPeptideIds_ForDisplay,
         dataPerReportedPeptideId_Map_Key_reportedPeptideId,
@@ -95,6 +101,7 @@ export const createReportedPeptideDisplayData = async function(
         dataPageStateManager,
 
     } : {
+        show_Protein_Pre_Post_Residues: boolean
         projectSearchId : number
         reportedPeptideIds_ForDisplay : Set<number>
         dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
@@ -288,7 +295,11 @@ export const createReportedPeptideDisplayData = async function(
             }
 
             const peptideItem : CreateReportedPeptideDisplayData_PeptideItem = {
-                reportedPeptideId, peptideUnique, proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+                reportedPeptideId, peptideUnique, proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+                protein_Pre_Residues : new Set(),
+                protein_Pre_Residue_N_Term : false,
+                protein_Post_Residues : new Set(),
+                protein_Post_Residue_C_Term : false
             };
 
             const reportedPeptideString = reportedPeptideSequences_Holder.get_ReportedPeptideSequence_For_ReportedPeptideId( reportedPeptideId );
@@ -298,6 +309,51 @@ export const createReportedPeptideDisplayData = async function(
             peptideItem.reportedPeptideSequence = reportedPeptideString;
 
             peptideItem.numPsms = proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
+
+            if ( show_Protein_Pre_Post_Residues ) {
+
+                //  Protein Pre and Post Residues
+
+                if ( !proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) {
+                    //  Coverage Data NOT loaded
+
+                    throw Error("( !proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) ")
+                }
+
+                const proteinCoverage_For_ReportedPeptideId =
+                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinCoverage_For_ReportedPeptideId(reportedPeptideId);
+
+                if (proteinCoverage_For_ReportedPeptideId) {
+                    for (const proteinCoverageEntry of proteinCoverage_For_ReportedPeptideId) {
+
+                        if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null
+                            && proteinSequenceVersionId !== proteinCoverageEntry.proteinSequenceVersionId ) {
+
+                            //  Processing this function specifically for proteinSequenceVersionId (Single Protein Page)
+                            //     AND the proteinSequenceVersionId for this Coverage Entry does NOT match SO SKIP
+
+                            continue;  // EARLY CONTINUE
+                        }
+
+                        if ( proteinCoverageEntry.peptideAtProteinStart_Flag ) {
+
+                            peptideItem.protein_Pre_Residue_N_Term = true
+                        } else {
+
+                            peptideItem.protein_Pre_Residues.add( proteinCoverageEntry.protein_PreResidue );
+
+                        }
+
+                        if ( proteinCoverageEntry.peptideAtProteinEnd_Flag ) {
+
+                            peptideItem.protein_Post_Residue_C_Term = true
+                        } else {
+
+                            peptideItem.protein_Post_Residues.add( proteinCoverageEntry.protein_PostResidue );
+                        }
+                    }
+                }
+            }
 
             {
                 //  Reported Peptide Ann Values

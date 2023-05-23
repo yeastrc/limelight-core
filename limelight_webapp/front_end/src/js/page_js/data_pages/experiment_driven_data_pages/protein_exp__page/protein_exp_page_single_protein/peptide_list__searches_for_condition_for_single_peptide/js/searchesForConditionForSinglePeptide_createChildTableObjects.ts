@@ -222,6 +222,7 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
             }
 
             const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
+                for_MultipleSearches_Overall: projectSearchIds.length > 1,
                 searchSubGroup_Ids_Selected : undefined,
                 projectSearchId,
                 reportedPeptideIds_ForDisplay,
