@@ -39,6 +39,8 @@ export interface ProteinPage_Display__SingleProtein_GeneratedReportedPeptideList
 
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result;  //  For displaying the peptide list in sub component
 
+    for_SingleProtein: boolean              //  Used to control what is displayed
+
     searchSubGroup_Ids_Selected : Set<number>
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds
@@ -157,6 +159,8 @@ export class ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSect
             const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_Result = createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein({ //  External Function
 
                 create_GeneratedReportedPeptideListData_Result : this.props.create_GeneratedReportedPeptideListData_Result,
+
+                for_SingleProtein: this.props.for_SingleProtein,
 
                 searchSubGroup_Ids_Selected : this.props.searchSubGroup_Ids_Selected,
 

@@ -64,6 +64,9 @@ const dataTableId_ThisTable = "Single Protein Peptide List Last Condition Group 
  */
 export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter {
 
+    for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+    for_SingleProtein: boolean              //  Used to control what is displayed
+
     createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry //  Row in Top Level table that this is under (direct or indirect)
 
     //  Path of condition ids from Root Peptide List to current list being created. Empty array if at top group
@@ -85,6 +88,9 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
      */
     constructor(
         {
+            for_MultipleSearches_Overall,
+            for_SingleProtein,
+
             createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow,
             conditionIds_ParentPath,
 
@@ -98,6 +104,9 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
             dataPageStateManager
         } : {
+            for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+            for_SingleProtein: boolean              //  Used to control what is displayed
+
             createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry;
             conditionIds_ParentPath : Array<number>; //  Empty array if at top group
 
@@ -111,6 +120,9 @@ export class CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             dataPageStateManager : DataPageStateManager
         }) {
+
+        this.for_MultipleSearches_Overall = for_MultipleSearches_Overall
+        this.for_SingleProtein = for_SingleProtein
 
         this.createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow = createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow;
         this.conditionIds_ParentPath = conditionIds_ParentPath;
@@ -369,8 +381,11 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
                 //  Child Condition Group NOT 'Last Condition Group':  Children table uses createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter
 
-                const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter = ( 
+                const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter__ForNextLowerLevel = (
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter({
+
+                        for_MultipleSearches_Overall: createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.for_MultipleSearches_Overall,
+                        for_SingleProtein: createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.for_SingleProtein,
                         
                         createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow,
                         conditionIds_ParentPath : conditionIds_ParentPath_ForChild,
@@ -391,7 +406,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
                     ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : DataTable_RootTableObject => {
 
                         const getDataTableDataObjects_All_But_Last_ConditionGroup_Result : GetDataTableDataObjects_All_But_Last_ConditionGroup_Result =
-                            createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup({ createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter });
+                            createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup({
+                                createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter: createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter__ForNextLowerLevel
+                            });
 
                         return  getDataTableDataObjects_All_But_Last_ConditionGroup_Result.dataTable_RootTableObject;
                     }
@@ -414,6 +431,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_
 
                 const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter = (
                     new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter({
+
+                        for_MultipleSearches_Overall: createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.for_MultipleSearches_Overall,
+                        for_SingleProtein: createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter.for_SingleProtein,
                         
                         createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow,
                         conditionIds_ParentPath : conditionIds_ParentPath_ForChild,

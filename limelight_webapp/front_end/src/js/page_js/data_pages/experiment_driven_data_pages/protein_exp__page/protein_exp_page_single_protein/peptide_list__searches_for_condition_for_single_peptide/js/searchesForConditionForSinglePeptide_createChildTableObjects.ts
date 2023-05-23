@@ -45,6 +45,9 @@ const dataTableId_ThisTable = "Experiment Protein Single Protein Single Peptide 
  */
 export class SearchesForSinglePeptide_createChildTableObjects_Parameter {
 
+    for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+    for_SingleProtein: boolean              //  Used to control what is displayed
+
     createReportedPeptideDisplayData_Result_Entry_ForParentRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
     projectSearchIds : Array<number>
     reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
@@ -58,6 +61,8 @@ export class SearchesForSinglePeptide_createChildTableObjects_Parameter {
      */
     constructor(
         {
+            for_MultipleSearches_Overall,
+            for_SingleProtein,
             createReportedPeptideDisplayData_Result_Entry_ForParentRow,
             projectSearchIds,
             reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId,  //  The Reported Peptide Ids Associated with Parent Peptide
@@ -66,6 +71,9 @@ export class SearchesForSinglePeptide_createChildTableObjects_Parameter {
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
             dataPageStateManager
         } : {
+            for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+            for_SingleProtein: boolean              //  Used to control what is displayed
+
             createReportedPeptideDisplayData_Result_Entry_ForParentRow : CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_Entry
             projectSearchIds : Array<number>
             reportedPeptideIds_ForDisplay_Map_KeyProjectSearchId : Map<number, Set<number>>
@@ -74,6 +82,9 @@ export class SearchesForSinglePeptide_createChildTableObjects_Parameter {
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             dataPageStateManager : DataPageStateManager
         }) {
+
+        this.for_MultipleSearches_Overall = for_MultipleSearches_Overall
+        this.for_SingleProtein = for_SingleProtein
 
         this.createReportedPeptideDisplayData_Result_Entry_ForParentRow = createReportedPeptideDisplayData_Result_Entry_ForParentRow;
         this.projectSearchIds = projectSearchIds;
@@ -222,7 +233,8 @@ export const searchesForSinglePeptide_createChildTableObjects = ({
             }
 
             const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
-                for_MultipleSearches_Overall: projectSearchIds.length > 1,
+                for_MultipleSearches_Overall: searchesForSinglePeptide_createChildTableObjects_Parameter.for_MultipleSearches_Overall,
+                for_SingleProtein: searchesForSinglePeptide_createChildTableObjects_Parameter.for_SingleProtein,
                 searchSubGroup_Ids_Selected : undefined,
                 projectSearchId,
                 reportedPeptideIds_ForDisplay,

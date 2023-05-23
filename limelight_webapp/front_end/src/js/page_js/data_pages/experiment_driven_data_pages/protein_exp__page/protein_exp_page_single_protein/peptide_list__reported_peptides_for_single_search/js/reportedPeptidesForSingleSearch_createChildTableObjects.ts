@@ -54,7 +54,7 @@ const dataTableId_ThisTable = "Experiment Protein Single Protein Single Peptide 
 export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
 
     for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
-    // for_SingleProtein: boolean              //  Used to control what is displayed
+    for_SingleProtein: boolean              //  Used to control what is displayed
 
     searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
     projectSearchId : number
@@ -71,7 +71,7 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
     constructor(
         {
             for_MultipleSearches_Overall,
-            // for_SingleProtein,
+            for_SingleProtein,
 
             searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId,
@@ -83,7 +83,7 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
             dataPageStateManager
         } : {
             for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
-            // for_SingleProtein: boolean              //  Used to control what is displayed
+            for_SingleProtein: boolean              //  Used to control what is displayed
 
             searchSubGroup_Ids_Selected : Set<number>; //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
             projectSearchId : number
@@ -95,7 +95,7 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
             dataPageStateManager : DataPageStateManager
         }) {
         this.for_MultipleSearches_Overall = for_MultipleSearches_Overall
-        // this.for_SingleProtein = for_SingleProtein
+        this.for_SingleProtein = for_SingleProtein
 
         this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
         this.projectSearchId = projectSearchId;
@@ -125,7 +125,9 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
         //  reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.dataPageStateManager.get_projectSearchIds()  returns undefined so do not use
 
-        if ( reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_MultipleSearches_Overall ) {
+        if ( reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_MultipleSearches_Overall
+            && ( ! reportedPeptidesForSingleSearch_createChildTableObjects_Parameter.for_SingleProtein ) ) {
+
             show_Protein_Pre_Post_Residues = true;  // Hard code to true
         }
 

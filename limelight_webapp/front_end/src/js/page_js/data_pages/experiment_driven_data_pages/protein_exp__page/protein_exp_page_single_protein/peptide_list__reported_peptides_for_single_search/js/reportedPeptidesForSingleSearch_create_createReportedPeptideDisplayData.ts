@@ -59,23 +59,6 @@ class CreateReportedPeptideDisplayData_Result_Class {
     annotationTypeRecords_DisplayOrder : Internal_AnnotationTypeRecords_DisplayOrder
 }
 
-//   Input Function Parameter class
-
-// /**
-//  * Parameters passed in to main function createReportedPeptideDisplayData
-//  */
-// class Internal_MainFunction_InputParameters {
-//     projectSearchId : number
-//     reportedPeptideIds_ForDisplay : Set<number>
-//     dataPerReportedPeptideId_Map_Key_reportedPeptideId : Map<number, CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry>
-//     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
-//     proteinSequenceVersionId : number // Only for error reporting
-//     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-//     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-//     dataPageStateManager : DataPageStateManager
-// }
-
-
 /**
  * !!!!!!!!!!   MAIN FUNCTION  !!!!!!!!!!!!!!!
  *

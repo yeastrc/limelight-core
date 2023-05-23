@@ -96,7 +96,10 @@ export class GetDataTableDataObjects_GeneratedReportedPeptideListSection_Result 
  * Reported Peptide List Data Table Root
  */
 export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection = async function( {
-    
+
+    for_MultipleSearches_Overall,
+    for_SingleProtein,
+
     create_GeneratedReportedPeptideListData_Result, 
     
     conditionGroupsContainer,
@@ -110,6 +113,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
     showProteins,
     proteinName_Clicked_Callback_Function
 } : {
+    for_MultipleSearches_Overall: boolean   //  Used to control what is displayed
+    for_SingleProtein: boolean              //  Used to control what is displayed
+
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
 
     conditionGroupsContainer : Experiment_ConditionGroupsContainer
@@ -604,6 +610,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
                     const createReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter = (
                         new CreateReportedPeptideDisplayData_DataTableDataObjects_All_But_Last_ConditionGroup_Parameter({
 
+                            for_MultipleSearches_Overall,
+                            for_SingleProtein,
+
                             createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
                             conditionIds_ParentPath,
 
@@ -658,6 +667,9 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_GeneratedRepo
 
                     const createReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter = (
                         new CreateReportedPeptideDisplayData_DataTableDataObjects_Last_ConditionGroup_Parameter({
+
+                            for_MultipleSearches_Overall,
+                            for_SingleProtein,
 
                             createReportedPeptideDisplayData_Result_Entry_ForTopLevelRow : createReportedPeptideDisplayData_Result_Entry_ForThisRow,
                             conditionIds_ParentPath,

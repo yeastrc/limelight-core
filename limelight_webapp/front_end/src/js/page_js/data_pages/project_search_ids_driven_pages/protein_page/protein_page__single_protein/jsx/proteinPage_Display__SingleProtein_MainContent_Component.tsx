@@ -3182,6 +3182,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                         <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component
 
+                            for_SingleProtein={ true }
+
                             showUpdatingMessage={ this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }
                             showGettingDataMessage={ this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds }
 

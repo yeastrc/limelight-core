@@ -160,9 +160,26 @@ export class ProteinExperimentPage_SingleProtein_GeneratedReportedPeptideListSec
                 return; // EARLY RETURN
             }
 
+            let for_MultipleSearches_Overall = false;
+
+            if ( this.props.projectSearchIds.length > 1 ) {
+
+                for_MultipleSearches_Overall = true;
+            }
+
+            let for_SingleProtein = false;
+
+            if ( this.props.proteinSequenceVersionId !== undefined && this.props.proteinSequenceVersionId !== null ) {
+
+                for_SingleProtein = true;
+            }
+
             //  Function returns a Promise
 
             const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearch_SingleProtein_Result = createReportedPeptideDisplayData_DataTableDataObjects_GeneratedReportedPeptideListSection({ //  External Function
+
+                for_MultipleSearches_Overall,
+                for_SingleProtein,
 
                 create_GeneratedReportedPeptideListData_Result : this.props.create_GeneratedReportedPeptideListData_Result,
 

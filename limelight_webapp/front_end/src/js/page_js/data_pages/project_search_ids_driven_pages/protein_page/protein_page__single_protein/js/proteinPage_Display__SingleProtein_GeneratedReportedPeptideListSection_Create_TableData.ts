@@ -108,6 +108,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
     
     create_GeneratedReportedPeptideListData_Result,
 
+    for_SingleProtein,
+
     searchSubGroup_Ids_Selected,
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds, //  ONLY Passed in ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter constructor
@@ -119,6 +121,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
     proteinName_Clicked_Callback_Function
 } : {
     create_GeneratedReportedPeptideListData_Result : Create_GeneratedReportedPeptideListData_MultipleSearch_SingleProtein_Result,
+
+    for_SingleProtein: boolean              //  Used to control what is displayed
 
     searchSubGroup_Ids_Selected : Set<number>
 
@@ -758,6 +762,8 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
 
                             createReportedPeptideDisplayData_MultipleSearch_SingleProtein_Result_Entry_ForParentRow: createReportedPeptideDisplayData_Result_Entry_ForThisRow,
 
+                            for_SingleProtein,
+
                             projectSearchIds,
                             dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId: peptideEntry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId,
                             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
@@ -810,6 +816,7 @@ export const createReportedPeptideDisplayData_DataTableDataObjects_MultipleSearc
                     const reportedPeptidesForSingleSearch_createChildTableObjects_Parameter = (
                         new ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter({
                             for_MultipleSearches_Overall: projectSearchIds.length > 1,
+                            for_SingleProtein,
                             searchSubGroup_Ids_Selected,
                             projectSearchId,
                             reportedPeptideIds_ForDisplay: undefined,

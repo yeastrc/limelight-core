@@ -1330,6 +1330,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
                 create_GeneratedReportedPeptideListData_Result : create_GeneratedReportedPeptideListData_Result,
 
+                for_SingleProtein: false,
+
                 searchSubGroup_Ids_Selected : searchSubGroup_Ids_Selected,
 
                 reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList,   //  ONLY Passed in ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter constructor
@@ -2861,6 +2863,8 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
 
                             <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component
+
+                                for_SingleProtein={ false }
 
                                 showProteins={ true }
 
