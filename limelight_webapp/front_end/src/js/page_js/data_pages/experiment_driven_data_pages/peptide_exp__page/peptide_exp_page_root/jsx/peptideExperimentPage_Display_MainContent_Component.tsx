@@ -128,6 +128,8 @@ import {
 } from "page_js/data_pages/blib_spectral_library_file__download/Blib_SpectralLibrary_File_Download__Overlay_Component_And_SendRequest_Code";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
 import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/jsx/peptideSequence_MissedCleavageCount_UserSelections_Component";
+import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 
 
 ////
@@ -169,6 +171,7 @@ export class PeptideExperimentPage_Display_MainContent_Component_Props_Prop {
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
 	peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
     peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject;
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
     peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
@@ -285,6 +288,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
 
     private _updateMadeTo_peptideSequence_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideSequence_UserSelections_StateObject.bind(this);
     private _updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback.bind(this);
+    private _updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis : () => void = this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback.bind(this);
     private _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis = this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback.bind(this);
 
 
@@ -960,6 +964,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,  //  NOT Copied Yet
 
             generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
@@ -1007,6 +1012,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,  //  NOT Copied Yet
 
             generatedPeptideContents_UserSelections_StateObject : this.props.propsValue.generatedPeptideContents_UserSelections_StateObject,
@@ -1655,6 +1661,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                 proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject
             });
 
@@ -1666,6 +1673,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                 peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                 proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
                 peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
@@ -1737,6 +1745,8 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             this.props.propsValue.peptideSequence_UserSelections_StateObject.clearPeptideSearchStrings();
 
             this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject.clearAll();
+
+            this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.clearAll();
 
             this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.clearSelections();
 
@@ -2206,6 +2216,24 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
     }
 
     /**
+     *
+     */
+    private _updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback() {
+
+        window.setTimeout( () => {
+            try {
+                //  Now update dependent page parts
+
+                this._updateRestOfPage_ForUserInteraction();
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
+        }, 10 );
+    }
+
+    /**
      * Change to Protein Position Filter Selections, this.props.propsValue.updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback
      */
     _updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback() : void {
@@ -2491,6 +2519,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
             peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
             dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
@@ -2529,6 +2558,7 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                     peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root : null,
                     proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
@@ -2952,6 +2982,12 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
                                 updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideSequence_MissedCleavageCount_UserSelections_StateObject_Callback_BindThis }
                             />
 
+                            <PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component
+                                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject={ this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject }
+                                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Object_Force_ResetToStateObject={ this.state.peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject }
+                                updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_Callback={ this._updateMadeTo_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_StateObject_Callback_BindThis }
+                            />
+
                             <ProteinPositionFilter_UserSelections__GetsProteinData
                                 proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.state.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
                                 proteinPositionFilter_UserSelections_StateObject={ this.props.propsValue.proteinPositionFilter_UserSelections_StateObject }
@@ -3086,6 +3122,7 @@ const _copy_Page_StateObjectData_To_SingleSearch_StateObjectData__OthersThan__Op
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+        peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject,  //  NOT Copied Yet
 
         generatedPeptideContents_UserSelections_StateObject,
@@ -3102,6 +3139,7 @@ const _copy_Page_StateObjectData_To_SingleSearch_StateObjectData__OthersThan__Op
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject;
         peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject;
+        peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
         proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
 
         generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
@@ -3145,6 +3183,10 @@ const _copy_Page_StateObjectData_To_SingleSearch_StateObjectData__OthersThan__Op
     {
         const peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData = peptideSequence_MissedCleavageCount_UserSelections_StateObject.getEncodedStateData();
         singleProtein_ExpPage_CentralStateManagerObjectClass.set_peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData({ peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData })
+    }
+    {
+        const peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData = peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.getEncodedStateData();
+        singleProtein_ExpPage_CentralStateManagerObjectClass.set_peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData({ peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData })
     }
     {
         const generatedPeptideContents_UserSelections__EncodedStateData = generatedPeptideContents_UserSelections_StateObject.getEncodedStateData();

@@ -303,7 +303,7 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_Component extend
                 <div className=" filter-common-selection-block " >
 
                     {/*  Remove className=" filter-common-selection-inner-block " since have Input Field  */}
-                    <div style={ { marginBottom: 3 } }>  {/* marginBottom: 3 - Add vertical space between input boxes for Retention Time and M/Z.  With No marginBottom they are touching */}
+                    <div style={ { marginBottom: 6 } }>  {/* marginBottom: 3 - Add vertical space between input boxes for Retention Time and M/Z.  With No marginBottom they are touching */}
 
                         <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
 

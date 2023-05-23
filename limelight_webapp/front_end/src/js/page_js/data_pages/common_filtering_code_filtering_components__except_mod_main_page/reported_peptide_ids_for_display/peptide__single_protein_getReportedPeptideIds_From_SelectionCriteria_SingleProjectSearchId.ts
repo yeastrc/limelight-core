@@ -52,6 +52,7 @@ import {
     Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn,
     Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_DataClasses";
+import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 
 
 /////////   Returned Classes
@@ -311,6 +312,7 @@ class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Pa
     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
     peptideSequence_UserSelections_StateObject: PeptideSequence_UserSelections_StateObject
     peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
     proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
     userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
@@ -525,6 +527,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : main_FunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
                 peptideSequence_UserSelections_StateObject: main_FunctionParams.peptideSequence_UserSelections_StateObject,
                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : main_FunctionParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                 proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
                 proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
                 userSearchString_LocationsOn_ProteinSequence_Root: main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root,
@@ -627,6 +630,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : main_FunctionParams.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject: main_FunctionParams.peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : main_FunctionParams.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : main_FunctionParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinSequenceWidget_StateObject: main_FunctionParams.proteinSequenceWidget_StateObject,
             proteinPositionFilter_UserSelections_StateObject: main_FunctionParams.proteinPositionFilter_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root: main_FunctionParams.userSearchString_LocationsOn_ProteinSequence_Root,
@@ -805,6 +809,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     peptideUnique_UserSelection_StateObject: filtering_Params_Main.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: filtering_Params_Main.peptideSequence_UserSelections_StateObject,
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject: filtering_Params_Main.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: filtering_Params_Main.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: filtering_Params_Main.proteinPositionFilter_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root: filtering_Params_Main.userSearchString_LocationsOn_ProteinSequence_Root,

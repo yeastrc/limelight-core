@@ -72,6 +72,7 @@ import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_M
 import {CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ProteinSequenceVersionId_Level_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifications_At_ProteinSequenceVersionId_Level_For_MainFilters";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 
 
 /**
@@ -106,6 +107,7 @@ const initialPopulate = async function({
     peptideUnique_UserSelection_StateObject,
     peptideSequence_UserSelections_StateObject,
     peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
     proteinSequenceWidget_StateObject,
     graphicRepresentation_SelectedCells //  may be NOT set ( null or undefined)
 } : {
@@ -124,6 +126,7 @@ const initialPopulate = async function({
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
     peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject;
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
     graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells
 }  ) :
@@ -194,6 +197,7 @@ Promise<{
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root,
             proteinPositionFilter_UserSelections_StateObject : undefined,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined

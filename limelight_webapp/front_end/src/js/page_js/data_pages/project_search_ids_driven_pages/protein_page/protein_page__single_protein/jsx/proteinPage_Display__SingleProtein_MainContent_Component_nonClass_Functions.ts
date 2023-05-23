@@ -65,6 +65,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 
 
 /**
@@ -95,6 +96,7 @@ const initialPopulate = async function(
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
         peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+        peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object
@@ -112,6 +114,7 @@ const initialPopulate = async function(
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
         peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+        peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object: GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class
@@ -194,6 +197,7 @@ Promise<{
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,
             peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+            peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             userSearchString_LocationsOn_ProteinSequence_Root,
             proteinPositionFilter_UserSelections_StateObject : undefined,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined

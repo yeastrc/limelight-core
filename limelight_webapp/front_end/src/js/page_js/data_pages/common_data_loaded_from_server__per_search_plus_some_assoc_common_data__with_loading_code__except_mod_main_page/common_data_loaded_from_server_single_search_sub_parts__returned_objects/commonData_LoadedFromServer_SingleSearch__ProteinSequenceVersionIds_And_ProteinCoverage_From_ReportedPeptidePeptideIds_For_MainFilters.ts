@@ -18,7 +18,7 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
-class ProteinCoverage_Entry {
+export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry {
     reportedPeptideId : number
     proteinSequenceVersionId : number
     proteinStartPosition : number
@@ -38,12 +38,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
     //  	Protein Coverage Data Per Reported Peptide Id
     // 					- Map <integer,[Object]> <Reported Peptide Id, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>>;
+    private _proteinCoverage_KeyReportedPeptideId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry>>;
 
     //  Created when requested
     //  	Protein Coverage Data Per ProteinSequenceVersionId
     // 					- Map <integer,[Object]> <ProteinSequenceVersionId, [{reportedPeptideId, proteinSequenceVersionId, proteinStartPosition, proteinEndPosition}]>
-    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<ProteinCoverage_Entry>>;
+    private _proteinCoverage_Key_ProteinSequenceVersionId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry>>;
 
     //    proteinSequenceVersionIds  Per Reported Peptide Id
     private _proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
@@ -66,7 +66,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             proteinCoverage_KeyReportedPeptideId, proteinSequenceVersionIds_KeyReportedPeptideId, proteinSequenceVersionIdsUnique,
             per_ProteinSequenceVersionId_Entries__Map_Key_ReportedPeptideId, all_ProteinSequenceVersionId_Entries__IndependentDecoy_True_Map_Key_ReportedPeptideId
         } : {
-            proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>>;
+            proteinCoverage_KeyReportedPeptideId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry>>;
             proteinSequenceVersionIds_KeyReportedPeptideId: Map<number, Set<number>>;
             proteinSequenceVersionIdsUnique : Set<number>; // - Set <integer> : <proteinSequenceVersionIds>
 
@@ -461,7 +461,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
             peptideAtProteinEnd_Flag_Array: Array<boolean>
         } = responseData;
 
-        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<ProteinCoverage_Entry>> = new Map();
+        const proteinCoverage_KeyReportedPeptideId : Map<number, Array<CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry>> = new Map();
 
         const proteinSequenceVersionIds_KeyReportedPeptideId : Map<number, Set<number>> = new Map();
 
@@ -607,7 +607,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
         for ( let responseData_Cast_AnyItem_Array_Index = 0; responseData_Cast_AnyItem_Array_Index < responseData_Cast_AnyItem_ArrayLength; responseData_Cast_AnyItem_Array_Index++ ) {
 
-            const proteinCoverage_Entry: ProteinCoverage_Entry = {
+            const proteinCoverage_Entry: CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry = {
                 reportedPeptideId : responseData_Cast.reportedPeptideId_Array[ responseData_Cast_AnyItem_Array_Index ],
                 proteinSequenceVersionId : responseData_Cast.proteinSequenceVersionId_Array[ responseData_Cast_AnyItem_Array_Index ],
                 proteinStartPosition : responseData_Cast.proteinStartPosition_Array[ responseData_Cast_AnyItem_Array_Index ],

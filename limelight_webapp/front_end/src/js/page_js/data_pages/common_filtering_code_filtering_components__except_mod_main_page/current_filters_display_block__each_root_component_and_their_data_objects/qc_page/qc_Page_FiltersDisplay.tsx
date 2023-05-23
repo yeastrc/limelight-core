@@ -22,6 +22,7 @@ import {currentFiltersDisplayBlock__Peptide_QC__ProteinPositionFilter_UserSelect
 import {currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelections";
 import {Page_MainFiltersDisplay_CommonDisplayContainer_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/common/page_MainFiltersDisplay_CommonDisplayContainer_Component";
 import {currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections";
+import {currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections";
 
 
 
@@ -189,6 +190,15 @@ export class QC_Page_FiltersDisplay extends React.Component< QC_Page_FiltersDisp
                 const currentFilter = currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections({
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject: this.props.qc_Page_FiltersDisplay_ComponentData.peptideSequence_MissedCleavageCount_UserSelections_StateObject
                 });
+                if ( currentFilter ) {
+                    currentFiltersArray.push( currentFilter );
+                }
+            }
+
+            {  //  Peptide Tryptic UserSelections
+                const currentFilter = currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections({
+                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.qc_Page_FiltersDisplay_ComponentData.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
+                })
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );
                 }
