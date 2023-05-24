@@ -563,7 +563,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
                 <QcPage_ChartBorder no_Min_Height={ true }>
 
-                    <div style={ { padding: 15 } }>
+                    <div style={ { padding: 15 } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
 
                         <div
                             style={ { fontSize: 16, fontWeight: "bold", marginBottom: 10 } }

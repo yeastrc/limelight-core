@@ -867,7 +867,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
 
         return (
-            <div >
+            <div   data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
                 <h3>
                     Scan Statistics
                 </h3>

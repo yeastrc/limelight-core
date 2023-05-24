@@ -1091,7 +1091,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
                         <QcPage_ChartBorder no_Min_Height={ true }>
 
-                            <div style={ { padding: 15 } }>
+                            <div style={ { padding: 15 } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
 
                                 <div style={ { display: "grid", gridTemplateColumns: this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? "min-content min-content min-content" : "min-content min-content " }}>
                                     {/*  Header Row */}

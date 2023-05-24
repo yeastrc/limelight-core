@@ -1689,7 +1689,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
                 {( ! this.props.isInSingleChartOverlay ) ? (
                     //  For Main Page: img the chart will be inserted into
-                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }></img>
                 ) : null }
 
                 { ( this.props.isInSingleChartOverlay ) ? (
@@ -1699,7 +1699,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
                     <div ref={this.plot_Container_Ref} style={ { height: "100%" } }>
 
                         {/*  For Single Chart Overlay: div the chart will be rendered into  */}
-                        <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                        <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }></div>
 
                         <div style={ { position: "relative"} }>
                             <div ref={this.linksUnderPlot_Container_Ref} style={ linksUnderPlot_Container_Style } >

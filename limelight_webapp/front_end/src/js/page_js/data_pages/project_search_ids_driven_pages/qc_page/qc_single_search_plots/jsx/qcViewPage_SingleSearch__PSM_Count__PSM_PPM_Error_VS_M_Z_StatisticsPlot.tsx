@@ -536,10 +536,10 @@ export class QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_Statistics
 
                 {( this.props.isInSingleChartOverlay ) ? (
                     //  For Single Chart Overlay: div the chart will be rendered into
-                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"></div>
+                    <div ref={this.plot_Ref} style={ { height: "100%" } } data-div-for-plot="the div for the plot"  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }></div>
                 ) : (
                     //  For Main Page: img the chart will be inserted into
-                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"></img>
+                    <img ref={this.image_Ref} className=" chart-main-page-image " data-img-for-plot="the img for the plot"  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }></img>
                 )}
 
                 {( this.state.showCreatingMessage ) ? (

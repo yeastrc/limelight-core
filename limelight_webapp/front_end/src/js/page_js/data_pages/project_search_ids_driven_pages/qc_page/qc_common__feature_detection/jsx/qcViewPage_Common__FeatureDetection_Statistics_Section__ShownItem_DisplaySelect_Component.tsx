@@ -117,7 +117,7 @@ export class QcViewPage_Common__FeatureDetection_Statistics_Section__ShownItem_D
 
         return (
 
-            <div style={ { marginBottom: 15 } }>
+            <div style={ { marginBottom: 15 } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
                 <div>
                     { ( ! this.props.callback__FeatureDetectionEntryClickedForChange ) ? (
                         //  No Callback so display without selection change option

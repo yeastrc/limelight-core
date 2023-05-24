@@ -792,7 +792,7 @@
 //
 //                 { ( this.state.displayTableContents ) ? (
 //
-//                     <div style={ { position: "relative", display: "inline-block" } }>
+//                     <div style={ { position: "relative", display: "inline-block" } }  data-plot-class-name={ this.constructor ? this.constructor.name : "Unknown: No this.constructor" }>
 //                         <div style={ { display: "grid", gridTemplateColumns: this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? "min-content min-content min-content" : "min-content min-content " }}>
 //                             {/*  Header Row */}
 //                             <div>
