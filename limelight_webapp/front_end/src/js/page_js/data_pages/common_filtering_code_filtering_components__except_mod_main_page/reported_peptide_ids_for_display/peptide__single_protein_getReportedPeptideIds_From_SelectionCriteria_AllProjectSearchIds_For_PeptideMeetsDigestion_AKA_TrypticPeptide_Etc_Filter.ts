@@ -69,7 +69,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
         {
             projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         } : {
-            projectSearchIds : Array<number>;
+            projectSearchIds : Array<number>
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         }
     ) :
@@ -447,7 +447,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
             proteinSequenceVersionId_Param = proteinSequenceVersionId_Param
         }
 
-        for ( const projectSearchId of data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
+        for ( const projectSearchId of this._projectSearchIds ) {
 
             const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
             if (!reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId) {
@@ -557,7 +557,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
 
         const result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = new Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds(null)
 
-        for ( const projectSearchId of data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
+        for ( const projectSearchId of this._projectSearchIds ) {
 
             const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({ projectSearchId, entriesMap_KeyReportedPeptideId: null })
 
@@ -596,10 +596,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
                 }
             }
 
-            if ( result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds().size > 0 ) {
-
-                result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.insert_Entry({ projectSearchId, entry: result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId })
-            }
+            result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.insert_Entry({ projectSearchId, entry: result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId })
         }
 
         return {
@@ -699,7 +696,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
             proteinSequenceVersionId_Param = proteinSequenceVersionId_Param
         }
 
-        for ( const projectSearchId of data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
+        for ( const projectSearchId of this._projectSearchIds ) {
 
             const result_peptideIds_All_In_SingleSearch = new Set<number>()
             const result_peptideIds_PeptideTryptic_In_SingleSearch = new Set<number>()
@@ -823,7 +820,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
 
         const result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds = new Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds(null)
 
-        for ( const projectSearchId of data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_ProjectSearchIds() ) {
+        for ( const projectSearchId of this._projectSearchIds ) {
 
             const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({ projectSearchId, entriesMap_KeyReportedPeptideId: null })
 
@@ -862,10 +859,7 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
                 }
             }
 
-            if ( result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_reportedPeptideIds().size > 0 ) {
-
-                result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.insert_Entry({ projectSearchId, entry: result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId })
-            }
+            result__reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.insert_Entry({ projectSearchId, entry: result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId })
         }
 
         return {
