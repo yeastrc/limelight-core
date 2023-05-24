@@ -67,6 +67,11 @@ public class ReportedPeptideStrings_For_ReportedPeptideIds_SearchIds_Searcher ex
 			Collection<Integer> searchIds
 			) throws SQLException {
 
+		if ( reportedPeptideIds.isEmpty() || searchIds.isEmpty() ) {
+		
+			return new ArrayList<>();
+		}
+		
 		List<ReportedPeptideStrings_For_ReportedPeptideIds_SearchIds_Item> resultList = new ArrayList<>();
 		
 		StringBuilder querySQL_SB = new StringBuilder( 1000 );
