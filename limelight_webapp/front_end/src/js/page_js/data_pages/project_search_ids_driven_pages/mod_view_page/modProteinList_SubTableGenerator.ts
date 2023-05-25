@@ -373,7 +373,20 @@ export class ModProteinList_SubTableGenerator {
                     throw Error( msg );
                 }
 
-                return (b.columnEntries[3].valueSort as number) - (a.columnEntries[3].valueSort as number);
+                if ( b.columnEntries[3].valueSort !== a.columnEntries[3].valueSort ) {
+
+                    //  PSM Count is different so sort on that
+                    return (b.columnEntries[3].valueSort as number) - (a.columnEntries[3].valueSort as number);
+                }
+
+                // sort by protein name otherwise
+                if(a.columnEntries[0].valueSort < b.columnEntries[0].valueSort) {
+                    return -1;
+                }
+                if(a.columnEntries[0].valueSort > b.columnEntries[0].valueSort) {
+                    return 1;
+                }
+                return 0;
             }));
 
         } else {
