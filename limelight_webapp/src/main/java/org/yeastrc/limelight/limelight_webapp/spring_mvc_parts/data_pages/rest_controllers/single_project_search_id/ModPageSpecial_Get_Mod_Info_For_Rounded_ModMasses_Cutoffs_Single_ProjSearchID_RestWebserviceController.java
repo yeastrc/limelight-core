@@ -56,14 +56,13 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmIdList_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher.PsmOpenModification_Masses_Positions_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
@@ -145,7 +144,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 
 	@Autowired
-	private PsmWebDisplaySearcherIF psmWebDisplaySearcher;
+	private PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF psmIdsForSearchIdReportedPeptideIdCutoffsSearcher;
 	
 	@Autowired
 	private PsmDynamicModification_For_PsmIdList_Searcher_IF psmDynamicModification_For_PsmIdList_Searcher;
@@ -527,6 +526,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	}
     }
 
+    /**
+     * @param reportedPeptideId
+     * @param params
+     * @throws Exception
+     */
     private void _processFor_Single_ReportedPeptideId_Updating_ResultList(
     		
     		Integer reportedPeptideId,
@@ -557,18 +561,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	 */
 		Map<Long, Map<Integer, WebserviceResultItem>> modMassesPerScan_Key_ModMassRounded_Key_PsmId = new HashMap<>();
 
-		List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
-		
-		// Result_Map_Key_PsmId
-		Map<Long, PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_Map_Key_PsmId = new HashMap<>( psmWebDisplayWebServiceResult_List.size() );
-
-		List<Long> psmIdList = new ArrayList<>( psmWebDisplayWebServiceResult_List.size() );
-		
-		for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
-			psmWebDisplayWebServiceResult_Map_Key_PsmId.put( psmWebDisplayWebServiceResult.getPsmId(), psmWebDisplayWebServiceResult );
-			psmIdList.add( psmWebDisplayWebServiceResult.getPsmId() );
-		}
+		List<Long> psmIdList =
+				psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
+				.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, params.searchId, params.searcherCutoffValuesSearchLevel );
 		
 		if ( searchFlags_anyPsmHas_VariableDynamicModifications ) {
 
@@ -593,14 +588,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				continue;  //  EARLY CONTINUE
     			}
 
-    			
-				PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult = psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmId );
-				if ( psmWebDisplayWebServiceResult == null ) {
-    				String msg = "psmWebDisplayWebServiceResult_Map_Key_PsmId.get( psmDynamicModificationDTO.getPsmId() ) return null.  psmDynamicModificationDTO.getPsmId(): " + psmId;
-    				log.error(msg);
-    				throw new LimelightInternalErrorException(msg);
-				}
-				
 				Map<Integer, WebserviceResultItem> modMassesPerScan_Key_ModMassRounded = modMassesPerScan_Key_ModMassRounded_Key_PsmId.get( psmId ); 
 				if ( modMassesPerScan_Key_ModMassRounded == null ) {
 					modMassesPerScan_Key_ModMassRounded = new HashMap<>();
@@ -640,7 +627,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			
 			//  Add in Variable/Dynamic Mod masses from Reported Peptide Level
 			
-//			Map<Integer, Map<Integer, Variable_ModItem_ReportedPeptideLevel>> variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId
+			//  USES: Map<Integer, Map<Integer, Variable_ModItem_ReportedPeptideLevel>> variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId
 
 			if ( variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated.get() ) {
 				
@@ -648,9 +635,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 				if ( variableModData_AtReportedPeptideLevel_Key_ModMassRounded != null ) {
 					
-					for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
-
-						Long psmId = psmWebDisplayWebServiceResult.getPsmId();
+					for ( Long psmId : psmIdList ) {
 
 	    				Map<Integer, WebserviceResultItem> modMassesPerScan_Key_ModMassRounded = modMassesPerScan_Key_ModMassRounded_Key_PsmId.get( psmId ); 
 	    				if ( modMassesPerScan_Key_ModMassRounded == null ) {
