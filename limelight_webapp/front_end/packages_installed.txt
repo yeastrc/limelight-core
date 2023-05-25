@@ -15,3 +15,13 @@ Upgrade:
     npm install react@17.0.2 react-dom@17.0.2
     npm install @types/react@17.0.2
     
+    
+Install:
+    npm install @mui/material @emotion/react @emotion/styled
+    
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.13.2",
+    
+    
+    
