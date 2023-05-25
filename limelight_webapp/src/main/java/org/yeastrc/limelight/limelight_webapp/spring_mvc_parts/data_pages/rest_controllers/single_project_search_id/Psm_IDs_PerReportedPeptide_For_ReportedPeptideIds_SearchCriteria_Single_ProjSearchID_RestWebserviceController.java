@@ -272,6 +272,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
     		
     		List<WebserviceResult_Entry> reportedPeptideId_psmIdList_List_InProgress = new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
+    		
+    		InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params params = new InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params();
+    		params.searchId = searchId;
+    		params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
 
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
@@ -288,8 +292,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	    			webserviceRequest.reportedPeptideIds.parallelStream().forEach( reportedPeptideId -> { 
 
         				try {
+        					
         					WebserviceResult_Entry entry = 
-        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, params);
 
         					synchronized(reportedPeptideId_psmIdList_List_InProgress){
         						reportedPeptideId_psmIdList_List_InProgress.add( entry );
@@ -314,7 +319,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         				try {
 
         					WebserviceResult_Entry entry = 
-        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+        							this.get_WebserviceResult_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, params);
 
         					synchronized(reportedPeptideId_psmIdList_List_InProgress){
         						reportedPeptideId_psmIdList_List_InProgress.add( entry );
@@ -402,12 +407,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     private WebserviceResult_Entry get_WebserviceResult_Entry_For_ONE_ReportedPeptideId( 
     		
     		Integer reportedPeptideId,
-    		Integer searchId,
-    		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
+    		InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params params ) throws Exception {
 
 		List<Long> psmIdList = 
 				psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
-				.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+				.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, params.searchId, params.searcherCutoffValuesSearchLevel );
 
 		WebserviceResult_Entry entry = new WebserviceResult_Entry();
 		entry.reportedPeptideId = reportedPeptideId;
@@ -415,6 +419,25 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 		return entry;
     }
+
+    //////////////////////////
+    
+    //  Internal classes
+    
+    /**
+     * 
+     *
+     */
+    private static class InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params {
+    		
+    	volatile Integer searchId;
+    	volatile SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel;
+    }
+    
+
+    //////////////////////////////////////////
+    
+    //////  Webservice Request and Response classes
 
     /**
      * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!

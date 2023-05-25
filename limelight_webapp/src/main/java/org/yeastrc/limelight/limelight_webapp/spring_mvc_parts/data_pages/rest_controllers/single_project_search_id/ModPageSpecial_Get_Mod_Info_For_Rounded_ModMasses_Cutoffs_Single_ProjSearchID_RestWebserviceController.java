@@ -416,6 +416,17 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
         	final List<WebserviceResultItem> webserviceResultItem_List__SynchronizedList_ForParallel = Collections.synchronizedList( webserviceResultItem_List__For_NonParallel );
 
+			InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params params = new InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params();
+			params.searchId = searchId;
+			params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
+			params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
+			params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
+			params.modMassesInteger_Set = modMassesInteger_Set;
+			params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId;
+			params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated;
+
+			params.webserviceResultItem_List__SynchronizedList = webserviceResultItem_List__SynchronizedList_ForParallel;  //  UPDATED
+
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
         		
@@ -428,19 +439,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         			reportedPeptideIds_InitialSelection_List.parallelStream().forEach( reportedPeptideId -> { 
 
         				try {
-        					InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params params = new InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params();
-        					params.searchId = searchId;
-        					params.reportedPeptideId = reportedPeptideId;
-        					params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
-        					params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
-        					params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
-        					params.modMassesInteger_Set = modMassesInteger_Set;
-        					params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId;
-        					params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated;
-
-        					params.webserviceResultItem_List__SynchronizedList = webserviceResultItem_List__SynchronizedList_ForParallel;  //  UPDATED
-
         					this._processFor_Single_ReportedPeptideId_Updating_ResultList(
+        							reportedPeptideId,
         							params
         							);
 
@@ -462,19 +462,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
         				try {
 
-        					InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params params = new InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params();
-        					params.searchId = searchId;
-        					params.reportedPeptideId = reportedPeptideId;
-        					params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
-        					params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
-        					params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
-        					params.modMassesInteger_Set = modMassesInteger_Set;
-        					params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId;
-        					params.variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated = variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId__Populated;
-
-        					params.webserviceResultItem_List__SynchronizedList = webserviceResultItem_List__For_NonParallel;  //  UPDATED
-
         					this._processFor_Single_ReportedPeptideId_Updating_ResultList(
+        							reportedPeptideId,
         							params
         							);
 
@@ -537,27 +526,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }
-    
-    /**
-     * @param searchId
-     * @param reportedPeptideId
-     * @param searcherCutoffValuesSearchLevel
-     * @param searchFlags_anyPsmHas_VariableDynamicModifications
-     * @param searchFlags_anyPsmHas_OpenModifications
-     * @param modMassesInteger_Set
-     * @param variableModData_AtReportedPeptideLevel_Key_ModMassRounded_Key_ReportedPeptideId
-     * @param webserviceResultItem_List__SynchronizedList
-     * @throws Exception
-     */
+
     private void _processFor_Single_ReportedPeptideId_Updating_ResultList(
     		
+    		Integer reportedPeptideId,
     		InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params params
     		
     		) throws Exception {
 
 
 		Integer searchId = params.searchId; 
-		Integer reportedPeptideId = params.reportedPeptideId;
 		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = params.searcherCutoffValuesSearchLevel;
 		
 		boolean searchFlags_anyPsmHas_VariableDynamicModifications = params.searchFlags_anyPsmHas_VariableDynamicModifications;
@@ -826,8 +804,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     //  Internal classes
 
     private static class InternalClass__ProcessFor_Single_ReportedPeptideId_Updating_ResultList__Params {
-    		
-    	volatile Integer reportedPeptideId;
     		
     	volatile Integer searchId;
     	volatile SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel;

@@ -368,7 +368,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         	 *  Map< Reported Peptide Id, ...> 
         	 */
         	ConcurrentHashMap<Integer, InternalClass_WebserviceResult_Entry> webserviceResultItem_List_Map_Key_ReportedPeptideId = new ConcurrentHashMap<>( reportedPeptideIds_InitialSelection_List.size() );
-        	
+
+    		InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params params = new InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params();
+
+    		params.searchId = searchId;
+    		params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
+    		params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
+    		params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
+    		params.variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId;
+			
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
         		
@@ -383,17 +391,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         			reportedPeptideIds_InitialSelection_List.parallelStream().forEach( reportedPeptideId -> { 
 
         				try {
-        		    		InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params params = new InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params();
-
-        		    		params.reportedPeptideId = reportedPeptideId;
-        		    		params.searchId = searchId;
-        		    		params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
-        		    		params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
-        		    		params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
-        		    		params.variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId;
-        					
 	        				List<WebserviceResultItem> psms_List_Result = 
 	        				get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
+	        						reportedPeptideId,
 	        						params
 	        						);
 	        				
@@ -427,18 +427,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         			reportedPeptideIds_InitialSelection_List.forEach( reportedPeptideId -> { 
 
         				try {
-
-        		    		InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params params = new InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params();
-
-        		    		params.reportedPeptideId = reportedPeptideId;
-        		    		params.searchId = searchId;
-        		    		params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
-        		    		params.searchFlags_anyPsmHas_VariableDynamicModifications = searchFlags_anyPsmHas_VariableDynamicModifications;
-        		    		params.searchFlags_anyPsmHas_OpenModifications = searchFlags_anyPsmHas_OpenModifications;
-        		    		params.variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId = variableModMassesRounded_AtReportedPeptideLevel_Key_ReportedPeptideId;
-        					
 	        				List<WebserviceResultItem> psms_List_Result = 
 	        				get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
+	        						reportedPeptideId,
 	        						params
 	        						);
 	        				
@@ -544,13 +535,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      * @param thrownInsideStream_List
      */
     private List<WebserviceResultItem> get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId(
-    		
+
+    		Integer reportedPeptideId,
     		InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params params
 
     		) throws Exception {
     	
-		Integer reportedPeptideId = params.reportedPeptideId;
-		
 		Integer searchId = params.searchId;
 		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = params.searcherCutoffValuesSearchLevel;
 		boolean searchFlags_anyPsmHas_VariableDynamicModifications = params.searchFlags_anyPsmHas_VariableDynamicModifications;
@@ -691,8 +681,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     //  Internal classes
     
     private static class InternalClass_Get_PSM_Open_Mods_and_Variable_Mods_For_ONE_ReportedPeptideId__Params {
-    		
-    	volatile Integer reportedPeptideId;
     		
     	volatile Integer searchId;
     	volatile SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel;

@@ -286,6 +286,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		List<WebserviceResult_Per_ReportedPeptideId_Entry> reportedPeptideId_psmOpenModificationMassesList_List_InProgress =
     				new ArrayList<>( webserviceRequest.reportedPeptideIds.size() );
 
+    		InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params params = new InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params();
+    		params.searchId = searchId;
+    		params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
+
         	{
         		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
         		
@@ -302,7 +306,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
         				try {
         					WebserviceResult_Per_ReportedPeptideId_Entry entry = 
-        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, params);
 
         					synchronized(reportedPeptideId_psmOpenModificationMassesList_List_InProgress){
         						reportedPeptideId_psmOpenModificationMassesList_List_InProgress.add( entry );
@@ -327,7 +331,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
         				try {
 
         					WebserviceResult_Per_ReportedPeptideId_Entry entry = 
-        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, searchId, searcherCutoffValuesSearchLevel);
+        							this.get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId(reportedPeptideId, params);
 
         					synchronized(reportedPeptideId_psmOpenModificationMassesList_List_InProgress){
         						reportedPeptideId_psmOpenModificationMassesList_List_InProgress.add( entry );
@@ -414,12 +418,11 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     private WebserviceResult_Per_ReportedPeptideId_Entry get_WebserviceResult_Per_ReportedPeptideId_Entry_For_ONE_ReportedPeptideId( 
     		
     		Integer reportedPeptideId,
-    		Integer searchId,
-    		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
+    		InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params params ) throws Exception {
 
 		List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
 				psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
-				.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+				.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, params.searchId, params.searcherCutoffValuesSearchLevel );
 		
 //		Map<Long, Integer> searchSubGroupIdMap_Key_PsmId = new HashMap<>( psmOpenModificationMassesList.size() );
 		
@@ -518,6 +521,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		return entry;
     }
 
+    //////////////////////////
+    
+    //  Internal classes
+    
     /**
      * 
      */
@@ -529,7 +536,22 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		long psm_open_modification_id;
 		WebserviceResult_Per_PsmId_OpenModMass_Entry webserviceResult_Per_PsmId_OpenModMass_Entry;
     }
+
+    /**
+     * 
+     *
+     */
+    private static class InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params {
+    		
+    	volatile Integer searchId;
+    	volatile SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel;
+    }
     
+
+    //////////////////////////////////////////
+    
+    //////  Webservice Request and Response classes
+
     /////////////
     
     /**

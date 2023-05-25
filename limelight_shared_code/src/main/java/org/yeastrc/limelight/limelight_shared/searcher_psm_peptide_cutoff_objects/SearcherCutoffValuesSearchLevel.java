@@ -40,9 +40,9 @@ public class SearcherCutoffValuesSearchLevel {
 	 */
 	private Map<Integer, SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesPerAnnotationId = new HashMap<>();
 	
-	//  Cached list version of data in map
-	private List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesPerAnnotationIdList;
-	private List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesPerAnnotationIdList;
+	//  List version of data in map.  Updated when Map is updated
+	private List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesPerAnnotationIdList = new ArrayList<>();
+	private List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesPerAnnotationIdList = new ArrayList<>();
 	
 	/**
 	 * Make compact string for comparing to another SearcherCutoffValuesSearchLevel value 
@@ -149,8 +149,25 @@ public class SearcherCutoffValuesSearchLevel {
 	public void addPsmPerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
 		
 		this.psmCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
+
+		psmCutoffValuesPerAnnotationIdList = new ArrayList<>( psmCutoffValuesPerAnnotationId.size() );
 		
-		psmCutoffValuesPerAnnotationIdList = null;  // ensure cached list is null
+		for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : psmCutoffValuesPerAnnotationId.entrySet() ) {
+			
+			psmCutoffValuesPerAnnotationIdList.add( entry.getValue() );
+		}
+		
+		// sort by name alphabetical
+		
+		Collections.sort( psmCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
+
+			@Override
+			public int compare(SearcherCutoffValuesAnnotationLevel o1,
+					SearcherCutoffValuesAnnotationLevel o2) {
+
+				return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
+			}
+		});
 	}
 
 	/**
@@ -158,28 +175,6 @@ public class SearcherCutoffValuesSearchLevel {
 	 * @return
 	 */
 	public List<SearcherCutoffValuesAnnotationLevel> getPsmPerAnnotationCutoffsList() {
-		
-		if ( psmCutoffValuesPerAnnotationIdList == null ) {
-			
-			psmCutoffValuesPerAnnotationIdList = new ArrayList<>( psmCutoffValuesPerAnnotationId.size() );
-			
-			for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : psmCutoffValuesPerAnnotationId.entrySet() ) {
-				
-				psmCutoffValuesPerAnnotationIdList.add( entry.getValue() );
-			}
-			
-			// sort by name alphabetical
-			
-			Collections.sort( psmCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
-
-				@Override
-				public int compare(SearcherCutoffValuesAnnotationLevel o1,
-						SearcherCutoffValuesAnnotationLevel o2) {
-
-					return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
-				}
-			});
-		}
 		
 		return psmCutoffValuesPerAnnotationIdList;
 	}
@@ -204,7 +199,25 @@ public class SearcherCutoffValuesSearchLevel {
 		
 		this.peptideCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
 		
-		peptideCutoffValuesPerAnnotationIdList = null;  // ensure cached list is null
+		
+		peptideCutoffValuesPerAnnotationIdList = new ArrayList<>( peptideCutoffValuesPerAnnotationId.size() );
+		
+		for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : peptideCutoffValuesPerAnnotationId.entrySet() ) {
+			
+			peptideCutoffValuesPerAnnotationIdList.add( entry.getValue() );
+		}
+
+		// sort by name alphabetical
+		
+		Collections.sort( peptideCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
+
+			@Override
+			public int compare(SearcherCutoffValuesAnnotationLevel o1,
+					SearcherCutoffValuesAnnotationLevel o2) {
+
+				return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
+			}
+		});
 	}
 
 	/**
@@ -212,28 +225,6 @@ public class SearcherCutoffValuesSearchLevel {
 	 * @return
 	 */
 	public List<SearcherCutoffValuesAnnotationLevel> getPeptidePerAnnotationCutoffsList() {
-		
-		if ( peptideCutoffValuesPerAnnotationIdList == null ) {
-			
-			peptideCutoffValuesPerAnnotationIdList = new ArrayList<>( peptideCutoffValuesPerAnnotationId.size() );
-			
-			for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : peptideCutoffValuesPerAnnotationId.entrySet() ) {
-				
-				peptideCutoffValuesPerAnnotationIdList.add( entry.getValue() );
-			}
-
-			// sort by name alphabetical
-			
-			Collections.sort( peptideCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
-
-				@Override
-				public int compare(SearcherCutoffValuesAnnotationLevel o1,
-						SearcherCutoffValuesAnnotationLevel o2) {
-
-					return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
-				}
-			});
-		}
 		
 		return peptideCutoffValuesPerAnnotationIdList;
 	}

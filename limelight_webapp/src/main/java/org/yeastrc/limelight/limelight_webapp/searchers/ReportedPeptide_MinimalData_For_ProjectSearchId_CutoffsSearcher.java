@@ -425,6 +425,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 					//  Perform Additional filtering
 
 					List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> resultList_Temp_Filtered = new ArrayList<>( resultList_Temp.size() );
+					
+					InternalClass_ProcessFor_ONE_ReportedPeptideId__Params params = new InternalClass_ProcessFor_ONE_ReportedPeptideId__Params();
+					params.searchId = searchId;
+					params.searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel;
 
 		        	{
 		        		AtomicBoolean anyThrownInsideStreamProcessing = new AtomicBoolean(false);
@@ -447,7 +451,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    						
 		    						int numPsms = 
 		    								psmCountForSearchIdReportedPeptideIdSearcher
-		    								.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
+		    								.getPsmCountForSearchIdReportedPeptideIdCutoffs( 
+		    										reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), 
+		    										params.searchId, params.searcherCutoffValuesSearchLevel );
 		    						
 		    						if ( numPsms <= 0 ) {
 		    							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
@@ -580,4 +586,18 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		return item;
 	}
 	
+    //////////////////////////
+    
+    //  Internal classes
+    
+    /**
+     * 
+     *
+     */
+    private static class InternalClass_ProcessFor_ONE_ReportedPeptideId__Params {
+    		
+    	volatile Integer searchId;
+    	volatile SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel;
+    }
+    
 }
