@@ -8,6 +8,7 @@
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 
 /**
@@ -16,6 +17,12 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 export class ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root{
 
     private _singleScanEntry_Map_Key_ScanNumber: Map<number, ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber> = new Map();
+
+    private _scanNumber_Max: number = undefined
+
+    private _scanNumbers_Set: Set<number> = new Set()
+
+    private _scanNumbers_Set__Map_Key_ScanLevel: Map<number, Set<number>> = new Map()
 
     private _scanLevels: Set<number> = new Set()
     private _scanCount_Map_Key_ScanLevel: Map<number,number> = new Map();
@@ -34,11 +41,31 @@ export class ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Da
         return this._singleScanEntry_Map_Key_ScanNumber.values()
     }
 
+    get_scanNumber_Max() {
+        return this._scanNumber_Max
+    }
+
+    /**
+     *
+     */
+    get_scanNumbers_Set() : Set<number> {
+        return this._scanNumbers_Set;
+    }
+
     /**
      *
      */
     get_scanLevels_Set() : Set<number> {
         return this._scanLevels;
+    }
+
+    /**
+     *
+     */
+    get_scanLevels_Sorted() : Array<number> {
+        const scanLevels_Sorted = Array.from( this._scanLevels )
+        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( scanLevels_Sorted )
+        return scanLevels_Sorted;
     }
 
     /**
@@ -48,11 +75,36 @@ export class ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Da
         return this._scanCount_Map_Key_ScanLevel.get( scanLevel );
     }
 
+    /**
+     * @returns undefined if scanLevel not found
+     */
+    get_ScanNumbers_For_ScanLevel( scanLevel: number ) {
+
+        return this._scanNumbers_Set__Map_Key_ScanLevel.get( scanLevel )
+    }
+
     ///  Add/Set
 
     add_SpectralStorage_NO_Peaks_DataFor_ScanNumber( item : ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber ) {
 
         this._singleScanEntry_Map_Key_ScanNumber.set( item.scanNumber, item );
+
+        if ( this._scanNumber_Max === undefined ) {
+            this._scanNumber_Max = item.scanNumber
+        } else {
+            if ( this._scanNumber_Max < item.scanNumber ) {
+                this._scanNumber_Max = item.scanNumber
+            }
+        }
+
+        this._scanNumbers_Set.add( item.scanNumber )
+
+        let scanNumbersForLevel = this._scanNumbers_Set__Map_Key_ScanLevel.get( item.level );
+        if ( ! scanNumbersForLevel ) {
+            scanNumbersForLevel = new Set()
+            this._scanNumbers_Set__Map_Key_ScanLevel.set( item.level, scanNumbersForLevel );
+        }
+        scanNumbersForLevel.add( item.scanNumber )
     }
 
     set_scanLevels( scanLevels: Set<number> ) : void {

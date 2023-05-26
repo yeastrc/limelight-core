@@ -59,6 +59,9 @@ export type ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Cl
 export interface ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_Props {
 
     projectScanFileId: number
+
+    scanLevels_ToDisplay: Set<number>
+
     scanNumber_Selected: number
     scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
     scanNumber_Clicked_Callback: ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback
@@ -96,6 +99,9 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
     private _main_Rect_overlay_MouseDown_PositionRelativeTo_Rect: { x: number, y: number, clientX: number, clientY: number }
 
+
+    private _scanLevels_ToDisplay_PrevFromProps: Set<number>
+
     /**
      *
      */
@@ -104,6 +110,8 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
         try {
             this._main_Rect_overlay_Ref = React.createRef();
             this._rect_SelectionCover_Ref = React.createRef();
+
+            this._scanLevels_ToDisplay_PrevFromProps = new Set( props.scanLevels_ToDisplay )
 
             this._min_Max_X_Y_Values = _compute_Min_Max_X_Y_Values(props);
 
@@ -156,8 +164,30 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
      */
     componentDidUpdate(prevProps: Readonly<ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_Props>, prevState: Readonly<ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_State>, snapshot?: any) {
         try {
+
+            let scanLevels_ToDisplay_CHANGED = false
+            {
+                const prev_Copy = new Set( this._scanLevels_ToDisplay_PrevFromProps )
+
+                for ( const scanLevel of this.props.scanLevels_ToDisplay ) {
+                    if ( ! prev_Copy.has( scanLevel ) ) {
+                        scanLevels_ToDisplay_CHANGED = true
+                        break
+                    }
+                    prev_Copy.delete( scanLevel )
+                }
+                if ( ! scanLevels_ToDisplay_CHANGED ) {
+                    if ( prev_Copy.size > 0 ) {
+                        scanLevels_ToDisplay_CHANGED = true;
+                    }
+                }
+
+                this._scanLevels_ToDisplay_PrevFromProps = new Set( this.props.scanLevels_ToDisplay )
+            }
+
             if ( prevProps.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root !==
-                this.props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root ) {
+                this.props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
+                || scanLevels_ToDisplay_CHANGED ) {
 
                 this._selected_X_Y_Value = undefined; // Reset selection
 
@@ -502,7 +532,24 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
             return;  // EARLY RETURN
         }
 
-        const binned_Entry_atPosition = this.state.binned_Entries.entries[ mouseUpPosition_X_RelativeToMainPlotArea ]
+        let mouseUpPosition_X_RelativeToMainPlotArea__InProgress = mouseUpPosition_X_RelativeToMainPlotArea
+
+        let binned_Entry_atPosition = this.state.binned_Entries.entries[ mouseUpPosition_X_RelativeToMainPlotArea__InProgress ]
+
+        while ( mouseUpPosition_X_RelativeToMainPlotArea__InProgress >= 0 && ( ! binned_Entry_atPosition ) ) {
+            mouseUpPosition_X_RelativeToMainPlotArea__InProgress--
+            binned_Entry_atPosition = this.state.binned_Entries.entries[ mouseUpPosition_X_RelativeToMainPlotArea__InProgress ]
+        }
+
+        if ( ! binned_Entry_atPosition ) {
+
+            mouseUpPosition_X_RelativeToMainPlotArea__InProgress = mouseUpPosition_X_RelativeToMainPlotArea
+
+            while ( mouseUpPosition_X_RelativeToMainPlotArea__InProgress < this.state.binned_Entries.entries.length && ( ! binned_Entry_atPosition ) ) {
+                binned_Entry_atPosition = this.state.binned_Entries.entries[ mouseUpPosition_X_RelativeToMainPlotArea__InProgress ]
+                mouseUpPosition_X_RelativeToMainPlotArea__InProgress++
+            }
+        }
 
         if ( ! binned_Entry_atPosition ) {
             //  No entry at index
@@ -1099,6 +1146,9 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
                 const y_Value_Max_FractionOf_Default  = y_Value_Max / y_Value_Max_DEFAULT
 
+
+                let prev_Y_Value = undefined
+
                 for (let binIndex = 0; binIndex < this.state.binned_Entries.entries.length; binIndex++) {
 
                     const binEntry = binned_Entries_Entries[binIndex]
@@ -1108,9 +1158,13 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
 
                     let y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value = binEntry.y_value_FractionOfMax / y_Value_Max_FractionOf_Default;
 
-                    if ( y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value > 1 ) {
-                        y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value = 1;  // clip at 1
-                    }
+                    //   NEW:  Draw line from one peak to the next.   Comment Out "clip at 1"
+
+                    // if ( y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value > 1 ) {
+                    //     y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value = 1;  // clip at 1
+                    // }
+
+
                     if ( y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value < 0 ) {
                         y_value_FractionOfMax_Input__FractionOfMaxSelected_Y_Value = 0;  // clip at 0
                     }
@@ -1122,13 +1176,29 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
                         line_Y_1 = LINE_BOTTOM_POSITION - 1; // Min height of 1 px
                     }
 
-                    const line_Y_2 = LINE_BOTTOM_POSITION
+                    //   NEW:  Draw line from one peak to the next
 
-                    const element = (
-                        <line key={ binIndex } x1={ line_X } x2={ line_X } y1={ line_Y_1 } y2={ line_Y_2 } stroke="#000000" fill="none" style={ { strokeWidth: 1 } }></line>
-                    )
+                    if ( prev_Y_Value !== undefined ) {
 
-                    svg_ScanMaxLines.push( element )
+                        const element = (
+                            <line key={ binIndex } x1={ line_X - 1 } x2={ line_X } y1={ prev_Y_Value } y2={ line_Y_1 } stroke="#000000" fill="none" style={ { strokeWidth: 1 } }></line>
+                        )
+
+                        svg_ScanMaxLines.push( element )
+                    }
+
+                    prev_Y_Value = line_Y_1
+
+
+                    //  OLD
+
+                    // const line_Y_2 = LINE_BOTTOM_POSITION
+                    //
+                    // const element = (
+                    //     <line key={ binIndex } x1={ line_X } x2={ line_X } y1={ line_Y_1 } y2={ line_Y_2 } stroke="#000000" fill="none" style={ { strokeWidth: 1 } }></line>
+                    // )
+                    //
+                    // svg_ScanMaxLines.push( element )
                 }
             }
 
@@ -1517,6 +1587,11 @@ const _compute_Min_Max_X_Y_Values = function (props : ScanFileBrowser_TotalIonCu
 
     for (const entry of props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
 
+        if ( ! props.scanLevels_ToDisplay.has( entry.level ) ) {
+            // Not showing this scan level so skip
+            continue // EARLY CONTINUE
+        }
+
         if (y_value_MIN === undefined) {
             y_value_MIN = entry.totalIonCurrent_ForScan
             y_value_MAX = entry.totalIonCurrent_ForScan
@@ -1607,6 +1682,11 @@ const _bin_Entries_On_X_value = function (
     const binned_Entries_On_X_Value: Array<Binned_Entries_On_X_value_Entry> = []
 
     for (const entry of props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
+
+        if ( ! props.scanLevels_ToDisplay.has( entry.level ) ) {
+            // Not showing this scan level so skip
+            continue // EARLY CONTINUE
+        }
 
         const retentionTime_Minutes = entry.retentionTime_InSeconds / 60
 

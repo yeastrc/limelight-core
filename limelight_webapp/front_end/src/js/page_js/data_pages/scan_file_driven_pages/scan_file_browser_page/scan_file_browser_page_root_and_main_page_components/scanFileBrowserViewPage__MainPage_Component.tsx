@@ -58,6 +58,8 @@ interface ScanFileBrowserViewPage__MainPage_Component_State {
     showScanNumber_ErrorMessage?: string
 
     singleScanData?: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+
+    force_ReRender?: object
 }
 
 /**
@@ -79,6 +81,8 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
     private _promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber  = new Map<number, Promise<ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root>>()
 
+    private _scanLevels_ToShow: Set<number> = new Set()
+
     private _scanNumber_CurrentlyShown: number
 
     /**
@@ -90,7 +94,8 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             this._scanNumber_Input_Ref = React.createRef();
 
             this.state = {
-                showLoadingMessage_ForWholeScanFile: true
+                showLoadingMessage_ForWholeScanFile: true,
+                force_ReRender: {}
             };
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
@@ -139,6 +144,9 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                 // }
             }
 
+            this._scanLevels_ToShow = new Set()
+            this._scanLevels_ToShow.add( 1 ); // Default to 1
+
             this.setState({ scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root, showLoadingMessage_ForWholeScanFile: false })
             // console.warn( "returned from scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData: ", value )
 
@@ -172,27 +180,33 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
      */
     private _prevScan_Clicked () {
         try {
-            let entry_Prev: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber
-            let found_scanNumber_CurrentlyShown = false;
-            for ( const entry of this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+            let scanNumber_Prev: number = undefined
 
-                if ( entry.scanNumber === this._scanNumber_CurrentlyShown ) {
-                    found_scanNumber_CurrentlyShown = true;
-                    break;
+            for ( let scanNumber_New = ( this._scanNumber_CurrentlyShown - 1 ); scanNumber_New > 0; scanNumber_New-- ) {
+
+                const scanEntry = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanNumber_New)
+                if ( ! scanEntry ) {
+                    // no entry so skip
+                    continue; // EARLY CONTINUE
                 }
 
-                entry_Prev = entry;
-            }
-            if ( ! found_scanNumber_CurrentlyShown ) {
-                throw Error("Never find '( entry.scanNumber === this._scanNumber_CurrentlyShown )'")
+                if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
+                    //  Not for selected scan level so skip
+                    continue; // EARLY CONTINUE
+                }
+
+                scanNumber_Prev = scanNumber_New
+
+                //  Exit loop since have new scan number
+                break;
             }
 
-            if ( ! entry_Prev ) {
-                // Current Scan is First scan
+            if ( scanNumber_Prev === undefined ) {
+                // No new scan number so exit
                 return; // EARLY RETURN
             }
 
-            this._display_SingleScan_For_ScanNumber({ scanNumber: entry_Prev.scanNumber })
+            this._display_SingleScan_For_ScanNumber({ scanNumber: scanNumber_Prev })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -202,31 +216,35 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
      */
     private _nextScan_Clicked () {
         try {
-            let entry_Next: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber
-            let found_scanNumber_CurrentlyShown = false;
-            for ( const entry of this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+            let scanNumber_Next: number = undefined
 
-                entry_Next = entry;
+            const scanNumber_Max = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanNumber_Max()
 
-                if ( found_scanNumber_CurrentlyShown ) {
-                    break;
+            for ( let scanNumber_New = ( this._scanNumber_CurrentlyShown + 1 ); scanNumber_New <= scanNumber_Max; scanNumber_New++ ) {
+
+                const scanEntry = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanNumber_New)
+                if ( ! scanEntry ) {
+                    // no entry so skip
+                    continue; // EARLY CONTINUE
                 }
 
-                if ( entry.scanNumber === this._scanNumber_CurrentlyShown ) {
-                    found_scanNumber_CurrentlyShown = true;
+                if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
+                    //  Not for selected scan level so skip
+                    continue; // EARLY CONTINUE
                 }
 
-            }
-            if ( ! found_scanNumber_CurrentlyShown ) {
-                throw Error("Never find '( entry.scanNumber === this._scanNumber_CurrentlyShown )'")
+                scanNumber_Next = scanNumber_New
+
+                //  Exit loop since have new scan number
+                break;
             }
 
-            if ( ! entry_Next ) {
-                // Current Scan is Last scan
+            if ( scanNumber_Next === undefined ) {
+                // No new scan number so exit
                 return; // EARLY RETURN
             }
 
-            this._display_SingleScan_For_ScanNumber({ scanNumber: entry_Next.scanNumber })
+            this._display_SingleScan_For_ScanNumber({ scanNumber: scanNumber_Next })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -413,6 +431,8 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                     </div>
                 )
             }
+
+
             return (
                 <div >
                     { this.state.scan_DoesNotHave_totalIonCurrent_ForScan ? (
@@ -425,12 +445,53 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
                         <React.Fragment>
 
-                            <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
-                                projectScanFileId={ this.props.propsValue.projectScanFileId }
-                                scanNumber_Selected={ this._scanNumber_CurrentlyShown }
-                                scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
-                                scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
-                            />
+                            <div style={ { marginBottom: 10 } }>
+                                <span>
+                                    Show data for scan level:
+                                </span>
+                                { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
+                                    return (
+                                        <React.Fragment key={ scanLevel }>
+                                            <span> </span>
+                                            <label>
+                                                <input
+                                                    type="checkbox"
+                                                    defaultChecked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                    // checked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                    onChange={ event => {
+                                                        if ( event.target.checked ) {
+                                                            this._scanLevels_ToShow.add(scanLevel)
+                                                        } else {
+                                                            this._scanLevels_ToShow.delete(scanLevel)
+                                                        }
+
+                                                        this.setState({ force_ReRender: {} })
+                                                    }}
+                                                />
+                                                <span>{ scanLevel }</span>
+                                            </label>
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </div>
+
+                            { ( this._scanLevels_ToShow.size === 0 ) ? (
+
+                                <div>
+                                    No scan levels selected.
+                                </div>
+
+                            ) : (
+
+                                <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
+                                    projectScanFileId={ this.props.propsValue.projectScanFileId }
+                                    scanLevels_ToDisplay={ this._scanLevels_ToShow }
+                                    scanNumber_Selected={ this._scanNumber_CurrentlyShown }
+                                    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
+                                    scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
+                                />
+                            )}
+
                         </React.Fragment>
 
                     ) : null }
@@ -442,6 +503,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                             <div style={ { marginTop: 10, marginBottom: 10 } }>
                                 <button
                                     style={ { marginRight: 10 } }
+                                    title="Within selected scan levels"
                                     onClick={ event => { this._prevScan_Clicked() } }
                                 >
                                     Previous Scan
@@ -449,6 +511,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                 <span > </span>
                                 <button
                                     style={ { marginRight: 10 } }
+                                    title="Within selected scan levels"
                                     onClick={ event => { this._nextScan_Clicked() } }
                                 >
                                     Next Scan
