@@ -263,6 +263,7 @@ export class ProjectPage_ROOT_Container_Containing_MultipleSections_Component ex
                     get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
                     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                     dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                 />
 
             </div>

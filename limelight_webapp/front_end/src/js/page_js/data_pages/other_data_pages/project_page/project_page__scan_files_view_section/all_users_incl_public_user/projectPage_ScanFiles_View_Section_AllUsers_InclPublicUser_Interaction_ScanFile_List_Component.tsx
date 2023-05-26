@@ -39,6 +39,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
 
 /**
  *
@@ -49,6 +50,7 @@ export interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFil
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
+    projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 }
 
 /**
@@ -228,6 +230,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                             projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
+                            projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                             selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
                         />
                     )
@@ -329,6 +332,7 @@ interface ScanFileEntry_Component_Props {
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
+    projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
 }
@@ -573,6 +577,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                                 projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
+                                projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                             />
                         ) : null }
                     </div>
@@ -605,6 +610,7 @@ interface ScanFile_Details_Component_Props {
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
+    projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     //  Any changes, update componentDidUpdate
 }
@@ -867,7 +873,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                         show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
                         showSeparatorBelow={ showSeparatorBelow }
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
-                        projectPage_SearchesAdmin={ null }
+                        projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         callbackOn_Search_Entry_Clicked={ null }
                         deleteSearch_Callback={ null }
                     />
