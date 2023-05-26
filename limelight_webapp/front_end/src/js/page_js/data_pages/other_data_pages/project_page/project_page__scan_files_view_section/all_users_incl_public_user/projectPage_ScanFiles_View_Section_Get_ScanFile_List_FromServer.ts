@@ -29,6 +29,10 @@ export class ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFil
     scanFileId: number;
     scanFilename_Array: Array<string>;
     scanFile_Code_FirstSix: string
+
+    userIsProjectOwner: boolean;
+    canDeleteEntry: boolean;
+    entryHasFeatureDetection: boolean;
 }
 
 
@@ -110,11 +114,30 @@ const _process_WebserviceResponse = function (
 
     for ( const resultItem of responseData.resultItemList ) {
 
+        if ( resultItem.canDeleteEntry ) {
+            resultItem.canDeleteEntry = true
+        } else {
+            resultItem.canDeleteEntry = false
+        }
+        if ( resultItem.userIsProjectOwner ) {
+            resultItem.userIsProjectOwner = true
+        } else {
+            resultItem.userIsProjectOwner = false
+        }
+        if ( resultItem.entryHasFeatureDetection ) {
+            resultItem.entryHasFeatureDetection = true
+        } else {
+            resultItem.entryHasFeatureDetection = false
+        }
+
         const scanFileEntry : ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry = {
             projectScanFileId: resultItem.projectScanFileId,
             scanFileId: resultItem.scanFileId,
             scanFile_Code_FirstSix: resultItem.scanFile_Code_FirstSix,
-            scanFilename_Array: resultItem.scanFilename_Set
+            scanFilename_Array: resultItem.scanFilename_Set,
+            canDeleteEntry: resultItem.canDeleteEntry,
+            userIsProjectOwner: resultItem.userIsProjectOwner,
+            entryHasFeatureDetection: resultItem.entryHasFeatureDetection
         }
 
         if ( ! scanFileEntry.projectScanFileId ) {

@@ -39,6 +39,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
 
 /**
@@ -560,6 +561,76 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 >
                                     [Scan Browser]
                                 </span>
+                                { this.props.scanFile_Entry.userIsProjectOwner ? (
+                                    <>
+                                        <span > </span>
+                                        { this.props.scanFile_Entry.canDeleteEntry ? (
+                                            <img
+                                                className="icon-small clickable  "
+                                                src="static/images/icon-circle-delete.png"
+                                                title="Delete Scan File"
+                                                onClick={ event => {
+                                                    event.stopPropagation()
+
+                                                    {
+                                                        let confirmMessage = "Delete Scan File";
+
+                                                        if ( scanFile_Entry.entryHasFeatureDetection ) {
+                                                            confirmMessage += " and all associated Feature Detection";
+                                                        }
+                                                        confirmMessage += "?"
+
+                                                        if ( ! window.confirm( confirmMessage ) ) {
+                                                            return // EARLY RETURN
+                                                        }
+                                                    }
+
+                                                    const requestObject = {
+                                                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId
+                                                    };
+
+                                                    const url = "d/rws/for-page/scan-file-in-project-delete";
+
+                                                    console.log( "START: AJAX Call to: getting data from URL: " + url );
+
+                                                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+
+                                                    const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+
+                                                    promise_webserviceCallStandardPost.catch( (reason) => { try {
+
+                                                        console.log("END: REJECTED: getting data from URL: " + url);
+
+                                                        // reject();
+
+                                                        throw Error( "Delete Scan File Request Rejected: reason: " + reason)
+
+                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                                                    promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
+
+                                                        console.log( "END: Successful: AJAX Call: getting data from URL: " + url );
+
+                                                        if ( ! responseData.deleteSuccess ) {
+
+                                                            window.alert( "Scan file not deleted.  Unable to delete scan files with associated searches." )
+                                                        }
+
+                                                        window.location.reload(true)
+
+                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                                                }}
+                                            />
+                                        ) : (
+                                            <img
+                                                className=" icon-small "
+                                                title="Unable to delete scan files with associated searches."
+                                                src="static/images/icon-circle-delete-disabled.png"
+                                            />
+                                        )}
+                                    </>
+                                ) : null }
                             </div>
                         </div>
                     </div>

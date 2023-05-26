@@ -50,7 +50,9 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Root_Entries_IsAnyExists_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectId_Searcher.ProjectScanFile_For_ProjectId_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
@@ -82,6 +84,12 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 	
 	@Autowired
 	private ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF scanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher;
+	
+	@Autowired
+	private ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher_IF projectSearchId_AnyExists_For_ProjectScanFileId_Searcher;
+	
+	@Autowired
+	private FeatureDetection_Root_Entries_IsAnyExists_For_ProjectScanFileId_Searcher_IF featureDetection_Root_Entries_IsAnyExists_For_ProjectScanFileId_Searcher;
 
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -252,8 +260,51 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 					webserviceResultItem.scanFile_Code_FirstSix = spectralStorageAPIKey_FirstSix;
 				}
 			}
+			
 
 			List<WebserviceResultItem> resultItemList = new ArrayList<>( webserviceResultItem_Map_Key_ProjectScanFileId.values() );
+
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+				
+				//  Project Owner so determine if the scan file can be removed from the project.
+				
+				//   Scan file cannot be removed if there are associated searches or feature detection in the project
+				
+				for ( WebserviceResultItem resultItem : resultItemList ) {
+
+					boolean canDeleteEntry = true;
+					
+					boolean entryHasFeatureDetection = false;
+
+					//  TODO  Comment out tests to see what happens
+					
+					if ( projectSearchId_AnyExists_For_ProjectScanFileId_Searcher.is_ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher( resultItem.projectScanFileId ) ) {
+
+						canDeleteEntry = false;
+					}
+					
+					//  SKIP since Foreign Key Cascade will delete Feature Detection entries for projectScanFileId
+					
+//					if ( canDeleteEntry ) {
+//
+//						if ( featureDetection_Root_Entries_IsAnyExists_For_ProjectScanFileId_Searcher.is_AnyExists_ForProjectScanFileId( resultItem.projectScanFileId ) ) {
+//
+//							canDeleteEntry = false;
+//						}
+//					}
+
+					if ( featureDetection_Root_Entries_IsAnyExists_For_ProjectScanFileId_Searcher.is_AnyExists_ForProjectScanFileId( resultItem.projectScanFileId ) ) {
+
+						entryHasFeatureDetection = true;
+					}
+					
+					resultItem.canDeleteEntry = canDeleteEntry;
+					
+					resultItem.entryHasFeatureDetection = entryHasFeatureDetection;
+					
+					resultItem.userIsProjectOwner = true;
+				}
+			}
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.resultItemList = resultItemList;
@@ -323,6 +374,10 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
     	private Set<String> scanFilename_Set;
     	private String scanFile_Code_FirstSix;
     	
+    	private boolean userIsProjectOwner;
+    	private boolean canDeleteEntry;
+    	private boolean entryHasFeatureDetection;
+    	
 		public int getScanFileId() {
 			return scanFileId;
 		}
@@ -337,6 +392,18 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 		public int getProjectScanFileId() {
 			return projectScanFileId;
+		}
+
+		public boolean isUserIsProjectOwner() {
+			return userIsProjectOwner;
+		}
+
+		public boolean isCanDeleteEntry() {
+			return canDeleteEntry;
+		}
+
+		public boolean isEntryHasFeatureDetection() {
+			return entryHasFeatureDetection;
 		}
     }
     

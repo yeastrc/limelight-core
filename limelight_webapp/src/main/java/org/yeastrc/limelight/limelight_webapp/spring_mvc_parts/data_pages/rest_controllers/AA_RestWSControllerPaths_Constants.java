@@ -259,6 +259,8 @@ public class AA_RestWSControllerPaths_Constants {
 	///////////////////////
 	
 	//  Scan Files in a Project
+	
+	public static final String PROJECT_SCAN_FILE_IN_PROJECT__DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-in-project-delete";
 
 	public static final String PROJECT_SCAN_FILES__PROJECT_CONTAIN_ANY_SCAN_FILES_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/project-scan-files--project-contain-any-scan-files";
