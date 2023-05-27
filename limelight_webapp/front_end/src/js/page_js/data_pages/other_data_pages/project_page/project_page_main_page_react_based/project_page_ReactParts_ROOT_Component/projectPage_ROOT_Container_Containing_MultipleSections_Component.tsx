@@ -23,6 +23,8 @@ import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/pro
 import {ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/all_users_incl_public_user/projectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_Root_Component";
 import {ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions} from "page_js/data_pages/other_data_pages/project_page/project_page__common/projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions";
 import {ProjectPage_SearchesSection_Root_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_Root_Component";
+import { ProjectPage_ExperimentsSectionRoot_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_ExpermntsSectionRoot_Root";
+import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_LoggedInUsersInteraction";
 
 /**
  *
@@ -33,7 +35,8 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         projectIsLocked,
         projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
-        projectPage_SearchesAdmin
+        projectPage_SearchesAdmin,
+        projectPage_ExperimentsSection_LoggedInUsersInteraction
     } : {
         projectIdentifierFromURL: string
         projectIsLocked: boolean
@@ -41,6 +44,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
         projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+        projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
     }
 ) {
 
@@ -57,7 +61,10 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
 
 
         const projectPage_ROOT_Container_Containing_MultipleSections_Component_Props : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props = {
-            projectIdentifier, projectIsLocked, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions, dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails, projectPage_SearchesAdmin
+            projectIdentifier, projectIsLocked, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
+            dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
+            projectPage_SearchesAdmin,
+            projectPage_ExperimentsSection_LoggedInUsersInteraction
         };
 
 
@@ -116,6 +123,7 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+    projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 }
 
 /**
@@ -129,7 +137,7 @@ interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State
 /**
  *
  */
-export class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends React.Component< ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props, ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State > {
+class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends React.Component< ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props, ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State > {
 
     private _searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis = this._searchesAndFolders_From_Webservice_CalledByChildrenComponents.bind(this)
 
@@ -249,6 +257,13 @@ export class ProjectPage_ROOT_Container_Containing_MultipleSections_Component ex
 
         return (
             <div>
+                <ProjectPage_ExperimentsSectionRoot_Root_Component
+                    force_ReloadFromServer_Object={ this.state.force_Rerender }
+                    projectIdentifier={ this.props.projectIdentifier }
+                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_ExperimentsSection_LoggedInUsersInteraction={ this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction }
+                />
+
                 <ProjectPage_SearchesSection_Root_Component
                     force_ReloadFromServer_Object={ this.state.force_Rerender }
                     projectIdentifier={ this.props.projectIdentifier }

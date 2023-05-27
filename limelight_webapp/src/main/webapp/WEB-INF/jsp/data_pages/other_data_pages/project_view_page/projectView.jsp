@@ -75,10 +75,6 @@
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SavedViews.jsp" %>
 
-	<%--  Experiments List --%>
-
-	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_ExperimentList.jsp" %>
-	
 	<%--  Rest of Sections rendered by single React Component --%>
 	
 	<div id="project_page_rest_of_sections__contents_block"></div>

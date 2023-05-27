@@ -34,12 +34,12 @@ import {
 	AnnotationTypeData_Root,
 	SearchProgramsPerSearchData_Root
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {ProjectPage_ExperimentsSection_AllUsersInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_AllUsersInteraction";
 import {DefaultFilter_Cutoffs_Overrides_ProjectWide_Root} from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
 import {
 	CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
 	CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
 } from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import { ProjectPage_ExperimentsSectionRoot } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_ExpermntsSectionRoot";
 
 
 /**
@@ -51,7 +51,7 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 	private _projectIdentifierFromURL: string;
 
-	private _projectPage_ExperimentsSection_AllUsersInteraction: ProjectPage_ExperimentsSection_AllUsersInteraction;
+	private _projectPage_ExperimentsSectionRoot: ProjectPage_ExperimentsSectionRoot //  Experiment Main Display React Component
 
 	private _scrollBeforeHideMainDiv: { scrollX : number, scrollY : number };
 
@@ -69,13 +69,13 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 	}
 
 	/**
-	 * 
+	 * Set to pass in Experiment Main Display React Component  - ProjectPage_ExperimentsSectionRoot
+	 *
+	 * Set after the Component is created
 	 */
-	initialize({ projectPage_ExperimentsSection_AllUsersInteraction }: { projectPage_ExperimentsSection_AllUsersInteraction: ProjectPage_ExperimentsSection_AllUsersInteraction }) {
-        
-        this._projectPage_ExperimentsSection_AllUsersInteraction = projectPage_ExperimentsSection_AllUsersInteraction;
+	set_projectPage_ExperimentsSectionRoot( projectPage_ExperimentsSectionRoot: ProjectPage_ExperimentsSectionRoot ) : void {
 
-        this._initializeCalled = true;
+		this._projectPage_ExperimentsSectionRoot = projectPage_ExperimentsSectionRoot;
 	}
 	
 	/**
@@ -288,7 +288,9 @@ export class ProjectPage_ExperimentsSection_LoggedInUsersInteraction {
 
 		this._create_Update_Experiment_addedDivElementDOM = undefined;
 
-		this._projectPage_ExperimentsSection_AllUsersInteraction.refreshExperimentLists();
+		if ( this._projectPage_ExperimentsSectionRoot ) {
+			this._projectPage_ExperimentsSectionRoot.refreshExperimentsLists();
+		}
 
 		{  //  Last restore scroll position and show the main root div
 			const data_page_outermost_divDOM = document.getElementById("data_page_outermost_div");

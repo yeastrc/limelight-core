@@ -44,8 +44,6 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './proje
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
-import { ProjectPage_ExperimentsSection_AllUsersInteraction } from './project_page_experiments_section/projPg_Expermnts_AllUsersInteraction';
-
 import { ProjectPage_SavedViews_Section_AllUsersInteraction } from './projectPage_SavedViews_Section_AllUsersInteraction'
 
 import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
@@ -74,8 +72,6 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
-
-	private _projectPage_ExperimentsSection_AllUsersInteraction : ProjectPage_ExperimentsSection_AllUsersInteraction
 
 	private _projectPage_SavedViews_Section_AllUsersInteraction : ProjectPage_SavedViews_Section_AllUsersInteraction
 
@@ -134,11 +130,6 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			projectPage_ProjectSection_ProjectOwnerInteraction : this._projectPage_ProjectSection_ProjectOwnerInteraction
 		} );
 
-		this._projectPage_ExperimentsSection_AllUsersInteraction = new ProjectPage_ExperimentsSection_AllUsersInteraction( {
-			projectIdentifierFromURL : this._projectIdentifierFromURL,
-			projectPage_ExperimentsSection_LoggedInUsersInteraction : this._projectPage_ExperimentsSection_LoggedInUsersInteraction
-		} );
-
 		this._projectPage_SavedViews_Section_AllUsersInteraction =
 			new ProjectPage_SavedViews_Section_AllUsersInteraction({ 
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
@@ -148,15 +139,11 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
-		this._projectPage_ExperimentsSection_LoggedInUsersInteraction.initialize({ projectPage_ExperimentsSection_AllUsersInteraction : this._projectPage_ExperimentsSection_AllUsersInteraction });
-
 		this._projectPage_SearchesAdmin.initialize();
 
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize({ projectPage_SavedViews_Section_AllUsersInteraction : this._projectPage_SavedViews_Section_AllUsersInteraction });
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
-
-		this._projectPage_ExperimentsSection_AllUsersInteraction.initialize();
 
 		this._projectPage_SavedViews_Section_AllUsersInteraction.initialize();
 
@@ -182,7 +169,8 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 				projectIsLocked: false,
 				projectPage_SearchesAdmin: this._projectPage_SearchesAdmin,
 				projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
-				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails
+				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
+				projectPage_ExperimentsSection_LoggedInUsersInteraction: this._projectPage_ExperimentsSection_LoggedInUsersInteraction
 			})
 		} catch (e) {
 

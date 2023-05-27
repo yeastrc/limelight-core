@@ -1,7 +1,7 @@
 /**
  * projPg_ExpermntsSectionRoot.tsx
  * 
- * Root of Experments Section
+ * Main Display of Experiments Section - The root is in projPg_ExpermntsSectionRoot_Root.tsx
  */
 import React from 'react'
 
@@ -19,8 +19,12 @@ import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projP
 
 export class ProjectPage_ExperimentsSectionRoot_Props {
 
+    force_ReloadFromServer_Object : object
+
     projectIdentifierFromURL : string
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
+
+    // TODO  Delete when done
     editExperimentInvokeHandler: any
     cloneExperimentInvokeHandler: any
 }
@@ -41,6 +45,8 @@ interface ProjectPage_ExperimentsSectionRoot_State {
  */
 export class ProjectPage_ExperimentsSectionRoot extends React.Component< ProjectPage_ExperimentsSectionRoot_Props, ProjectPage_ExperimentsSectionRoot_State > {
 
+    private _refreshExperimentsLists_BindThis = this._refreshExperimentsLists.bind(this)
+
     private _createNewExperiment_BindThis = this._createNewExperiment.bind(this);
 
     private _experimentDraftNameClicked_BindThis = this._experimentDraftNameClicked.bind(this);
@@ -52,9 +58,12 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     private _experimentCloneClicked_BindThis = this._experimentCloneClicked.bind(this);
     private _experimentDeleteClicked_BindThis = this._experimentDeleteClicked.bind(this);
 
-
     constructor(props : ProjectPage_ExperimentsSectionRoot_Props) {
         super(props);
+
+        if ( props.projectPage_ExperimentsSection_LoggedInUsersInteraction ) {
+            props.projectPage_ExperimentsSection_LoggedInUsersInteraction.set_projectPage_ExperimentsSectionRoot( this )
+        }
 
         this.state = {
             experiments_initialLoading : true,
@@ -95,9 +104,33 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
     }
 
     /**
-     * 
+     *
+     * @param prevProps
+     * @param prevState
+     * @param snapshot
+     */
+    componentDidUpdate( prevProps: Readonly<ProjectPage_ExperimentsSectionRoot_Props>, prevState: Readonly<ProjectPage_ExperimentsSectionRoot_State>, snapshot?: any ) {
+
+        if ( prevProps.force_ReloadFromServer_Object !== this.props.force_ReloadFromServer_Object ) {
+
+            this._loadExperiments_NonDrafts_IfNeeded();
+            this._loadDraftExperiments_IfNeeded();
+        }
+
+    }
+
+    /**
+     *
      */
     refreshExperimentsLists() {
+
+        this._refreshExperimentsLists()
+    }
+
+    /**
+     *
+     */
+    private _refreshExperimentsLists() {
 
         this._loadExperiments_NonDrafts_IfNeeded();
         this._loadDraftExperiments_IfNeeded();
@@ -214,7 +247,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     private _experimentDraftNameClicked({ id }:{ id: any }) {
 
-        this.props.editExperimentInvokeHandler({ experimentId : id })
+        // this.props.editExperimentInvokeHandler({ experimentId : id })
+
+        this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction.editExperiment({ experimentId: id });
     }
 
     /**
@@ -222,7 +257,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     private _experimentDraftEditClicked({ id }:{ id: any }) {
 
-        this.props.editExperimentInvokeHandler({ experimentId : id })
+        // this.props.editExperimentInvokeHandler({ experimentId : id })
+
+        this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction.editExperiment({ experimentId: id });
     }
 
     /**
@@ -257,7 +294,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     private _experimentNameClicked({ id }:{ id: any }) {
 
-        this.props.editExperimentInvokeHandler({ experimentId : id })
+        // this.props.editExperimentInvokeHandler({ experimentId : id })
+
+        this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction.editExperiment({ experimentId: id });
     }
 
     /**
@@ -265,7 +304,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     private _experimentEditClicked({ id }:{ id: any }) {
 
-        this.props.editExperimentInvokeHandler({ experimentId : id })
+        // this.props.editExperimentInvokeHandler({ experimentId : id })
+
+        this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction.editExperiment({ experimentId: id });
     }
 
     /**
@@ -273,7 +314,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     private _experimentCloneClicked({ id }:{ id: any }) {
 
-        this.props.cloneExperimentInvokeHandler({ experimentId : id })
+        // this.props.cloneExperimentInvokeHandler({ experimentId : id })
+
+        this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction.cloneExperiment({ experimentId: id });
     }
 
     /**
