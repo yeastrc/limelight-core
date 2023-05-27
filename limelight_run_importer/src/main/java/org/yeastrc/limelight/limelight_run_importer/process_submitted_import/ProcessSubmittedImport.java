@@ -664,7 +664,7 @@ public class ProcessSubmittedImport {
 					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES );
 			if ( ! ConfigSystemsValuesSharedConstants.TRUE.equals( deleteFilesConfigValue ) ) {
 				//  Config value in table is not true string.
-				System.out.println( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) IMPORT_DELETE_UPLOADED_FILES config value NOT TRUE so return. config value: " + deleteFilesConfigValue );
+				log.warn( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) IMPORT_DELETE_UPLOADED_FILES config value NOT TRUE so return. config value: " + deleteFilesConfigValue );
 				return;  //  EARLY EXIT
 			}
 		} catch ( IllegalStateException e ) {
