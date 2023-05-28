@@ -11,11 +11,8 @@
 
 import React from "react";
 import {ProjectPage_PublicAccessSection_ProjectOwnerInteraction__CurrentURL_CustomizeProjectURL_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_ProjectURL_Component";
-import {
-    ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component,
-    ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component_Expanded_Default
-} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/common/projectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component";
 import {ProjectPage_PublicAccessSection_ProjectOwnerInteraction__PublicAccess_ReviewerAccess_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_PublicAccess_ReviewerAccess_Component";
+import { ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component, ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component_Expanded_Default } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component";
 
 
 //  File Global values loaded from the DOM
@@ -65,7 +62,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Compon
     constructor(props: ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component_Props) {
         super(props)
 
-        const bodyEverShown = ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component_Expanded_Default;
+        const bodyEverShown = ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component_Expanded_Default;
         const expandBody = bodyEverShown;
 
         _initialize_file_global_variables__From_Page();
@@ -119,7 +116,7 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Compon
 
             <div className="top-level-container share-data-root ">
 
-                <ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component
+                <ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component
                     show_Public_Tag={ this.state.show_Public_Tag }
                     show_ReviewerMode_Tag={ this.state.show_ReviewerMode_Tag }
                     expanded_Chosen_Callback={ this._expanded_Chosen_Callback_BindThis }

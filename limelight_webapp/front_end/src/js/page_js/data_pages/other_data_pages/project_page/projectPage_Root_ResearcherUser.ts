@@ -47,8 +47,11 @@ import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_p
 import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
-import {ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/researcher_aka_assistant_project_owner/projectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction";
-import {add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
+import {
+	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
+	ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
+import { getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component } from "page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component";
 
 
 
@@ -70,7 +73,6 @@ class ProjectViewPage_Root_ResearcherUser {
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
-	private _projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction : ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction
 
 	/**
 	 * 
@@ -126,19 +128,28 @@ class ProjectViewPage_Root_ResearcherUser {
 			new ProjectPage_ProjectUserAccessAdminSection( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
 
-		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction =
-				new ProjectPage_ShareDataSection_ResearcherUser_AssistantProjectOwner__Interaction();
-
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize();
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 
 		this._projectPage_ProjectSection_LoggedInUsersInteraction.initialize({ projectPage_ProjectSection_AllUsersInteraction : this._projectPage_ProjectSection_AllUsersInteraction });
+
+		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
+
+			return getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component({
+				projectIdentifier: params.projectIdentifierFromURL,
+				projectIsLocked: params.projectIsLocked,
+				force_ReloadFromServer_Object: params.force_Rerender
+			})
+		}
+
+
 		
 		window.setTimeout(() => {
 			//  Run in setTimeout to catch Errors
 			this._projectPage_ProjectUserAccessAdminSection.initialize();
 		}, 10 );
+
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
@@ -148,14 +159,12 @@ class ProjectViewPage_Root_ResearcherUser {
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
 				projectPage_ExperimentsSection_LoggedInUsersInteraction: this._projectPage_ExperimentsSection_LoggedInUsersInteraction,
 				projectPage_SavedViews_Section_LoggedInUsersInteraction: this._projectPage_SavedViews_Section_LoggedInUsersInteraction,
-				getSubComponents__Callback_Function: null
+				getSubComponents__Callback_Function
 			})
 		} catch (e) {
 
 		}
 
-		this._projectPage_PublicAccessSection_ResearcherUser_AssistantProjectOwner__Interaction.initialize();
-		
 		////  Instance of class
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		

@@ -90,11 +90,15 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
             getSubComponents__Callback_Function
         };
 
+        const projectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props = {
+            mainProps: projectPage_ROOT_Container_Containing_MultipleSections_Component_Props
+        }
+
 
         const projectPage_SearchesSection_ROOT_Component = (
             React.createElement(
-                ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
-                projectPage_ROOT_Container_Containing_MultipleSections_Component_Props,
+                ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent,
+                projectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props,
                 null
             )
         );
@@ -112,6 +116,79 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
     }
 
 };
+
+///   ROOT Rendered Component
+
+
+/**
+ *
+ */
+export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props {
+    mainProps: ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props
+}
+
+/**
+ *
+ */
+interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_State {
+
+    component_SubTree_Has_Error? : boolean
+}
+
+/**
+ *
+ */
+class ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent extends React.Component< ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props, ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_State > {
+
+    /**
+     *
+     */
+    constructor( props: ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_Props ) {
+        super( props )
+
+        this.state = {
+            component_SubTree_Has_Error: false
+        }
+    }
+
+    /**
+     *
+     */
+    static getDerivedStateFromError( error: any ): ProjectPage_ROOT_Container_Containing_MultipleSections_Component_RootRenderedComponent_State {
+        // Update state so the next render will show the fallback UI.
+        return { component_SubTree_Has_Error: true };
+    }
+
+    /**
+     *
+     */
+    componentDidCatch( error: any, errorInfo: any ) {
+        // You can also log the error to an error reporting service
+
+        console.warn( "react Component 'ProjectPage_ROOT_Container_Containing_MultipleSections_Component'. componentDidCatch: ", error, errorInfo );
+        // logErrorToMyService(error, errorInfo);
+    }
+
+
+    /**
+     *
+     */
+    render() {
+
+        if ( this.state.component_SubTree_Has_Error ) {
+
+            return (
+                <div >An Error has Occurred.  Please reload the page and try again.</div>
+            )
+        }
+
+        return (
+            <ProjectPage_ROOT_Container_Containing_MultipleSections_Component
+                { ...this.props.mainProps }
+            />
+        );
+    }
+}
 
 
 //////////   Function passed to Children components so they can notify everything to reload.  This is to avoid page reload
@@ -158,8 +235,6 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
  */
 interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
 
-    component_SubTree_Has_Error? : boolean
-
     force_Rerender?: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
 }
 
@@ -190,24 +265,6 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
         this.state = {
             force_Rerender: {}
         }
-    }
-
-    /**
-     *
-     */
-    static getDerivedStateFromError( error : any ) : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
-        // Update state so the next render will show the fallback UI.
-        return { component_SubTree_Has_Error: true };
-    }
-
-    /**
-     *
-     */
-    componentDidCatch( error : any, errorInfo : any ) {
-        // You can also log the error to an error reporting service
-
-        console.warn("react Component 'ProjectPage_ROOT_Container_Containing_MultipleSections_Component'. componentDidCatch: ", error, errorInfo );
-        // logErrorToMyService(error, errorInfo);
     }
 
     /**
@@ -301,13 +358,6 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
      *
      */
     render() {
-
-        if ( this.state.component_SubTree_Has_Error ) {
-
-            return (
-                <div >An Error has Occurred.  Please reload the page and try again.</div>
-            )
-        }
 
         return (
             <div>
