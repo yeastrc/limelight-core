@@ -25,6 +25,8 @@ import {ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions} from 
 import {ProjectPage_SearchesSection_Root_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_Root_Component";
 import { ProjectPage_ExperimentsSectionRoot_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_ExpermntsSectionRoot_Root";
 import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_LoggedInUsersInteraction";
+import { ProjectPage_SavedViewsSection_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViewsSection_Root_Component";
+import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 
 /**
  *
@@ -36,7 +38,8 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
         projectPage_SearchesAdmin,
-        projectPage_ExperimentsSection_LoggedInUsersInteraction
+        projectPage_ExperimentsSection_LoggedInUsersInteraction,
+        projectPage_SavedViews_Section_LoggedInUsersInteraction
     } : {
         projectIdentifierFromURL: string
         projectIsLocked: boolean
@@ -45,6 +48,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
         projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
         projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
+        projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
     }
 ) {
 
@@ -64,7 +68,8 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
             projectIdentifier, projectIsLocked, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
             dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
             projectPage_SearchesAdmin,
-            projectPage_ExperimentsSection_LoggedInUsersInteraction
+            projectPage_ExperimentsSection_LoggedInUsersInteraction,
+            projectPage_SavedViews_Section_LoggedInUsersInteraction
         };
 
 
@@ -124,6 +129,7 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
+    projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 }
 
 /**
@@ -131,7 +137,7 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
  */
 interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
 
-    force_Rerender?: object
+    force_Rerender?: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
 }
 
 /**
@@ -257,6 +263,13 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
         return (
             <div>
+                <ProjectPage_SavedViewsSection_Root_Component
+                    force_ReloadFromServer_Object={ this.state.force_Rerender }
+                    projectIdentifier={ this.props.projectIdentifier }
+                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_SavedViews_Section_LoggedInUsersInteraction={ this.props.projectPage_SavedViews_Section_LoggedInUsersInteraction }
+                />
+
                 <ProjectPage_ExperimentsSectionRoot_Root_Component
                     force_ReloadFromServer_Object={ this.state.force_Rerender }
                     projectIdentifier={ this.props.projectIdentifier }

@@ -71,10 +71,6 @@
 
 	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_UploadData.jsp" %>
 
-	<%-- Highlighted Results: Previously Known as: Saved Views --%>
-
-	<%@ include file="/WEB-INF/jsp/data_pages/other_data_pages/project_view_page/projectView_SavedViews.jsp" %>
-
 	<%--  Rest of Sections rendered by single React Component --%>
 	
 	<div id="project_page_rest_of_sections__contents_block"></div>
