@@ -27,6 +27,7 @@ import { ProjectPage_ExperimentsSectionRoot_Root_Component } from "page_js/data_
 import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_LoggedInUsersInteraction";
 import { ProjectPage_SavedViewsSection_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViewsSection_Root_Component";
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
+import { ProjectPage_UploadData_MainPage_Main_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
 
 /**
  *
@@ -263,6 +264,10 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
         return (
             <div>
+                <ProjectPage_UploadData_MainPage_Main_Component
+                    propsValue={ { projectIdentifier: this.props.projectIdentifier } }
+                />
+
                 <ProjectPage_SavedViewsSection_Root_Component
                     force_ReloadFromServer_Object={ this.state.force_Rerender }
                     projectIdentifier={ this.props.projectIdentifier }

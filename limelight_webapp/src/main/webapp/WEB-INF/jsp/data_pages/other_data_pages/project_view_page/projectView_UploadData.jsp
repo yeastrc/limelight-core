@@ -1,7 +1,7 @@
 <%--
 	projectView_UploadData.jsp
 
-	User Submits data to be imported
+	User Submits data to be imported.   Used to pass data to the Javascript
 --%>
 
  <%@page import="org.yeastrc.limelight.limelight_submit_import_client_connector.enum_classes.LimelightSubmit_FileImportFileType"%>
@@ -12,10 +12,6 @@
 
  <c:if test="${webSessionAuthAccessLevel.projectOwnerAllowed}" >
  
-		<%--  Container for React Component --%>
-	<div id="upload_data_section_outer_block_react_root_container" 
-	></div>
-	
 	
 	<c:if test="${ configSystemValues.scanFileImportAllowedViaWebSubmit }" >
 	
