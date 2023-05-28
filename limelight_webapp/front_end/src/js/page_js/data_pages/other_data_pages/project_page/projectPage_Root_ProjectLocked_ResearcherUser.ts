@@ -116,7 +116,8 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 				projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions : null,
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: null,
 				projectPage_ExperimentsSection_LoggedInUsersInteraction: null,
-				projectPage_SavedViews_Section_LoggedInUsersInteraction: null
+				projectPage_SavedViews_Section_LoggedInUsersInteraction: null,
+				getSubComponents__Callback_Function: null
 			})
 
 		} catch (e) {

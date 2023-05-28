@@ -147,7 +147,8 @@ class ProjectViewPage_Root_ResearcherUser {
 				projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: null,
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
 				projectPage_ExperimentsSection_LoggedInUsersInteraction: this._projectPage_ExperimentsSection_LoggedInUsersInteraction,
-				projectPage_SavedViews_Section_LoggedInUsersInteraction: this._projectPage_SavedViews_Section_LoggedInUsersInteraction
+				projectPage_SavedViews_Section_LoggedInUsersInteraction: this._projectPage_SavedViews_Section_LoggedInUsersInteraction,
+				getSubComponents__Callback_Function: null
 			})
 		} catch (e) {
 

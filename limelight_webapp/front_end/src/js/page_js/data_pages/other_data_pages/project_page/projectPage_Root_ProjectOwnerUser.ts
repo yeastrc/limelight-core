@@ -48,8 +48,12 @@ import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_projec
 import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './project_page_project_section/js/projectPage_ProjectSection_ProjectOwnerInteraction';
 import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
-import {add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
+import {
+	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
+	ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions} from "page_js/data_pages/other_data_pages/project_page/project_page__common/projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions";
+import { getComponent_ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component } from "page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component";
 
 /**
  * 
@@ -142,6 +146,15 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			this._projectPage_ProjectUserAccessAdminSection.initialize();
 		}, 10 );
 
+		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
+
+			return getComponent_ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component({
+				projectIdentifier: params.projectIdentifierFromURL,
+				projectIsLocked: params.projectIsLocked,
+				force_ReloadFromServer_Object: params.force_Rerender
+			})
+		}
+
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
@@ -150,7 +163,8 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 				projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
 				projectPage_ExperimentsSection_LoggedInUsersInteraction: this._projectPage_ExperimentsSection_LoggedInUsersInteraction,
-				projectPage_SavedViews_Section_LoggedInUsersInteraction: this._projectPage_SavedViews_Section_LoggedInUsersInteraction
+				projectPage_SavedViews_Section_LoggedInUsersInteraction: this._projectPage_SavedViews_Section_LoggedInUsersInteraction,
+				getSubComponents__Callback_Function
 			})
 		} catch (e) {
 

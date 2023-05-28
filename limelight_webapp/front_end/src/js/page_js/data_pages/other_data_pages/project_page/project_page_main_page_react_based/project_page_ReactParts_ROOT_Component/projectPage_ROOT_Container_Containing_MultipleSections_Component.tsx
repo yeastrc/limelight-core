@@ -30,6 +30,16 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js
 import { ProjectPage_UploadData_MainPage_Main_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
 import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
 
+export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params {
+    projectIdentifierFromURL: string
+    projectIsLocked: boolean
+
+    force_Rerender: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
+}
+
+export type ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Function =
+    ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => JSX.Element;
+
 /**
  *
  */
@@ -41,7 +51,9 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
         projectPage_SearchesAdmin,
         projectPage_ExperimentsSection_LoggedInUsersInteraction,
-        projectPage_SavedViews_Section_LoggedInUsersInteraction
+        projectPage_SavedViews_Section_LoggedInUsersInteraction,
+
+        getSubComponents__Callback_Function
     } : {
         projectIdentifierFromURL: string
         projectIsLocked: boolean
@@ -51,6 +63,9 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
         projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
         projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
         projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
+
+        //  Callback Function to add Components that are not rendered for all users
+        getSubComponents__Callback_Function: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Function
     }
 ) {
 
@@ -71,7 +86,8 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
             dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
             projectPage_SearchesAdmin,
             projectPage_ExperimentsSection_LoggedInUsersInteraction,
-            projectPage_SavedViews_Section_LoggedInUsersInteraction
+            projectPage_SavedViews_Section_LoggedInUsersInteraction,
+            getSubComponents__Callback_Function
         };
 
 
@@ -132,6 +148,9 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction // object of class ProjectPage_ExperimentsSection_LoggedInUsersInteraction
     projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
+
+    //  Callback Function to add Components that are not rendered for all users
+    getSubComponents__Callback_Function: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Function
 }
 
 /**
@@ -292,15 +311,18 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
         return (
             <div>
-                <ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component
-                    projectIdentifier={ this.props.projectIdentifier }
-                    projectIsLocked={ this.props.projectIsLocked }
-                />
 
-                <ProjectPage_UploadData_MainPage_Main_Component
-                    propsValue={ { projectIdentifier: this.props.projectIdentifier } }
-                />
+                { //  Add Components for User type
 
+                    ( this.props.getSubComponents__Callback_Function ) ? (
+
+                    this.props.getSubComponents__Callback_Function({
+                        projectIdentifierFromURL: this.props.projectIdentifier,
+                        projectIsLocked: this.props.projectIsLocked,
+                        force_Rerender: this.state.force_Rerender
+                    })
+                ) : null }
+                
                 <ProjectPage_SavedViewsSection_Root_Component
                     force_ReloadFromServer_Object={ this.state.force_Rerender }
                     projectIdentifier={ this.props.projectIdentifier }
