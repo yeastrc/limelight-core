@@ -3,7 +3,7 @@
 	
 	Share Data block - For Project Owner
 	
-	More than just Public Access
+	More than just Public Access.  Contains data passed to the Javascript.
 
 --%>
 
@@ -14,9 +14,6 @@
 
 <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed or webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed }" >
 
-		<%--  Container for React Component --%>
-	<div id="share_data_section_outer_block_react_root_container" 
-	></div>
 	
 	<c:if test="${ projectPublicAccessEnabled }" >
 	

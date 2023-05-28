@@ -28,6 +28,7 @@ import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from "page_js
 import { ProjectPage_SavedViewsSection_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViewsSection_Root_Component";
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 import { ProjectPage_UploadData_MainPage_Main_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
+import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
 
 /**
  *
@@ -264,6 +265,11 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
         return (
             <div>
+                <ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component
+                    projectIdentifier={ this.props.projectIdentifier }
+                    projectIsLocked={ this.props.projectIsLocked }
+                />
+
                 <ProjectPage_UploadData_MainPage_Main_Component
                     propsValue={ { projectIdentifier: this.props.projectIdentifier } }
                 />

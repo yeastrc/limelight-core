@@ -15,65 +15,12 @@ import {
     ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component,
     ProjectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component_Expanded_Default
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/common/projectPage_ShareDataSection_ProjectOwnerInteraction_Common_TopLevelLabel_Component";
-import ReactDOM from "react-dom";
 import {ProjectPage_PublicAccessSection_ProjectOwnerInteraction__PublicAccess_ReviewerAccess_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_PublicAccess_ReviewerAccess_Component";
 
 
 //  File Global values loaded from the DOM
 let _share_data_project__public_access_enabled__ExistsInDOM = false;
 let _share_data_project__public_access_code_enabled_ExistsInDOM = false;
-
-
-
-
-/**
- * Create the React Component and add it to the page
- *
- * @param projectIdentifierFromURL
- * @param projectIsLocked
- */
-export const add_Component_to_Page__ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component = function (
-    {
-        projectIdentifierFromURL,
-        projectIsLocked
-    } : {
-        projectIdentifierFromURL: string
-        projectIsLocked: boolean
-    }
-) {
-
-
-    const props : ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component_Props = {
-        projectIdentifier : projectIdentifierFromURL,
-        projectIsLocked
-    }
-
-    const projectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component = (
-        React.createElement(
-            ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component,
-            props,
-            null
-        )
-    );
-
-    const containerDOMElement = document.getElementById("share_data_section_outer_block_react_root_container");
-
-    if ( ! containerDOMElement ) {
-        throw Error("No DOM element with id 'share_data_section_outer_block_react_root_container'");
-    }
-
-    //  Called on render complete
-    const renderCompleteCallbackFcn = () => {
-
-    };
-
-    const renderedReactComponent = ReactDOM.render(
-        projectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component,
-        containerDOMElement,
-        renderCompleteCallbackFcn
-    );
-
-}
 
 
 /**
