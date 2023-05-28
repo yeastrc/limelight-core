@@ -23,10 +23,6 @@ export class ProjectPage_ExperimentsSectionRoot_Props {
 
     projectIdentifierFromURL : string
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
-
-    // TODO  Delete when done
-    editExperimentInvokeHandler: any
-    cloneExperimentInvokeHandler: any
 }
 
 interface ProjectPage_ExperimentsSectionRoot_State {

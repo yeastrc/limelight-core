@@ -171,8 +171,6 @@ export class ProjectPage_ExperimentSection_MainBlock_Component extends React.Com
                 force_ReloadFromServer_Object={ this.props.force_ReloadFromServer_Object }
                 projectIdentifierFromURL={ this.props.projectIdentifier }
                 projectPage_ExperimentsSection_LoggedInUsersInteraction={ this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction }
-                editExperimentInvokeHandler={ null }
-                cloneExperimentInvokeHandler={ null }
             />
         );
     }
