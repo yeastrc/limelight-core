@@ -139,6 +139,8 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
  */
 interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
 
+    component_SubTree_Has_Error? : boolean
+
     force_Rerender?: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
 }
 
@@ -169,6 +171,24 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
         this.state = {
             force_Rerender: {}
         }
+    }
+
+    /**
+     *
+     */
+    static getDerivedStateFromError( error : any ) : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
+        // Update state so the next render will show the fallback UI.
+        return { component_SubTree_Has_Error: true };
+    }
+
+    /**
+     *
+     */
+    componentDidCatch( error : any, errorInfo : any ) {
+        // You can also log the error to an error reporting service
+
+        console.warn("react Component 'ProjectPage_ROOT_Container_Containing_MultipleSections_Component'. componentDidCatch: ", error, errorInfo );
+        // logErrorToMyService(error, errorInfo);
     }
 
     /**
@@ -262,6 +282,13 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
      *
      */
     render() {
+
+        if ( this.state.component_SubTree_Has_Error ) {
+
+            return (
+                <div >An Error has Occurred.  Please reload the page and try again.</div>
+            )
+        }
 
         return (
             <div>
