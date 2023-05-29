@@ -77,7 +77,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
 
-    private _searchDataMap_KeyProjectSearchId : Map<any, any>;
+    private _searchDataMap_KeyProjectSearchId : Map<number, CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
 
 
     constructor(props : ProjectPage_ExperimentsList_SingleExperimentDetails_Props) {
@@ -194,7 +194,6 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
             results : {
                 searchesSearchTagsFolders_Result_Root?: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
                 noSearchesFound? : boolean
-                searchList_OnlySearches? : Array<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data>;
 
                 searchesSubData? : {
                     searchProgramsPerSearchData_Root :  SearchProgramsPerSearchData_Root,
@@ -205,7 +204,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
         }) : void {
 
         const experimentData = results.experimentData;
-        const searchList_OnlySearches = results.searchList_OnlySearches;
+        const searchesSearchTagsFolders_Result_Root = results.searchesSearchTagsFolders_Result_Root;
         const searchesSubData = results.searchesSubData;
 
         {
@@ -213,8 +212,8 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 
             this._searchDataMap_KeyProjectSearchId = new Map();
 
-            if ( searchList_OnlySearches ) {
-                for ( const search of searchList_OnlySearches ) {
+            if ( searchesSearchTagsFolders_Result_Root ) {
+                for ( const search of searchesSearchTagsFolders_Result_Root.get_SearchData_ALL_Iterator() ) {
                     const projectSearchId = search.projectSearchId;
                     this._searchDataMap_KeyProjectSearchId.set( projectSearchId, search );
                 }
@@ -341,7 +340,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
                     const projectSearchIdsArray = Array.from( projectSearchIds );
                     if ( projectSearchIdsArray.length !== 0 ) {
 
-                        const searchDataEntries = [];
+                        const searchDataEntries: Array<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data> = [];
 
                         for ( const projectSearchId of projectSearchIdsArray ) {
                             const searchDataEntry = this._searchDataMap_KeyProjectSearchId.get( projectSearchId );
@@ -371,7 +370,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
                                         <span >{ searchDataEntry.searchId }</span>
                                         <span >) </span> 
                                         <span style={ { overflowWrap : "break-word"  /* Force single words to break to wrap if exceed max width */  } }
-                                        >{ searchDataEntry.name }</span>
+                                        >{ searchDataEntry.searchName }</span>
                                     </li>
                                 );
                                 searchComponents.push( searchComponent );
