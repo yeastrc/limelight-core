@@ -110,6 +110,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _collapse_All_Button_Clicked_BindThis = this._collapse_All_Button_Clicked.bind(this);
 
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this);
+    private _callback_SearchChanged_BindThis = this._callback_SearchChanged.bind(this);
     private _callback_SearchDeleted_BindThis = this._callback_SearchDeleted.bind(this);
     private _callback_FolderDeleted_BindThis = this._callback_FolderDeleted.bind(this);
 
@@ -458,6 +459,21 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             compareButtonsDisabled,
             copy_move_ButtonsDisabled: copy_move_organize_ButtonsDisabled
         });
+    }
+
+    /**
+     *
+     */
+    private _callback_SearchChanged() : void {
+
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
     }
 
     /**
@@ -1101,6 +1117,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                                 callback_updateSelected_Searches={ this._callback_updateSelected_Searches_BindThis }
                                 projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet={ this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet }
+                                callback_SearchChanged={ this._callback_SearchChanged_BindThis }
                                 callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                                 callback_FolderDeleted={ this._callback_FolderDeleted_BindThis }
                             />

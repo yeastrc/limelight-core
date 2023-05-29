@@ -36,10 +36,17 @@ import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component,
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 
 /////
 
 //  Single Search Entry
+
+export interface ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params {
+    projectSearchId: number
+}
+
+export type ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type = ( params: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params ) => void
 
 export interface ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params {
     projectSearchId: number
@@ -65,6 +72,7 @@ interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     callbackOn_Search_Entry_Clicked : (projectSearchId : number ) => void;
+    searchChanged_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type
     deleteSearch_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type
 }
 
@@ -74,6 +82,8 @@ interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
 interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_State {
 
     showSearchDetails? : boolean
+
+    show_UpdatingSearchName_Message?: boolean
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props ?: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
 }
@@ -182,6 +192,11 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         if ( this.state.showSearchDetails && ( ! this._searchDetailsAddedToDOM ) ) {
             this._addSearchDetailToDOM()
         }
+
+        if ( prevProps.searchDisplayListItem.searchName !== this.props.searchDisplayListItem.searchName ) {
+
+            this.setState({ show_UpdatingSearchName_Message: false })
+        }
     }
 
     /**
@@ -260,10 +275,25 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         const change_Callback: SearchName_and_SearchShortName_Change_Component_Change_Callback =
             ( params: SearchName_and_SearchShortName_Change_Component_Change_Callback_Params ) : void => {
 
-                window.location.reload(true)
+                if ( this.props.searchChanged_Callback ) {
 
-                // this.props.searchDisplayListItem.searchName = searchName_InputField_Value;
-                // this.setState({ changeSearchName_Active: false });
+                    this.setState({ show_UpdatingSearchName_Message: true })
+
+                    window.setTimeout( () => {
+                        try {
+
+                            this.props.searchChanged_Callback( { projectSearchId: this.props.searchDisplayListItem.projectSearchId } )
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 10 );
+
+                    return // EARLY RETURN
+                }
+
+                window.location.reload(true)  //  fallback when no callback
             }
 
         this.props.projectPage_SearchesAdmin.openOverlay_Change_SearchName_SearchShortName({
@@ -507,11 +537,11 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                     <div>
                         { this.props.callbackOn_Search_Entry_Clicked ? (
-                        <div style={ { width: 16, marginRight: 8, position: "relative" } }>
-                            <div style={ { position: "absolute", top: -2 }}>
-                                <input type="checkbox" checked={ this.props.selected } onChange={ this._checkboxChanged_BindThis } />
+                            <div style={ { width: 16, marginRight: 8, position: "relative" } }>
+                                <div style={ { position: "absolute", top: -2 }}>
+                                    <input type="checkbox" checked={ this.props.selected } onChange={ this._checkboxChanged_BindThis } />
+                                </div>
                             </div>
-                        </div>
                         ) : null }
                     </div>
 
@@ -536,7 +566,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                             <div style={ { maxWidth: "calc( 100vw - 390px )" }}>
                                 <div
                                     ref={ this._searchName_Div_Ref }
-                                    style={ { marginBottom: 2 } }
+                                    style={ { marginBottom: 2, position: "relative" } }
                                 >
                                     <span
                                         style={ { overflowWrap : "break-word"} }
@@ -555,6 +585,14 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                             />
                                         </>
                                     ): null }
+
+                                    { this.state.show_UpdatingSearchName_Message ? (
+                                        <div
+                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                        >
+                                            Updating Search Name
+                                        </div>
+                                    ) : null }
                                 </div>
 
                                 <div >

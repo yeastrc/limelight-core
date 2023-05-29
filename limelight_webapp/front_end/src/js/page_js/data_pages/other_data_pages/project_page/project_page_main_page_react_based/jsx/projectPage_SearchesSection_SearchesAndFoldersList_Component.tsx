@@ -21,7 +21,8 @@ import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} 
 import {
     ProjectPage_SearchEntry_UsedInMultipleSections_Component,
     ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params,
-    ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type
+    ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type,
+    ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
@@ -121,6 +122,7 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
     projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet: ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet
     callback_updateSelected_Searches : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds
 
+    callback_SearchChanged: () => void
     callback_SearchDeleted: () => void
     callback_FolderDeleted: () => void
 }
@@ -148,6 +150,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
     private _folderEntry_Expanded_Collapsed_Callback_BindThis = this._folderEntry_Expanded_Collapsed_Callback.bind(this)
     private _searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis = this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback.bind(this);
     private _searchEntry_In_Folder_Selected_DeSelected_Callback_BindThis = this._searchEntry_In_Folder_Selected_DeSelected_Callback.bind(this);
+    private _callback_SearchChanged_BindThis = this._callback_SearchChanged.bind(this);
     private _deleteSearch_Callback_BindThis = this._deleteSearch_Callback.bind(this);
 
     private _DO_NOT_CALL() {
@@ -282,6 +285,33 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
     /**
      *
      */
+    private _callback_SearchChanged( params: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params ) {
+
+        if ( this.props.callback_SearchChanged ) {
+
+            this.setState( { show_UpdatingMessage: true } )
+
+            window.setTimeout( () => {
+                try {
+                    this.props.callback_SearchChanged()
+
+                } catch ( e ) {
+                    console.warn( "Exception caught in _callback_SearchChanged inside setTimeout" );
+                    console.warn( e );
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                    throw e;
+                }
+            }, 10 );
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
+    }
+
+    /**
+     *
+     */
     private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
 
         if ( this.props.callback_SearchDeleted ) {
@@ -359,6 +389,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     showSeparatorBelow={true}
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                     deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                     callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
                 />
@@ -453,6 +484,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     showSeparatorBelow={true}
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                     deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                     callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
                 />
@@ -462,9 +494,6 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
 
         return (
             <div style={ { position: "relative"} }>
-                <div>
-                    Before folderDisplayList and searchDisplayList
-                </div>
                 <div>
                     { folderDisplayList }
                 </div>
@@ -546,6 +575,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     private _changeFolderName_Clicked_BindThis = this._changeFolderName_Clicked.bind(this);
     private _deleteFolder_Clicked_BindThis = this._deleteFolder_Clicked.bind(this);
 
+    private _callback_SearchChanged_BindThis = this._callback_SearchChanged.bind(this);
     private _deleteSearch_Callback_BindThis = this._deleteSearch_Callback.bind(this);
 
     private _callbackOn_searchEntry_Clicked_BindThis = this._callbackOn_searchEntry_Clicked.bind(this);
@@ -635,19 +665,24 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
     /**
      *
      */
+    private _callback_SearchChanged( params: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params ) {
+
+
+    }
+
+    /**
+     *
+     */
     private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
 
-        window.location.reload(true)
+        if ( this.props.callback_FolderDeleted ) {
 
-        // const new_searchesInFolder: ProjectPage_SearchesSection_Searches_Folders_SingleSearch[] = [];
-        // for ( const search of this.props.folderEntry.searchesInFolder ) {
-        //     if ( search.projectSearchId !== params.projectSearchId) {
-        //         new_searchesInFolder.push( search );
-        //     }
-        // }
-        // this.props.folderEntry.searchesInFolder = new_searchesInFolder;
-        //
-        // this.setState({ fakeTriggerRender: {} })
+            this.props.callback_FolderDeleted()
+
+            return;
+        }
+
+        window.location.reload(true)  // Fallback
     }
 
     /**
@@ -725,6 +760,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                                 showSeparatorBelow={ showSeparatorBelow }
                                 dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails}
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                                searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                                 deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                                 callbackOn_Search_Entry_Clicked={this._callbackOn_searchEntry_Clicked_BindThis}
                             />

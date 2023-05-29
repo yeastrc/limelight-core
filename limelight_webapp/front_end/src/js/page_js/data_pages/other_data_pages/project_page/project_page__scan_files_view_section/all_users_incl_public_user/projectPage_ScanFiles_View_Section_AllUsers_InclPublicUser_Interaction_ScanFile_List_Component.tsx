@@ -86,6 +86,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     private _updateFor_ScanFileSelection_Change_BindThis = this._updateFor_ScanFileSelection_Change.bind(this)
     private _run_FeatureDetection_For_Selected_ScanFiles_BindThis = this._run_FeatureDetection_For_Selected_ScanFiles.bind(this)
 
+    private _searchChanged_Callback_BindThis = this._searchChanged_Callback.bind(this)
     private _callback_SearchDeleted_BindThis = this._callback_SearchDeleted.bind(this);
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
@@ -229,6 +230,21 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     /**
      *
      */
+    private _searchChanged_Callback() : void {
+
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
+    }
+
+    /**
+     *
+     */
     private _callback_SearchDeleted() : void {
 
         if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
@@ -271,6 +287,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                             projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                             selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
+                            searchChanged_Callback={ this._searchChanged_Callback_BindThis }
                             callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                         />
                     )
@@ -375,6 +392,7 @@ interface ScanFileEntry_Component_Props {
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
+    searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
 }
 
@@ -690,6 +708,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
 
+                                searchChanged_Callback={ this.props.searchChanged_Callback }
                                 callback_SearchDeleted={ this.props.callback_SearchDeleted }
                             />
                         ) : null }
@@ -725,6 +744,7 @@ interface ScanFile_Details_Component_Props {
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
+    searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
 
     //  Any changes, update componentDidUpdate
@@ -990,7 +1010,8 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         callbackOn_Search_Entry_Clicked={ null }
-                        deleteSearch_Callback={  this.props.callback_SearchDeleted }
+                        searchChanged_Callback={ this.props.searchChanged_Callback }
+                        deleteSearch_Callback={ this.props.callback_SearchDeleted }
                     />
                 )
 
