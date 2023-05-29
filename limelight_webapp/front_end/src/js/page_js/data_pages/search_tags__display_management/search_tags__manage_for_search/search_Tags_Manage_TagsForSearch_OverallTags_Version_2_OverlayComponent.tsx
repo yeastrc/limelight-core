@@ -47,6 +47,7 @@ const _Overlay_Height_Max = 800;
 export class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams {
 
     searches: Array<Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch>
+    tagsChangedOnSearches_Callback: () => void
 }
 
 export class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch {
@@ -76,17 +77,9 @@ export const open_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Overlay
         limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();
     }
 
-    // const callback_TagsUpdated_Local = () : void => {
-    //
-    //     window.location.reload( true );
-    //
-    //     // callbackOn_Close()
-    // }
-
     const overlayComponent = get_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent_Overlay_Layout({
         mainParams,
-        callbackOn_Close,
-        // callback_TagsUpdated: callback_TagsUpdated_Local
+        callbackOn_Close
     })
 
     limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent })
@@ -210,9 +203,16 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
 
             //  Show spinner
 
-            window.location.reload(true)
+            if ( this.props.mainParams.tagsChangedOnSearches_Callback ) {
 
-            return;
+                this.props.mainParams.tagsChangedOnSearches_Callback()
+
+            } else {
+
+                window.location.reload( true )
+
+                return;
+            }
         }
 
         this.props.callbackOn_Close()

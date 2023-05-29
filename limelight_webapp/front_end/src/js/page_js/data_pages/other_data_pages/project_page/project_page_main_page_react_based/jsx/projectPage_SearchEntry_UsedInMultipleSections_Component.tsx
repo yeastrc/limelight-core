@@ -48,11 +48,15 @@ export interface ProjectPage_SearchEntry_UsedInMultipleSections_Component__Searc
 
 export type ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type = ( params: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Params ) => void
 
+////
+
 export interface ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params {
     projectSearchId: number
 }
 
 export type ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type = ( params: ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) => void
+
+/////////////
 
 /**
  *
@@ -460,8 +464,20 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         }
         searches.push(search)
 
+        const tagsChangedOnSearches_Callback = () => {
+
+            if ( this.props.searchChanged_Callback ) {
+
+                this.props.searchChanged_Callback({ projectSearchId: this.props.searchDisplayListItem.projectSearchId })
+
+                return // EARLY RETURN
+            }
+
+            window.location.reload(true)  // Fallback
+        }
+
         const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {
-            searches
+            searches, tagsChangedOnSearches_Callback
         }
 
         open_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent_Overlay({ mainParams })

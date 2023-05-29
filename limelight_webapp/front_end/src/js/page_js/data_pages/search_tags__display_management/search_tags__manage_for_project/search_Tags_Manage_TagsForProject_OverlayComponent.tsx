@@ -48,6 +48,7 @@ const _CATEGORY_DISPLAY_LABEL_FOR_UNCATEGORIZED = "uncategorized"
 export class Search_Tags_Manage_TagsForProject_MainParams {
 
     projectIdentifier: string
+    tagsChanged_Callback: () => void
 }
 
 /**
@@ -68,9 +69,16 @@ export const open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay = f
 
         if ( tagsHaveBeenUpdated ) {
 
-            window.location.reload( true );
+            if ( mainParams.tagsChanged_Callback ) {
 
-            return; // EARLY RETURN
+                mainParams.tagsChanged_Callback()
+
+            } else {
+
+                window.location.reload( true );
+
+                return; // EARLY RETURN
+            }
         }
 
         limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder.removeContents_AndContainer_FromDOM();

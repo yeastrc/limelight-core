@@ -264,9 +264,10 @@ export class ProjectPage_SearchesAdmin {
 
 	openOverlay_For_Search_Tags_Manage_TagsForSearches(
 		{
-			projectSearchIdsSelected
+			projectSearchIdsSelected, tagsChangedOnSearches_Callback
 		} : {
 			projectSearchIdsSelected: Set<number>
+			tagsChangedOnSearches_Callback: () => void
 		} ) : void {
 
 		if (projectSearchIdsSelected.size === 0) {
@@ -286,7 +287,7 @@ export class ProjectPage_SearchesAdmin {
 		}
 
 		const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {
-			searches
+			searches, tagsChangedOnSearches_Callback
 		}
 
 		open_Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent_Overlay({ mainParams })
@@ -295,11 +296,12 @@ export class ProjectPage_SearchesAdmin {
 
 	openOverlay_For_Search_Tags_Manage_TagsForProject(
 		{
-			projectIdentifier
+			projectIdentifier, tagsChanged_Callback
 		} : {
 			projectIdentifier: string
+			tagsChanged_Callback: () => void
 		} ) : void {
 
-		open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay({ mainParams:{ projectIdentifier} })
+		open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay({ mainParams:{ projectIdentifier, tagsChanged_Callback} })
 	}
 }

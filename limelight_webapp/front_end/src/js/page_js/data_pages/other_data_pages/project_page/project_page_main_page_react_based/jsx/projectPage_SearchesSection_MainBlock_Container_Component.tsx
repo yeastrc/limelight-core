@@ -658,8 +658,21 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return; // EARLY RETURN
         }
 
+        const tagsChangedOnSearches_Callback = () : void => {
+
+            if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+                this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+                return;  // EARLY RETURN
+            }
+
+            window.location.reload(true)
+        }
+
         this.props.projectPage_SearchesAdmin.openOverlay_For_Search_Tags_Manage_TagsForSearches({
-            projectSearchIdsSelected: new Set( this.state.selected_Searches_Data_Object.get_ProjectSearchIds_Selected_In_SelectionOrder_IterableIterator() )
+            projectSearchIdsSelected: new Set( this.state.selected_Searches_Data_Object.get_ProjectSearchIds_Selected_In_SelectionOrder_IterableIterator() ),
+            tagsChangedOnSearches_Callback
         })
     }
 
@@ -668,8 +681,21 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      */
     private _manageTagsInProject(event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
 
+        const tagsChanged_Callback = () : void => {
+
+            if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+                this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+                return;  // EARLY RETURN
+            }
+
+            window.location.reload(true)
+        }
+
         this.props.projectPage_SearchesAdmin.openOverlay_For_Search_Tags_Manage_TagsForProject({
-            projectIdentifier: this.props.projectIdentifier
+            projectIdentifier: this.props.projectIdentifier,
+            tagsChanged_Callback
         })
     }
 

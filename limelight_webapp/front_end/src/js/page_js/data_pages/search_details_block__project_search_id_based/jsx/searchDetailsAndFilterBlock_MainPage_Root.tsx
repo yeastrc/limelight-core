@@ -921,7 +921,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         searches.push(search)
 
         const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {
-            searches
+            searches, tagsChangedOnSearches_Callback: null
         }
 
         this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunction_open_Search_Tags_Manage_TagsForSearch_OverallTags_OverlayComponent_Overlay() ({
