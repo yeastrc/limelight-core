@@ -230,6 +230,18 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
     /**
      *
      */
+    componentDidUpdate( prevProps: Readonly<ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props>, prevState: Readonly<ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State>, snapshot?: any ) {
+
+        if ( prevProps.searchesSearchTagsFolders_Result_Root !== this.props.searchesSearchTagsFolders_Result_Root
+            && this.state.show_UpdatingMessage ) {
+
+            this.setState({ show_UpdatingMessage: false })
+        }
+    }
+
+    /**
+     *
+     */
     private _folderEntry_Expanded_Collapsed_Callback( params : FolderEntry_Expanded_Collapsed_Callback_Params ) {
 
 
@@ -500,12 +512,16 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                 <div>
                     { searchDisplayList }
                 </div>
+
+                {/*  Remove since not removed after update.  Maybe add back in when figure out    */}
+
                 { this.state.show_UpdatingMessage ? (
-                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }>
+                    <div className=" block-updating-overlay-container " >
                         Updating
                     </div>
 
                 ) : null }
+
             </div>
         );
 
