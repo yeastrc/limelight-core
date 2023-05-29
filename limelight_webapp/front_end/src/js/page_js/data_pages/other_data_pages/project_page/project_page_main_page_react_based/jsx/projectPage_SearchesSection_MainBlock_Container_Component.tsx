@@ -46,11 +46,19 @@ import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__dis
  *
  */
 export interface ProjectPage_SearchesSection_MainBlock_Component_Props {
-    force_ReloadFromServer_Object : object
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+    update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -167,8 +175,9 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     }
 
     componentDidUpdate(prevProps: Readonly<ProjectPage_SearchesSection_MainBlock_Component_Props>, prevState: Readonly<ProjectPage_SearchesSection_MainBlock_Component_State>, snapshot?: any) {
-        if ( prevProps.force_ReloadFromServer_Object !== this.props.force_ReloadFromServer_Object ) {
+        if ( prevProps.force_ReloadFromServer_EmptyObjectReference !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
             //  Reload Data
+
             this._searchesAndFolders_GetFromFunctionPassedFromParent();
         }
     }
@@ -456,9 +465,14 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      */
     private _callback_SearchDeleted() : void {
 
-        //  Probably not called anymore.  If called, just reload page
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
 
-        window.location.reload(true)
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
     }
 
     /**
@@ -466,7 +480,14 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
      */
     private _callback_FolderDeleted() : void {
 
-        window.location.reload(true)
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
     }
 
     /**

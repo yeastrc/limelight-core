@@ -34,7 +34,11 @@ export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_
     projectIdentifierFromURL: string
     projectIsLocked: boolean
 
-    force_Rerender: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
 }
 
 export type ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Function =
@@ -213,6 +217,13 @@ export class ProjectPage_ROOT_Container_Containing_MultipleSections_Component__G
 export type ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function =
     (params: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root_Params) => ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root_Result
 
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
+////    Main ROOT Containing Component
+
 /**
  *
  */
@@ -235,7 +246,11 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
  */
 interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
 
-    force_Rerender?: object  //  All child components need to compare this object for display updating message since a newer force_Rerender object may come down while the child component is getting data to refresh
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference?: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference?: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
 }
 
 /**
@@ -244,6 +259,7 @@ interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State
 class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends React.Component< ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props, ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State > {
 
     private _searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis = this._searchesAndFolders_From_Webservice_CalledByChildrenComponents.bind(this)
+    private _update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis = this._update_force_ReloadFromServer_EmptyObjectReference_Callback.bind(this)
 
     private _DONOTCALL() {
 
@@ -263,7 +279,7 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
         super(props)
 
         this.state = {
-            force_Rerender: {}
+            force_Rerender_EmptyObjectReference: {}, force_ReloadFromServer_EmptyObjectReference: {}
         }
     }
 
@@ -347,6 +363,16 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
         }
     }
 
+    /**
+     * Called from Child components to force All child components to reload to display updated data
+     */
+    private _update_force_ReloadFromServer_EmptyObjectReference_Callback() : void {
+
+        this._searchesSearchTagsFolders_Result_Root = null;
+
+        this.setState({ force_ReloadFromServer_EmptyObjectReference: {} })
+    }
+
     //   NOT Called Yet --  Called by children components when other children components need to refresh their data.  A way to avoid page reload
     // private _forceReload_AllData() {
     //
@@ -369,39 +395,47 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                     this.props.getSubComponents__Callback_Function({
                         projectIdentifierFromURL: this.props.projectIdentifier,
                         projectIsLocked: this.props.projectIsLocked,
-                        force_Rerender: this.state.force_Rerender
+                        force_Rerender_EmptyObjectReference: this.state.force_Rerender_EmptyObjectReference,
+                        force_ReloadFromServer_EmptyObjectReference: this.state.force_ReloadFromServer_EmptyObjectReference
                     })
                 ) : null }
-                
+
                 <ProjectPage_SavedViewsSection_Root_Component
-                    force_ReloadFromServer_Object={ this.state.force_Rerender }
+                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
                     projectIdentifier={ this.props.projectIdentifier }
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SavedViews_Section_LoggedInUsersInteraction={ this.props.projectPage_SavedViews_Section_LoggedInUsersInteraction }
                 />
 
                 <ProjectPage_ExperimentsSectionRoot_Root_Component
-                    force_ReloadFromServer_Object={ this.state.force_Rerender }
+                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
                     projectIdentifier={ this.props.projectIdentifier }
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_ExperimentsSection_LoggedInUsersInteraction={ this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction }
                 />
 
                 <ProjectPage_SearchesSection_Root_Component
-                    force_ReloadFromServer_Object={ this.state.force_Rerender }
+                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
                     projectIdentifier={ this.props.projectIdentifier }
                     get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis}
                 />
 
                 <ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
+                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
                     projectIdentifier={ this.props.projectIdentifier }
                     projectIsLocked={ this.props.projectIsLocked }
                     get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
                     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                     dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
                 />
 
             </div>

@@ -29,9 +29,16 @@ export const getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForR
  *
  */
 export interface ProjectPage_SearchesSection_MainBlock_Component_Props {
-    force_ReloadFromServer_Object : object
+
     projectIdentifier : string
     projectIsLocked: boolean
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
 }
 
 /**

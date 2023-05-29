@@ -26,12 +26,21 @@ import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/p
  *
  */
 export interface ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component_Props {
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     projectIsLocked : boolean
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+    update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -107,12 +116,15 @@ export class ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interact
                         { (this.state.bodyEverShown) ? (
                             //  Show the Body Contents so call this method
                             <ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component
+                                force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
                                 projectIdentifier={ this.props.projectIdentifier}
                                 projectIsLocked={ this.props.projectIsLocked }
                                 get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                                 projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions  }
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                                update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
                             />
                         ) : null }
                     </div>

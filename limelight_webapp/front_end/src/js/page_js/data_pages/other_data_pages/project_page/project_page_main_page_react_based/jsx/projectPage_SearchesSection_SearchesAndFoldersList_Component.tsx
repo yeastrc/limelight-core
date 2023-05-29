@@ -24,6 +24,7 @@ import {
     ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 
 //  Internal Constants
 
@@ -129,6 +130,8 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
  */
 interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_State {
 
+    show_UpdatingMessage?: boolean
+
     folderIds_ExpandedFolders_InProgress? : Set<number>;
 
     expand_All_Folders__ShowSearchDetailsTo_Global_Force_FromProps?: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
@@ -165,6 +168,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
         super(props);
 
         this.state = {
+            show_UpdatingMessage: false,
             folderIds_ExpandedFolders_InProgress : new Set( props.projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.get_FolderIds_ExpandedFolders() ),
             expand_All_Folders__ShowSearchDetailsTo_Global_Force_FromProps: props.expand_All_Folders__ShowSearchDetailsTo_Global_Force,
             fakeTriggerRender: {}
@@ -280,7 +284,26 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
      */
     private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
 
-        window.location.reload(true)
+        if ( this.props.callback_SearchDeleted ) {
+
+            this.setState( { show_UpdatingMessage: true } )
+
+            window.setTimeout( () => {
+                try {
+                    this.props.callback_SearchDeleted()
+
+                } catch ( e ) {
+                    console.warn( "Exception caught in _deleteSearch_Callback inside setTimeout" );
+                    console.warn( e );
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                    throw e;
+                }
+            }, 10 );
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
     }
 
     /**
@@ -438,14 +461,23 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
         }
 
         return (
-            <React.Fragment>
+            <div style={ { position: "relative"} }>
+                <div>
+                    Before folderDisplayList and searchDisplayList
+                </div>
                 <div>
                     { folderDisplayList }
                 </div>
                 <div>
                     { searchDisplayList }
                 </div>
-            </React.Fragment>
+                { this.state.show_UpdatingMessage ? (
+                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }>
+                        Updating
+                    </div>
+
+                ) : null }
+            </div>
         );
 
     }

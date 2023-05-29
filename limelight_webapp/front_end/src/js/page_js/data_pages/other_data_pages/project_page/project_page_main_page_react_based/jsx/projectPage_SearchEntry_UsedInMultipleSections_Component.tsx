@@ -284,7 +284,14 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
         const deleteComplete_Callback = (): void => {
 
-            this.props.deleteSearch_Callback({ projectSearchId: this.props.searchDisplayListItem.projectSearchId });
+            if ( this.props.deleteSearch_Callback ) {
+
+                this.props.deleteSearch_Callback( { projectSearchId: this.props.searchDisplayListItem.projectSearchId } );
+
+                return; // EARLY RETURN
+            }
+
+            window.location.reload(true)
         }
 
         this.props.projectPage_SearchesAdmin.deleteSearch({

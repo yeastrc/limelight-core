@@ -151,7 +151,8 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			return getComponent_ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component({
 				projectIdentifier: params.projectIdentifierFromURL,
 				projectIsLocked: params.projectIsLocked,
-				force_ReloadFromServer_Object: params.force_Rerender
+				force_Rerender_EmptyObjectReference: params.force_Rerender_EmptyObjectReference,
+				force_ReloadFromServer_EmptyObjectReference: params.force_ReloadFromServer_EmptyObjectReference
 			})
 		}
 

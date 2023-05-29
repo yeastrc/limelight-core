@@ -14,14 +14,18 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js
 import {
     ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component_Change_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/projectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component";
-import { values } from "d3";
-
 
 /**
  *
  */
 export interface ProjectPage_SearchesSection_MainBlock_Component_Props {
-    force_ReloadFromServer_Object : object
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
@@ -86,8 +90,11 @@ export class ProjectPage_SavedViewsSection_MainBlock_Component extends React.Com
      */
     componentDidUpdate( prevProps: Readonly<ProjectPage_SearchesSection_MainBlock_Component_Props>, prevState: Readonly<ProjectPage_SearchesSection_MainBlock_Component_State>, snapshot?: any ) {
         try {
-            if ( prevProps.force_ReloadFromServer_Object !== this.props.force_ReloadFromServer_Object ) {
+            if ( prevProps.force_ReloadFromServer_EmptyObjectReference !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
                 //  Reload Data
+
+                this.setState({ show_UpdatingMessage: true })
+
                 this._loadData_FromServer();
             }
 

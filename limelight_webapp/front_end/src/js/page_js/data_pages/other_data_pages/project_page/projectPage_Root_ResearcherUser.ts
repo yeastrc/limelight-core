@@ -139,7 +139,8 @@ class ProjectViewPage_Root_ResearcherUser {
 			return getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component({
 				projectIdentifier: params.projectIdentifierFromURL,
 				projectIsLocked: params.projectIsLocked,
-				force_ReloadFromServer_Object: params.force_Rerender
+				force_ReloadFromServer_EmptyObjectReference: params.force_ReloadFromServer_EmptyObjectReference,
+				force_Rerender_EmptyObjectReference: params.force_Rerender_EmptyObjectReference
 			})
 		}
 

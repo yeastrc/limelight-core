@@ -46,12 +46,21 @@ import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/p
  *
  */
 export interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props {
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     projectIsLocked : boolean
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+    update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -76,6 +85,8 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 
     private _updateFor_ScanFileSelection_Change_BindThis = this._updateFor_ScanFileSelection_Change.bind(this)
     private _run_FeatureDetection_For_Selected_ScanFiles_BindThis = this._run_FeatureDetection_For_Selected_ScanFiles.bind(this)
+
+    private _callback_SearchDeleted_BindThis = this._callback_SearchDeleted.bind(this);
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
@@ -110,6 +121,18 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
         //  Load Data
 
         this.get_ScanList_FromServer();
+    }
+
+    componentDidUpdate( prevProps: Readonly<ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props>, prevState: Readonly<ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_State>, snapshot?: any ) {
+
+        if ( prevProps.force_ReloadFromServer_EmptyObjectReference !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
+
+            this.setState({ show_LoadingData_Message: true })
+
+            //  ReLoad Data
+
+            this.get_ScanList_FromServer();
+        }
     }
 
     /**
@@ -206,6 +229,21 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     /**
      *
      */
+    private _callback_SearchDeleted() : void {
+
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+            return; // EARLY RETURN
+        }
+
+        window.location.reload(true) //  Fallback when no callback is available
+    }
+
+    /**
+     *
+     */
     render() {
 
         let no_ScanFiles_Found = false;
@@ -233,6 +271,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                             projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                             selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
+                            callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                         />
                     )
 
@@ -336,6 +375,7 @@ interface ScanFileEntry_Component_Props {
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
+    callback_SearchDeleted: () => void
 }
 
 /**
@@ -649,6 +689,8 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+
+                                callback_SearchDeleted={ this.props.callback_SearchDeleted }
                             />
                         ) : null }
                     </div>
@@ -682,6 +724,8 @@ interface ScanFile_Details_Component_Props {
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+    callback_SearchDeleted: () => void
 
     //  Any changes, update componentDidUpdate
 }
@@ -946,7 +990,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         callbackOn_Search_Entry_Clicked={ null }
-                        deleteSearch_Callback={ null }
+                        deleteSearch_Callback={  this.props.callback_SearchDeleted }
                     />
                 )
 

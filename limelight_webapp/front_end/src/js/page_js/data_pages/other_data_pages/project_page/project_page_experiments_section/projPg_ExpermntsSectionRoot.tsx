@@ -19,7 +19,11 @@ import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projP
 
 export class ProjectPage_ExperimentsSectionRoot_Props {
 
-    force_ReloadFromServer_Object : object
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
 
     projectIdentifierFromURL : string
     projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
@@ -33,6 +37,9 @@ interface ProjectPage_ExperimentsSectionRoot_State {
     experiments_initialLoading? : boolean
 
     createExperimentButton_Disabled? : boolean
+
+    show_LoadingMessage_InitialLoad?: boolean
+    show_UpdatingMessage?: boolean
 }
 
 
@@ -62,6 +69,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
         }
 
         this.state = {
+            show_LoadingMessage_InitialLoad: true, show_UpdatingMessage: true,
             experiments_initialLoading : true,
             experiments_drafts_initialLoading : true,
             createExperimentButton_Disabled : true  //  Start at true until get data from server to indicate can change to false
@@ -107,7 +115,9 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      */
     componentDidUpdate( prevProps: Readonly<ProjectPage_ExperimentsSectionRoot_Props>, prevState: Readonly<ProjectPage_ExperimentsSectionRoot_State>, snapshot?: any ) {
 
-        if ( prevProps.force_ReloadFromServer_Object !== this.props.force_ReloadFromServer_Object ) {
+        if ( prevProps.force_ReloadFromServer_EmptyObjectReference !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
+
+            this.setState({ show_UpdatingMessage: true, draftExperiments: null, experiments: null })
 
             this._loadExperiments_NonDrafts_IfNeeded();
             this._loadDraftExperiments_IfNeeded();
@@ -161,6 +171,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 
                     return _process_loadExperiments_NonDrafts_responseData_SetState({ state, props, loadExperiments_responseData : responseData });
                 });
+                this.setState({ show_LoadingMessage_InitialLoad: false, show_UpdatingMessage: false })
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
@@ -187,6 +198,7 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
 
                         return _process_loadExperimentDrafts_responseData_SetState({ state, props, loadExperimentDrafts_responseData : responseData });
                     });
+                    this.setState({ show_LoadingMessage_InitialLoad: false, show_UpdatingMessage: false })
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
@@ -343,6 +355,14 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
      * 
      */
     render () {
+
+        if ( this.state.show_LoadingMessage_InitialLoad || this.state.show_UpdatingMessage ) {
+            return (
+                <div>
+                    LOADING
+                </div>
+            )
+        }
 
         let createNewExperimentButton_WithContainingDiv = undefined;
 
