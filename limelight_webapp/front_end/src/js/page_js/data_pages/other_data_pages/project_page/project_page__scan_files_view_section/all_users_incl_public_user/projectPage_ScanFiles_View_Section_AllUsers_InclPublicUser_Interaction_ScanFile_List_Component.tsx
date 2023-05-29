@@ -83,6 +83,7 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
  */
 export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component extends React.Component< ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props, ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_State > {
 
+    private _updateFor_ScanFileEntry_Component_ExpandedChange_BindThis = this._updateFor_ScanFileEntry_Component_ExpandedChange.bind(this)
     private _updateFor_ScanFileSelection_Change_BindThis = this._updateFor_ScanFileSelection_Change.bind(this)
     private _run_FeatureDetection_For_Selected_ScanFiles_BindThis = this._run_FeatureDetection_For_Selected_ScanFiles.bind(this)
 
@@ -95,6 +96,8 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
     }
 
     private _scanFiles_Selected_ProjectScanFileId_Set: Set<number> = new Set();
+
+    private _scanFiles_Expanded_ProjectScanFileId_Set: Set<number> = new Set();
 
     private _buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled: boolean = true //  start out with NO Scan File Selections
 
@@ -154,6 +157,18 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
             })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    }
+
+    /**
+     *
+     */
+    private _updateFor_ScanFileEntry_Component_ExpandedChange( params: ScanFileEntry_Component_ExpandedChange_CallbackFunction_Params ) {
+
+        if ( params.expanded ) {
+            this._scanFiles_Expanded_ProjectScanFileId_Set.add( params.projectScanFileId )
+        } else {
+            this._scanFiles_Expanded_ProjectScanFileId_Set.delete( params.projectScanFileId )
+        }
     }
 
     /**
@@ -277,6 +292,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                     const element = (
                         <ScanFileEntry_Component
                             key={ scanFile_Entry.projectScanFileId }
+                            showExpanded_OnMount={ this._scanFiles_Expanded_ProjectScanFileId_Set.has( scanFile_Entry.projectScanFileId )}
                             scanFile_Entry={ scanFile_Entry }
                             runFeatureDetection_IsFullyConfigured={ this.state.runFeatureDetection_IsFullyConfigured }
                             projectIdentifier={ this.props.projectIdentifier }
@@ -286,6 +302,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                             dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                             projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                            expandedChange_CallbackFunction={ this._updateFor_ScanFileEntry_Component_ExpandedChange_BindThis }
                             selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
                             searchChanged_Callback={ this._searchChanged_Callback_BindThis }
                             callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
@@ -368,6 +385,17 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 
 //  Component for Single Scan File - not exported
 
+interface ScanFileEntry_Component_ExpandedChange_CallbackFunction_Params {
+
+    projectScanFileId: number
+    expanded: boolean
+}
+
+type ScanFileEntry_Component_ExpandedChange_CallbackFunction =
+    (params: ScanFileEntry_Component_ExpandedChange_CallbackFunction_Params) => void
+
+////////
+
 interface ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Params {
 
     projectScanFileId: number
@@ -377,10 +405,13 @@ interface ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Para
 type ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction =
     (params: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction_Params) => void
 
+////////
+
 /**
  *
  */
 interface ScanFileEntry_Component_Props {
+    showExpanded_OnMount: boolean
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     runFeatureDetection_IsFullyConfigured: boolean
     projectIdentifier : string
@@ -391,6 +422,7 @@ interface ScanFileEntry_Component_Props {
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
+    expandedChange_CallbackFunction: ScanFileEntry_Component_ExpandedChange_CallbackFunction
     selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
     searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
@@ -401,7 +433,7 @@ interface ScanFileEntry_Component_Props {
  */
 interface ScanFileEntry_Component_State {
 
-    show_DetailsBlock?: boolean
+    force_Rerender?: object
 }
 
 /**
@@ -417,6 +449,8 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
     }
 
+    private _show_DetailsBlock: boolean
+
     private _detailsBlock_EverShown: boolean = false;
 
     /**
@@ -426,8 +460,23 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
         super(props)
 
         this.state = {
-            show_DetailsBlock: false
+            force_Rerender: {}
         }
+    }
+
+    componentDidMount() {
+        try {
+            if ( this.props.showExpanded_OnMount ) {
+                if ( !this._detailsBlock_EverShown ) {
+                    this._detailsBlock_EverShown = true;
+                }
+
+                this._show_DetailsBlock = true;
+
+                this.setState( { force_Rerender: {} } );
+            }
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
@@ -441,10 +490,11 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
             this._detailsBlock_EverShown = true;
         }
 
-        this.setState( (prevState: Readonly<ScanFileEntry_Component_State>, props: Readonly<ScanFileEntry_Component_Props>) => {
-            //  flip show_DetailsBlock
-            return { show_DetailsBlock: ( ! prevState.show_DetailsBlock ) }
-        });
+        this._show_DetailsBlock = ! this._show_DetailsBlock
+
+        this.props.expandedChange_CallbackFunction({ expanded: this._show_DetailsBlock, projectScanFileId: this.props.scanFile_Entry.projectScanFileId })
+
+        this.setState( { force_Rerender: {} } );
     }
 
     /**
@@ -524,7 +574,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                     style={ { width: 16 } }
                     onClick={ this._iconOrMainRowClicked_BindThis }
                 >
-                    { ( ! this.state.show_DetailsBlock ) ? (
+                    { ( ! this._show_DetailsBlock ) ? (
                         <img className="icon-small fake-link-image " src="static/images/pointer-right.png"/>
                     ) : (
                         <img className="icon-small fake-link-image " src="static/images/pointer-down.png"/>
@@ -695,7 +745,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                     {/*  Scan File Details  */}
                     <div
-                        style={ { display: ( ! this.state.show_DetailsBlock ) ? "none": null } }
+                        style={ { display: ( ! this._show_DetailsBlock ) ? "none": null } }
                     >
                         { ( this._detailsBlock_EverShown ) ? (
                             <ScanFile_Details_Component
