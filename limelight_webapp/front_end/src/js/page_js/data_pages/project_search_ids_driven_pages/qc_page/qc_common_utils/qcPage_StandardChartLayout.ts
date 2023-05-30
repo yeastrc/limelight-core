@@ -114,13 +114,14 @@ export const qcPage_StandardChartLayout = function (
         showlegend_Local = false;
     }
 
-    let title_y;
-    let title_yanchor;
-
-    if ( ! notMoveTitle ) {
-        title_y = 0.95;
-        title_yanchor = "top";
-    }
+    //  Remove since does not appear to always place the title properly above the chart but the title sometimes ends up in the chart.
+    // let title_y;
+    // let title_yanchor;
+    //
+    // if ( ! notMoveTitle ) {
+    //     title_y = 0.95;
+    //     title_yanchor = "top";
+    // }
 
     let plotWidth = _StandardChart_Width;
 
@@ -138,9 +139,10 @@ export const qcPage_StandardChartLayout = function (
     return {
         title:{
             text: chartTitle,
+            //        Remove since does not appear to always place the title properly above the chart but the title sometimes ends up in the chart.
             // Move title towards chart
-            y: title_y,
-            yanchor: title_yanchor
+            // y: title_y,
+            // yanchor: title_yanchor
         },
         autosize: false,
         width: plotWidth,
