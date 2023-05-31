@@ -34,6 +34,10 @@ export class FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component 
 
     render() {
 
+        const style_BoxAround_Show_Hide: React.CSSProperties = {
+            padding: 5, marginTop: 5, marginBottom: 5, borderWidth: 2, borderStyle: "dashed", whiteSpace: "nowrap", paddingLeft: 5
+        }
+
         return (
 
             <React.Fragment>
@@ -46,42 +50,52 @@ export class FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component 
 
                     { ( ! this.state.showChildren ) ? (
                         <React.Fragment>
-                            <div
-                                className=" triangle-container-span " style={ { display: "inline-block" } }
-                                onClick={ event => {
-                                    this.setState({ showChildren: true });
-                                }}
-                            >
-                                <img className="icon-small fake-link-image " src="static/images/pointer-right.png" />
-                            </div>
-                            <div
-                                className=" show-hide-text "
-                                style={ { display: "inline-block" } }
-                                onClick={ event => {
-                                    this.setState({ showChildren: true });
-                                }}
-                            >
-                                Click to Show Filters and Options
+                            <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
+                                <div className=" standard-border-color-very-dark " style={ style_BoxAround_Show_Hide }>
+                                    <div
+                                        className=" triangle-container-span " style={ { display: "inline-block" } }
+                                        onClick={ event => {
+                                            this.setState({ showChildren: true });
+                                        }}
+                                    >
+                                        <img className="icon-small fake-link-image " src="static/images/pointer-right.png" />
+                                    </div>
+                                    <div
+                                        className=" show-hide-text "
+                                        style={ { display: "inline-block" } }
+                                        onClick={ event => {
+                                            this.setState({ showChildren: true });
+                                        }}
+                                    >
+                                        Click to Show Filters and Options
+                                    </div>
+                                </div>
+                                <div></div>
                             </div>
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
-                            <div
-                                className=" triangle-container-span " style={ { display: "inline-block" } }
-                                onClick={ event => {
-                                    this.setState({ showChildren: false });
-                                }}
-                            >
-                                <img className="icon-small fake-link-image " src="static/images/pointer-down.png" />
-                            </div>
-                            <div
-                                className=" show-hide-text "
-                                style={ { display: "inline-block" } }
-                                onClick={ event => {
-                                    this.setState({ showChildren: false });
-                                }}
-                            >
-                                Click to Hide Filters and Options
+
+                            <div style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
+                                <div className=" standard-border-color-very-dark " style={ style_BoxAround_Show_Hide }>
+                                    <div
+                                        className=" triangle-container-span " style={ { display: "inline-block" } }
+                                        onClick={ event => {
+                                            this.setState({ showChildren: false });
+                                        }}
+                                    >
+                                        <img className="icon-small fake-link-image " src="static/images/pointer-down.png" />
+                                    </div>
+                                    <div
+                                        className=" show-hide-text "
+                                        style={ { display: "inline-block" } }
+                                        onClick={ event => {
+                                            this.setState({ showChildren: false });
+                                        }}
+                                    >
+                                        Click to Hide Filters and Options
+                                    </div>
+                                </div>
                             </div>
                         </React.Fragment>
                     )}
