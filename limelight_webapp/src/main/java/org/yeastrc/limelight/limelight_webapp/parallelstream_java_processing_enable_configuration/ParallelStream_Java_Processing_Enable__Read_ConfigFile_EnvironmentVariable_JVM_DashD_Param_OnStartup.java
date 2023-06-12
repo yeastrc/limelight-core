@@ -66,7 +66,7 @@ public class ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentV
 			
 			if ( parallelStream_DefaultThreadPool_Java_Processing_Enabled_True != null ) {
 				
-				log.warn( "INFO: ParallelStream_Java_Processing_Enable: Value found in config file: '" + CONFIG_FILENAME + "' with key: '" + PROPERTY_FILE_KEY__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True );
+				log.warn( "INFO: ParallelStream_Java_Processing_Enable: Value found in config file: '" + CONFIG_FILENAME + "' with key: '" + PROPERTY_FILE_KEY__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value evaluated to 'true' or 'false' boolean value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True );
 				
 			} else {
 				
@@ -78,7 +78,7 @@ public class ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentV
 					
 					parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = true;
 			
-					log.warn( "INFO::: ParallelStream_Java_Processing_Enable: Value found in Environment Variable: '" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True_String );
+					log.warn( "INFO::: ParallelStream_Java_Processing_Enable: Value found in Environment Variable: '" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value evaluated to 'true' or 'false' boolean value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True_String );
 					
 				} else {
 
@@ -96,11 +96,18 @@ public class ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentV
 						
 						parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = true;
 				
-						log.warn( "INFO::: ParallelStream_Java_Processing_Enable: Value found in JVM param: '-D" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True_String );
+						log.warn( "INFO::: ParallelStream_Java_Processing_Enable: Value found in JVM param: '-D" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "' with value evaluated to 'true' or 'false' boolean value: " + parallelStream_DefaultThreadPool_Java_Processing_Enabled_True_String );
 
 					} else {
 
-						log.info( "INFO: ParallelStream_Java_Processing_Enable: NO Value found in JVM param: '-D" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "'." );
+						log.info( "INFO: ParallelStream_Java_Processing_Enable: NO Value found so default to false.  No Value found in "
+								+ " config file: '" + CONFIG_FILENAME + "' with key: '" + PROPERTY_FILE_KEY__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "', "
+								+ "Environment Variable: '" 
+								+ ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE 
+								+ "', "
+								+ "OR JVM param: '-D" + ENVIRONMENT_VARIABLE__PARALLELSTREAM_DEFAULT_THREAD_POOL_JAVA_PROCESSING_ENABLE + "'." );
+						
+						parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = false;
 					}
 				}
 				
@@ -109,6 +116,7 @@ public class ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentV
 		}
 		
 		if ( parallelStream_DefaultThreadPool_Java_Processing_Enabled_True == null ) {
+			//  Default to false if did not set above
 			parallelStream_DefaultThreadPool_Java_Processing_Enabled_True = false;
 		}
 
