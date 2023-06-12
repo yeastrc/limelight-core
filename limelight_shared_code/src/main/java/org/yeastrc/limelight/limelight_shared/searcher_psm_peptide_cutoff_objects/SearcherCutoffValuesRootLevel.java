@@ -18,6 +18,11 @@ public class SearcherCutoffValuesRootLevel {
 	private Map<Integer,SearcherCutoffValuesSearchLevel> searchLevelCutoffsPerProjectSearchId = new HashMap<>();
 	
 	private List<SearcherCutoffValuesSearchLevel> searchLevelCutoffsPerProjectSearchIdList = null;
+	
+	/**
+	 * Private Constructor
+	 */
+	private SearcherCutoffValuesRootLevel() {}
 
 	
 	/**
@@ -30,32 +35,64 @@ public class SearcherCutoffValuesRootLevel {
 	}
 
 	/**
-	 * @param perSearchCutoffs
-	 */
-	public void addPerSearchCutoffs( SearcherCutoffValuesSearchLevel perSearchCutoffs ) {
-		
-		this.searchLevelCutoffsPerProjectSearchId.put( perSearchCutoffs.getProjectSearchId(), perSearchCutoffs);
-		
-		searchLevelCutoffsPerProjectSearchIdList = null;  // ensure cached list is null
-	}
-
-	/**
 	 * Get Per Search Cutoffs in list form
 	 * @return
 	 */
 	public List<SearcherCutoffValuesSearchLevel> getPerSearchCutoffsList() {
 		
-		if ( searchLevelCutoffsPerProjectSearchIdList == null ) {
+		return searchLevelCutoffsPerProjectSearchIdList;
+	}
+	
+	///////////////////////
+	
+	//   Builder
+	
+	/**
+	 * @return builder
+	 */
+	public static SearcherCutoffValuesRootLevel_Builder builder() {
+		return new SearcherCutoffValuesRootLevel_Builder();
+	}
+	
+	/**
+	 * Builder
+	 *
+	 */
+	public static class SearcherCutoffValuesRootLevel_Builder {
+		
+		private SearcherCutoffValuesRootLevel newInstance = new SearcherCutoffValuesRootLevel();
+		
+		/**
+		 * private constructor
+		 */
+		private SearcherCutoffValuesRootLevel_Builder() {}
+		
+		/**
+		 * @return
+		 */
+		public SearcherCutoffValuesRootLevel build() {
 			
-			searchLevelCutoffsPerProjectSearchIdList = new ArrayList<>( searchLevelCutoffsPerProjectSearchId.size() );
-			
-			for ( Map.Entry<Integer,SearcherCutoffValuesSearchLevel> entry : searchLevelCutoffsPerProjectSearchId.entrySet() ) {
-				
-				searchLevelCutoffsPerProjectSearchIdList.add( entry.getValue() );
+			{  // Populate searchLevelCutoffsPerProjectSearchIdList
+					
+				newInstance.searchLevelCutoffsPerProjectSearchIdList = new ArrayList<>( newInstance.searchLevelCutoffsPerProjectSearchId.size() );
+
+				for ( Map.Entry<Integer,SearcherCutoffValuesSearchLevel> entry : newInstance.searchLevelCutoffsPerProjectSearchId.entrySet() ) {
+
+					newInstance.searchLevelCutoffsPerProjectSearchIdList.add( entry.getValue() );
+				}
 			}
 			
+			return newInstance;
 		}
 		
-		return searchLevelCutoffsPerProjectSearchIdList;
+
+		/**
+		 * @param perSearchCutoffs
+		 */
+		public void addPerSearchCutoffs( SearcherCutoffValuesSearchLevel perSearchCutoffs ) {
+			
+			newInstance.searchLevelCutoffsPerProjectSearchId.put( perSearchCutoffs.getProjectSearchId(), perSearchCutoffs);
+		}
+
 	}
 }

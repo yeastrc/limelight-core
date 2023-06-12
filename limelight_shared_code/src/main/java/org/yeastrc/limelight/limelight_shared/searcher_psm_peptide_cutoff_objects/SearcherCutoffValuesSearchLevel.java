@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.yeastrc.limelight.limelight_shared.exceptions.LimelightShardCodeInternalErrorException;
+
 
 /**
  * Entry per Search
@@ -53,15 +55,20 @@ public class SearcherCutoffValuesSearchLevel {
 
 	byte[] compactStringByteArray;
 
+	/**
+	 * Private Constructor
+	 */
+	private SearcherCutoffValuesSearchLevel() {}
 	
 	/**
 	 * @return
 	 */
 	public byte[] getAsCompactStringByteArray() {
-		if ( compactStringByteArray != null ) {
-			return compactStringByteArray;
+		
+		if ( compactStringByteArray == null ) {
+			throw new LimelightShardCodeInternalErrorException("( compactStringByteArray == null ) ");
 		}
-		compactStringByteArray = getAsCompactString().getBytes( StandardCharsets.UTF_8 );
+
 		return compactStringByteArray;
 	}
 	
@@ -69,50 +76,12 @@ public class SearcherCutoffValuesSearchLevel {
 	 * @return
 	 */
 	public String getAsCompactString() {
-		if ( asCompactString != null ) {
-			return asCompactString;
+		
+		if ( asCompactString == null ) {
+			throw new LimelightShardCodeInternalErrorException("( asCompactString == null ) ");
 		}
-		
-		StringBuilder asStringSB = new StringBuilder( 100000 );
-		asStringSB.append( String.valueOf( projectSearchId ) );
-		asStringSB.append( "pep" );
-		addCutoffsPerAnnotationDataAsCompactString(peptideCutoffValuesPerAnnotationId, asStringSB);
-		asStringSB.append( "psm" );
-		addCutoffsPerAnnotationDataAsCompactString(psmCutoffValuesPerAnnotationId, asStringSB);
-		
-		asCompactString = asStringSB.toString();
-		return asCompactString;
-	}
 
-	/**
-	 * @param cutoffsPerAnnotationData
-	 * @param asStringSB
-	 */
-	private void addCutoffsPerAnnotationDataAsCompactString( 
-			Map<Integer, SearcherCutoffValuesAnnotationLevel> cutoffsPerAnnotationData, 
-			StringBuilder asStringSB ) {
-		//  Put in List so can sort
-		List<Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel> > mapEntriesList = new ArrayList<>( cutoffsPerAnnotationData.entrySet() );
-		Collections.sort( mapEntriesList, new Comparator<Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel>>() {
-			@Override
-			public int compare(Entry<Integer, SearcherCutoffValuesAnnotationLevel> o1,
-					Entry<Integer, SearcherCutoffValuesAnnotationLevel> o2) {
-				if ( o1.getKey() < o2.getKey() ) {
-					return -1;
-				}
-				if ( o1.getKey() > o2.getKey() ) {
-					return 1;
-				}
-				return 0;
-			}
-		});
-		for ( Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel> entry : mapEntriesList ) {
-			asStringSB.append( String.valueOf( entry.getValue().getAnnotationTypeId() ) );
-			asStringSB.append( ":" );
-			asStringSB.append( String.valueOf( entry.getValue().getAnnotationCutoffValue() ) );
-			asStringSB.append( "," );
-		}
-		
+		return asCompactString;
 	}
 	
 	/**
@@ -121,13 +90,6 @@ public class SearcherCutoffValuesSearchLevel {
 	 */
 	public int getProjectSearchId() {
 		return projectSearchId;
-	}
-	/**
-	 * 
-	 * @param projectSearchId
-	 */
-	public void setProjectSearchId(int projectSearchId) {
-		this.projectSearchId = projectSearchId;
 	}
 
 	///////////////////////
@@ -141,33 +103,6 @@ public class SearcherCutoffValuesSearchLevel {
 	 */
 	public SearcherCutoffValuesAnnotationLevel getPsmPerAnnotationCutoffs( Integer annotationId ) {
 		return psmCutoffValuesPerAnnotationId.get( annotationId );
-	}
-
-	/**
-	 * @param perAnnotationCutoffs
-	 */
-	public void addPsmPerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
-		
-		this.psmCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
-
-		psmCutoffValuesPerAnnotationIdList = new ArrayList<>( psmCutoffValuesPerAnnotationId.size() );
-		
-		for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : psmCutoffValuesPerAnnotationId.entrySet() ) {
-			
-			psmCutoffValuesPerAnnotationIdList.add( entry.getValue() );
-		}
-		
-		// sort by name alphabetical
-		
-		Collections.sort( psmCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
-
-			@Override
-			public int compare(SearcherCutoffValuesAnnotationLevel o1,
-					SearcherCutoffValuesAnnotationLevel o2) {
-
-				return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
-			}
-		});
 	}
 
 	/**
@@ -190,34 +125,6 @@ public class SearcherCutoffValuesSearchLevel {
 	 */
 	public SearcherCutoffValuesAnnotationLevel getPeptidePerAnnotationCutoffs( Integer annotationId ) {
 		return peptideCutoffValuesPerAnnotationId.get( annotationId );
-	}
-
-	/**
-	 * @param perAnnotationCutoffs
-	 */
-	public void addPeptidePerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
-		
-		this.peptideCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
-		
-		
-		peptideCutoffValuesPerAnnotationIdList = new ArrayList<>( peptideCutoffValuesPerAnnotationId.size() );
-		
-		for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : peptideCutoffValuesPerAnnotationId.entrySet() ) {
-			
-			peptideCutoffValuesPerAnnotationIdList.add( entry.getValue() );
-		}
-
-		// sort by name alphabetical
-		
-		Collections.sort( peptideCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
-
-			@Override
-			public int compare(SearcherCutoffValuesAnnotationLevel o1,
-					SearcherCutoffValuesAnnotationLevel o2) {
-
-				return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
-			}
-		});
 	}
 
 	/**
@@ -273,5 +180,171 @@ public class SearcherCutoffValuesSearchLevel {
 		return "SearcherCutoffValuesSearchLevel [getProjectSearchId()=" + getProjectSearchId() + ", getPsmPerAnnotationCutoffsList()="
 				+ getPsmPerAnnotationCutoffsList() + ", getPeptidePerAnnotationCutoffsList()="
 				+ getPeptidePerAnnotationCutoffsList() + "]";
+	}
+	
+	/////////////////////////
+	
+	//  Builder
+
+	/**
+	 * Get Builder
+	 * @return
+	 */
+	public static SearcherCutoffValuesSearchLevel_Builder builder() {
+		return new SearcherCutoffValuesSearchLevel_Builder();
+	}
+	
+	/**
+	 * Builder
+	 *
+	 *
+	 */
+	public static class SearcherCutoffValuesSearchLevel_Builder {
+		
+		private SearcherCutoffValuesSearchLevel newInstance = new SearcherCutoffValuesSearchLevel();
+		
+		/**
+		 * Private Constructor
+		 */
+		private SearcherCutoffValuesSearchLevel_Builder() {}
+
+		/**
+		 * @return
+		 */
+		public SearcherCutoffValuesSearchLevel build() {
+			
+			{  // Populate peptideCutoffValuesPerAnnotationIdList
+
+				newInstance.peptideCutoffValuesPerAnnotationIdList = new ArrayList<>( newInstance.peptideCutoffValuesPerAnnotationId.size() );
+				
+				for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : newInstance.peptideCutoffValuesPerAnnotationId.entrySet() ) {
+					
+					newInstance.peptideCutoffValuesPerAnnotationIdList.add( entry.getValue() );
+				}
+
+				// sort by name alphabetical
+				
+				Collections.sort( newInstance.peptideCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
+
+					@Override
+					public int compare(SearcherCutoffValuesAnnotationLevel o1,
+							SearcherCutoffValuesAnnotationLevel o2) {
+
+						return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
+					}
+				});
+			}
+			
+			{  //  Populate psmCutoffValuesPerAnnotationIdList
+				
+
+				newInstance.psmCutoffValuesPerAnnotationIdList = new ArrayList<>( newInstance.psmCutoffValuesPerAnnotationId.size() );
+				
+				for ( Map.Entry<Integer,SearcherCutoffValuesAnnotationLevel> entry : newInstance.psmCutoffValuesPerAnnotationId.entrySet() ) {
+					
+					newInstance.psmCutoffValuesPerAnnotationIdList.add( entry.getValue() );
+				}
+				
+				// sort by name alphabetical
+				
+				Collections.sort( newInstance.psmCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
+
+					@Override
+					public int compare(SearcherCutoffValuesAnnotationLevel o1,
+							SearcherCutoffValuesAnnotationLevel o2) {
+
+						return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
+					}
+				});
+			}
+			
+			{  //  Populate asCompactString
+				
+				StringBuilder asStringSB = new StringBuilder( 100000 );
+				asStringSB.append( String.valueOf( newInstance.projectSearchId ) );
+				asStringSB.append( "pep" );
+				addCutoffsPerAnnotationDataAsCompactString( newInstance.peptideCutoffValuesPerAnnotationId, asStringSB);
+				asStringSB.append( "psm" );
+				addCutoffsPerAnnotationDataAsCompactString( newInstance.psmCutoffValuesPerAnnotationId, asStringSB);
+				
+				newInstance.asCompactString = asStringSB.toString();
+			}
+
+
+			{  //  Populate compactStringByteArray
+			
+				newInstance.compactStringByteArray = newInstance.asCompactString.getBytes( StandardCharsets.UTF_8 );
+			}
+			
+			
+			return newInstance;
+		}
+
+		/**
+		 * @param cutoffsPerAnnotationData
+		 * @param asStringSB
+		 */
+		private void addCutoffsPerAnnotationDataAsCompactString( 
+				Map<Integer, SearcherCutoffValuesAnnotationLevel> cutoffsPerAnnotationData, 
+				StringBuilder asStringSB ) {
+			//  Put in List so can sort
+			List<Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel> > mapEntriesList = new ArrayList<>( cutoffsPerAnnotationData.entrySet() );
+			Collections.sort( mapEntriesList, new Comparator<Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel>>() {
+				@Override
+				public int compare(Entry<Integer, SearcherCutoffValuesAnnotationLevel> o1,
+						Entry<Integer, SearcherCutoffValuesAnnotationLevel> o2) {
+					if ( o1.getKey() < o2.getKey() ) {
+						return -1;
+					}
+					if ( o1.getKey() > o2.getKey() ) {
+						return 1;
+					}
+					return 0;
+				}
+			});
+			for ( Map.Entry<Integer, SearcherCutoffValuesAnnotationLevel> entry : mapEntriesList ) {
+				asStringSB.append( String.valueOf( entry.getValue().getAnnotationTypeId() ) );
+				asStringSB.append( ":" );
+				asStringSB.append( String.valueOf( entry.getValue().getAnnotationCutoffValue() ) );
+				asStringSB.append( "," );
+			}
+			
+		}
+		
+		/////////////////////
+
+		/**
+		 * 
+		 * @param projectSearchId
+		 */
+		public void setProjectSearchId(int projectSearchId) {
+			newInstance.projectSearchId = projectSearchId;
+		}
+
+		
+		///////////////////////
+		
+		//  PSM
+
+		/**
+		 * @param perAnnotationCutoffs
+		 */
+		public void addPsmPerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
+			
+			newInstance.psmCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
+		}
+		
+		///////////////////
+		
+		//  Peptide
+
+		/**
+		 * @param perAnnotationCutoffs
+		 */
+		public void addPeptidePerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
+			
+			newInstance.peptideCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
+		}
+		
 	}
 }

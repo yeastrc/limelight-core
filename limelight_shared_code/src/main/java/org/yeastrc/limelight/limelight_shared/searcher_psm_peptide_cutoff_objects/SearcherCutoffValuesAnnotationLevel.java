@@ -13,6 +13,11 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
  *  	annotationCutoffValue
  *  
  *    All other fields are related to those fields
+ *    
+ *    
+ *    Made Immutable once the build() is called:
+ *    
+ *       Assumes that contained property AnnotationTypeDTO annotationTypeDTO does not change
  *
  */
 public class SearcherCutoffValuesAnnotationLevel {
@@ -24,6 +29,11 @@ public class SearcherCutoffValuesAnnotationLevel {
 
 	private AnnotationTypeDTO annotationTypeDTO;
 	
+	/**
+	 * Private Constructor
+	 */
+	private SearcherCutoffValuesAnnotationLevel() {}
+ 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -63,29 +73,55 @@ public class SearcherCutoffValuesAnnotationLevel {
 	public int getAnnotationTypeId() {
 		return annotationTypeId;
 	}
-
-	public void setAnnotationTypeId(int annotationTypeId) {
-		this.annotationTypeId = annotationTypeId;
-	}
-
 	public double getAnnotationCutoffValue() {
 		return annotationCutoffValue;
 	}
-
-
-	public void setAnnotationCutoffValue(double annotationCutoffValue) {
-		this.annotationCutoffValue = annotationCutoffValue;
-	}
-
-	
 	public AnnotationTypeDTO getAnnotationTypeDTO() {
 		return annotationTypeDTO;
 	}
 
 
-	public void setAnnotationTypeDTO(AnnotationTypeDTO annotationTypeDTO) {
-		this.annotationTypeDTO = annotationTypeDTO;
+	/**
+	 * Get Builder
+	 * @return
+	 */
+	public static SearcherCutoffValuesAnnotationLevel_Builder builder() {
+		
+		return new SearcherCutoffValuesAnnotationLevel_Builder();
 	}
+	
+	
+	/**
+	 * Builder
+	 *
+	 */
+	public static class SearcherCutoffValuesAnnotationLevel_Builder {
+		
+		private SearcherCutoffValuesAnnotationLevel newInstance = new SearcherCutoffValuesAnnotationLevel();
+		
+		/**
+		 * private constructor
+		 */
+		private SearcherCutoffValuesAnnotationLevel_Builder() {}
 
+		public SearcherCutoffValuesAnnotationLevel build() {
+			return newInstance;
+		}
+		
+		public SearcherCutoffValuesAnnotationLevel_Builder setAnnotationCutoffValue(double annotationCutoffValue) {
+			newInstance.annotationCutoffValue = annotationCutoffValue;
+			return this;
+		}
 
+		public SearcherCutoffValuesAnnotationLevel_Builder setAnnotationTypeId(int annotationTypeId) {
+			newInstance.annotationTypeId = annotationTypeId;
+			return this;
+		}
+
+		public SearcherCutoffValuesAnnotationLevel_Builder setAnnotationTypeDTO(AnnotationTypeDTO annotationTypeDTO) {
+			newInstance.annotationTypeDTO = annotationTypeDTO;
+			return this;
+		}
+
+	}
 }

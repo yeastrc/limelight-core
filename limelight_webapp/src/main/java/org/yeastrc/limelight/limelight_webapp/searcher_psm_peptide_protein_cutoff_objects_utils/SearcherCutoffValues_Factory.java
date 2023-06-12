@@ -31,7 +31,9 @@ import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptive
 import org.yeastrc.limelight.limelight_shared.enum_classes.PsmPeptideMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel.SearcherCutoffValuesRootLevel_Builder;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel.SearcherCutoffValuesSearchLevel_Builder;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightErrorDataInWebRequestException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParamsRoot;
@@ -91,16 +93,18 @@ public class SearcherCutoffValues_Factory {
 		}
 		
 		//  outputs
-		SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel = new SearcherCutoffValuesRootLevel();
+		SearcherCutoffValuesRootLevel_Builder searcherCutoffValuesRootLevel_Builder = SearcherCutoffValuesRootLevel.builder();
 
 		for ( SearchDataLookupParams_For_Single_ProjectSearchId paramsForProjectSearchId : paramsForProjectSearchIdsList ) {
 			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel =
 					createSearcherCutoffValuesSearchLevel( projectSearchIdMapToSearchId, paramsForProjectSearchId, skipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId );
 			if ( searcherCutoffValuesSearchLevel != null ) {
-				searcherCutoffValuesRootLevel.addPerSearchCutoffs( searcherCutoffValuesSearchLevel );
+				searcherCutoffValuesRootLevel_Builder.addPerSearchCutoffs( searcherCutoffValuesSearchLevel );
 			}
 		}
-		
+
+		SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel = searcherCutoffValuesRootLevel_Builder.build();
+				
 		if ( searcherCutoffValuesRootLevel.getPerSearchCutoffsList() == null || searcherCutoffValuesRootLevel.getPerSearchCutoffsList().isEmpty() ) {
 			
 			String projectSearchIds = null;
@@ -115,6 +119,7 @@ public class SearcherCutoffValues_Factory {
 			log.warn( msg );
 			throw new LimelightErrorDataInWebRequestException( msg );
 		}
+		
 		return searcherCutoffValuesRootLevel;
 	}
 
@@ -224,8 +229,10 @@ public class SearcherCutoffValues_Factory {
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> psmCutoffValues = inputItem.getPsmFilters();
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> peptideCutoffValues = inputItem.getReportedPeptideFilters();
 		//  outputs
-		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = new SearcherCutoffValuesSearchLevel();
-		searcherCutoffValuesSearchLevel.setProjectSearchId( projectSearchId );
+		
+		SearcherCutoffValuesSearchLevel_Builder searcherCutoffValuesSearchLevel_Builder = SearcherCutoffValuesSearchLevel.builder();
+		
+		searcherCutoffValuesSearchLevel_Builder.setProjectSearchId( projectSearchId );
 		
 		//////////////////////
 		//  Process Input
@@ -239,7 +246,7 @@ public class SearcherCutoffValues_Factory {
 									annotationTypeId, 
 									cutoffValuesAnnotationLevel, 
 									srchPgmFilterablePsmAnnotationTypeDTOMap );
-					searcherCutoffValuesSearchLevel.addPsmPerAnnotationCutoffs( output );
+					searcherCutoffValuesSearchLevel_Builder.addPsmPerAnnotationCutoffs( output );
 				}
 			}
 		}
@@ -253,10 +260,13 @@ public class SearcherCutoffValues_Factory {
 									annotationTypeId, 
 									cutoffValuesAnnotationLevel, 
 									srchPgmFilterableReportedPeptideAnnotationTypeDTOMap );
-					searcherCutoffValuesSearchLevel.addPeptidePerAnnotationCutoffs( output );
+					searcherCutoffValuesSearchLevel_Builder.addPeptidePerAnnotationCutoffs( output );
 				}
 			}
 		}
+
+		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel_Builder.build();
+		
 		return searcherCutoffValuesSearchLevel;
 	}
 
@@ -269,16 +279,22 @@ public class SearcherCutoffValues_Factory {
 			Integer typeId,
 			SearchDataLookupParams_Filter_Per_AnnotationType inputItem,
 			Map<Integer, AnnotationTypeDTO> annotationTypeDTOMap  ) {
+		
 		AnnotationTypeDTO annotationTypeDTO = annotationTypeDTOMap.get( typeId );
 		if ( annotationTypeDTO == null ) {
 			String msg = "Failed to find annotationTypeDTO for type id: " + typeId;
 			log.error( msg );
 			throw new LimelightErrorDataInWebRequestException( msg );
 		}
-		SearcherCutoffValuesAnnotationLevel outputItem = new SearcherCutoffValuesAnnotationLevel();
-		outputItem.setAnnotationTypeId( typeId );
-		outputItem.setAnnotationCutoffValue( inputItem.getValue() );
-		outputItem.setAnnotationTypeDTO( annotationTypeDTO );
+	
+		SearcherCutoffValuesAnnotationLevel outputItem = 
+				SearcherCutoffValuesAnnotationLevel
+				.builder()
+				.setAnnotationTypeId( typeId )
+				.setAnnotationCutoffValue( inputItem.getValue() )
+				.setAnnotationTypeDTO( annotationTypeDTO )
+				.build();
+				
 		return outputItem;
 	}
 
