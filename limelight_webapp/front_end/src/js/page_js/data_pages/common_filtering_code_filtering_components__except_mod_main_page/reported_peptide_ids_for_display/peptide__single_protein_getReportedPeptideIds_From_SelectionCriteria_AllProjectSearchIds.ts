@@ -291,7 +291,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                                     this._peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds_For_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_Filter.
                                     peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds_For_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_Filter({
                                         proteinSequenceVersionId: requestParams.proteinSequenceVersionId,
-                                        data_MainMethod_ReturnContents_FilteredToThisPoint: all_Data_Before_Apply_DigestionFilter_Aka_PeptideTryptic.data,
+                                        data_MainMethod_ReturnContents_FilteredToThisPoint: value_mainSearchResultPromise,
                                         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject:  requestParams.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
                                     })
 
