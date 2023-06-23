@@ -687,6 +687,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                             <span>
                                                 Go to project the searches were
                                             </span>
+                                            <span> </span>
                                             {( this.props.doCopy ) ? (
                                             <span>
                                                 copied
