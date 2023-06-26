@@ -79,6 +79,10 @@
 			>Title:</div>
 		<div id="title_container_div"  class="second-level-text project-info-text" >
 
+		     <%--  Change to Title text always bolded --%>
+		  <c:set var="title_style_addition" value="font-weight: bold;"></c:set>
+		  
+		  <%--
 		  <c:choose>
 			<c:when test="${ webSessionAuthAccessLevel.publicAccessCodeReadAccessLevel }">
 			  <c:set var="title_style_addition" value="font-weight: bold;"></c:set>
@@ -87,6 +91,7 @@
 			  <c:set var="title_style_addition" value=""></c:set>
 			</c:otherwise>
 		  </c:choose>
+		  --%>
 		  
 		  <span id="project_title_display" style="<c:out value="${title_style_addition}" ></c:out>"><c:out value="${ project.title }" ></c:out></span>
 	      <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
