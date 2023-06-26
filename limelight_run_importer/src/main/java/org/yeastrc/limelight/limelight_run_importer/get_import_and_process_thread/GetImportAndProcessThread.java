@@ -26,12 +26,14 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
+import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.file_import_limelight_xml_scans.objects.TrackingDTOTrackingRunDTOPair;
 import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigData;
 import org.yeastrc.limelight.limelight_run_importer.constants.GetImportStatus_FileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_update_with_transaction_services.GetNextTrackingToProcessDBTransaction;
 import org.yeastrc.limelight.limelight_run_importer.manager_thread.ManagerThread;
+import org.yeastrc.limelight.limelight_run_importer.pause_run_importer.RunImporter_Get_And_Process_PauseRequest;
 import org.yeastrc.limelight.limelight_run_importer.process_submitted_import.ProcessSubmittedImport;
 import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 
@@ -231,7 +233,7 @@ public class GetImportAndProcessThread extends Thread {
 					
 					lastSQLErrorTimestamp = System.currentTimeMillis();
 
-					if ( log_Exception_YN == log_Exception_YN.YES ) {
+					if ( log_Exception_YN == Log_Exception_YN.YES ) {
 						log.error( "NOT all failed attempts to query the database will be logged." );
 					}
 					
@@ -325,7 +327,7 @@ public class GetImportAndProcessThread extends Thread {
 
 						lastSQLErrorTimestamp = System.currentTimeMillis();
 						
-						if ( log_Exception_YN == log_Exception_YN.YES ) {
+						if ( log_Exception_YN == Log_Exception_YN.YES ) {
 							log.error( "NOT all failed attempts to query the database will be logged." );
 						}
 						
@@ -407,6 +409,18 @@ public class GetImportAndProcessThread extends Thread {
 				System.out.println( "**************************" );
 			}
 			
+			try {
+				RunImporter_Get_And_Process_PauseRequest.getSingletonInstance().runImporter_Get_And_Process_PauseRequest();
+			} catch (Throwable t ) {
+				log.error( "RunImporter_Get_And_Process_PauseRequest.getSingletonInstance().runImporter_Get_And_Process_PauseRequest(); threw: " + t, t );
+			}
+
+			if ( ! keepRunning ) {
+
+				//  Check for shutdown and stop after current import before continuing
+				
+				continue; //  Skip to start of loop
+			}
 			
 			//  Get Next Import to process
 			

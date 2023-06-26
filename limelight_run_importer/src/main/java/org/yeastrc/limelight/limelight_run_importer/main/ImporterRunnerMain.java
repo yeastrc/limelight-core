@@ -59,7 +59,7 @@ public class ImporterRunnerMain {
 			
 			//  Instantiate and 'start()' the ManagerThread
 			
-			managerThread = new ManagerThread( dbConnectionParametersProvider );
+			managerThread = ManagerThread.createSingletonInstance( dbConnectionParametersProvider );
 			managerThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
 			managerThread.setImporterRunnerMain( this );
 			managerThread.start();

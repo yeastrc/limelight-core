@@ -86,6 +86,32 @@ INSERT INTO file_import_tracking_run_sub_status_values_lookup_tbl (id, display_t
 INSERT INTO file_import_tracking_run_sub_status_values_lookup_tbl (id, display_text) VALUES ( 2, 'data error' );
 INSERT INTO file_import_tracking_run_sub_status_values_lookup_tbl (id, display_text) VALUES ( 3, 'project not allow import' );
 
+
+
+INSERT INTO file_import__run_importer__pause_processing_cur_status_tp_vl_tbl (type_id, label_text) VALUES (1, 'Pause All');
+
+INSERT INTO file_import__run_importer__pause_processing_cur_status_st_vl_tbl (status_id, label_text) VALUES (1, 'NOT Paused');
+INSERT INTO file_import__run_importer__pause_processing_cur_status_st_vl_tbl (status_id, label_text) VALUES (2, 'YES Paused');
+
+INSERT INTO file_import__run_importer__pause_processing_cur_st_trigg_vl_tbl (trigger_type_id, label_text) VALUES (1, 'Paused for Request');
+INSERT INTO file_import__run_importer__pause_processing_cur_st_trigg_vl_tbl (trigger_type_id, label_text) VALUES (2, 'Paused for Schedule');
+
+INSERT INTO file_import__run_importer_alive__type_values_tbl (type_id, label_text) VALUES (1, 'Alive All');
+
+INSERT INTO file_import__run_importer_alive__status_values_tbl (status_id, label_text) VALUES (1, 'Alive');
+INSERT INTO file_import__run_importer_alive__status_values_tbl (status_id, label_text) VALUES (2, 'Shutdown');
+
+
+INSERT INTO file_import__run_importer__pause_prcssng_reqst_type_values_tbl (type_id, label_text) VALUES (1, 'Pause All');
+
+INSERT INTO file_import__run_importer__pause_prcssng_reqst_status_vals_tbl (status_id, label_text) VALUES (1, 'NOT Pause');
+INSERT INTO file_import__run_importer__pause_prcssng_reqst_status_vals_tbl (status_id, label_text) VALUES (2, 'Pause Immediately');
+INSERT INTO file_import__run_importer__pause_prcssng_reqst_status_vals_tbl (status_id, label_text) VALUES (3, 'Pause when complete');
+
+INSERT INTO file_import__run_importer__pause_prcssng_sched_type_values_tbl (type_id, label_text) VALUES (1, 'Pause All');
+
+
+
 	
 --  Insert entries into isotope_label_tbl
 

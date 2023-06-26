@@ -32,6 +32,7 @@ import org.yeastrc.limelight.limelight_run_importer.config.ImporterRunnerConfigD
 import org.yeastrc.limelight.limelight_run_importer.constants.GetImportStatus_FileConstants;
 import org.yeastrc.limelight.limelight_run_importer.database_update_with_transaction_services.GetNext_ImportAndPipelineRunTracking_ToProcessDBTransaction;
 import org.yeastrc.limelight.limelight_run_importer.manager_thread.ManagerThread;
+import org.yeastrc.limelight.limelight_run_importer.pause_run_importer.RunImporter_Get_And_Process_PauseRequest;
 import org.yeastrc.limelight.limelight_run_importer.process_submitted_import_or_pipeline_run.ProcessSubmittedImportOrPipelineRun;
 import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.LimelightDatabaseSchemaVersion_Constants;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.objects.FileImport_AndPipelineRun_TrackingDTOTrackingRunDTOPair;
@@ -408,6 +409,19 @@ public class ImportAndPipelineRun_Thread extends Thread {
 				System.out.println( "**************************" );
 			}
 			
+
+			try {
+				RunImporter_Get_And_Process_PauseRequest.getSingletonInstance().runImporter_Get_And_Process_PauseRequest();
+			} catch (Throwable t ) {
+				log.error( "RunImporter_Get_And_Process_PauseRequest.getSingletonInstance().runImporter_Get_And_Process_PauseRequest(); threw: " + t, t );
+			}
+
+			if ( ! keepRunning ) {
+
+				//  Check for shutdown and stop after current import before continuing
+				
+				continue; //  Skip to start of loop
+			}
 			
 			//  Get Next Run or Import to process
 						

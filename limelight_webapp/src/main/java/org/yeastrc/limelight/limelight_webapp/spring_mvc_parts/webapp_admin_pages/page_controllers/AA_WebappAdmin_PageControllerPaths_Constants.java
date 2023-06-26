@@ -55,10 +55,15 @@ public class AA_WebappAdmin_PageControllerPaths_Constants {
 	public static final String ADMIN_MANAGE_CACHED_DATA_PAGE_CONTROLLER = "admin/pg/manage-cached-data";
 
 	/**
-	 * Admin Manage Caching Page
+	 * Admin Manage Terms of Service Page
 	 */
 	public static final String ADMIN_MANAGE_TERMS_OF_SERVICE_PAGE_CONTROLLER = "admin/pg/manage-terms-of-service";
 	
-	
+
+	/**
+	 * Admin Manage Importer and Pipeline Execution Page - Manages the "Run Importer" process and its spawned processes
+	 */
+	public static final String ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION_PAGE_CONTROLLER = "admin/pg/manage-importer";
+
 
 }

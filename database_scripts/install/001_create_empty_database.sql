@@ -3822,6 +3822,220 @@ COMMENT = 'Track DB Updates - Table tracking Completion for a search id';
 CREATE INDEX fk_aa_limelight_db_updates_in_runiproridpm_cmpltfrsrchidtbl_idx ON aa_limelight_db_updates_in_run_importer_or_pgm_cmplt_fr_srch_tbl (search_id ASC) VISIBLE;
 
 
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_cur_status_tp_vl_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_cur_status_tp_vl_tbl (
+  type_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (type_id))
+ENGINE = InnoDB
+COMMENT = 'Type Values';
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_cur_status_st_vl_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_cur_status_st_vl_tbl (
+  status_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (status_id))
+ENGINE = InnoDB
+COMMENT = 'Status Values';
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_cur_st_trigg_vl_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_cur_st_trigg_vl_tbl (
+  trigger_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'Current Status Trigger Type: request, schedule',
+  label_text VARCHAR(400) NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (trigger_type_id))
+ENGINE = InnoDB
+COMMENT = 'Current Status Trigger Type Values: request, schedule';
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_current_status_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_current_status_tbl (
+  type_id_fk SMALLINT UNSIGNED NOT NULL COMMENT 'Current Status - All of Run Importer Processing - Import and Import and Pipeline Run',
+  status_id_fk SMALLINT UNSIGNED NOT NULL COMMENT 'The Requested Status to change to.  Input to the Run Importer process the next time this table is checked.',
+  status_id_last_updated_date_time DATETIME NOT NULL,
+  current_status_trigger_type_id_fk SMALLINT UNSIGNED NULL COMMENT 'trigger of current status: request, schedule.  null for not paused.',
+  time_in_seconds_until_next_check_for_pause INT UNSIGNED NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (type_id_fk),
+  CONSTRAINT fk_file_import__run_importer__pause_pcsg_cur_stats_tbl_1
+    FOREIGN KEY (type_id_fk)
+    REFERENCES file_import__run_importer__pause_processing_cur_status_tp_vl_tbl (type_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_import__run_importer__pause_pcsg_cur_stats_tbl_2
+    FOREIGN KEY (status_id_fk)
+    REFERENCES file_import__run_importer__pause_processing_cur_status_st_vl_tbl (status_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_import__run_importer__pause_pcsg_cur_stats_tbl_3
+    FOREIGN KEY (current_status_trigger_type_id_fk)
+    REFERENCES file_import__run_importer__pause_processing_cur_st_trigg_vl_tbl (trigger_type_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_file_import__import_and_pipeline_run__pause_processing_t_idx ON file_import__run_importer__pause_processing_current_status_tbl (status_id_fk ASC) VISIBLE;
+
+CREATE INDEX fk_file_import__run_importer__pause_processing_current_stat_idx ON file_import__run_importer__pause_processing_current_status_tbl (current_status_trigger_type_id_fk ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer_alive__type_values_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer_alive__type_values_tbl (
+  type_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (type_id))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer_alive__status_values_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer_alive__status_values_tbl (
+  status_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (status_id))
+ENGINE = InnoDB
+COMMENT = 'values for status_id';
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer_alive_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer_alive_tbl (
+  type_id_fk SMALLINT UNSIGNED NOT NULL,
+  status_id_fk SMALLINT UNSIGNED NOT NULL,
+  last_status_applied_date_time DATETIME NULL,
+  time_in_seconds_until_next_alive_status_update INT UNSIGNED NOT NULL,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'NOW() of when record last had \"UPDATE\" applied since status_id may not change',
+  PRIMARY KEY (type_id_fk),
+  CONSTRAINT fk_file_import__run_importer_alive_tbl_1
+    FOREIGN KEY (type_id_fk)
+    REFERENCES file_import__run_importer_alive__type_values_tbl (type_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_import__run_importer_alive_tbl_2
+    FOREIGN KEY (status_id_fk)
+    REFERENCES file_import__run_importer_alive__status_values_tbl (status_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'All of Run Importer Processing - Import and Import and Pipeline Run';
+
+CREATE INDEX fk_file_import__import_and_pipeline_run__run_importer_alive_idx ON file_import__run_importer_alive_tbl (status_id_fk ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_prcssng_reqst_type_values_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_prcssng_reqst_type_values_tbl (
+  type_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (type_id))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_prcssng_reqst_status_vals_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_prcssng_reqst_status_vals_tbl (
+  status_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (status_id))
+ENGINE = InnoDB
+COMMENT = 'Status Values';
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_request_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_request_tbl (
+  type_id_fk SMALLINT UNSIGNED NOT NULL COMMENT 'All of Run Importer Processing - Import and Import and Pipeline Run',
+  status_id_requested_fk SMALLINT UNSIGNED NOT NULL COMMENT 'The Requested Status to change to.  Input to the Run Importer process the next time this table is checked.',
+  status_id_requested_last_updated_date_time DATETIME NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (type_id_fk),
+  CONSTRAINT fk_file_import__run_importer__ps_prcg_request_tbl_1
+    FOREIGN KEY (type_id_fk)
+    REFERENCES file_import__run_importer__pause_prcssng_reqst_type_values_tbl (type_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_file_import__run_importer__ps_prcg_request_tbl_2
+    FOREIGN KEY (status_id_requested_fk)
+    REFERENCES file_import__run_importer__pause_prcssng_reqst_status_vals_tbl (status_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_file_import__run_importer__ps_prcg_request_tbl_2_idx ON file_import__run_importer__pause_processing_request_tbl (status_id_requested_fk ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_prcssng_sched_type_values_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_prcssng_sched_type_values_tbl (
+  type_id SMALLINT UNSIGNED NOT NULL,
+  label_text VARCHAR(400) NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  dummy_on_duplicate_update TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (type_id))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table file_import__run_importer__pause_processing_schedule_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_import__run_importer__pause_processing_schedule_tbl (
+  type_id_fk SMALLINT UNSIGNED NOT NULL COMMENT 'All of Run Importer Processing - Import and Import and Pipeline Run',
+  schedule_json MEDIUMTEXT NOT NULL,
+  schedule_json_version INT UNSIGNED NOT NULL,
+  schedule_last_updated_date_time DATETIME NOT NULL,
+  last_updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (type_id_fk),
+  CONSTRAINT fk_file_import__run_importer__pause_processing_schedule_tbl_1
+    FOREIGN KEY (type_id_fk)
+    REFERENCES file_import__run_importer__pause_prcssng_sched_type_values_tbl (type_id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

@@ -204,6 +204,9 @@ const mainConfig = (env, argv) => {
 		//  Webapp Manage Users Page
 		'webapp_admin/manageUsersPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root.ts',
 
+		//  Webapp Manage Importer / Pipeline Execution Page
+		'webapp_admin/manage_ImporterPipelineExecution_Page_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage_ImporterPipelineExecution_ForAdminPage_Root.ts',
+
 		//  Webapp Manage Cached Data Page
 		'webapp_admin/manageCachedDataPage_Root' : './src/js/page_js/webapp_admin_pages/webapp_manage_cached_data_page/js/manageCachedDataForAdminPage_Root.ts',
 

@@ -71,7 +71,19 @@ public class AA_WebappAdmin_RestWSControllerPaths_Constants {
 	public static final String WEBAPP_ADMIN_MANAGE_CACHED_DATA_WRITE_CACHED_DATA_SIZE_TO_LOG_FILE_REST_WEBSERVICE_CONTROLLER = 
 			"admin/rws/for-page/manage-cached-data-write-cached-data-size-to-log-file";
 
+
+	//  Admin Manage Run Importer Page
+
+	public static final String WEBAPP_ADMIN_MANAGE_RUN_IMPORTER_PAUSE_GET_CURRENT_STATUS__REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-get-current-status";
 	
+	public static final String WEBAPP_ADMIN_MANAGE_RUN_IMPORTER_PAUSE_GET_REQUESTED_STATUS__REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-get-requested-status";
+	
+	public static final String WEBAPP_ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION__UPDATE_REQUESTED_STATUS_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-update-requested-status";
+
+	public static final String WEBAPP_ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION__PAUSE_SCHEDULE_GET_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-schedule-get";
+
+	public static final String WEBAPP_ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION__PAUSE_SCHEDULE_INSERT_UPDATE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-schedule-insert-update";
+
 
 	//  Under general User Account since shared code:
 	//     Create Account Performed By Admin User
