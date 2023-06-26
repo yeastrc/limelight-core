@@ -20,7 +20,7 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 import {
     projectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component__openOverlay,
     ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component__openOverlay__FunctionParams
-} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/projectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component";
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component";
 
 //  Local imports
 
