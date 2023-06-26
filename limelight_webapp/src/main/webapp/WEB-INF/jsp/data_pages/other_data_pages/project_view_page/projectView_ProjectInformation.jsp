@@ -96,9 +96,10 @@
 		  <span id="project_title_display" style="<c:out value="${title_style_addition}" ></c:out>"><c:out value="${ project.title }" ></c:out></span>
 	      <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
 				<input id="change_project_title_button" type="image" src="static/images/icon-edit.png"  value="Update"
-					 class="selector_tool_tip_attached  icon-small " data-tooltip="Edit project title" >	    
+					 class=" icon-small " title="Edit project title" >	    
 		  </c:if>
 		</div>
+		<%--  Moved to JS
 		  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
 
 			  <div id="change_project_title_container" style="display: none;  position: relative;" 
@@ -118,7 +119,7 @@
 			  </div>
 			  
 		  </c:if>
-
+		--%>
 	  </div> <%-- End for Project Title: <div class="project-info-single-block" >  --%>
 	  
 	  <%--  Project Abstract --%>
@@ -143,23 +144,13 @@
 				<%-- 
 				--%>
 					<input id="change_project_abstract_button" type="image" src="static/images/icon-edit.png"  value="Update"
-						 class="selector_tool_tip_attached  icon-small " data-tooltip="Edit project abstract" >
+						 class=" icon-small " title="Edit project abstract" >
 				</c:if>
 			  </div>
 				<%--  Edit Abstract block --%>
+				<%--  Moved to JS
 			  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
 				<div  id="change_project_abstract_container" class="second-level-text project-info-text" style="display: none; position: relative;">
-					<%--  
-			  		<div class="error-message-container error_message_container_jq" id="error_message_project_abstract_required">
-			  		
-			  			<div class="error-message-inner-container" style="width: 300px;">
-			  				<div class="error-message-close-x error_message_close_x_jq">X</div>
-				  			<div class="error-message-text" >Project Abstract cannot be empty</div>
-			  			</div>
-				  	</div>
-				  	--%>
-				
-				
 				  <div >
 					<textarea id="change_project_abstract_input" rows="10" cols="100" maxlength="5000"></textarea>
 				  </div>
@@ -169,6 +160,7 @@
 				  </div>
 				</div>
 			  </c:if>
+			  --%>
 			</div>
 			
 	  </c:if> <%-- END: Project Abstract --%>
