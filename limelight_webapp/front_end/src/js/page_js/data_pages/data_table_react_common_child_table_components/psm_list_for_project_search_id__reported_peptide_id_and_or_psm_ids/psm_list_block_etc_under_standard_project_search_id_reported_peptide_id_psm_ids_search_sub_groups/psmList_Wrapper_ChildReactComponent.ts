@@ -26,7 +26,7 @@ import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__co
 import {
     psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects,
     PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
-} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id_reported_peptide_id/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
+} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id__reported_peptide_id_and_or_psm_ids/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
 
 /**
  *
