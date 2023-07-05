@@ -44,7 +44,6 @@
           <IfLastModified age="P20D" />
         </Delete>
       </DefaultRolloverStrategy>
-      <DefaultRolloverStrategy max="20" />
     </RollingFile>
         
   </Appenders>
