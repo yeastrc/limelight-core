@@ -27,6 +27,7 @@ import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileCons
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_AliveStatus_DAO__RunImporter;
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_PauseProcessing_CurrentStatus_DAO__RunImporter;
 import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread;
+import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread.GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread;
@@ -192,7 +193,11 @@ public class ManagerThread extends Thread {
 
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 				try {
-					database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance( DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD /* name */, dbConnectionParametersProvider );
+					database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance(
+							Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.YES,
+							DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD /* name */, 
+							dbConnectionParametersProvider 
+							);
 					database_PopulateNewFields_Cleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
 					database_PopulateNewFields_Cleanup_RemoveData_Thread.start();
 				} catch (Throwable e) {
@@ -643,7 +648,11 @@ public class ManagerThread extends Thread {
 					}
 					
 					try {
-						database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance(  DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD + "_" + database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter /* name */, dbConnectionParametersProvider  );
+						database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance(
+								Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.NO,
+								DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD + "_" + database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter /* name */, 
+								dbConnectionParametersProvider  );
+						
 						database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter += 1;
 						if ( old_database_PopulateNewFields_Cleanup_RemoveData_Thread != null ) {
 							log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "'."  );
