@@ -1285,6 +1285,10 @@ public class ManagerThread extends Thread {
 					//  Not logged for today so do it now
 						
 					prevLogStatus_Hour_2__DayOfMonth = currentDayOfMonth;
+
+				} else {
+					//  Some other hour so return
+					return; // EARLY RETURN
 				}
 			}
 		
