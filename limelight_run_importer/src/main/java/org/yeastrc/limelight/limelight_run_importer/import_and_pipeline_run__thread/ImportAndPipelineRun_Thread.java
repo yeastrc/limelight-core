@@ -45,6 +45,10 @@ import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.objects.F
  */
 public class ImportAndPipelineRun_Thread extends Thread {
 
+	public enum ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM {
+		YES, NO
+	}
+	
 	private static final String className = ImportAndPipelineRun_Thread.class.getSimpleName();
 	private static final int WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT = 5; // in seconds
 	private static final int WAIT_TIME_WHEN_GET_EXCEPTION = 5 * 60; // in seconds
@@ -57,8 +61,6 @@ public class ImportAndPipelineRun_Thread extends Thread {
 	private volatile boolean keepRunning = true;
 	private volatile ProcessSubmittedImportOrPipelineRun processSubmittedImportOrPipelineRun;
 	
-	private volatile boolean firstInstanceOfThisThread;
-
 	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
 	
 	//  Parent ManagerThread managerThread
@@ -78,11 +80,32 @@ public class ImportAndPipelineRun_Thread extends Thread {
 	private int waitTimeForNextCheckForImportToProcess_InSeconds = WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT;
 	
 	private int maxTrackingRecordPriorityToRetrieve;
+
+	private ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM firstInstanceOfThisThread;
+
 	
-	public static ImportAndPipelineRun_Thread getNewInstance( String s, ManagerThread managerThread ) {
+	
+	/**
+	 * @param threadName
+	 * @param managerThread
+	 * @param maxTrackingRecordPriorityToRetrieve
+	 * @param firstInstanceOfThisThread
+	 * @return
+	 */
+	public static ImportAndPipelineRun_Thread getNewInstance(  
+
+			String threadName,
+			ManagerThread managerThread,
+			
+			int maxTrackingRecordPriorityToRetrieve,
+
+			ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM firstInstanceOfThisThread ) {
 		
-		ImportAndPipelineRun_Thread instance = new ImportAndPipelineRun_Thread(s);
+		ImportAndPipelineRun_Thread instance = new ImportAndPipelineRun_Thread(threadName);
+
 		instance.managerThread = managerThread;
+		instance.maxTrackingRecordPriorityToRetrieve = maxTrackingRecordPriorityToRetrieve;
+		instance.firstInstanceOfThisThread = firstInstanceOfThisThread;
 		
 		instance.init();
 		return instance;
@@ -435,7 +458,8 @@ public class ImportAndPipelineRun_Thread extends Thread {
 					throw t;
 				}
 				
-				if ( firstInstanceOfThisThread && firstTimeQueriedDBForImportToProcess ) {
+				if ( firstInstanceOfThisThread == ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.YES 
+						&& firstTimeQueriedDBForImportToProcess ) {
 					
 					firstTimeQueriedDBForImportToProcess = false;
 					
@@ -623,16 +647,4 @@ public class ImportAndPipelineRun_Thread extends Thread {
 		}
 	}
 
-
-	
-	public int getMaxTrackingRecordPriorityToRetrieve() {
-		return maxTrackingRecordPriorityToRetrieve;
-	}
-	public void setMaxTrackingRecordPriorityToRetrieve(
-			int maxTrackingRecordPriorityToRetrieve) {
-		this.maxTrackingRecordPriorityToRetrieve = maxTrackingRecordPriorityToRetrieve;
-	}
-	public void setFirstInstanceOfThisThread(boolean firstInstanceOfThisThread) {
-		this.firstInstanceOfThisThread = firstInstanceOfThisThread;
-	}
 }

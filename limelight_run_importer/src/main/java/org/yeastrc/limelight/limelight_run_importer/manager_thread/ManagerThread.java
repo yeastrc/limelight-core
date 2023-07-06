@@ -28,7 +28,9 @@ import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_PauseProcessing_CurrentStatus_DAO__RunImporter;
 import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
+import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread.GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread;
+import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread.ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_run_importer.pause_run_importer.RunImporter_Get_And_Process_PauseRequest;
@@ -44,6 +46,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Calendar;
 
 
 /**
@@ -89,6 +92,8 @@ public class ManagerThread extends Thread {
 	
 	//////
 	
+	private InternalCLass__Log_Thread_Alive internalCLass__Log_Thread_Alive  = new InternalCLass__Log_Thread_Alive();
+	
 	private int maxTrackingRecordPriorityToRetrieve;
 	
 	private DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider;
@@ -106,6 +111,8 @@ public class ManagerThread extends Thread {
 	
 	private volatile Database_PopulateNewFields_Cleanup_RemoveData_Thread database_PopulateNewFields_Cleanup_RemoveData_Thread;
 	private int database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter = 2;  // used if need to replace the thread
+	
+	//   Update Thread Status Reporting if add more theads
 	
 //	private volatile ClientStatusUpdateThread clientStatusUpdateThread;
 //
@@ -302,15 +309,21 @@ public class ManagerThread extends Thread {
 				//			clientStatusUpdateThread.start();
 
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( GET_IMPORT_AND_PROCESS_THREAD /* name */, this );
-				getImportAndProcessThread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
-				getImportAndProcessThread.setFirstInstanceOfThisThread(true);
+				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( 
+						GET_IMPORT_AND_PROCESS_THREAD /* name */, 
+						this,
+						maxTrackingRecordPriorityToRetrieve,
+						GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM.YES );
+								
 				getImportAndProcessThread.start();
 
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
-				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance( IMPORT_AND_PIPELINE_RUN_THREAD /* name */, this );
-				importAndPipelineRun_Thread.setMaxTrackingRecordPriorityToRetrieve( maxTrackingRecordPriorityToRetrieve );
-				importAndPipelineRun_Thread.setFirstInstanceOfThisThread(true);
+				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance( 
+						IMPORT_AND_PIPELINE_RUN_THREAD /* name */, 
+						this,
+						maxTrackingRecordPriorityToRetrieve,
+						ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.YES );
+								
 				importAndPipelineRun_Thread.start();
 
 			}
@@ -393,7 +406,19 @@ public class ManagerThread extends Thread {
 //			}
 			try {
 				
+				
+				//  LOG current status
+				
+				internalCLass__Log_Thread_Alive.log_ThreadStatus(
+						getImportAndProcessThread, 
+						importAndPipelineRun_Thread, 
+						importFiles_DelayedRemoval_Thread, 
+						database_PopulateNewFields_Cleanup_RemoveData_Thread, 
+						pause_Imports_RunPipelines_NOW, 
+						pause_Imports_RunPipelines_AfterCurrent_ImportsAndRunPipelines);
+				
 				if ( ( ! pause_Imports_RunPipelines_NOW ) && ( ! pause_Imports_RunPipelines_AfterCurrent_ImportsAndRunPipelines ) ) {
+					
 					replaceWorkerThreadsIfDead();
 					
 					if ( pause_Imports_RunPipelines_Paused ) {
@@ -541,8 +566,15 @@ public class ManagerThread extends Thread {
 			
 			//  check health of getImportAndProcessThread, replace thread if dead
 			if ( getImportAndProcessThread == null || ! getImportAndProcessThread.isAlive() ) {
+				
 				GetImportAndProcessThread oldGetImportAndProcessThread = getImportAndProcessThread;
-				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */, this );
+				
+				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( 
+						GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */, 
+						this,
+						maxTrackingRecordPriorityToRetrieve,
+						GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM.NO );
+
 				getImportAndProcessThreadCounter += 1;
 				if ( oldGetImportAndProcessThread != null ) {
 					log.error( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
@@ -552,8 +584,15 @@ public class ManagerThread extends Thread {
 
 			//  check health of importAndPipelineRun_Thread, replace thread if dead
 			if ( importAndPipelineRun_Thread == null || ! importAndPipelineRun_Thread.isAlive() ) {
+				
 				ImportAndPipelineRun_Thread old_importAndPipelineRun_Thread = importAndPipelineRun_Thread;
-				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance(  GET_IMPORT_AND_PROCESS_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */, this );
+				
+				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance(  
+						GET_IMPORT_AND_PROCESS_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */,
+						this,
+						maxTrackingRecordPriorityToRetrieve,
+						ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.NO );
+				
 				importAndPipelineRun_ThreadCounter += 1;
 				if ( old_importAndPipelineRun_Thread != null ) {
 					log.error( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
@@ -1182,6 +1221,127 @@ public class ManagerThread extends Thread {
 	public void setMaxTrackingRecordPriorityToRetrieve(
 			int maxTrackingRecordPriorityToRetrieve) {
 		this.maxTrackingRecordPriorityToRetrieve = maxTrackingRecordPriorityToRetrieve;
+	}
+	
+	
+	
+	//////////////////////
+	
+	private static class InternalCLass__Log_Thread_Alive {
+
+		private static final int HOUR_1_LOG = 9; // 9 am
+		private static final int HOUR_2_LOG = 21; // 9 pm
+		
+		private int prevLogStatus_Hour_1__DayOfMonth;
+		private int prevLogStatus_Hour_2__DayOfMonth;
+
+		/**
+		 * 
+		 */
+		private void log_ThreadStatus(
+
+				GetImportAndProcessThread getImportAndProcessThread,
+				ImportAndPipelineRun_Thread importAndPipelineRun_Thread,
+				ImportFiles_DelayedRemoval_Thread importFiles_DelayedRemoval_Thread,
+				Database_PopulateNewFields_Cleanup_RemoveData_Thread database_PopulateNewFields_Cleanup_RemoveData_Thread,
+				boolean pause_Imports_RunPipelines_NOW,
+				boolean pause_Imports_RunPipelines_AfterCurrent_ImportsAndRunPipelines
+				) {
+
+			if ( ! log.isInfoEnabled() ) {
+
+				//  NOT logging at info level so skip
+				
+				return; // EARLY RETURN
+			}
+			
+			{
+				Calendar calendar  = Calendar.getInstance();
+				int currentHour = calendar.get( Calendar.HOUR_OF_DAY );
+				int currentDayOfMonth = calendar.get( Calendar.DAY_OF_MONTH );
+
+				if ( currentHour == HOUR_1_LOG ) {
+					
+					if ( prevLogStatus_Hour_1__DayOfMonth == currentDayOfMonth ) {
+					
+						//  Already logged for today at this hour so return
+
+						return; // EARLY RETURN
+					}
+						
+					//  Not logged for today so do it now
+						
+					prevLogStatus_Hour_1__DayOfMonth = currentDayOfMonth;
+				
+				} else if ( currentHour == HOUR_2_LOG ) {
+					
+					if ( prevLogStatus_Hour_2__DayOfMonth == currentDayOfMonth ) {
+					
+						//  Already logged for today at this hour so return
+
+						return; // EARLY RETURN
+					}
+						
+					//  Not logged for today so do it now
+						
+					prevLogStatus_Hour_2__DayOfMonth = currentDayOfMonth;
+				}
+			}
+		
+			if ( log.isInfoEnabled() ) {
+
+				String threadStatus__getImportAndProcessThread = "getImportAndProcessThread == null";
+				if ( getImportAndProcessThread != null ) {
+					try {
+						threadStatus__getImportAndProcessThread = "getImportAndProcessThread.isAlive(): " + getImportAndProcessThread.isAlive();
+					} catch ( Throwable t ) {
+						threadStatus__getImportAndProcessThread = "Exception calling getImportAndProcessThread.isAlive(): " + t.toString();
+					}
+				}
+
+				String threadStatus__importAndPipelineRun_Thread = "importAndPipelineRun_Thread == null";
+				if ( importAndPipelineRun_Thread != null ) {
+					try {
+						threadStatus__importAndPipelineRun_Thread = "importAndPipelineRun_Thread.isAlive(): " + importAndPipelineRun_Thread.isAlive();
+					} catch ( Throwable t ) {
+						threadStatus__importAndPipelineRun_Thread = "Exception calling importAndPipelineRun_Thread.isAlive(): " + t.toString();
+					}
+				}
+
+				String threadStatus__importFiles_DelayedRemoval_Thread = "importFiles_DelayedRemoval_Thread == null";
+				if ( importFiles_DelayedRemoval_Thread != null ) {
+					try {
+						threadStatus__importFiles_DelayedRemoval_Thread = "importFiles_DelayedRemoval_Thread.isAlive(): " + importFiles_DelayedRemoval_Thread.isAlive();
+					} catch ( Throwable t ) {
+						threadStatus__importFiles_DelayedRemoval_Thread = "Exception calling importFiles_DelayedRemoval_Thread.isAlive(): " + t.toString();
+					}
+				}
+
+				String threadStatus__database_PopulateNewFields_Cleanup_RemoveData_Thread = "database_PopulateNewFields_Cleanup_RemoveData_Thread == null";
+				if ( database_PopulateNewFields_Cleanup_RemoveData_Thread != null ) {
+					try {
+						threadStatus__database_PopulateNewFields_Cleanup_RemoveData_Thread = 
+								"database_PopulateNewFields_Cleanup_RemoveData_Thread.isAlive(): " 
+										+ database_PopulateNewFields_Cleanup_RemoveData_Thread.isAlive();
+					} catch ( Throwable t ) {
+						threadStatus__database_PopulateNewFields_Cleanup_RemoveData_Thread = "Exception calling database_PopulateNewFields_Cleanup_RemoveData_Thread.isAlive(): " + t.toString();
+					}
+				}
+
+				log.info( "*********************************************************************" );
+				log.info( "Thread Status: pause_Imports_RunPipelines_NOW: " 
+						+ pause_Imports_RunPipelines_NOW
+						+ ", pause_Imports_RunPipelines_AfterCurrent_ImportsAndRunPipelines: " 
+						+ pause_Imports_RunPipelines_AfterCurrent_ImportsAndRunPipelines
+						+ ", " + threadStatus__getImportAndProcessThread 
+						+ ", " + threadStatus__importAndPipelineRun_Thread
+						+ ", " + threadStatus__importFiles_DelayedRemoval_Thread
+						+ ", " + threadStatus__database_PopulateNewFields_Cleanup_RemoveData_Thread );
+				log.info( "*********************************************************************" );
+			}
+		}
+		
+		
 	}
 
 }
