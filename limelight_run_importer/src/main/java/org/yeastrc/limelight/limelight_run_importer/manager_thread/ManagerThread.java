@@ -582,7 +582,7 @@ public class ManagerThread extends Thread {
 
 				getImportAndProcessThreadCounter += 1;
 				if ( oldGetImportAndProcessThread != null ) {
-					log.error( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
+					log.warn( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
 				}
 				getImportAndProcessThread.start();
 			}
@@ -600,7 +600,7 @@ public class ManagerThread extends Thread {
 				
 				importAndPipelineRun_ThreadCounter += 1;
 				if ( old_importAndPipelineRun_Thread != null ) {
-					log.error( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
+					log.warn( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
 				}
 				importAndPipelineRun_Thread.start();
 			}
