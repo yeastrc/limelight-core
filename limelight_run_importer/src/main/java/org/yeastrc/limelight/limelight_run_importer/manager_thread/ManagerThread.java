@@ -27,11 +27,8 @@ import org.yeastrc.limelight.limelight_run_importer.constants.RunControlFileCons
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_AliveStatus_DAO__RunImporter;
 import org.yeastrc.limelight.limelight_run_importer.dao.FileImport__RunImporter_PauseProcessing_CurrentStatus_DAO__RunImporter;
 import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread;
-import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall;
 import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread;
-import org.yeastrc.limelight.limelight_run_importer.get_import_and_process_thread.GetImportAndProcessThread.GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread;
-import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__thread.ImportAndPipelineRun_Thread.ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_run_importer.pause_run_importer.RunImporter_Get_And_Process_PauseRequest;
@@ -107,10 +104,16 @@ public class ManagerThread extends Thread {
 	private volatile ImportAndPipelineRun_Thread importAndPipelineRun_Thread;
 	private int importAndPipelineRun_ThreadCounter = 2;  // used if need to replace the thread
 	
+	//   Initially created in method completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread(...):
+	
 	private volatile ImportFiles_DelayedRemoval_Thread importFiles_DelayedRemoval_Thread;
+	private volatile boolean importFiles_DelayedRemoval_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread = false;
 	private int importFiles_DelayedRemoval_ThreadCounter = 2;  // used if need to replace the thread
+
+	//   Initially created in method completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread(...):
 	
 	private volatile Database_PopulateNewFields_Cleanup_RemoveData_Thread database_PopulateNewFields_Cleanup_RemoveData_Thread;
+	private volatile boolean database_PopulateNewFields_Cleanup_RemoveData_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread = false;
 	private int database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter = 2;  // used if need to replace the thread
 	
 	//   Update Thread Status Reporting if add more theads
@@ -175,13 +178,17 @@ public class ManagerThread extends Thread {
 	 */
 	public void completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread() {
 		
-		if ( importFiles_DelayedRemoval_Thread == null ) {
+		if ( ( ! importFiles_DelayedRemoval_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread )
+				&& importFiles_DelayedRemoval_Thread == null ) {
 
 			try {
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 				importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( IMPORT_FILES_DELAYED_REMOVAL_THREAD /* name */, dbConnectionParametersProvider );
 				importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
 				importFiles_DelayedRemoval_Thread.start();
+				
+				importFiles_DelayedRemoval_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread = true;
+				
 			} catch (Throwable e) {
 				log.error( "Failed to create first importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
 			}
@@ -189,17 +196,21 @@ public class ManagerThread extends Thread {
 
 		if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 			
-			if ( database_PopulateNewFields_Cleanup_RemoveData_Thread == null ) {
+			if ( ( ! database_PopulateNewFields_Cleanup_RemoveData_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread )
+					&& database_PopulateNewFields_Cleanup_RemoveData_Thread == null ) {
 
 				//  Any changes here to create thread ALSO need change in code below where replacement thread is created
 				try {
 					database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance(
-							Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.YES,
 							DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD /* name */, 
 							dbConnectionParametersProvider 
 							);
 					database_PopulateNewFields_Cleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					
 					database_PopulateNewFields_Cleanup_RemoveData_Thread.start();
+					
+					database_PopulateNewFields_Cleanup_RemoveData_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread = true;
+					
 				} catch (Throwable e) {
 					log.error( "Failed to create first database_PopulateNewFields_Cleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
 				}
@@ -317,8 +328,7 @@ public class ManagerThread extends Thread {
 				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( 
 						GET_IMPORT_AND_PROCESS_THREAD /* name */, 
 						this,
-						maxTrackingRecordPriorityToRetrieve,
-						GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM.YES );
+						maxTrackingRecordPriorityToRetrieve );
 								
 				getImportAndProcessThread.start();
 
@@ -326,8 +336,7 @@ public class ManagerThread extends Thread {
 				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance( 
 						IMPORT_AND_PIPELINE_RUN_THREAD /* name */, 
 						this,
-						maxTrackingRecordPriorityToRetrieve,
-						ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.YES );
+						maxTrackingRecordPriorityToRetrieve );
 								
 				importAndPipelineRun_Thread.start();
 
@@ -577,13 +586,13 @@ public class ManagerThread extends Thread {
 				getImportAndProcessThread = GetImportAndProcessThread.getNewInstance( 
 						GET_IMPORT_AND_PROCESS_THREAD + "_" + getImportAndProcessThreadCounter /* name */, 
 						this,
-						maxTrackingRecordPriorityToRetrieve,
-						GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM.NO );
+						maxTrackingRecordPriorityToRetrieve );
 
 				getImportAndProcessThreadCounter += 1;
 				if ( oldGetImportAndProcessThread != null ) {
 					log.warn( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
 				}
+				
 				getImportAndProcessThread.start();
 			}
 
@@ -595,18 +604,19 @@ public class ManagerThread extends Thread {
 				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance(  
 						IMPORT_AND_PIPELINE_RUN_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */,
 						this,
-						maxTrackingRecordPriorityToRetrieve,
-						ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.NO );
+						maxTrackingRecordPriorityToRetrieve );
 				
 				importAndPipelineRun_ThreadCounter += 1;
 				if ( old_importAndPipelineRun_Thread != null ) {
 					log.warn( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
 				}
+				
 				importAndPipelineRun_Thread.start();
 			}
 			
 			//  check health of importFiles_DelayedRemoval_Thread, replace thread if dead
-			if ( importFiles_DelayedRemoval_Thread == null ||( ! importFiles_DelayedRemoval_Thread.isAlive() ) ) {
+			if ( importFiles_DelayedRemoval_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread
+					&& ( importFiles_DelayedRemoval_Thread == null || ( ! importFiles_DelayedRemoval_Thread.isAlive() ) ) ) {
 				
 				ImportFiles_DelayedRemoval_Thread old_importFiles_DelayedRemoval_Thread = importFiles_DelayedRemoval_Thread;
 
@@ -626,7 +636,9 @@ public class ManagerThread extends Thread {
 						log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_importFiles_DelayedRemoval_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + importFiles_DelayedRemoval_Thread.getName() + "'."  );
 					}
 					importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+					
 					importFiles_DelayedRemoval_Thread.start();
+					
 				} catch (Throwable e) {
 					log.error( "Failed to create replacement importFiles_DelayedRemoval_Thread. No Import Files Cleanup will be performed. Exception ", e );
 				}
@@ -635,7 +647,8 @@ public class ManagerThread extends Thread {
 			if ( ! ImporterRunnerConfigData.isDatabaseCleanup_Disable() ) {
 
 				//  check health of database_PopulateNewFields_Cleanup_RemoveData_Thread, replace thread if dead
-				if ( database_PopulateNewFields_Cleanup_RemoveData_Thread == null || ( ! database_PopulateNewFields_Cleanup_RemoveData_Thread.isAlive() ) ) {
+				if ( database_PopulateNewFields_Cleanup_RemoveData_Thread_FirstInstanceCreatedIn_completedSuccessful_FirstDatabaseSQL_GetImportAndProcessThread
+						&& ( database_PopulateNewFields_Cleanup_RemoveData_Thread == null || ( ! database_PopulateNewFields_Cleanup_RemoveData_Thread.isAlive() ) ) ) {
 					
 					Database_PopulateNewFields_Cleanup_RemoveData_Thread old_database_PopulateNewFields_Cleanup_RemoveData_Thread = database_PopulateNewFields_Cleanup_RemoveData_Thread;
 
@@ -649,7 +662,6 @@ public class ManagerThread extends Thread {
 					
 					try {
 						database_PopulateNewFields_Cleanup_RemoveData_Thread = Database_PopulateNewFields_Cleanup_RemoveData_Thread.getNewInstance(
-								Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.NO,
 								DATABASE_POPULATE_NEW_FIELDS_CLEANUP_REMOVE_DATA_THREAD + "_" + database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter /* name */, 
 								dbConnectionParametersProvider  );
 						
@@ -658,7 +670,9 @@ public class ManagerThread extends Thread {
 							log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "'."  );
 						}
 						database_PopulateNewFields_Cleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
+						
 						database_PopulateNewFields_Cleanup_RemoveData_Thread.start();
+						
 					} catch (Throwable e) {
 						log.error( "Failed to create replacement database_PopulateNewFields_Cleanup_RemoveData_Thread. No Database Cleanup will be performed. Exception ", e );
 					}

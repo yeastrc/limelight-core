@@ -58,14 +58,12 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 	private static final Logger log = LoggerFactory.getLogger( Database_PopulateNewFields_Cleanup_RemoveData_Thread.class );
 	
-	public enum Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall {
-		YES, NO
-	}
-	
-	
-	private static volatile long lastTime_ProcessingLoopRan_Milliseconds = 0;
 
-	
+	//  Static Properties
+
+	private static volatile boolean firstInstanceOfThisThread__StaticProperty = true;
+
+	private static volatile long lastTime_ProcessingLoopRan_Milliseconds = 0;
 
 	//  Instance Properties
 	
@@ -76,7 +74,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 	private volatile boolean logged_CloseAllConnections_Exception = false;
 	
-	private Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall getNewInstance_FirstCall;
+	private boolean getNewInstance_FirstCall;
 
 	/**
 	 * Cleanup when thread is dead
@@ -105,7 +103,6 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	 */
 	public static Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance( 
 
-			Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall getNewInstance_FirstCall ,
 			String threadLabel, 
 			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
 
@@ -117,10 +114,22 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 				
 		instance.importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
 		instance.importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
-
 		
-		instance.getNewInstance_FirstCall = getNewInstance_FirstCall;
+		if ( firstInstanceOfThisThread__StaticProperty ) {
+			System.out.println( "************" );
+			System.out.println( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is TRUE");
+			System.out.println( "************" );
+		} else {
+			System.out.println( "************" );
+			System.out.println( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is FALSE");
+			System.out.println( "************" );
+		}
+
+		instance.getNewInstance_FirstCall = firstInstanceOfThisThread__StaticProperty;
 		instance.init();
+
+		firstInstanceOfThisThread__StaticProperty = false;
+		
 		return instance;
 	}
 
@@ -265,8 +274,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 						//  DB is correct version so continue
 
-						if ( ( firstIterationOfLoop
-								&& this.getNewInstance_FirstCall == Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.YES )
+						if ( ( firstIterationOfLoop && this.getNewInstance_FirstCall )
 								|| ( ! firstIterationOfLoop ) ) { 
 
 							//  Execute if either ( firstIterationOfLoop && GetNewInstance_FirstCall.YES ) || ( ! firstIterationOfLoop ) 

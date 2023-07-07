@@ -45,10 +45,6 @@ import org.yeastrc.limelight.limelight_shared.database_schema_version__constant.
  */
 public class GetImportAndProcessThread extends Thread {
 	
-	public enum GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM {
-		YES, NO
-	}
-
 	private static final String className = GetImportAndProcessThread.class.getSimpleName();
 	private static final int WAIT_TIME_TO_GET_SOMETHING_TO_PROCESS_DEFAULT = 5; // in seconds
 	private static final int WAIT_TIME_WHEN_GET_EXCEPTION = 5 * 60; // in seconds
@@ -58,10 +54,22 @@ public class GetImportAndProcessThread extends Thread {
 	
 	private static final Logger log = LoggerFactory.getLogger( GetImportAndProcessThread.class );
 	
+	
+
+	//  Static Properties
+	
+	private static volatile boolean firstInstanceOfThisThread__StaticProperty = true;
+
+	
+	//  Instance Properties
+	
+	private volatile boolean firstInstanceOfThisThread;
+
+	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
+	
+	
 	private volatile boolean keepRunning = true;
 	private volatile ProcessSubmittedImport processSubmittedImport;
-	
-	private volatile boolean firstTimeQueriedDBForImportToProcess = true;
 	
 	//  Parent ManagerThread managerThread
 	
@@ -81,8 +89,9 @@ public class GetImportAndProcessThread extends Thread {
 	
 
 	//  From Create Parameters in call to getNewInstance(...)
-	private GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM firstInstanceOfThisThread;
 	private int maxTrackingRecordPriorityToRetrieve;
+	
+	
 	
 	
 	/**
@@ -97,17 +106,19 @@ public class GetImportAndProcessThread extends Thread {
 			String threadName,
 			ManagerThread managerThread,
 			
-			int maxTrackingRecordPriorityToRetrieve,
-			GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM firstInstanceOfThisThread
+			int maxTrackingRecordPriorityToRetrieve
 			) {
 		
 		GetImportAndProcessThread instance = new GetImportAndProcessThread(threadName);
 		
 		instance.managerThread = managerThread;
 		instance.maxTrackingRecordPriorityToRetrieve = maxTrackingRecordPriorityToRetrieve;
-		instance.firstInstanceOfThisThread = firstInstanceOfThisThread;
+		instance.firstInstanceOfThisThread = firstInstanceOfThisThread__StaticProperty;
 		
 		instance.init();
+
+		firstInstanceOfThisThread__StaticProperty = false;
+		
 		return instance;
 	}
 	
@@ -457,8 +468,7 @@ public class GetImportAndProcessThread extends Thread {
 					throw t;
 				}
 				
-				if ( firstInstanceOfThisThread == GetImportAndProcessThread_firstInstanceOfThisThread_Values_ENUM.YES 
-						&& firstTimeQueriedDBForImportToProcess ) {
+				if ( firstInstanceOfThisThread && firstTimeQueriedDBForImportToProcess ) {
 					
 					firstTimeQueriedDBForImportToProcess = false;
 					
