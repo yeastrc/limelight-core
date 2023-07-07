@@ -593,7 +593,7 @@ public class ManagerThread extends Thread {
 				ImportAndPipelineRun_Thread old_importAndPipelineRun_Thread = importAndPipelineRun_Thread;
 				
 				importAndPipelineRun_Thread = ImportAndPipelineRun_Thread.getNewInstance(  
-						GET_IMPORT_AND_PROCESS_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */,
+						IMPORT_AND_PIPELINE_RUN_THREAD + "_" + importAndPipelineRun_ThreadCounter /* name */,
 						this,
 						maxTrackingRecordPriorityToRetrieve,
 						ImportAndPipelineRun_Thread_firstInstanceOfThisThread_Values_ENUM.NO );
