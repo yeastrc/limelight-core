@@ -23,7 +23,6 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_vers
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.database_version_info_retrieval_compare.Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.LimelightDatabaseSchemaVersion_Comparison_Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main;
 import org.yeastrc.limelight.limelight_run_importer.import_and_pipeline_run__cleanup_dirs_files.ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main;
 import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_main_and_searcher.ImportFiles_DelayedRemoval_Main;
@@ -43,45 +42,28 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	
 	private static final Logger log = LoggerFactory.getLogger( ImportFiles_DelayedRemoval_Thread.class );
 	
+	//  Instance Properties
+	
 	private volatile boolean keepRunning = true;
 
-	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
-	
-	
-	/**
-	 * 
-	 */
-	public static void closeAll_DatabaseConnections() {
-
-		//  Assumes only 1 instance of this class will exist at a time
-		
-		if ( importRunImporterDBConnectionFactory != null ) {
-			//  Have prev instance so close and unassign
-			try {
-				importRunImporterDBConnectionFactory.closeAllConnections();
-				importRunImporterDBConnectionFactory = null;
-			} catch (Throwable t) {
-				
-			}
-		}
-	}
-
+	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
 	
 	/**
 	 * Cleanup when thread is dead
 	 */
 	public void threadIsDead_Cleanup() {
 
-		//  Assumes only 1 instance of this class will exist at a time
-		
 		if ( importRunImporterDBConnectionFactory != null ) {
 			//  Have prev instance so close and unassign
 			try {
-				importRunImporterDBConnectionFactory.closeAllConnections();
-				importRunImporterDBConnectionFactory = null;
-			} catch (Throwable t) {
+
+				ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory);
 				
+			} catch (Throwable t) {
+				log.error( "In threadIsDead_Cleanup(): ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory); threw Exception: ", t );
+				//  Eat Exception
 			}
+			importRunImporterDBConnectionFactory = null;
 		}
 	}
 	
@@ -96,23 +78,15 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 			String threadLabel, 
 			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
 
-		//  Requires only 1 instance of this class will exist at a time
-		
-		if ( importRunImporterDBConnectionFactory != null ) {
-			
-			String msg = "Clean Up Previous dead ImportFiles_DelayedRemoval_Thread Thread before creating an new ImportFiles_DelayedRemoval_Thread Thread";
-			log.error(msg);
-			throw new LimelightRunImporterInternalException(msg);
-		}
+		ImportFiles_DelayedRemoval_Thread instance = new ImportFiles_DelayedRemoval_Thread(threadLabel);
 
 		//  Create "New" Instance of ImportRunImporterDBConnectionFactory so is NOT same instance that main "Run Importer" uses 
 		//      since main "Run Importer" calls 'importRunImporterDBConnectionFactory.closeAllConnections();' after each check of imports to process 
-		importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
+		instance.importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
 		
-		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
-		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
+		instance.importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
+		instance.importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 		
-		ImportFiles_DelayedRemoval_Thread instance = new ImportFiles_DelayedRemoval_Thread(threadLabel);
 		instance.init();
 		return instance;
 	}
@@ -189,135 +163,148 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	 */
 	@Override
 	public void run() {
-		
-		log.debug( "run() entered" );
-		
-		//  Top level loop until keepRunning is false
-		
-		while ( keepRunning ) {
+		try {
+			log.debug( "run() entered" );
 
-			try {
+			//  Top level loop until keepRunning is false
 
-				//  Check DB Version Number
+			while ( keepRunning ) {
 
-				{ //  Validate Code And Database Schema Versions match
-					
-					//  CURRENT Version
-					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
-					try {
-						limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
-								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
-								);
-					} catch (Exception e) {
+				try {
 
-						synchronized (this) {
-							try {
-								wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-							} catch (InterruptedException e2) {
-								log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+					//  Check DB Version Number
+
+					{ //  Validate Code And Database Schema Versions match
+
+						//  CURRENT Version
+						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
+						try {
+							limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+									getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
+											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+											);
+						} catch (Exception e) {
+
+							synchronized (this) {
+								try {
+									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
+								} catch (InterruptedException e2) {
+									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+								}
 							}
+
+							continue;  // EARLY CONTINUE
 						}
-						
-						continue;  // EARLY CONTINUE
-					}
 
-					//  DB Update in Progress Version
-					LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
-					try {
-						limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-						getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
-								Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
-								);
-					} catch (Exception e) {
+						//  DB Update in Progress Version
+						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
+						try {
+							limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+									getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
+											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+											);
+						} catch (Exception e) {
 
-						synchronized (this) {
-							try {
-								wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-							} catch (InterruptedException e2) {
-								log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+							synchronized (this) {
+								try {
+									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
+								} catch (InterruptedException e2) {
+									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+								}
 							}
+
+							continue;  // EARLY CONTINUE
 						}
-						
-						continue;  // EARLY CONTINUE
-					}
 
 
-					if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
-							|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+						if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
+								|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
 
-						synchronized (this) {
-							try {
-								wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-							} catch (InterruptedException e2) {
-								log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+							synchronized (this) {
+								try {
+									wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
+								} catch (InterruptedException e2) {
+									log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
+								}
 							}
+
+							continue;  // EARLY CONTINUE
 						}
-						
-						continue;  // EARLY CONTINUE
 					}
-				}
-				
-				///////////////
-				
-				//  Main Processing
-				
-				ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
-				
-				//  Do same processing for Import and Pipeline Run
 
-				ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance().importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
-				
-				ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
-				
-				///////////////
-				
-				//  Next wait 24 hours before run again
-				
-				synchronized (this) {
-					try {
-						wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
-					} catch (InterruptedException e) {
-						log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
-					}
-				}
+					///////////////
 
-			} catch ( Throwable t ) {
-				
-				if ( keepRunning ) {
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!! \n\n Exception in run(): Will next wait " + TWENTY_FOUR_HOURS__IN_MILLISECONDS
-							+ " seconds before doing any more processing.  Exception: \n\n", t );
+					//  Main Processing
 
-					log.error( "!!!! \n\n " );
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					ImportFiles_DelayedRemoval_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
+
+					//  Do same processing for Import and Pipeline Run
+
+					ImportAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main.getSingletonInstance().importAndPipelineRun_Remove_SuccessFailed_ExceptLastTwo_Main(importRunImporterDBConnectionFactory);
+
+					ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main.getSingletonInstance().importFiles_DelayedRemoval_Main(importRunImporterDBConnectionFactory);
+
+					///////////////
+
+					//  Next wait 24 hours before run again
 
 					synchronized (this) {
 						try {
 							wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
 						} catch (InterruptedException e) {
-							log.info("waiting on Throwable exception caught:  wait() interrupted with InterruptedException");
+							log.info("waitForSleepTime():  wait() interrupted with InterruptedException");
 						}
 					}
-				} else {
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!! \n\n Exception in run(): keepRunning is false so will not wait but exit."
-							+ "  Exception: \n\n", t );
 
-					log.error( "!!!! \n\n " );
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					
+				} catch ( Throwable t ) {
+
+					if ( keepRunning ) {
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!! \n\n Exception in run(): Will next wait " + TWENTY_FOUR_HOURS__IN_MILLISECONDS
+								+ " seconds before doing any more processing.  Exception: \n\n", t );
+
+						log.error( "!!!! \n\n " );
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+						synchronized (this) {
+							try {
+								wait( TWENTY_FOUR_HOURS__IN_MILLISECONDS ); //  wait for notify() call or timeout, in milliseconds
+							} catch (InterruptedException e) {
+								log.info("waiting on Throwable exception caught:  wait() interrupted with InterruptedException");
+							}
+						}
+					} else {
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!! \n\n Exception in run(): keepRunning is false so will not wait but exit."
+								+ "  Exception: \n\n", t );
+
+						log.error( "!!!! \n\n " );
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+					}
+
+				} finally {
+
 				}
-				
-			} finally {
-			
+			}
+			log.info( "Exiting run()" );
+		
+		} finally {
+			try {
+
+				ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance( this.importRunImporterDBConnectionFactory );
+
+				this.importRunImporterDBConnectionFactory = null;
+
+			} catch (Throwable t) {
+				log.error( "In run(): ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory); threw Exception: ", t );
+				//  Eat Exception
 			}
 		}
-		log.info( "Exiting run()" );
 	}
 
 

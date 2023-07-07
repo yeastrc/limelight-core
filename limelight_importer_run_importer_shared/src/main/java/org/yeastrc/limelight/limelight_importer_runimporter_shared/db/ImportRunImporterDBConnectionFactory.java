@@ -2,6 +2,8 @@ package org.yeastrc.limelight.limelight_importer_runimporter_shared.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +42,8 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	//  Singleton 
 	private static final ImportRunImporterDBConnectionFactory _INSTANCE = new ImportRunImporterDBConnectionFactory();
 	
+	private static final List<ImportRunImporterDBConnectionFactory> importRunImporterDBConnectionFactory_Allocated_List = new ArrayList<>(100);
+	
 	// private constructor
 	private ImportRunImporterDBConnectionFactory() { }
 	
@@ -50,7 +54,70 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	 * 
 	 * @return a new instance - User in Run Importer in other than Process Import Thread
 	 */
-	public static ImportRunImporterDBConnectionFactory get_New_Instance() { return new ImportRunImporterDBConnectionFactory(); }
+	public static ImportRunImporterDBConnectionFactory get_New_Instance() { 
+		
+		ImportRunImporterDBConnectionFactory newInstance = new ImportRunImporterDBConnectionFactory();
+		
+		synchronized (importRunImporterDBConnectionFactory_Allocated_List) {
+			importRunImporterDBConnectionFactory_Allocated_List.add(newInstance);
+		}
+		
+		return  newInstance;
+	}
+	
+	/**
+	 * @param instance
+	 */
+	public static void closeAllConnections_And_Remove_Instance_From_get_New_Instance( ImportRunImporterDBConnectionFactory instance ) {
+		
+		if ( instance == null ) {
+			log.warn( "In closeAllConnections_And_Remove_Instance_From_get_New_Instance(...): ( instance == null )  so early exit" );
+			return; // EARLY RETURN
+		}
+		
+		boolean instanceFoundAndRemovedFromList = false;
+		
+		synchronized (importRunImporterDBConnectionFactory_Allocated_List) {
+			instanceFoundAndRemovedFromList = importRunImporterDBConnectionFactory_Allocated_List.remove( instance );
+		}
+		
+		if ( ! instanceFoundAndRemovedFromList ) {
+			log.warn( "In closeAllConnections_And_Remove_Instance_From_get_New_Instance(...): importRunImporterDBConnectionFactory_Allocated_List.remove( instance ); did NOT remove anything");
+		} else {
+			log.info( "In closeAllConnections_And_Remove_Instance_From_get_New_Instance(...): importRunImporterDBConnectionFactory_Allocated_List.remove( instance ); did YES remove an entry");
+		}
+		
+		try {
+			instance.closeAllConnections();
+		} catch (Throwable e) {
+			
+			log.error( "In closeAllConnections_And_Remove_Instance_From_get_New_Instance(...): instance.closeAllConnections(); exception: ", e );
+			//  Eat Exception
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static void closeAllConnections_OnAllInstancesNotRemoved_From_get_New_Instance() {
+		
+		List<ImportRunImporterDBConnectionFactory> importRunImporterDBConnectionFactory_Allocated_List_Local = new ArrayList<>( 100 );
+		
+		synchronized (importRunImporterDBConnectionFactory_Allocated_List) {
+			importRunImporterDBConnectionFactory_Allocated_List_Local.addAll( importRunImporterDBConnectionFactory_Allocated_List );
+		}
+		
+		for ( ImportRunImporterDBConnectionFactory instance : importRunImporterDBConnectionFactory_Allocated_List_Local ) {
+			
+			try {
+				instance.closeAllConnections();
+			} catch (Throwable e) {
+				
+				log.error( "In closeAllConnections_OnAllInstancesNotRemoved_From_get_New_Instance(): instance.closeAllConnections(); exception: ", e );
+				//  Eat Exception
+			}
+		}
+	}
 	
 	
 	//  Instance properties

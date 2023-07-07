@@ -35,7 +35,6 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnecti
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_cleanup__common_code__remove_data_from_database.RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider;
 import org.yeastrc.limelight.limelight_run_importer.db__for__limelight__database_populate_new_fields__common_code.RunImporter__Limelight_Database_PopulateNewFields__DBConnectionProvider_Provider;
-import org.yeastrc.limelight.limelight_run_importer.exceptions.LimelightRunImporterInternalException;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.searchers.FileImportTracking_Searcher_Shared;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.searchers.FileImportAndPipelineRunTracking_Searcher_Shared;
 
@@ -66,11 +65,11 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	
 	private static volatile long lastTime_ProcessingLoopRan_Milliseconds = 0;
 
+	
 
-	/**
-	 * Single instance for currently active Thread.
-	 */
-	private static volatile ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
+	//  Instance Properties
+	
+	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
 
 
 	private volatile boolean keepRunning = true;
@@ -79,43 +78,20 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	
 	private Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall getNewInstance_FirstCall;
 
-
-	/**
-	 * 
-	 */
-	public static void closeAll_DatabaseConnections() {
-
-		log.warn("INFO:  public static void closeAll_DatabaseConnections() called in this class. if importRunImporterDBConnectionFactory is not null, calling importRunImporterDBConnectionFactory.closeAllConnections(); and setting importRunImporterDBConnectionFactory to null.");
-
-		//  Assumes only 1 instance of this class will exist at a time
-
-		if ( importRunImporterDBConnectionFactory != null ) {
-			//  Have prev instance so close and unassign
-			try {
-				importRunImporterDBConnectionFactory.closeAllConnections();
-			} catch (Throwable t) {
-
-			}
-			importRunImporterDBConnectionFactory = null;
-		}
-	}
-
-
 	/**
 	 * Cleanup when thread is dead
 	 */
 	public void threadIsDead_Cleanup() {
 
-		log.warn("INFO: public void threadIsDead_Cleanup() called in this class. if importRunImporterDBConnectionFactory is not null, calling importRunImporterDBConnectionFactory.closeAllConnections(); and setting importRunImporterDBConnectionFactory to null.");
-
-		//  Assumes only 1 instance of this class will exist at a time
-
 		if ( importRunImporterDBConnectionFactory != null ) {
 			//  Have prev instance so close and unassign
 			try {
-				importRunImporterDBConnectionFactory.closeAllConnections();
-			} catch (Throwable t) {
 
+				ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory);
+				
+			} catch (Throwable t) {
+				log.error( "In threadIsDead_Cleanup(): ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory); threw Exception: ", t );
+				//  Eat Exception
 			}
 			importRunImporterDBConnectionFactory = null;
 		}
@@ -133,42 +109,16 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 			String threadLabel, 
 			DBConnectionParametersProviderFromPropertiesFileEnvironmentVariables dbConnectionParametersProvider ) throws Exception {
 
-		//  Requires only 1 instance of this class will exist at a time
-
-		if ( importRunImporterDBConnectionFactory != null ) {
-
-			//  Assumes only 1 instance of this class will exist at a time
-
-			if ( importRunImporterDBConnectionFactory != null ) {
-				//  Have prev instance so close and unassign
-				try {
-					importRunImporterDBConnectionFactory.closeAllConnections();
-				} catch (Throwable t) {
-
-				}
-				importRunImporterDBConnectionFactory = null;
-			}
-			
-			String msg = "Clean Up Previous dead DatabaseCleanup_RemoveData_Thread Thread before creating an new DatabaseCleanup_RemoveData_Thread Thread.  static property importRunImporterDBConnectionFactory is NOT null when called getNewInstance(...)";
-			log.error(msg);
-			throw new LimelightRunImporterInternalException(msg);
-		}
-
-		//  Create "New" Instance of ImportRunImporterDBConnectionFactory so is NOT same instance that main "Run Importer" uses 
-		//      since main "Run Importer" calls 'importRunImporterDBConnectionFactory.closeAllConnections();' after each check of imports to process 
-		importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
-		
-		if ( importRunImporterDBConnectionFactory == null ) {
-			String msg = "( importRunImporterDBConnectionFactory == null ) AFTER importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();";
-			log.error(msg);
-			throw new LimelightRunImporterInternalException(msg);
-		}
-
-		
-		importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
-		importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
-
 		Database_PopulateNewFields_Cleanup_RemoveData_Thread instance = new Database_PopulateNewFields_Cleanup_RemoveData_Thread(threadLabel);
+		
+//		Create "New" Instance of ImportRunImporterDBConnectionFactory so is NOT same instance that main "Run Importer" uses 
+		//      since main "Run Importer" calls 'importRunImporterDBConnectionFactory.closeAllConnections();' after each check of imports to process 
+		instance.importRunImporterDBConnectionFactory = ImportRunImporterDBConnectionFactory.get_New_Instance();
+				
+		instance.importRunImporterDBConnectionFactory.initialize( dbConnectionParametersProvider ); 
+		instance.importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
+
+		
 		instance.getNewInstance_FirstCall = getNewInstance_FirstCall;
 		instance.init();
 		return instance;
@@ -243,181 +193,193 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	 */
 	@Override
 	public void run() {
-
-		log.debug( "run() entered" );
-
 		try {
-			Limelight_DatabasePopulateNewFields__DatabaseConnection_Provider_DatabasePopulateNewFieldsCode.getSingletonInstance()
-			.setDatabasePopulateNewFields_DBConnectionProvider_Provider_IF(
-					RunImporter__Limelight_Database_PopulateNewFields__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory));
+			log.debug( "run() entered" );
 
-			Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
-			.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
-					RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory) );
+			try {
+				Limelight_DatabasePopulateNewFields__DatabaseConnection_Provider_DatabasePopulateNewFieldsCode.getSingletonInstance()
+				.setDatabasePopulateNewFields_DBConnectionProvider_Provider_IF(
+						RunImporter__Limelight_Database_PopulateNewFields__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory));
 
-			boolean firstIterationOfLoop = true;
+				Limelight_DatabaseCleanup__DatabaseConnection_Provider_DBCleanupCode.getSingletonInstance()
+				.setDatabaseCleanupOnly_DBConnectionProvider_Provider_IF( 
+						RunImporter__Limelight_DatabaseCleanup__DBConnectionProvider_Provider.getNewInstance(importRunImporterDBConnectionFactory) );
 
-			//  Top level loop until keepRunning is false
+				boolean firstIterationOfLoop = true;
 
-			while ( keepRunning ) {
+				//  Top level loop until keepRunning is false
 
-				try {
+				while ( keepRunning ) {
 
-					//  Check DB Version Number
+					try {
 
-					{ //  Validate Code And Database Schema Versions match
+						//  Check DB Version Number
 
-						//  CURRENT Version
-						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
-						try {
-							limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-									getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
-											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
-											);
-						} catch (Exception e) {
+						{ //  Validate Code And Database Schema Versions match
 
-							this.wait_Until_10PM_Tomorrow();
+							//  CURRENT Version
+							LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = null;
+							try {
+								limelightDatabase_CURRENT_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+										getLimelightDatabase_CURRENT_SchemaVersion_Comparison_Result(
+												Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+												);
+							} catch (Exception e) {
 
-							continue;  // EARLY CONTINUE
-						}
+								this.wait_Until_10PM_Tomorrow();
 
-						//  DB Update in Progress Version
-						LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
-						try {
-							limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
-									getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
-											Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
-											);
-						} catch (Exception e) {
-
-							this.wait_Until_10PM_Tomorrow();
-
-							continue;  // EARLY CONTINUE
-						}
-
-
-						if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
-								|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
-
-							this.wait_Until_10PM_Tomorrow();
-							
-							continue;  // EARLY CONTINUE
-						}
-					}
-					
-					/////////
-
-					//   Log current Pending and Running count of imports
-					
-					log_CurrentPending_and_Running_count_of_imports();
-					
-					///////////////
-
-					//  DB is correct version so continue
-
-					if ( ( firstIterationOfLoop
-							&& this.getNewInstance_FirstCall == Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.YES )
-							|| ( ! firstIterationOfLoop ) ) { 
-
-						//  Execute if either ( firstIterationOfLoop && GetNewInstance_FirstCall.YES ) || ( ! firstIterationOfLoop ) 
-
-						///////////////
-
-						// Populate new Database fields
-
-						log.warn( "INFO:: STARTING: Database Populate New Fields.  When completed it will wait before it runs again" );
-
-						Limelight_DatabasePopulateNewFields__Main_EntryPoint.getSingletonInstance()
-						.limelight_DatabasePopulateNewFields__Main_EntryPoint(
-								Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM );
-
-						///////////////
-
-						//  Database Cleanup
-						
-						
-						lastTime_ProcessingLoopRan_Milliseconds = System.currentTimeMillis();
-						
-
-						log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait before it runs again" );
-
-						Limelight_DatabaseCleanup__Main_EntryPoint.getSingletonInstance()
-						.limelight_DatabaseCleanup__Main_EntryPoint(
-								Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM,
-								Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS
-								);
-
-						try {
-							if ( importRunImporterDBConnectionFactory != null ) {
-								importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
-							} else {
-								log.warn( "INFO:: After: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  importRunImporterDBConnectionFactory is null so not calling importRunImporterDBConnectionFactory.closeAllConnections();" ); 
+								continue;  // EARLY CONTINUE
 							}
-						} catch ( Throwable t ) {
 
-							if ( ! logged_CloseAllConnections_Exception ) {
-								logged_CloseAllConnections_Exception = true;
-								log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception: ", t );
-							} else {
-								log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception only logged the first time. " );
+							//  DB Update in Progress Version
+							LimelightDatabaseSchemaVersion_Comparison_Result limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result;
+							try {
+								limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result = Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.getInstance().
+										getLimelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result(
+												Importer_RunImporter_Get_LimelightDatabaseSchemaVersion_FromVersionTable_CompareToCurrentVersionInCode.Log_Exception_YN.YES
+												);
+							} catch (Exception e) {
+
+								this.wait_Until_10PM_Tomorrow();
+
+								continue;  // EARLY CONTINUE
+							}
+
+
+							if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
+									|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
+
+								this.wait_Until_10PM_Tomorrow();
+
+								continue;  // EARLY CONTINUE
 							}
 						}
 
-						log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports)." );
+						/////////
 
-					}
+						//   Log current Pending and Running count of imports
 
-					///////////////
+						log_CurrentPending_and_Running_count_of_imports();
 
-					//  Next wait util 10pm tomorrow hours before run again
+						///////////////
 
-					this.wait_Until_10PM_Tomorrow();
+						//  DB is correct version so continue
 
-					firstIterationOfLoop = false;
+						if ( ( firstIterationOfLoop
+								&& this.getNewInstance_FirstCall == Database_PopulateNewFields_Cleanup_RemoveData_Thread__GetNewInstance_FirstCall.YES )
+								|| ( ! firstIterationOfLoop ) ) { 
+
+							//  Execute if either ( firstIterationOfLoop && GetNewInstance_FirstCall.YES ) || ( ! firstIterationOfLoop ) 
+
+							///////////////
+
+							// Populate new Database fields
+
+							log.warn( "INFO:: STARTING: Database Populate New Fields.  When completed it will wait before it runs again" );
+
+							Limelight_DatabasePopulateNewFields__Main_EntryPoint.getSingletonInstance()
+							.limelight_DatabasePopulateNewFields__Main_EntryPoint(
+									Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM );
+
+							///////////////
+
+							//  Database Cleanup
 
 
-				} catch ( Throwable t ) {
+							lastTime_ProcessingLoopRan_Milliseconds = System.currentTimeMillis();
 
-					if ( keepRunning ) {
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!! \n\n Exception in run(): Will next wait before doing any more processing.  Exception: \n\n", t );
 
-						log.error( "!!!! \n\n " );
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.warn( "INFO:: STARTING: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  When Cleanup is completed it will wait before it runs again" );
+
+							Limelight_DatabaseCleanup__Main_EntryPoint.getSingletonInstance()
+							.limelight_DatabaseCleanup__Main_EntryPoint(
+									Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.LIMELIGHT__RUN_IMPORTER_PROGRAM,
+									Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.DELETE_RECORDS
+									);
+
+							try {
+								if ( importRunImporterDBConnectionFactory != null ) {
+									importRunImporterDBConnectionFactory.closeAllConnections(); // New connections created next processing loop
+								} else {
+									log.warn( "INFO:: After: Database Cleanup (removal of deleted searches and projects and removal of failed search imports).  importRunImporterDBConnectionFactory is null so not calling importRunImporterDBConnectionFactory.closeAllConnections();" ); 
+								}
+							} catch ( Throwable t ) {
+
+								if ( ! logged_CloseAllConnections_Exception ) {
+									logged_CloseAllConnections_Exception = true;
+									log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception: ", t );
+								} else {
+									log.error( "Failed to close all DB connections at end of processing loop before wait to process again.  Exception only logged the first time. " );
+								}
+							}
+
+							log.warn( "INFO:: FINISHED: Database Cleanup (removal of deleted searches and projects and removal of failed search imports)." );
+
+						}
+
+						///////////////
+
+						//  Next wait util 10pm tomorrow hours before run again
 
 						this.wait_Until_10PM_Tomorrow();
 
-					} else {
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!! \n\n Exception in run(): keepRunning is false so will not wait but exit."
-								+ "  Exception: \n\n", t );
+						firstIterationOfLoop = false;
 
-						log.error( "!!!! \n\n " );
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
+					} catch ( Throwable t ) {
+
+						if ( keepRunning ) {
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!! \n\n Exception in run(): Will next wait before doing any more processing.  Exception: \n\n", t );
+
+							log.error( "!!!! \n\n " );
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+							this.wait_Until_10PM_Tomorrow();
+
+						} else {
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!! \n\n Exception in run(): keepRunning is false so will not wait but exit."
+									+ "  Exception: \n\n", t );
+
+							log.error( "!!!! \n\n " );
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+						}
 					}
 				}
+
+			} finally {
+
+				try {
+					importRunImporterDBConnectionFactory.closeAllConnections(); // Close as exit thread 'run()'
+
+				} catch ( Throwable t ) {
+					log.error( "Failed to close all DB connections.");
+				}
+
 			}
+
+			log.info( "Exiting run()" );
 
 		} finally {
-
 			try {
-				importRunImporterDBConnectionFactory.closeAllConnections(); // Close as exit thread 'run()'
 
-			} catch ( Throwable t ) {
-				log.error( "Failed to close all DB connections.");
+				ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance( this.importRunImporterDBConnectionFactory );
+
+				this.importRunImporterDBConnectionFactory = null;
+
+			} catch (Throwable t) {
+				log.error( "In run(): ImportRunImporterDBConnectionFactory.closeAllConnections_And_Remove_Instance_From_get_New_Instance(importRunImporterDBConnectionFactory); Failed to close all DB connections. threw Exception: ", t );
+				//  Eat Exception
 			}
-
-			importRunImporterDBConnectionFactory = null;
-
 		}
-
-		log.info( "Exiting run()" );
 	}
+
 	
 	////////////////
 	

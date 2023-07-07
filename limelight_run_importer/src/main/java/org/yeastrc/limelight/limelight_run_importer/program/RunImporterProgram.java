@@ -33,8 +33,6 @@ import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnecti
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.DBConnectionParametersProviderPropertiesFileErrorException;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
 import org.yeastrc.limelight.limelight_run_importer.config.ProcessImporterRunnerConfigFileEnvironmentVariables;
-import org.yeastrc.limelight.limelight_run_importer.database_cleanup__populate_new_fields__thread.Database_PopulateNewFields_Cleanup_RemoveData_Thread;
-import org.yeastrc.limelight.limelight_run_importer.import_files_delayed_removal_thread.ImportFiles_DelayedRemoval_Thread;
 import org.yeastrc.limelight.limelight_run_importer.main.ImporterRunnerMain;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemTableGetValueCommon;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
@@ -224,22 +222,13 @@ public class RunImporterProgram {
 			
 			try {
 				// free up db resources
-				ImportFiles_DelayedRemoval_Thread.closeAll_DatabaseConnections();
+				ImportRunImporterDBConnectionFactory.closeAllConnections_OnAllInstancesNotRemoved_From_get_New_Instance();
 			} catch ( Throwable e ) {
 
 				//  eat exception
 				// throw e;
 			}
 
-			try {
-				// free up db resources
-				Database_PopulateNewFields_Cleanup_RemoveData_Thread.closeAll_DatabaseConnections();
-			} catch ( Throwable e ) {
-
-				//  eat exception
-				// throw e;
-			}
-			
 		}
 		//		if ( programExitCode != PROGRAM_EXIT_CODE_DEFAULT_NO_SYTEM_EXIT_CALLED ) {
 		//			System.exit( programExitCode );
@@ -311,18 +300,10 @@ public class RunImporterProgram {
 				System.err.println( "----------------------------------------");
 			}
 
-			try {
-				// free up db resources
-				ImportFiles_DelayedRemoval_Thread.closeAll_DatabaseConnections();
-			} catch ( Throwable e ) {
-
-				//  eat exception
-				// throw e;
-			}
 
 			try {
 				// free up db resources
-				Database_PopulateNewFields_Cleanup_RemoveData_Thread.closeAll_DatabaseConnections();
+				ImportRunImporterDBConnectionFactory.closeAllConnections_OnAllInstancesNotRemoved_From_get_New_Instance();
 			} catch ( Throwable e ) {
 
 				//  eat exception
