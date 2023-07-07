@@ -52,9 +52,9 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	
 	// See class method this.wait_Until_10PM_Tomorrow() for when will run next
 
-//	private static final long TWENTY_FOUR_HOURS = 24;  // Run every 24 hours
-//		
-//	private static final long TWENTY_FOUR_HOURS__IN_MILLISECONDS = TWENTY_FOUR_HOURS * 60 * 60 * 1000;  // Run every 24 hours
+	private static final long ONE_HOUR__IN_MILLISECONDS = 1l * 60l * 60l * 1000l; 
+	
+	private static final long ONE_WEEK_MILLISECONDS = ONE_HOUR__IN_MILLISECONDS * 24l * 7l;
 
 	private static final Logger log = LoggerFactory.getLogger( Database_PopulateNewFields_Cleanup_RemoveData_Thread.class );
 	
@@ -235,7 +235,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 												);
 							} catch (Exception e) {
 
-								this.wait_Until_10PM_Tomorrow();
+								this.wait_Until__Next_Run();
 
 								continue;  // EARLY CONTINUE
 							}
@@ -249,7 +249,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 												);
 							} catch (Exception e) {
 
-								this.wait_Until_10PM_Tomorrow();
+								this.wait_Until__Next_Run();
 
 								continue;  // EARLY CONTINUE
 							}
@@ -258,7 +258,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 							if ( limelightDatabase_CURRENT_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME 
 									|| limelightDatabase_UpdateInProgress_SchemaVersion_Comparison_Result != LimelightDatabaseSchemaVersion_Comparison_Result.SAME ) {
 
-								this.wait_Until_10PM_Tomorrow();
+								this.wait_Until__Next_Run();
 
 								continue;  // EARLY CONTINUE
 							}
@@ -275,9 +275,12 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 						//  DB is correct version so continue
 
 						if ( ( firstIterationOfLoop && this.getNewInstance_FirstCall )
-								|| ( ! firstIterationOfLoop ) ) { 
+								|| ( ! firstIterationOfLoop )
+								|| ( ( System.currentTimeMillis() - lastTime_ProcessingLoopRan_Milliseconds ) > ONE_WEEK_MILLISECONDS ) ) { 
 
-							//  Execute if either ( firstIterationOfLoop && GetNewInstance_FirstCall.YES ) || ( ! firstIterationOfLoop ) 
+							//  Execute if either ( firstIterationOfLoop && getNewInstance_FirstCall ) || ( ! firstIterationOfLoop )
+							
+							//  Goal is for a replacement thread to NOT run this code when the thread is first created, unless it has been a week
 
 							///////////////
 
@@ -329,7 +332,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 						//  Next wait util 10pm tomorrow hours before run again
 
-						this.wait_Until_10PM_Tomorrow();
+						this.wait_Until__Next_Run();
 
 						firstIterationOfLoop = false;
 
@@ -345,7 +348,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-							this.wait_Until_10PM_Tomorrow();
+							this.wait_Until__Next_Run();
 
 						} else {
 							log.error( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -424,23 +427,14 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	/**
 	 * 
 	 */
-	private void wait_Until_10PM_Tomorrow() {
-
-
-		log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again." );
-
+	private void wait_Until__Next_Run() {
 
 		Calendar calendar  = Calendar.getInstance();
 
 		long now_calendar_Milliseconds = calendar.getTimeInMillis();
 		
-//		int timeSinceLastRan_Hours = (int) ( ( now_calendar_Milliseconds - lastTime_ProcessingLoopRan_Milliseconds ) / ( 1000 * 60 * 60 ) );
+		calendar.add(Calendar.DATE, 1);
 		
-//		if ( timeSinceLastRan_Hours < 48 ) {
-			//  Change day to tomorrow
-			calendar.add(Calendar.DATE, 1);
-//		}
-
 		///  Change time to 22 hours (10pm)		calendar.set(Calendar.HOUR_OF_DAY,22);
 		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
@@ -449,21 +443,21 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 		long tomorrow_22_Hour_Minus_Now__Milliseconds = tomorrow_22_Hour__Milliseconds - now_calendar_Milliseconds;
 
-//		if ( timeSinceLastRan_Hours < 48 ) {
+		if ( tomorrow_22_Hour_Minus_Now__Milliseconds < 8 * 60 * 60 * 1000 ) {
 
-			if ( tomorrow_22_Hour_Minus_Now__Milliseconds < 8 * 60 * 60 * 1000 ) {
+			//  Less than 8 hours so add another day
 
-				//  Less than 8 hours so add another day
+			calendar.add(Calendar.DATE,1);
 
-				calendar.add(Calendar.DATE,1);
+			tomorrow_22_Hour__Milliseconds = calendar.getTimeInMillis();
 
-				tomorrow_22_Hour__Milliseconds = calendar.getTimeInMillis();
-
-				tomorrow_22_Hour_Minus_Now__Milliseconds = tomorrow_22_Hour__Milliseconds - now_calendar_Milliseconds;
-			}
-//		}
+			tomorrow_22_Hour_Minus_Now__Milliseconds = tomorrow_22_Hour__Milliseconds - now_calendar_Milliseconds;
+		}
 		
 		if ( tomorrow_22_Hour_Minus_Now__Milliseconds > 0 ) {
+
+			log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again." );
+
 
 			synchronized (this) {
 				try {
