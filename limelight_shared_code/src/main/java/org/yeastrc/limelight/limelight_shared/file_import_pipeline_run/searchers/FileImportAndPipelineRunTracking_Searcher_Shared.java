@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.db.SharedCodeOnly_DBConnectionProvider;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportStatus;
 
@@ -56,7 +57,8 @@ public class FileImportAndPipelineRunTracking_Searcher_Shared {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT COUNT(*) AS count FROM import_and_pipeline_run_tracking_tbl WHERE status_id IN ( " + FileImportStatus.QUEUED.value() + ", " + FileImportStatus.RE_QUEUED.value() + ")";
+		final String sql = "SELECT COUNT(*) AS count FROM import_and_pipeline_run_tracking_tbl WHERE status_id IN ( " + FileImportStatus.QUEUED.value() + ", " + FileImportStatus.RE_QUEUED.value() + ") "
+				+ " AND marked_for_deletion != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
 		try {
 			conn = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
 			pstmt = conn.prepareStatement( sql );
@@ -96,7 +98,8 @@ public class FileImportAndPipelineRunTracking_Searcher_Shared {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		final String sql = "SELECT COUNT(*) AS count FROM import_and_pipeline_run_tracking_tbl WHERE status_id IN ( " + FileImportStatus.STARTED.value() + ")";
+		final String sql = "SELECT COUNT(*) AS count FROM import_and_pipeline_run_tracking_tbl WHERE status_id IN ( " + FileImportStatus.STARTED.value() + ") "
+				+ " AND marked_for_deletion != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE;
 		try {
 			conn = SharedCodeOnly_DBConnectionProvider.getInstance().getConnection();
 			pstmt = conn.prepareStatement( sql );
