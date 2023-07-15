@@ -435,7 +435,8 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 		
 		calendar.add(Calendar.DATE, 1);
 		
-		///  Change time to 22 hours (10pm)		calendar.set(Calendar.HOUR_OF_DAY,22);
+		///  Change time to 22 hours (10pm)		
+		calendar.set(Calendar.HOUR_OF_DAY,22);
 		calendar.set(Calendar.MINUTE, 00);
 		calendar.set(Calendar.SECOND, 00);
 
@@ -456,7 +457,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 		
 		if ( tomorrow_22_Hour_Minus_Now__Milliseconds > 0 ) {
 
-			log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again." );
+			log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again. wait time in milliseconds: " + tomorrow_22_Hour_Minus_Now__Milliseconds );
 
 
 			synchronized (this) {
