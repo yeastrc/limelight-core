@@ -166,7 +166,6 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 
 				if ( log.isInfoEnabled() ) {
 
-					System.out.println( "Limelight DB Name from Connection Provider: " + limelightDbName_Param );
 					log.info( "Limelight DB Name from Connection Provider: " + limelightDbName_Param );
 				}
 
@@ -182,7 +181,6 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 
 			if ( StringUtils.isNotEmpty( dbConnectionParametersProvider.getLimelightDbName() ) ) {
 				if ( log.isInfoEnabled() ) {
-					System.out.println( "Limelight DB Name from Connection Provider: " + dbConnectionParametersProvider.getLimelightDbName() );
 					log.info( "Limelight DB Name from Connection Provider: " + dbConnectionParametersProvider.getLimelightDbName() );
 				}
 			}

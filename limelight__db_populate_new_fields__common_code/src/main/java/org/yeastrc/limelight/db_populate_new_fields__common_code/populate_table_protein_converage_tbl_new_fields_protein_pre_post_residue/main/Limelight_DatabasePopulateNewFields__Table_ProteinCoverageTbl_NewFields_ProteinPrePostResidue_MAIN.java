@@ -56,9 +56,6 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 			Limelight_DatabasePopulateNewFields__CallFrom__RunImporter_VS_StandaloneProgram_Enum callFrom
 			) throws Exception {
 		
-
-		log.warn( "INFO:: STARTING: Database Populate New Fields for table 'protein_coverage_tbl'.  When completed it will wait before it runs again" );
-
 		//  First Get or Save and Get the Root record for this label_ShortKey
 		
 		final String label_ShortKey = Aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root__Constants.LABEL_SHORT_KEY_VALUE___PROTEIN_COV_POP_PRE_POST_RESIDUE;
@@ -95,9 +92,7 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 		
 		if ( aa_LimelightDb_UpdatesIn_RunImporterOrPgm_Root_DTO_FromDBGet.isUpdatesComplete() ) {
 			
-			//  Database Fully updated for this update so exit
-
-			log.warn( "INFO:: EXIT:  Updates for this code was previously COMPLETE:: Database Populate New Fields for table 'protein_coverage_tbl'." );
+			//  Database Already Fully updated for this update so exit
 
 			return;  // EARLY RETURN
 		}
@@ -186,7 +181,10 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 				}
 
 			}
+
+			log.warn( "INFO:: STARTING: Database Populate New Fields for table 'protein_coverage_tbl'.  When completed it will wait before it runs again" );
 			
+
 			// Process Search Id
 			
 			limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_SingleSearch( 
@@ -226,7 +224,7 @@ public class Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFi
 		
 
 		log.warn( "INFO:: FINISHED: Database Populate New Fields for table 'protein_coverage_tbl'.  When completed it will wait before it runs again" );
-
+		
 	}
 	
 	/**

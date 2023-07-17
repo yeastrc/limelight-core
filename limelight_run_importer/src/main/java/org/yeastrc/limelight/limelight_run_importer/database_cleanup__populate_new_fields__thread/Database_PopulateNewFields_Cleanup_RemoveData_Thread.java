@@ -116,13 +116,13 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 		instance.importRunImporterDBConnectionFactory.setDatabaseConnectionTestOnBorrow(true);
 		
 		if ( firstInstanceOfThisThread__StaticProperty ) {
-			System.out.println( "************" );
-			System.out.println( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is TRUE");
-			System.out.println( "************" );
+			log.info( "************" );
+			log.info( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is TRUE");
+			log.info( "************" );
 		} else {
-			System.out.println( "************" );
-			System.out.println( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is FALSE");
-			System.out.println( "************" );
+			log.info( "************" );
+			log.info( "Database_PopulateNewFields_Cleanup_RemoveData_Thread getNewInstance: firstInstanceOfThisThread__StaticProperty is FALSE");
+			log.info( "************" );
 		}
 
 		instance.getNewInstance_FirstCall = firstInstanceOfThisThread__StaticProperty;
