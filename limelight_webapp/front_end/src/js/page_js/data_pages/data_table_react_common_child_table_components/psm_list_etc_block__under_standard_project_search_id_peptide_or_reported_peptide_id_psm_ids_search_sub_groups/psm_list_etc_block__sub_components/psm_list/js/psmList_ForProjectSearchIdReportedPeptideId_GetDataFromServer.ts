@@ -18,6 +18,83 @@ import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerP
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
+
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result {
+
+    resultList: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>;
+
+    searchHasScanData: boolean;
+    search_hasScanFilenames: boolean;
+    search_hasIsotopeLabel: boolean;
+    search_anyPsmHas_DynamicModifications: boolean;
+    search_anyPsmHas_OpenModifications: boolean;
+    search_anyPsmHas_ReporterIons: boolean;
+}
+
+/**
+ *
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item {
+
+    psmId: number;
+    charge: number;
+    scanNumber: number;
+    scanFilename: string; // Can be null
+    searchScanFileId: number; // Can be null
+    searchId: number;
+    reportedPeptideId: number //  From psm_tbl record
+
+    //  Populated from PSM if not null.  Otherwise if have scan both copied from scan if either not populated on PSM
+    retentionTimeSeconds: number; // Can be null if Not populated on PSM and no scan
+    precursor_M_Over_Z: number; // Can be null if Not populated on PSM and no scan
+
+    reporterIonMassList: Array<number>; // Can be null
+    openModificationMassAndPositionsList: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_OpenModItem>; // Can be null
+
+    hasReporterIons: boolean;
+    hasOpenModifications: boolean;
+    hasVariableModifications: boolean
+
+    psmIs_IndependentDecoy: boolean;
+
+    //  Array will be copied to map
+    psmAnnotationData_List: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_AnnotationDataItem>;
+
+    psmAnnotationData_Map_Key_AnnotationTypeId: Map<number, PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_AnnotationDataItem>;
+}
+
+/**
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_AnnotationDataItem {
+
+    annotationTypeId: number;
+    valueDouble: number; // Can be null
+    valueString: string;
+}
+
+/**
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_OpenModItem {
+
+    openModMass: number;
+    positionEntries_Optional: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_OpenModItem_PositionItem>;
+}
+
+/**
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_OpenModItem_PositionItem {
+
+    position: number;
+    is_N_Terminal: boolean;
+    is_C_Terminal: boolean;
+}
+
+/////
+
 /**
  * 
  */
@@ -36,13 +113,13 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
     psmIds_Include: ReadonlySet<number>
     searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     dataPageStateManager : DataPageStateManager,
-}) : Promise<any> {
+}) : Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result> {
 
     if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
         throw Error("ERROR: reportedPeptideId === undefined && searchSubGroupId !== undefined : getPSMDataFromServer");
     }
 
-    return new Promise( ( resolve, reject ) => {
+    return new Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result>( ( resolve, reject ) => {
         try {
 
             let psmIds_Include_Array : Array<number> = undefined
@@ -79,11 +156,22 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
                 reject() 
             });
 
-            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result }) => {
                 try {
                     // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
 
                     console.log("AJAX Call to d/rws/for-page/psb/psm-list END, Now: " + new Date() );
+
+                    if ( responseData.resultList ) {
+                        for ( const resultItem of responseData.resultList ) {
+                            if ( resultItem.psmAnnotationData_List ) {
+                                resultItem.psmAnnotationData_Map_Key_AnnotationTypeId = new Map()
+                                for ( const psmAnnItem of resultItem.psmAnnotationData_List ) {
+                                    resultItem.psmAnnotationData_Map_Key_AnnotationTypeId.set( psmAnnItem.annotationTypeId, psmAnnItem )
+                                }
+                            }
+                        }
+                    }
 
                     resolve( responseData );
                     

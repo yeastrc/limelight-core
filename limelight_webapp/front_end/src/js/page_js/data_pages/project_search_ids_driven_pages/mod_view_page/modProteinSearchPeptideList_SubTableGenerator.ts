@@ -4,7 +4,10 @@ import {
     DataTable_Column_sortFunction_Param,
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry_SearchTableData,
-    DataTable_DataRowEntry, DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry,
+    DataTable_DataRowEntry__Get_RowChildContent_CallParams,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent,
     DataTable_DataRowEntry_DownloadTable,
     DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject,
@@ -20,9 +23,11 @@ import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
-    psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects,
     PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
-} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id__reported_peptide_id_and_or_psm_ids/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
+} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
+import { psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__root_component_and_code/psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent";
+import { PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component";
+import { get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 
 
 export class ModProteinSearchPeptideList_SubTableGenerator {
@@ -355,16 +360,33 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 projectSearchId: projectSearchId,
                 psmIds_Include: proteinData.psmIds,
                 reportedPeptideId: undefined,
+                searchSubGroupId: undefined,
                 searchDataLookupParamsRoot: modViewDataManager.searchDataLookupParameters_Root,
-                openModPositionOverride:proteinData.openModPositionOverride
+                openModPositionOverride: proteinData.openModPositionOverride
             });
 
-            const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
-                ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().get_commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root().
+                get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
 
-                    return psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects({ params : subTableData });
+            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                const msg = "get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().get_commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root().get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params = {
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+            }
+
+            const dataRow_Get_RowChildContent_Return_Promise_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent =
+                ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ): Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent> => {
+
+                    return psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent({
+                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: subTableData,
+                        psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params,
+                        params_DataTableCallback: params })
                 }
-
 
             const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
 
@@ -374,7 +396,7 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 sortOrder_OnEquals : proteinData.projectSearchId,
                 columnEntries,
                 dataTable_DataRowEntry_DownloadTable,
-                dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
+                dataRow_Get_RowChildContent_Return_Promise_ChildContent
             });
 
             // sort by protein name

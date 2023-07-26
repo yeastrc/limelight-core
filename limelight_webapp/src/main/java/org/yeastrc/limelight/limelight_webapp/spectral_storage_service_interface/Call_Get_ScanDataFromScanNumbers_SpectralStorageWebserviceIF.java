@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanDataFromScanNumbers_Request;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
 /**
@@ -43,4 +44,18 @@ public interface Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF {
 			Get_ScanDataFromScanNumbers_IncludeParentScans get_ScanDataFromScanNumbers_IncludeParentScans,
 			Get_ScanData_ExcludeReturnScanPeakData excludeReturnScanPeakData, String scanFileAPIKey) throws Exception;
 
+	/**
+	 * Get Scan Data from Spectral Storage Service
+	 * 
+	 * Number of scan numbers cannot exceed max as specified in Spectral Storage Service.  
+	 *   LimelightInternalErrorException thrown with max allowed if max exceeded.
+	 * 
+	 * @param get_ScanDataFromScanNumbers_Request
+	 * @param scanFileAPIKey
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SingleScan_SubResponse> getScanDataFromSpectralStorageService_NativeSpectralStorageServiceRequestObject( 
+			Get_ScanDataFromScanNumbers_Request get_ScanDataFromScanNumbers_Request,
+			String scanFileAPIKey ) throws Exception;
 }

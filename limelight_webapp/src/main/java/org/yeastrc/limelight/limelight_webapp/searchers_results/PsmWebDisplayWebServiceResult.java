@@ -27,6 +27,8 @@ public class PsmWebDisplayWebServiceResult {
 	
 	private long psmId;
 	
+	private int reportedPeptideId;
+	
 	private boolean hasModifications; // PSM level Variable/Dynamic Modifications
 	private boolean hasOpenModifications;
 	private boolean hasReporterIons;
@@ -129,5 +131,11 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setPsmIs_IndependentDecoy(boolean psmIs_IndependentDecoy) {
 		this.psmIs_IndependentDecoy = psmIs_IndependentDecoy;
+	}
+	public int getReportedPeptideId() {
+		return reportedPeptideId;
+	}
+	public void setReportedPeptideId(int reportedPeptideId) {
+		this.reportedPeptideId = reportedPeptideId;
 	}
 }

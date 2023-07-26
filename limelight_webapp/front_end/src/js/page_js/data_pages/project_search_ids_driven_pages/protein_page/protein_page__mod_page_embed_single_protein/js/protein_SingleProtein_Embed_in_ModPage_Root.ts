@@ -366,6 +366,13 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this._dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
         });
     }
+
+    /**
+     * Return commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+     */
+    get_commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root() {
+        return this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+    }
 }
 
 /**

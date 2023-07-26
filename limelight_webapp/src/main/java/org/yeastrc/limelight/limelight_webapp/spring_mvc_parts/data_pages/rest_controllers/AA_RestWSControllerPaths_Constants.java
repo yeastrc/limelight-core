@@ -656,6 +656,15 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
 	public static final String PSM_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-list";
+
+	public static final String SCAN_NUMBERS_FOR_MS_1_SCANS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_RETENTION_TIME_RANGE_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/scan-numbers-for-ms-1-scans-project-search-id-search-scan-file-id-retention-time-range";
+
+	public static final String SCAN_DATA_WITH_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_M_OVER_Z_RANGES_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-m-over-z-ranges";
+
+	public static final String SCAN_DATA_NO_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/scan-data-no-peaks-for-scan-numbers-project-search-id-search-scan-file-id";
 	
 	public static final String SPECTRUM_FOR_PSM_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/spectrum-for-psm-id";
 
@@ -754,5 +763,10 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String FASTA_FILE_STATISTICS_PROJECT_SEARCH_ID_LIST =
 			"d/rws/for-page/psb/fasta-file-statistics-project-search-id-list";
 
+	
+
+	//  Scan with Peaks Max Return Count: Access Control: Project Search Id
+	public static final String SCAN_WITH_PEAKS_MAX_RETURN_COUNT_ACCESS_CONTROL_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-search-id";
 
 }

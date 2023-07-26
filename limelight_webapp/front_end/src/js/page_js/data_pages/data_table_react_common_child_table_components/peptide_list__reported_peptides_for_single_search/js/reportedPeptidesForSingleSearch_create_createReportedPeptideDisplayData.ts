@@ -38,7 +38,7 @@ export class CreateReportedPeptideDisplayData_PeptideItem {
     protein_Post_Residue_C_Term : boolean
 
     peptideUnique : boolean
-    proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+    peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
     reportedPeptideSequence? : string
     numPsms? : number
     peptideAnnotationMap_KeyAnnType? : Map<number, CreateReportedPeptideDisplayData_Item_For_AnnotationTypeId>
@@ -278,7 +278,7 @@ export const createReportedPeptideDisplayData = async function(
             }
 
             const peptideItem : CreateReportedPeptideDisplayData_PeptideItem = {
-                reportedPeptideId, peptideUnique, proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+                reportedPeptideId, peptideUnique, peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
                 protein_Pre_Residues : new Set(),
                 protein_Pre_Residue_N_Term : false,
                 protein_Post_Residues : new Set(),

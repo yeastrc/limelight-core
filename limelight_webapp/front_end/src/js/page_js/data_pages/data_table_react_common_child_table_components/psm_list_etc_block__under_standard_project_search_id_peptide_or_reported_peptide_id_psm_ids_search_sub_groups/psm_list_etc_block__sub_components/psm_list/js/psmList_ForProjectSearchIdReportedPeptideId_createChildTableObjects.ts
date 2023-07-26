@@ -28,13 +28,17 @@ import {
     DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
 } from 'page_js/data_pages/data_table_react/dataTable_React_DataObjects';
 
-import { psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer } from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
+import {
+    psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer,
+    PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
+    PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
+} from './psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer';
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {get_PsmList_ViewSpectrumCell_ExternalReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id__reported_peptide_id_and_or_psm_ids/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent";
+import {get_PsmList_ViewSpectrumCell_ExternalReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -49,14 +53,13 @@ const LOCAL__RETENTION_TIME_MINUTES_DIGITS_AFTER_DECIMAL_POINT = 2;
  */
 export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter {
 
-    projectSearchId : number
-    reportedPeptideId : number                                      // NOT required if have psmIds_Include
-    searchSubGroupId : number                                       // Optional, only allowed if reportedPeptideId is populated
-    openModPositionOverride : OpenModPosition_DataType
-    searchDataLookupParamsRoot : SearchDataLookupParameters_Root
-    dataPageStateManager : DataPageStateManager
-    psmIds_Include : ReadonlySet<number> // Optional
-    alwaysShow_ReporterIonMasses_Column? : boolean
+    readonly projectSearchId : number
+    readonly reportedPeptideId : number                                      // NOT required if have psmIds_Include
+    readonly searchSubGroupId : number                                       // Optional, only allowed if reportedPeptideId is populated
+    readonly openModPositionOverride : OpenModPosition_DataType
+    readonly searchDataLookupParamsRoot : SearchDataLookupParameters_Root
+    readonly dataPageStateManager : DataPageStateManager
+    readonly psmIds_Include : ReadonlySet<number> // Optional
 
     /**
      *
@@ -93,6 +96,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         this.openModPositionOverride = openModPositionOverride;
     }
 
+    private _FAKE_TO_FORCE_USE_CONSTRUCTOR() {}
 
     // shallowClone() {
 
@@ -100,6 +104,26 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
     //     Object.assign( clone, this );
     //     return clone;
     // }
+}
+
+
+/**
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result {
+
+    dataTable_Data: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data
+    webserviceResult_Root: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result
+}
+
+
+/**
+ *
+ */
+export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data {
+
+    dataTable_RootTableObject: DataTable_RootTableObject
+    dataTable_DataRowEntries_Map_Key_Psm_Id : Map<number, DataTable_DataRowEntry>
 }
 
 /**
@@ -115,9 +139,9 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
 } : {
     params :PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 
-}) : Promise<DataTable_RootTableObject> => {
+}) : Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result> => {
 
-    const promise = new Promise<DataTable_RootTableObject>( ( resolve, reject ) => {
+    const promise = new Promise<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result>( ( resolve, reject ) => {
         try {
 
             const projectSearchId = params.projectSearchId
@@ -126,7 +150,6 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             const searchSubGroupId = params.searchSubGroupId;
             const searchDataLookupParamsRoot = params.searchDataLookupParamsRoot;
             const dataPageStateManager = params.dataPageStateManager;
-            const alwaysShow_ReporterIonMasses_Column = params.alwaysShow_ReporterIonMasses_Column;
             const openModPositionOverride = params.openModPositionOverride;
 
             const loadPromise = psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer({
@@ -139,16 +162,15 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
 
             loadPromise.then( ( ajaxResponse ) => {
                 try {
-                    const dataTable_RootTableObject = _create_DataTable_RootTableObject({
-                        alwaysShow_ReporterIonMasses_Column,
-                        ajaxResponse, 
+                    const dataTable_Data = _create_DataTable_RootTableObject({
+                        ajaxResponse,
                         dataPageStateManager, 
                         projectSearchId,
                         searchDataLookupParamsRoot,
                         openModPositionOverride
                     });
 
-                    resolve( dataTable_RootTableObject );
+                    resolve( { dataTable_Data, webserviceResult_Root: ajaxResponse } );
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -171,22 +193,20 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
  */
 const _create_DataTable_RootTableObject = function({
 
-    alwaysShow_ReporterIonMasses_Column,
-    ajaxResponse, 
+    ajaxResponse,
     dataPageStateManager, 
     projectSearchId,
     searchDataLookupParamsRoot,
     openModPositionOverride
 
 } : {
-    alwaysShow_ReporterIonMasses_Column : boolean,
-    ajaxResponse: any,
+    ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number,
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     openModPositionOverride : OpenModPosition_DataType
 
-}) : DataTable_RootTableObject {
+}) : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data {
 
     // ajaxResponse.resultList;
     // ajaxResponse.searchHasScanData;
@@ -205,12 +225,12 @@ const _create_DataTable_RootTableObject = function({
 
     const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse, openModPositionOverride });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
+    const dataTable_DataRowEntries_Map_Key_Psm_Id = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries_Map_Key_Psm_Id;
 
     const { dataTable_Columns,
         dataTable_Column_DownloadTable_Entries
     } = _getDataTableColumns({
 
-        alwaysShow_ReporterIonMasses_Column : false,  //  Set arbitrarily for now
         ajaxResponse, 
         dataPageStateManager, 
         projectSearchId,
@@ -236,7 +256,11 @@ const _create_DataTable_RootTableObject = function({
         tableDataObject : dataTable_RootTableDataObject
     });
 
-    return dataTable_RootTableObject;
+    const result: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data = {
+        dataTable_RootTableObject, dataTable_DataRowEntries_Map_Key_Psm_Id
+    }
+
+    return result;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -246,8 +270,7 @@ const _create_DataTable_RootTableObject = function({
  * 
  */
 const _getDataTableColumns = function({ 
-    
-    alwaysShow_ReporterIonMasses_Column, 
+
     ajaxResponse, 
     dataPageStateManager, 
     projectSearchId,
@@ -259,9 +282,8 @@ const _getDataTableColumns = function({
     anyPsmIs_IndependentDecoy
 
 } : { 
-    
-    alwaysShow_ReporterIonMasses_Column : boolean, 
-    ajaxResponse: any,
+
+    ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
     dataPageStateManager : DataPageStateManager, 
     projectSearchId : number
     psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem>
@@ -411,6 +433,7 @@ const _getDataTableColumns = function({
 
 interface Get_DataTable_DataRowEntries_Result {
     dataTable_DataRowEntries : Array<DataTable_DataRowEntry>
+    dataTable_DataRowEntries_Map_Key_Psm_Id : Map<number, DataTable_DataRowEntry>
     anyPsmsHave_precursor_M_Over_Z? : boolean
     anyPsmsHave_retentionTime? : boolean
     anyPsmsHave_reporterIonMassesDisplay? : boolean
@@ -431,20 +454,21 @@ const _get_DataTable_DataRowEntries = function({
     openModPositionOverride,
     ajaxResponse
 } : { 
-    psmList : Array<any>,
+    psmList : Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>,
     projectSearchId : number,
     dataPageStateManager : DataPageStateManager
-    psmAnnotationTypesForPsmListEntries_DisplayOrder: any,
-    ajaxResponse: any,
+    psmAnnotationTypesForPsmListEntries_DisplayOrder: Array<AnnotationTypeItem>,
+    ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
     openModPositionOverride: OpenModPosition_DataType
 
 }) : Get_DataTable_DataRowEntries_Result {
 
     const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
+    const dataTable_DataRowEntries_Map_Key_Psm_Id : Map<number, DataTable_DataRowEntry> = new Map()
     
     if ( ( ! psmList ) || psmList.length === 0 ) {
 
-        return { dataTable_DataRowEntries };
+        return { dataTable_DataRowEntries, dataTable_DataRowEntries_Map_Key_Psm_Id };
     }
 
     if ( psmList.length === undefined ) {
@@ -651,7 +675,7 @@ const _get_DataTable_DataRowEntries = function({
 
         if ( anyPsmsHave_openModificationMassesDisplay ) {
             let valueDisplay = "";
-            let valueSort = "";
+            let valueSort: number | string = "";
             if ( psmListItem.openModificationMassAndPositionsList && psmListItem.openModificationMassAndPositionsList.length > 0 ) {
 
                 const openModificationMassAsString_List = [];
@@ -713,7 +737,7 @@ const _get_DataTable_DataRowEntries = function({
                     openModificationMassAsString_List.push( outputEntryString );
                 }
                 valueDisplay = openModificationMassAsString_List.join(", ");
-                valueSort = psmListItem.openModificationMassAndPositionsList[ 0 ]; // Sort on first entry mass
+                valueSort = psmListItem.openModificationMassAndPositionsList[ 0 ].openModMass; // Sort on first entry mass
             }
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
@@ -731,11 +755,11 @@ const _get_DataTable_DataRowEntries = function({
 
         // let psmAnnotationDisplayEntries = [];
 
-        let psmAnnotationMap = psmListItem.psmAnnotationMap;  //  psmAnnotationMap is an Object
-        if ( psmAnnotationMap ) {
+        let psmAnnotationData_Map_Key_AnnotationTypeId = psmListItem.psmAnnotationData_Map_Key_AnnotationTypeId;
+        if ( psmAnnotationData_Map_Key_AnnotationTypeId ) {
             for ( const annTypeItem of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
-                const entryForAnnTypeId = psmAnnotationMap[ annTypeItem.annotationTypeId ];
-                let valueSort = entryForAnnTypeId.valueDouble;
+                const entryForAnnTypeId = psmAnnotationData_Map_Key_AnnotationTypeId.get( annTypeItem.annotationTypeId );
+                let valueSort: string | number = entryForAnnTypeId.valueDouble;
                 if ( valueSort === undefined || valueSort === null ) {
                     valueSort = entryForAnnTypeId.valueString;
                 }
@@ -771,11 +795,15 @@ const _get_DataTable_DataRowEntries = function({
             dataTable_DataRowEntry_DownloadTable,
             row_CSS_Additions
         })
+
         dataTable_DataRowEntries.push( dataTable_DataRowEntry );
+
+        dataTable_DataRowEntries_Map_Key_Psm_Id.set( psmListItem.psmId, dataTable_DataRowEntry )
     }
 
     return {
         dataTable_DataRowEntries,
+        dataTable_DataRowEntries_Map_Key_Psm_Id,
         anyPsmsHave_precursor_M_Over_Z,
         anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay,
@@ -794,7 +822,7 @@ const _sort_psmList = function({
     projectSearchId,
     dataPageStateManager
 } : {
-    psmList: any
+    psmList : Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>,
     projectSearchId : number
     dataPageStateManager : DataPageStateManager 
 }) {
@@ -808,18 +836,18 @@ const _sort_psmList = function({
 
     let psm_AnnotationTypeRecords_WhereSortOrderPopulated_Length = psm_AnnotationTypeRecords_WhereSortOrderPopulated.length;
 
-    psmList.sort( function( a: any, b: any ) {
+    psmList.sort( function( a, b ) {
 
         //  Compare PSM Ann Values, if they are populated
-        let a_psmAnnotationMap = a.psmAnnotationMap;
-        let b_psmAnnotationMap = b.psmAnnotationMap;
+        let a_psmAnnotationMap = a.psmAnnotationData_Map_Key_AnnotationTypeId;
+        let b_psmAnnotationMap = b.psmAnnotationData_Map_Key_AnnotationTypeId;
         if ( a_psmAnnotationMap && b_psmAnnotationMap ) {
 
             for ( let psm_AnnotationTypeRecords_WhereSortOrderPopulated_Index = 0; psm_AnnotationTypeRecords_WhereSortOrderPopulated_Index < psm_AnnotationTypeRecords_WhereSortOrderPopulated_Length; psm_AnnotationTypeRecords_WhereSortOrderPopulated_Index++ ) {
                 let psm_AnnotationTypeRecords_WhereSortOrderPopulated_Entry = psm_AnnotationTypeRecords_WhereSortOrderPopulated[ psm_AnnotationTypeRecords_WhereSortOrderPopulated_Index ];
                 let annotationTypeId = psm_AnnotationTypeRecords_WhereSortOrderPopulated_Entry.annotationTypeId;
-                let a_psmAnnotationMap_ForAnnType = a_psmAnnotationMap[ annotationTypeId ];
-                let b_psmAnnotationMap_ForAnnType = b_psmAnnotationMap[ annotationTypeId ];
+                let a_psmAnnotationMap_ForAnnType = a_psmAnnotationMap.get( annotationTypeId );
+                let b_psmAnnotationMap_ForAnnType = b_psmAnnotationMap.get( annotationTypeId );
                 
                 if ( a_psmAnnotationMap_ForAnnType && b_psmAnnotationMap_ForAnnType ) {
                     if ( psm_AnnotationTypeRecords_WhereSortOrderPopulated_Entry.filterDirectionBelow ) {

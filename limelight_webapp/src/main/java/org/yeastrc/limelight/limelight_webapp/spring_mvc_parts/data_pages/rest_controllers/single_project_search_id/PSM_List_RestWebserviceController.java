@@ -358,12 +358,15 @@ public class PSM_List_RestWebserviceController {
     			WebserviceResponse_PSM_Item result = new WebserviceResponse_PSM_Item();
     			result.setPsmId( psmWebDisplay.getPsmId() );
     			result.setSearchId( psmWebDisplay.getSearchId() );
+    			result.setReportedPeptideId( psmWebDisplay.getReportedPeptideId() );
     			result.setCharge( psmWebDisplay.getCharge() );
     			result.setScanNumber( psmWebDisplay.getScanNumber() );
     			result.setScanFilename( psmWebDisplay.getScanFilename() );
+    			result.setSearchScanFileId( psmWebDisplay.getSearchScanFileId() );
     			
     			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
     			result.setHasOpenModifications( psmWebDisplay.isHasOpenModifications() );
+    			result.setHasVariableModifications( psmWebDisplay.isHasModifications() );
     			
     			//  Not return 'is_decoy' since excluded in Searcher
     			
@@ -390,6 +393,7 @@ public class PSM_List_RestWebserviceController {
 	    					throw new LimelightInternalErrorException(msg);
 	    				}
 	    				
+	    				//  Copy both from scan if either is NOT populated on PSM
 	    				result.setRetentionTimeSeconds( scan.getRetentionTime() );
 	    				result.setPrecursor_M_Over_Z( scan.getPrecursor_M_Over_Z() );
 	    			}
@@ -404,10 +408,12 @@ public class PSM_List_RestWebserviceController {
     				result.setPrecursor_M_Over_Z( psmWebDisplay.getPsm_precursor_MZ().doubleValue() );
 				}
     			
-    			Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap = new HashMap<>();
+    			List<AnnotationDataItem_ForPage> psmAnnotationData_List = new ArrayList<>( annTypeIdsToRetrieve.size() );
     			
-    			//   TODO  Optimize this
+    			//   TODO  Optimize this by getting for all PSM Ids at once
     			{
+    				Set<Integer> psmAnnotationTypeIds_Retrieved = new HashSet<>( annTypeIdsToRetrieve.size() );
+    				
     				//  Add in PSM Annotation data for Ann Type Display
     				{
     					List<Long> psmList = new ArrayList<>( 1 );
@@ -419,12 +425,20 @@ public class PSM_List_RestWebserviceController {
     							.getPsmFilterableAnnotationDTOList( psmList, annTypeIdsToRetrieve );
 
     					for ( PsmFilterableAnnotationDTO item : psmFilterableAnnotationDTOList ) {
+    						
+    						if ( psmAnnotationTypeIds_Retrieved.contains( item.getAnnotationTypeId() ) ) {
+    							String msg = "Already processed item.getAnnotationTypeId() for this PSM Id. item.getAnnotationTypeId(): " + item.getAnnotationTypeId() + ", PSM ID: " + psmWebDisplay.getPsmId();
+    							log.error(msg);
+    							throw new LimelightInternalErrorException(msg);
+    						}
+    						
+    						psmAnnotationTypeIds_Retrieved.add( item.getAnnotationTypeId() );
 
     						AnnotationDataItem_ForPage annotationDataItem_ForPage = new AnnotationDataItem_ForPage();
     						annotationDataItem_ForPage.setAnnotationTypeId( item.getAnnotationTypeId() );
     						annotationDataItem_ForPage.setValueString( item.getValueString() );
     						annotationDataItem_ForPage.setValueDouble( item.getValueDouble() );
-    						psmAnnotationMap.put( item.getAnnotationTypeId(), annotationDataItem_ForPage );
+    						psmAnnotationData_List.add( annotationDataItem_ForPage );
     					}
     				}
     				
@@ -437,15 +451,23 @@ public class PSM_List_RestWebserviceController {
 
     					for ( PsmDescriptiveAnnotationDTO item : psmDescriptiveAnnotationDTOList ) {
 
+    						if ( psmAnnotationTypeIds_Retrieved.contains( item.getAnnotationTypeId() ) ) {
+    							String msg = "Already processed item.getAnnotationTypeId() for this PSM Id. item.getAnnotationTypeId(): " + item.getAnnotationTypeId() + ", PSM ID: " + psmWebDisplay.getPsmId();
+    							log.error(msg);
+    							throw new LimelightInternalErrorException(msg);
+    						}
+    						
+    						psmAnnotationTypeIds_Retrieved.add( item.getAnnotationTypeId() );
+
     						AnnotationDataItem_ForPage annotationDataItem_ForPage = new AnnotationDataItem_ForPage();
     						annotationDataItem_ForPage.setAnnotationTypeId( item.getAnnotationTypeId() );
     						annotationDataItem_ForPage.setValueString( item.getValueString() );
-    						psmAnnotationMap.put( item.getAnnotationTypeId(), annotationDataItem_ForPage );
+    						psmAnnotationData_List.add( annotationDataItem_ForPage );
     					}
     				}
     			}
     			
-    			result.setPsmAnnotationMap( psmAnnotationMap );
+    			result.setPsmAnnotationData_List( psmAnnotationData_List );
     			
     			resultList.add( result );
     		}
@@ -796,7 +818,9 @@ public class PSM_List_RestWebserviceController {
     	private int charge;
     	private int scanNumber;
     	private String scanFilename;
+    	private Integer searchScanFileId;
     	private int searchId;
+    	private int reportedPeptideId;
 
     	private Float retentionTimeSeconds;
     	private Double precursor_M_Over_Z;
@@ -806,10 +830,11 @@ public class PSM_List_RestWebserviceController {
 
     	private boolean hasReporterIons;
     	private boolean hasOpenModifications;
+    	private boolean hasVariableModifications;
 
     	private boolean psmIs_IndependentDecoy;
     	
-    	private Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap;
+    	private List<AnnotationDataItem_ForPage> psmAnnotationData_List;
     	
 		public long getPsmId() {
 			return psmId;
@@ -871,12 +896,6 @@ public class PSM_List_RestWebserviceController {
 		public void setHasOpenModifications(boolean hasOpenModifications) {
 			this.hasOpenModifications = hasOpenModifications;
 		}
-		public Map<Integer, AnnotationDataItem_ForPage> getPsmAnnotationMap() {
-			return psmAnnotationMap;
-		}
-		public void setPsmAnnotationMap(Map<Integer, AnnotationDataItem_ForPage> psmAnnotationMap) {
-			this.psmAnnotationMap = psmAnnotationMap;
-		}
 		public List<WebserviceResponse_PSM_OpenModItem> getOpenModificationMassAndPositionsList() {
 			return openModificationMassAndPositionsList;
 		}
@@ -889,6 +908,30 @@ public class PSM_List_RestWebserviceController {
 		}
 		public void setPsmIs_IndependentDecoy(boolean psmIs_IndependentDecoy) {
 			this.psmIs_IndependentDecoy = psmIs_IndependentDecoy;
+		}
+		public List<AnnotationDataItem_ForPage> getPsmAnnotationData_List() {
+			return psmAnnotationData_List;
+		}
+		public void setPsmAnnotationData_List(List<AnnotationDataItem_ForPage> psmAnnotationData_List) {
+			this.psmAnnotationData_List = psmAnnotationData_List;
+		}
+		public Integer getSearchScanFileId() {
+			return searchScanFileId;
+		}
+		public void setSearchScanFileId(Integer searchScanFileId) {
+			this.searchScanFileId = searchScanFileId;
+		}
+		public boolean isHasVariableModifications() {
+			return hasVariableModifications;
+		}
+		public void setHasVariableModifications(boolean hasVariableModifications) {
+			this.hasVariableModifications = hasVariableModifications;
+		}
+		public int getReportedPeptideId() {
+			return reportedPeptideId;
+		}
+		public void setReportedPeptideId(int reportedPeptideId) {
+			this.reportedPeptideId = reportedPeptideId;
 		}
     }
     

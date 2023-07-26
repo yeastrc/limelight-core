@@ -1,8 +1,8 @@
 /**
  * reportedPeptidesForSingleSearch_createChildTableObjects.ts
- * 
+ *
  * Experiment Protein Page: Single Protein: show Reported Peptides for Single Search for Single Peptide in Peptide List
- * 
+ *
  * Create     DataTable_RootTableObject for child table
  */
 
@@ -15,6 +15,9 @@ import {
     DataTable_DataRow_ColumnEntry,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
+    DataTable_DataRowEntry__Get_RowChildContent_CallParams,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
+    DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent,
     DataTable_DataRowEntry__GetChildTableData_CallbackParams,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject,
     DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject_ReturnValue,
@@ -32,19 +35,20 @@ import {
     SearchSubGroups_For_ReportedPeptide_Return_ChildTable_RootObject__Parameter
 } from "page_js/data_pages/data_table_react_common_child_table_components/peptide_list_search_sub_groups_for_single_reported_peptide/js/searchSubGroups_For_ReportedPeptide_Return_ChildTable_RootObject";
 import {reportedPeptidesForSingleSearch_ChildReactComponents_Other} from "page_js/data_pages/data_table_react_common_child_table_components/peptide_list__reported_peptides_for_single_search/jsx/reportedPeptidesForSingleSearch_ChildReactComponents_Other";
-import {
-    PsmList_Wrapper__Get_RowChildContent_Return_ChildDataTableObject_Parameter,
-    psmList_Wrapper__Get_RowChildDataTable
-} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_for_project_search_id__reported_peptide_id_and_or_psm_ids/psm_list_block_etc_under_standard_project_search_id_reported_peptide_id_psm_ids_search_sub_groups/psmList_Wrapper_ChildReactComponent";
 import {CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
+} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
+import { psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__root_component_and_code/psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent";
+import { PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component";
 
 //  Local
 
 ////////////////
 
-const dataTableId_ThisTable = "Experiment Protein Single Protein Single Peptide Search List Table";
+const dataTableId_ThisTable = "Reported Peptides For Single Search List Table";
 
 ////////////////
 
@@ -109,13 +113,13 @@ export class ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter {
 }
 
 /**
- * 
+ *
  * @returns ReportedPeptidesForSingleSearch_createChildTableObjects_Result
  */
 export const reportedPeptidesForSingleSearch_createChildTableObjects = async function({
 
-    reportedPeptidesForSingleSearch_createChildTableObjects_Parameter
-} : {
+                                                                                          reportedPeptidesForSingleSearch_createChildTableObjects_Parameter
+                                                                                      } : {
     reportedPeptidesForSingleSearch_createChildTableObjects_Parameter : ReportedPeptidesForSingleSearch_createChildTableObjects_Parameter
 
 }) : Promise<DataTable_RootTableObject> /* return a promise */ {
@@ -321,7 +325,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
                 const reportedPeptideId = peptideEntry.reportedPeptideId;
 
-                const proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = peptideEntry.proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
+                const peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = peptideEntry.peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId
 
                 const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
                 {
@@ -470,7 +474,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                                 searchSubGroup_Ids_Selected, //  Populated ONLY for Single Search when Search has Search SubGroups.  May be a Subset of searchSubGroup_Ids for the Search based on User selection
                                 projectSearchId,
                                 reportedPeptideId_ForDisplay : reportedPeptideId,
-                                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+                                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
                                 reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId,
                                 searchDataLookupParamsRoot,
                                 commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
@@ -499,22 +503,28 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
                 } else {
 
-                    const psmList_Wrapper__Get_RowChildContent_Return_ChildDataTableObject_Parameter = new PsmList_Wrapper__Get_RowChildContent_Return_ChildDataTableObject_Parameter({
+                    const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter({
                         projectSearchId,
                         reportedPeptideId,
                         searchSubGroupId : undefined,
-                        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId: proteinExpmntPage_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId,
+                        psmIds_Include : peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmIds_Include,
+                        openModPositionOverride: undefined,
                         searchDataLookupParamsRoot,
-                        dataPageStateManager,
-                        forMultipleSearchesPage : true  // Always true for Experiment
+                        dataPageStateManager
                     });
 
-                    const dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject =
-                        ( params : DataTable_DataRowEntry__GetChildTableData_CallbackParams ) : Promise<DataTable_RootTableObject> => {
+                    const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params = {
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                    }
 
-                            return psmList_Wrapper__Get_RowChildDataTable({
-                                psmList_Wrapper__Get_RowChildContent_Return_ChildDataTableObject_Parameter
-                            });
+                    const dataRow_Get_RowChildContent_Return_Promise_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent =
+                        ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ): Promise<DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent> => {
+
+                            return psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComponent({
+                                psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter,
+                                psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params,
+                                params_DataTableCallback: params
+                            })
                         }
 
                     const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
@@ -524,7 +534,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                         sortOrder_OnEquals : reportedPeptideId,
                         columnEntries,
                         dataTable_DataRowEntry_DownloadTable,
-                        dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject
+                        dataRow_Get_RowChildContent_Return_Promise_ChildContent
                     });
 
                     dataTable_DataRowEntries.push( dataTable_DataRowEntry );

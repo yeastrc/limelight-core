@@ -99,4 +99,59 @@ public class Call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice implemen
 		
 		return scans;
 	}
+	
+
+	/**
+	 * Get Scan Data from Spectral Storage Service
+	 * 
+	 * Number of scan numbers cannot exceed max as specified in Spectral Storage Service.  
+	 *   LimelightInternalErrorException thrown with max allowed if max exceeded.
+	 * 
+	 * @param scanNumbers
+	 * @param scanFileAPIKey
+	 * @throws Exception 
+	 */
+	@Override
+	public List<SingleScan_SubResponse> getScanDataFromSpectralStorageService_NativeSpectralStorageServiceRequestObject( 
+			Get_ScanDataFromScanNumbers_Request get_ScanDataFromScanNumbers_Request,
+			String scanFileAPIKey ) throws Exception {
+	
+		if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
+			String msg = "No value for scanFileAPIKey.  ";
+			log.error( msg );
+			throw new IllegalArgumentException( msg );
+		}
+		
+		CallSpectralStorageGetDataWebservice callSpectralStorageWebservice = 
+				callSpectralStorageWebservice_ForThisApp_Factory.getCallSpectralStorageWebservice();
+		
+		Get_ScanDataFromScanNumbers_Response get_ScanDataFromScanNumber_Response =
+				callSpectralStorageWebservice.call_Get_ScanDataFromScanNumbers_Webservice( get_ScanDataFromScanNumbers_Request );
+
+		if ( get_ScanDataFromScanNumber_Response.getStatus_scanFileAPIKeyNotFound() 
+				== Get_ScanData_ScanFileAPI_Key_NotFound.YES ) {
+			String msg = "No data in Spectral Storage for API Key: " + scanFileAPIKey;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		if ( get_ScanDataFromScanNumber_Response.getTooManyScansToReturn() != null
+				&& get_ScanDataFromScanNumber_Response.getTooManyScansToReturn() ) {
+			
+			String msg = "Tried to get data from Spectral Storage Service for too many scan numbers.  "
+					+ " MaxScansToReturn: " + get_ScanDataFromScanNumber_Response.getMaxScansToReturn();
+			log.error( msg );
+			throw new LimelightInternalErrorException( msg );
+		}
+		
+		List<SingleScan_SubResponse> scans = get_ScanDataFromScanNumber_Response.getScans();
+		
+		if ( scans == null ) {
+			String msg = "Returned Scans property is null: Spectral Storage API Key: " + scanFileAPIKey;
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		return scans;
+	}
 }

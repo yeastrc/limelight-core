@@ -52,7 +52,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
 	private static final String SQL_MAIN = 
-			"SELECT psm_tbl.id AS psm_id, "
+			"SELECT psm_tbl.id AS psm_id, psm_tbl.reported_peptide_id, "
 			+ 		" psm_tbl.has_modifications, psm_tbl.has_open_modifications, psm_tbl.has_reporter_ions, "
 			+ 		" is_independent_decoy, "  //  Not return 'is_decoy' since excluded in SQL
 			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
@@ -81,7 +81,7 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 	@Override
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
-			Integer reportedPeptideId, 
+			Integer reportedPeptideId, //  Optional
 			Integer searchSubGroupId,  //  Optional
 			List<Long> psmIds_Include, //  Optional
 			List<Long> psmIds_Exclude, //  Optional - Currently no value ever passed 
@@ -279,6 +279,8 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					PsmWebDisplayWebServiceResult psmWebDisplay = new PsmWebDisplayWebServiceResult();
 					psmWebDisplay.setSearchId( searchId );
 					psmWebDisplay.setPsmId( rs.getLong( "psm_id" ) );
+					
+					psmWebDisplay.setReportedPeptideId( rs.getInt( "reported_peptide_id" ) );
 
 					{
 						int intValue = rs.getInt( "has_modifications" );
