@@ -2896,6 +2896,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 title: {
                     text: chart_X_Axis_Label
                 },
+                range: [ retentionTimeSeconds_Range_ForChart_Min / 60, retentionTimeSeconds_Range_ForChart_Max / 60 ],
+
                 exponentformat: 'e'  // https://plotly.com/javascript/tick-formatting/#using-exponentformat
             },
             yaxis: {
@@ -4345,7 +4347,7 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                 style={ { width: _INPUT_FIELD_WIDTH } }
                                 onChange={ event => {
                                     const valueString = event.target.value
-                                    if ( valueString === "" ) {
+                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
                                         this._retentionTimeMinutes_Range_ForChart_Min__Current__DisplayString = valueString
                                         this._retentionTimeMinutes_Range_ForChart_Min__Current__Number = this._NUMBER_NOT_ASSIGNED
 
@@ -4375,15 +4377,7 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                 style={ { width: _INPUT_FIELD_WIDTH } }
                                 onChange={ event => {
                                     const valueString = event.target.value
-                                    if ( valueString === "" ) {
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
-                                        this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
-
-                                        this._set_UpdateButton_Enabled()
-
-                                        return // EARLY RETURN
-                                    }
-                                    if ( valueString === "." ) {
+                                    if ( valueString === "" || valueString === "." || valueString === "-" ) {
                                         this._retentionTimeMinutes_Range_ForChart_Max__Current__DisplayString = valueString
                                         this._retentionTimeMinutes_Range_ForChart_Max__Current__Number = this._NUMBER_NOT_ASSIGNED
 
