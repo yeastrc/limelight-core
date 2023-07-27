@@ -1,5 +1,6 @@
 package org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,10 @@ public class Call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice implemen
 			String scanFileAPIKey ) throws Exception {
 		
 		if ( scanNumbers == null || scanNumbers.isEmpty() ) {
-			throw new IllegalArgumentException( "scanNumbers is null or empty" );
+			
+			return new ArrayList<SingleScan_SubResponse>();
+			
+//			throw new IllegalArgumentException( "scanNumbers is null or empty" );
 		}
 		if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
 			Integer firstScanNumber = scanNumbers.iterator().next();

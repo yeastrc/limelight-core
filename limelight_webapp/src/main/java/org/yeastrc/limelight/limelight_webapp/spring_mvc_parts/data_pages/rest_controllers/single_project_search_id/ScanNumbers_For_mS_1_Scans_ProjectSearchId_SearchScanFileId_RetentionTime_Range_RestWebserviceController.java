@@ -128,7 +128,7 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-    public @ResponseBody ResponseEntity<byte[]>  psmList(
+    public @ResponseBody ResponseEntity<byte[]>  webserviceCall(
     		
     		@RequestBody byte[] postBody,
     		HttpServletRequest httpServletRequest,
@@ -250,35 +250,38 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 							null, // scanLevelsToExclude
 							scanFileAPIKey);
 
-			List<SingleScan_SubResponse> scans = 
-					call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
-					.getScanDataFromSpectralStorageService(
-							scanNumbers_All_Level_1_List, 
-							Get_ScanDataFromScanNumbers_IncludeParentScans.NO,
-							Get_ScanData_ExcludeReturnScanPeakData.YES,
-							scanFileAPIKey );
-			
-			
 			List<Integer> scanNumbers_Result_List = new ArrayList<>( scanNumbers_All_Level_1_List.size() );
 			
-			for ( SingleScan_SubResponse scan : scans ) {
-				
-				if ( webserviceRequest.retentionTimeRange_Min != null ) {
-					if ( webserviceRequest.retentionTimeRange_Min.floatValue() > scan.getRetentionTime() ) {
-						//  Skip since out of range
-						continue; // 
-					}
-				}
-				if ( webserviceRequest.retentionTimeRange_Max != null ) {
-					if ( webserviceRequest.retentionTimeRange_Max.floatValue() < scan.getRetentionTime() ) {
-						//  Skip since out of range
-						continue; // 
-					}
-				}
-				
-				scanNumbers_Result_List.add( scan.getScanNumber() );
-			}
 			
+			if ( ! scanNumbers_All_Level_1_List.isEmpty() ) {
+					
+				List<SingleScan_SubResponse> scans = 
+						call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
+						.getScanDataFromSpectralStorageService(
+								scanNumbers_All_Level_1_List, 
+								Get_ScanDataFromScanNumbers_IncludeParentScans.NO,
+								Get_ScanData_ExcludeReturnScanPeakData.YES,
+								scanFileAPIKey );
+
+				for ( SingleScan_SubResponse scan : scans ) {
+
+					if ( webserviceRequest.retentionTimeRange_Min != null ) {
+						if ( webserviceRequest.retentionTimeRange_Min.floatValue() > scan.getRetentionTime() ) {
+							//  Skip since out of range
+							continue; // 
+						}
+					}
+					if ( webserviceRequest.retentionTimeRange_Max != null ) {
+						if ( webserviceRequest.retentionTimeRange_Max.floatValue() < scan.getRetentionTime() ) {
+							//  Skip since out of range
+							continue; // 
+						}
+					}
+
+					scanNumbers_Result_List.add( scan.getScanNumber() );
+				}
+			}
+
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.scanNumber_List = scanNumbers_Result_List;
