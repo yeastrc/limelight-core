@@ -16,6 +16,8 @@ import savitzkyGolay from 'ml-savitzky-golay';
 function smoothLowess(xCoords: number[], yCoords: number[], smoothingFactor: number = 0.25): {x: number[], y: number[]} {
     // Apply the lowess smoother
     const smoothed = lowess(xCoords, yCoords, {f: smoothingFactor});
+    smoothed.y = setNegativeToZero(smoothed.y);
+    
     return smoothed;
 }
 
@@ -51,8 +53,11 @@ function smoothSavitzkyGolay(
         }
 
         let ans = savitzkyGolay(yCoords, 1, options);
-        return {x: xCoords, y: ans};
+        return {x: xCoords, y: setNegativeToZero(ans)};
     }
 
+function setNegativeToZero(numbers: number[]): number[] {
+    return numbers.map(num => num < 0 ? 0 : num);
+}
 
 export { smoothLowess, smoothSavitzkyGolay };
