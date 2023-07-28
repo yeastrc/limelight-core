@@ -26,7 +26,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {
-    AnnotationTypeData_Root, AnnotationTypeItem,
+    AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId,
     SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItem
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
@@ -38,6 +38,11 @@ import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
 } from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
@@ -339,11 +344,20 @@ export class ProjectPage_Experiments_SingleExperiment_MainCellMaint extends Reac
         if ( this.state.searches_Selected && this.state.searches_Selected.length !== 0 ) {
             searches_Assigned_ToCell = [];
             for ( const searchSelectedEntry of this.state.searches_Selected ) {
-                
+
+                const annotationTypeItems_ForProjectSearchId =
+                    this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( searchSelectedEntry.wrappedSearch.projectSearchId )
+                if ( ! annotationTypeItems_ForProjectSearchId ) {
+                    const msg = "RETURNED NOTHING FROM this.props.data_ProjectPage_Experiments_SingleExperiment_MainCellMaint.searchesData.searchesSubData.annotationTypeData_Root.annotationTypeItems_PerProjectSearchId_Map.get( searchSelectedEntry.wrappedSearch.projectSearchId ) FOR searchSelectedEntry.wrappedSearch.projectSearchId: " + searchSelectedEntry.wrappedSearch.projectSearchId;
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
                 const search_Assigned_Display = ( 
                     <Search_Assigned
                         key={ searchSelectedEntry.wrappedSearch.projectSearchId }
                         searchSelectedEntry={ searchSelectedEntry }
+                        annotationTypeItems_ForProjectSearchId={  annotationTypeItems_ForProjectSearchId }
                         deleteProjectSearchId={ this._delete_Search_BindThis }
                         filterEntryClicked={ this._filterEntryClicked_BindThis } /> 
                 );
@@ -595,6 +609,7 @@ const _createSearchSelectedEntry_PerType = function(
 interface Search_Assigned_Props {
 
     searchSelectedEntry: SearchSelected_Entry
+    annotationTypeItems_ForProjectSearchId: AnnotationTypeItems_PerProjectSearchId
     deleteProjectSearchId: any // callback function
     filterEntryClicked: any // callback function
 }
@@ -636,64 +651,69 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
      * 
      */
     render () {
+        try {
+            const search = this.props.searchSelectedEntry.wrappedSearch;
 
-        const search = this.props.searchSelectedEntry.wrappedSearch;
+            const searchTitle = "(" + search.searchId + ") " + search.searchName;
 
-        const searchTitle = "(" + search.searchId + ") " + search.searchName;
+            let psmFilters : JSX.Element = undefined;
 
-        let psmFilters : JSX.Element = undefined;
+            if ( this.props.searchSelectedEntry.psmFilters ) {
 
-        if ( this.props.searchSelectedEntry.psmFilters ) {
-
-            psmFilters = (
-                <Search_Assigned_FilterData_ForType 
-                    filters={ this.props.searchSelectedEntry.psmFilters }
-                    filterLabel={ _FILTER_LABEL_PSM }
-                    filterEntryClicked={ this._filterEntryClicked_BindThis }
-                />
-            );
-        }
-
-        let peptideFilters : JSX.Element = undefined;
-
-        if ( this.props.searchSelectedEntry.reportedPeptideFilters ) {
-
-            peptideFilters = (
-                <Search_Assigned_FilterData_ForType 
-                    filters={ this.props.searchSelectedEntry.reportedPeptideFilters }
-                    filterLabel={ _FILTER_LABEL_PEPTIDE }
-                    filterEntryClicked={ this._filterEntryClicked_BindThis }
-                />
-            );
-        }
-
-        let filters = undefined;
-        if ( psmFilters || peptideFilters ) {
-
-            filters = (
-                <div style= { { marginLeft: 30, marginTop: 4 }}>
-                    { psmFilters }
-                    { peptideFilters }
-                </div>
-            );
-        }
-
-        return (
-            <React.Fragment>
-                <div style={ { marginBottom: 1, whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }>
-                    <img className=" fake-link-image icon-small " title="Remove Search" src="static/images/icon-circle-delete.png"
-                        onClick={ this._deleteClicked_BindThis }
+                psmFilters = (
+                    <Search_Assigned_FilterData_ForType
+                        filters={ this.props.searchSelectedEntry.psmFilters }
+                        filterLabel={ _FILTER_LABEL_PSM }
+                        filterableAnnotationTypes={ this.props.annotationTypeItems_ForProjectSearchId.psmFilterableAnnotationTypes }
+                        filterEntryClicked={ this._filterEntryClicked_BindThis }
                     />
-                    <span > </span>
-                    <span >(</span><span >{ search.searchId }</span><span >) </span>
-                    <span style={ { overflowWrap: "break-word" }} title={ searchTitle } >{ search.searchName }</span>
-                </div>
-                <div >
-                    { filters }
-                </div>
-            </React.Fragment>
-        )
+                );
+            }
 
+            let peptideFilters : JSX.Element = undefined;
+
+            if ( this.props.searchSelectedEntry.reportedPeptideFilters ) {
+
+                peptideFilters = (
+                    <Search_Assigned_FilterData_ForType
+                        filters={ this.props.searchSelectedEntry.reportedPeptideFilters }
+                        filterLabel={ _FILTER_LABEL_PEPTIDE }
+                        filterableAnnotationTypes={ this.props.annotationTypeItems_ForProjectSearchId.reportedPeptideFilterableAnnotationTypes }
+                        filterEntryClicked={ this._filterEntryClicked_BindThis }
+                    />
+                );
+            }
+
+            let filters = undefined;
+            if ( psmFilters || peptideFilters ) {
+
+                filters = (
+                    <div style= { { marginLeft: 30, marginTop: 4 }}>
+                        { psmFilters }
+                        { peptideFilters }
+                    </div>
+                );
+            }
+
+            return (
+                <React.Fragment>
+                    <div style={ { marginBottom: 1, whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }>
+                        <img className=" fake-link-image icon-small " title="Remove Search" src="static/images/icon-circle-delete.png"
+                            onClick={ this._deleteClicked_BindThis }
+                        />
+                        <span > </span>
+                        <span >(</span><span >{ search.searchId }</span><span >) </span>
+                        <span style={ { overflowWrap: "break-word" }} title={ searchTitle } >{ search.searchName }</span>
+                    </div>
+                    <div >
+                        { filters }
+                    </div>
+                </React.Fragment>
+            )
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 }
 
@@ -701,6 +721,9 @@ interface Search_Assigned_FilterData_ForType_Props {
 
     filters: SearchSelected_Entry_FiltersForType_PSM_Etc[]
     filterLabel: string
+
+    filterableAnnotationTypes: Map<number, AnnotationTypeItem>
+
     filterEntryClicked: any // Callback Function
 }
 
@@ -731,54 +754,72 @@ class Search_Assigned_FilterData_ForType extends React.Component< Search_Assigne
      * 
      */
     render () {
+        try {
+            let filterEntriesDisplay = undefined;
 
-        let filterEntriesDisplay = undefined;
+            if ( this.props.filters && this.props.filters.length !== 0 ) {
 
-        if ( this.props.filters && this.props.filters.length !== 0 ) {
+                filterEntriesDisplay = [];
 
-            filterEntriesDisplay = [];
+                for ( const filter of this.props.filters ) {
 
-            for ( const filter of this.props.filters ) {
+                    const annotationTypeId = filter.annotationTypeId
 
-                const filterDisplay = (
-                    <Search_Assigned_FilterData_ForType_SingleEntry 
-                        key={ filter.annotationTypeId } 
-                        filter={ filter } 
-                        filterLabel={ this.props.filterLabel } 
-                        filterEntryClicked={ this.props.filterEntryClicked } 
-                    />
-                );
-                filterEntriesDisplay.push( filterDisplay );
-            }
-        }
+                    const filterableAnnotationType = this.props.filterableAnnotationTypes.get( annotationTypeId )
 
-        const lineHeight = "1.3em"; // Vertical space for background color on filter values
+                    if ( ! filterableAnnotationType ) {
+                        const msg = "this.props.filterableAnnotationTypes.get( annotationTypeId ) returned NOTHING for annotationTypeId: " + annotationTypeId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
 
-        return (
-            <React.Fragment>
-                <div style={ { display: "grid", gridTemplateColumns: "120px 1fr" } }>
-
-                    <div style={ { lineHeight, marginBottom: 1, whiteSpace: "nowrap" } }>
-                        <span className=" clickable " onClick={ this._filterLabelOrEditIconClicked_BindThis }>
-                            { this.props.filterLabel } Filters: 
-                        </span>
-                        <img className=" fake-link-image icon-small " title="Edit Filters" src="static/images/icon-edit.png"
-                            onClick={ this._filterLabelOrEditIconClicked_BindThis }
+                    const filterDisplay = (
+                        <Search_Assigned_FilterData_ForType_SingleEntry
+                            key={ filter.annotationTypeId }
+                            annotationTypeId={ annotationTypeId }
+                            filter={ filter }
+                            filterLabel={ this.props.filterLabel }
+                            filterableAnnotationType={ filterableAnnotationType }
+                            filterEntryClicked={ this.props.filterEntryClicked }
                         />
+                    );
+                    filterEntriesDisplay.push( filterDisplay );
+                }
+            }
+
+            const lineHeight = "1.3em"; // Vertical space for background color on filter values
+
+            return (
+                <React.Fragment>
+                    <div style={ { display: "grid", gridTemplateColumns: "120px 1fr" } }>
+
+                        <div style={ { lineHeight, marginBottom: 1, whiteSpace: "nowrap" } }>
+                            <span className=" clickable " onClick={ this._filterLabelOrEditIconClicked_BindThis }>
+                                { this.props.filterLabel } Filters:
+                            </span>
+                            <img className=" fake-link-image icon-small " title="Edit Filters" src="static/images/icon-edit.png"
+                                onClick={ this._filterLabelOrEditIconClicked_BindThis }
+                            />
+                        </div>
+                        <div style={ { lineHeight } }>
+                            { filterEntriesDisplay }
+                        </div>
                     </div>
-                    <div style={ { lineHeight } }>
-                        { filterEntriesDisplay }
-                    </div>
-                </div>
-            </React.Fragment>
-        );
+                </React.Fragment>
+            );
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 }
 
 interface Search_Assigned_FilterData_ForType_SingleEntry_Props {
 
+    annotationTypeId: number
     filter: any
-    filterLabel: any
+    filterLabel: any  // PSM / Peptide
+    filterableAnnotationType: AnnotationTypeItem
     filterEntryClicked: any
 }
 /**
@@ -813,19 +854,72 @@ class Search_Assigned_FilterData_ForType_SingleEntry extends React.Component< Se
      * 
      */
     render () {
+        try {
+            let cutoffEntryComponent_ClassName = " filter-single-value-display-block   clickable  "
 
-        return (
-            <React.Fragment>
-                <span className=" filter-single-value-display-block   clickable  "
-                    onClick={ this._filterEntryClicked_BindThis }>
-                    <span >{ this.props.filter.annotationTypeName }</span>
-                    <span > (</span>
-                    <span >{ this.props.filter.searchProgramName }</span>
-                    <span >): </span>
-                    <span >{ this.props.filter.value }</span>
-                </span>
-                <span style={ { fontSize: 1 } }> </span>
-            </React.Fragment>
-        );
+            let filterDirection_Symbol = ""
+            if ( this.props.filterableAnnotationType.filterDirectionAbove ) {
+                filterDirection_Symbol = ">="
+            } else if ( this.props.filterableAnnotationType.filterDirectionBelow ) {
+                filterDirection_Symbol = "<="
+            } else {
+                const msg = "Error: Neither is true: this.props.filterableAnnotationType.filterDirectionAbove and this.props.filterableAnnotationType.filterDirectionBelow"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
+
+            const tooltip_Text = "Only " + this.props.filterLabel + "s with a " + this.props.filter.annotationTypeName + " " + filterDirection_Symbol + " " + this.props.filter.value + " will be included.";
+
+            const tooltip_Element_Main = (
+                <div>
+                    { tooltip_Text }
+                </div>
+            )
+
+            let tooltip_Element_Addition_For_NonDefault: JSX.Element = undefined
+
+            if ( this.props.filterableAnnotationType.defaultFilterValue !== this.props.filter.value ) {
+
+                cutoffEntryComponent_ClassName += " not-default-value "
+
+                tooltip_Element_Addition_For_NonDefault = (
+                    <div
+                        style={ { marginTop: 10 } }>
+                        This filter value has been changed from the import defaults for this search.
+                    </div>
+                )
+            }
+
+            const tooltip_Element = (
+                <div>
+                    { tooltip_Element_Main }
+                    { tooltip_Element_Addition_For_NonDefault }
+                </div>
+            )
+
+            return (
+                <React.Fragment>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={ tooltip_Element }
+                        { ...tooltip_Main_Props }
+                    >
+                        <span className={ cutoffEntryComponent_ClassName }
+                              onClick={ this._filterEntryClicked_BindThis }>
+                            <span >{ this.props.filter.annotationTypeName }</span>
+                            <span > (</span>
+                            <span >{ this.props.filter.searchProgramName }</span>
+                            <span >): </span>
+                            <span >{ this.props.filter.value }</span>
+                        </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    <span style={ { fontSize: 1 } }> </span>
+                </React.Fragment>
+            );
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
     }
 }

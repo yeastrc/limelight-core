@@ -52,12 +52,14 @@ import {
 } from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent";
 import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component,
-    Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root,
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTag_Entry,
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
-import {Search_Tags_SelectSearchTags_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 //  Put here since used in multiple places
@@ -1540,18 +1542,67 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
         const searchProgramName : string = searchProgramsPerSearchForId.name;
         const cutoffItem_Value : number = cutoffItem.value;
 
+        let filterDirection_Symbol = ""
+        if ( filterableAnnotation_ForId.filterDirectionAbove ) {
+            filterDirection_Symbol = ">="
+        } else if ( filterableAnnotation_ForId.filterDirectionBelow ) {
+            filterDirection_Symbol = "<="
+        } else {
+            const msg = "Error: Neither is true: filterableAnnotation_ForId.filterDirectionAbove and filterableAnnotation_ForId.filterDirectionBelow"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
         let cutoffEntryComponent_ClassName = " filter-single-value-display-block ";
         let filterValue_ClickHandler = undefined;
+
+        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
+
+        const tooltip_Text = "Only " + this.props.type_label + "s with a " + annotationName + " " + filterDirection_Symbol + " " + cutoffItem.value + " will be included.";
+
+        const tooltip_Element_Main = (
+            <div>
+                { tooltip_Text }
+            </div>
+        )
+
+        let tooltip_Element_Addition_For_NonDefault: JSX.Element = undefined
+
+        if ( filterableAnnotation_ForId.defaultFilterValue !== cutoffItem.value ) {
+
+            cutoffEntryComponent_ClassName += " not-default-value "
+
+            tooltip_Element_Addition_For_NonDefault = (
+                <div
+                    style={ { marginTop: 10 } }>
+                    This filter value has been changed from the import defaults for this search.
+                </div>
+            )
+        }
 
         if ( ! this.props.propValue.displayOnly ) {
             cutoffEntryComponent_ClassName += " clickable "
             filterValue_ClickHandler = this._filterValue_ClickHandler_BindThis;
         }
 
+        const tooltip_Element = (
+            <div>
+                { tooltip_Element_Main }
+                { tooltip_Element_Addition_For_NonDefault }
+            </div>
+        )
+
         return (
             <React.Fragment>
-                <span className={ cutoffEntryComponent_ClassName } onClick={ filterValue_ClickHandler }
-                        >{ annotationName } ({ searchProgramName }): { cutoffItem_Value }</span>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={ tooltip_Element }
+                    { ...tooltip_Main_Props }
+                >
+                    <span className={ cutoffEntryComponent_ClassName } onClick={ filterValue_ClickHandler }
+                    >
+                        { annotationName } ({ searchProgramName }): { cutoffItem_Value }
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 <span style={ { fontSize : 1 } }> </span>
             </React.Fragment>
         )

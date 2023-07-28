@@ -446,6 +446,10 @@
         border-style: solid;
         border-color: $site-color-gray;
         border-width: 1px;
+
+      &.not-default-value {
+        background-color: $search-details-block-filter-background-color-not-default-filter-value;  // Background color for Search Details Block Filter Value when NOT search default value
+      }
     }
 
     /////

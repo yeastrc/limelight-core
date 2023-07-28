@@ -42,6 +42,10 @@ $filtering-display-color: #FEDD00;
 $filtering-display-background-color: $filtering-display-color; //  Background color for Data Page "Filtering On" and other uses
 $filtering-display-border-color: $filtering-display-color;
 
+//  Search Details Block PSM/Peptide Filter
+
+$search-details-block-filter-background-color-not-default-filter-value: #F2DC84;  // Background color for Search Details Block Filter Value when NOT search default value
+
 //  The border color used for the NOT of OR/AND/NOT Peptide Filters
 
 $peptide-filter--not-border-color: red;
