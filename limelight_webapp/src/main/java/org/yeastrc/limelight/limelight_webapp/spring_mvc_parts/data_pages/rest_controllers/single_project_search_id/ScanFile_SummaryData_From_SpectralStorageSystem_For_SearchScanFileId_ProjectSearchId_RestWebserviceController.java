@@ -140,6 +140,7 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
             }
 
             WebserviceResult webserviceResult = new WebserviceResult();
+            webserviceResult.searchScanFileId = searchScanFileId;
             webserviceResult.scanLevelEntries = scanLevelEntries;
 
             byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -179,10 +180,17 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
     */
     public static class WebserviceResult {
     	
+
+        int searchScanFileId;
+        
     	List<WebsserviceResult_SingleLevelEntry> scanLevelEntries;
 
 		public List<WebsserviceResult_SingleLevelEntry> getScanLevelEntries() {
 			return scanLevelEntries;
+		}
+
+		public int getSearchScanFileId() {
+			return searchScanFileId;
 		}
 
     }

@@ -56,6 +56,7 @@ import {
     psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId,
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result_Root
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId";
+import { CommonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_DataFor_SingleSearchScanFileId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data";
 
 
 const _CHART_WIDTH = 800
@@ -212,6 +213,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
     private _show_LoadingData_Message = false
     private _loadingData_ScanNumberCount: { totalCount: number, currentCount: number }
     private _show_LoadingData_ERROR_Message = false
+
+    private _show_NO_MS_1_Scans_ForScanFile = false
 
     private _showUpdatingMessage = false
 
@@ -1136,6 +1139,141 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
         }
     ) : void {
         try {
+            const get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result =
+                this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data().
+                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+
+            if ( get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.data ) {
+
+                const spectralStorage_Summary_Data_For_SearchScanFileId =
+                    get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.data.commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.
+                    get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+
+                if ( ! spectralStorage_Summary_Data_For_SearchScanFileId ) {
+                    const msg = "commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest) returned NOTHING for " + searchScanFileId_Selected_AtStartOf_LoadRequest;
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( spectralStorage_Summary_Data_For_SearchScanFileId ) ) {
+
+                    this._show_NO_MS_1_Scans_ForScanFile = false;
+
+                    this._load_Chromatogram_For_Selected_SearchScanFileId__CallAfterSetTimeout__AfterValidate_SearchScanFileId_Has_MS1_Scans({
+                        searchScanFileId_Selected_AtStartOf_LoadRequest,
+                        currentSelection_ObjectReference_AtStartOf_Request,
+                        retentionTimeRange_Min__LoadDataForScansFor,
+                        retentionTimeRange_Max__LoadDataForScansFor
+                    })
+
+                } else {
+                    this._show_LoadingData_Message = false
+                    this._loadingInitialChromatogram = false
+
+                    this._show_NO_MS_1_Scans_ForScanFile = true;
+
+                    this.setState({ forceRerenderObject: {} })
+                }
+
+            } else if ( get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise ) {
+
+                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise.catch(reason => {})
+                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise.then(value_spectralStorage_Summary_Data_For_SearchScanFileId => { try {
+
+                    if ( currentSelection_ObjectReference_AtStartOf_Request !== this._currentSelection_ObjectReference ) {
+                        //  No longer current request so exit
+
+                        return; // EARLY RETURN
+                    }
+
+                    const spectralStorage_Summary_Data_For_SearchScanFileId =
+                        value_spectralStorage_Summary_Data_For_SearchScanFileId.commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.
+                        get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+
+                    if ( ! spectralStorage_Summary_Data_For_SearchScanFileId ) {
+                        const msg = "commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest) returned NOTHING for " + searchScanFileId_Selected_AtStartOf_LoadRequest;
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( spectralStorage_Summary_Data_For_SearchScanFileId ) ) {
+
+                        this._show_NO_MS_1_Scans_ForScanFile = false;
+
+                        this._load_Chromatogram_For_Selected_SearchScanFileId__CallAfterSetTimeout__AfterValidate_SearchScanFileId_Has_MS1_Scans({
+                            searchScanFileId_Selected_AtStartOf_LoadRequest,
+                            currentSelection_ObjectReference_AtStartOf_Request,
+                            retentionTimeRange_Min__LoadDataForScansFor,
+                            retentionTimeRange_Max__LoadDataForScansFor
+                        })
+
+                    } else {
+
+                        this._show_LoadingData_Message = false
+                        this._loadingInitialChromatogram = false
+
+                        this._show_NO_MS_1_Scans_ForScanFile = true;
+
+                        this.setState({ forceRerenderObject: {} })
+                    }
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+            } else {
+                const msg = "get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result  no data or promise"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId(
+
+        spectralStorage_Summary_Data_For_SearchScanFileId: CommonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_DataFor_SingleSearchScanFileId
+    ) : boolean {
+
+        if ( spectralStorage_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
+            for ( const scanLevel of spectralStorage_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
+                if ( scanLevel.scanLevel === 1 ) {
+                    if ( scanLevel.numberOfScans > 0 ) {
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    /**
+     *
+     */
+    private _load_Chromatogram_For_Selected_SearchScanFileId__CallAfterSetTimeout__AfterValidate_SearchScanFileId_Has_MS1_Scans(
+        {
+            searchScanFileId_Selected_AtStartOf_LoadRequest,
+            currentSelection_ObjectReference_AtStartOf_Request,
+            retentionTimeRange_Min__LoadDataForScansFor,
+            retentionTimeRange_Max__LoadDataForScansFor
+        } : {
+            searchScanFileId_Selected_AtStartOf_LoadRequest: number
+            currentSelection_ObjectReference_AtStartOf_Request: object
+
+            retentionTimeRange_Min__LoadDataForScansFor: number
+            retentionTimeRange_Max__LoadDataForScansFor: number
+        }
+    ) : void {
+        try {
+            if ( currentSelection_ObjectReference_AtStartOf_Request !== this._currentSelection_ObjectReference ) {
+                //  No longer current request so exit
+
+                return; // EARLY RETURN
+            }
 
             const promises: Array<Promise<void>> = []
 
@@ -2183,42 +2321,81 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                                 </div>
 
-                                <div>
-                                    { this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId &&
-                                        this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId ? (
-                                        <Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component
-                                            triggerPlotUpdate_Object={ this._triggerPlotUpdate_Object }
-                                            open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection={ this._open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection }
-                                            projectSearchId={ this.props.projectSearchId }
-                                            selection_ReportedPeptide_OpenModMass_Charge={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection }
-                                            searchScanFileId_Selected={ this._searchScanFileId_Selected }
-                                            open_modification_mass_decimal_place_rounding__user_selection={ this._open_modification_mass_decimal_place_rounding__user_selection }
-                                            scanPeakSelect={ this._scanPeakSelect }
-                                            smoothingOption_Selection={ this._smoothingOption_Selection }
+                                <div style={ {
+                                    position: "relative",
 
-                                            precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection={ this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection }
+                                    minWidth: _CHART_WIDTH,
+                                    minHeight: _CHART_HEIGHT
+                                } }>
 
-                                            retentionTimeSeconds_Range_ForChart_Min={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
-                                            retentionTimeSeconds_Range_ForChart_Max={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+                                    <div>
+                                        { this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId &&
+                                            this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId ? (
+                                            <Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component
+                                                triggerPlotUpdate_Object={ this._triggerPlotUpdate_Object }
+                                                open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection={ this._open_modification_mass_decimal_place_rounding__10_POWER___for_user_selection }
+                                                projectSearchId={ this.props.projectSearchId }
+                                                selection_ReportedPeptide_OpenModMass_Charge={ this._ionSelection__reportedPeptide_OpenModMass_Charge_Selection }
+                                                searchScanFileId_Selected={ this._searchScanFileId_Selected }
+                                                open_modification_mass_decimal_place_rounding__user_selection={ this._open_modification_mass_decimal_place_rounding__user_selection }
+                                                scanPeakSelect={ this._scanPeakSelect }
+                                                smoothingOption_Selection={ this._smoothingOption_Selection }
 
-                                            psmList_FilteredForDisplay={ this._psmList_PossiblyFiltered_ForChart_ForDisplay }
+                                                precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection={ this._precursor_M_Over_Z_PPM_ExtendRange_AddSubtract_ToMinMaxValues_Selection }
+
+                                                retentionTimeSeconds_Range_ForChart_Min={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Min }
+                                                retentionTimeSeconds_Range_ForChart_Max={ this._retentionTimeSeconds_Range_ForChart_Min_Max.retentionTimeSeconds_Range_Max }
+
+                                                psmList_FilteredForDisplay={ this._psmList_PossiblyFiltered_ForChart_ForDisplay }
 
 
-                                            dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
-                                            dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
-                                            dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
+                                                dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
+                                                dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
+                                                dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId={ this._dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId }
 
-                                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results={ this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results }
-                                            psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params={ this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params }
+                                                psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results={ this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results }
+                                                psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params={ this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params }
 
-                                            variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder={ this._variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder }
-                                            staticMods_Holder={ this._staticMods_Holder }
-                                            peptideIds_For_MainFilters_Holder={ this._peptideIds_For_MainFilters_Holder }
-                                            peptideSequences_For_MainFilters_Holder={ this._peptideSequences_For_MainFilters_Holder }
-                                            reportedPeptideSequences_Holder={ this._reportedPeptideSequences_Holder }
-                                        />
+                                                variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder={ this._variable_Dynamic_Modifications_At_ReportedPeptide_Level_For_MainFilters_Holder }
+                                                staticMods_Holder={ this._staticMods_Holder }
+                                                peptideIds_For_MainFilters_Holder={ this._peptideIds_For_MainFilters_Holder }
+                                                peptideSequences_For_MainFilters_Holder={ this._peptideSequences_For_MainFilters_Holder }
+                                                reportedPeptideSequences_Holder={ this._reportedPeptideSequences_Holder }
+                                            />
+                                        ) : null }
+                                    </div>
+
+
+                                    {/*  Overlay for  Scan File selection NOT have any MS 1 scans  */}
+                                    { this._show_NO_MS_1_Scans_ForScanFile ? (
+                                        <div
+                                            className=" standard-background-color standard-border-color-gray "
+                                            style={ {
+                                                fontSize: 24,
+                                                position: "absolute",
+                                                left: 0,
+                                                right: 0,
+                                                top: 0,
+                                                bottom: 0,
+                                                //  Center text in block
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                borderWidth: 1,
+                                                borderStyle: "solid",
+
+                                            }}
+                                        >
+                                            <div>
+                                                <span>No MS1 scan data could be found for scan file. </span>
+                                            </div>
+                                        </div>
                                     ) : null }
+
                                 </div>
+
+
 
                                 {/*  Overlay for Loading Data when NOT initial chromatogram  */}
                                 { this._show_LoadingData_Message && ! this._loadingInitialChromatogram ? (
