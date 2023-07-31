@@ -68,7 +68,9 @@ export interface ProjectPage_UploadData_MainPage_Main_Component_Props {
  */
 interface ProjectPage_UploadData_MainPage_Main_Component_State {
 
+    limelightXMLFileImport_Is_FullyConfigured?: boolean
     pendingCount?: number
+
     bodyEverShown?: boolean
     expandBody?: boolean
 
@@ -101,6 +103,7 @@ export class ProjectPage_UploadData_MainPage_Main_Component extends React.Compon
         super(props);
 
         this.state = {
+            limelightXMLFileImport_Is_FullyConfigured: false,
             refreshData_Force: {}
         };
     }
@@ -150,9 +153,12 @@ export class ProjectPage_UploadData_MainPage_Main_Component extends React.Compon
 
         const promise = _getPendingCount_FromServer(this.props.propsValue.projectIdentifier)
         promise.catch(reason => { })
-        promise.then(pendingCount => {
+        promise.then(promise_value => {
             try {
-                this.setState({ pendingCount })
+                this.setState({
+                    limelightXMLFileImport_Is_FullyConfigured: promise_value.limelightXMLFileImport_Is_FullyConfigured,
+                    pendingCount: promise_value.pendingCount
+                })
 
             } catch (e) {
                 reportWebErrorToServer.reportErrorObjectToServer({
@@ -191,6 +197,11 @@ export class ProjectPage_UploadData_MainPage_Main_Component extends React.Compon
      *
      */
     render() {
+
+        if ( ! this.state.limelightXMLFileImport_Is_FullyConfigured ) {
+
+            return null
+        }
 
         return (
 
@@ -415,7 +426,10 @@ export class ProjectPage_UploadData_MainPage__TopLevelLabel_Component extends Re
  */
 const _getPendingCount_FromServer = function(projectIdentifierFromURL: string) {
 
-    return new Promise<number>((resolve, reject) => { try {
+    return new Promise<{
+        limelightXMLFileImport_Is_FullyConfigured: boolean
+        pendingCount: number
+    }>((resolve, reject) => { try {
 
         const requestData = {
             projectIdentifier : projectIdentifierFromURL
@@ -437,7 +451,10 @@ const _getPendingCount_FromServer = function(projectIdentifierFromURL: string) {
                     throw Error(msg)
                 }
 
-                resolve( responseData.pendingCount )
+                resolve({
+                    limelightXMLFileImport_Is_FullyConfigured: responseData.limelightXMLFileImport_Is_FullyConfigured,
+                    pendingCount: responseData.pendingCount
+                } )
 
             } catch (e) {
                 reportWebErrorToServer.reportErrorObjectToServer({

@@ -49,6 +49,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.utils.IsLimelightXMLFileImportFullyConfiguredIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF;
@@ -75,6 +76,9 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 	@Autowired
 	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
+
+	@Autowired
+	private IsLimelightXMLFileImportFullyConfiguredIF isLimelightXMLFileImportFullyConfigured;
 	
 	@Autowired
 	private ConfigSystemDAO_IF configSystemDAO;
@@ -310,19 +314,29 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
     		webserviceResult.resultItemList = resultItemList;
     		
     		{
-    			String basePath =
-    					configSystemDAO.getConfigValueForConfigKey(
-    							ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH );
-
-    			String baseURL =
-    					configSystemDAO.getConfigValueForConfigKey(
-    							ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL );
-    			
-    			if ( StringUtils.isNotEmpty( basePath ) && StringUtils.isNotEmpty( baseURL ) ) {
-    				
-    				webserviceResult.runFeatureDetection_IsFullyConfigured = true;
+        		//  Is Limelight XML File Import is Fully Configured,
+        		
+        		if ( isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
+        			
+        			//  File Import is Fully Configured,
+        			
+    				webserviceResult.standardRunImporter_IsFullyConfigured = true;
+		    	
+		    		{
+		    			String basePath =
+		    					configSystemDAO.getConfigValueForConfigKey(
+		    							ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_RESULT_FILES_BASE_PATH );
+		
+		    			String baseURL =
+		    					configSystemDAO.getConfigValueForConfigKey(
+		    							ConfigSystemsKeysSharedConstants.RUN_FEATURE_DETECTION_SERVICE_RUN_HARDKLOR_BULLSEYE_WEB_SERVICE_BASE_URL );
+		    			
+		    			if ( StringUtils.isNotEmpty( basePath ) && StringUtils.isNotEmpty( baseURL ) ) {
+		    				
+		    				webserviceResult.runFeatureDetection_IsFullyConfigured = true;
+		    			}
+		    		}
     			}
-    			
     		}
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -356,6 +370,7 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
     public static class WebserviceResult {
 
     	private List<WebserviceResultItem> resultItemList;
+    	private boolean standardRunImporter_IsFullyConfigured;
     	private boolean runFeatureDetection_IsFullyConfigured;
 
 		public List<WebserviceResultItem> getResultItemList() {
@@ -364,6 +379,10 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 		public boolean isRunFeatureDetection_IsFullyConfigured() {
 			return runFeatureDetection_IsFullyConfigured;
+		}
+
+		public boolean isStandardRunImporter_IsFullyConfigured() {
+			return standardRunImporter_IsFullyConfigured;
 		}
     }
     

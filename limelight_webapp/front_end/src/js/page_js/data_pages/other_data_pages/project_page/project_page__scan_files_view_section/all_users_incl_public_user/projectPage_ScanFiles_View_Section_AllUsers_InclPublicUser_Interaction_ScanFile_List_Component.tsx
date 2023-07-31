@@ -73,6 +73,7 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
     show_SearchTag_Categories?: boolean
 
     scanFile_Entry_CombinedEntries_Array?: Array<ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry >
+    standardRunImporter_IsFullyConfigured?: boolean
     runFeatureDetection_IsFullyConfigured?: boolean
 
     force_ReRender?: object
@@ -153,6 +154,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
             this.setState({
                 show_LoadingData_Message: false,
                 scanFile_Entry_CombinedEntries_Array: scanFile_List_FromServer_Root.scanFiles_In_Project_List,
+                standardRunImporter_IsFullyConfigured: scanFile_List_FromServer_Root.standardRunImporter_IsFullyConfigured,
                 runFeatureDetection_IsFullyConfigured: scanFile_List_FromServer_Root.runFeatureDetection_IsFullyConfigured
             })
 
@@ -294,6 +296,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             key={ scanFile_Entry.projectScanFileId }
                             showExpanded_OnMount={ this._scanFiles_Expanded_ProjectScanFileId_Set.has( scanFile_Entry.projectScanFileId )}
                             scanFile_Entry={ scanFile_Entry }
+                            standardRunImporter_IsFullyConfigured={ this.state.standardRunImporter_IsFullyConfigured }
                             runFeatureDetection_IsFullyConfigured={ this.state.runFeatureDetection_IsFullyConfigured }
                             projectIdentifier={ this.props.projectIdentifier }
                             projectIsLocked={ this.props.projectIsLocked }
@@ -413,6 +416,7 @@ type ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction =
 interface ScanFileEntry_Component_Props {
     showExpanded_OnMount: boolean
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
+    standardRunImporter_IsFullyConfigured: boolean
     runFeatureDetection_IsFullyConfigured: boolean
     projectIdentifier : string
     projectIsLocked : boolean
@@ -636,31 +640,35 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                 <span> </span>
                                             </>
                                         ) : null }
-                                        <span
-                                            className=" fake-link "
-                                            onClick={ event => {
+                                        { this.props.standardRunImporter_IsFullyConfigured ? (
+                                            <>
+                                                <span
+                                                    className=" fake-link "
+                                                    onClick={ event => {
 
-                                                event.stopPropagation();
+                                                        event.stopPropagation();
 
-                                                this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
-                                                getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({
-                                                    component_Params: {
-                                                        projectIdentifier: this.props.projectIdentifier,
-                                                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
-                                                        scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array
-                                                    },
-                                                    uploadComplete_Callback: () : void => {
+                                                        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
+                                                        getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({
+                                                            component_Params: {
+                                                                projectIdentifier: this.props.projectIdentifier,
+                                                                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+                                                                scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array
+                                                            },
+                                                            uploadComplete_Callback: () : void => {
 
-                                                        refresh_ProjectPage_UploadData_MainPage_Main_Component()
+                                                                refresh_ProjectPage_UploadData_MainPage_Main_Component()
 
-                                                        refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
-                                                    }
-                                                })
-                                            } }
-                                        >
-                                            [Import Feature Detection]
-                                        </span>
-                                        <span> </span>
+                                                                refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
+                                                            }
+                                                        })
+                                                    } }
+                                                >
+                                                    [Import Feature Detection]
+                                                </span>
+                                                <span> </span>
+                                            </>
+                                        ) : null }
                                     </>
                                 ) : null }
                                 <span

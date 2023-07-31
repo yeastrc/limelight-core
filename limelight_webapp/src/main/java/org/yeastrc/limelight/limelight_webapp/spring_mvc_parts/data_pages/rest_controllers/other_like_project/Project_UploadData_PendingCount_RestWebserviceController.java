@@ -151,13 +151,6 @@ public class Project_UploadData_PendingCount_RestWebserviceController {
 			validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
 			.validateProjectOwnerIfProjectNotLockedAllowed( projectIds, httpServletRequest );
 
-			//  If NOT Limelight XML File Import is Fully Configured, 
-			if ( ! isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
-				String msg = "Limelight XML File Import is NOT Fully Configured ";
-				log.error( msg );
-				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-
 			WebserviceResult webserviceResult = getLimelightXMLFileImportingDataForPage( projectId );
 
 			byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -188,13 +181,22 @@ public class Project_UploadData_PendingCount_RestWebserviceController {
 	 */
 	private WebserviceResult getLimelightXMLFileImportingDataForPage(int projectId)
 			throws Exception {
-		
-		int pendingCount = 
-				fileImportTracking_PendingCount_Searcher.getPendingCountForProject( projectId )
-				+ fileImportAndPipelineRunTracking_PendingCount_Searcher.getPendingCountForProject( projectId );
-		
+
 		WebserviceResult webserviceResult = new WebserviceResult();
-		webserviceResult.pendingCount = pendingCount;
+		
+		//  Is Limelight XML File Import is Fully Configured, 
+		if ( ! isLimelightXMLFileImportFullyConfigured.isLimelightXMLFileImportFullyConfigured() ) {
+			
+			webserviceResult.limelightXMLFileImport_Is_FullyConfigured = false;
+			
+		} else {
+			webserviceResult.limelightXMLFileImport_Is_FullyConfigured = true;
+			
+			webserviceResult.pendingCount = 
+					fileImportTracking_PendingCount_Searcher.getPendingCountForProject( projectId )
+					+ fileImportAndPipelineRunTracking_PendingCount_Searcher.getPendingCountForProject( projectId );
+		}
+		
 		return webserviceResult;
 	}
 	
@@ -215,13 +217,15 @@ public class Project_UploadData_PendingCount_RestWebserviceController {
 	 */
 	public static class WebserviceResult {
 		
+		boolean limelightXMLFileImport_Is_FullyConfigured;
 		int pendingCount;
 
 		public int getPendingCount() {
 			return pendingCount;
 		}
-		public void setPendingCount(int pendingCount) {
-			this.pendingCount = pendingCount;
+
+		public boolean isLimelightXMLFileImport_Is_FullyConfigured() {
+			return limelightXMLFileImport_Is_FullyConfigured;
 		}
 	}
 

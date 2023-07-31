@@ -20,6 +20,7 @@ import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__
 export class ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_Root {
 
     scanFiles_In_Project_List: Array<ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry>
+    standardRunImporter_IsFullyConfigured: boolean
     runFeatureDetection_IsFullyConfigured: boolean
 }
 
@@ -77,6 +78,7 @@ export const projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer = f
 
             const result: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_Root = {
                 scanFiles_In_Project_List: response.scanFile_List,
+                standardRunImporter_IsFullyConfigured: responseData.standardRunImporter_IsFullyConfigured,
                 runFeatureDetection_IsFullyConfigured: responseData.runFeatureDetection_IsFullyConfigured
             }
 
