@@ -11,7 +11,7 @@ import org.yeastrc.limelight.database_cleanup.remove_deleted__file_import_tracki
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_ProjectTbl;
 import org.yeastrc.limelight.database_cleanup.remove_deleted__searches_projects.main.Limelight_DatabaseCleanup__Cleanup_SearchTbl_And_Children;
-import org.yeastrc.limelight.database_cleanup.remove_feature_detection_failed_to_import.Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_FailedToImport;
+import org.yeastrc.limelight.database_cleanup.remove_feature_detection.Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_Root;
 
 /**
  * 
@@ -102,7 +102,7 @@ public class Limelight_DatabaseCleanup__Main_EntryPoint {
 		
 		Limelight_DatabaseCleanup__Remove_MarkedDeleted__file_import_tracking_tbl.getInstance().cleanup_Search_AndChildren(callFrom, delete_Or_ListIdsToDelete);
 
-		Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_FailedToImport.getInstance().cleanup_FailedImports(callFrom, delete_Or_ListIdsToDelete);
+		Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_Root.getInstance().cleanup_Root(callFrom, delete_Or_ListIdsToDelete);
 		
 		Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children.getInstance().cleanup_ProjectSearch_AndChildren( callFrom, delete_Or_ListIdsToDelete );
 		

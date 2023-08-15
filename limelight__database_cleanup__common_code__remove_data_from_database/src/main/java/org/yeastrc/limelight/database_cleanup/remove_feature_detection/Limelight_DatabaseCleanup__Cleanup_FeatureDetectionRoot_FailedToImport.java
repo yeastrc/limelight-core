@@ -1,4 +1,4 @@
-package org.yeastrc.limelight.database_cleanup.remove_feature_detection_failed_to_import;
+package org.yeastrc.limelight.database_cleanup.remove_feature_detection;
 
 import java.util.List;
 
@@ -12,6 +12,10 @@ import org.yeastrc.limelight.database_cleanup.shutdown_requested_detection.Limel
 
 /**
  * Clean up feature_detection_root_tbl table
+ * 
+ * Remove records that were NOT Fully Inserted:
+ * 
+ * 		Remove records that were NOT Marked Fully Inserted within a time limit
  *
  */
 public class Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_FailedToImport {
@@ -80,7 +84,7 @@ public class Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_FailedToImp
 			return;
 		}
 		
-		List<Integer> idsToDelete = Limelight_DatabaseCleanup__FeatureDetectionRoot_DAO_Searcher.getInstance().getIdsToDelete();
+		List<Integer> idsToDelete = Limelight_DatabaseCleanup__FeatureDetectionRoot_FailedToImport_Searcher.getInstance().getIdsToDelete();
 
 		if ( delete_Or_ListIdsToDelete == Limelight_DatabaseCleanup__Delete_OR_ListIdsToDelete_Enum.LIST_RECORD_IDS_TO_DELETE ) {
 			
@@ -93,9 +97,52 @@ public class Limelight_DatabaseCleanup__Cleanup_FeatureDetectionRoot_FailedToImp
 			return;
 		}
 		
-		for ( Integer id : idsToDelete ) {
+		Limelight_DatabaseCleanup__FeatureDetection_Delete_DAO limelight_DatabaseCleanup__FeatureDetection_Delete_DAO = Limelight_DatabaseCleanup__FeatureDetection_Delete_DAO.getInstance();
+		
+		for ( Integer feature_detection_root_id : idsToDelete ) {
+
+			{ //  Delete records for this root id from feature_detection_singular_feature_entry_tbl
+				
+				int deletedRecordCount = -1;
+				do {
+					deletedRecordCount = limelight_DatabaseCleanup__FeatureDetection_Delete_DAO.delete_feature_detection_singular_feature_entry_tbl_FOR_Root_Id(feature_detection_root_id, callFrom);
+
+					if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+						return;
+					}
+					
+				} while ( deletedRecordCount != 0 );
+			}
+			{ //  Delete records for this root id from feature_detection_persistent_feature_entry_tbl
+				
+				int deletedRecordCount = -1;
+				do {
+					deletedRecordCount = limelight_DatabaseCleanup__FeatureDetection_Delete_DAO.delete_feature_detection_persistent_feature_entry_tbl_FOR_Root_Id(feature_detection_root_id, callFrom);
+
+					if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+						return;
+					}
+					
+				} while ( deletedRecordCount != 0 );
+			}
+			{ //  Delete records for this root id from feature_detection_other_uploaded_file_like_conf_tbl
+
+				int deletedRecordCount = -1;
+				do {
+					deletedRecordCount = limelight_DatabaseCleanup__FeatureDetection_Delete_DAO.delete_feature_detection_other_uploaded_file_like_conf_tbl_FOR_Root_Id(feature_detection_root_id, callFrom);
+
+					if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+						return;
+					}
+					
+				} while ( deletedRecordCount != 0 );
+			}
 			
-			Limelight_DatabaseCleanup__FeatureDetectionRoot_DAO_Searcher.getInstance().deleteId(id, callFrom);
+			//  Finally delete the root table record from table feature_detection_root_tbl
+			
+			//       This will cascade delete any remaining records like the ...file_stats... records and their children 
+			
+			limelight_DatabaseCleanup__FeatureDetection_Delete_DAO.delete_From_feature_detection_root_tbl_Root_Id(feature_detection_root_id, callFrom);
 		}
 
 		if ( callFrom == Limelight_DatabaseCleanup__CallFrom__RunImporter_VS_StandaloneProgram_Enum.STANDALONE_PROGRAM ) {
