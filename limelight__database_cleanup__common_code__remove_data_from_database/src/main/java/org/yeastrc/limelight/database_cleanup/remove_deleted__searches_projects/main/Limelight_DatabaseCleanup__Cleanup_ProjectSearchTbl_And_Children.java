@@ -115,6 +115,8 @@ public class Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children {
 
 				if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
 					
+					log.info( "About to start deleting records for project search id BUT 'waitForImporterRun_And_IsShutdownRequestReceived()' returned true so exiting. projectSearchId: " + projectSearchId );
+					
 					return;
 				}
 
@@ -141,6 +143,8 @@ public class Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children {
 				}
 				
 				if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+
+					log.info( "After deleting records for project search id THEN 'waitForImporterRun_And_IsShutdownRequestReceived()' returned true so exiting. projectSearchId: " + projectSearchId );
 					
 					return;
 				}
@@ -151,6 +155,8 @@ public class Limelight_DatabaseCleanup__Cleanup_ProjectSearchTbl_And_Children {
 				
 
 				if ( Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().waitForImporterRun_And_IsShutdownRequestReceived() ) {
+
+					log.info( "After deleting records for project search id AFTER Thread.sleep(...): THEN 'waitForImporterRun_And_IsShutdownRequestReceived()' returned true so exiting. projectSearchId: " + projectSearchId );
 					
 					return;
 				}
