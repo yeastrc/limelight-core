@@ -204,6 +204,16 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	public void run() {
 		try {
 			log.debug( "run() entered" );
+			
+			if ( ! keepRunning ) {
+				return; // EARLY RETURN
+			}
+
+			try {
+				Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().thread_RunMethod_Entered();
+			} catch (Throwable e) {
+				log.error( "In run(): call to Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequestedDetection.getInstance().thread_RunMethod_Entered() threw Throwable " + e.toString(), e );
+			}
 
 			try {
 				Limelight_DatabasePopulateNewFields__DatabaseConnection_Provider_DatabasePopulateNewFieldsCode.getSingletonInstance()

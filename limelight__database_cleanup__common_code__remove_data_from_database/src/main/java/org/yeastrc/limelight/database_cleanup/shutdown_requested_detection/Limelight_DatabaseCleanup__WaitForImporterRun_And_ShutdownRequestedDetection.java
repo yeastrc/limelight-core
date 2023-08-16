@@ -102,6 +102,17 @@ public class Limelight_DatabaseCleanup__WaitForImporterRun_And_ShutdownRequested
 		return false;
 	}
 	
+	/**
+	 * 
+	 */
+	public void thread_RunMethod_Entered() {
+		
+		//  An instance of the Thread method 'run()' just started processing so shutdown cannot be true
+
+		synchronized (this) {
+			this.shutdownRequestReceived = false;
+		}
+	}
 
 	/**
 	 * 
