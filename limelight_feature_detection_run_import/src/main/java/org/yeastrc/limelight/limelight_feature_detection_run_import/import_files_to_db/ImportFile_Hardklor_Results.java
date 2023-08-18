@@ -6,15 +6,19 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.constants.FeatureDetectionProgramName_Values_Constants;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureEntryMods_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureEntry_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureUploadedFileStatsDAO;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionSingularFeatureEntry_DAO.FeatureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.exceptions.LimelightInternalErrorException;
@@ -22,6 +26,7 @@ import org.yeastrc.limelight.limelight_feature_detection_run_import.utils.Read_I
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionSingularFeatureEntryDTO;
+import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionSingularFeatureEntryMods_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.FeatureDetection_SingularFeature_UploadedFileStatsDTO;
 import org.yeastrc.limelight.limelight_shared.file_import_pipeline_run.dto.FileImportAndPipelineRunTrackingSingleFileDTO;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
@@ -309,7 +314,19 @@ public class ImportFile_Hardklor_Results {
 		
 		float retentionTime_Difference_AbsoluteValue_Max_Difference = 0;
 
-		List<FeatureDetectionSingularFeatureEntryDTO> featureDetectionSingularFeatureDTO_List = new ArrayList<>( FeatureDetectionSingularFeatureEntry_DAO.DEFAULT_INSERT_ENTRIES_ARRAY_SIZE ); 
+		List<FeatureDetectionSingularFeatureEntryDTO> featureDetectionSingularFeatureDTO_List = new ArrayList<>( FeatureDetectionSingularFeatureEntry_DAO.DEFAULT_INSERT_ENTRIES_ARRAY_SIZE );
+		
+		List<FeatureDetectionSingularFeatureEntryMods_DTO> featureDetectionSingularFeatureEntryMods_DTO_List = new ArrayList<>( FeatureDetectionSingularFeatureEntry_DAO.DEFAULT_INSERT_ENTRIES_ARRAY_SIZE );
+		
+		//  First Batch
+		FeatureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch = 
+				FeatureDetectionSingularFeatureEntry_DAO.getInstance().getNextBatch_IDs();
+		
+		int featureDetectionSingularFeatureEntry_ID = featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_Start();
+		
+		
+		Set<Integer> featureDetectionSingularFeatureEntry_IDs_Used = new HashSet<>();
+		
 
 		final int MS1_SCAN_NUMBER_NOT_SET = -1;
 
@@ -405,11 +422,26 @@ public class ImportFile_Hardklor_Results {
 				//  Start Creating Entry for DB
 
 				FeatureDetectionSingularFeatureEntryDTO featureDetectionSingularFeatureEntryDTO = new FeatureDetectionSingularFeatureEntryDTO();
+				
+				featureDetectionSingularFeatureEntryDTO.setId( featureDetectionSingularFeatureEntry_ID );
+				
+				if ( featureDetectionSingularFeatureEntry_IDs_Used.contains( featureDetectionSingularFeatureEntry_ID ) ) {
+
+					String msg = "featureDetectionSingularFeatureEntry_ID Already used: " + featureDetectionSingularFeatureEntry_ID;
+					log.warn( msg );
+					throw new LimelightImporterInternalException(msg);
+					
+				}
+				
+				featureDetectionSingularFeatureEntry_IDs_Used.add( featureDetectionSingularFeatureEntry_ID );
 
 				featureDetectionSingularFeatureEntryDTO.setFeatureDetectionRootId( featureDetection_SingularFeature_UploadedFileStatsDTO.getFeatureDetectionRootId() );
 				featureDetectionSingularFeatureEntryDTO.setFeatureDetectionSingularFeatureUploadedFileStatsId( featureDetection_SingularFeature_UploadedFileStatsDTO.getId() );
 
 				featureDetectionSingularFeatureEntryDTO.setMs_1_scanNumber( ms_1_ScanNumber );
+				
+				FeatureDetectionSingularFeatureEntryMods_DTO featureDetectionSingularFeatureEntryMods_DTO = new FeatureDetectionSingularFeatureEntryMods_DTO();
+				featureDetectionSingularFeatureEntryMods_DTO.setFeatureDetectionSingularFeatureEntryId( featureDetectionSingularFeatureEntryDTO.getId() );
 
 				{
 					String field_String = lineSplitOnTab[1];
@@ -495,12 +527,12 @@ public class ImportFile_Hardklor_Results {
 
 				{
 					String field_String = lineSplitOnTab[7];
-
-					if ( StringUtils.isNotEmpty( field_String ) && ( ! "_".equals( field_String ) ) ) {
-						String msg = "NOT currently processing value in 'modifications' other than '_'.";
-						log.error(msg + " A separate table exists to hold them but not processing them yet." );
-						throw new LimelightInternalErrorException(msg);
-					}
+					
+					featureDetectionSingularFeatureEntryMods_DTO.setModificationField(field_String);
+					
+					//  https://proteome.gs.washington.edu/software/hardklor/param/averagine_mod.html
+					
+					//  https://crux.ms/commands/hardklor.html
 				}
 				{
 					String field_String = lineSplitOnTab[8];
@@ -513,16 +545,83 @@ public class ImportFile_Hardklor_Results {
 						throw new LimelightImporterDataException(msg);
 					}
 				}
-
+				
 				featureDetectionSingularFeatureDTO_List.add( featureDetectionSingularFeatureEntryDTO );
+				featureDetectionSingularFeatureEntryMods_DTO_List.add(featureDetectionSingularFeatureEntryMods_DTO);
 
 				if ( featureDetectionSingularFeatureDTO_List.size() >= FeatureDetectionSingularFeatureEntry_DAO.DEFAULT_INSERT_ENTRIES_ARRAY_SIZE  ) {
 
-					//  Insert Batch of Single Feature Entries
-					FeatureDetectionSingularFeatureEntry_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionSingularFeatureDTO_List );
+					try {
+						{
+							//  Check for duplicate id
+							
+							Set<Integer> idSet = new HashSet<>( featureDetectionSingularFeatureDTO_List.size() );
+							
+							for ( FeatureDetectionSingularFeatureEntryDTO featureDetectionSingularFeatureDTO : featureDetectionSingularFeatureDTO_List ) {
+								
+								if ( idSet.contains( featureDetectionSingularFeatureDTO.getId() ) ) {
+									
+									String msg = "Duplicate Id in featureDetectionSingularFeatureDTO_List.  id: " + featureDetectionSingularFeatureDTO.getId();
+									log.warn(msg);
+									throw new LimelightImporterInternalException(msg);
+								}
+								
+								idSet.add( featureDetectionSingularFeatureDTO.getId() );
+							}
+						}
+						
+						
+						
+						//  Insert Batch of Single Feature Entries
+						FeatureDetectionSingularFeatureEntry_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionSingularFeatureDTO_List );
+	
+	
+						//  Insert Batch of Single Feature Mods Entries
+						FeatureDetectionSingularFeatureEntryMods_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionSingularFeatureEntryMods_DTO_List );
+						
+					} catch ( Exception e ) {
+						String msg = "Failed to Insert.  Current Batch Start: "
+								+ featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_Start()
+								+ ", End: " + featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End();
+						log.warn(msg, e);
+						
+						throw e;
+						
+					}
 
-					//  Reset List
+					//  Reset Lists
 					featureDetectionSingularFeatureDTO_List.clear();
+					featureDetectionSingularFeatureEntryMods_DTO_List.clear();
+
+					//  Next Batch
+					FeatureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch =
+							FeatureDetectionSingularFeatureEntry_DAO.getInstance().getNextBatch_IDs();
+
+					if ( featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch.getId_Start() < featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End() ) {
+
+						String msg = "featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch.getId_Start() < featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End(). featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch.getId_Start(): " 
+								+ featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch.getId_Start()
+								+ ", featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End(): " + featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End();
+						log.warn(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
+					
+					featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch = featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__NextBatch;
+
+					//  Set id to start of next batch
+					featureDetectionSingularFeatureEntry_ID = featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_Start();
+				} else {
+					
+					featureDetectionSingularFeatureEntry_ID++; // Increment the id
+					
+					if ( featureDetectionSingularFeatureEntry_ID > featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End() ) {
+
+						String msg = "featureDetectionSingularFeatureEntry_ID AFTER INCREMENT is > Batch End.  'featureDetectionSingularFeatureEntry_ID AFTER INCREMENT': " 
+								+ featureDetectionSingularFeatureEntry_ID
+								+ ", featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End(): " + featureDetectionSingularFeatureEntry_DAO__BatchIds_Start_End__CurrentBatch.getId_End();
+						log.warn(msg);
+						throw new LimelightImporterInternalException(msg);
+					}
 				}
 
 			} else {
@@ -535,6 +634,10 @@ public class ImportFile_Hardklor_Results {
 		//  Insert Last Batch of Single Feature Entries
 		if ( ! featureDetectionSingularFeatureDTO_List.isEmpty() ) {
 			FeatureDetectionSingularFeatureEntry_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionSingularFeatureDTO_List );
+			
+			//  Insert Batch of Single Feature Mods Entries
+			FeatureDetectionSingularFeatureEntryMods_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionSingularFeatureEntryMods_DTO_List );
+
 		}
 
 	}

@@ -2961,7 +2961,7 @@ CREATE INDEX feature_detection_other_uploaded_file_like_conf_tbl_1_idx ON featur
 CREATE TABLE  feature_detection_singular_feature_entry_mods_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   feature_detection_singular_feature_entry_id INT UNSIGNED NOT NULL,
-  modification_mass DOUBLE NULL,
+  modification_field VARCHAR(2000) NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_feature_detection_singular_feature_entry_mods_tbl_1
     FOREIGN KEY (feature_detection_singular_feature_entry_id)
@@ -4034,6 +4034,16 @@ CREATE TABLE  file_import__run_importer__pause_processing_schedule_tbl (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table feature_detection_singular_feature_entry__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_singular_feature_entry__insert_id_tbl (
+  id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get block of id values to insert to feature_detection_singular_feature_entry_tbl';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
