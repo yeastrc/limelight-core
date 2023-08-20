@@ -34,6 +34,32 @@ public class FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DA
 	
 	private List<Internal_SaveHolder_AndChildren> saveHolder_AndChildren_List = new ArrayList<>( INSERT_BATCH_SIZE );
 	
+	/**
+	 * Insert last stored batch into DB
+	 * 
+	 * @throws Exception 
+	 */
+	public void insert_LAST_Batch_ToDB() throws Exception {
+		
+		System.out.println( "insert_LAST_Batch_ToDB()" );
+
+		if ( ! saveHolder_AndChildren_List.isEmpty() ) {
+			
+			System.out.println( "insert_LAST_Batch_ToDB()  ( ! saveHolder_AndChildren_List.isEmpty() )" );
+
+			//  Batch not empty so save
+			
+			_saveBatch();
+		}
+
+		//  Call to 'insert_LAST_Batch_ToDB()' is required to insert last batch into DB
+		
+		FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumber_InsertOnly_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+	}
+	
+	
 
 	/**
 	 * @param featureDetectionPersistentFeatureEntryDTO
@@ -60,88 +86,88 @@ public class FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DA
 
 			saveHolder_AndChildren_List.add(internal_SaveHolder_AndChildren);
 		}
-		
-		_saveBatch_IfNeeded();
+
+		if ( saveHolder_AndChildren_List.size() >= INSERT_BATCH_SIZE ) {
+
+			//  At Batch Size so save
+			
+			_saveBatch();
+		}
 	}
 	
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private void _saveBatch_IfNeeded() throws Exception {
+	private void _saveBatch() throws Exception {
 
-		if ( saveHolder_AndChildren_List.size() >= INSERT_BATCH_SIZE ) {
-			
-			//  At Batch Size so save
-			
-			{
-				//  Assign 'id' to top level featureDetectionPersistentFeatureEntryDTO objects
+		{
+			//  Assign 'id' to top level featureDetectionPersistentFeatureEntryDTO objects
 
-				FeatureDetectionPersistentFeatureEntry_DAO__BatchIds_Start_End batchIds_Start_End = 
-						FeatureDetectionPersistentFeatureEntry_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
+			FeatureDetectionPersistentFeatureEntry_DAO__BatchIds_Start_End batchIds_Start_End = 
+					FeatureDetectionPersistentFeatureEntry_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
 
-				int persistentFeatureEntry_ID = batchIds_Start_End.getId_Start();
+			int persistentFeatureEntry_ID = batchIds_Start_End.getId_Start();
 
-				for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
 
-					if ( persistentFeatureEntry_ID > batchIds_Start_End.getId_End() ) {
+				if ( persistentFeatureEntry_ID > batchIds_Start_End.getId_End() ) {
 
-						String msg = "persistentFeatureEntry_ID > batchIds_Start_End.getId_End(). persistentFeatureEntry_ID : " 
-								+ persistentFeatureEntry_ID
-								+ ", batchIds_Start_End.getId_End(): " + batchIds_Start_End.getId_End();
-						log.error( msg );
-						throw new LimelightInternalErrorException( msg );
-					}
-
-					internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.setId( persistentFeatureEntry_ID );
-
-					persistentFeatureEntry_ID++;
-				}
-			}
-			
-			{  //  Save Top Level featureDetectionPersistentFeatureEntryDTO objects
-				
-				List<FeatureDetectionPersistentFeatureEntryDTO> featureDetectionPersistentFeatureEntryDTO_List = new ArrayList<>( saveHolder_AndChildren_List.size() );
-
-				for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
-
-					featureDetectionPersistentFeatureEntryDTO_List.add( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO );
+					String msg = "persistentFeatureEntry_ID > batchIds_Start_End.getId_End(). persistentFeatureEntry_ID : " 
+							+ persistentFeatureEntry_ID
+							+ ", batchIds_Start_End.getId_End(): " + batchIds_Start_End.getId_End();
+					log.error( msg );
+					throw new LimelightInternalErrorException( msg );
 				}
 
-				FeatureDetectionPersistentFeatureEntry_InsertONLY_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionPersistentFeatureEntryDTO_List );
+				internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.setId( persistentFeatureEntry_ID );
+
+				persistentFeatureEntry_ID++;
 			}
-			
-
-			{
-				//  Insert Children records
-
-				for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
-
-					if ( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO != null ) {
-
-						internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO.setFeatureDetectionPersistentFeatureEntryId( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.getId() );
-
-						FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchInserter_DAO.getSingletonInstance()
-						.insert_Batching_Object( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO );
-					}
-
-					if ( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List != null ) {
-
-						for ( FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO entry_MS_2_ScanNumber : internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List ) {
-
-							entry_MS_2_ScanNumber.setFeatureDetectionPersistentFeatureEntryId( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.getId() );
-
-							FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumber_InsertOnly_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( entry_MS_2_ScanNumber );
-						}
-					}
-				}
-			}
-			
-			//  Clear Batch List since All Saved
-			
-			saveHolder_AndChildren_List.clear();
 		}
+
+		{  //  Save Top Level featureDetectionPersistentFeatureEntryDTO objects
+
+			List<FeatureDetectionPersistentFeatureEntryDTO> featureDetectionPersistentFeatureEntryDTO_List = new ArrayList<>( saveHolder_AndChildren_List.size() );
+
+			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+
+				featureDetectionPersistentFeatureEntryDTO_List.add( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO );
+			}
+
+			FeatureDetectionPersistentFeatureEntry_InsertONLY_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( featureDetectionPersistentFeatureEntryDTO_List );
+		}
+
+
+		{
+			//  Insert Children records
+
+			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+
+				if ( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO != null ) {
+
+					internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO.setFeatureDetectionPersistentFeatureEntryId( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.getId() );
+
+					FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchInserter_DAO.getSingletonInstance()
+					.insert_Batching_Object( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO );
+				}
+
+				if ( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List != null ) {
+
+					for ( FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO entry_MS_2_ScanNumber : internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List ) {
+
+						entry_MS_2_ScanNumber.setFeatureDetectionPersistentFeatureEntryId( internal_SaveHolder_AndChildren.featureDetectionPersistentFeatureEntryDTO.getId() );
+
+						FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumber_InsertOnly_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( entry_MS_2_ScanNumber );
+					}
+				}
+			}
+
+		}
+
+		//  Clear Batch List since All Saved
 		
+		saveHolder_AndChildren_List.clear();
 	}
 	
 	

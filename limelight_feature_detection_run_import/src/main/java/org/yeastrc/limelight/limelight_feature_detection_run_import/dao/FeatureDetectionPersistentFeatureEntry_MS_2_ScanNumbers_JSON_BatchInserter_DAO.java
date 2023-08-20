@@ -29,6 +29,22 @@ public class FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchI
 	private static FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchInserter_DAO singletonInstance = new FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchInserter_DAO();
 	
 	private List<FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO> item_List = new ArrayList<>( INSERT_BATCH_SIZE );
+
+	/**
+	 * Insert last stored batch into DB
+	 * 
+	 * @throws Exception 
+	 */
+	public void insert_LAST_Batch_ToDB() throws Exception {
+		
+
+		if ( ! item_List.isEmpty() ) {
+
+			//  Batch not empty so save
+			
+			_saveBatch();
+		}
+	}
 	
 
 	/**
@@ -46,29 +62,29 @@ public class FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_BatchI
 			
 			item_List.add(featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO);
 		}
-		
-		_saveBatch_IfNeeded();
+
+		if ( item_List.size() >= INSERT_BATCH_SIZE ) {
+
+			//  At Batch Size so save
+						
+			_saveBatch();
+		}
 	}
 	
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private void _saveBatch_IfNeeded() throws Exception {
+	private void _saveBatch() throws Exception {
 
-		if ( item_List.size() >= INSERT_BATCH_SIZE ) {
-			
-			//  At Batch Size so save
-						
-			{  //  Save objects
-				
-				FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_InsertONLY_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( item_List );
-			}
-			
-			//  Clear Batch List since All Saved
-			
-			item_List.clear();
+		{  //  Save objects
+
+			FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_InsertONLY_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( item_List );
 		}
+
+		//  Clear Batch List since All Saved
+
+		item_List.clear();
 		
 	}
 	

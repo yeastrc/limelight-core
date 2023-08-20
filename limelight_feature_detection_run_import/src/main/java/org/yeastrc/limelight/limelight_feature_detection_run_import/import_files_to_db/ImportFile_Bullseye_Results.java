@@ -697,7 +697,10 @@ public class ImportFile_Bullseye_Results {
 					featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List );
 
 		}
-
+		
+		//  Call to 'insert_LAST_Batch_ToDB()' is required to insert last batch into DB
+		
+		FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 	}
 
 
