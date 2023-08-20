@@ -91,7 +91,7 @@ public class DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO {
 			//  Assign 'id' to top level PsmDescriptiveAnnotationDTO objects
 
 			DB_Insert_PsmDescriptiveAnnotation__BatchIds_Start_End batchIds_Start_End = 
-					DB_Insert_PsmDescriptiveAnnotation_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
+					DB_Insert_PsmDescriptiveAnnotation_InsertId_DAO.getSingletonInstance().getNextBatch_IDs( psmDescriptiveAnnotationDTO_List.size() );
 
 			long psmDescriptiveAnnotation_ID = batchIds_Start_End.getId_Start();
 

@@ -100,7 +100,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO {
 			//  Assign 'id' to top level psmOpenModificationDTO objects
 
 			DB_Insert_PsmOpenModification__BatchIds_Start_End batchIds_Start_End = 
-					DB_Insert_PsmOpenModification_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
+					DB_Insert_PsmOpenModification_InsertId_DAO.getSingletonInstance().getNextBatch_IDs( saveHolder_AndChildren_List.size() );
 
 			long psmOpenModification_ID = batchIds_Start_End.getId_Start();
 

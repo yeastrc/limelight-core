@@ -91,7 +91,7 @@ public class DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_Ba
 			//  Assign 'id' to top level SearchReportedPeptideDescriptiveAnnotationDTO objects
 
 			DB_Insert_SearchReportedPeptideDescriptiveAnnotation__BatchIds_Start_End batchIds_Start_End = 
-					DB_Insert_SearchReportedPeptideDescriptiveAnnotation_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
+					DB_Insert_SearchReportedPeptideDescriptiveAnnotation_InsertId_DAO.getSingletonInstance().getNextBatch_IDs( searchReportedPeptideDescriptiveAnnotationDTO_List.size() );
 
 			long searchReportedPeptideDescriptiveAnnotation_ID = batchIds_Start_End.getId_Start();
 
