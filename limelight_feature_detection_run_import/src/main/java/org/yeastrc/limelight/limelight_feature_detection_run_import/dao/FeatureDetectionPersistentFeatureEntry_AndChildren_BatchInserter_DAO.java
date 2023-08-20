@@ -41,11 +41,11 @@ public class FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DA
 	 */
 	public void insert_LAST_Batch_ToDB() throws Exception {
 		
-		System.out.println( "insert_LAST_Batch_ToDB()" );
+		log.info( "insert_LAST_Batch_ToDB()" );
 
 		if ( ! saveHolder_AndChildren_List.isEmpty() ) {
 			
-			System.out.println( "insert_LAST_Batch_ToDB()  ( ! saveHolder_AndChildren_List.isEmpty() )" );
+			log.info( "insert_LAST_Batch_ToDB()  ( ! saveHolder_AndChildren_List.isEmpty() )" );
 
 			//  Batch not empty so save
 			
@@ -105,7 +105,7 @@ public class FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DA
 			//  Assign 'id' to top level featureDetectionPersistentFeatureEntryDTO objects
 
 			FeatureDetectionPersistentFeatureEntry_DAO__BatchIds_Start_End batchIds_Start_End = 
-					FeatureDetectionPersistentFeatureEntry_InsertId_DAO.getSingletonInstance().getNextBatch_IDs(INSERT_BATCH_SIZE);
+					FeatureDetectionPersistentFeatureEntry_InsertId_DAO.getSingletonInstance().getNextBatch_IDs( saveHolder_AndChildren_List.size() );
 
 			int persistentFeatureEntry_ID = batchIds_Start_End.getId_Start();
 
