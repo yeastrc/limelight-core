@@ -34,9 +34,12 @@ import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchRe
 import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
 import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchDynamicModMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIsotopeLabelDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReporterIonMassDAO;
@@ -299,6 +302,17 @@ public class ProcessReportedPeptidesAndPSMs {
 				
 			} //  END: for ( Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object : input_LimelightXMLFile_InternalHolder_Root_Object.get_InternalHolder_ReportedPeptide_Object_Unmodifiable() ) {
 
+			//   Call this when done processing ALL Reported Peptides
+
+			//  Insert Last Batch by calling:
+			DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+
+			//  Insert Last Batch by calling:
+			DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			//  Insert Last Batch by calling:
+			DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
 
 			//  Commit to get timing, along with other reasons
 			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();

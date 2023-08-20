@@ -546,6 +546,57 @@ INSERT INTO feature_detection_persistent_feature_entry__insert_id_tbl
 SELECT If( Max(id), Max(id), 0) FROM feature_detection_persistent_feature_entry_tbl;
 
 
+
+-- -----------------------------------------------------
+
+--   Importer Batch Insert Changes  2023 08
+
+-- -----------------------------------------------------
+-- Table psm_open_modification__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_open_modification_tbl';
+
+
+-- Populate Table psm_open_modification__insert_id_tbl
+INSERT INTO psm_open_modification__insert_id_tbl
+SELECT If( Max(id), Max(id), 0) FROM psm_open_modification_tbl;
+
+
+-- -----------------------------------------------------
+-- Table psm_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_descriptive_annotation__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_descriptive_annotation_tbl';
+
+
+-- Populate Table psm_descriptive_annotation__insert_id_tbl
+INSERT INTO psm_descriptive_annotation__insert_id_tbl
+SELECT If( Max(id), Max(id), 0) FROM psm_descriptive_annotation_tbl;
+
+
+-- -----------------------------------------------------
+-- Table srch__rep_pept_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__rep_pept_descriptive_annotation__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+
+-- Populate Table srch__rep_pept_descriptive_annotation__insert_id_tbl
+INSERT INTO srch__rep_pept_descriptive_annotation__insert_id_tbl
+SELECT If( Max(id), Max(id), 0) FROM srch__rep_pept_descriptive_annotation_tbl;
+
+
+
+
 -- -----------------------------------------------------
 
 

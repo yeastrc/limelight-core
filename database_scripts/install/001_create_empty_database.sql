@@ -4056,6 +4056,35 @@ ENGINE = InnoDB
 COMMENT = 'Get block of id values to insert to feature_detection_persistent_feature_entry_tbl';
 
 
+-- -----------------------------------------------------
+-- Table psm_open_modification__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_open_modification_tbl';
+
+
+-- -----------------------------------------------------
+-- Table psm_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_descriptive_annotation__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_descriptive_annotation_tbl';
+
+
+-- -----------------------------------------------------
+-- Table srch__rep_pept_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__rep_pept_descriptive_annotation__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
