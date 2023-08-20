@@ -13,9 +13,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeatureEntryDAO;
-import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumberDAO;
-import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DAO;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeatureUploadedFileStatsDAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.FeatureDetectionPersistentFeature_FileHeaderContents_DAO;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.dao.ScanFileDAO_Partial;
@@ -693,25 +691,11 @@ public class ImportFile_Bullseye_Results {
 				}
 			}
 			
+			FeatureDetectionPersistentFeatureEntry_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren(
+					featureDetectionPersistentFeatureEntryDTO,
+					featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO,
+					featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List );
 
-			FeatureDetectionPersistentFeatureEntryDAO.getInstance().save( featureDetectionPersistentFeatureEntryDTO );
-			
-			if ( featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO != null ) {
-			
-				featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO.setFeatureDetectionPersistentFeatureEntryId( featureDetectionPersistentFeatureEntryDTO.getId() );
-
-				FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DAO.getInstance().save( featureDetectionPersistentFeatureEntry_MS_2_ScanNumbers_JSON_DTO );
-			}
-
-			if ( featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List != null ) {
-			
-				for ( FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO entry_MS_2_ScanNumber : featureDetectionPersistentFeatureEntry_MS_2_ScanNumberDTO_List ) {
-
-					entry_MS_2_ScanNumber.setFeatureDetectionPersistentFeatureEntryId( featureDetectionPersistentFeatureEntryDTO.getId() );
-
-					FeatureDetectionPersistentFeatureEntry_MS_2_ScanNumberDAO.getInstance().save( entry_MS_2_ScanNumber );
-				}
-			}
 		}
 
 	}

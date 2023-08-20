@@ -4046,6 +4046,16 @@ ENGINE = InnoDB
 COMMENT = 'Get block of id values to insert to feature_detection_singular_feature_entry_tbl';
 
 
+-- -----------------------------------------------------
+-- Table feature_detection_persistent_feature_entry__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  feature_detection_persistent_feature_entry__insert_id_tbl (
+  id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get block of id values to insert to feature_detection_persistent_feature_entry_tbl';
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
