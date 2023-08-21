@@ -35,7 +35,10 @@ import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_General
 import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModification_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMass_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmSearchSubGroup_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchDynamicModMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIsotopeLabelDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO;
@@ -302,8 +305,19 @@ public class ProcessReportedPeptidesAndPSMs {
 				
 			} //  END: for ( Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object : input_LimelightXMLFile_InternalHolder_Root_Object.get_InternalHolder_ReportedPeptide_Object_Unmodifiable() ) {
 
-			//   Call this when done processing ALL Reported Peptides
+			/////////////
+			
+			//   Call these when done processing ALL Reported Peptides to insert Last Batch
 
+			//  Insert Last Batch by calling:
+			DB_Insert_PsmSearchSubGroup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+
+			//  Insert Last Batch by calling:
+			DB_Insert_PsmDynamicModification_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			//  Insert Last Batch by calling:
+			DB_Insert_PsmReporterIonMass_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+				
 			//  Insert Last Batch by calling:
 			DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 
@@ -313,7 +327,8 @@ public class ProcessReportedPeptidesAndPSMs {
 			//  Insert Last Batch by calling:
 			DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
-
+			////////////////////
+			
 			//  Commit to get timing, along with other reasons
 			ImportRunImporterDBConnectionFactory.getMainSingletonInstance().commitInsertControlCommitConnection();
 

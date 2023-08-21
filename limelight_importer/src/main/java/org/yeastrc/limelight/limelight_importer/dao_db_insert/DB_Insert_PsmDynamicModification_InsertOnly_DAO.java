@@ -26,45 +26,46 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
+import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 
 /**
- * table psm_search_sub_group_tbl
+ * table psm_dynamic_modification_tbl
  *
  */
-public class DB_Insert_PsmSearchSubGroup_DAO {
+public class DB_Insert_PsmDynamicModification_InsertOnly_DAO {
 
-	private static final Logger log = LoggerFactory.getLogger( DB_Insert_PsmSearchSubGroup_DAO.class );
+	private static final Logger log = LoggerFactory.getLogger( DB_Insert_PsmDynamicModification_InsertOnly_DAO.class );
 
-	private DB_Insert_PsmSearchSubGroup_DAO() { }
-	public static DB_Insert_PsmSearchSubGroup_DAO getInstance() { return new DB_Insert_PsmSearchSubGroup_DAO(); }
+	private DB_Insert_PsmDynamicModification_InsertOnly_DAO() { }
+	public static DB_Insert_PsmDynamicModification_InsertOnly_DAO getInstance() { return new DB_Insert_PsmDynamicModification_InsertOnly_DAO(); }
+
 
 	/**
-	 * This will INSERT the given PsmSearchSubGroupDTO into the database.
 	 * @param itemList
-	 * @throws Exception
+	 * @return
+	 * @throws Throwable
 	 */
-	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmSearchSubGroupDTO> itemList ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmDynamicModificationDTO> itemList ) throws Exception {
 
 		try {
+
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
 			insert_NOT_Update_ID_Property_InDTOParams( itemList, dbConnection );
-
+			
 		} finally {
 		}
 	}
-
-	private final static String INSERT_SQL = 
-			"INSERT INTO psm_search_sub_group_tbl "
-			
-			+ "(psm_id, search_sub_group_id ) "
-			
-			+ "VALUES ";
 	
-	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "(?, ?)";
-	
+	private static final String INSERT_SQL =
+			
+			"INSERT INTO psm_dynamic_modification_tbl "
+			+ " ( psm_id, position, mass, is_n_terminal, is_c_terminal )"
+			+ " VALUES ";
+			
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL =  "( ?, ?, ?, ?, ? )";
 
 	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
 
@@ -98,13 +99,12 @@ public class DB_Insert_PsmSearchSubGroup_DAO {
 		return sql;
 	}
 	
-	
 	/**
-	 * This will INSERT the given PsmSearchSubGroupDTO into the database
-	 * @param item
+	 * @param itemList
+	 * @param conn
 	 * @throws Exception
 	 */
-	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmSearchSubGroupDTO> itemList, Connection dbConnection ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmDynamicModificationDTO> itemList, Connection dbConnection ) throws Exception {
 
 		if ( itemList.isEmpty() ) {
 			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
@@ -115,21 +115,36 @@ public class DB_Insert_PsmSearchSubGroup_DAO {
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
 			
 			int counter = 0;
-			
-			for ( PsmSearchSubGroupDTO item : itemList ) {
+
+			for ( PsmDynamicModificationDTO item : itemList ) {
 
 				counter++;
-				pstmt.setLong( counter, item.getPsmId() );
+				pstmt.setLong( counter,  item.getPsmId() );
+
 				counter++;
-				pstmt.setInt( counter, item.getSearchSubGroupId() );
+				pstmt.setInt( counter,  item.getPosition() );
+				counter++;
+				pstmt.setDouble( counter,  item.getMass() );
+
+				counter++;
+				if ( item.isIs_N_Terminal() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isIs_C_Terminal() ) {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
 			}
-
+			
 			pstmt.executeUpdate();
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: insertSQL: " + insertSQL + "\n First Item to save: " + itemList.get(0), e );
+			log.error( "ERROR: insert_NOT_Update_ID_Property_InDTOParams(...) insertSQL: " + insertSQL + "\n First Item: " + itemList.get(0), e );
 			throw e;
-		} 
+		}
 	}
-	
 }
