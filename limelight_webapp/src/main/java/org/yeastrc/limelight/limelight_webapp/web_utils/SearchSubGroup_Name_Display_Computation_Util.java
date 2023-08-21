@@ -140,6 +140,9 @@ public class SearchSubGroup_Name_Display_Computation_Util {
 		{
 			//  Compute Start Index to display last MAX_LENGTH_OF_DISPLAY_STRING characters for Longest searchSubgroupName_fromImportFile String
 			int startIndex = longestLength_searchSubgroupName_fromImportFile - MAX_LENGTH_OF_DISPLAY_STRING;
+			if ( startIndex < 0 ) {
+				startIndex = 0; // Set to zero if less than zero
+			}
 			if ( searchSubgroupName_fromImportFile_StartIndex > startIndex ) {
 				searchSubgroupName_fromImportFile_StartIndex = startIndex; // Change since can show more of all searchSubgroupName_fromImportFile String
 			}
