@@ -32,7 +32,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPept
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotations;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideFilterableAnnotationDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideFilterableAnnotation_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
@@ -179,7 +179,7 @@ public class SaveSearchReportedPeptideAnnotations {
 						searchReportedPeptideAnnotationDTO.setAnnotationTypeId( annotationTypeId );
 						searchReportedPeptideAnnotationDTO.setValueDouble( value.doubleValue() );
 						searchReportedPeptideAnnotationDTO.setValueString( value.toString() );
-						DB_Insert_SearchReportedPeptideFilterableAnnotationDAO.getInstance().saveToDatabase(searchReportedPeptideAnnotationDTO);
+						DB_Insert_SearchReportedPeptideFilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( searchReportedPeptideAnnotationDTO );
 						searchReportedPeptideFilterableAnnotationDTOList.add(searchReportedPeptideAnnotationDTO);
 					}
 				}

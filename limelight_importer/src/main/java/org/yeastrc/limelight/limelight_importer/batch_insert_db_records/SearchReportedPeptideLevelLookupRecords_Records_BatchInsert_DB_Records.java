@@ -26,7 +26,7 @@ public class SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Reco
 
 	//  insert INSERT_BLOCK_SIZE number of records with single 'insert' SQL statement
 	
-	private final static int INSERT_BLOCK_SIZE = 250;
+	private final static int INSERT_BLOCK_SIZE = 2000;
 	
 	
 	private SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records() { }
@@ -281,7 +281,7 @@ public class SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Reco
 
 			{
 				searchImportInProgress_Counter++;
-				if ( searchImportInProgress_Counter > 1000 ) {
+				if ( searchImportInProgress_Counter > 100000 ) {
 					//  at 10th save, Updates 'heart beat'
 					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
 				

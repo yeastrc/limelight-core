@@ -19,13 +19,13 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_shared.constants.AnnotationValueStringLocalFieldLengthConstants;
 import org.yeastrc.limelight.limelight_shared.dto.SearchReportedPeptideFilterableAnnotationDTO;
 
@@ -42,16 +42,16 @@ public class DB_Insert_SearchReportedPeptideFilterableAnnotationDAO {
 
 	/**
 	 * This will INSERT the given SearchReportedPeptideAnnotationDTO into the database.
-	 * @param item
+	 * @param itemList
 	 * @throws Exception
 	 */
-	public void saveToDatabase( SearchReportedPeptideFilterableAnnotationDTO item ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SearchReportedPeptideFilterableAnnotationDTO> itemList ) throws Exception {
 
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
-			saveToDatabase( item, dbConnection );
+			insert_NOT_Update_ID_Property_InDTOParams( itemList, dbConnection );
 
 		} finally {
 		}
@@ -63,61 +63,93 @@ public class DB_Insert_SearchReportedPeptideFilterableAnnotationDAO {
 			+ "(search_id, reported_peptide_id, "
 			+ 	" annotation_type_id, value_double, value_string ) "
 			
-			+ "VALUES (?, ?, ?, ?, ?)";
+			+ "VALUES ";
+			
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "(?, ?, ?, ?, ?)";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * This will INSERT the given SearchReportedPeptideAnnotationDTO into the database
-	 * @param item
+	 * @param itemList
 	 * @throws Exception
 	 */
-	public void saveToDatabase( SearchReportedPeptideFilterableAnnotationDTO item, Connection dbConnection ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SearchReportedPeptideFilterableAnnotationDTO> itemList, Connection dbConnection ) throws Exception {
 
-		if ( item == null ) {
-			String msg = "item to save cannot be null";
-			log.error( msg );
-			throw new IllegalArgumentException(msg);
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
 		}
 		
-		if ( item.getValueString().length() > AnnotationValueStringLocalFieldLengthConstants.ANNOTATION_VALUE_STRING_LOCAL_FIELD_LENGTH ) {
-
-			//  Filterable valueString must fit in the main table since it is copied from there to lookup tables.
-			String msg = "For Filterable annotation: item to save ValueString cannot have length > " 
-					+ AnnotationValueStringLocalFieldLengthConstants.ANNOTATION_VALUE_STRING_LOCAL_FIELD_LENGTH
-					+ ", ValueString: " + item.getValueString()
-					+ ", item: " + item;
-			log.error( msg );
-			throw new IllegalArgumentException(msg);
-		}
-
-		final String sql = INSERT_SQL;
+		for ( SearchReportedPeptideFilterableAnnotationDTO item : itemList ) {
 		
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+			if ( item.getValueString().length() > AnnotationValueStringLocalFieldLengthConstants.ANNOTATION_VALUE_STRING_LOCAL_FIELD_LENGTH ) {
+	
+				//  Filterable valueString must fit in the main table since it is copied from there to lookup tables.
+				String msg = "For Filterable annotation: item to save ValueString cannot have length > " 
+						+ AnnotationValueStringLocalFieldLengthConstants.ANNOTATION_VALUE_STRING_LOCAL_FIELD_LENGTH
+						+ ", ValueString: " + item.getValueString()
+						+ ", item: " + item;
+				log.error( msg );
+				throw new IllegalArgumentException(msg);
+			}
+		}
+		
+		final String insertSQL = this.create_insert_SQL( itemList.size() );
+
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
 			
 			int counter = 0;
-			
-			counter++;
-			pstmt.setInt( counter, item.getSearchId() );
-			counter++;
-			pstmt.setInt( counter, item.getReportedPeptideId() );
-			counter++;
-			pstmt.setInt( counter, item.getAnnotationTypeId() );
 
-			counter++;
-			pstmt.setDouble( counter, item.getValueDouble() );
-
-			counter++;
-			pstmt.setString( counter, item.getValueString() );
+			for ( SearchReportedPeptideFilterableAnnotationDTO item : itemList ) {
+				
+				counter++;
+				pstmt.setInt( counter, item.getSearchId() );
+				counter++;
+				pstmt.setInt( counter, item.getReportedPeptideId() );
+				counter++;
+				pstmt.setInt( counter, item.getAnnotationTypeId() );
+	
+				counter++;
+				pstmt.setDouble( counter, item.getValueDouble() );
+	
+				counter++;
+				pstmt.setString( counter, item.getValueString() );
+			}
 			
 			pstmt.executeUpdate();
 			
-			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-				if( rs.next() ) {
-					item.setId( rs.getInt( 1 ) );
-				} else
-					throw new LimelightImporterDatabaseException( "Failed to insert for " + item.getSearchId() + ", " + item.getReportedPeptideId() );
-			}			
 		} catch ( Exception e ) {
-			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			log.error( "ERROR: insertSQL: " + insertSQL + "\n First Data to save: " + itemList.get(0), e );
 			throw e;
 		}
 	}
