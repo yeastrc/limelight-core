@@ -30,7 +30,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 	
 	private static final String _DEFAULT_PORT = "3306";
 	
-	private static final int COMMIT_AFTER_500_INSERTS = 500;
+	private static final int COMMIT_AFTER_100_INSERTS = 100;
 	
 	/**
 	 * Internal to this class
@@ -265,7 +265,7 @@ public class ImportRunImporterDBConnectionFactory implements SharedCodeOnly_DBCo
 		
 		_insertControlCommitConnectionGetCount++;
 		
-		if ( _insertControlCommitConnectionGetCount > COMMIT_AFTER_500_INSERTS 
+		if ( _insertControlCommitConnectionGetCount > COMMIT_AFTER_100_INSERTS 
 				|| insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {
 			
 			if ( ! insertControlCommitConnection_Do_NOT_Disable_AutoCommit ) {

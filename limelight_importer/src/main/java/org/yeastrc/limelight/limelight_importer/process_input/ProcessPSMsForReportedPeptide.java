@@ -36,7 +36,6 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPos
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
-import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_FilterableAnnotation_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO.DB_Insert_Psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren;
@@ -125,8 +124,7 @@ public class ProcessPSMsForReportedPeptide {
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries,
-			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide,
-			Psm_FilterableAnnotation_Records_BatchInsert_DB_Records psm_FilterableAnnotation_Records_BatchInsert_DB_Records
+			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide
 			) throws LimelightImporterDataException, Exception {
 
 		ReportedPeptide reportedPeptide = internalHolder_ReportedPeptide_Object.getReportedPeptide();
@@ -482,7 +480,8 @@ public class ProcessPSMsForReportedPeptide {
 					populatePsmAnnotations.populatePsmFilterableAnnotations( psm, psmDTO );
 			
 			for ( PsmFilterableAnnotationDTO psmFilterableAnnotationDTO : currentPsm_psmAnnotationDTO_Filterable_List ) {
-				psm_FilterableAnnotation_Records_BatchInsert_DB_Records.add_PsmFilterableAnnotationDTO(psmFilterableAnnotationDTO);
+				
+				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmFilterableAnnotationDTO__List().add( psmFilterableAnnotationDTO );
 			}
 			
 			//   Commented out since insert now done in psm_FilterableAnnotation_Records_BatchInsert_DB_Records

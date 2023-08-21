@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
-import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_FilterableAnnotation_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
 import org.yeastrc.limelight.limelight_importer.dao.Importer_Stats_GeneralData_DAO;
@@ -129,11 +128,6 @@ public class ProcessReportedPeptidesAndPSMs {
 			
 			//  Create and Initialize
 
-			Psm_FilterableAnnotation_Records_BatchInsert_DB_Records psm_FilterableAnnotation_Records_BatchInsert_DB_Records =
-					Psm_FilterableAnnotation_Records_BatchInsert_DB_Records.getSingletonInstance();
-
-			psm_FilterableAnnotation_Records_BatchInsert_DB_Records.initialize(input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput());
-			
 			SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records =
 					SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.getSingletonInstance();
 			
@@ -209,8 +203,7 @@ public class ProcessReportedPeptidesAndPSMs {
 								searchProgramEntryMap,
 								filterablePsmAnnotationTypesOnId,
 								searchScanFileEntry_AllEntries,
-								uniqueReporterIonMassesForTheReportedPeptide,
-								psm_FilterableAnnotation_Records_BatchInsert_DB_Records
+								uniqueReporterIonMassesForTheReportedPeptide
 								);
 
 
@@ -341,9 +334,6 @@ public class ProcessReportedPeptidesAndPSMs {
 
 			// Insert all psm_FilterableAnnotation_Records.  Insert Held until this method call so they are all inserted together
 
-			psm_FilterableAnnotation_Records_BatchInsert_DB_Records.insert_All_Records_Into_Database(search);
-			
-			
 			searchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records.insert_All_Records_Into_Database(search);
 
 

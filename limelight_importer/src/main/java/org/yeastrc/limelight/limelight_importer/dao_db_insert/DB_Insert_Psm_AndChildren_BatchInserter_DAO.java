@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry;
@@ -47,48 +48,36 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 
 		List<DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren> saveHolder_PsmOpenModification_AndChildren__List = new ArrayList<>();
 		
-		List<PsmDescriptiveAnnotationDTO> psmAnnotationDTO_Descriptive__List = new ArrayList<>();
+		List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTO__List = new ArrayList<>();
 		
+		List<PsmDescriptiveAnnotationDTO> psmAnnotationDTO_Descriptive__List = new ArrayList<>();
+
+
 		///
 		
-		public PsmDTO getPsmDTO() {
-			return psmDTO;
-		}
-		public void setPsmDTO(PsmDTO psmDTO) {
-			this.psmDTO = psmDTO;
-		}
 		public List<PsmSearchSubGroupDTO> getPsmSearchSubGroupDTO__List() {
 			return psmSearchSubGroupDTO__List;
-		}
-		public void setPsmSearchSubGroupDTO__List(List<PsmSearchSubGroupDTO> psmSearchSubGroupDTO__List) {
-			this.psmSearchSubGroupDTO__List = psmSearchSubGroupDTO__List;
 		}
 		public List<PsmDynamicModificationDTO> getPsmDynamicModificationDTO__List() {
 			return psmDynamicModificationDTO__List;
 		}
-		public void setPsmDynamicModificationDTO__List(List<PsmDynamicModificationDTO> psmDynamicModificationDTO__List) {
-			this.psmDynamicModificationDTO__List = psmDynamicModificationDTO__List;
-		}
 		public List<PsmReporterIonMassDTO> getPsmReporterIonMassDTO__List() {
 			return psmReporterIonMassDTO__List;
-		}
-		public void setPsmReporterIonMassDTO__List(List<PsmReporterIonMassDTO> psmReporterIonMassDTO__List) {
-			this.psmReporterIonMassDTO__List = psmReporterIonMassDTO__List;
 		}
 		public List<DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren> getSaveHolder_PsmOpenModification_AndChildren__List() {
 			return saveHolder_PsmOpenModification_AndChildren__List;
 		}
-		public void setSaveHolder_PsmOpenModification_AndChildren__List(
-				List<DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren> saveHolder_PsmOpenModification_AndChildren__List) {
-			this.saveHolder_PsmOpenModification_AndChildren__List = saveHolder_PsmOpenModification_AndChildren__List;
+		public List<PsmFilterableAnnotationDTO> getPsmFilterableAnnotationDTO__List() {
+			return psmFilterableAnnotationDTO__List;
 		}
 		public List<PsmDescriptiveAnnotationDTO> getPsmAnnotationDTO_Descriptive__List() {
 			return psmAnnotationDTO_Descriptive__List;
 		}
-		public void setPsmAnnotationDTO_Descriptive__List(
-				List<PsmDescriptiveAnnotationDTO> psmAnnotationDTO_Descriptive__List) {
-			this.psmAnnotationDTO_Descriptive__List = psmAnnotationDTO_Descriptive__List;
+		public void setPsmDTO(PsmDTO psmDTO) {
+			this.psmDTO = psmDTO;
 		}
+		
+		
 	}
 	
 	/**
@@ -146,18 +135,17 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		
 
 		//  Insert Last Batch by calling:
+
 		DB_Insert_PsmSearchSubGroup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 
-		//  Insert Last Batch by calling:
 		DB_Insert_PsmDynamicModification_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
-		//  Insert Last Batch by calling:
 		DB_Insert_PsmReporterIonMass_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
-		//  Insert Last Batch by calling:
 		DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		DB_Insert_PsmFilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 
-		//  Insert Last Batch by calling:
 		DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
 	}
@@ -237,6 +225,10 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 
 				for ( DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_PsmOpenModification_AndChildren : saveHolder_AndChildren.saveHolder_PsmOpenModification_AndChildren__List ) {
 					DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren( saveHolder_PsmOpenModification_AndChildren );
+				}
+				
+				for ( PsmFilterableAnnotationDTO psmFilterableAnnotationDTO : saveHolder_AndChildren.psmFilterableAnnotationDTO__List ) {
+					DB_Insert_PsmFilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmFilterableAnnotationDTO );
 				}
 
 				for ( PsmDescriptiveAnnotationDTO psmDescriptiveAnnotationDTO : saveHolder_AndChildren.psmAnnotationDTO_Descriptive__List ) {
