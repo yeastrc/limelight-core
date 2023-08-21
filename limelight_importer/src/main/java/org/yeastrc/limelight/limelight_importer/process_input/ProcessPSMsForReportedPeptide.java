@@ -40,12 +40,10 @@ import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_Filt
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModification_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModification_InsertOnly_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMass_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmSearchSubGroup_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmSearchSubGroup_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
@@ -296,7 +294,7 @@ public class ProcessPSMsForReportedPeptide {
 							psmHasReporterIons,
 							searchScanFileEntry_AllEntries );
 			
-			DB_Insert_PsmDAO.getSingletonInstance().saveToDatabase( psmDTO );
+			DB_Insert_PsmDAO.getSingletonInstance().insert_NOT_Update_ID_Property_InDTOParams( psmDTO );
 			
 			lastSavedPsmId = psmDTO.getId();
 

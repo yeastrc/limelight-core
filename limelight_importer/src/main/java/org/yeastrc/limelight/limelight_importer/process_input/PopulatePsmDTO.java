@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_InsertId_DAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
@@ -65,6 +66,9 @@ public class PopulatePsmDTO {
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries ) throws LimelightImporterDataException, Exception {
 		
 		PsmDTO psmDTO = new PsmDTO();
+		
+		psmDTO.setId( DB_Insert_Psm_InsertId_DAO.getSingletonInstance().get_NextId() );
+		
 		psmDTO.setSearchId( searchId );
 		psmDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
 		if ( psm.getPrecursorCharge() == null ) {

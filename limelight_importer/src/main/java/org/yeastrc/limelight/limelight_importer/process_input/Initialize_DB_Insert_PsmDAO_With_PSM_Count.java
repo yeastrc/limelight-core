@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptides;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_InsertId_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 
 /**
@@ -51,7 +51,7 @@ public class Initialize_DB_Insert_PsmDAO_With_PSM_Count {
 			}
 		}
 		
-		DB_Insert_PsmDAO.getSingletonInstance().initialize_Pass_PsmCount(psmCount_ForSearch, searchDTO);
+		DB_Insert_Psm_InsertId_DAO.getSingletonInstance().initialize_Pass_PsmCount(psmCount_ForSearch, searchDTO);
 	}
 			
 }
