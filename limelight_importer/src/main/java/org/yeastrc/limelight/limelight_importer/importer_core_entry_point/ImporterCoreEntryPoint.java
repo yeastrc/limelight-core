@@ -39,6 +39,7 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
 import org.yeastrc.limelight.limelight_importer.constants.Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant;
 import org.yeastrc.limelight.limelight_importer.dao.ProjectSearchDAO;
 import org.yeastrc.limelight.limelight_importer.dao.SearchDAO;
+import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry;
 import org.yeastrc.limelight.limelight_importer.dto.ProjectSearchDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
@@ -487,6 +488,10 @@ public class ImporterCoreEntryPoint {
 			//  Set limelightInputForImport to null to release memory needed later, but right now no other code to run
 			limelightInputForImport = null;
 			limelightInputObjectContainer.setLimelightInput( null );
+			
+			
+			//   Validate that in all DB Batch Insert Classes, the 'insert_LAST_Batch_ToDB()' method was called.  Throws an exception if there is an error
+			DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry.getSingletonInstance().validateAllCalled_InsertLastBatch_ToDB();
 			
 			
 			try {
