@@ -19,6 +19,9 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -38,16 +41,16 @@ public class DB_Insert_SearchRepPeptSubGroup_DAO {
 
 	/**
 	 * This will INSERT the given SearchRepPeptSubGroupDTO into the database.
-	 * @param item
+	 * @param itemList
 	 * @throws Exception
 	 */
-	public void saveToDatabase( SearchRepPeptSubGroupDTO item ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SearchRepPeptSubGroupDTO> itemList ) throws Exception {
 
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
-			saveToDatabase( item, dbConnection );
+			insert_NOT_Update_ID_Property_InDTOParams( itemList, dbConnection );
 
 		} finally {
 		}
@@ -59,38 +62,73 @@ public class DB_Insert_SearchRepPeptSubGroup_DAO {
 			+ "(search_id, reported_peptide_id, "
 			+ 	" search_sub_group_id ) "
 			
-			+ "VALUES (?, ?, ?)";
+			+ "VALUES ";
+	
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "(?, ?, ?)";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * This will INSERT the given SearchRepPeptSubGroupDTO into the database
-	 * @param item
+	 * @param itemList
 	 * @throws Exception
 	 */
-	public void saveToDatabase( SearchRepPeptSubGroupDTO item, Connection dbConnection ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SearchRepPeptSubGroupDTO> itemList, Connection dbConnection ) throws Exception {
 
-		if ( item == null ) {
-			String msg = "item to save cannot be null";
-			log.error( msg );
-			throw new IllegalArgumentException(msg);
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
 		}
 		
-		final String sql = INSERT_SQL;
-		
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+		final String insertSQL = this.create_insert_SQL( itemList.size() );
+
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
 			
 			int counter = 0;
 			
-			counter++;
-			pstmt.setInt( counter, item.getSearchId() );
-			counter++;
-			pstmt.setInt( counter, item.getReportedPeptideId() );
-			counter++;
-			pstmt.setInt( counter, item.getSearchSubGroupId() );
+			for ( SearchRepPeptSubGroupDTO item : itemList ) {
+			
+				counter++;
+				pstmt.setInt( counter, item.getSearchId() );
+				counter++;
+				pstmt.setInt( counter, item.getReportedPeptideId() );
+				counter++;
+				pstmt.setInt( counter, item.getSearchSubGroupId() );
+			}
 
 			pstmt.executeUpdate();
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			log.error( "ERROR: insertSQL: " + insertSQL + "\n First Data to save: " + itemList.get(0), e );
 			throw e;
 		}
 	}

@@ -40,7 +40,7 @@ import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceAnnotationDAO
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersionDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceAnnotationDTO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
@@ -233,13 +233,16 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 						searchProteinVersionDTO_ToBeInserted.add(item);
 					}
 
-					SearchReportedPeptideProteinVersionDTO searchReportedPeptideProteinVersionDTO = new SearchReportedPeptideProteinVersionDTO();
-					searchReportedPeptideProteinVersionDTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
-					searchReportedPeptideProteinVersionDTO.setSearchId( searchId );
-					searchReportedPeptideProteinVersionDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
-					searchReportedPeptideProteinVersionDTO.setProtein_IsDecoy(protein_IsDecoy);
-					searchReportedPeptideProteinVersionDTO.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
-					DB_Insert_SearchReportedPeptideProteinVersionDAO.getInstance().save( searchReportedPeptideProteinVersionDTO );
+					{
+						SearchReportedPeptideProteinVersionDTO searchReportedPeptideProteinVersionDTO = new SearchReportedPeptideProteinVersionDTO();
+						searchReportedPeptideProteinVersionDTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
+						searchReportedPeptideProteinVersionDTO.setSearchId( searchId );
+						searchReportedPeptideProteinVersionDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
+						searchReportedPeptideProteinVersionDTO.setProtein_IsDecoy(protein_IsDecoy);
+						searchReportedPeptideProteinVersionDTO.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
+						
+						DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( searchReportedPeptideProteinVersionDTO );
+					}
 
 					//  Insert PeptideProteinPositionDTO record for protein coverage
 					for ( Integer peptidePositionInProtein : peptidePositionsInProtein ) {

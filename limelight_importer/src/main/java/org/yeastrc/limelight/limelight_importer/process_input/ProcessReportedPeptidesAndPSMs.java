@@ -37,12 +37,16 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndC
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchDynamicModMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchIsotopeLabelDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchOpenModMass_ReportedPeptideUniqueValues_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchRepPeptSubGroup__BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideFilterableAnnotation_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__BatchInserter__DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReporterIonMassDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_GeneralData_DTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
@@ -236,7 +240,7 @@ public class ProcessReportedPeptidesAndPSMs {
 						dto.setSearchId( searchId );
 						dto.setReportedPeptideId( reportedPeptideId );
 						dto.setMass( mass );
-						DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO.getInstance().save(dto);
+						DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( dto );
 					}
 
 					uniquePsmOpenModMassesRoundedForTheSearch.addAll( psmStatisticsAndBestValues.getPsmOpenModification_UniqueMassesRounded() );
@@ -309,6 +313,14 @@ public class ProcessReportedPeptidesAndPSMs {
 			DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__BatchInserter__DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
 			DB_Insert_SearchReportedPeptideFilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_SearchRepPeptSubGroup__BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
 			
 			////////////////////

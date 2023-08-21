@@ -20,6 +20,9 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -45,49 +48,92 @@ public class DB_Insert_SearchReportedPeptideProteinVersionDAO {
 
 			+ " ( search_id, reported_peptide_id, protein_sequence_version_id, protein_is_decoy, protein_is_independent_decoy )"
 
-			+ " VALUES ( ?, ?, ?, ?, ? )";
+			+ " VALUES ";
+	
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "( ?, ?, ?, ?, ? )";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * Save the associated data to the database
-	 * @param item
+	 * @param itemList
 	 * @throws Exception
 	 */
-	public void save( SearchReportedPeptideProteinVersionDTO item ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SearchReportedPeptideProteinVersionDTO> itemList ) throws Exception {
 				
-		final String sql = INSERT_SQL;
+
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
+		}
+		
+		final String insertSQL = this.create_insert_SQL( itemList.size() );
+
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 
-			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
 
 				int counter = 0;
-
-				counter++;
-				pstmt.setInt( counter,  item.getSearchId() );
-				counter++;
-				pstmt.setInt( counter,  item.getReportedPeptideId() );
-				counter++;
-				pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
-
-				counter++;
-				if ( item.isProtein_IsDecoy() ) {
-					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
-				} else {
-					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				
+				for ( SearchReportedPeptideProteinVersionDTO item : itemList ) {
+	
+					counter++;
+					pstmt.setInt( counter,  item.getSearchId() );
+					counter++;
+					pstmt.setInt( counter,  item.getReportedPeptideId() );
+					counter++;
+					pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
+	
+					counter++;
+					if ( item.isProtein_IsDecoy() ) {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+					} else {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+					}
+					counter++;
+					if ( item.isProtein_IsIndependentDecoy() ) {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+					} else {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+					}
 				}
-				counter++;
-				if ( item.isProtein_IsIndependentDecoy() ) {
-					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
-				} else {
-					pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-				}
-
+				
 				pstmt.executeUpdate();
 			}
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: item: " + item + ", sql: " + sql, e );
+			log.error( "ERROR: first item: " + itemList.get(0) + ", insertSQL: " + insertSQL, e );
 			throw e;
 		} finally {
 			

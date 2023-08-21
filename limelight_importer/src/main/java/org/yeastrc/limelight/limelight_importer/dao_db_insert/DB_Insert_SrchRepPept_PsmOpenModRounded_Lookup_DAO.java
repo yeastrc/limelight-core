@@ -20,12 +20,13 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_shared.dto.SrchRepPept_PsmOpenModRounded_Lookup_DTO;
 
 /**
@@ -44,60 +45,84 @@ public class DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO {
 			+ " ( search_id, reported_peptide_id, "
 			+   " psm_open_mod_mass_rounded_unique )"
 
-			+ " VALUES ( ?, ?, ? )";
+			+ " VALUES ";
+	
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "( ?, ?, ? )";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * Save the associated data to the database
 	 * @param item
 	 * @throws Exception
 	 */
-	public void save( SrchRepPept_PsmOpenModRounded_Lookup_DTO item ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<SrchRepPept_PsmOpenModRounded_Lookup_DTO> itemList ) throws Exception {
+
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
+		}
 		
+		final String insertSQL = this.create_insert_SQL( itemList.size() );
+
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
-		String sql = INSERT_SQL;
-		
 		try {
 
 			conn = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 			
-			pstmt = conn.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS );
+			pstmt = conn.prepareStatement( insertSQL );
 			
 			
 			int counter = 0;
 			
-			counter++;
-			pstmt.setInt( counter,  item.getSearchId() );
-			counter++;
-			pstmt.setInt( counter,  item.getReportedPeptideId() );
-			
-			counter++;
-			pstmt.setDouble( counter,  item.getMass() );
+			for ( SrchRepPept_PsmOpenModRounded_Lookup_DTO item : itemList ) {
+
+				counter++;
+				pstmt.setInt( counter,  item.getSearchId() );
+				counter++;
+				pstmt.setInt( counter,  item.getReportedPeptideId() );
+
+				counter++;
+				pstmt.setDouble( counter,  item.getMass() );
+			}
 
 			pstmt.executeUpdate();
-
-			rs = pstmt.getGeneratedKeys();
-			
-			if( rs.next() ) {
-				
-				item.setId( rs.getInt( 1 ) );
-				
-			} else {
-				throw new LimelightImporterDatabaseException( "Failed to get inserted 'id' value. item: " + item );
-
-				//  Inserting duplicate record so no record inserted.
-				//  Need to query DB to get "id" field value using 
-				//    fields that identify a "unique" record
-				//    looking at the index of type UNIQUE on the table
-				
-			}
-			
 			
 		} catch ( Exception e ) {
 			
-			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+			log.error( "ERROR: sql: " + insertSQL + "\n First Data to save: " + itemList.get(0), e );
 			
 			throw e;
 			

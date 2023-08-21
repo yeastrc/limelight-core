@@ -33,10 +33,10 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideIsotopeLabels;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.dao.IsotopeLabelDAO_Importer;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchRepPeptSubGroup_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchRepPeptSubGroup__BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPeptDynamicModDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_IsotopeLabel_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object;
@@ -284,11 +284,14 @@ public class ProcessSave_SingleReportedPeptide {
 						log.error( msg );
 						throw new LimelightImporterDataException(msg);
 					}
-					SrchRepPept_IsotopeLabel_DTO dto = new SrchRepPept_IsotopeLabel_DTO();
-					dto.setIsotopeLabelId( isotopeLabelId );
-					dto.setSearchId( searchId );
-					dto.setReportedPeptideId( reportedPeptideId );
-					DB_Insert_SrchRepPept_IsotopeLabel_DAO.getInstance().saveToDatabase( dto );
+					{
+						SrchRepPept_IsotopeLabel_DTO dto = new SrchRepPept_IsotopeLabel_DTO();
+						dto.setIsotopeLabelId( isotopeLabelId );
+						dto.setSearchId( searchId );
+						dto.setReportedPeptideId( reportedPeptideId );
+						
+						DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( dto );
+					}
 				
 					//  Accumulate Isotope label id values across the search
 					uniqueIsotopeLabelIdsForTheSearch.add( isotopeLabelId );
@@ -313,8 +316,7 @@ public class ProcessSave_SingleReportedPeptide {
 				searchRepPeptSubGroupDTO.setReportedPeptideId( reportedPeptideId );
 				searchRepPeptSubGroupDTO.setSearchSubGroupId( searchSubGroupDTO.getSearchSubGroupId() );
 				
-				DB_Insert_SearchRepPeptSubGroup_DAO.getInstance()
-				.saveToDatabase(searchRepPeptSubGroupDTO);
+				DB_Insert_SearchRepPeptSubGroup__BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( searchRepPeptSubGroupDTO );
 			}
 		}
 
