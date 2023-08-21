@@ -24,8 +24,31 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 	
 
 	private static final int INSERT_BATCH_SIZE = 4000;
-
 	
+	
+	/**
+	 * Holder of Batch Data 
+	 *
+	 */
+	public static class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren {
+
+		private PsmOpenModificationDTO psmOpenModificationDTO;
+
+		//  Children
+		private List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List;
+
+		public void setPsmOpenModificationDTO(PsmOpenModificationDTO psmOpenModificationDTO) {
+			this.psmOpenModificationDTO = psmOpenModificationDTO;
+		}
+		public void setPsmOpenModificationPositionDTO_List(
+				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List) {
+			this.psmOpenModificationPositionDTO_List = psmOpenModificationPositionDTO_List;
+		}
+	}
+	
+	/**
+	 * Constructor
+	 */
 	private DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO() { 
 		DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry.getSingletonInstance().register(this);
 	}
@@ -39,7 +62,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 
 	private static DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO singletonInstance = new DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO();
 	
-	private List<Internal_SaveHolder_AndChildren> saveHolder_AndChildren_List = new ArrayList<>( INSERT_BATCH_SIZE );
+	private List<DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren> saveHolder_AndChildren_List = new ArrayList<>( INSERT_BATCH_SIZE );
 
 	private volatile boolean insert_LAST_Batch_ToDB;
 
@@ -88,9 +111,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 	 */
 	public void insert_Batching_ObjectAndChildren(
 
-			PsmOpenModificationDTO psmOpenModificationDTO,
-
-			List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List
+			DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren
 			
 			) throws Exception {
 
@@ -103,11 +124,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 		{
 			//  Add to Batch
 			
-			Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren = new Internal_SaveHolder_AndChildren();
-			internal_SaveHolder_AndChildren.psmOpenModificationDTO = psmOpenModificationDTO;
-			internal_SaveHolder_AndChildren.psmOpenModificationPositionDTO_List = psmOpenModificationPositionDTO_List;
-
-			saveHolder_AndChildren_List.add(internal_SaveHolder_AndChildren);
+			saveHolder_AndChildren_List.add(saveHolder_AndChildren);
 		}
 
 		if ( saveHolder_AndChildren_List.size() >= INSERT_BATCH_SIZE ) {
@@ -132,7 +149,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 
 			long psmOpenModification_ID = batchIds_Start_End.getId_Start();
 
-			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+			for ( DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren : saveHolder_AndChildren_List ) {
 
 				if ( psmOpenModification_ID > batchIds_Start_End.getId_End() ) {
 
@@ -143,7 +160,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 					throw new LimelightImporterInternalException( msg );
 				}
 
-				internal_SaveHolder_AndChildren.psmOpenModificationDTO.setId( psmOpenModification_ID );
+				saveHolder_AndChildren.psmOpenModificationDTO.setId( psmOpenModification_ID );
 
 				psmOpenModification_ID++;
 			}
@@ -153,9 +170,9 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 
 			List<PsmOpenModificationDTO> psmOpenModificationDTO_List = new ArrayList<>( saveHolder_AndChildren_List.size() );
 
-			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+			for ( DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren : saveHolder_AndChildren_List ) {
 
-				psmOpenModificationDTO_List.add( internal_SaveHolder_AndChildren.psmOpenModificationDTO );
+				psmOpenModificationDTO_List.add( saveHolder_AndChildren.psmOpenModificationDTO );
 			}
 
 			DB_Insert_PsmOpenModification_InsertOnly_DAO.getInstance().insert_NOT_Update_ID_Property_InDTOParams( psmOpenModificationDTO_List );
@@ -165,13 +182,13 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 		{
 			//  Insert Children records
 
-			for ( Internal_SaveHolder_AndChildren internal_SaveHolder_AndChildren : saveHolder_AndChildren_List ) {
+			for ( DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren : saveHolder_AndChildren_List ) {
 
-				if ( internal_SaveHolder_AndChildren.psmOpenModificationPositionDTO_List != null ) {
+				if ( saveHolder_AndChildren.psmOpenModificationPositionDTO_List != null ) {
 
-					for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : internal_SaveHolder_AndChildren.psmOpenModificationPositionDTO_List ) {
+					for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : saveHolder_AndChildren.psmOpenModificationPositionDTO_List ) {
 
-						psmOpenModificationPositionDTO.setPsmOpenModificationId( internal_SaveHolder_AndChildren.psmOpenModificationDTO.getId() );
+						psmOpenModificationPositionDTO.setPsmOpenModificationId( saveHolder_AndChildren.psmOpenModificationDTO.getId() );
 
 						DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmOpenModificationPositionDTO );
 					}
@@ -185,19 +202,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 	}
 	
 	
-	
-	
-	/**
-	 * Internal Object 
-	 *
-	 */
-	private static class Internal_SaveHolder_AndChildren {
 
-		private PsmOpenModificationDTO psmOpenModificationDTO;
-
-		//  Children
-		private List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List;
-	}
 
 	
 }

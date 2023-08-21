@@ -19,13 +19,13 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
-import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDatabaseException;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 
@@ -64,18 +64,18 @@ public class DB_Insert_PsmDAO {
 //	}
 	
 	/**
-	 * @param item
+	 * @param itemList
 	 * @return
 	 * @throws Throwable
 	 */
-	public void insert_NOT_Update_ID_Property_InDTOParams(PsmDTO item ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmDTO> itemList ) throws Exception {
 
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 
 			//  Insert into main table
-			insert_NOT_Update_ID_Property_InDTOParams( item, dbConnection );
+			insert_NOT_Update_ID_Property_InDTOParams( itemList, dbConnection );
 			
 		} finally {
 		}
@@ -91,97 +91,130 @@ public class DB_Insert_PsmDAO {
 			+ " precursor_retention_time, precursor_m_z,"
 			+ " is_decoy, is_independent_decoy "
 			+ " ) "
-			+ "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ "VALUES ";
+	
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL =  "( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
-	 * @param psm
+	 * @param itemList
 	 * @param conn
 	 * @throws Exception
 	 */
-	public void insert_NOT_Update_ID_Property_InDTOParams( PsmDTO psm, Connection dbConnection ) throws Exception {
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<PsmDTO> itemList, Connection dbConnection ) throws Exception {
+
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
+		}
 		
-		final String sql = INSERT_SQL;
-		
+		final String insertSQL = this.create_insert_SQL( itemList.size() );
 
 		long startTimeNanoSeconds = System.nanoTime();
 		
 		
-		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+		try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
 			
 			int counter = 0;
 			
-			counter++;
-			pstmt.setLong( counter, psm.getId() );
-			
-			counter++;
-			pstmt.setInt( counter, psm.getSearchId() );
+			for ( PsmDTO item : itemList ) {
 
-			counter++;
-			pstmt.setInt( counter, psm.getReportedPeptideId() );
+				counter++;
+				pstmt.setLong( counter, item.getId() );
 
-			counter++;
-			pstmt.setInt( counter, psm.getCharge() );
+				counter++;
+				pstmt.setInt( counter, item.getSearchId() );
 
-			counter++;
-			pstmt.setInt( counter, psm.getScanNumber() );
+				counter++;
+				pstmt.setInt( counter, item.getReportedPeptideId() );
 
-			counter++;
-			if ( psm.getSearchScanFileId()!= null ) {
-				pstmt.setInt( counter, psm.getSearchScanFileId() );
-			} else {
-				pstmt.setNull( counter, java.sql.Types.INTEGER );
-			}
+				counter++;
+				pstmt.setInt( counter, item.getCharge() );
 
-			counter++;
-			if ( psm.isHasModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			counter++;
-			if ( psm.isHasOpenModifications() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
+				counter++;
+				pstmt.setInt( counter, item.getScanNumber() );
 
-			counter++;
-			if ( psm.isHasReporterIons() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			
-			counter++;
-			pstmt.setBigDecimal( counter, psm.getPrecursor_RetentionTime() );
-			counter++;
-			pstmt.setBigDecimal( counter, psm.getPrecursor_MZ() );
+				counter++;
+				if ( item.getSearchScanFileId()!= null ) {
+					pstmt.setInt( counter, item.getSearchScanFileId() );
+				} else {
+					pstmt.setNull( counter, java.sql.Types.INTEGER );
+				}
 
-			counter++;
-			if ( psm.isDecoy() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
-			}
-			counter++;
-			if ( psm.isIndependentDecoy() ) {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-			} else {
-				pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				counter++;
+				if ( item.isHasModifications() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isHasOpenModifications() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+
+				counter++;
+				if ( item.isHasReporterIons() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+
+				counter++;
+				pstmt.setBigDecimal( counter, item.getPrecursor_RetentionTime() );
+				counter++;
+				pstmt.setBigDecimal( counter, item.getPrecursor_MZ() );
+
+				counter++;
+				if ( item.isDecoy() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
+				counter++;
+				if ( item.isIndependentDecoy() ) {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				} else {
+					pstmt.setInt( counter, Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+				}
 			}
 
 			pstmt.executeUpdate();
-			
-			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-				if( rs.next() ) {
-					psm.setId( rs.getLong( 1 ) );
-				} else
-					throw new LimelightImporterDatabaseException( "Failed to insert psm..." );
-			}
-			
+						
 		} catch ( Exception e ) {
 			
-			log.error( "ERROR: saveToDatabase(...) sql: " + sql + "\nData to save: " + psm, e );
+			log.error( "ERROR: insert_NOT_Update_ID_Property_InDTOParams(...) insertSQL: " + insertSQL + "\n First Data to save: " + itemList.get(0), e );
 			
 			throw e;
 		}

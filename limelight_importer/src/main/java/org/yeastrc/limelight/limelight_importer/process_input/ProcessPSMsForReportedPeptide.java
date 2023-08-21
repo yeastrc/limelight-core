@@ -37,14 +37,11 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
 import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.Psm_FilterableAnnotation_Records_BatchInsert_DB_Records;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmDynamicModification_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMass_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmSearchSubGroup_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO.DB_Insert_Psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object;
@@ -294,7 +291,9 @@ public class ProcessPSMsForReportedPeptide {
 							psmHasReporterIons,
 							searchScanFileEntry_AllEntries );
 			
-			DB_Insert_PsmDAO.getSingletonInstance().insert_NOT_Update_ID_Property_InDTOParams( psmDTO );
+			DB_Insert_Psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren = new DB_Insert_Psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren();
+			
+			psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.setPsmDTO( psmDTO );
 			
 			lastSavedPsmId = psmDTO.getId();
 
@@ -337,7 +336,7 @@ public class ProcessPSMsForReportedPeptide {
 				psmSearchSubGroupDTO.setPsmId( psmDTO.getId() );
 				psmSearchSubGroupDTO.setSearchSubGroupId( searchSubGroupDTO.getSearchSubGroupId() );
 				
-				DB_Insert_PsmSearchSubGroup_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object(psmSearchSubGroupDTO);
+				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmSearchSubGroupDTO__List().add(psmSearchSubGroupDTO);
 			}
 			
 			if ( psmHasModifications ) {
@@ -360,7 +359,7 @@ public class ProcessPSMsForReportedPeptide {
 					
 					//  NOT called in the Insert: psmDynamicModificationDTO.setId(id);
 					
-					DB_Insert_PsmDynamicModification_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmDynamicModificationDTO );
+					psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmDynamicModificationDTO__List().add( psmDynamicModificationDTO );
 				}
 			}
 			
@@ -390,7 +389,7 @@ public class ProcessPSMsForReportedPeptide {
 					psmReporterIonMassDTO.setPsmId( psmDTO.getId() );
 					psmReporterIonMassDTO.setReporterIonMass( reporterIonMass );
 					
-					DB_Insert_PsmReporterIonMass_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object(psmReporterIonMassDTO);
+					psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmReporterIonMassDTO__List().add( psmReporterIonMassDTO );
 				}
 			}
 			
@@ -459,9 +458,13 @@ public class ProcessPSMsForReportedPeptide {
 					}
 				}
 				
-				//  Save psmOpenModificationDTO, psmOpenModificationPositionDTO_List 
+				//  Save psmOpenModificationDTO, psmOpenModificationPositionDTO_List
+				
+				DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren = new DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren();
+				saveHolder_AndChildren.setPsmOpenModificationDTO(psmOpenModificationDTO);
+				saveHolder_AndChildren.setPsmOpenModificationPositionDTO_List(psmOpenModificationPositionDTO_List);
 
-				DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren( psmOpenModificationDTO, psmOpenModificationPositionDTO_List );
+				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getSaveHolder_PsmOpenModification_AndChildren__List().add( saveHolder_AndChildren );
 				
 				//  Insert Last Batch by calling:
 				//  DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
@@ -493,13 +496,14 @@ public class ProcessPSMsForReportedPeptide {
 
 			for ( PsmDescriptiveAnnotationDTO psmDescriptiveAnnotationDTO : currentPsm_psmAnnotationDTO_Descriptive_List ) {
 				
-				DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmDescriptiveAnnotationDTO );
+				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmAnnotationDTO_Descriptive__List().add( psmDescriptiveAnnotationDTO );
 				
 				//  Insert Last Batch by calling:
 				//  DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 				//
 				//   Call this when done processing ALL Reported Peptides
 			}
+			
 			
 			{
 				boolean doesPsmPassDefaultCutoffs = 
@@ -592,7 +596,17 @@ public class ProcessPSMsForReportedPeptide {
 				bestPsmFilterableAnnotationProcessing_PSM_Targets_IndependentDecoys_Decoys.updateForCurrentPsmFilterableAnnotationData( currentPsm_psmAnnotationDTO_Filterable_List );
 			}
 
+			
+			
+			//  Add PSM and it's children to batch
+			
+			DB_Insert_Psm_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren(psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren);
+			
+			
+			
 			saveAnyPSMs = true;
+			
+			
 			
 		} // end of loop processing Psm in input file
 		
