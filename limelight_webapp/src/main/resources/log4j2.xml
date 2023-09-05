@@ -30,7 +30,14 @@
       		<!-- Roll over the log file based on time  -->
         <TimeBasedTriggeringPolicy/>
       </Policies>
-      <DefaultRolloverStrategy max="20" />
+      
+      <DefaultRolloverStrategy>
+        <Delete basePath="${sys:catalina.base}/logs" maxDepth="1">
+          <IfFileName glob="limelight-*.log.gz" />
+          <IfLastModified age="P20D" /> <!-- Delete older than 20 days -->
+        </Delete>
+      </DefaultRolloverStrategy>
+      
     </RollingFile>
         
   </Appenders>
