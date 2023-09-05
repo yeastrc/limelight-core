@@ -509,6 +509,153 @@ INSERT INTO file_import__run_importer__pause_prcssng_sched_type_values_tbl (type
 
 
 
+
+-- -----------------------------------------------------
+
+--    Gold Standard August 2023
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_for_scan_file_root_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_for_scan_file_root_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  scan_file_id INT UNSIGNED NOT NULL,
+  entry_fully_inserted TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Set to 1 when all data inserted',
+  entry_fully_inserted_date_time DATETIME NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_feature_detection_root_tbl_20
+    FOREIGN KEY (scan_file_id)
+    REFERENCES scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_feature_detection_root_tbl_2_idx ON gold_standard_for_scan_file_root_tbl (scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_for_scan_file_root__project_scnfl_mapping_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_for_scan_file_root__project_scnfl_mapping_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  gold_standard_for_scan_file_root_id INT UNSIGNED NOT NULL,
+  project_scan_file_id INT UNSIGNED NOT NULL,
+  display_label VARCHAR(300) NOT NULL,
+  description VARCHAR(5000) NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_gdstd_frscnfl_rt_prjtscnfl_mpg_10
+    FOREIGN KEY (gold_standard_for_scan_file_root_id)
+    REFERENCES gold_standard_for_scan_file_root_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_gdstd_frscnfl_rt_prjtscnfl_mpg_2
+    FOREIGN KEY (project_scan_file_id)
+    REFERENCES project_scan_file_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Map gold_standard_for_scan_file_root record to project_scan_file_tbl record';
+
+CREATE INDEX fk_gdstd_frscnfl_rt_prjtscnfl_mpg_10_idx ON gold_standard_for_scan_file_root__project_scnfl_mapping_tbl (gold_standard_for_scan_file_root_id ASC) VISIBLE;
+
+CREATE INDEX fk_gdstd_frscnfl_rt_prjtscnfl_mpg_2_idx ON gold_standard_for_scan_file_root__project_scnfl_mapping_tbl (project_scan_file_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_uploaded_file_stats_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_uploaded_file_stats_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  gold_standard_for_scan_file_root_id INT UNSIGNED NOT NULL,
+  uploaded_filename VARCHAR(255) NULL,
+  uploaded_file_size INT UNSIGNED NOT NULL,
+  uploaded_file_sha1_sum VARCHAR(45) NULL,
+  uploaded_file_sha384_zero_in_second_digit VARCHAR(300) NULL COMMENT 'For each hex pair, if zero in second digit keep it.  This is maybe different from standard display of sha384.',
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_gold_standard_uploaded_file_stats_tbl_1
+    FOREIGN KEY (gold_standard_for_scan_file_root_id)
+    REFERENCES gold_standard_for_scan_file_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_gold_standard_uploaded_file_stats_tbl_1_idx ON gold_standard_uploaded_file_stats_tbl (gold_standard_for_scan_file_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_uploaded_file_contents_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_uploaded_file_contents_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  gold_standard_for_scan_file_root_id INT UNSIGNED NOT NULL,
+  gold_standard_file_contents_json_gzip MEDIUMBLOB NOT NULL COMMENT 'JSON for Java class GoldStandard_Data_Root_Data_JSON_V001 or later version',
+  gold_standard_file_contents_json_version_number SMALLINT UNSIGNED NOT NULL,
+  created_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_date_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_by_user_id INT UNSIGNED NOT NULL,
+  updated_by_user_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_gold_standard_uploaded_file_stats_tbl_10
+    FOREIGN KEY (gold_standard_for_scan_file_root_id)
+    REFERENCES gold_standard_for_scan_file_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX fk_gold_standard_uploaded_file_stats_tbl_10_idx ON gold_standard_uploaded_file_contents_tbl (gold_standard_for_scan_file_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_single_entry_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_single_entry_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  gold_standard_for_scan_file_root_id INT UNSIGNED NOT NULL,
+  scan_number INT UNSIGNED NOT NULL,
+  peptide_sequence VARCHAR(2000) CHARACTER SET 'ascii' NOT NULL COMMENT 'Plain Peptide Sequence',
+  scan_number_peptide_sequence_mods_json MEDIUMTEXT CHARACTER SET 'ascii' COLLATE 'ascii_bin' NOT NULL,
+  scan_number_peptide_sequence_mods_json_version_number SMALLINT UNSIGNED NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_gold_standard_single_entry_tbl_1
+    FOREIGN KEY (gold_standard_for_scan_file_root_id)
+    REFERENCES gold_standard_for_scan_file_root_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX gold_standard_for_scan_file_root_id_idx ON gold_standard_single_entry_tbl (gold_standard_for_scan_file_root_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table gold_standard_single_entry_unique_mod_mass_tbl
+-- -----------------------------------------------------
+CREATE TABLE  gold_standard_single_entry_unique_mod_mass_tbl (
+  gold_standard_single_entry_id INT UNSIGNED NOT NULL,
+  modification_mass_unique DOUBLE NOT NULL,
+  PRIMARY KEY (gold_standard_single_entry_id, modification_mass_unique),
+  CONSTRAINT fk_gold_std_sgle_entry_ms_uq
+    FOREIGN KEY (gold_standard_single_entry_id)
+    REFERENCES gold_standard_single_entry_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+
+
 -- -----------------------------------------------------
 
 --   Feature Detection Changes  2023 08

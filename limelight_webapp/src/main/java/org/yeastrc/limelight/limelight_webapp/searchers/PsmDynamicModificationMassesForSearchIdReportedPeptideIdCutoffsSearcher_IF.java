@@ -1,0 +1,15 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
+
+public interface PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF {
+
+	List<PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> getPsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffs(
+
+			int reportedPeptideId, int searchId, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel)
+			throws Exception;
+
+}

@@ -1,0 +1,10 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_Result;
+
+public interface GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_IF {
+
+	GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_Result getForProjectScanFileId(int projectScanFileId)
+			throws Exception;
+
+}

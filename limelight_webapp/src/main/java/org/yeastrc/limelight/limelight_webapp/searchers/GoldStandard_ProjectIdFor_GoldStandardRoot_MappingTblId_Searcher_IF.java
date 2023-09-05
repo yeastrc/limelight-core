@@ -1,0 +1,10 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_ProjectIdFor_GoldStandardRoot_MappingTblId_Searcher.GoldStandard_ProjectIdFor_GoldStandardRoot_MappingTblId_Searcher_Result;
+
+public interface GoldStandard_ProjectIdFor_GoldStandardRoot_MappingTblId_Searcher_IF {
+
+	GoldStandard_ProjectIdFor_GoldStandardRoot_MappingTblId_Searcher_Result getProjectIdFor_GoldStandardRoot_MappingTblId(
+			int featureDetectionRoot_MappingTblId) throws Exception;
+
+}

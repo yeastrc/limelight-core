@@ -18,6 +18,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
     projectPage_ScanFiles_View_Section_Get_ScanFile_Details_FromServer,
     ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_FeatureDetectionEntry,
+    ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry,
     ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_Root
 } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/all_users_incl_public_user/projectPage_ScanFiles_View_Section_Get_ScanFile_Details_FromServer";
 import {
@@ -41,6 +42,7 @@ import {
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
+import { GoldStandard_Label_Description_Change_Component_Change_Callback_Params } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/project_owner/goldStandard_Label_Description_Change_Component_and_WebserviceCall";
 
 /**
  *
@@ -437,6 +439,7 @@ interface ScanFileEntry_Component_Props {
  */
 interface ScanFileEntry_Component_State {
 
+    forceReloadContents_Object__For__ScanFile_Details_Component?: object
     force_Rerender?: object
 }
 
@@ -611,6 +614,45 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                 { ( ( ! this.props.projectIsLocked ) && ( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ) ) ? (
                                     <>
+
+                                        {/* COMMENT OUT:  '[Import Gold Standard]'
+
+                                        { this.props.standardRunImporter_IsFullyConfigured ? (
+                                            <>
+                                                <span
+                                                    className=" fake-link "
+                                                    onClick={ event => { 
+
+                                                        event.stopPropagation();
+
+                                                        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
+                                                        getFunction__open_Import_GoldStandard_File_Contents_For_ScanFile_Project_Overlay()({
+                                                            component_Params: {
+                                                                projectIdentifier: this.props.projectIdentifier,
+                                                                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+                                                                scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array
+                                                            },
+                                                            uploadComplete_Callback: () : void => {
+
+                                                                refresh_ProjectPage_UploadData_MainPage_Main_Component()
+
+                                                                refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
+
+                                                                //  Refresh everything under this Component
+
+                                                                this.setState( { forceReloadContents_Object__For__ScanFile_Details_Component: {} } );
+                                                            }
+                                                        })
+                                                    } }
+                                                >
+                                                    [Import Gold Standard]
+                                                </span>
+                                                <span> </span>
+                                            </>
+                                        ) : null }
+
+                                        */}
+
                                         { this.props.runFeatureDetection_IsFullyConfigured ? (
                                             <>
                                                 <span
@@ -757,6 +799,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                     >
                         { ( this._detailsBlock_EverShown ) ? (
                             <ScanFile_Details_Component
+                                forceReloadContents_Object={ this.state.forceReloadContents_Object__For__ScanFile_Details_Component }
                                 scanFile_Entry={ this.props.scanFile_Entry }
                                 projectIdentifier={ this.props.projectIdentifier }
                                 projectIsLocked={ this.props.projectIsLocked }
@@ -791,6 +834,9 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
  *
  */
 interface ScanFile_Details_Component_Props {
+
+    forceReloadContents_Object: object
+
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     projectIdentifier : string
     projectIsLocked : boolean
@@ -832,6 +878,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
 
     private _updateDisplayLabel_FeatureDetection_Entry_BindThis = this._updateDisplayLabel_FeatureDetection_Entry.bind(this);
     private _remove_FeatureDetection_Entry_BindThis = this._remove_FeatureDetection_Entry.bind(this);
+    private _remove_GoldStandard_Entry_BindThis = this._remove_GoldStandard_Entry.bind(this)
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
@@ -863,18 +910,21 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
      */
     componentDidUpdate(prevProps: Readonly<ScanFile_Details_Component_Props>, prevState: Readonly<ScanFile_Details_Component_State>, snapshot?: any) {
 
-        if ( prevProps.scanFile_Entry === this.props.scanFile_Entry
-            || prevProps.projectIdentifier === this.props.projectIdentifier
-            || prevProps.projectIsLocked === this.props.projectIsLocked
-            || prevProps.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions === this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
-            || prevProps.show_SearchTag_Categories === this.props.show_SearchTag_Categories
-            || prevState.scanFile_Details_FromServer_Root !== this.state.scanFile_Details_FromServer_Root
-            // || prevState.forceRerender !== this.state.forceRerender
-        ) {
+        if (  prevProps.forceReloadContents_Object === this.props.forceReloadContents_Object ) {
 
-            //  Nothing changed so exit
+            if ( prevProps.scanFile_Entry === this.props.scanFile_Entry
+                || prevProps.projectIdentifier === this.props.projectIdentifier
+                || prevProps.projectIsLocked === this.props.projectIsLocked
+                || prevProps.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions === this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
+                || prevProps.show_SearchTag_Categories === this.props.show_SearchTag_Categories
+                || prevState.scanFile_Details_FromServer_Root !== this.state.scanFile_Details_FromServer_Root
+                // || prevState.forceRerender !== this.state.forceRerender
+            ) {
 
-            return; // EARLY RETURN
+                //  Nothing changed so exit
+
+                return; // EARLY RETURN
+            }
         }
 
         this._getDetails();
@@ -996,6 +1046,21 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
 
         this.setState ((prevState, props) => {
             prevState.scanFile_Details_FromServer_Root.featureDetection_List = prevState.scanFile_Details_FromServer_Root.featureDetection_List.filter(value => {
+                if ( value.id_MappingTbl === id_MappingTbl ) {
+                    return false;
+                }
+                return true;
+            });
+            return { scanFile_Details_FromServer_Root: prevState.scanFile_Details_FromServer_Root, forceRerender: {} };
+        });
+    }
+
+    private _remove_GoldStandard_Entry( id_MappingTbl: number ) : void {
+
+        //  Remove id from featureDetection_List
+
+        this.setState ((prevState, props) => {
+            prevState.scanFile_Details_FromServer_Root.goldStandard_List = prevState.scanFile_Details_FromServer_Root.goldStandard_List.filter(value => {
                 if ( value.id_MappingTbl === id_MappingTbl ) {
                     return false;
                 }
@@ -1133,6 +1198,32 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                                                     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                                                     entry_update_DisplayLabel_Description_Callback={ this._updateDisplayLabel_FeatureDetection_Entry_BindThis }
                                                     entryDeleted_Callback={ this._remove_FeatureDetection_Entry_BindThis }
+                                                />
+                                            )
+                                        })
+                                    )
+                                }
+                            </div>
+                            <div style={ { marginTop: 10 } }>
+                                Gold Standard
+                            </div>
+                            <div style={ { marginLeft: 20, marginTop: 8 } }>
+                                {
+                                    this.state.scanFile_Details_FromServer_Root.goldStandard_List.length === 0 ? (
+                                        <div>
+                                            None
+                                        </div>
+                                    ) : (
+                                        this.state.scanFile_Details_FromServer_Root.goldStandard_List.map(value => {
+                                            return (
+                                                <GoldStandard_Entry_Component
+                                                    key={ value.id_MappingTbl}
+                                                    goldStandard_Entry={ value }
+                                                    projectIdentifier={ this.props.projectIdentifier }
+                                                    projectIsLocked={ this.props.projectIsLocked }
+                                                    projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
+                                                    entry_update_DisplayLabel_Description_Callback={ this._updateDisplayLabel_FeatureDetection_Entry_BindThis }
+                                                    entryDeleted_Callback={ this._remove_GoldStandard_Entry_BindThis }
                                                 />
                                             )
                                         })
@@ -1305,6 +1396,172 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
                             />
                         </React.Fragment>
                         ) : null
+                        )}
+                    </React.Fragment>
+                ) }
+            </div>
+
+        );
+    }
+}
+
+///////////////////////////////////////
+
+// Component for Single Gold Standard Entry  -  not exported
+
+type GoldStandard_Entry_Component__Deleted__Callback = ( id: number ) => void
+
+/**
+ *
+ */
+interface GoldStandard_Entry_Component_Props {
+    goldStandard_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry
+    projectIdentifier : string
+    projectIsLocked : boolean
+    projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
+    entry_update_DisplayLabel_Description_Callback: (id: number, displayLabel: string, description: string ) => void,
+    entryDeleted_Callback: GoldStandard_Entry_Component__Deleted__Callback
+
+    //  Any changes, update componentDidUpdate
+}
+
+/**
+ *
+ */
+interface GoldStandard_Entry_Component_State {
+
+    //  Any changes, update componentDidUpdate
+    deleteInProgress?: boolean
+    forceRerender?: {}
+}
+
+/**
+ *
+ */
+class GoldStandard_Entry_Component extends React.Component< GoldStandard_Entry_Component_Props, GoldStandard_Entry_Component_State > {
+
+    private _edit_DisplayLabel_Clicked_BindThis = this._edit_DisplayLabel_Clicked.bind(this);
+    private _delete_Entry_Clicked_BindThis = this._delete_Entry_Clicked.bind(this);
+
+    // private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
+    //
+    // }
+
+    private _displayLabel_Div_Ref: React.RefObject<HTMLDivElement>; //  React.createRef()
+
+    /**
+     *
+     */
+    constructor(props: GoldStandard_Entry_Component_Props) {
+        super(props)
+
+        this._displayLabel_Div_Ref = React.createRef<HTMLDivElement>();
+
+        this.state = {
+            deleteInProgress: false,
+            forceRerender: {}
+        }
+    }
+
+    private _edit_DisplayLabel_Clicked( event: React.MouseEvent<HTMLImageElement, MouseEvent> ) {
+
+        event.stopPropagation();
+
+        const buttonContainer_BoundingRect = this._displayLabel_Div_Ref.current.getBoundingClientRect();
+
+        let position_top =  buttonContainer_BoundingRect.top;
+        let position_left =  buttonContainer_BoundingRect.left;
+
+        const change_Callback = ( params : GoldStandard_Label_Description_Change_Component_Change_Callback_Params ) => {
+
+            const newLabel: string = params.newLabel;
+            const newDescription: string = params.newDescription;
+
+            // const goldStandard_Entry = this.props.goldStandard_Entry;
+
+            this.props.goldStandard_Entry.displayLabel = newLabel;
+            this.props.goldStandard_Entry.description = newDescription
+
+            this.props.entry_update_DisplayLabel_Description_Callback( this.props.goldStandard_Entry.id_MappingTbl, newLabel, newDescription );
+
+            this.setState({ forceRerender: {} });
+        }
+
+        this.props.
+        projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
+        getFunction__goldStandard_Label_Description_Change_Component__openOverlay__Function()({
+            goldStandardRoot_MappingTblId: this.props.goldStandard_Entry.id_MappingTbl,
+            existingLabel: this.props.goldStandard_Entry.displayLabel,
+            existingDescription: this.props.goldStandard_Entry.description,
+            position_left,
+            position_top,
+            cancel_Callback: () => {},
+            change_Callback
+        })
+    }
+
+    private _delete_Entry_Clicked( event: React.MouseEvent<HTMLImageElement, MouseEvent> ) {
+
+        event.stopPropagation();
+
+        if ( ! window.confirm( "Delete the Gold Standard Entry" ) ) {
+
+            return; // EARLY RETURN
+        }
+
+        this.setState({ deleteInProgress: true })
+
+        const promise =
+            this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
+            getFunction__projectPage_ScanFiles_View_Section_ScanFile_GoldStandardMappingEntry_Delete_FromServer__Function() (
+                { goldStandardRoot_MappingTblId: this.props.goldStandard_Entry.id_MappingTbl })
+
+
+        promise.catch(reason => {  })
+        promise.then(value => { try {
+            this.props.entryDeleted_Callback( this.props.goldStandard_Entry.id_MappingTbl )
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    }
+
+    /**
+     *
+     */
+    render() {
+
+        return (
+            <div>
+                <span
+                    ref={ this._displayLabel_Div_Ref } // ref used to get position
+                >{ this.props.goldStandard_Entry.description } ({ this.props.goldStandard_Entry.displayLabel })</span>
+
+                { this.state.deleteInProgress ? (
+                    <React.Fragment>
+                        <span> - delete in progress</span>
+                    </React.Fragment>
+                ) : (
+                    <React.Fragment>
+                        {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
+                                <React.Fragment>
+                                    <span> </span>
+                                    <img
+                                        src="static/images/icon-edit.png" title="Change Label"
+                                        className="icon-small clickable  "
+                                        onClick={ this._edit_DisplayLabel_Clicked_BindThis }
+                                    />
+                                </React.Fragment>
+                            ) : null
+                        )}
+
+                        {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
+                                <React.Fragment>
+                                    <span> </span>
+                                    <img
+                                        src="static/images/icon-circle-delete.png" title="Delete Gold Standard Entry"
+                                        className="icon-small clickable  "
+                                        onClick={ this._delete_Entry_Clicked_BindThis }
+                                    />
+                                </React.Fragment>
+                            ) : null
                         )}
                     </React.Fragment>
                 ) }

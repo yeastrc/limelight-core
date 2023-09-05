@@ -63,6 +63,7 @@ export const open_Run_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Over
         maxFASTAFileUploadSizeFormatted: null,
         maxScanFileUploadSize: null,
         maxScanFileUploadSizeFormatted: null,
+        scanFileSelection_For_GoldStandardImport: null,
         scanFileSelection_For_FeatureDetectionImport: null,
         scanFileSelection_For_FeatureDetectionRun
     }

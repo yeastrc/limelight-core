@@ -55,5 +55,11 @@ public class FieldLengthConstants {
 	
 	public static final int FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL = 8; // DB: 300
 	public static final int FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION = 255; // DB: 5000
+	
+
+	//        Keep in sync with Javascript class GoldStandard_Max_FieldLengths_Constants
+	
+	public static final int GOLD_STANDARD_MAX_LENGTH__DISPLAY_LABEL = 8; // DB: 300
+	public static final int GOLD_STANDARD_MAX_LENGTH__DESCRIPTION = 255; // DB: 5000
 
 }

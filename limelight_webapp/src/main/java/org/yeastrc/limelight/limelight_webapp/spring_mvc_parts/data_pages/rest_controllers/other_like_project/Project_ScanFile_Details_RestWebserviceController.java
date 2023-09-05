@@ -41,6 +41,9 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher.GoldStandard_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_ProjectId_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchIdList_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher.FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_Result;
@@ -79,6 +82,9 @@ public class Project_ScanFile_Details_RestWebserviceController {
 
 	@Autowired
 	private FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_IF featureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher;
+	
+	@Autowired
+	private GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_IF goldStandard_Root_Entries_For_ProjectScanFileId_Searcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -180,27 +186,56 @@ public class Project_ScanFile_Details_RestWebserviceController {
 			
 			
 			//  Feature Detection
-			
-			FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_Result searcher_Result =
-					featureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher.getForProjectScanFileId(webserviceRequest.projectScanFileId);
-			
-			List<FeatureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item> dbEntries = searcher_Result.getEntries();
-			
-			List<WebserviceResult_FeatureDetectionEntry> featureDetection_List = new ArrayList<>(  dbEntries.size() );
 
-			for ( FeatureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item dbEntry : dbEntries ) {
-				
-				WebserviceResult_FeatureDetectionEntry featureDetection_Entry = new WebserviceResult_FeatureDetectionEntry();
-				featureDetection_Entry.id_MappingTbl = dbEntry.getId_MappingTbl();
-				featureDetection_Entry.displayLabel = dbEntry.getDisplayLabel();
-				featureDetection_Entry.description = dbEntry.getDescription();
-				
-				featureDetection_List.add(featureDetection_Entry);
+			List<WebserviceResult_FeatureDetectionEntry> featureDetection_List = null;
+
+			{
+				FeatureDetection_Root_Entries_For_ProjectScanFileId_Searcher_Result featureDetection_Searcher_Result =
+						featureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher.getForProjectScanFileId(webserviceRequest.projectScanFileId);
+
+				List<FeatureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item> dbEntries_FeatureDetection = featureDetection_Searcher_Result.getEntries();
+
+				featureDetection_List = new ArrayList<>(  dbEntries_FeatureDetection.size() );
+
+				for ( FeatureDetection_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item dbEntry : dbEntries_FeatureDetection ) {
+
+					WebserviceResult_FeatureDetectionEntry featureDetection_Entry = new WebserviceResult_FeatureDetectionEntry();
+					featureDetection_Entry.id_MappingTbl = dbEntry.getId_MappingTbl();
+					featureDetection_Entry.displayLabel = dbEntry.getDisplayLabel();
+					featureDetection_Entry.description = dbEntry.getDescription();
+
+					featureDetection_List.add(featureDetection_Entry);
+				}
 			}
+			
+			//  Gold Standard
+			
+			List<WebserviceResult_GoldStandardEntry> goldStandard_List = null;
+			{
+				GoldStandard_Root_Entries_For_ProjectScanFileId_Searcher_Result goldStandard_Searcher_Result =
+						goldStandard_Root_Entries_For_ProjectScanFileId_Searcher.getForProjectScanFileId(webserviceRequest.projectScanFileId);
+
+				List<GoldStandard_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item> dbEntries_GoldStandard = goldStandard_Searcher_Result.getEntries();
+
+				goldStandard_List = new ArrayList<>(  dbEntries_GoldStandard.size() );
+
+				for ( GoldStandard_Root_Entries_For_ProjectId_ScanFileId_Searcher_Result_Item dbEntry : dbEntries_GoldStandard ) {
+
+					WebserviceResult_GoldStandardEntry goldStandard_Entry = new WebserviceResult_GoldStandardEntry();
+					goldStandard_Entry.id_MappingTbl = dbEntry.getId_MappingTbl();
+					goldStandard_Entry.displayLabel = dbEntry.getDisplayLabel();
+					goldStandard_Entry.description = dbEntry.getDescription();
+
+					goldStandard_List.add(goldStandard_Entry);
+				}
+			}
+			
+			//  Result Object
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.projectSearchIds_ForScanFile_List = projectSearchIds_ForScanFile_List;
     		webserviceResult.featureDetection_List = featureDetection_List;
+    		webserviceResult.goldStandard_List = goldStandard_List;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -238,17 +273,37 @@ public class Project_ScanFile_Details_RestWebserviceController {
     	
     	private List<Integer> projectSearchIds_ForScanFile_List;
     	private List<WebserviceResult_FeatureDetectionEntry> featureDetection_List;
+    	private List<WebserviceResult_GoldStandardEntry> goldStandard_List;
     	
 		public List<WebserviceResult_FeatureDetectionEntry> getFeatureDetection_List() {
 			return featureDetection_List;
 		}
-
 		public List<Integer> getProjectSearchIds_ForScanFile_List() {
 			return projectSearchIds_ForScanFile_List;
+		}
+		public List<WebserviceResult_GoldStandardEntry> getGoldStandard_List() {
+			return goldStandard_List;
 		}
     }
 
     public static class WebserviceResult_FeatureDetectionEntry {
+    	
+    	private int id_MappingTbl;
+		private String displayLabel;
+		private String description;
+
+		public String getDisplayLabel() {
+			return displayLabel;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public int getId_MappingTbl() {
+			return id_MappingTbl;
+		}
+    }
+
+    public static class WebserviceResult_GoldStandardEntry {
     	
     	private int id_MappingTbl;
 		private String displayLabel;

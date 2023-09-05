@@ -295,6 +295,66 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
     /**
      * always return promise
      */
+    get_reportedPeptideIds_AnyPsmHas_Variable_Dynamic_Modifications_ReturnPromise(): Promise<CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_Has_FunctionResult> {
+        try {
+            const result = this.get_reportedPeptideIds_AnyPsmHas_Variable_Dynamic_Modifications();
+
+            if (result.data) {
+
+                return Promise.resolve(result.data);
+            }
+
+            return result.promise;
+
+        } catch( e ) {
+            console.warn("Exception caught in get_reportedPeptideIds_AnyPsmHas_OpenModifications_ReturnPromise: ", e);
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    get_reportedPeptideIds_AnyPsmHas_Variable_Dynamic_Modifications():
+        {
+            data: CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_Has_FunctionResult
+            promise: Promise<CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_Has_FunctionResult>
+        } {
+
+        if (this._reportedPeptideIds_AnyPsmHas_DynamicModifications) {
+
+            //  Have loaded data so just return it
+            return {
+                data: this._reportedPeptideIds_AnyPsmHas_DynamicModifications,
+                promise: undefined
+            };
+        }
+
+        const promise_load = this._load_ReportedPeptide_Data();
+
+        const promise = new Promise<CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_Has_FunctionResult>(
+            (resolve, reject) => { try {
+
+                promise_load.catch(reason => {
+                    reject(reason)
+                });
+                promise_load.then(noValue => {
+                    try {
+                        resolve(this._reportedPeptideIds_AnyPsmHas_DynamicModifications);
+
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        return {
+            data: undefined,
+            promise
+        }
+    }
+
+    /**
+     * always return promise
+     */
     get_reportedPeptideIds_AnyPsmHas_ReporterIons_ReturnPromise(): Promise<CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_Has_FunctionResult> {
         try {
             const result = this.get_reportedPeptideIds_AnyPsmHas_ReporterIons();

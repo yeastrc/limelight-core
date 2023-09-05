@@ -214,6 +214,20 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   background-color: $site-color-medium;
 }
 
+
+//  Light Red background - One use is for "NO Match"
+
+.background-color-light-red {
+  background-color: $color-light-red-for-background;
+}
+
+//  Light Blue background - One use is for "YES Match"
+
+.background-color-light-blue {
+  background-color: $color-light-blue-for-background;
+}
+
+
 //  On hover
 
 .on-hover-standard-background-color-medium:hover {

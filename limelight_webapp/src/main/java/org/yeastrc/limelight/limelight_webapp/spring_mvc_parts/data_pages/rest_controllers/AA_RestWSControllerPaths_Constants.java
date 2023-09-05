@@ -220,6 +220,13 @@ public class AA_RestWSControllerPaths_Constants {
 
 	///////////////////////
 
+	//  Gold Standard - Import
+
+	public static final String PROJECT__GOLD_STANDARD_IMPORT_UPLOAD_FILE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/project-gold-standard-import-upload-file";
+
+	///////////////////////
+
 	//  Feature Detection - Import
 
 	public static final String PROJECT__FEATURE_DETECTION_IMPORT_INITIALIZE_REST_WEBSERVICE_CONTROLLER =
@@ -249,6 +256,11 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String FEATURE_DETECTION_DISPLAY_LABEL_DESCRIPTION_CHANGE_REST_WEBSERVICE_CONTROLLER =
 			"d/rws/for-page/feature-detection-display-label-description-change";
 
+	//   Gold Standard (Scan File) - Display Label - Description - Change
+
+	public static final String GOLD_STANDARD_DISPLAY_LABEL_DESCRIPTION_CHANGE_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/gold-standard-display-label-description-change";
+
 	///////////////////////
 	
 	//   Label for Project - for Short URL
@@ -275,6 +287,10 @@ public class AA_RestWSControllerPaths_Constants {
 	//  Scan File Feature Detection Root Mapping Entry - Delete
 	
 	public static final String PROJECT_SCAN_FILE_FEATURE_DETECTION_ROOT_MAPPING_ENTRY_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-feature-detection-root-mapping-entry-delete";
+
+	//  Scan File Gold Standard Root Mapping Entry - Delete
+	
+	public static final String PROJECT_SCAN_FILE_GOLD_STANDARD_ROOT_MAPPING_ENTRY_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-gold-standard-root-mapping-entry-delete";
 	
 	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project scan file id
 	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__PROJECT_SCAN_FILE_ID =
@@ -540,6 +556,18 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	
 
+	//  Scan File Gold Standard Root Entries AND Assoc Search Scan File Data for Project Search Id
+	
+	public static final String SCAN_FILE_GOLD_STANDARD_ROOT_ANY_ENTRIES_EXIST_SINGLE_PROJECT_SEARCH_ID = "d/rws/for-page/scan-file-gold-standard-root-any-entries-exist-single-project-search-id";
+
+	//  Scan File Gold Standard Root Entries AND Assoc Search Scan File Data for Project Search Id
+	
+	public static final String SCAN_FILE_GOLD_STANDARD_ROOT_ENTRIES_ROOT_SINGLE_PROJECT_SEARCH_ID = "d/rws/for-page/scan-file-gold-standard-root-entries-single-project-search-id";
+
+	//  Scan File Gold Standard Root File Contents for Mapping Id
+	
+	public static final String SCAN_FILE_GOLD_STANDARD_ROOT_FILE_CONTENTS_FOR_MAPPING_ID = "d/rws/for-page/scan-file-gold-standard-root-file-contents-for-id";
+	
 
 	//  Scan File Feature Detection Root Entries AND Assoc Search Scan File Data for Project Search Id
 	
@@ -654,6 +682,9 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String PSM_OPEN_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
 			"d/rws/for-page/psb/psm-open-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
+
+	public static final String PSM_VARIABLE_DYNAMIC_MODIFICATION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
+			"d/rws/for-page/psb/psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
 	public static final String PSM_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/psm-list";
 

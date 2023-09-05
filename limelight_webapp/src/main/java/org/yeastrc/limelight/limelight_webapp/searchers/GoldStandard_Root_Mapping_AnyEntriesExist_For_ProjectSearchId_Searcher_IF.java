@@ -1,0 +1,10 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.GoldStandard_Root_Mapping_AnyEntriesExist_For_ProjectSearchId_Searcher.GoldStandard_Root_Mapping_AnyEntriesExist_For_ProjectSearchId_Searcher_Result;
+
+public interface GoldStandard_Root_Mapping_AnyEntriesExist_For_ProjectSearchId_Searcher_IF {
+
+	GoldStandard_Root_Mapping_AnyEntriesExist_For_ProjectSearchId_Searcher_Result getForProjectSearchId(
+			int projectSearchId) throws Exception;
+
+}

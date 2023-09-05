@@ -14,6 +14,8 @@ import React from 'react'
 interface QcPage_ClickPlot_ForInteractivePlot_BlockCover_Props {
 
     clickHandler_Callback: () => void
+
+    force_Render_WithoutCallback?: boolean
 }
 
 /**
@@ -55,7 +57,7 @@ export class QcPage_ClickPlot_ForInteractivePlot_BlockCover extends React.Compon
 
     render() {
 
-        if ( ! this.props.clickHandler_Callback ) {
+        if ( ( ! this.props.clickHandler_Callback ) && ( ! this.props.force_Render_WithoutCallback ) ) {
 
             //  No Click Handler so no render
 
@@ -71,11 +73,20 @@ export class QcPage_ClickPlot_ForInteractivePlot_BlockCover extends React.Compon
             height: "calc(100% - " + ( container_3_Inset * 2 ) + "px )"
         };
 
+        const topLevel_ClassName__WITHOUT__clicable = " qc-click-plot-for-interactive--msg--cover-overlay-container-1 " // standard-background-color
+
+        let topLevel_ClassName = topLevel_ClassName__WITHOUT__clicable
+
+        if ( ! this.props.force_Render_WithoutCallback ) {
+
+            topLevel_ClassName += " clickable "
+        }
+
         return (
 
             <div
                 ref={ this.containerDiv_Ref }
-                className=" clickable qc-click-plot-for-interactive--msg--cover-overlay-container-1 " // standard-background-color
+                className={ topLevel_ClassName }
                 onClick={ this._onClick_Handler_BindThis }
             >
                 {/*  Position relative to contain position absolute elements under it  */}

@@ -78,6 +78,8 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
 
     private _psmTblData_Map_Key_ReportedPeptideId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSingleReportedPeptideId>
     private _psmTblData_Map_Key_PsmId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>
+    private _psmTblData_Array_Map_Key_ScanNumber: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>
+    private _psms_DO_NOT_Have_ScanNumbers: boolean = false
 
     constructor(
         {
@@ -89,6 +91,10 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
     ) {
         this._psmTblData_Map_Key_ReportedPeptideId = psmTblData_Map_Key_ReportedPeptideId;
         this._psmTblData_Map_Key_PsmId = psmTblData_Map_Key_PsmId;
+    }
+
+    get_PsmTblData_EntryCount() {
+        return this._psmTblData_Map_Key_PsmId.size
     }
 
     get_PsmTblData_For_ReportedPeptideId(reportedPeptideId: number) {
@@ -106,6 +112,55 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
 
         return this._psmTblData_Map_Key_PsmId.values()
     }
+
+    /**
+     *
+     */
+    get_PsmTblData_Array_For_ScanNumber(scanNumer: number) {
+
+        this._compute__psmTblData_Array_Map_Key_ScanNumber__psms_DO_NOT_Have_ScanNumbers()
+
+        if ( this._psms_DO_NOT_Have_ScanNumbers ) {
+            return undefined
+        }
+
+        return this._psmTblData_Array_Map_Key_ScanNumber.get(scanNumer);
+    }
+
+
+
+    private _compute__psmTblData_Array_Map_Key_ScanNumber__psms_DO_NOT_Have_ScanNumbers() {
+
+        if ( this._psmTblData_Array_Map_Key_ScanNumber || this._psms_DO_NOT_Have_ScanNumbers ) {
+            //  Already computed
+            return; // EARLY RETURN
+        }
+
+        const psmTblData_Array_Map_Key_ScanNumber: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>> = new Map()
+
+        for ( const psmTblData of this._psmTblData_Map_Key_PsmId.values() ) {
+
+            if ( psmTblData.scanNumber === undefined || psmTblData.scanNumber === null ) {
+
+                //  PSM NOT have scan number
+
+                this._psms_DO_NOT_Have_ScanNumbers = true;
+
+                return; // EARLY RETURN
+            }
+
+            let psmTblData_Array = psmTblData_Array_Map_Key_ScanNumber.get( psmTblData.scanNumber );
+            if ( ! psmTblData_Array ) {
+                psmTblData_Array = []
+                psmTblData_Array_Map_Key_ScanNumber.set( psmTblData.scanNumber, psmTblData_Array );
+            }
+
+            psmTblData_Array.push( psmTblData )
+        }
+
+        this._psmTblData_Array_Map_Key_ScanNumber = psmTblData_Array_Map_Key_ScanNumber;
+    }
+
 }
 
 /**

@@ -21,9 +21,17 @@ export class ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_Root
 
     projectSearchIds_ForScanFile_List: Array<number>
     featureDetection_List: Array<ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_FeatureDetectionEntry>
+    goldStandard_List: Array<ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry>
 }
 
 export class ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_FeatureDetectionEntry {
+
+    id_MappingTbl: number;
+    displayLabel: string
+    description: string
+}
+
+export class ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry {
 
     id_MappingTbl: number;
     displayLabel: string
@@ -147,10 +155,45 @@ const _process_WebserviceResponse = function (
         featureDetection_List.push( featureDetection_Entry );
     }
 
+
+    const goldStandard_List: Array<ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry> = [];
+
+    for ( const resultItem of responseData.goldStandard_List ) {
+
+        const goldStandard_Entry : ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_GoldStandardEntry = {
+            id_MappingTbl: resultItem.id_MappingTbl,
+            displayLabel: resultItem.displayLabel,
+            description: resultItem.description
+        }
+
+        if ( ! goldStandard_Entry.id_MappingTbl ) {
+            throw Error("( ! goldStandard_Entry.id_MappingTbl )")
+        }
+        if ( ! variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) ) {
+            throw Error("( ! variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) )")
+        }
+
+        if ( ! goldStandard_Entry.displayLabel ) {
+            throw Error("( ! goldStandard_Entry.displayLabel )")
+        }
+        if ( ! limelight__IsVariableAString( goldStandard_Entry.displayLabel ) ) {
+            throw Error("( ! limelight__IsVariableAString( goldStandard_Entry.displayLabel ) )")
+        }
+
+        if ( goldStandard_Entry.description ) {
+            if (!limelight__IsVariableAString(goldStandard_Entry.description)) {
+                throw Error("( ! limelight__IsVariableAString( goldStandard_Entry.description ) )")
+            }
+        }
+
+        goldStandard_List.push( goldStandard_Entry );
+    }
+
     const result: ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_Root = {
 
         projectSearchIds_ForScanFile_List,
-        featureDetection_List
+        featureDetection_List,
+        goldStandard_List
     }
 
     return result;

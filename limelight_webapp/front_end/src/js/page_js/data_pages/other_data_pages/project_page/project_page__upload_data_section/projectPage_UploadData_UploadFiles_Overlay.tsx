@@ -39,6 +39,8 @@ import {ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection} from "page
 import {ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_SubmitImport_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_SubmitImport_Component";
 import {ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SelectScanFile_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SelectScanFile_Component";
 import {ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_Component_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_Component";
+import { ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SubmitImport_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SubmitImport_Component";
+import { ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SelectScanFile_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SelectScanFile_Component";
 
 const _Overlay_Title = "Import Data Files"
 
@@ -69,6 +71,11 @@ export class ProjectPage_UploadData_UploadFiles__Params {
     maxFASTAFileUploadSizeFormatted: string
     maxScanFileUploadSize: number
     maxScanFileUploadSizeFormatted: string
+
+    /**
+     * Go Directly to Gold Standard Import and use this value
+     */
+    scanFileSelection_For_GoldStandardImport: ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection
 
     /**
      * Go Directly to Feature Detection Import and use this value
@@ -141,6 +148,8 @@ const projectPage_UploadData_UploadFiles__OpenOverlay__GetComponent = function (
 enum Internal__UploadSubType {
     LIMELIGHT_XML_AND_OPTIONAL_SCAN_FILES = "LIMELIGHT_XML_AND_OPTIONAL_SCAN_FILES",
     SCAN_FILES_ONLY = "SCAN_FILES_ONLY",
+    GOLD_STANDARD_IMPORT_SELECT_SCAN_FILE = "GOLD_STANDARD_IMPORT_SELECT_SCAN_FILE",
+    GOLD_STANDARD_IMPORT_FOR_SCAN_FILE = "GOLD_STANDARD_IMPORT_FOR_SCAN_FILE",
     FEATURE_DETECTION_IMPORT_SELECT_SCAN_FILE = "FEATURE_DETECTION_IMPORT_SELECT_SCAN_FILE",
     FEATURE_DETECTION_IMPORT_FOR_SCAN_FILE = "FEATURE_DETECTION_IMPORT_FOR_SCAN_FILE",
     FEATURE_DETECTION_RUN_SELECT_SCAN_FILE = "FEATURE_DETECTION_RUN_SELECT_SCAN_FILE",
@@ -179,6 +188,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
     private _close_Cancel_Clicked_BindThis = this._close_Cancel_Clicked.bind(this);
 
+    private _goldStandardImport_SelectScanFile_Callback_BindThis = this._goldStandardImport_SelectScanFile_Callback.bind(this)
     private _featureDetectionImport_SelectScanFile_Callback_BindThis = this._featureDetectionImport_SelectScanFile_Callback.bind(this)
     private _featureDetectionRun_SelectScanFile_Callback_BindThis = this._featureDetectionRun_SelectScanFile_Callback.bind(this)
 
@@ -197,6 +207,13 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
         super(props);
 
         let uploadSubType: Internal__UploadSubType = null
+
+        if ( props.mainParams.scanFileSelection_For_GoldStandardImport  ) {
+
+            //  Go Directly to Gold Standard Import
+            this._scanFileSelection = props.mainParams.scanFileSelection_For_GoldStandardImport
+            uploadSubType = Internal__UploadSubType.GOLD_STANDARD_IMPORT_FOR_SCAN_FILE
+        }
 
         if ( props.mainParams.scanFileSelection_For_FeatureDetectionImport  ) {
 
@@ -379,6 +396,14 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
         }
     }
 
+    private _goldStandardImport_SelectScanFile_Callback( params: ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_Callback_Params ) {
+
+        this._scanFileSelection = params.scanFileSelection
+
+        this.setState({ uploadSubType: Internal__UploadSubType.GOLD_STANDARD_IMPORT_FOR_SCAN_FILE })
+    }
+
+
     /**
      *
      */
@@ -550,6 +575,23 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
                         mainParams={ this.props.mainParams }
                         accepted_ScanFilename_Suffix_List={ this.state.accepted_ScanFilename_Suffix_List }
                         callbackOn_Close_Clicked={ this._close_Cancel_Clicked_BindThis }
+                    />
+
+                ) :  ( this.state.uploadSubType === Internal__UploadSubType.GOLD_STANDARD_IMPORT_SELECT_SCAN_FILE ) ? (
+
+                    <ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SelectScanFile_Component
+                        mainParams={ this.props.mainParams }
+                        selectScanFile_Callback={ this._goldStandardImport_SelectScanFile_Callback_BindThis }
+                        callbackOn_Close_Clicked={ this._close_Cancel_Clicked_BindThis }
+                    />
+
+                ) :  ( this.state.uploadSubType === Internal__UploadSubType.GOLD_STANDARD_IMPORT_FOR_SCAN_FILE ) ? (
+
+                    <ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SubmitImport_Component
+                        mainParams={ this.props.mainParams }
+                        projectScanFileId={ this._scanFileSelection.projectScanFileId_List[0]}
+                        scanFilename_Array={ this._scanFileSelection.scanFilename_Array_Array[0] }
+                        callbackOn_Cancel_Close_Clicked={ this._close_Cancel_Clicked_BindThis }
                     />
 
                 ) :  ( this.state.uploadSubType === Internal__UploadSubType.FEATURE_DETECTION_IMPORT_SELECT_SCAN_FILE ) ? (

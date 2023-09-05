@@ -438,6 +438,7 @@ export class ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Displa
                                 maxFASTAFileUploadSizeFormatted: _maxFASTAFileUploadSizeFormatted,
                                 maxScanFileUploadSize: _maxScanFileUploadSize,
                                 maxScanFileUploadSizeFormatted: _maxScanFileUploadSizeFormatted,
+                                scanFileSelection_For_GoldStandardImport: null,
                                 scanFileSelection_For_FeatureDetectionImport: null,
                                 scanFileSelection_For_FeatureDetectionRun: null
                             }

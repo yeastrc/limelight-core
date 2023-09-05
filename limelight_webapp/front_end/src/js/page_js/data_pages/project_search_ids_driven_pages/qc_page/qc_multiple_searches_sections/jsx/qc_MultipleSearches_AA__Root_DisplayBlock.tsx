@@ -19,6 +19,7 @@ import {Qc_MultipleSearches_PSM_PPM_Error_Statistics_Section} from "page_js/data
 import {Qc_MultipleSearches_ErrorEstimation_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_ErrorEstimation_Section";
 import {Qc_MultipleSearches_Protein_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_Protein_Level_Statistics_Section";
 import {Qc_MultipleSearches_FeatureDetection_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_FeatureDetection_Statistics_Section";
+import { Qc_MultipleSearches_GoldStandard_Statistics_Section } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_GoldStandard_Statistics_Section";
 
 /**
  *
@@ -106,6 +107,18 @@ export class Qc_MultipleSearches_AA__Root_DisplayBlock extends React.Component< 
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                     />
                 </div>
+
+                {/* COMMENT OUT:  'Qc_MultipleSearches_GoldStandard_Statistics_Section'
+
+                <div style={ { clear: "both" } }>
+                    <Qc_MultipleSearches_GoldStandard_Statistics_Section
+                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                        qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent={ this._qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent }
+                    />
+                </div>
+
+                */}
+
                 <div style={ { clear: "both" } }>
                     <Qc_MultipleSearches_FeatureDetection_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
