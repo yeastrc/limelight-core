@@ -130,7 +130,7 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
                 </div>
 
 
-                {/* COMMENT OUT:  'Qc_SingleSearch_GoldStandard_Statistics_Section'
+                {/* COMMENT OUT: GOLD STANDARD  'Qc_SingleSearch_GoldStandard_Statistics_Section'
 
                 <div style={ { clear: "both" } }>
                     <Qc_SingleSearch_GoldStandard_Statistics_Section

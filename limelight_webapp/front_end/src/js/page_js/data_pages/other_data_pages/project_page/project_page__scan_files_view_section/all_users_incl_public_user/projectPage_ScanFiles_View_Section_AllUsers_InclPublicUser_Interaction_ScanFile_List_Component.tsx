@@ -615,7 +615,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 { ( ( ! this.props.projectIsLocked ) && ( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ) ) ? (
                                     <>
 
-                                        {/* COMMENT OUT:  '[Import Gold Standard]'
+                                        {/* COMMENT OUT: GOLD STANDARD '[Import Gold Standard]'
 
                                         { this.props.standardRunImporter_IsFullyConfigured ? (
                                             <>
@@ -1204,6 +1204,10 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                                     )
                                 }
                             </div>
+
+
+                            {/* COMMENT OUT: GOLD STANDARD 'Gold Standard' Display Section
+
                             <div style={ { marginTop: 10 } }>
                                 Gold Standard
                             </div>
@@ -1230,6 +1234,9 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                                     )
                                 }
                             </div>
+
+                            */}
+
                         </div>
                     )}
                 </div>

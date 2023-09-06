@@ -108,7 +108,7 @@ export class Qc_MultipleSearches_AA__Root_DisplayBlock extends React.Component< 
                     />
                 </div>
 
-                {/* COMMENT OUT:  'Qc_MultipleSearches_GoldStandard_Statistics_Section'
+                {/* COMMENT OUT: GOLD STANDARD  'Qc_MultipleSearches_GoldStandard_Statistics_Section'
 
                 <div style={ { clear: "both" } }>
                     <Qc_MultipleSearches_GoldStandard_Statistics_Section
