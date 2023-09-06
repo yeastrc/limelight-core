@@ -65,7 +65,11 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
-import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import {
+    PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+    PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import { PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
 
 
 /**
@@ -97,6 +101,7 @@ const initialPopulate = async function(
         peptideSequence_UserSelections_StateObject,
         peptideSequence_MissedCleavageCount_UserSelections_StateObject,
         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+        peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
         proteinSequenceWidget_StateObject,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object
@@ -115,6 +120,7 @@ const initialPopulate = async function(
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject,
         peptideSequence_MissedCleavageCount_UserSelections_StateObject: PeptideSequence_MissedCleavageCount_UserSelections_StateObject
         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
+        peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
         proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object: GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class
@@ -236,6 +242,12 @@ Promise<{
                 modificationMass_UserSelections_StateObject,
                 reporterIonMass_UserSelections_StateObject,
                 peptideUnique_UserSelection_StateObject,
+                peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+                peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
+                scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+                scan_RetentionTime_MZ_UserSelections_StateObject: scan_RetentionTime_MZ_UserSelection_StateObject,
+                psm_Charge_Filter_UserSelection_StateObject,
                 searchSubGroup_Are_All_SearchSubGroupIds_Selected
             });
         }
@@ -715,6 +727,12 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = async function({
     modificationMass_UserSelections_StateObject,
     reporterIonMass_UserSelections_StateObject,
     peptideUnique_UserSelection_StateObject,
+    peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+    peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
+    scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+    scan_RetentionTime_MZ_UserSelections_StateObject,
+    psm_Charge_Filter_UserSelection_StateObject,
     searchSubGroup_Are_All_SearchSubGroupIds_Selected
 } : {
     proteinSequenceWidget_StateObject : ProteinSequenceWidget_StateObject
@@ -730,6 +748,12 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = async function({
     modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
+    peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
+    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject;
+    peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject : PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+    scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+    scan_RetentionTime_MZ_UserSelections_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
+    psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     searchSubGroup_Are_All_SearchSubGroupIds_Selected : boolean
 
 }) : Promise<ProteinSequenceWidgetDisplay_Component_Data> {
@@ -742,8 +766,14 @@ const create_ProteinSequenceWidgetDisplay_Component_Data = async function({
             || modificationMass_UserSelections_StateObject.is_Any_StaticModification_Selected()
             || reporterIonMass_UserSelections_StateObject.is_Any_ReporterIons_Selected()
             || peptideUnique_UserSelection_StateObject.getPeptideUnique()
+            || peptideSequence_MissedCleavageCount_UserSelections_StateObject.is_Any_FilterHaveValue()
             || proteinPositions_CoveredBy_PeptideSearchStrings
             || proteinSequenceWidget_StateObject.is_Any_selectedProteinSequencePosition()
+            || peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject.get_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelection() !== PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum.NONE
+            || ( peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter() !== undefined && peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject.get_PSM_CountFilter() !== null )
+            || ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds() )
+            || scan_RetentionTime_MZ_UserSelections_StateObject.is_Any_FilterHaveValue()
+            || ( ! psm_Charge_Filter_UserSelection_StateObject.areAllSelected__chargeValues_OnPSMs() )
             || ( ! searchSubGroup_Are_All_SearchSubGroupIds_Selected )
         ) {
             //  Populate since have user selection

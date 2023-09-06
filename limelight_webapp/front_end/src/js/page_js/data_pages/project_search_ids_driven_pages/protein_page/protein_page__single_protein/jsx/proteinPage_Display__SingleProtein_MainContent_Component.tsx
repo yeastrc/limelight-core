@@ -596,6 +596,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                 peptideSequence_UserSelections_StateObject : this.props.propsValue.peptideSequence_UserSelections_StateObject,
                 peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
                 peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+                peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject: this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
                 proteinSequenceWidget_StateObject : this.props.propsValue.proteinSequenceWidget_StateObject,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
                 getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object: this.props.propsValue.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object
@@ -2352,8 +2353,11 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         try {
             window.setTimeout( () => {
                 try {
-                    this._updateCurrentPeptideFiltersSection();
+                    //  Always Update the Protein Sequence Widget since the Sequence Coverage Filtered Always needs to be updated
+                    this._proteinSequenceWidgetDisplay_Update_proteinSequenceWidgetDisplay_Component_Data();
 
+
+                    this._updateCurrentPeptideFiltersSection();
 
                     window.setTimeout( () => {
                         try {
@@ -2501,6 +2505,12 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                     modificationMass_UserSelections_StateObject : this.props.propsValue.modificationMass_UserSelections_StateObject,
                     reporterIonMass_UserSelections_StateObject : this.props.propsValue.reporterIonMass_UserSelections_StateObject,
                     peptideUnique_UserSelection_StateObject : this.props.propsValue.peptideUnique_UserSelection_StateObject,
+                    peptideSequence_MissedCleavageCount_UserSelections_StateObject : this.props.propsValue.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
+                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
+                    peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject: this.props.propsValue.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject,
+                    scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+                    scan_RetentionTime_MZ_UserSelections_StateObject: this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
+                    psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                     searchSubGroup_Are_All_SearchSubGroupIds_Selected : this.state.searchSubGroup_Are_All_SearchSubGroupIds_Selected
                 });
             }
