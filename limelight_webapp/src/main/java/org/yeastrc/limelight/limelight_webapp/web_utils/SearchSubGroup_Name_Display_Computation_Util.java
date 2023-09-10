@@ -17,6 +17,7 @@
  */
 package org.yeastrc.limelight.limelight_webapp.web_utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -85,165 +86,207 @@ public class SearchSubGroup_Name_Display_Computation_Util {
 	 */
 	public void searchSubGroup_Name_Display_Computation__SortOn_DisplayOrder_SubGroupNameDisplay__Util( List<SearchSubGroup_Name_Display_Computation_Entry> entriesToUpdate ) {
 
-		String subGroupName_ShortestCommon = null;
+		Set<String> displayNames_Output_Set = new HashSet<>();
+
 		
-		int longestLength_searchSubgroupName_fromImportFile = 0;
-
-		for (SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate ) {
-
-			//  Skip following code since even if user sets value still use for determining Shortest Common String
-			
-//			if ( entry.subgroupName_Display_FromServer_IfUserEnteredAValue != null ) {
-//				//  has a value so skip
-//				continue;  // EARLY CONTINUE
-//			}
-			
-			String searchSubgroupName_fromImportFile = entry.subgroupName_fromImportFile;
-			
-			{
-				int length = searchSubgroupName_fromImportFile.length() ;
-				if ( length > longestLength_searchSubgroupName_fromImportFile ) {
-					longestLength_searchSubgroupName_fromImportFile = length;
-				}
-			}
-			
-			if ( subGroupName_ShortestCommon == null ) {
-				//  First record where  not set so assign and skip to next
-				subGroupName_ShortestCommon = searchSubgroupName_fromImportFile;
-				continue;  // EARLY CONTINUE
-			}
-			if ( searchSubgroupName_fromImportFile.startsWith( subGroupName_ShortestCommon ) ) {
-				//  searchSubgroupName_fromImportFile.startsWith( subGroupName_ShortestCommon ) so next
-				continue;  // EARLY CONTINUE
-			}
-			int firstDifferentIndex = 0;
-			{
-				int index = 0;
-				while ( subGroupName_ShortestCommon.charAt( index ) == searchSubgroupName_fromImportFile.charAt( index ) ) {
-					index++;
-				}
-				firstDifferentIndex = index;
-			}
-			if ( firstDifferentIndex == 0 ) {
-				//  No Part of Strings in Common so start at beginning of string and exit loop
-
-				subGroupName_ShortestCommon = "";
-
-				break;  // EARLY BREAK LOOP
-			}
-
-			subGroupName_ShortestCommon = subGroupName_ShortestCommon.substring( 0, firstDifferentIndex );
-		}
-
-		int searchSubgroupName_fromImportFile_StartIndex = subGroupName_ShortestCommon.length();
+		List<SearchSubGroup_Name_Display_Computation_Entry> entriesToUpdate__YES_SET__subgroupName_Display_FromServer_IfUserEnteredAValue = new ArrayList<>( entriesToUpdate.size() );
 		
-		{
-			//  Compute Start Index to display last MAX_LENGTH_OF_DISPLAY_STRING characters for Longest searchSubgroupName_fromImportFile String
-			int startIndex = longestLength_searchSubgroupName_fromImportFile - MAX_LENGTH_OF_DISPLAY_STRING;
-			if ( startIndex < 0 ) {
-				startIndex = 0; // Set to zero if less than zero
-			}
-			if ( searchSubgroupName_fromImportFile_StartIndex > startIndex ) {
-				searchSubgroupName_fromImportFile_StartIndex = startIndex; // Change since can show more of all searchSubgroupName_fromImportFile String
-			}
-		}
-
+		List<SearchSubGroup_Name_Display_Computation_Entry> entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue = new ArrayList<>( entriesToUpdate.size() );
+				
 		for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate ) {
+			
 
 			if ( StringUtils.isNotEmpty( entry.subgroupName_Display_FromServer_IfUserEnteredAValue ) ) {
 				//  has a value so copy and skip
 				
 				entry.subgroupName_Display = entry.subgroupName_Display_FromServer_IfUserEnteredAValue;
 				
-				continue;  // EARLY CONTINUE
-			}
-			
-			String searchSubgroupName_fromImportFile = entry.subgroupName_fromImportFile;
-			
-			int searchSubgroupName_fromImportFile_EndIndex = searchSubgroupName_fromImportFile.length();
-			if ( ( searchSubgroupName_fromImportFile_EndIndex - searchSubgroupName_fromImportFile_StartIndex ) > MAX_LENGTH_OF_DISPLAY_STRING ) {
-				searchSubgroupName_fromImportFile_EndIndex = searchSubgroupName_fromImportFile_StartIndex + MAX_LENGTH_OF_DISPLAY_STRING;
-			}
-			String subgroupName_Display = searchSubgroupName_fromImportFile.substring( searchSubgroupName_fromImportFile_StartIndex, searchSubgroupName_fromImportFile_EndIndex );
-			entry.subgroupName_Display = subgroupName_Display;
-		}
-		
-		//  Change as needed so NO Duplicate Display Names
-		
-		{
-			Set<String> displayNames_Set = new HashSet<>();
-			
-			int counter = 0;
-
-			for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate ) {
+				entriesToUpdate__YES_SET__subgroupName_Display_FromServer_IfUserEnteredAValue.add(entry);
 				
-				counter++;
+				displayNames_Output_Set.add( entry.subgroupName_Display );
+				
+				continue;  // EARLY CONTINUE
+			
+			} else {
+				
+				entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue.add(entry);
+			}
+		}
 
-				String subgroupName_Display_Altered = entry.subgroupName_Display;
+		if ( ! entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue.isEmpty() ) {
 
-				boolean addSuccessful = false;
+			//  Update entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue as needed
+						
+			String subGroupName_ShortestCommon = null;
 
-				while ( ( ! addSuccessful ) && subgroupName_Display_Altered.length() > MIN_LENGTH_OF_DISPLAY_STRING ) {
+			int longestLength_searchSubgroupName_fromImportFile = 0;
 
-					if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+			for (SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue ) {
 
-						addSuccessful = true;
+				//  Skip following code since even if user sets value still use for determining Shortest Common String
 
-						break;  //  EARLY EXIT LOOP
+				//			if ( entry.subgroupName_Display_FromServer_IfUserEnteredAValue != null ) {
+				//				//  has a value so skip
+				//				continue;  // EARLY CONTINUE
+				//			}
+
+				String searchSubgroupName_fromImportFile = entry.subgroupName_fromImportFile;
+
+				{
+					int length = searchSubgroupName_fromImportFile.length() ;
+					if ( length > longestLength_searchSubgroupName_fromImportFile ) {
+						longestLength_searchSubgroupName_fromImportFile = length;
 					}
-
-					subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 1 );  // Remove last character
 				}
 
-				if ( ! addSuccessful ) {
+				if ( subGroupName_ShortestCommon == null ) {
+					//  First record where  not set so assign and skip to next
+					subGroupName_ShortestCommon = searchSubgroupName_fromImportFile;
+					continue;  // EARLY CONTINUE
+				}
+				if ( searchSubgroupName_fromImportFile.startsWith( subGroupName_ShortestCommon ) ) {
+					//  searchSubgroupName_fromImportFile.startsWith( subGroupName_ShortestCommon ) so next
+					continue;  // EARLY CONTINUE
+				}
+				int firstDifferentIndex = 0;
+				{
+					int index = 0;
+					while ( subGroupName_ShortestCommon.charAt( index ) == searchSubgroupName_fromImportFile.charAt( index ) ) {
+						index++;
+					}
+					firstDifferentIndex = index;
+				}
+				if ( firstDifferentIndex == 0 ) {
+					//  No Part of Strings in Common so start at beginning of string and exit loop
 
-					subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
+					subGroupName_ShortestCommon = "";
+
+					break;  // EARLY BREAK LOOP
+				}
+
+				subGroupName_ShortestCommon = subGroupName_ShortestCommon.substring( 0, firstDifferentIndex );
+			}
+
+			int searchSubgroupName_fromImportFile_StartIndex = subGroupName_ShortestCommon.length();
+
+			{
+				//  Compute Start Index to display last MAX_LENGTH_OF_DISPLAY_STRING characters for Longest searchSubgroupName_fromImportFile String
+				int startIndex = longestLength_searchSubgroupName_fromImportFile - MAX_LENGTH_OF_DISPLAY_STRING;
+				if ( startIndex < 0 ) {
+					startIndex = 0; // Set to zero if less than zero
+				}
+				if ( searchSubgroupName_fromImportFile_StartIndex > startIndex ) {
+					searchSubgroupName_fromImportFile_StartIndex = startIndex; // Change since can show more of all searchSubgroupName_fromImportFile String
+				}
+			}
+
+			for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue ) {
+
+				if ( StringUtils.isNotEmpty( entry.subgroupName_Display_FromServer_IfUserEnteredAValue ) ) {
+					//  has a value so copy and skip
+
+					entry.subgroupName_Display = entry.subgroupName_Display_FromServer_IfUserEnteredAValue;
+
+					continue;  // EARLY CONTINUE
+				}
+
+				String searchSubgroupName_fromImportFile = entry.subgroupName_fromImportFile;
+
+				int searchSubgroupName_fromImportFile_EndIndex = searchSubgroupName_fromImportFile.length();
+				if ( ( searchSubgroupName_fromImportFile_EndIndex - searchSubgroupName_fromImportFile_StartIndex ) > MAX_LENGTH_OF_DISPLAY_STRING ) {
+					searchSubgroupName_fromImportFile_EndIndex = searchSubgroupName_fromImportFile_StartIndex + MAX_LENGTH_OF_DISPLAY_STRING;
+				}
+				String subgroupName_Display = searchSubgroupName_fromImportFile.substring( searchSubgroupName_fromImportFile_StartIndex, searchSubgroupName_fromImportFile_EndIndex );
+				entry.subgroupName_Display = subgroupName_Display;
+			}
+
+			///////////
+
+			//  Change as needed so NO Duplicate Display Names
+
+			{
+
+				int counter = 0;
+
+				for ( SearchSubGroup_Name_Display_Computation_Entry entry : entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue ) {
+
+					counter++;
+
+					String subgroupName_Display_Altered = entry.subgroupName_Display;
+
+					boolean addSuccessful = false;
 
 					while ( ( ! addSuccessful ) && subgroupName_Display_Altered.length() > MIN_LENGTH_OF_DISPLAY_STRING ) {
 
-						if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+						if ( displayNames_Output_Set.add( subgroupName_Display_Altered ) ) {
 
 							addSuccessful = true;
 
 							break;  //  EARLY EXIT LOOP
 						}
 
-						subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 1 );  // Remove first character
+						subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 1 );  // Remove last character
 					}
-				}
-				
-				if ( ! addSuccessful ) {
 
-					//  Try Add counter
+					if ( ! addSuccessful ) {
 
-					subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
+						subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
 
-					if( subgroupName_Display_Altered.length() >= MAX_LENGTH_OF_DISPLAY_STRING - 1 ) {
-						//  Remove last 1 or 2 characters to provide length under max length for up to 2 digit counter
-						
-						subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 2 );  // Remove last 2 characters
+						while ( ( ! addSuccessful ) && subgroupName_Display_Altered.length() > MIN_LENGTH_OF_DISPLAY_STRING ) {
+
+							if ( displayNames_Output_Set.add( subgroupName_Display_Altered ) ) {
+
+								addSuccessful = true;
+
+								break;  //  EARLY EXIT LOOP
+							}
+
+							subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 1 );  // Remove first character
+						}
 					}
-					
-					subgroupName_Display_Altered = subgroupName_Display_Altered + counter;
 
-					if ( displayNames_Set.add( subgroupName_Display_Altered ) ) {
+					if ( ! addSuccessful ) {
 
-						addSuccessful = true;
+						//  Try Add counter
+
+						subgroupName_Display_Altered = entry.subgroupName_Display;  // Reset to full value
+
+						if( subgroupName_Display_Altered.length() >= MAX_LENGTH_OF_DISPLAY_STRING - 1 ) {
+							//  Remove last 1 or 2 characters to provide length under max length for up to 2 digit counter
+
+							subgroupName_Display_Altered = subgroupName_Display_Altered.substring( 0, subgroupName_Display_Altered.length() - 2 );  // Remove last 2 characters
+						}
+
+						subgroupName_Display_Altered = subgroupName_Display_Altered + counter;
+
+						if ( displayNames_Output_Set.add( subgroupName_Display_Altered ) ) {
+
+							addSuccessful = true;
+						}
 					}
+
+					if ( ! addSuccessful ) {
+
+						//  real mess.
+
+						// Give up for now
+					}
+
+					entry.subgroupName_Display = subgroupName_Display_Altered;  // Save new value back to entry
 				}
+			}		
+		}
+		
+		//  Final List
+		
+		List<SearchSubGroup_Name_Display_Computation_Entry> entriesToUpdate_FINAL = new ArrayList<>( entriesToUpdate.size() );
+		
+		entriesToUpdate_FINAL.addAll( entriesToUpdate__YES_SET__subgroupName_Display_FromServer_IfUserEnteredAValue );
+		
+		entriesToUpdate_FINAL.addAll( entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue );
+		
 
-				if ( ! addSuccessful ) {
-
-					//  real mess.
-
-					// Give up for now
-				}
-				
-				entry.subgroupName_Display = subgroupName_Display_Altered;  // Save new value back to entry
-			}
-		}		
-
-		Collections.sort( entriesToUpdate, new Comparator<SearchSubGroup_Name_Display_Computation_Entry>() {
+		Collections.sort( entriesToUpdate_FINAL, new Comparator<SearchSubGroup_Name_Display_Computation_Entry>() {
 
 			@Override
 			public int compare(SearchSubGroup_Name_Display_Computation_Entry o1, SearchSubGroup_Name_Display_Computation_Entry o2) {
