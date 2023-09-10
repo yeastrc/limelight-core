@@ -277,16 +277,7 @@ public class SearchSubGroup_Name_Display_Computation_Util {
 			}		
 		}
 		
-		//  Final List
-		
-		List<SearchSubGroup_Name_Display_Computation_Entry> entriesToUpdate_FINAL = new ArrayList<>( entriesToUpdate.size() );
-		
-		entriesToUpdate_FINAL.addAll( entriesToUpdate__YES_SET__subgroupName_Display_FromServer_IfUserEnteredAValue );
-		
-		entriesToUpdate_FINAL.addAll( entriesToUpdate__NOT_SET__subgroupName_Display_FromServer_IfUserEnteredAValue );
-		
-
-		Collections.sort( entriesToUpdate_FINAL, new Comparator<SearchSubGroup_Name_Display_Computation_Entry>() {
+		Collections.sort( entriesToUpdate, new Comparator<SearchSubGroup_Name_Display_Computation_Entry>() {
 
 			@Override
 			public int compare(SearchSubGroup_Name_Display_Computation_Entry o1, SearchSubGroup_Name_Display_Computation_Entry o2) {
