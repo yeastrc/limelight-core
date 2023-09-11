@@ -27,9 +27,12 @@ import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject}
  */
 export interface SingleProtein_FiltersDisplay_ComponentData {
 
-	// TODO WARNING!!!!!   MUST also update this function with any NEW STATE Objects
+	// TODO WARNING!!!!!   MUST also update these functions with any NEW STATE Objects
 
 	// TODO  create_ProteinSequenceWidgetDisplay_Component_Data(...) IN ProteinPage_Display__SingleProtein_MainContent_Component_nonClass_Functions
+
+	// TODO  create_ProteinSequenceWidgetDisplay_Component_Data(...) IN file proteinExperimentPage_SingleProtein_MainContent_Component_nonClass_Functions.ts
+
     
 	modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject;
 	reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject;
