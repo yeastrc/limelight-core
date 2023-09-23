@@ -1,5 +1,5 @@
 /**
- * psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount.ts
+ * commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId.ts
  *
  */
 
@@ -11,7 +11,7 @@ import { variable_is_type_number_Check } from "page_js/variable_is_type_number_C
 /**
  *
  */
-export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount_Result {
+export class CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result {
 
     maxScanDataWithPeaksReturnCount: number
 }
@@ -20,15 +20,15 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeak
  *
  * @param projectSearchId
  */
-export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount = function (
+export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId = function (
     {
         projectSearchId
     } : {
         projectSearchId: number
     }
-) : Promise<PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount_Result> {
+) : Promise<CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result> {
 
-    return new Promise<PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount_Result>((resolve, reject) => { try {
+    return new Promise<CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result>(( resolve, reject) => { try {
 
         let requestObject = {
             projectSearchId: projectSearchId
@@ -59,7 +59,7 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeak
 
                 console.log("AJAX Call END: URL: " + url + new Date() );
 
-                const response: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount_Result = {
+                const response: CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result = {
                     maxScanDataWithPeaksReturnCount: responseData.maxScanDataWithPeaksReturnCount
                 }
 

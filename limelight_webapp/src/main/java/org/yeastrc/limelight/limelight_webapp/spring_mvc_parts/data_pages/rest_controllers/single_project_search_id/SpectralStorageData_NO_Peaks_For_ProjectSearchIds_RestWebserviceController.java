@@ -44,6 +44,11 @@ import java.util.Map;
 /**
  * Get Scan Data (No Peaks) from Spectral Storage Service (Spectr) for Project Search Id
  *
+ *		TODO  Deprecated.
+ *
+ *			Use JS code that calls 'class ScanData_NO_Peaks_And_Optional_ALL_PARENTS__For_ScanNumbers_ProjectScanFileId_RestWebserviceController'
+ *
+ * @deprecated
  */
 @RestController
 public class SpectralStorageData_NO_Peaks_For_ProjectSearchIds_RestWebserviceController {

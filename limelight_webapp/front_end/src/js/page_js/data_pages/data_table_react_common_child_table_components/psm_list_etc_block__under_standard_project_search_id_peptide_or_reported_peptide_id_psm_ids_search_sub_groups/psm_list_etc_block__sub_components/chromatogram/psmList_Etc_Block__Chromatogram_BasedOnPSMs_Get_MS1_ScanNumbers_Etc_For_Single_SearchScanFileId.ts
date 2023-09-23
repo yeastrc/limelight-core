@@ -9,16 +9,14 @@
 
 //   Request Params:
 
-import {
-    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange,
-    PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result
-} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 import {
-    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers,
-    PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result
+    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers";
 import { PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer";
+import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
+import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
+import { CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange";
 
 
 
@@ -29,11 +27,11 @@ import { PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_get
  */
 export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root {
 
-    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result
+    value_CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult: CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult
 
-    value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result
+    value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
 
-    scanNumberArray: Array<number>
+    scanNumberArray: ReadonlyArray<number>
 }
 
 /**
@@ -44,16 +42,16 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
     {
         retentionTimeRange_Min,
         retentionTimeRange_Max,
-        projectSearchId,
         searchScanFileId,
         psmList,
+        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
     } : {
         retentionTimeRange_Min: number
         retentionTimeRange_Max: number
 
-        projectSearchId: number
         searchScanFileId: number
         psmList: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 ) : Promise<PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root> {
 
@@ -65,30 +63,31 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
 
     return new Promise<PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root>((resolve_TopLevel, reject_TopLevel) => { try {
 
-        let value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result
-        let value_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result
+        let value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
+        let value_CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult: CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult
 
         const promises: Array<Promise<void>> = []
 
         {
 
-            const scanNumberList: Array<number> = []
+            const scanNumberSet: Set<number> = new Set()
 
             for ( const psmItem of psmList ) {
 
                 if ( psmItem.searchScanFileId === searchScanFileId ) {
-                    scanNumberList.push( psmItem.scanNumber )
+                    scanNumberSet.add( psmItem.scanNumber )
                 }
             }
 
             const promise = new Promise<void>((resolve, reject) => { try {
+
                 const promise_FromCall = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers({
-                    projectSearchId, searchScanFileId, scanNumberList
+                    searchScanFileId, scanNumberSet, commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
                 })
                 promise_FromCall.catch(reason => { reject( reason )})
                 promise_FromCall.then(value => { try {
 
-                    value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers = value
+                    value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = value
 
                     resolve()
 
@@ -99,16 +98,19 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
         }
         {
             const promise = new Promise<void>((resolve, reject) => { try {
-                const promise_FromCall = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange({
-                    projectSearchId,
-                    searchScanFileId,
-                    retentionTimeRange_Min,
-                    retentionTimeRange_Max
-                })
+                const promise_FromCall =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange().
+                    get_MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Data_ReturnPromise({
+                        searchScanFileId,
+                        retentionTimeRange_Min,
+                        retentionTimeRange_Max
+                    })
+
                 promise_FromCall.catch(reason => { reject( reason )})
                 promise_FromCall.then(value => { try {
 
-                    value_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange = value
+                    value_CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult = value
 
                     resolve()
 
@@ -125,10 +127,14 @@ export const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc
 
             const result_Final : PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root = {
 
-                psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result: value_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange,
-                value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers,
+                value_CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult,
+                value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
 
-                scanNumberArray: value_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange.scanNumber_List
+                scanNumberArray:
+                value_CommonData_LoadedFromServer_SingleSearch__ScanData__MS_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange__FunctionResult.
+                    ms_1_ScanNumbers_For_Single_SearchScanFileId_RetentionTimeRange_Holder.
+                    ms_1_ScanNumbers_Data_Holder.
+                    scanNumber_Array
             }
 
             resolve_TopLevel( result_Final )

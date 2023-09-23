@@ -15,13 +15,11 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id;
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.scan_data__single_project_scan_file_id;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,17 +34,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
-import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
-import org.yeastrc.limelight.limelight_webapp.dao.SearchScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
-import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -57,33 +55,28 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnIonInjectionTimeData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanDataFromScanNumbers_Request;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
 
 /**
- * Get Scan Data NO Peaks For Scan Numbers, Project Search Id, Search Scan File Id
+ * Get Scan Data With Peaks For Scan Numbers, Project Search Id, Search Scan File Id, M/Z Ranges
  * 
  * 
  */
 @RestController
-public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_RestWebserviceController {
+public class ScanData_WithPeaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_And_OPTIONAL_M_Over_Z_Ranges_RestWebserviceController {
   
-	private static final Logger log = LoggerFactory.getLogger( ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( ScanData_WithPeaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_And_OPTIONAL_M_Over_Z_Ranges_RestWebserviceController.class );
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
-	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
 	
 	@Autowired
-	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
-	
-	@Autowired
-	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
-
-	@Autowired
-	private SearchScanFileDAO_IF searchScanFileDAO;
+	private ProjectScanFileDAO_IF projectScanFileDAO;
 	
 	@Autowired
 	private ScanFileDAO_IF scanFileDAO;
@@ -100,7 +93,7 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
     /**
 	 * 
 	 */
-	public ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_RestWebserviceController() {
+	public ScanData_WithPeaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId_And_OPTIONAL_M_Over_Z_Ranges_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -118,7 +111,7 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.SCAN_DATA_NO_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER
+					+ AA_RestWSControllerPaths_Constants.SCAN_DATA_WITH_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_OPTIONAL_M_OVER_Z_RANGES_REST_WEBSERVICE_CONTROLLER
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -127,7 +120,7 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 //			method = RequestMethod.POST,
 //			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
-    public @ResponseBody ResponseEntity<byte[]>  webserviceCall(
+    public @ResponseBody ResponseEntity<byte[]>  psmList(
     		
     		@RequestBody byte[] postBody,
     		HttpServletRequest httpServletRequest,
@@ -152,15 +145,10 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 
     		WebserviceRequestRoot webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequestRoot.class );
 
-    		Integer projectSearchId = webserviceRequest.projectSearchId;
+    		Integer projectScanFileId = webserviceRequest.projectScanFileId;
 
-    		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Id" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-
-    		if ( webserviceRequest.searchScanFileId == null ) {
-    			log.warn( "( webserviceRequest.searchScanFileId == null )" );
+    		if ( projectScanFileId == null ) {
+    			log.warn( "No projectScanFileId" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
@@ -172,73 +160,59 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
     			log.warn( "( webserviceRequest.scanNumberList.isEmpty() )" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		if ( webserviceRequest.m_over_Z_Ranges != null ) {
 
-    		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
-    		projectSearchIdsForValidate.add( projectSearchId );
+    			if ( webserviceRequest.m_over_Z_Ranges.isEmpty() ) {
+    				log.warn( "( webserviceRequest.m_over_Z_Ranges.isEmpty() )" );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    			for ( WebserviceRequest_Single_M_Over_Z_Range m_over_Z_Range_Entry : webserviceRequest.m_over_Z_Ranges ) {
+    				if ( m_over_Z_Range_Entry.m_over_Z_Range_Min == null ) {
+    					log.warn( "( m_over_Z_Range_Entry.m_over_Z_Range_Min == null )" );
+    					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    				}	
+    				if ( m_over_Z_Range_Entry.m_over_Z_Range_Max == null ) {
+    					log.warn( "( m_over_Z_Range_Entry.m_over_Z_Range_Max == null )" );
+    					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    				}	
+    			}
+    		}
 
+    		Project_ScanFile_DTO project_ScanFile_DTO = projectScanFileDAO.getById( projectScanFileId.intValue() );
+     		if ( project_ScanFile_DTO == null ) {
+    			log.warn( "projectScanFileId NOT in DB: projectScanFileId: " + projectScanFileId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+     		
     		////////////////
     		
     		//  AUTH - validate access
     		
     		//  throws an exception if access is not valid that is turned into a webservice response by Spring
-    		
-    		//  Comment out result since not use it
-//    		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
-    		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
-    		
-    		////////////////
-   			
-    		Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
-			if ( searchId == null ) {
-				String msg = "No searchId for projectSearchId: " + projectSearchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+
+			List<Integer> projectIds = new ArrayList<>( 1 );
+			projectIds.add( project_ScanFile_DTO.getProjectId() );
+
+
+			GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
+					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+
+			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+
+			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
+					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+				
+				//  No User session and not public project
+				throw new Limelight_WS_AuthError_Unauthorized_Exception();
 			}
+			    		
 			
-
-			SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = 
-					searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
-			
-    		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
-    		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
-    		
-
-    		//  TODO Can do something more Graceful here
-    		
-    		if ( ! searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) {
-    			String msg = "No Scan Data for searchId: " + searchId + ", for projectSearchId: " + projectSearchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		
-    		SearchScanFileDTO searchScanFileDTO = searchScanFileDAO.getById( webserviceRequest.searchScanFileId );
-    		if ( searchScanFileDTO == null ) {
-    			String msg = "No DB record for webserviceRequest.searchScanFileId: " + webserviceRequest.searchScanFileId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		if ( searchScanFileDTO.getSearchId() != searchId.intValue() ) {
-    			String msg = "searchScanFileDTO DB record has searchId not match for param projectSearchId. webserviceRequest.searchScanFileId: " 
-    					+ webserviceRequest.searchScanFileId 
-    					+ ", projectSearchId: " + projectSearchId
-    					+ ", searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		if ( searchScanFileDTO.getScanFileId() == null ) {
-    			String msg = "searchScanFileDTO.getScanFileId() == null so no Scan File associated with it. webserviceRequest.searchScanFileId: " 
-    					+ webserviceRequest.searchScanFileId 
-    					+ ", projectSearchId: " + projectSearchId
-    					+ ", searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		
-    		String scanFileAPIKey = scanFileDAO.getSpectralStorageAPIKeyById( searchScanFileDTO.getScanFileId() );
+    		String scanFileAPIKey = scanFileDAO.getSpectralStorageAPIKeyById( project_ScanFile_DTO.getScanFileId() );
     		if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
 				String msg = "No value for scanFileAPIKey for scan file id: " 
-						+ searchScanFileDTO.getScanFileId() 
-						+ ", webserviceRequest.searchScanFileId: " + webserviceRequest.searchScanFileId;
+						+ project_ScanFile_DTO.getScanFileId() 
+						+ ", webserviceRequest.projectScanFileId: " + webserviceRequest.projectScanFileId;
 				log.error( msg );
 				throw new LimelightInternalErrorException( msg );
 			}
@@ -246,15 +220,33 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 			List<SingleScan_SubResponse> scanList_Result = null;
     		
 			{
+				List<Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest> m_Over_Z_Range_Filters = null;
+
+				if ( webserviceRequest.m_over_Z_Ranges != null ) {
+					m_Over_Z_Range_Filters = new ArrayList<>( webserviceRequest.m_over_Z_Ranges.size() );
+					for ( WebserviceRequest_Single_M_Over_Z_Range single_M_Over_Z_Range : webserviceRequest.m_over_Z_Ranges ) {
+
+						Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest m_over_Z_Range_Out = new Get_ScanDataFromScanNumbers_M_Over_Z_Range_SubRequest();
+
+						m_over_Z_Range_Out.setMzLowCutoff(single_M_Over_Z_Range.m_over_Z_Range_Min);
+						m_over_Z_Range_Out.setMzHighCutoff(single_M_Over_Z_Range.m_over_Z_Range_Max);
+
+						m_Over_Z_Range_Filters.add(m_over_Z_Range_Out);
+					}
+				}
+				
 				Get_ScanDataFromScanNumbers_Request get_ScanDataFromScanNumbers_Request = new Get_ScanDataFromScanNumbers_Request();
 				get_ScanDataFromScanNumbers_Request.setScanFileAPIKey( scanFileAPIKey );
 				get_ScanDataFromScanNumbers_Request.setScanNumbers( webserviceRequest.scanNumberList );
 				
-				get_ScanDataFromScanNumbers_Request.setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.ALL_PARENTS );
-				get_ScanDataFromScanNumbers_Request.setExcludeReturnScanPeakData( Get_ScanData_ExcludeReturnScanPeakData.YES );
+				get_ScanDataFromScanNumbers_Request.setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.NO );
+				get_ScanDataFromScanNumbers_Request.setExcludeReturnScanPeakData( Get_ScanData_ExcludeReturnScanPeakData.NO );
 				
 				get_ScanDataFromScanNumbers_Request.setIncludeReturnScanLevelTotalIonCurrentData(Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData.YES);
 				get_ScanDataFromScanNumbers_Request.setIncludeReturnIonInjectionTimeData(Get_ScanData_IncludeReturnIonInjectionTimeData.YES);
+				
+				get_ScanDataFromScanNumbers_Request.setM_Over_Z_Range_Filters(m_Over_Z_Range_Filters);
+				
 				
 				List<SingleScan_SubResponse> scans = 
 						call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
@@ -266,7 +258,14 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 
 				for ( SingleScan_SubResponse scan : scans ) {
 
-					scanList_Result.add(scan);
+					if ( scan.getPeaks().isEmpty() ) {
+
+						int z = 0;  // Scans ARE returned with empty peaks
+					} else {
+
+						scanList_Result.add(scan);
+					}
+
 				}
 			}
     		
@@ -301,21 +300,41 @@ public class ScanData_NO_Peaks_For__ScanNumbers_ProjectSearchId_SearchScanFileId
 	 */
 	public static class WebserviceRequestRoot {
 	
-		private Integer projectSearchId;
-		private Integer searchScanFileId;
+		private Integer projectScanFileId;
 		private List<Integer> scanNumberList;
+		private List<WebserviceRequest_Single_M_Over_Z_Range> m_over_Z_Ranges;
 		
-		public void setProjectSearchId(Integer projectSearchId) {
-			this.projectSearchId = projectSearchId;
-		}
-		public void setSearchScanFileId(Integer searchScanFileId) {
-			this.searchScanFileId = searchScanFileId;
+		public void setProjectScanFileId(Integer projectScanFileId) {
+			this.projectScanFileId = projectScanFileId;
 		}
 		public void setScanNumberList(List<Integer> scanNumberList) {
 			this.scanNumberList = scanNumberList;
 		}
+		public void setM_over_Z_Ranges(List<WebserviceRequest_Single_M_Over_Z_Range> m_over_Z_Ranges) {
+			this.m_over_Z_Ranges = m_over_Z_Ranges;
+		}
+		
 	}
 
+	 
+	/**
+	 * Request - Single m/z range
+	 *
+	 */
+	public static class WebserviceRequest_Single_M_Over_Z_Range {
+		 
+		private Double m_over_Z_Range_Min;
+		private Double m_over_Z_Range_Max;
+		
+		public void setM_over_Z_Range_Min(Double m_over_Z_Range_Min) {
+			this.m_over_Z_Range_Min = m_over_Z_Range_Min;
+		}
+		public void setM_over_Z_Range_Max(Double m_over_Z_Range_Max) {
+			this.m_over_Z_Range_Max = m_over_Z_Range_Max;
+		}
+		
+	 }
+    
     /**
      * 
      *

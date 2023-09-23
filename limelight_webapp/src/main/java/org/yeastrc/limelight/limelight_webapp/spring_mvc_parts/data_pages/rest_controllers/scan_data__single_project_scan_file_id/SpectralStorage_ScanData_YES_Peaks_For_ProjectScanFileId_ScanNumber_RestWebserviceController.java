@@ -1,4 +1,4 @@
-package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.scan_data__single_project_scan_file_id;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ public class SpectralStorage_ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber
     @PostMapping(
             path = {
                     AA_RestWSControllerPaths_Constants.PATH_START_ALL
-                            + AA_RestWSControllerPaths_Constants.SPECTRAL_STORAGE_SCAN_SPECTRUM_FOR_PROJECT_SCAN_FILE_ID_SCAN_NUMBER_REST_WEBSERVICE_CONTROLLER
+                            + AA_RestWSControllerPaths_Constants.SCAN_DATA_YES_PEAKS_FOR_PROJECT_SCAN_FILE_ID_SCAN_NUMBER_REST_WEBSERVICE_CONTROLLER
             },
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 

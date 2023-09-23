@@ -48,25 +48,31 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearch
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF;
-import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_ScanNumbers_SpectralStorageWebserviceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanDataFromScanNumbers_IncludeParentScans;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_ExcludeReturnScanPeakData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnIonInjectionTimeData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.enums.Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData;
+import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.main.Get_ScanDataFromScanNumbers_Request;
 import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webservice_request_response.sub_parts.SingleScan_SubResponse;
 
 
 /**
- * Get Scan Numbers For MS 1 Scans, Project Search Id, Search Scan File Id, Retention Time Range
+ * Get Scan Data NO Peaks For Scan Numbers, Project Search Id, Search Scan File Id
+ * 
+ * Get Scan Data for ALL PARENTS of Scan Numbers since pass:
+ * 
+ * 				setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.ALL_PARENTS
  * 
  * 
  */
 @RestController
-public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_RetentionTime_Range_RestWebserviceController {
+public class ScanData_NO_Peaks_For__ScanNumbers_And_ALL_PARENTS_ProjectSearchId_SearchScanFileId_RestWebserviceController {
   
-	private static final Logger log = LoggerFactory.getLogger( ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_RetentionTime_Range_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( ScanData_NO_Peaks_For__ScanNumbers_And_ALL_PARENTS_ProjectSearchId_SearchScanFileId_RestWebserviceController.class );
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -87,9 +93,6 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 	private ScanFileDAO_IF scanFileDAO;
 	
 	@Autowired
-	private Call_Get_ScanNumbers_SpectralStorageWebserviceIF call_Get_ScanNumbers_SpectralStorageWebservice;
-
-	@Autowired
 	private Call_Get_ScanDataFromScanNumbers_SpectralStorageWebserviceIF call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
 	
 	@Autowired
@@ -101,7 +104,7 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
     /**
 	 * 
 	 */
-	public ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_RetentionTime_Range_RestWebserviceController() {
+	public ScanData_NO_Peaks_For__ScanNumbers_And_ALL_PARENTS_ProjectSearchId_SearchScanFileId_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -119,7 +122,7 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 	@PostMapping( 
 			path = {
 					AA_RestWSControllerPaths_Constants.PATH_START_ALL
-					+ AA_RestWSControllerPaths_Constants.SCAN_NUMBERS_FOR_MS_1_SCANS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_RETENTION_TIME_RANGE_REST_WEBSERVICE_CONTROLLER
+					+ AA_RestWSControllerPaths_Constants.SCAN_DATA_NO_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER
 			},
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
 
@@ -165,8 +168,12 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
-    		if ( webserviceRequest.retentionTimeRange_Min == null && webserviceRequest.retentionTimeRange_Max == null ) {
-    			log.warn( "( webserviceRequest.retentionTimeRange_Min == null && webserviceRequest.retentionTimeRange_Max == null )" );
+    		if ( webserviceRequest.scanNumberList == null ) {
+    			log.warn( "( webserviceRequest.scanNumberList == null )" );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}	
+    		if ( webserviceRequest.scanNumberList.isEmpty() ) {
+    			log.warn( "( webserviceRequest.scanNumberList.isEmpty() )" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
@@ -239,52 +246,36 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 				log.error( msg );
 				throw new LimelightInternalErrorException( msg );
 			}
-    		
-    		List<Integer> scanLevelsToInclude = new ArrayList<>( 1 );
-    		scanLevelsToInclude.add( 1 );  // Only Scan Level 1
-    		
-    					
-			List<Integer> scanNumbers_All_Level_1_List =
-					call_Get_ScanNumbers_SpectralStorageWebservice.getScanNumbersFromSpectralStorageService( 
-							scanLevelsToInclude,
-							null, // scanLevelsToExclude
-							scanFileAPIKey);
 
-			List<Integer> scanNumbers_Result_List = new ArrayList<>( scanNumbers_All_Level_1_List.size() );
-			
-			
-			if ( ! scanNumbers_All_Level_1_List.isEmpty() ) {
-					
+			List<SingleScan_SubResponse> scanList_Result = null;
+    		
+			{
+				Get_ScanDataFromScanNumbers_Request get_ScanDataFromScanNumbers_Request = new Get_ScanDataFromScanNumbers_Request();
+				get_ScanDataFromScanNumbers_Request.setScanFileAPIKey( scanFileAPIKey );
+				get_ScanDataFromScanNumbers_Request.setScanNumbers( webserviceRequest.scanNumberList );
+				
+				get_ScanDataFromScanNumbers_Request.setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.ALL_PARENTS );
+				get_ScanDataFromScanNumbers_Request.setExcludeReturnScanPeakData( Get_ScanData_ExcludeReturnScanPeakData.YES );
+				
+				get_ScanDataFromScanNumbers_Request.setIncludeReturnScanLevelTotalIonCurrentData(Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData.YES);
+				get_ScanDataFromScanNumbers_Request.setIncludeReturnIonInjectionTimeData(Get_ScanData_IncludeReturnIonInjectionTimeData.YES);
+				
 				List<SingleScan_SubResponse> scans = 
 						call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice
-						.getScanDataFromSpectralStorageService(
-								scanNumbers_All_Level_1_List, 
-								Get_ScanDataFromScanNumbers_IncludeParentScans.NO,
-								Get_ScanData_ExcludeReturnScanPeakData.YES,
+						.getScanDataFromSpectralStorageService_NativeSpectralStorageServiceRequestObject(
+								get_ScanDataFromScanNumbers_Request,
 								scanFileAPIKey );
+				
+				scanList_Result = new ArrayList<>( scans.size() );
 
 				for ( SingleScan_SubResponse scan : scans ) {
 
-					if ( webserviceRequest.retentionTimeRange_Min != null ) {
-						if ( webserviceRequest.retentionTimeRange_Min.floatValue() > scan.getRetentionTime() ) {
-							//  Skip since out of range
-							continue; // 
-						}
-					}
-					if ( webserviceRequest.retentionTimeRange_Max != null ) {
-						if ( webserviceRequest.retentionTimeRange_Max.floatValue() < scan.getRetentionTime() ) {
-							//  Skip since out of range
-							continue; // 
-						}
-					}
-
-					scanNumbers_Result_List.add( scan.getScanNumber() );
+					scanList_Result.add(scan);
 				}
 			}
-
     		
     		WebserviceResult webserviceResult = new WebserviceResult();
-    		webserviceResult.scanNumber_List = scanNumbers_Result_List;
+    		webserviceResult.scanList = scanList_Result;
     		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
     		
@@ -316,8 +307,7 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 	
 		private Integer projectSearchId;
 		private Integer searchScanFileId;
-		private Float retentionTimeRange_Min;
-		private Float retentionTimeRange_Max;
+		private List<Integer> scanNumberList;
 		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
@@ -325,26 +315,22 @@ public class ScanNumbers_For_mS_1_Scans_ProjectSearchId_SearchScanFileId_Retenti
 		public void setSearchScanFileId(Integer searchScanFileId) {
 			this.searchScanFileId = searchScanFileId;
 		}
-		public void setRetentionTimeRange_Min(Float retentionTimeRange_Min) {
-			this.retentionTimeRange_Min = retentionTimeRange_Min;
-		}
-		public void setRetentionTimeRange_Max(Float retentionTimeRange_Max) {
-			this.retentionTimeRange_Max = retentionTimeRange_Max;
+		public void setScanNumberList(List<Integer> scanNumberList) {
+			this.scanNumberList = scanNumberList;
 		}
 	}
-    
+
     /**
      * 
      *
      */
     public static class WebserviceResult {
-    	
-    	List<Integer> scanNumber_List;
 
-		public List<Integer> getScanNumber_List() {
-			return scanNumber_List;
+    	List<SingleScan_SubResponse> scanList;
+
+		public List<SingleScan_SubResponse> getScanList() {
+			return scanList;
 		}
-    	
 
     }
 

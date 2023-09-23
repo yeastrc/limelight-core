@@ -3,6 +3,16 @@
  *
  * Common Data - Data From Server - Single Search - Spectral Storage Data - NO Scan Peaks - Load Data
  *
+ *  @deprecated
+ *
+ *          TODO   DEPRECATED
+
+ *    TODO:  ONLY USE Going Forward: one of following:
+ *    TODO:         'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data' from 'export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data'
+ *
+ *  TODO  SOME DAY:  Rewrite all to use  one of the above
  */
 
 import {
@@ -16,6 +26,17 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 
 /**
  * Common Data - Data From Server - Single Search - Spectral Storage Data - NO Scan Peaks - Load Data
+ *
+ * @deprecated
+ *
+ *     TODO   DEPRECATED
+ *
+ *    TODO:  ONLY USE Going Forward: one of following:
+ *    TODO:         'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data' from 'export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data'
+ *
+ *  TODO  SOME DAY:  Rewrite all to use  one of the above
  *
  * @param projectSearchId
  */

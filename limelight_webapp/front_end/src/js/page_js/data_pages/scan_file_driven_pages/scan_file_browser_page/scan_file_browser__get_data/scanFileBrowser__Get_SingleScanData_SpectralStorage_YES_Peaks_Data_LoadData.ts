@@ -80,7 +80,7 @@ export const scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_
     const promise = new Promise<ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root> ( (resolve, reject) => {
         try {
 
-            const url = "d/rws/for-page/psb/spectral-storage-scan-spectrum-for-project-scan-file-id-scan-number";
+            const url = "d/rws/for-page/psfb/scan-data-yes-peaks-for-project-scan-file-id-scan-number";
 
             console.log( "START: getting data from URL: " + url );
 

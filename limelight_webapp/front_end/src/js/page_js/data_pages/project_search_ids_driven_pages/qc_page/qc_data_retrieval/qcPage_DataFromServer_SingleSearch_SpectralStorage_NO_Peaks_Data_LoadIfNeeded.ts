@@ -23,7 +23,9 @@ import {dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_L
 
 
 /**
+ * TODO:  ONLY USE Going Forward:  'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data' from 'export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT'
  *
+ *  TODO  SOME DAY:  Rewrite all to use 'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data'
  */
 export class QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded {
 

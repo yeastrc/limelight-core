@@ -10,12 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ProjectScanFileDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SpectralStorageAPIKey_For_SearchIdSearchScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.Call_Get_GetSummaryDataPerScanLevel_FromSpectralStorageServiceIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -40,15 +45,15 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
     @Autowired
     private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
-    @Autowired
-    private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
+	@Autowired
+	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
+	
+	@Autowired
+	private ProjectScanFileDAO_IF projectScanFileDAO;
+	
+	@Autowired
+	private ScanFileDAO_IF scanFileDAO;
 
-    @Autowired
-    private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
-    
-    @Autowired
-    private SpectralStorageAPIKey_For_SearchIdSearchScanFileId_Searcher_IF spectralStorageAPIKey_For_SearchIdSearchScanFileId_Searcher;
-    
     @Autowired
     private Call_Get_GetSummaryDataPerScanLevel_FromSpectralStorageServiceIF call_Get_GetSummaryDataPerScanLevel_FromSpectralStorageService;
     
@@ -91,37 +96,44 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
 
             WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
-            Integer projectSearchId = webserviceRequest.projectSearchId;
-            Integer searchScanFileId = webserviceRequest.searchScanFileId;
+            Integer projectScanFileId = webserviceRequest.projectScanFileId;
 
-            if ( projectSearchId == null ) {
-                log.warn( "No Project Search Id" );
-                throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-            }
-            if ( searchScanFileId == null ) {
-                log.warn( "No searchScanFileId" );
-                throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-            }
-            
-            List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
-            projectSearchIdsForValidate.add( projectSearchId );
-            validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
+    		Project_ScanFile_DTO project_ScanFile_DTO = projectScanFileDAO.getById( projectScanFileId.intValue() );
+     		if ( project_ScanFile_DTO == null ) {
+    			log.warn( "projectScanFileId NOT in DB: projectScanFileId: " + projectScanFileId );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+     		
+    		////////////////
+    		
+    		//  AUTH - validate access
+    		
+    		//  throws an exception if access is not valid that is turned into a webservice response by Spring
 
-            Integer searchId = searchIdForProjectSearchIdSearcher.getSearchListForProjectId( projectSearchId );
-            if ( searchId == null ) {
-                String msg = "No searchId for projectSearchId: " + projectSearchId;
-                log.warn( msg );
-                throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-            }
-            
-            String scanFileAPIKey =  
-            		spectralStorageAPIKey_For_SearchIdSearchScanFileId_Searcher.get_SpectralStorageAPIKey_For_SearchId_SearchScanFileId( searchId, searchScanFileId );
-            
-            if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
-            	String msg = "Got empty scanFileAPIKey for search id: " + searchId + ", searchScanFileId: " + searchScanFileId;
-            	log.warn( msg );
-            	throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-            }
+			List<Integer> projectIds = new ArrayList<>( 1 );
+			projectIds.add( project_ScanFile_DTO.getProjectId() );
+
+
+			GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
+					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+
+			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+
+			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
+					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+				
+				//  No User session and not public project
+				throw new Limelight_WS_AuthError_Unauthorized_Exception();
+			}
+			    		
+    		String scanFileAPIKey = scanFileDAO.getSpectralStorageAPIKeyById( project_ScanFile_DTO.getScanFileId() );
+    		if ( StringUtils.isEmpty( scanFileAPIKey ) ) {
+				String msg = "No value for scanFileAPIKey for scan file id: " 
+						+ project_ScanFile_DTO.getScanFileId() 
+						+ ", webserviceRequest.projectScanFileId: " + webserviceRequest.projectScanFileId;
+				log.error( msg );
+				throw new LimelightInternalErrorException( msg );
+			}
 
             List<SingleScanLevelSummaryData_SubResponse> singleScanLevelSummaryData_SubResponse_List =
             		call_Get_GetSummaryDataPerScanLevel_FromSpectralStorageService.getSummaryDataPerScanLevelFromAPIKey(scanFileAPIKey);
@@ -140,7 +152,6 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
             }
 
             WebserviceResult webserviceResult = new WebserviceResult();
-            webserviceResult.searchScanFileId = searchScanFileId;
             webserviceResult.scanLevelEntries = scanLevelEntries;
 
             byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -164,14 +175,10 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
      */
     public static class WebserviceRequest {
     	
-        Integer projectSearchId;
-        Integer searchScanFileId;
-        
-		public void setProjectSearchId(Integer projectSearchId) {
-			this.projectSearchId = projectSearchId;
-		}
-		public void setSearchScanFileId(Integer searchScanFileId) {
-			this.searchScanFileId = searchScanFileId;
+        Integer projectScanFileId;
+
+		public void setProjectScanFileId(Integer projectScanFileId) {
+			this.projectScanFileId = projectScanFileId;
 		}
     }
 
@@ -180,19 +187,11 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
     */
     public static class WebserviceResult {
     	
-
-        int searchScanFileId;
-        
     	List<WebsserviceResult_SingleLevelEntry> scanLevelEntries;
 
 		public List<WebsserviceResult_SingleLevelEntry> getScanLevelEntries() {
 			return scanLevelEntries;
 		}
-
-		public int getSearchScanFileId() {
-			return searchScanFileId;
-		}
-
     }
     
     /**

@@ -3,6 +3,17 @@
  *
  * QC Page - Data Loaded - From Server - Single Search - Spectral Storage Data - NO Scan Peaks
  *
+ *
+ *
+ *          TODO   DEPRECATED
+ *
+
+ *    TODO:  ONLY USE Going Forward: one of following:
+ *    TODO:         'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data' from 'export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data'
+ *
+ *  TODO  SOME DAY:  Rewrite all to use  one of the above
  */
 
 
@@ -12,6 +23,19 @@
 
 /**
  *
+ *
+ *          TODO   DEPRECATED
+ *
+
+ *    TODO:  ONLY USE Going Forward: one of following:
+ *    TODO:         'export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data' from 'export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data'
+ *    TODO:         'export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data'
+ *
+ *  TODO  SOME DAY:  Rewrite all to use  one of the above
+ *
+ *
+ *          @deprecated
  */
 export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root {
 
@@ -61,7 +85,7 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 }
 
 /**
- *
+ * @deprecated
  */
 export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleSearchScanFileId{
 
@@ -127,7 +151,7 @@ export class DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_D
 }
 
 /**
- *
+ * @deprecated
  */
 export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber {
 

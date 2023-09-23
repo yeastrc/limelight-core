@@ -27,18 +27,11 @@ import {
     PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
 import {
-    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges,
-    PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse,
-    PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse_SinglePeak
-} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges";
-import {
     psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId,
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_Root
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId";
-import { psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount";
 import {
-    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers,
-    PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+    psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers";
 import { PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_GetDataFromServer";
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
@@ -56,7 +49,15 @@ import {
     psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId,
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId__Result_Root
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Compute_DataFrom_PSMs_For_Single_SearchScanFileId";
-import { CommonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_DataFor_SingleSearchScanFileId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data";
+import { commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber,
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import { CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 
 
 const _CHART_WIDTH = 800
@@ -1139,24 +1140,24 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
         }
     ) : void {
         try {
-            const get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result =
+            const get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result =
                 this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                get_commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data().
-                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+                get_commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_SearchScanFileId_MainClass().
+                get_ScanData_Summary_DataHolder_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
 
-            if ( get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.data ) {
+            if ( get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result.data ) {
 
-                const spectralStorage_Summary_Data_For_SearchScanFileId =
-                    get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.data.commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.
-                    get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+                const scanData_Summary_Data_For_SearchScanFileId =
+                    get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result.data.commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.
+                    get_ScanData_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
 
-                if ( ! spectralStorage_Summary_Data_For_SearchScanFileId ) {
+                if ( ! scanData_Summary_Data_For_SearchScanFileId ) {
                     const msg = "commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest) returned NOTHING for " + searchScanFileId_Selected_AtStartOf_LoadRequest;
                     console.warn(msg)
                     throw Error(msg)
                 }
 
-                if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( spectralStorage_Summary_Data_For_SearchScanFileId ) ) {
+                if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( scanData_Summary_Data_For_SearchScanFileId ) ) {
 
                     this._show_NO_MS_1_Scans_ForScanFile = false;
 
@@ -1176,10 +1177,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                     this.setState({ forceRerenderObject: {} })
                 }
 
-            } else if ( get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise ) {
+            } else if ( get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result.promise ) {
 
-                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise.catch(reason => {})
-                get_SpectralStorage_Summary_DataHolder_For_SearchScanFileId_Result.promise.then(value_spectralStorage_Summary_Data_For_SearchScanFileId => { try {
+                get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result.promise.catch(reason => {})
+                get_ScanData_Summary_DataHolder_For_SearchScanFileId_Result.promise.then(value_scanData_Summary_Data_For_SearchScanFileId => { try {
 
                     if ( currentSelection_ObjectReference_AtStartOf_Request !== this._currentSelection_ObjectReference ) {
                         //  No longer current request so exit
@@ -1187,17 +1188,17 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                         return; // EARLY RETURN
                     }
 
-                    const spectralStorage_Summary_Data_For_SearchScanFileId =
-                        value_spectralStorage_Summary_Data_For_SearchScanFileId.commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.
-                        get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
+                    const scanData_Summary_Data_For_SearchScanFileId =
+                        value_scanData_Summary_Data_For_SearchScanFileId.commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.
+                        get_ScanData_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest)
 
-                    if ( ! spectralStorage_Summary_Data_For_SearchScanFileId ) {
+                    if ( ! scanData_Summary_Data_For_SearchScanFileId ) {
                         const msg = "commonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_Data_Holder.get_SpectralStorage_Summary_Data_For_SearchScanFileId(searchScanFileId_Selected_AtStartOf_LoadRequest) returned NOTHING for " + searchScanFileId_Selected_AtStartOf_LoadRequest;
                         console.warn(msg)
                         throw Error(msg)
                     }
 
-                    if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( spectralStorage_Summary_Data_For_SearchScanFileId ) ) {
+                    if ( this._is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId( scanData_Summary_Data_For_SearchScanFileId ) ) {
 
                         this._show_NO_MS_1_Scans_ForScanFile = false;
 
@@ -1234,11 +1235,11 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
      */
     private _is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId(
 
-        spectralStorage_Summary_Data_For_SearchScanFileId: CommonData_LoadedFromServer_SingleSearch__SpectralStorage_Summary_DataFor_SingleSearchScanFileId
+        scanData_Summary_Data_For_SearchScanFileId: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId
     ) : boolean {
 
-        if ( spectralStorage_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
-            for ( const scanLevel of spectralStorage_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
+        if ( scanData_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
+            for ( const scanLevel of scanData_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {
                 if ( scanLevel.scanLevel === 1 ) {
                     if ( scanLevel.numberOfScans > 0 ) {
 
@@ -1281,7 +1282,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                 const promise = new Promise<void>((resolve, reject) => { try {
 
                     //  Get MaxScanDataWithPeaksReturnCount every request and Store in module wide variable
-                    const promise_Get_MaxScanDataWithPeaksReturnCount = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_MaxScanDataWithPeaksReturnCount({ projectSearchId: this.props.projectSearchId })
+                    const promise_Get_MaxScanDataWithPeaksReturnCount = commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId({ projectSearchId: this.props.projectSearchId })
                     promise_Get_MaxScanDataWithPeaksReturnCount.catch(reason => {
                         reject(reason)
                     })
@@ -1305,9 +1306,9 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                         retentionTimeRange_Min: retentionTimeRange_Min__LoadDataForScansFor,
                         retentionTimeRange_Max: retentionTimeRange_Max__LoadDataForScansFor,
 
-                        projectSearchId: this.props.projectSearchId,
                         searchScanFileId: searchScanFileId_Selected_AtStartOf_LoadRequest,
-                        psmList: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.webserviceResult_Root.resultList
+                        psmList: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.webserviceResult_Root.resultList,
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
                     })
 
                     promise_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.catch(reason => {
@@ -1684,8 +1685,9 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                 //  !!! WARNING:  NOT all scan numbers requested may result in scans returned, since filtering on scan peak m/z
 
-                const promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges( {
-                    projectSearchId: this.props.projectSearchId,
+                const promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges =
+                    this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_YES_Peaks_Data().get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise({
                     searchScanFileId: searchScanFileId_Selected,
                     scanNumberList: scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH,
                     m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
@@ -1698,7 +1700,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
                     //  Store returned scans
 
-                    for ( const scan of value_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges.scanList ) {
+                    for ( const scan of value_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges.scanData_Single_SearchScanFileId_YES_Peaks_Data_Holder.scanData_YES_Peaks_Data_Holder.scanData.scansArray ) {
 
                         if ( scan.peaks && scan.peaks.length > 0 ) {
 
@@ -1755,21 +1757,22 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                             return;  // EARLY RETURN
                         }
 
+
                         const promise_ScansNoPeaks = psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers({
-                            projectSearchId: this.props.projectSearchId,
                             searchScanFileId: searchScanFileId_Selected,
-                            scanNumberList: Array.from(scanNumbers_Get_NonPeaksDataFor_Set)
+                            scanNumberSet: scanNumbers_Get_NonPeaksDataFor_Set,
+                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
                         })
 
                         promise_ScansNoPeaks.catch(reason => { reject(reason) })
-                        promise_ScansNoPeaks.then(value_promise_ScansNoPeaks => { try {
+                        promise_ScansNoPeaks.then(scanData_NO_Peaks_Data_Holder => { try {
 
-                            for ( const scan of value_promise_ScansNoPeaks.scanList ) {
+                            //  resolve parent Promise
+
+                            for ( const scan of scanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
                                 dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.set( scan.scanNumber, scan )
                             }
-
-                            //  resolve parent Promise
 
                             this._loadingData_ScanNumberCount = undefined
 
@@ -1800,7 +1803,6 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
-
 
     /**
      *
@@ -2717,8 +2719,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         }
 
         const scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime: Array<{
-            scan_WithPeaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse
-            scan_NO_Peaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+            scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+            scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
             scan_RetentionTime: number
             scanNumber: number
             scanLevel: number
@@ -2761,7 +2763,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 const scanItem_NO_Peaks = this.props.dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get(  scanNumber )
                 if ( scanItem_NO_Peaks ) {
 
-                    if ( scanItem_NO_Peaks.retentionTime < retentionTimeSeconds_Range_ForChart_Min || scanItem_NO_Peaks.retentionTime > retentionTimeSeconds_Range_ForChart_Max ) {
+                    if ( scanItem_NO_Peaks.retentionTime_InSeconds < retentionTimeSeconds_Range_ForChart_Min || scanItem_NO_Peaks.retentionTime_InSeconds > retentionTimeSeconds_Range_ForChart_Max ) {
 
                         //  Scan retentionTime not in range so SKIP
 
@@ -2769,7 +2771,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     }
 
                     scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime.push({
-                        scan_RetentionTime: scanItem_NO_Peaks.retentionTime,
+                        scan_RetentionTime: scanItem_NO_Peaks.retentionTime_InSeconds,
                         scanNumber: scanItem_NO_Peaks.scanNumber,
                         scanLevel: scanItem_NO_Peaks.level,
                         scan_WithPeaks: undefined,
@@ -3149,9 +3151,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
             //   NOT all PSMs put on the chart, Display These PSMs at zero on Y axis
 
-            const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number, PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse> = new Map()
+            const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
 
-            for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers.scanList ) {
+            for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
                 scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
             }
@@ -3270,8 +3272,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             m_Over_Z_Window_Index: number  // Not sure used
 
             scanItem_Array_SortOn_RetentionTime: Array<{
-                scan_WithPeaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse
-                scan_NO_Peaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
                 scan_RetentionTime: number
                 scanNumber: number
                 scanLevel: number
@@ -3300,9 +3302,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
         const ms_1_ScanNumber_Map_Key_PsmId: Map<number, number> = new Map()
 
-        const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number, PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse> = new Map()
+        const scanData_NO_Peaks_Entry_Map_Key_ScanNumber: Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
 
-        for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_FromPsmScanNumbers.scanList ) {
+        for ( const scanItem of this.props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.value_CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
             scanData_NO_Peaks_Entry_Map_Key_ScanNumber.set( scanItem.scanNumber, scanItem )
         }
@@ -3341,12 +3343,12 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         const psm_And_Its_ScanData: Array<{
             psmItem: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
             scanItem: {
-                scan_WithPeaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse
-                scan_NO_Peaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
                 scan_RetentionTime: number
                 scanNumber: number
             }
-            peakToUse: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse_SinglePeak
+            peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
             y_Trace_Index: number
         }> = []
 
@@ -3382,7 +3384,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                 } else {
 
-                    let peakToUse: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse_SinglePeak = undefined
+                    let peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
                     let peakToUse_DifferenceFrom_M_Over_Z_RangeCenter: number = undefined
 
                     for ( const peak of scanItem_WithPeaks.peaks ) {
@@ -3651,16 +3653,16 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             trace_Psm_Points_Tooltips
         } : {
             psmItem_ToPlot: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item
-            scanData_NO_Peaks_Entry_MS_1: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+            scanData_NO_Peaks_Entry_MS_1:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
 
             scanItem: {
-                scan_WithPeaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse
-                scan_NO_Peaks: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse
+                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
                 scan_RetentionTime: number
                 scanNumber: number
             }
 
-            peakToUse: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse_SinglePeak
+            peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 
             plot_Y_Value: number
 
@@ -3686,7 +3688,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         if ( scanData_NO_Peaks_Entry_MS_1 ) {
 
             scanNumber = scanData_NO_Peaks_Entry_MS_1.scanNumber
-            scanRetentionTime_Seconds = scanData_NO_Peaks_Entry_MS_1.retentionTime
+            scanRetentionTime_Seconds = scanData_NO_Peaks_Entry_MS_1.retentionTime_InSeconds
 
         } else if ( scanItem ) {
 
@@ -4691,7 +4693,7 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId {
             return  false
         }
 
-        for ( const scanNumber of this.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanNumbers_For_RetentionTimeRange_Result.scanNumber_List ) {
+        for ( const scanNumber of this.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.scanNumberArray ) {
 
             if ( ( ! dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId.scanData_Map_Key_ScanNumber.has( scanNumber ) )
                 && ( ! dataFromServer_Scans_NO_For_Single_SearchScanFileId.scanData_Map_Key_ScanNumber.has( scanNumber ) ) ) {
@@ -4728,14 +4730,14 @@ class Internal_DataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId {
 class Internal_DataFromServer_ScansWithPeaks_For_Single_SearchScanFileId {
 
     readonly searchScanFileId: number
-    readonly scanData_Map_Key_ScanNumber: Map<number, PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges_Result_SingleScan_SubResponse> = new Map()
+    readonly scanData_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber> = new Map()
 }
 
 
 class Internal_DataFromServer_Scans_NO_Peaks_For_Single_SearchScanFileId {
 
     readonly searchScanFileId: number
-    readonly scanData_Map_Key_ScanNumber: Map<number, PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Get_SingleScanFile_ScanData_NO_Peaks_AndParentScanData_For_ScanNumbers_Result_SingleScan_SubResponse> = new Map()
+    readonly scanData_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
 }
 
 enum INTERNAL__MATH_FLOOR_CEIL {
