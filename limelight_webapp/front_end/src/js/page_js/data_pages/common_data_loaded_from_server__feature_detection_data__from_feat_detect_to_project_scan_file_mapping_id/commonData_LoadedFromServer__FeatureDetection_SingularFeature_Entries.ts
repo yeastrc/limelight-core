@@ -1,5 +1,5 @@
 /**
- * commonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries.ts
+ * commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries.ts
  *
  * For Single Project Search  -  FeatureDetection Singular Feature Entries - Contents of imported Feature Detection
  *
@@ -63,11 +63,9 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
 /**
  *  MAIN CLASS
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries {
+export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries {
 
     //  !! If these values change, then create a new instance of this class
-
-    private _projectSearchId: number
 
     //
 
@@ -77,35 +75,16 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
 
     /**
      *
-     * @param projectSearchIds
-     * @param searchDataLookupParameters_SingularFeature
      */
-    private constructor(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        this._projectSearchId = projectSearchId;
+    private constructor() {
     }
 
     /**
      * Create New Instance
      *
-     * @param projectSearchIds
-     * @param searchDataLookupParameters_SingularFeature
      */
-    static getNewInstance(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        return new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries({
-            projectSearchId
-        });
+    static getNewInstance( ) {
+        return new CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries();
     }
 
     /**
@@ -289,11 +268,10 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
             }>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
                         feature_detection_root__project_scnfl_mapping_tbl__id
                     };
 
-                    const url =  "d/rws/for-page/scan-file-feature-detection-singular-feature-entries-min-max-id--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url =  "d/rws/for-page/fdb/feature-detection-singular-feature-entries-min-max-id--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
@@ -365,12 +343,11 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
             const promise = new Promise<any>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
                         feature_detection_root__project_scnfl_mapping_tbl__id,
                         startId, endId
                     };
 
-                    const url = "d/rws/for-page/scan-file-feature-detection-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0003";
+                    const url = "d/rws/for-page/fdb/feature-detection-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0003";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 

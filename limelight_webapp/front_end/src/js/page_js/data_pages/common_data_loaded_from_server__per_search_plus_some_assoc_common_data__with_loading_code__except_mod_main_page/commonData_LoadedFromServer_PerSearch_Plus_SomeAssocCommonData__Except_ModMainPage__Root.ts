@@ -22,6 +22,7 @@ import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPag
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Multiple_ProjectSearchIds} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__MultipleProjectSearches";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch__NO_PSM_Peptide_Protein_Filtering";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
+import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
 
 /**
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
@@ -56,6 +57,8 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
 
     private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
 
+    private _commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+
     /**
      *
      * @param projectSearchIds
@@ -63,12 +66,15 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
      */
     private constructor(
         {
-            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager, commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager,
+            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         } : {
             projectSearchIds: Array<number>
             searchDataLookupParameters_Root: SearchDataLookupParameters_Root
             dataPageStateManager: DataPageStateManager
             commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         }
     ) {
         this._projectSearchIds = projectSearchIds;
@@ -79,6 +85,13 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
             this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
         } else {
             this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()  // Populate if not passed in
+        }
+
+        if ( commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT ) {
+            this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+        } else {
+            this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT =
+                CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.getNewInstance()  // Populate if not passed in
         }
 
         //  Create Common across Searches Instance
@@ -162,16 +175,19 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
      */
     static getNewInstance(
         {
-            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager, commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager,
+            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         } : {
             projectSearchIds: Array<number>
             searchDataLookupParameters_Root: SearchDataLookupParameters_Root
             dataPageStateManager: DataPageStateManager
             commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         }
     ) {
         return new CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root({
-            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager, commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            projectSearchIds, searchDataLookupParameters_Root, dataPageStateManager, commonData_LoadedFromServer_From_ProjectScanFileId___ROOT, commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         });
     }
 
@@ -205,6 +221,10 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
 
     get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT() {
         return this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+    }
+
+    get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT() {
+        return this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
     }
 
 }

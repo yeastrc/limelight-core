@@ -1,5 +1,5 @@
 /**
- * commonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries.ts
+ * commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries.ts
  *
  * For Single Project Search  -  FeatureDetection Persistent Feature Entries - Contents of imported Feature Detection
  *
@@ -93,11 +93,9 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
 /**
  *  MAIN CLASS
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries {
+export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries {
 
     //  !! If these values change, then create a new instance of this class
-
-    private _projectSearchId: number
 
     //
 
@@ -110,14 +108,8 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
      * @param projectSearchIds
      * @param searchDataLookupParameters_PersistentFeature
      */
-    private constructor(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        this._projectSearchId = projectSearchId;
+    private constructor() {
+
     }
 
     /**
@@ -126,16 +118,8 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
      * @param projectSearchIds
      * @param searchDataLookupParameters_PersistentFeature
      */
-    static getNewInstance(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        return new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries({
-            projectSearchId
-        });
+    static getNewInstance() {
+        return new CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries();
     }
 
     /**
@@ -241,11 +225,10 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
             const promise = new Promise<void>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
                         feature_detection_root__project_scnfl_mapping_tbl__id
                     };
 
-                    const url = "d/rws/for-page/scan-file-feature-detection-persistent-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url = "d/rws/for-page/fdb/feature-detection-persistent-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 

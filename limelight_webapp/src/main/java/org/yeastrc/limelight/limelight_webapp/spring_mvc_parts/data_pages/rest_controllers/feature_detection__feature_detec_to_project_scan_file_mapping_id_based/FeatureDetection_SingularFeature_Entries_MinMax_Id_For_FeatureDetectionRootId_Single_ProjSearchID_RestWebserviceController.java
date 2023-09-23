@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.single_project_search_id;
+package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.feature_detection__feature_detec_to_project_scan_file_mapping_id_based;
 
 
 import java.util.ArrayList;
@@ -34,16 +34,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
+import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher.FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -77,7 +82,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.SCAN_FILE_FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MIN_MAX_ID_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MIN_MAX_ID_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -89,8 +94,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
 
 	@Autowired
-	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
-
+	private GetWebSessionAuthAccessLevelForProjectIdsIF getWebSessionAuthAccessLevelForProjectIds;
+	
 	@Autowired
 	private Cached_WebserviceResponse_Management_IF cached_WebserviceResponse_Management;
 
@@ -101,11 +106,14 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF restControllerUtils__Request_Accept_GZip_Response_Set_GZip;
 	
 	@Autowired
-	private Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_IF feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher;
+	private FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF featureDetection_SingularFeature_Entries_COUNT__For_FeatureDetectionRootId_Searcher;
 
 	@Autowired
-	private FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_IF featureDetection_SingularFeature_Entries_COUNT__For_FeatureDetectionRootId_Searcher;
+	private Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_IF feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher;
 	
+	@Autowired
+	private ProjectScanFile_For_ProjectScanFileId_Searcher_IF projectScanFile_For_ProjectScanFileId_Searcher;
+
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -186,45 +194,58 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
 
-    		Integer projectSearchId = webserviceRequest.projectSearchId;
-    		
-    		if ( webserviceRequest.projectSearchId == null ) {
-    			log.warn( "projectSearchId is not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
     		if ( webserviceRequest.feature_detection_root__project_scnfl_mapping_tbl__id == null ) {
     			log.warn( "feature_detection_root__project_scnfl_mapping_tbl__id is not assigned" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
-    		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
-    		projectSearchIdsForValidate.add( projectSearchId );
 
-    		////////////////
-    		
-    		//  AUTH - validate access
-    		
-    		//  throws an exception if access is not valid that is turned into a webservice response by Spring
-    		
-    		//  Comment out result since not use it
-//    		ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
-    		validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIdsForValidate, httpServletRequest );
-    		
-    		////////////////
-    		
-    		
-    		Feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher_Result feature_detection_root_Id_Result =
-    					feature_detection_root_Id_For_Feature_detection_root__project_scnfl_mapping_tbl_id__ProjectSearchId_Searcher
-    					.feature_detection_root__project_scnfl_mapping_tbl__id_ValidateIsIn_ProjectSearchId__For_projectSearchId_feature_detection_root__project_scnfl_mapping_tbl__id(
-    							projectSearchId, webserviceRequest.feature_detection_root__project_scnfl_mapping_tbl__id);
+    		Integer feature_detection_root_id = null;
 
-    		if ( feature_detection_root_Id_Result == null ) {
-    			String msg = "feature_detection_root__project_scnfl_mapping_tbl__id NOT Found for projectSearchId.  projectSearchId: " + projectSearchId
-    					+ ", feature_detection_root__project_scnfl_mapping_tbl__id: " + webserviceRequest.feature_detection_root__project_scnfl_mapping_tbl__id;
-    			log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		{
+    			Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result =
+    					feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher.
+    					feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id(webserviceRequest.feature_detection_root__project_scnfl_mapping_tbl__id);
+    			
+    			if ( feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result == null ) {
+    				String msg = "feature_detection_root__project_scnfl_mapping_tbl_Id not in DB: " + webserviceRequest.feature_detection_root__project_scnfl_mapping_tbl__id;
+    				log.warn(msg);
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    			
+    			int project_scan_file_id = feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result.getProject_scan_file_id();
+
+    			Project_ScanFile_DTO project_ScanFile_DTO =
+    					projectScanFile_For_ProjectScanFileId_Searcher.get_For_ProjectScanFileId_Searcher(project_scan_file_id);
+
+    			if ( project_ScanFile_DTO == null ) {
+    				String msg = "projectScanFileId not in DB: " + project_scan_file_id;
+    				log.warn(msg);
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+
+    			int projectId = project_ScanFile_DTO.getProjectId();
+
+    			List<Integer> projectIds = new ArrayList<>( 1 );
+    			projectIds.add( projectId );
+
+
+    			GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
+    					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+
+    			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+
+    			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
+    					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+    				
+    				//  No User session and not public project
+    				throw new Limelight_WS_AuthError_Unauthorized_Exception();
+    			}
+    			
+    			feature_detection_root_id = feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result.getFeature_detection_root_id();
+    			
     		}
-    		
+    			
 			
 			//  End Authorization
 			
@@ -249,7 +270,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		FeatureDetection_SingularFeature_Entries_MinMax_ID__For_FeatureDetectionRootId_Searcher_Result searcherResult =
     				featureDetection_SingularFeature_Entries_COUNT__For_FeatureDetectionRootId_Searcher
-    				.get_MinMax_ID_ForFeatureDetectionRootId(feature_detection_root_Id_Result.getFeature_detection_root_id());
+    				.get_MinMax_ID_ForFeatureDetectionRootId(feature_detection_root_id);
 
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.minId = searcherResult.getMinId();
@@ -298,12 +319,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     public static class WebserviceRequest {
     	
-    	private Integer projectSearchId;
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
 
-		public void setProjectSearchId(Integer projectSearchId) {
-			this.projectSearchId = projectSearchId;
-		}
 		public void setFeature_detection_root__project_scnfl_mapping_tbl__id(
 				Integer feature_detection_root__project_scnfl_mapping_tbl__id) {
 			this.feature_detection_root__project_scnfl_mapping_tbl__id = feature_detection_root__project_scnfl_mapping_tbl__id;

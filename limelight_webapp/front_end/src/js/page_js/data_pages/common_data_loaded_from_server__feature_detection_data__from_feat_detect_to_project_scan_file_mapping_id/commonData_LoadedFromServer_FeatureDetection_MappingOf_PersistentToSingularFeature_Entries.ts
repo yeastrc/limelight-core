@@ -1,5 +1,5 @@
 /**
- * commonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries.ts
+ * commonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries.ts
  *
  * For Single Project Search  -  FeatureDetection Mapping of Persistent to Singular Feature Entries - Contents of imported Feature Detection
  *
@@ -15,19 +15,19 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder {
+export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder {
 
-    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry>;
+    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries : Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry>;
 
     //  Populated on demand
     private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_SingularFeatureEntry_Id :
-        Map<number, Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry>>;
+        Map<number, Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry>>;
 
     constructor(
         {
             featureDetection_MappingOf_PersistentToSingularFeature_Entries
         } : {
-            featureDetection_MappingOf_PersistentToSingularFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry>
+            featureDetection_MappingOf_PersistentToSingularFeature_Entries : Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry>
         }
     ) {
         this._featureDetection_MappingOf_PersistentToSingularFeature_Entries = featureDetection_MappingOf_PersistentToSingularFeature_Entries;
@@ -65,7 +65,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry {
+export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry {
     readonly featureDetection_PersistentFeatureEntry_Id: number; // int
     readonly featureDetection_SingularFeatureEntry_Id: number; // int
     readonly featureDetection_Root_Id: number; // int
@@ -74,39 +74,30 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult {
+export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult {
 
-    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
+    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
 }
 
 /**
  *  MAIN CLASS
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries {
+export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries {
 
     //  !! If these values change, then create a new instance of this class
 
-    private _projectSearchId: number
-
     //
 
-    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder> = new Map();
+    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder> = new Map();
 
-    private _promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>> = new Map();
+    private _promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>> = new Map();
 
     /**
      *
      * @param projectSearchIds
      * @param searchDataLookupParameters_MappingOf_PersistentToSingularFeature
      */
-    private constructor(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        this._projectSearchId = projectSearchId;
+    private constructor() {
     }
 
     /**
@@ -115,16 +106,8 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
      * @param projectSearchIds
      * @param searchDataLookupParameters_MappingOf_PersistentToSingularFeature
      */
-    static getNewInstance(
-        {
-            projectSearchId
-        }: {
-            projectSearchId: number
-        }
-    ) {
-        return new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries({
-            projectSearchId
-        });
+    static getNewInstance() {
+        return new CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries();
     }
 
     /**
@@ -137,7 +120,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }
-    ): Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult> {
+    ): Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult> {
 
         const result = this.get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -161,8 +144,8 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
         }
     ):
         {
-            data: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>
+            data: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>
         } {
 
         {
@@ -171,7 +154,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
 
                 //  Have loaded data so just return it
 
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
                     featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
                 }
 
@@ -193,14 +176,14 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
 
         const promise_Loading = this._load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
-        const promise_Return = new Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+        const promise_Return = new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason));
             promise_Loading.then(noValue => { try {
                 const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
                 if ( ! featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder ) {
                     throw Error("this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
                 }
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
                     featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
                 }
                 resolve(data);
@@ -318,11 +301,10 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
             }>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
                         feature_detection_root__project_scnfl_mapping_tbl__id
                     };
 
-                    const url =  "d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url =  "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
@@ -376,13 +358,12 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
             const promise = new Promise<any>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        projectSearchId : this._projectSearchId,
                         feature_detection_root__project_scnfl_mapping_tbl__id,
                         limit_Offset,
                         limit_Count
                     };
 
-                    const url = "d/rws/for-page/scan-file-feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0003";
+                    const url = "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
@@ -424,7 +405,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }) : void {
 
-        const featureDetection_MappingOf_PersistentToSingularFeature_EntriesList : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry> = [];
+        const featureDetection_MappingOf_PersistentToSingularFeature_EntriesList : Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry> = [];
 
         for ( const responseData of webserviceResponseData_Array ) {
 
@@ -498,7 +479,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
 
             for ( let index = 0; index < responseData_Array_Lengths; index++ ) {
 
-                const entry: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entry = {
+                const entry: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry = {
                     featureDetection_PersistentFeatureEntry_Id: featureDetection_PersistentFeatureEntry_Id_List[ index ],
                     featureDetection_SingularFeatureEntry_Id: featureDetection_SingularFeatureEntry_Id_List[ index ],
                     featureDetection_Root_Id: featureDetection_Root_Id_List[ index ]
@@ -541,7 +522,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingO
             }
         }
 
-        const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder({ featureDetection_MappingOf_PersistentToSingularFeature_Entries: featureDetection_MappingOf_PersistentToSingularFeature_EntriesList });
+        const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = new CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder({ featureDetection_MappingOf_PersistentToSingularFeature_Entries: featureDetection_MappingOf_PersistentToSingularFeature_EntriesList });
 
         this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder );
     }

@@ -99,6 +99,7 @@ import {ReporterIonMass_UserSelections_StateObject} from "page_js/data_pages/com
 import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_StateObject";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
+import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
 
 
 /**
@@ -350,9 +351,11 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
         const commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()
 
+        const commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.getNewInstance()
+
         const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.getNewInstance({
             projectSearchIds, searchDataLookupParameters_Root: searchDataLookupParamsRoot, dataPageStateManager: props.propsValue.dataPageStateManager,
-            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT, commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
         });
 
         //  Main Filtering object
@@ -398,7 +401,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                     projectSearchIds: this.props.propsValue.projectSearchIds,
                     dataPageStateManager: this.props.propsValue.dataPageStateManager,
                     searchDataLookupParameters_Root: searchDataLookupParameters_Root__NO_FILTERING,
-                    commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+                    commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+                    commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
                 })
 
             //  Main Filtering object
