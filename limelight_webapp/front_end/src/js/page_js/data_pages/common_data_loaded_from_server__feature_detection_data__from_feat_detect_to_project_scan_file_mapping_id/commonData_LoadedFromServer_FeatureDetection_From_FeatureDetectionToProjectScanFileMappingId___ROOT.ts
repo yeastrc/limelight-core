@@ -17,7 +17,7 @@ import { CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries }
  */
 export class CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT {
 
-    private _commonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id: CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id
+    private _commonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id: CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id
 
     private _commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries
     private _commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries
@@ -30,7 +30,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionT
      */
     private constructor() {
 
-        this._commonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id =
+        this._commonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id =
             CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id.getNewInstance()
 
         this._commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries = CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries.getNewInstance()
@@ -51,8 +51,8 @@ export class CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionT
 
     ///////////////
 
-    get_commonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id() {
-        return this._commonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id
+    get_commonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id() {
+        return this._commonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id
     }
 
     get_commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries() {

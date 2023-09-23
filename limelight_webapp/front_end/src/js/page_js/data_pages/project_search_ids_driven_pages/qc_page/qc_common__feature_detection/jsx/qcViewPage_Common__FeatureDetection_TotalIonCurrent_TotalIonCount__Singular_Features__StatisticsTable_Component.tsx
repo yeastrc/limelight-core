@@ -21,7 +21,7 @@ import {
     DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber
 } from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
-import { CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
+import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
 import {
     QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
     QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
@@ -35,8 +35,8 @@ import {qcPage_StandardChartLayout_StandardWidth} from "page_js/data_pages/proje
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 import {
-    CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder,
-    CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry
+    CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder,
+    CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries";
 import { CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries";
 
@@ -51,8 +51,8 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
     psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
     spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
 
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder
-    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder
+    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
+    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
     featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
 
     qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback__SectionLevel: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback
@@ -363,8 +363,8 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         } : {
             psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
             spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
-            featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder
-            featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder
+            featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
+            featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
         }
     ) {
@@ -590,7 +590,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         {
             ///  Create Feature Detection Total Ion Current, all Feature Detection Entries
 
-            const featureDetection_SingleFeature_Array_Map_Key_MS_1_ScanNumber: Map<number, Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry>> = new Map()
+            const featureDetection_SingleFeature_Array_Map_Key_MS_1_ScanNumber: Map<number, Array<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>> = new Map()
 
             for ( const featureDetection_SingleFeature_Entry of featureDetection_SingularFeature_Entries_Holder.get_FeatureDetection_SingularFeature_Entries() ) {
 
@@ -727,7 +727,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                 ms_2_scanData_For_PSMs_Map_Key_ScanNumber.set( ms_2_scanData.scanNumber, ms_2_scanData );
             }
 
-            const featureDetection_SingularFeature_Map_Key_SingularFeatureId_Map_Key_MS_1_ScanNumber: Map<number, Map<number, CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry>> = new Map()
+            const featureDetection_SingularFeature_Map_Key_SingularFeatureId_Map_Key_MS_1_ScanNumber: Map<number, Map<number, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>> = new Map()
 
             for ( const featureDetection_SingularFeature_Entry of featureDetection_SingularFeature_Entries_Holder.get_FeatureDetection_SingularFeature_Entries() ) {
 

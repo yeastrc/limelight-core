@@ -1,5 +1,5 @@
 /**
- * commonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id.ts
+ * commonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id.ts
  *
  * For FeatureDetection ProjectScanFileId From feature_detection_root__project_scnfl_mapping_tbl__id
  *
@@ -15,7 +15,7 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder {
+export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder {
 
     private _projectScanFileId : number
 
@@ -40,9 +40,9 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectS
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult {
+export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult {
 
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
 }
 
 /**
@@ -52,9 +52,9 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
 
     //  !! If these values change, then create a new instance of this class
 
-    private _featureDetection_Holder_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id: Map<number, CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder> = new Map();
+    private _featureDetection_Holder_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id: Map<number, CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder> = new Map();
 
-    private _promise_Load_Data_InProgress_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id: Map<number, Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>> = new Map();
+    private _promise_Load_Data_InProgress_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id: Map<number, Promise<CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>> = new Map();
 
     /**
      *
@@ -76,15 +76,15 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
      * !!!  Always return promise
      *
      */
-    get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_ReturnPromise(
+    get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_ReturnPromise(
         {
             feature_detection_root__project_scnfl_mapping_tbl__id
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }
-    ): Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult> {
+    ): Promise<CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult> {
 
-        const result = this.get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ feature_detection_root__project_scnfl_mapping_tbl__id });
+        const result = this.get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
         if (result.data) {
 
@@ -98,7 +98,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
     /**
      *
      */
-    get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder(
+    get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder(
         {
             feature_detection_root__project_scnfl_mapping_tbl__id
         } : {
@@ -106,8 +106,8 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
         }
     ):
         {
-            data: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>
+            data: CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>
         } {
 
         {
@@ -116,7 +116,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
 
                 //  Have loaded data so just return it
 
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
                     featureDetection_SingularFeature_Entries_Holder
                 }
 
@@ -138,14 +138,14 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
 
         const promise_Loading = this._load_Data({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
-        const promise_Return = new Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>((resolve, reject) => { try {
+        const promise_Return = new Promise<CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult>(( resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason));
             promise_Loading.then(noValue => { try {
                 const featureDetection_SingularFeature_Entries_Holder = this._featureDetection_Holder_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id.get( feature_detection_root__project_scnfl_mapping_tbl__id );
                 if ( ! featureDetection_SingularFeature_Entries_Holder ) {
                     throw Error("this._featureDetection_Holder_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
                 }
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
                     featureDetection_SingularFeature_Entries_Holder
                 }
                 resolve(data);
@@ -198,7 +198,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
                         console.log("END:  AJAX Call to get " + url + ", Now: " + new Date() );
 
                         const holder =
-                            new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ projectScanFileId: responseData.projectScanFileId });
+                            new CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ projectScanFileId: responseData.projectScanFileId });
 
                         if ( holder.get_projectScanFileId() === undefined || holder.get_projectScanFileId() === null ) {
                             const msg = "( holder.get_projectScanFileId() === undefined || holder.get_projectScanFileId() === null )"

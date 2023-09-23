@@ -15,15 +15,15 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder {
+export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder {
 
-    private _featureDetection_SingularFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry>;
+    private _featureDetection_SingularFeature_Entries : Array<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>;
 
     constructor(
         {
             featureDetection_SingularFeature_Entries
         } : {
-            featureDetection_SingularFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry>
+            featureDetection_SingularFeature_Entries : Array<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry>
         }
     ) {
         this._featureDetection_SingularFeature_Entries = featureDetection_SingularFeature_Entries;
@@ -40,7 +40,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry {
+export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry {
     readonly id: number;  //  int
     readonly ms_1_scan_number: number;  //  int
     readonly monoisotopic_mass: number;  //  Double
@@ -55,9 +55,9 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Singular
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult {
+export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult {
 
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder
+    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
 }
 
 /**
@@ -69,9 +69,9 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
     //
 
-    private _featureDetection_SingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder> = new Map();
+    private _featureDetection_SingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder> = new Map();
 
-    private _promise_Load_FeatureDetection_SingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>> = new Map();
+    private _promise_Load_FeatureDetection_SingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>> = new Map();
 
     /**
      *
@@ -97,7 +97,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }
-    ): Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult> {
+    ): Promise<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult> {
 
         const result = this.get_FeatureDetection_SingularFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -121,8 +121,8 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
         }
     ):
         {
-            data: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>
+            data: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>
         } {
 
         {
@@ -131,7 +131,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
                 //  Have loaded data so just return it
 
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult = {
                     featureDetection_SingularFeature_Entries_Holder
                 }
 
@@ -153,14 +153,14 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
         const promise_Loading = this._load_FeatureDetection_SingularFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
-        const promise_Return = new Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+        const promise_Return = new Promise<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult>(( resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason));
             promise_Loading.then(noValue => { try {
                 const featureDetection_SingularFeature_Entries_Holder = this._featureDetection_SingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
                 if ( ! featureDetection_SingularFeature_Entries_Holder ) {
                     throw Error("this._featureDetection_SingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
                 }
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries__get_FeatureDetection_SingularFeature_EntriesHolder__FunctionResult = {
                     featureDetection_SingularFeature_Entries_Holder
                 }
                 resolve(data);
@@ -387,7 +387,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }) : void {
 
-        const featureDetection_SingularFeature_EntriesList : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry> = [];
+        const featureDetection_SingularFeature_EntriesList : Array<CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry> = [];
 
         for ( const responseData of webserviceResponseData_Array ) {
 
@@ -584,7 +584,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
             for ( let index = 0; index < responseData_Array_Lengths; index++ ) {
 
-                const entry: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entry = {
+                const entry: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry = {
                     id: id_List[ index ],
                     ms_1_scan_number: ms_1_scan_number_List[ index ],
                     monoisotopic_mass: monoisotopic_mass_List[ index ],
@@ -670,7 +670,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
             }
         }
 
-        const featureDetection_SingularFeature_Entries_Holder = new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_SingularFeature_Entries_Holder({ featureDetection_SingularFeature_Entries: featureDetection_SingularFeature_EntriesList });
+        const featureDetection_SingularFeature_Entries_Holder = new CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder({ featureDetection_SingularFeature_Entries: featureDetection_SingularFeature_EntriesList });
 
         this._featureDetection_SingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_SingularFeature_Entries_Holder );
     }

@@ -1,7 +1,7 @@
 /**
  * commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries.ts
  *
- * For Single Project Search  -  FeatureDetection Persistent Feature Entries - Contents of imported Feature Detection
+ * FeatureDetection Persistent Feature Entries - Contents of imported Feature Detection
  *
  * Data loaded from server and code to load data from server
  *
@@ -16,18 +16,18 @@ import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder {
+export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder {
 
-    private _featureDetection_PersistentFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry>;
+    private _featureDetection_PersistentFeature_Entries : Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>;
 
     //  Populated on demand
-    private _featureDetection_PersistentFeature_Entries_Map_Key_featureDetection_SingularFeatureEntry_Id : Map<number,CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry>
+    private _featureDetection_PersistentFeature_Entries_Map_Key_featureDetection_SingularFeatureEntry_Id : Map<number,CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>
 
     constructor(
         {
             featureDetection_PersistentFeature_Entries
         } : {
-            featureDetection_PersistentFeature_Entries : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry>
+            featureDetection_PersistentFeature_Entries : Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>
         }
     ) {
         this._featureDetection_PersistentFeature_Entries = featureDetection_PersistentFeature_Entries;
@@ -60,7 +60,7 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry {
+export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry {
     readonly id_PersistentFeature_Entry: number; // int
     readonly featureDetectionPersistentFeatureUploadedFileStatsId: number; // int
 
@@ -85,9 +85,9 @@ export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Persiste
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult {
+export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult {
 
-    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder
+    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
 }
 
 /**
@@ -99,9 +99,9 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
 
     //
 
-    private _featureDetection_PersistentFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder> = new Map();
+    private _featureDetection_PersistentFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder> = new Map();
 
-    private _promise_Load_FeatureDetection_PersistentFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>> = new Map();
+    private _promise_Load_FeatureDetection_PersistentFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>> = new Map();
 
     /**
      *
@@ -132,7 +132,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
         }
-    ): Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult> {
+    ): Promise<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult> {
 
         const result = this.get_FeatureDetection_PersistentFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -156,8 +156,8 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
         }
     ):
         {
-            data: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>
+            data: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>
         } {
 
         {
@@ -166,7 +166,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
 
                 //  Have loaded data so just return it
 
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult = {
                     featureDetection_PersistentFeature_Entries_Holder
                 }
 
@@ -188,14 +188,14 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
 
         const promise_Loading = this._load_FeatureDetection_PersistentFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
-        const promise_Return = new Promise<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+        const promise_Return = new Promise<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult>(( resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason));
             promise_Loading.then(noValue => { try {
                 const featureDetection_PersistentFeature_Entries_Holder = this._featureDetection_PersistentFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
                 if ( ! featureDetection_PersistentFeature_Entries_Holder ) {
                     throw Error("this._featureDetection_PersistentFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
                 }
-                const data : CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult = {
+                const data : CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries__get_FeatureDetection_PersistentFeature_EntriesHolder__FunctionResult = {
                     featureDetection_PersistentFeature_Entries_Holder
                 }
                 resolve(data);
@@ -280,7 +280,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
             throw Error(msg);
         }
 
-        const featureDetection_PersistentFeature_EntriesList : Array<CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry> = [];
+        const featureDetection_PersistentFeature_EntriesList : Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry> = [];
 
         //  Validate each entry is a number
 
@@ -296,7 +296,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 result_Entry.ms_2_scanNumbers_Array = JSON.parse( result_Entry.ms_2_scn_nmbrs_array_json_String );
             }
 
-            const entry = result_Entry as CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entry;
+            const entry = result_Entry as CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry;
 
             if ( entry.id_PersistentFeature_Entry === undefined || entry.id_PersistentFeature_Entry === null ) {
                 const msg = "entry.id_PersistentFeature_Entry is undefined or null. ";
@@ -422,7 +422,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
             featureDetection_PersistentFeature_EntriesList.push( entry );
         }
 
-        const featureDetection_PersistentFeature_Entries_Holder = new CommonData_LoadedFromServer_SingleSearch__FeatureDetection_PersistentFeature_Entries_Holder({ featureDetection_PersistentFeature_Entries: featureDetection_PersistentFeature_EntriesList });
+        const featureDetection_PersistentFeature_Entries_Holder = new CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder({ featureDetection_PersistentFeature_Entries: featureDetection_PersistentFeature_EntriesList });
 
         this._featureDetection_PersistentFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_PersistentFeature_Entries_Holder );
     }
