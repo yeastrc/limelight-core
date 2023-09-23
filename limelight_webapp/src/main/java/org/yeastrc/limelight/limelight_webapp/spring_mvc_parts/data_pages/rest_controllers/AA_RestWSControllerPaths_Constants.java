@@ -822,6 +822,6 @@ public class AA_RestWSControllerPaths_Constants {
 
 	
 	public static final String SCAN_DATA_WITH_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_OPTIONAL_M_OVER_Z_RANGES_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-optional-m-over-z-ranges";
+			"d/rws/for-page/psfb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-optional-m-over-z-ranges";
 
 }

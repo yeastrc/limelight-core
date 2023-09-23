@@ -176,7 +176,7 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
                     m_over_Z_Ranges: requestParams.m_over_Z_Ranges
                 };
 
-                const url = "d/rws/for-page/psb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-optional-m-over-z-ranges";
+                const url = "d/rws/for-page/psfb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-optional-m-over-z-ranges";
 
                 console.log("START: getting data from URL: " + url);
 
