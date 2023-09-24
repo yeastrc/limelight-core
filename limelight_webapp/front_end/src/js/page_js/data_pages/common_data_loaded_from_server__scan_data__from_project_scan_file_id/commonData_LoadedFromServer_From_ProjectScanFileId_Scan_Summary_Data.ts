@@ -1,19 +1,10 @@
 /**
- * commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data.ts
+ * commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data.ts
  *
  * Data across Project since pass in ProjectScanFileId  -  
  *
  * Data loaded from server and code to load data from server
  *
- */
-/**
- * commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId.ts
- *
- * For Single Project Search  -  ScanData Summary Data
- *
- * Data loaded from server and code to load data from server
- *
- * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
@@ -23,15 +14,15 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId {
+export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId {
 
-    readonly scanLevelEntries: ReadonlyArray<CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId_SingleScanLevel>
+    readonly scanLevelEntries: ReadonlyArray<CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_SingleScanLevel>
 }
 
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId_SingleScanLevel {
+export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_SingleScanLevel {
 
     readonly scanLevel: number
     readonly numberOfScans: number
@@ -41,9 +32,9 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder {
+export class CommonData_LoadedFromServer__ScanData_Summary_Data_Holder {
 
-    private _scanData_PerProjectScanFileId_Map_Key_ProjectScanFileId = new Map<number, CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId>()
+    private _scanData_PerProjectScanFileId_Map_Key_ProjectScanFileId = new Map<number, CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId>()
 
     /**
      *
@@ -62,7 +53,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Hol
             projectScanFileId, entry
         } : {
             projectScanFileId: number
-            entry: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId
+            entry: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId
         } ) {
 
         this._scanData_PerProjectScanFileId_Map_Key_ProjectScanFileId.set( projectScanFileId, entry )
@@ -72,19 +63,19 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Hol
 /**
  *
  */
-export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder__FunctionResult {
+export class CommonData_LoadedFromServer__ScanData_Summary_Data_Holder__FunctionResult {
 
-    commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder
+    commonData_LoadedFromServer__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer__ScanData_Summary_Data_Holder
 }
 
 /**
  *  !!!!!!  MAIN CLASS  !!!!!!!!
  */
-export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass {
+export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass {
 
     //
 
-    private _commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder = new CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder()
+    private _commonData_LoadedFromServer__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer__ScanData_Summary_Data_Holder = new CommonData_LoadedFromServer__ScanData_Summary_Data_Holder()
 
     private _promise_LoadingInProgress_Map_Key_ProjectScanFileId: Map<number, Promise<void>> = new Map()
 
@@ -102,7 +93,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
      * @param projectSearchIds
      */
     static getNewInstance() {
-        return new CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass();
+        return new CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass();
     }
 
     /**
@@ -110,7 +101,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
      *
      * Get all for projectScanFileId
      */
-    get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise(projectScanFileId: number): Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder__FunctionResult> {
+    get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise(projectScanFileId: number): Promise<CommonData_LoadedFromServer__ScanData_Summary_Data_Holder__FunctionResult> {
         try {
             const result = this.get_ScanData_Summary_DataHolder_For_ProjectScanFileId(projectScanFileId);
 
@@ -134,16 +125,16 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
      */
     get_ScanData_Summary_DataHolder_For_ProjectScanFileId(projectScanFileId: number):
         {
-            data: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder__FunctionResult
-            promise: Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder__FunctionResult>
+            data: CommonData_LoadedFromServer__ScanData_Summary_Data_Holder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer__ScanData_Summary_Data_Holder__FunctionResult>
         } {
 
-        if (this._commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId(projectScanFileId) ) {
+        if (this._commonData_LoadedFromServer__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId(projectScanFileId) ) {
 
             //  Have loaded data so just return it
             return {
                 data: {
-                    commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder: this._commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder
+                    commonData_LoadedFromServer__ScanData_Summary_Data_Holder: this._commonData_LoadedFromServer__ScanData_Summary_Data_Holder
                 },
                 promise: undefined
             };
@@ -156,11 +147,11 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
             this._promise_LoadingInProgress_Map_Key_ProjectScanFileId.set(projectScanFileId, promise_LoadingInProgress_For_ProjectScanFileId)
         }
 
-        return {data: undefined, promise: new Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder__FunctionResult>((resolve, reject) => { try {
+        return {data: undefined, promise: new Promise<CommonData_LoadedFromServer__ScanData_Summary_Data_Holder__FunctionResult>(( resolve, reject) => { try {
                 promise_LoadingInProgress_For_ProjectScanFileId.catch(reason => reject(reason))
                 promise_LoadingInProgress_For_ProjectScanFileId.then(novalue => { try {
 
-                    resolve({ commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder: this._commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder })
+                    resolve({ commonData_LoadedFromServer__ScanData_Summary_Data_Holder: this._commonData_LoadedFromServer__ScanData_Summary_Data_Holder })
 
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -218,7 +209,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
             projectScanFileId: number
         }): void {
 
-        const spectralStorage_Summary_DataFor_SingleProjectScanFileId: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId = responseData
+        const spectralStorage_Summary_DataFor_SingleProjectScanFileId: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId = responseData
 
         if ( spectralStorage_Summary_DataFor_SingleProjectScanFileId.scanLevelEntries ) {
             if ( ! ( spectralStorage_Summary_DataFor_SingleProjectScanFileId.scanLevelEntries instanceof Array ) ) {
@@ -262,6 +253,6 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
             }
         }
 
-        this._commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.InternalUse__InsertEntry({ projectScanFileId, entry: spectralStorage_Summary_DataFor_SingleProjectScanFileId })
+        this._commonData_LoadedFromServer__ScanData_Summary_Data_Holder.InternalUse__InsertEntry({ projectScanFileId, entry: spectralStorage_Summary_DataFor_SingleProjectScanFileId })
     }
 }

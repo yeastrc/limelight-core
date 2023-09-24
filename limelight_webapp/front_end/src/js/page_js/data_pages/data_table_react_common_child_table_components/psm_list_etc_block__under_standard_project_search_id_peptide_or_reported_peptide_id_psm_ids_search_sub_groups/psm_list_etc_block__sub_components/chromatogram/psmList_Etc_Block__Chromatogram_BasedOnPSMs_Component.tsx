@@ -57,7 +57,7 @@ import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber,
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
-import { CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
+import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 
 
 const _CHART_WIDTH = 800
@@ -1235,7 +1235,7 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
      */
     private _is_Any_MS_1_Scans_For_SearchScanFileId__PassIn_SpectralStorage_Summary_Data_For_SearchScanFileId(
 
-        scanData_Summary_Data_For_SearchScanFileId: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId
+        scanData_Summary_Data_For_SearchScanFileId: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId
     ) : boolean {
 
         if ( scanData_Summary_Data_For_SearchScanFileId.scanLevelEntries ) {

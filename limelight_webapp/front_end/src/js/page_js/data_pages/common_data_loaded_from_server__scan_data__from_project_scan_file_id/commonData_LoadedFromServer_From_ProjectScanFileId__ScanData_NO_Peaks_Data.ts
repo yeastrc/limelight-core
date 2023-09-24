@@ -405,7 +405,7 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Pea
 
                     console.log( "END: Successful: AJAX Call: getting data from URL: " + url );
 
-                    const holder = _populate_DataPage_common_Data_Holder_SingleSearch_ScanData_NO_Peaks_Data_Root({responseData, requestParams });
+                    const holder = _populate_DataPage_common_Data_Holder__ScanData_NO_Peaks_Data_Root({responseData, requestParams });
 
                     resolve(holder);
 
@@ -420,7 +420,7 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Pea
 /**
  *
  */
-const _populate_DataPage_common_Data_Holder_SingleSearch_ScanData_NO_Peaks_Data_Root = function (
+const _populate_DataPage_common_Data_Holder__ScanData_NO_Peaks_Data_Root = function (
     {
         responseData, requestParams
     } : {

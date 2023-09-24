@@ -10,14 +10,14 @@
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
-import { CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
+import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 
 /**
  *
  */
 export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder {
 
-    private _scanData_PerSearchScanFileId_Map_Key_SearchScanFileId = new Map<number, CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId>()
+    private _scanData_PerSearchScanFileId_Map_Key_SearchScanFileId = new Map<number, CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId>()
 
     /**
      *
@@ -36,7 +36,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Hol
             searchScanFileId, entry
         } : {
             searchScanFileId
-            entry: CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId
+            entry: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId
         }) : void {
 
         this._scanData_PerSearchScanFileId_Map_Key_SearchScanFileId.set( searchScanFileId, entry )
@@ -187,11 +187,11 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For
             const get_ScanData_NO_Peaks_DataHolder_Result =
                 await
                     this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.get_ParentObject().
-                    get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass().
+                    get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass().
                     get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise( projectScanFileId_SearchScanFileId_Entry.projectScanFileId )
 
             const scanData_Summary_Data_For_ProjectScanFileId =
-                get_ScanData_NO_Peaks_DataHolder_Result.commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId( projectScanFileId_SearchScanFileId_Entry.projectScanFileId )
+                get_ScanData_NO_Peaks_DataHolder_Result.commonData_LoadedFromServer__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId( projectScanFileId_SearchScanFileId_Entry.projectScanFileId )
             if ( ! scanData_Summary_Data_For_ProjectScanFileId ) {
                 const msg = "get_ScanData_NO_Peaks_DataHolder_Result.commonData_LoadedFromServer_SingleSearch__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId( projectScanFileId_SearchScanFileId_Entry.projectScanFileId )) returned NOTHING for projectScanFileId_SearchScanFileId_Entry.projectScanFileId: " + projectScanFileId_SearchScanFileId_Entry.projectScanFileId
                 console.warn(msg)
