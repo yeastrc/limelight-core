@@ -47,10 +47,12 @@ public class LimelightXMLFileUploadWebConstants {
 	public static final String UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_SUFFIX = ".xml";
 
 	public static final String UPLOAD_FASTA_FILE_TEMP_FILENAME_PREFIX = "uploaded_fasta_file_";
+
+	public static final String UPLOAD_GENERIC_OTHER_FILE_TEMP_FILENAME_PREFIX = "uploaded_generic_other_file_";
+	
 	
 	public static final String UPLOAD_SCAN_FILE_TEMP_FILENAME_PREFIX = "uploaded_scan_file_";
-	
-	
+
 	
 	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX__DEFAULT_AND_SPECTR_1_X__MZML = ".mzML"; 
 	public static final String UPLOAD_SCAN_FILE_ALLOWED_SUFFIX__DEFAULT_AND_SPECTR_1_X__MZXML = ".mzXML";

@@ -107,17 +107,23 @@ public class Limelight_XML_Importer_Work_Directory_And_SubDirs_Web implements Li
 	 */
 	@Override
 	public File getUploadFile( String scanFileSuffix, int fileIndex, FileImportFileType fileType, File uploadTempBase ) throws LimelightWebappFileUploadFileSystemException {
+		
 		String uploadFilename = null;
+		
 		if ( fileType == FileImportFileType.LIMELIGHT_XML_FILE ) {
 			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_PREFIX
 					+ fileIndex
 					+ LimelightXMLFileUploadWebConstants.UPLOAD_LIMELIGHT_XML_FILE_TEMP_FILENAME_SUFFIX;
+			
 		} else if ( fileType == FileImportFileType.FASTA_FILE ) {
-			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_FASTA_FILE_TEMP_FILENAME_PREFIX
-					+ fileIndex;
+			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_FASTA_FILE_TEMP_FILENAME_PREFIX + fileIndex;
+
+		} else if ( fileType == FileImportFileType.GENERIC_OTHER_FILE ) {
+			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_GENERIC_OTHER_FILE_TEMP_FILENAME_PREFIX + fileIndex;
+			
 		} else if ( fileType == FileImportFileType.SCAN_FILE ) {
-			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_TEMP_FILENAME_PREFIX
-					+ fileIndex + scanFileSuffix;
+			uploadFilename = LimelightXMLFileUploadWebConstants.UPLOAD_SCAN_FILE_TEMP_FILENAME_PREFIX + fileIndex + scanFileSuffix;
+			
 		} else {
 			String msg = "getUploadFile(...): Unknown value for fileType: " + fileType;
 			log.error( msg );

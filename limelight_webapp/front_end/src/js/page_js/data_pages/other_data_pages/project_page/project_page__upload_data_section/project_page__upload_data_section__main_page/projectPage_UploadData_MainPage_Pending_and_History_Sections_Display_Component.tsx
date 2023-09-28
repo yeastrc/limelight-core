@@ -1157,6 +1157,18 @@ class Internal__Pending_OR_History_Section__SingleItem__Display_Component extend
                             </>
                         ) : null }
 
+                        { fileImport_TrackingItem.genericOtherFileFileNamesCommaDelim ? (
+                            //  Have Other Files Filenames so display
+                            <>
+                                <div style={ detailsLine_Label_CSS }>
+                                    Other files:
+                                </div>
+                                <div style={ detailsLine_Value_CSS }>
+                                    { fileImport_TrackingItem.genericOtherFileFileNamesCommaDelim }
+                                </div>
+                            </>
+                        ) : null }
+
                         { fileImport_TrackingItem.searchName ? (
                             //  Have Search Name so display
                             <>
@@ -1582,6 +1594,10 @@ class Internal__FileImportTrackingDisplay {
     lastUpdatedDateTime: string;
 
     fastafileName: string
+
+    genericOtherFileFilenames: Array<string>
+
+    genericOtherFileFileNamesCommaDelim: string
 
     scanFilenames: Array<string>;
 

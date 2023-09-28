@@ -424,6 +424,48 @@
 						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_SCAN_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>')
 					</div>
 				</div>
+				
+				
+				<%--  Generic Other File - Max Upload File Size --%>
+				
+				<c:if test="${ not empty Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property }">
+					<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+						<div style="display: grid; grid-template-columns: min-content 1fr">
+							
+							<div style="color: red; margin-right: 3px;" >*</div>
+							<div>
+								Generic Other File Max Size  Value set here is ignored since it is configured via Environment Variable or java -D parameter
+								'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>'
+								with value 
+								'<c:out value="${ Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property }"></c:out>'
+							</div>
+						</div>
+					</div>
+				</c:if>
+	
+				<div style="margin-bottom: 3px;" >
+					<div class="config_single_input_root_jq">
+						Scan File Max Size in GB: 
+						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
+						data-config-key="<%= ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						>
+						
+						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
+							An
+							 <span title="A whole number with no decimal point or fraction">integer</span>
+							  is required, or make it an empty field
+						</span>
+						<span
+							style="margin-left: 6px"
+						>
+							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+						</span>
+					</div>
+					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
+						(Or use Environment Variable or java -D parameter
+						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>')
+					</div>
+				</div>
 			</div>
 		</div>
 	  </div> 

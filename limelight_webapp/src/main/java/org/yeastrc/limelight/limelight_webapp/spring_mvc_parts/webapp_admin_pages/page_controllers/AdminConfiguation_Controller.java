@@ -106,6 +106,10 @@ public class AdminConfiguation_Controller {
 			httpServletRequest.setAttribute( 
 					"Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property", 
 					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property() );
+
+			httpServletRequest.setAttribute( 
+					"Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property", 
+					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property() );
 			
 			
 

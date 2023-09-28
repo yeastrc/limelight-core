@@ -31,7 +31,8 @@ public enum LimelightSubmit_FileImportFileType {
 
     LIMELIGHT_XML_FILE( 1 ),
     SCAN_FILE( 2 ),
-    FASTA_FILE( 3 )
+    FASTA_FILE( 3 ),
+    GENERIC_OTHER_FILE(4)
     ;
 
     

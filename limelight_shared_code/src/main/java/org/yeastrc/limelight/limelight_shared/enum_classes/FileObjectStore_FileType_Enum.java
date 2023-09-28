@@ -17,7 +17,12 @@ public enum FileObjectStore_FileType_Enum {
     /**
      * FASTA file
      */
-    FASTA_FILE_TYPE(2);
+    FASTA_FILE_TYPE(2),
+
+    /**
+     * Generic Other file
+     */
+    GENERIC_OTHER_FILE_TYPE(3);
 
     
     private final int value;
@@ -37,6 +42,11 @@ public enum FileObjectStore_FileType_Enum {
     	if ( enumValue == FileObjectStore_FileType_Enum.FASTA_FILE_TYPE ) {
     		
     		return "FASTA FILE";
+    	}
+
+    	if ( enumValue == FileObjectStore_FileType_Enum.GENERIC_OTHER_FILE_TYPE) {
+    		
+    		return "Generic File";
     	}
     	
     	throw new IllegalArgumentException( "fileObjectStore_FileType_GetDescriptionString_ForEnumValue(...): enumValue is unknown.  enumValue.value(): " + enumValue.value() );

@@ -46,6 +46,7 @@ import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dt
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.FileImportFileType;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.enum_classes.ImportSingleFileUploadStatus;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.utils.Limelight_XML_ImporterWrkDirAndSbDrsCmmn;
+import org.yeastrc.limelight.limelight_submit_import_client_connector.constants.Limelight_SubmitImport_Version_Constants;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Request_Common;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_Base;
 import org.yeastrc.limelight.limelight_submit_import_client_connector.request_response_objects.SubmitImport_UploadFile_Response_PgmXML;
@@ -378,14 +379,48 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 
 				//  Return Error
 				webserviceResult.setStatusSuccess(false);
-				webserviceResult.setScanFileNotAllowed(true);
 
+				if ( webserviceRequestHeaderContents.getSubmitProgram_Version() != null
+						&& webserviceRequestHeaderContents.getSubmitProgram_Version().intValue() >= 9 ) {
+					
+					webserviceResult.setFastaFile_NotAllowed(true);
+					
+				} else {
+					
+					webserviceResult.setScanFileNotAllowed(true);	
+				}
+				
 				methodResults.returnBadRequestStatusCode = true;
 
 				//  EARLY RETURN
 				return methodResults;
 			}
 			
+
+			if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.GENERIC_OTHER_FILE 
+					&& ( ! isFileObjectStorageFileImportAllowedViaWebSubmit.isFileObjectStorageFileImportAllowedViaWebSubmit() ) ) {
+
+				log.warn( "'fileType' is : GENERIC_OTHER_FILE but File Object Storage files are not allowed via web submit" );
+
+				//  Return Error
+				webserviceResult.setStatusSuccess(false);
+
+				if ( webserviceRequestHeaderContents.getSubmitProgram_Version() != null
+						&& webserviceRequestHeaderContents.getSubmitProgram_Version().intValue() >= 9 ) {
+					
+					webserviceResult.setGenericOtherFile_NotAllowed(true);
+					
+				} else {
+					
+					webserviceResult.setScanFileNotAllowed(true);	
+				}
+				
+
+				methodResults.returnBadRequestStatusCode = true;
+
+				//  EARLY RETURN
+				return methodResults;
+			}
 			
 			if ( StringUtils.isEmpty( projectIdString ) ) {
 				log.warn( "'projectIdentifier' header JSON is not sent or is empty.  uploadKeyString: " + uploadKeyString
@@ -420,6 +455,11 @@ public class Project_UploadData_V1_UploadFile_OldFor_OldSubmitImportProgram_Rest
 			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.FASTA_FILE ) {
 				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE();
 				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE_FORMATTED();
+
+			} else if ( webserviceMethod_Internal_Params.fileType == FileImportFileType.GENERIC_OTHER_FILE ) {
+				webserviceMethod_Internal_Params.maxFileSize = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE();
+				webserviceMethod_Internal_Params.maxFileSizeFormatted = FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_FORMATTED();
+				
 			} else {
 				String msg = "Unknown value for fileType: " + webserviceMethod_Internal_Params.fileType + ".  uploadKeyString: " + uploadKeyString
 					+ ", projectId: " + webserviceMethod_Internal_Params.projectId 

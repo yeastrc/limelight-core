@@ -56,6 +56,8 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	@XmlAttribute
 	private Boolean fastaFile_InvalidContents;
 	@XmlAttribute
+	private Boolean fastaFile_NotAllowed;
+	@XmlAttribute
 	private boolean scanFileNotAllowed;
 	@XmlAttribute
 	private boolean scanFilenameSuffixNotValid;
@@ -63,6 +65,8 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	private boolean scanFileFailsInitialParse;
 	@XmlAttribute
 	private boolean scanFilerootXMLNodeIncorrect;
+	@XmlAttribute
+	private Boolean genericOtherFile_NotAllowed;
 	@XmlAttribute
 	private boolean projectLocked;
 	
@@ -161,6 +165,18 @@ public abstract class SubmitImport_UploadFile_Response_Base extends BaseSubmitIm
 	}
 	public void setFastaFile_InvalidContents(Boolean fastaFile_InvalidContents) {
 		this.fastaFile_InvalidContents = fastaFile_InvalidContents;
+	}
+	public Boolean getFastaFile_NotAllowed() {
+		return fastaFile_NotAllowed;
+	}
+	public void setFastaFile_NotAllowed(Boolean fastaFile_NotAllowed) {
+		this.fastaFile_NotAllowed = fastaFile_NotAllowed;
+	}
+	public Boolean getGenericOtherFile_NotAllowed() {
+		return genericOtherFile_NotAllowed;
+	}
+	public void setGenericOtherFile_NotAllowed(Boolean genericOtherFile_NotAllowed) {
+		this.genericOtherFile_NotAllowed = genericOtherFile_NotAllowed;
 	}
 	
 }

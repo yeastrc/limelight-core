@@ -698,6 +698,14 @@ public class Project_UploadData_UploadSubmit_RestWebserviceController {
 						webservice_Result_Base.setSubmittedFASTAFileNotAllowed( true );
 						return webserviceMethod_Internal_Results;  //  EARLY EXIT
 					}
+
+				} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.GENERIC_OTHER_FILE.value() ) {
+					if ( ! isFileObjectStorageFileImportAllowed ) {
+						webservice_Result_Base.setStatusSuccess( false );
+						webservice_Result_Base.setSubmittedFASTAFileNotAllowed( true );
+						return webserviceMethod_Internal_Results;  //  EARLY EXIT
+					}
+					
 				} else if ( requestFileItem.getFileType().intValue() == FileImportFileType.SCAN_FILE.value() ) {
 					if ( ! isScanFileImportAllowed ) {
 						webservice_Result_Base.setStatusSuccess( false );

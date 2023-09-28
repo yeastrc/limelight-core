@@ -133,6 +133,7 @@ public class SubmitImportProgram {
 		File fastaFile = null;
 		
 		List<File> scanFiles = null;
+		List<File> genericOtherFiles = null;
 
 		try {
 			CmdLineParser cmdLineParser = new CmdLineParser();
@@ -152,8 +153,24 @@ public class SubmitImportProgram {
 			CmdLineParser.Option fastaFile_SendOnlyIfPossible_CommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "fasta-file-send-only-if-possible" );
 			
 			CmdLineParser.Option scanFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 's', "scan-file" );
-
+			
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
+
+			
+			//  Commented out until approve the chosen command line string: genericOtherFilesFromCommandLineCommandLineOpt
+			
+			//       Uncomment all usage of genericOtherFilesFromCommandLineCommandLineOpt below
+			
+//			CmdLineParser.Option genericOtherFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "misc-file" );
+			
+//			Help Addition below "--no-scan-files":
+//			
+//			--misc-file=  <miscellaneous file to save to search>
+//			   (Optional.  Save other miscellaneous files to be dowloadable when view search
+//			    Repeat the: 
+//			    	--misc-file=  <file to save to search>
+//			    for each file.)
+
 
 			CmdLineParser.Option noLimelightXMLFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-limelight-xml-file" );
 			
@@ -353,7 +370,10 @@ public class SubmitImportProgram {
 
 			@SuppressWarnings("rawtypes")
 			Vector inputScanFileStringVector = cmdLineParser.getOptionValues( scanFilesFromCommandLineCommandLineOpt );
-			
+
+			@SuppressWarnings("rawtypes")
+			Vector input_GenericOtherFiles_StringVector = null; // cmdLineParser.getOptionValues( genericOtherFilesFromCommandLineCommandLineOpt );
+					
 			//  Since have default as second param to 'getOptionValue' will always return true or false so no need to handle null
 
 			boolean noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
@@ -408,6 +428,10 @@ public class SubmitImportProgram {
 				}
 				if ( StringUtils.isNotEmpty(fastaFileString) ) {
 					System.err.println( "FASTA file NOT ALLOWED when Param for No Limelight XML File is specified." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				if ( input_GenericOtherFiles_StringVector != null && input_GenericOtherFiles_StringVector.size() > 0 ) {
+					System.err.println( "'misc-file' NOT ALLOWED when Param for No Limelight XML File is specified." );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 				if ( authTestCommandLineOptChosen ) {
@@ -490,6 +514,58 @@ public class SubmitImportProgram {
 					scanFiles.add( scanFile );
 				}
 			}
+			
+
+			if ( input_GenericOtherFiles_StringVector != null && ( ! input_GenericOtherFiles_StringVector.isEmpty() ) ) {
+
+				if ( authTestCommandLineOptChosen ) {
+					System.err.println( "Scan files NOT ALLOWED when param " + AUTH_TEST_PARAM_STRING_WITH_LEADING_DASHES + " is passed." );
+					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+				}
+				
+				genericOtherFiles = new ArrayList<>();
+
+				for ( Object input_GenericOtherFile_StringObject : input_GenericOtherFiles_StringVector ) {
+
+					if ( ! (  input_GenericOtherFile_StringObject instanceof String ) ) {
+
+						System.err.println( "" );
+						System.err.println( "Internal ERROR:  input_GenericOtherFile_StringObject is not a String object." );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_PROGRAM_PROBLEM);  //  EARLY EXIT
+					}
+
+					String inputScanFileString = (String) input_GenericOtherFile_StringObject;
+
+					if( inputScanFileString == null || inputScanFileString.equals( "" ) ) {
+
+						System.err.println( "" );
+						System.err.println( "Internal ERROR:  input_GenericOtherFile_StringObject is empty or null." );
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_PROGRAM_PROBLEM);  //  EARLY EXIT
+					}
+
+					File genericOtherFile = new File( inputScanFileString );
+
+					if( ! genericOtherFile.exists() ) {
+
+						System.err.println( "" );
+						System.err.println( "Could not find 'add file': " + genericOtherFile.getAbsolutePath() );
+
+						System.err.println( "" );
+						System.err.println( FOR_HELP_STRING );
+
+						System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
+					}
+
+					genericOtherFiles.add( genericOtherFile );
+				}
+			}
+			
 			
 			if (  ( ! authTestCommandLineOptChosen ) && ( StringUtils.isEmpty(limelightXMLFileString) && ( scanFiles == null || scanFiles.isEmpty() ) ) ) {
 				System.err.println( "No Limelight XML File is specified AND No Scan Files are specified." );
@@ -648,6 +724,7 @@ public class SubmitImportProgram {
 								fastaFile,
 								fastaFile_SendOnlyIfPossible,
 								scanFiles,
+								genericOtherFiles,
 
 								searchName,
 								searchShortName,
@@ -687,10 +764,11 @@ public class SubmitImportProgram {
 
 										retryCountLimit,
 
-										limelightXMLFile, //  is null
-										fastaFile, //  is null
-										fastaFile_SendOnlyIfPossible,
+										null, // limelightXMLFile, //  is null
+										null, // fastaFile, //  is null
+										null, // fastaFile_SendOnlyIfPossible,
 										scanFiles_SingleFileSubmission,
+										null, // genericOtherFiles,
 
 										searchName,
 										searchShortName,

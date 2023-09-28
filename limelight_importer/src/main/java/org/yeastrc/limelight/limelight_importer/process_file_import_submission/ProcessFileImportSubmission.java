@@ -223,7 +223,7 @@ public class ProcessFileImportSubmission {
 		FileImportTrackingSingleFileDTO limelightXMLFileDBRecord = null;
 		
 		List<FileImportTrackingSingleFileDTO> scanFilesDBRecords = new ArrayList<>( fileDBRecordList.size() );
-		
+
 		FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries = new FileObjectStorage_FileContainer_AllEntries();
 		
 		
@@ -234,9 +234,28 @@ public class ProcessFileImportSubmission {
 			
 			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.SCAN_FILE ) {
 				scanFilesDBRecords.add( fileDBRecordItem );
+
+			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.FASTA_FILE
+					|| fileDBRecordItem.getFileType() == FileImportFileType.GENERIC_OTHER_FILE ) {
 				
-			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.FASTA_FILE ) {
+				FileObjectStore_FileType_Enum fileType_FileObjectStore_FileType = null;
 				
+				if ( fileDBRecordItem.getFileType() == FileImportFileType.FASTA_FILE ) {
+
+					fileType_FileObjectStore_FileType = FileObjectStore_FileType_Enum.FASTA_FILE_TYPE;
+				
+				} else if ( fileDBRecordItem.getFileType() == FileImportFileType.GENERIC_OTHER_FILE ) {
+					
+					fileType_FileObjectStore_FileType = FileObjectStore_FileType_Enum.GENERIC_OTHER_FILE_TYPE;
+					
+				} else {
+					
+					String msg = "Inside SubPart: Value in FileImportTrackingSingleFileDTO.fileType is NOT FASTA_FILE or GENERIC_OTHER_FILE.  fileType: " + fileDBRecordItem.getFileType();
+					log.error( msg );
+					throw new LimelightImporterInternalException( msg ); 
+					
+				}
+								
 				if ( StringUtils.isNotEmpty( fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine() ) ) {
 
 					//  Special code for when the filename with path is passed to the webapp from the submitter
@@ -258,7 +277,7 @@ public class ProcessFileImportSubmission {
 						//  return importResults;  //  EARLY EXIT
 					}
 					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE );
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
 					fileObjectStorage_FileContainer.setFile( file );
 					fileObjectStorage_FileContainer.setFilename( file.getName() );
 					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
@@ -272,7 +291,7 @@ public class ProcessFileImportSubmission {
 					String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
 
 					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE );
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
 					fileObjectStorage_FileContainer.setFilename( filenameInUpload );
 					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
 					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
@@ -292,7 +311,7 @@ public class ProcessFileImportSubmission {
 						throw new LimelightImporterErrorProcessingRunIdException();
 					}
 					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE );
+					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
 					fileObjectStorage_FileContainer.setFile( file );
 					fileObjectStorage_FileContainer.setFilename( filenameInUpload );
 					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );

@@ -76,6 +76,8 @@ public class ConfigSystemsKeysSharedConstants {
 	public static final String FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY = "fasta_file_max_file_size_in_gb";
 
 	public static final String SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY = "scan_file_max_file_size_in_gb";
+	
+	public static final String GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY = "generic_other_file_max_file_size_in_gb";
 
 	////              Delete uploaded files after Import key  -  Specific Values allowed
 

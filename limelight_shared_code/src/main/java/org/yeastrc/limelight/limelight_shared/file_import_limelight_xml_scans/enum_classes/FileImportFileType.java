@@ -24,13 +24,14 @@ package org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.e
  * Keep these values in sync with the values in the table 
  * 'file_import_tracking_single_file_type_lookup'
  * 
- * And in sync with same enum class in 'limelight_submit_import_client_connector'
+ * And in sync with enum class 'LimelightSubmit_FileImportFileType' in 'limelight_submit_import_client_connector' sub project
  */
 public enum FileImportFileType {
 
     LIMELIGHT_XML_FILE( 1 ),
     SCAN_FILE( 2 ),
-    FASTA_FILE( 3 )
+    FASTA_FILE( 3 ),
+    GENERIC_OTHER_FILE(4)
     ;
 
     

@@ -604,6 +604,7 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 			FileImportTrackingSingleFileDTO importFileEntry = null;
 			FileImportTrackingSingleFileDTO importFile_FASTAFile_Entry = null;
 			List<FileImportTrackingSingleFileDTO> scanFileEntryList = new ArrayList<>();
+			List<FileImportTrackingSingleFileDTO> genericOtherFileEntryList = new ArrayList<>();
 			for ( FileImportTrackingSingleFileDTO fileDataEntry : fileDataList ) {
 				if ( fileDataEntry.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
 					importFileEntry = fileDataEntry;
@@ -611,6 +612,8 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 					importFile_FASTAFile_Entry = fileDataEntry;
 				} else if ( fileDataEntry.getFileType() == FileImportFileType.SCAN_FILE ) {
 					scanFileEntryList.add( fileDataEntry );
+				} else if ( fileDataEntry.getFileType() == FileImportFileType.GENERIC_OTHER_FILE ) {
+					genericOtherFileEntryList.add( fileDataEntry );
 				} else {
 					String msg = "Import Tracking Processing: Unknown file type for single file id: " 
 							+ fileDataEntry.getId();
@@ -632,18 +635,34 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 				String uploadedFilename = importFileEntry.getFilenameInUpload();
 				displayItem.setUploadedFilename( uploadedFilename );
 			}
+			
 			if ( importFile_FASTAFile_Entry != null ) {
 				String uploadedFilename = importFile_FASTAFile_Entry.getFilenameInUpload();
 				displayItem.setFastafileName(uploadedFilename);
 			}
-			List<String> scanFilenames = new ArrayList<>( scanFileEntryList.size() );
-			for ( FileImportTrackingSingleFileDTO scanFileEntry : scanFileEntryList ) {
-				String scanFilename = scanFileEntry.getFilenameInUpload();
-				scanFilenames.add( scanFilename );
+			
+			{
+				List<String> scanFilenames = new ArrayList<>( scanFileEntryList.size() );
+				for ( FileImportTrackingSingleFileDTO scanFileEntry : scanFileEntryList ) {
+					String scanFilename = scanFileEntry.getFilenameInUpload();
+					scanFilenames.add( scanFilename );
+				}
+				String scanfileNamesCommaDelim = StringUtils.join( scanFilenames, ", " );
+				displayItem.setScanFilenames( scanFilenames );
+				displayItem.setScanfileNamesCommaDelim( scanfileNamesCommaDelim );
 			}
-			String scanfileNamesCommaDelim = StringUtils.join( scanFilenames, ", " );
-			displayItem.setScanFilenames( scanFilenames );
-			displayItem.setScanfileNamesCommaDelim( scanfileNamesCommaDelim );
+
+			{
+				List<String> genericOtherFileFilenames = new ArrayList<>( genericOtherFileEntryList.size() );
+				for ( FileImportTrackingSingleFileDTO genericOtherFileEntry : genericOtherFileEntryList ) {
+					String genericOtherFileFilename = genericOtherFileEntry.getFilenameInUpload();
+					genericOtherFileFilenames.add( genericOtherFileFilename );
+				}
+				String genericOtherFilefileNamesCommaDelim = StringUtils.join( genericOtherFileFilenames, ", " );
+				displayItem.setGenericOtherFileFilenames( genericOtherFileFilenames );
+				displayItem.setGenericOtherFileFileNamesCommaDelim( genericOtherFilefileNamesCommaDelim );
+			}
+			
 			if ( trackingItem.getRecordSubmitDateTime() != null ) {
 				displayItem.setImportSubmitDateTime( dateTimeFormat.format( trackingItem.getRecordSubmitDateTime() ) );
 			}
@@ -1576,6 +1595,12 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 		private List<String> scanFilenames;
 
 		private String scanfileNamesCommaDelim;
+		
+
+		private List<String> genericOtherFileFilenames;
+
+		private String genericOtherFileFileNamesCommaDelim;
+		
 
 
 		public boolean isStatusQueued() {
@@ -1706,6 +1731,18 @@ public class Project_UploadData_ListSubmittedItems_RestWebserviceController {
 		}
 		public void setFastafileName(String fastafileName) {
 			this.fastafileName = fastafileName;
+		}
+		public List<String> getGenericOtherFileFilenames() {
+			return genericOtherFileFilenames;
+		}
+		public void setGenericOtherFileFilenames(List<String> genericOtherFileFilenames) {
+			this.genericOtherFileFilenames = genericOtherFileFilenames;
+		}
+		public String getGenericOtherFileFileNamesCommaDelim() {
+			return genericOtherFileFileNamesCommaDelim;
+		}
+		public void setGenericOtherFileFileNamesCommaDelim(String genericOtherFileFileNamesCommaDelim) {
+			this.genericOtherFileFileNamesCommaDelim = genericOtherFileFileNamesCommaDelim;
 		}
 
 	}

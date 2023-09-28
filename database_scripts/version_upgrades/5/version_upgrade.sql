@@ -757,6 +757,10 @@ UPDATE file_import_tracking_single_file_tbl
   SET file_location_or_aws_s3_object_provided_from_external_system = 1
   WHERE filename_on_disk_with_path_sub_same_machine IS NOT NULL;
   
+  
+  
+INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 4, 'Generic Other File' );
+
 
 --  !!!!!!!   UPGRADE SQL END    !!!!!!!!
     

@@ -445,7 +445,7 @@ public class CallSubmitImportWebservice {
 						fileToSendAsStream, 
 						headersToSend,
 						webserviceURL );
-
+		
 		ByteArrayInputStream inputStreamBufferOfServerResponse = 
 				new ByteArrayInputStream( serverResponseByteArray );
 		// Unmarshal received XML into Java objects
@@ -607,7 +607,7 @@ public class CallSubmitImportWebservice {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 				} catch ( Exception ex ) {
 				}
 				LimelightSubmitImportWebserviceCallErrorException wcee = new LimelightSubmitImportWebserviceCallErrorException( "IOException sending XML to server at URL: " + webserviceURL, e );
@@ -624,7 +624,7 @@ public class CallSubmitImportWebservice {
 						closeOutputStreamFail = true;
 						byte[] errorStreamContents = null;
 						try {
-							errorStreamContents= getErrorStreamContents( httpURLConnection );
+							errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 						} catch ( Exception ex ) {
 						}
 						LimelightSubmitImportWebserviceCallErrorException wcee = new LimelightSubmitImportWebserviceCallErrorException( "IOException closing output Stream to server at URL: " + webserviceURL, e );
@@ -641,7 +641,7 @@ public class CallSubmitImportWebservice {
 									// Only throw exception if close of output stream successful
 									byte[] errorStreamContents = null;
 									try {
-										errorStreamContents= getErrorStreamContents( httpURLConnection );
+										errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 									} catch ( Exception ex ) {
 									}
 									LimelightSubmitImportWebserviceCallErrorException wcee = new LimelightSubmitImportWebserviceCallErrorException( "Exception closing output Stream to server at URL: " + webserviceURL, e );
@@ -668,8 +668,9 @@ public class CallSubmitImportWebservice {
 				if ( httpResponseCode != HTTP_RETURN_CODE__SUCCESS ) {
 					byte[] errorStreamContents = null;
 					try {
-						errorStreamContents= getErrorStreamContents( httpURLConnection );
+						errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 					} catch ( Exception ex ) {
+						int z = 0;
 					}
 					String msgForStatusCode = "";
 					if ( httpResponseCode == HTTP_RETURN_CODE__ERROR_REDIRECT ) {
@@ -693,6 +694,30 @@ public class CallSubmitImportWebservice {
 						wcee.setErrorStreamContents( errorStreamContents );
 						throw wcee;
 					}
+
+					//  errorStreamContents  may be null if server not send error response like when return HTTP Status Code 400
+					
+					if ( errorStreamContents == null ) {
+
+						String serverResponseString = "NO server response in Error Response. HTTP Status Code: " + httpResponseCode;
+						try {
+							serverResponseString = new String(serverResponseByteArray, XML_ENCODING_CHARACTER_SET );
+						} catch ( Throwable t ) {
+							//  Eat exception
+						}
+						
+						LimelightSubmitImportWebserviceCallErrorException wcee = 
+								new LimelightSubmitImportWebserviceCallErrorException( 
+										serverResponseString );
+						
+						wcee.setBadHTTPStatusCode(true);
+						wcee.setHttpStatusCode( httpResponseCode );
+						wcee.setWebserviceURL( webserviceURL );
+						wcee.setErrorStreamContents( errorStreamContents );
+
+						throw wcee;
+					}
+
 					
 					return errorStreamContents;
 					
@@ -700,7 +725,7 @@ public class CallSubmitImportWebservice {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 				} catch ( Exception ex ) {
 				}
 				LimelightSubmitImportWebserviceCallErrorException wcee = 
@@ -728,7 +753,7 @@ public class CallSubmitImportWebservice {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 				} catch ( Exception ex ) {
 				}
 				LimelightSubmitImportWebserviceCallErrorException wcee = 
@@ -744,7 +769,7 @@ public class CallSubmitImportWebservice {
 					} catch ( IOException e ) {
 						byte[] errorStreamContents = null;
 						try {
-							errorStreamContents= getErrorStreamContents( httpURLConnection );
+							errorStreamContents= getErrorStreamContents( httpURLConnection );  // May Return null
 						} catch ( Exception ex ) {
 						}
 						LimelightSubmitImportWebserviceCallErrorException wcee = 
@@ -773,6 +798,14 @@ public class CallSubmitImportWebservice {
 	private byte[] getErrorStreamContents(HttpURLConnection httpURLConnection) throws IOException {
 		
 		InputStream inputStream = httpURLConnection.getErrorStream();
+		
+		if ( inputStream == null ) {
+			
+			//  NO Error Stream so return null
+			
+			return null; //  EARLY RETURN
+		}
+		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int byteArraySize = 5000;
 		byte[] data = new byte[ byteArraySize ];

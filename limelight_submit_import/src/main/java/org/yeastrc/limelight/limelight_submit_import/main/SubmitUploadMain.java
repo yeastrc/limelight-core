@@ -61,6 +61,10 @@ import org.yeastrc.limelight.limelight_submit_import_client_connector.request_re
  * 
  *
  */
+/**
+ * @author danj
+ *
+ */
 public class SubmitUploadMain {
 
 	private static final Logger log = LoggerFactory.getLogger( SubmitUploadMain.class );
@@ -106,26 +110,30 @@ public class SubmitUploadMain {
 		}
 	}
 
+	
 	/**
 	 * @param submitterSameMachine
 	 * @param baseURL
-	 * @param baseURLWithServicesPath
 	 * @param uploadBaseDir
-	 * @param usernameFromCommandLine
-	 * @param passwordFromCommandLine
-	 * @param usernamePasswordFileCommandLine
+	 * @param userSubmitImportProgramKeyFromCommandLine
 	 * @param projectId
 	 * @param projectIdString
+	 * @param retryCountLimit
 	 * @param limelightXMLFile
+	 * @param fastaFile
+	 * @param fastaFile_SendOnlyIfPossible
 	 * @param scanFiles
+	 * @param genericOtherFiles
 	 * @param searchName
+	 * @param searchShortName
 	 * @param searchPath
 	 * @param noSearchNameCommandLineOptChosen
 	 * @param noScanFilesCommandLineOptChosen
+	 * @param searchTagList
+	 * @param searchTagCategory_AndItsSearchTagStrings_Object_List
 	 * @return
 	 * @throws Exception
 	 * @throws IOException
-	 * @throws JsonProcessingException
 	 */
 	public SubmitResult submitUpload(
 
@@ -145,6 +153,7 @@ public class SubmitUploadMain {
 			Boolean fastaFile_SendOnlyIfPossible,
 
 			List<File> scanFiles,
+			List<File> genericOtherFiles,
 
 			String searchName,
 			String searchShortName,
@@ -579,6 +588,8 @@ public class SubmitUploadMain {
 
 							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
 
+							webserviceRequest.setSubmitProgram_Version( Limelight_SubmitImport_Version_Constants.SUBMIT_PROGRAM__CURRENT__VERSION_NUMBER );
+							
 							webserviceRequest.setProjectIdentifier( projectIdString );
 							webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
 							webserviceRequest.setUploadKey( submitImport_UploadKey );
@@ -614,6 +625,71 @@ public class SubmitUploadMain {
 							}
 
 							System.out.println( "Sent Scan file to server: " + scanFile.getCanonicalPath() );
+						}
+					}
+				}
+
+
+				//	Process Generic Other Files (other files that just need to be stored)
+
+				if ( genericOtherFiles != null ) {
+
+					for ( File genericOtherFile : genericOtherFiles ) {
+
+						fileIndex++;
+
+						SubmitImport_FinalSubmit_SingleFileItem submitImport_FinalSubmit_SingleFileItem = new SubmitImport_FinalSubmit_SingleFileItem();
+						fileItems.add( submitImport_FinalSubmit_SingleFileItem );
+
+						submitImport_FinalSubmit_SingleFileItem.setFileIndex( fileIndex );
+						submitImport_FinalSubmit_SingleFileItem.setFileType( LimelightSubmit_FileImportFileType.GENERIC_OTHER_FILE.value() );
+						submitImport_FinalSubmit_SingleFileItem.setIsLimelightXMLFile( false );
+						submitImport_FinalSubmit_SingleFileItem.setUploadedFilename( genericOtherFile.getName() );
+
+						if ( submitterSameMachine ) {
+
+							submitImport_FinalSubmit_SingleFileItem.setFilenameOnDiskWithPathSubSameMachine( genericOtherFile.getCanonicalPath() );
+						}
+
+						if ( ! submitterSameMachine ) {
+
+							SubmitImport_UploadFile_Request_Common webserviceRequest = new SubmitImport_UploadFile_Request_Common();
+
+							webserviceRequest.setProjectIdentifier( projectIdString );
+							webserviceRequest.setUserSubmitImportProgramKey( userSubmitImportProgramKey );
+							webserviceRequest.setUploadKey( submitImport_UploadKey );
+							webserviceRequest.setFileIndex( submitImport_FinalSubmit_SingleFileItem.getFileIndex() );
+							webserviceRequest.setFileType( submitImport_FinalSubmit_SingleFileItem.getFileType() );
+							webserviceRequest.setFilename( genericOtherFile.getName() );
+							webserviceRequest.setAbsoluteFilename_W_Path_OnSubmitMachine( genericOtherFile.getAbsolutePath() );
+							webserviceRequest.setCanonicalFilename_W_Path_OnSubmitMachine( genericOtherFile.getCanonicalPath() );
+
+							Call_SubmitImport_UploadFile_Service_Parameters parameters = new Call_SubmitImport_UploadFile_Service_Parameters();
+							parameters.setUploadFile( genericOtherFile );
+							parameters.setWebserviceRequest( webserviceRequest );
+
+							//  Make call to server
+							SubmitImport_UploadFile_Response_PgmXML submitImport_UploadFile_Response =
+									callSubmitImportWebservice.call_SubmitImport_UploadFile_Service( parameters );
+
+							if ( ! submitImport_UploadFile_Response.isStatusSuccess() ) {
+
+								System.err.println( "FAILED sending Generic Other File to server: " + genericOtherFile.getCanonicalPath() );
+								
+								if ( submitImport_UploadFile_Response.isFileSizeLimitExceeded() ) {
+								
+									System.err.println( "Scan file is too large.  Max file size is: " + submitImport_UploadFile_Response.getMaxSizeFormatted() );
+								}
+
+								System.err.println( "If this error continues, contact the administrator of your Limelight Instance." );
+
+								submitResult.exitCode = PROGRAM_EXIT_CODE_UPLOAD_SEND_FILE_FAILED;
+
+								return submitResult;    //  EARLY EXIT
+
+							}
+
+							System.out.println( "Sent Generic Other File to server: " + genericOtherFile.getCanonicalPath() );
 						}
 					}
 				}

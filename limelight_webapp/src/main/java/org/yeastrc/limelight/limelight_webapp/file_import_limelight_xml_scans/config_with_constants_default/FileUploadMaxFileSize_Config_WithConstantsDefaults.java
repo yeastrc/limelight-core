@@ -45,15 +45,18 @@ public class FileUploadMaxFileSize_Config_WithConstantsDefaults {
 	private static final int MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_DEFAULT_IN_GB = 1; // 1GB max
 	private static final int MAX_FASTA_FILE_UPLOAD_SIZE_DEFAULT_IN_GB = 10; // 10GB max
 	private static final int MAX_SCAN_FILE_UPLOAD_SIZE_DEFAULT_IN_GB = 10; // 10GB max
+	private static final int MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_DEFAULT_IN_GB = 10; // 10GB max
 
 	
 	public static final String MAX_LIMELIGHT_XML_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL = "LIMELIGHT_LIMELIGHT_XML_FILE_MAX_SIZE_IN_GB";
 	public static final String MAX_FASTA_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL = "LIMELIGHT_FASTA_FILE_UPLOAD_MAX_SIZE_IN_GB";
 	public static final String MAX_SCAN_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL = "LIMELIGHT_SCAN_FILE_MAX_SIZE_IN_GB";
+	public static final String MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL = "LIMELIGHT_GENERIC_OTHER_FILE_MAX_SIZE_IN_GB";
 	
 	private static volatile String max_limelight_xml_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage;
 	private static volatile String max_scan_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage;
 	private static volatile String max_fasta_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage;
+	private static volatile String max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage;
 	
 
 	/**
@@ -67,6 +70,8 @@ public class FileUploadMaxFileSize_Config_WithConstantsDefaults {
 		get_Max_FASTA_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(true);
 		
 		get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(true);
+		
+		get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(true);
 	}
 
 	//   LIMELIGHT_XML
@@ -154,6 +159,36 @@ public class FileUploadMaxFileSize_Config_WithConstantsDefaults {
 	}
 	
 	public static String get_MAX_SCAN_FILE_UPLOAD_SIZE_FORMATTED() {
+
+		int result_InGB = get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(false);
+		
+		return result_InGB + GIGABYTE_LABEL_SUFFIX;
+	}
+
+	//  GENERIC_OTHER
+
+	public static int get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() {
+		
+		return MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_DEFAULT_IN_GB;
+	}
+
+	public static long get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE() {
+		
+		int result_InGB = get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(false);
+		
+		long result = result_InGB * ONE_GIGABYTE;
+		
+		return result;
+	}
+
+	public static String get_MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_AS_STRING() {
+
+		long result_Number = get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE();
+		
+		return Long.toString( result_Number );
+	}
+	
+	public static String get_MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_FORMATTED() {
 
 		int result_InGB = get_Max_Scan_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(false);
 		
@@ -560,6 +595,142 @@ public class FileUploadMaxFileSize_Config_WithConstantsDefaults {
 							+ "' is not parsable as integer.  value: " + value;
 					if ( ! errorMessage.equals(max_scan_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage)) {
 						max_scan_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage = errorMessage;
+						log.error(errorMessage);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+
+	//////////////////////////
+	
+	///////   Max Generic_Other FileSize
+	
+
+	/**
+	 * Max_Generic_Other_FileSize
+	 * 
+	 * @return
+	 */
+	private static int get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property_Or_ConfigTable__OrDefault__LogIfRequired_IfLog_NoRethrowException(
+			boolean logResult
+			) {
+		
+		Integer result = get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__LogIfRequired_IfLog_NoRethrowException(logResult);
+
+		if ( result == null ) {
+			
+			String value = null; 
+			try {
+				value = ConfigSystemTableGetValueCommon.getInstance()
+						.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY );
+			} catch (Exception e ) {
+				String msg = "Exception getting Config table entry for key: " + ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY;
+				log.error( msg, e );
+			}
+			if ( StringUtils.isNotEmpty(value) ) {
+				try {
+					result = Integer.parseInt(value);
+
+					if ( logResult ) {
+						log.warn( "INFO::  Value from Config table entry for key: '" 
+								+ ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY
+								+ "' is '"
+								+ value
+								+ "'." );
+					}
+					
+				} catch (Throwable t) {
+					String errorMessage = "get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__OrDefault(): Value in Config Table key '" 
+							+ ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY
+							+ "' is not parsable as integer.  value: " + value;
+					if ( ! errorMessage.equals(max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage)) {
+						max_scan_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage = errorMessage;
+						log.error(errorMessage);
+					}
+				}
+			}
+		}
+
+		if ( result == null ) {
+			
+			result = MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_DEFAULT_IN_GB; // use default
+		}
+		
+		return result.intValue();
+	}
+	
+
+	/**
+	 * Max_Generic_Other_FileSize
+	 * 
+	 * @return
+	 */
+	public static Integer get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property() {
+		
+		return get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__LogIfRequired_IfLog_NoRethrowException(false);
+	}
+	
+	/**
+	 * Max_Generic_Other_FileSize
+	 * 
+	 * @return
+	 */
+	private static Integer get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__LogIfRequired_IfLog_NoRethrowException(
+			boolean logResult
+			) {
+		
+		Integer result = null;
+		
+		{
+			String value = System.getenv(MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL);
+			if ( StringUtils.isNotEmpty(value) ) {
+				try {
+					result = Integer.parseInt(value);
+					if ( logResult ) {
+						log.warn( "INFO::  Value from Environment Variable: '" 
+								+ MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL
+								+ "' is '"
+								+ value
+								+ "'." );
+					}
+					
+				} catch (Throwable t) {
+					String errorMessage = "get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__OrDefault(): Value in environment variable '" 
+							+ MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL
+							+ "' is not parsable as integer.  value: " + value;
+					if ( ! errorMessage.equals(max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage)) {
+						max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage = errorMessage;
+						log.error(errorMessage);
+					}
+				}
+			}
+		}
+		if ( result == null ) {
+			
+			//  Not in Environment Variable so get from JVM -D Property
+
+			Properties prop = System.getProperties();
+			String value = prop.getProperty(MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL);
+			if ( StringUtils.isNotEmpty(value) ) {
+				try {
+					result = Integer.parseInt(value);
+					if ( logResult ) {
+						log.warn( "INFO::  Value from JVM -D property: '" 
+								+ MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL
+								+ "' is '"
+								+ value
+								+ "'." );
+					}
+				} catch (Throwable t) {
+					String errorMessage = "get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property__OrDefault(): Value in JVM -D property '" 
+							+ MAX_GENERIC_OTHER_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL
+							+ "' is not parsable as integer.  value: " + value;
+					if ( ! errorMessage.equals(max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage)) {
+						max_generic_other_file_upload_size_default_in_gb_FromEnv_FailedToParse_ErrorMessage = errorMessage;
 						log.error(errorMessage);
 					}
 				}

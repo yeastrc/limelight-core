@@ -53,6 +53,8 @@ public class SubmitImport_UploadFile_Request_Common {
 	private String canonicalFilename_W_Path_OnSubmitMachine;
 	@XmlAttribute
 	private String absoluteFilename_W_Path_OnSubmitMachine;
+	@XmlAttribute
+	private Integer submitProgram_Version;
 	
 	
 	public String getCanonicalFilename_W_Path_OnSubmitMachine() {
@@ -102,6 +104,12 @@ public class SubmitImport_UploadFile_Request_Common {
 	}
 	public void setUserSubmitImportProgramKey(String userSubmitImportProgramKey) {
 		this.userSubmitImportProgramKey = userSubmitImportProgramKey;
+	}
+	public Integer getSubmitProgram_Version() {
+		return submitProgram_Version;
+	}
+	public void setSubmitProgram_Version(Integer submitProgram_Version) {
+		this.submitProgram_Version = submitProgram_Version;
 	}
 	
 }

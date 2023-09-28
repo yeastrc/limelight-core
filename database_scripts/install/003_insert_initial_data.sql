@@ -60,6 +60,7 @@ INSERT INTO search_data_lookup_parameters_type_id (id, type_label) VALUES ( 1, '
 INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 1, 'Limelight XML File' );
 INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 2, 'Scan File' );
 INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 3, 'FASTA File' );
+INSERT INTO file_import_tracking_single_file_type_lookup_tbl (id, display_text) VALUES ( 4, 'Generic Other File' );
 
 	--  These values must be kept in sync with the values in the Java class FileImportFileUploadStatus
 	
