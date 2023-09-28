@@ -199,7 +199,12 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
         if ( prevProps.searchDisplayListItem.searchName !== this.props.searchDisplayListItem.searchName ) {
 
-            this.setState({ show_UpdatingSearchName_Message: false })
+            this.setState( (prevState, props) => {
+                if ( prevState.show_UpdatingSearchName_Message ) {
+                    return { show_UpdatingSearchName_Message: false }
+                }
+                return null
+            })
         }
     }
 
