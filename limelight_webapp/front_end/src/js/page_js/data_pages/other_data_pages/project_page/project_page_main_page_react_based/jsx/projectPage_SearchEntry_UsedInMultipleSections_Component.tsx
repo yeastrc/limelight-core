@@ -605,8 +605,9 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                     { this.state.show_UpdatingSearchName_Message ? (
                                         <div
                                             style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            className=" standard-background-color "
                                         >
-                                            Updating Search Name
+                                            Updating Search Name...
                                         </div>
                                     ) : null }
                                 </div>
