@@ -19,6 +19,7 @@ import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelDataForSingleSearchScanFileId
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
+import { CommonData_LoadedFromServer__ScanData_Summary_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 
 /**
  *
@@ -53,49 +54,60 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
             }
         }
 
-        const projectSearchId = retrievalParams.projectSearchId;
-
         const promise = new Promise<void>( (resolve, reject) => {
             try {
-                const url = "d/rws/for-page/psb/scan-file-summary-data-from-spectral-storage-data--search-scan-file-id-single-project-search-id";
+                const promise_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch  =
+                    retrievalParams.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
+                    get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
 
-                const requestData = { projectSearchId, searchScanFileId };
+                promise_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch.catch(reason => {
 
-                console.log( "START: getting data from URL: " + url );
+                    this._promiseInProgress_Map_Key_searchScanFileId.delete( searchScanFileId );
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+                    reject(reason)
+                })
+                promise_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch.then(value_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Result => { try {
 
-                const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+                    const scanFile_ProjectScanFileId_SearchScanFileId__For_SearchScanFileId =
+                        value_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Result.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileId )
+                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId__For_SearchScanFileId ) {
+                        const msg = "value_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Result.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileId ) returned NOTHING for searchScanFileId: " + searchScanFileId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
 
-                promise_webserviceCallStandardPost.catch( () => {
-                    try {
+                    const projectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId__For_SearchScanFileId.projectScanFileId
+
+                    const promise_get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise =
+                        retrievalParams.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                        get_ParentObject().
+                        get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().
+                        get_commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass().
+                        get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise( projectScanFileId )
+
+                    promise_get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise.catch(reason => {
+
                         this._promiseInProgress_Map_Key_searchScanFileId.delete( searchScanFileId );
 
-                        console.log( "END: REJECTED: getting data from URL: " + url );
+                        reject(reason)
+                    })
+                    promise_get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise.then(value_get_ScanData_Summary_DataHolder_For_ProjectScanFileId => { try {
 
-                        reject()
-
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                }  );
-
-                promise_webserviceCallStandardPost.then( ({ responseData } : { responseData: any }) => {
-                    try {
                         this._promiseInProgress_Map_Key_searchScanFileId.delete( searchScanFileId );
 
-                        console.log( "END: Successful: getting data from URL: " + url );
+                        _populateHolder({
+                            searchScanFileId, projectScanFileId,
+                            commonData_LoadedFromServer__ScanData_Summary_Data_Holder: value_get_ScanData_Summary_DataHolder_For_ProjectScanFileId.commonData_LoadedFromServer__ScanData_Summary_Data_Holder,
+                            data_Holder_SingleSearch
+                        });
 
-                        _populateHolder({ searchScanFileId, responseData, data_Holder_SingleSearch });
+                        resolve()
 
-                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
-                    } catch( e ) {
-                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                        throw e;
-                    }
-                } );
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
@@ -113,69 +125,33 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
  */
 const _populateHolder = function (
     {
-        searchScanFileId, responseData, data_Holder_SingleSearch
+        searchScanFileId, projectScanFileId, commonData_LoadedFromServer__ScanData_Summary_Data_Holder, data_Holder_SingleSearch
     } : {
         searchScanFileId: number
-        responseData: any
+        projectScanFileId: number
+        commonData_LoadedFromServer__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer__ScanData_Summary_Data_Holder
         data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
     }) : void {
 
-    if ( responseData.scanLevelEntries ) {
-        if ( ! ( responseData.scanLevelEntries instanceof Array ) ) {
-            const msg = "( ! ( responseData.scanLevelEntries instanceof Array ) )";
-            console.warn(msg);
-            throw Error(msg);
-        }
+    let scanFile_SummaryPerLevelData_Root = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root;
+    if ( ! scanFile_SummaryPerLevelData_Root ) {
+        scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
+        data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root =  scanFile_SummaryPerLevelData_Root;
+    }
 
-        let scanFile_SummaryPerLevelData_Root = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root;
-        if ( ! scanFile_SummaryPerLevelData_Root ) {
-            scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
-            data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root =  scanFile_SummaryPerLevelData_Root;
-        }
+    let scanFileData_For_SearchScanFileId = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId );
+    if ( ! scanFileData_For_SearchScanFileId ) {
+        scanFileData_For_SearchScanFileId = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelDataForSingleSearchScanFileId({ searchScanFileId });
+        scanFile_SummaryPerLevelData_Root.add_ScanFileDataFor_SingleSearchScanFileId( scanFileData_For_SearchScanFileId );
+    }
 
-        let scanFileData_For_SearchScanFileId = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId );
-        if ( ! scanFileData_For_SearchScanFileId ) {
-            scanFileData_For_SearchScanFileId = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelDataForSingleSearchScanFileId({ searchScanFileId });
-            scanFile_SummaryPerLevelData_Root.add_ScanFileDataFor_SingleSearchScanFileId( scanFileData_For_SearchScanFileId );
-        }
+    const scanData_Summary_Data_For_ProjectScanFileId__From_CommonData_LoadedFromServer = commonData_LoadedFromServer__ScanData_Summary_Data_Holder.get_ScanData_Summary_Data_For_ProjectScanFileId(projectScanFileId)
 
-        for ( const scanLevelEntry_FromArray of responseData.scanLevelEntries ) {
+    for ( const scanLevelEntry_FromArray of scanData_Summary_Data_For_ProjectScanFileId__From_CommonData_LoadedFromServer.scanLevelEntries ) {
 
-            const scanLevelEntry : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_ForSingleScanLevel = scanLevelEntry_FromArray;
+        const scanLevelEntry : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_ForSingleScanLevel = scanLevelEntry_FromArray;
 
-            if ( scanLevelEntry.scanLevel === undefined || scanLevelEntry.scanLevel === null ) {
-                const msg = "( scanLevelEntry.scanLevel === undefined || scanLevelEntry.scanLevel === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! variable_is_type_number_Check( scanLevelEntry.scanLevel ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanLevelEntry.scanLevel ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( scanLevelEntry.numberOfScans === undefined || scanLevelEntry.numberOfScans === null ) {
-                const msg = "( scanLevelEntry.numberOfScans === undefined || scanLevelEntry.numberOfScans === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! variable_is_type_number_Check( scanLevelEntry.numberOfScans ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.numberOfScans ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( scanLevelEntry.totalIonCurrent === undefined || scanLevelEntry.totalIonCurrent === null ) {
-                const msg = "( scanLevelEntry.totalIonCurrent === undefined || scanLevelEntry.totalIonCurrent === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! variable_is_type_number_Check( scanLevelEntry.totalIonCurrent ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.totalIonCurrent ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            scanFileData_For_SearchScanFileId.add_ScanLevelData_ForScanLevel(scanLevelEntry);
-        }
+        scanFileData_For_SearchScanFileId.add_ScanLevelData_ForScanLevel(scanLevelEntry);
     }
 
 
