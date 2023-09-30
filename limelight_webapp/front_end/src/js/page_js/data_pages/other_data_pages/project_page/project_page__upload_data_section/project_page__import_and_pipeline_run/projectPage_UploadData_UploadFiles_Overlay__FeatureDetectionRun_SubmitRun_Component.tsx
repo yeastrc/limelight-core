@@ -334,9 +334,11 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_Sub
                         Use this form to run the Hardklor/Bullseye feature detection pipeline on:
                     </div>
                     { this.props.scanFilename_Array_Array.map( ( scanFilename_Array, index, array ) => {
+
+                        const scanFilename_Display = scanFilename_Array.join( ", " )
                         return (
-                            <div >
-                                { scanFilename_Array.join( ", " ) }
+                            <div key={ scanFilename_Display }>
+                                { scanFilename_Display }
                             </div>
                         )
                     } ) }

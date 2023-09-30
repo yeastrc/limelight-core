@@ -356,27 +356,36 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             { scanFile_Element_List }
                         </div>
 
+                        { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
 
-                        <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
+                            <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
-                            {/*  Run Feature Detection */}
-                            <div style={ { position: "relative", display: "inline-block" } }>
-                                <button
-                                    title="Run Feature Detection on selected scan files"
-                                    disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
-                                    onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
-                                >
-                                    Run Feature Detection
-                                </button>
-                                { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
-                                    // overlay when button is disabled to show tooltip
-                                    <div
-                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                        title="Select 1 or more scan files to run Feature Detection for"
-                                    ></div>
-                                ): null }
+                                { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
+
+                                    <>
+                                        {/*  Run Feature Detection */}
+                                        <div style={ { position: "relative", display: "inline-block" } }>
+                                            <button
+                                                title="Run Feature Detection on selected scan files"
+                                                disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
+                                                onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                                            >
+                                                Run Feature Detection
+                                            </button>
+                                            { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
+                                                // overlay when button is disabled to show tooltip
+                                                <div
+                                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                    title="Select 1 or more scan files to run Feature Detection for"
+                                                ></div>
+                                            ): null }
+                                        </div>
+                                    </>
+                                ) : null }
+
                             </div>
-                        </div>
+
+                        ) : null }
 
                     </React.Fragment>
                 ) }
