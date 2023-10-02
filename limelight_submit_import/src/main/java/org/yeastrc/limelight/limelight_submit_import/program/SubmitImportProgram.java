@@ -157,21 +157,8 @@ public class SubmitImportProgram {
 			CmdLineParser.Option noScanFilesCommandLineOpt = cmdLineParser.addBooleanOption( 'n', "no-scan-files" );
 
 			
-			//  Commented out until approve the chosen command line string: genericOtherFilesFromCommandLineCommandLineOpt
+			CmdLineParser.Option genericOtherFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "add-file" );
 			
-			//       Uncomment all usage of genericOtherFilesFromCommandLineCommandLineOpt below
-			
-//			CmdLineParser.Option genericOtherFilesFromCommandLineCommandLineOpt = cmdLineParser.addStringOption( 'Z', "misc-file" );
-			
-//			Help Addition below "--no-scan-files":
-//			
-//			--misc-file=  <miscellaneous file to save to search>
-//			   (Optional.  Save other miscellaneous files to be dowloadable when view search
-//			    Repeat the: 
-//			    	--misc-file=  <file to save to search>
-//			    for each file.)
-
-
 			CmdLineParser.Option noLimelightXMLFileCommandLineOpt = cmdLineParser.addBooleanOption( 'Z', "no-limelight-xml-file" );
 			
 
@@ -372,7 +359,7 @@ public class SubmitImportProgram {
 			Vector inputScanFileStringVector = cmdLineParser.getOptionValues( scanFilesFromCommandLineCommandLineOpt );
 
 			@SuppressWarnings("rawtypes")
-			Vector input_GenericOtherFiles_StringVector = null; // cmdLineParser.getOptionValues( genericOtherFilesFromCommandLineCommandLineOpt );
+			Vector input_GenericOtherFiles_StringVector = cmdLineParser.getOptionValues( genericOtherFilesFromCommandLineCommandLineOpt );
 					
 			//  Since have default as second param to 'getOptionValue' will always return true or false so no need to handle null
 
@@ -431,7 +418,7 @@ public class SubmitImportProgram {
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 				if ( input_GenericOtherFiles_StringVector != null && input_GenericOtherFiles_StringVector.size() > 0 ) {
-					System.err.println( "'misc-file' NOT ALLOWED when Param for No Limelight XML File is specified." );
+					System.err.println( "'add-file' NOT ALLOWED when Param for No Limelight XML File is specified." );
 					System.exit(PROGRAM_EXIT_CODE_INVALID_INPUT);  //  EARLY EXIT
 				}
 				if ( authTestCommandLineOptChosen ) {

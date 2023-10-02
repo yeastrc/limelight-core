@@ -37,6 +37,14 @@ Submit Import Help:
 
 -n (--no-scan-files)  :  If no scan files
 
+
+--add-file=  <additional file to save to search>
+   (Optional.  Save other additional files to be downloadable when view search
+    Repeat the: 
+    	--add-file=  <additional file to save to search>
+    for each file.)
+
+
 --search-description=
 
 --no-search-description
