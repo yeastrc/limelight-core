@@ -656,12 +656,12 @@ public class CallSubmitImportWebservice {
 				}
 			}
 
-			System.out.println( "webserviceURL: " + webserviceURL );
-			
-			System.out.println( "fileToSendAsStream: " + fileToSendAsStream );
-			if ( fileToSendAsStream != null ) {
-				System.out.println( "fileToSendAsStream.getAbsolutePath() : " + fileToSendAsStream.getAbsolutePath() );
-			}
+//			System.out.println( "webserviceURL: " + webserviceURL );
+//			
+//			System.out.println( "fileToSendAsStream: " + fileToSendAsStream );
+//			if ( fileToSendAsStream != null ) {
+//				System.out.println( "fileToSendAsStream.getAbsolutePath() : " + fileToSendAsStream.getAbsolutePath() );
+//			}
 			
 			try {
 				int httpResponseCode = httpURLConnection.getResponseCode();
@@ -736,9 +736,9 @@ public class CallSubmitImportWebservice {
 				throw wcee;
 			}
 			
-			System.out.println( "webserviceURL: " + webserviceURL );
+//			System.out.println( "webserviceURL: " + webserviceURL );
 			
-			System.out.println( "httpURLConnection.getContentLength(): " + httpURLConnection.getContentLength() );
+//			System.out.println( "httpURLConnection.getContentLength(): " + httpURLConnection.getContentLength() );
 			
 			//  Get response XML from server
 			ByteArrayOutputStream outputStreamBufferOfServerResponse = new ByteArrayOutputStream( 1000000 );
