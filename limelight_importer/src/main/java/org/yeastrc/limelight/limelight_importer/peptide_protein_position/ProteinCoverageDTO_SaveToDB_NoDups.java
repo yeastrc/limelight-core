@@ -20,7 +20,7 @@ package org.yeastrc.limelight.limelight_importer.peptide_protein_position;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoverageDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoverage_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 
 /**
@@ -47,7 +47,7 @@ public class ProteinCoverageDTO_SaveToDB_NoDups {
 		
 		if ( savedRecords.add(item) ) {
 			
-			DB_Insert_ProteinCoverageDAO.getInstance().save( item );
+			DB_Insert_ProteinCoverage_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( item );
 		}
 	}
 }

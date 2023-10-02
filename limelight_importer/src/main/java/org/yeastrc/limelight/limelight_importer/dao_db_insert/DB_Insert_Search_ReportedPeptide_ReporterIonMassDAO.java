@@ -19,6 +19,9 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.db.ImportRunImporterDBConnectionFactory;
@@ -37,28 +40,79 @@ public class DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO {
 	private DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO() { }
 	public static DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO getInstance() { return new DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO(); }
 	
-	private static final String SQL =
+	private static final String INSERT_SQL =
 			"INSERT IGNORE INTO srch_rep_pept__reporter_ion_mass_lookup_tbl ( search_id, reported_peptide_id, reporter_ion_mass ) " 
-			 + " VALUES (?, ?, ?) ";
+			 + " VALUES ";
+
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "(?, ?, ?)";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * insert srch_rep_pept__reporter_ion_mass_lookup_tbl
 	 * @param item
 	 * @throws Exception
 	 */
-	public void saveSearch_ReportedPeptide_ReporterIonMass( Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO item ) throws Exception {
+	public void insert( List<Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO> itemList ) throws Exception {
+
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
+		}
 		
+		final String sql = this.create_insert_SQL( itemList.size() );
+
 		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
-			try ( PreparedStatement pstmt = dbConnection.prepareStatement( SQL ) ) {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
-					pstmt.setInt( 1, item.getSearchId() );
-					pstmt.setInt( 2, item.getReportedPeptideId() );
-					pstmt.setBigDecimal( 3, item.getReporterIonMass() );
+				int counter = 0;
 
-					pstmt.executeUpdate();
+				for ( Search_ReportedPeptide_ReporterIon_Mass_Lookup_DTO item : itemList ) {
+					
+					counter++;
+					pstmt.setInt( counter, item.getSearchId() );
+					counter++;
+					pstmt.setInt( counter, item.getReportedPeptideId() );
+					counter++;
+					pstmt.setBigDecimal( counter, item.getReporterIonMass() );
+				}
+				
+				pstmt.executeUpdate();
 			}
 		} catch ( Exception e ) {
-			log.error( "ERROR: saveSearch_ReportedPeptide_ReporterIonMass(...), sql: " + SQL + "\nData to save: " + item, e );
+
+			log.error( "ERROR: insert_NOT_Update_ID_Property_InDTOParams(...) sql: " + sql
+					+ ".  First Item: " + itemList.get(0) , e );
+			
 			throw e;
 		}
 		

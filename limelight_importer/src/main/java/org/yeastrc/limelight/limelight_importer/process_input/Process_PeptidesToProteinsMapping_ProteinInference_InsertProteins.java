@@ -38,7 +38,8 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinImporterContainerDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceDAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferent_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoverage_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceAnnotationDTO;
@@ -291,7 +292,7 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 							item.setReportedPeptideId( reportedPeptideDTO.getId() );
 							item.setPeptideIdInfoOnly( peptideDTO.getId() );
 							item.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
-							DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO.getInstance().save(item);
+							DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferent_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object(item);
 						}
 					}
 				}
@@ -301,6 +302,12 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 			insert_searchProteinVersionDTO_ToBeInserted( searchProteinVersionDTO_ToBeInserted, search );
 
 		} // End if ( input_LimelightXMLFile_InternalHolder_Root_Object.is_Any_InternalHolder_ReportedPeptide_Objects() )
+		
+		
+		DB_Insert_ProteinCoverage_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferent_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
 
 		GetProteinsForPeptide.getSingletonInstance().logTotalElapsedTime_SaveToImporterStatsTable( search );
 

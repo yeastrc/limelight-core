@@ -23,7 +23,7 @@ package org.yeastrc.limelight.limelight_shared.dto;
  */
 public class ProteinCoverageDTO {
 
-	private int id;
+	private Integer id_NullIfNotSet_NOT_SET_In_Importer;
 	private int searchId;
 	private int reportedPeptideId;
 	private int peptideIdInfoOnly;
@@ -38,7 +38,7 @@ public class ProteinCoverageDTO {
 	private Boolean peptideAtProteinStart_Flag;  //  peptide at start of protein.  null until computed
 	private Boolean peptideAtProteinEnd_Flag;  //  peptide at end of protein.  null until computed
 		
-	//  id is not part of equals or hashCode
+	//  property 'id_NullIfNotSet_NOT_SET_In_Importer' is not part of equals or hashCode
 
 	@Override
 	public int hashCode() {
@@ -110,7 +110,7 @@ public class ProteinCoverageDTO {
 	}
 	@Override
 	public String toString() {
-		return "ProteinCoverageDTO [id=" + id + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
+		return "ProteinCoverageDTO [id_NullIfNotSet_NOT_SET_In_Importer=" + id_NullIfNotSet_NOT_SET_In_Importer + ", searchId=" + searchId + ", reportedPeptideId=" + reportedPeptideId
 				+ ", peptideIdInfoOnly=" + peptideIdInfoOnly + ", proteinSequenceVersionId=" + proteinSequenceVersionId
 				+ ", proteinStartPosition=" + proteinStartPosition + ", proteinEndPosition=" + proteinEndPosition
 				+ ", peptideProteinMatchNotExactMatch=" + peptideProteinMatchNotExactMatch + ", protein_IsDecoy="
@@ -123,12 +123,6 @@ public class ProteinCoverageDTO {
 
 	/////
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public int getSearchId() {
 		return searchId;
 	}
@@ -206,5 +200,11 @@ public class ProteinCoverageDTO {
 	}
 	public void setPeptideAtProteinEnd_Flag(Boolean peptideAtProteinEnd_Flag) {
 		this.peptideAtProteinEnd_Flag = peptideAtProteinEnd_Flag;
+	}
+	public Integer getId_NullIfNotSet_NOT_SET_In_Importer() {
+		return id_NullIfNotSet_NOT_SET_In_Importer;
+	}
+	public void setId_NullIfNotSet_NOT_SET_In_Importer(Integer id_NullIfNotSet_NOT_SET_In_Importer) {
+		this.id_NullIfNotSet_NOT_SET_In_Importer = id_NullIfNotSet_NOT_SET_In_Importer;
 	}	
 }

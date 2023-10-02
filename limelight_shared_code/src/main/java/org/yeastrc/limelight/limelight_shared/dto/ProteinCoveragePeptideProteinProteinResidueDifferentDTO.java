@@ -24,7 +24,7 @@ package org.yeastrc.limelight.limelight_shared.dto;
  */
 public class ProteinCoveragePeptideProteinProteinResidueDifferentDTO {
 
-	private int id;
+	private Integer id_NullIfNotSet_NOT_SET_In_Importer;
 	private int searchId;
 	private int reportedPeptideId;
 	private int peptideIdInfoOnly;
@@ -34,7 +34,7 @@ public class ProteinCoveragePeptideProteinProteinResidueDifferentDTO {
 	private String peptideResidueLetter;
 	private String proteinResidueLetter;
 
-	//  id is not part of equals or hashCode
+	//  property 'id_NullIfNotSet_NOT_SET_In_Importer' is not part of equals or hashCode
 
 	@Override
 	public int hashCode() {
@@ -87,7 +87,7 @@ public class ProteinCoveragePeptideProteinProteinResidueDifferentDTO {
 	////
 	@Override
 	public String toString() {
-		return "ProteinCoveragePeptideProteinProteinResidueDifferentDTO [id=" + id + ", searchId=" + searchId
+		return "ProteinCoveragePeptideProteinProteinResidueDifferentDTO [id_NullIfNotSet_NOT_SET_In_Importer=" + id_NullIfNotSet_NOT_SET_In_Importer + ", searchId=" + searchId
 				+ ", reportedPeptideId=" + reportedPeptideId + ", peptideIdInfoOnly=" + peptideIdInfoOnly
 				+ ", proteinSequenceVersionId=" + proteinSequenceVersionId + ", peptidePosition=" + peptidePosition
 				+ ", proteinPosition=" + proteinPosition + ", peptideResidueLetter=" + peptideResidueLetter
@@ -97,12 +97,6 @@ public class ProteinCoveragePeptideProteinProteinResidueDifferentDTO {
 	
 	//////////
 
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public int getSearchId() {
 		return searchId;
 	}

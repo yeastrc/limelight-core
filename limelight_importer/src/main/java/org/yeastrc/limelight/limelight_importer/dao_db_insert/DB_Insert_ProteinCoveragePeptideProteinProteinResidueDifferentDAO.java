@@ -20,8 +20,9 @@ package org.yeastrc.limelight.limelight_importer.dao_db_insert;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -47,56 +48,94 @@ public class DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferentDAO {
 			+ " ( search_id, reported_peptide_id, peptide_id_info_only, protein_sequence_version_id, "
 			+ " peptide_position, protein_position, peptide_residue_letter, protein_residue_letter )"
 
-			+ " VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			+ " VALUES ";
+
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "( ?, ?, ?, ?, ?, ?, ?, ? )";
+
+	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
+
+	/**
+	 * @param entryCount
+	 * @return
+	 */
+	private String create_insert_SQL( int entryCount ) {
+		
+		String sql = insertSQL_Map_Key_StringLength.get( entryCount );
+		
+		if ( sql != null ) {
+			return sql;
+		}
+		
+		StringBuilder sqlSB = new StringBuilder( INSERT_SQL.length() + ( ( INSERT_VALUES_SINGLE_ENTRY_SQL.length() + 5 ) * entryCount ) );
+
+		sqlSB.append( INSERT_SQL );
+		
+		for ( int counter = 1; counter <= entryCount; counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
+			}
+			sqlSB.append( INSERT_VALUES_SINGLE_ENTRY_SQL );
+		}
+		
+		sql = sqlSB.toString();
+		
+		insertSQL_Map_Key_StringLength.put( entryCount, sql );
+		
+		return sql;
+	}
 	
 	/**
 	 * Save the associated data to the database
 	 * @param item
 	 * @throws Exception
 	 */
-	public void save( ProteinCoveragePeptideProteinProteinResidueDifferentDTO item ) throws Exception {
-				
-		final String sql = INSERT_SQL;
+	public void insert_NOT_Update_ID_Property_InDTOParams( List<ProteinCoveragePeptideProteinProteinResidueDifferentDTO> itemList ) throws Exception {
+
+		if ( itemList.isEmpty() ) {
+			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
+		}
+		
+		final String sql = this.create_insert_SQL( itemList.size() );
+
 		try {
 			//  DO NOT Close connection from getInsertControlCommitConnection()
 			Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getInsertControlCommitConnection();
 
-			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
 
 				int counter = 0;
 
-				counter++;
-				pstmt.setInt( counter,  item.getSearchId() );
-				counter++;
-				pstmt.setInt( counter,  item.getReportedPeptideId());
-				counter++;
-				pstmt.setInt( counter,  item.getPeptideIdInfoOnly() );
-
-				counter++;
-				pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
-
-				counter++;
-				pstmt.setInt( counter,  item.getPeptidePosition() );
-				counter++;
-				pstmt.setInt( counter,  item.getProteinPosition() );
-				
-				counter++;
-				pstmt.setString( counter,  item.getPeptideResidueLetter() );
-				counter++;
-				pstmt.setString( counter,  item.getProteinResidueLetter() );
+				for ( ProteinCoveragePeptideProteinProteinResidueDifferentDTO item : itemList ) {
+		
+					counter++;
+					pstmt.setInt( counter,  item.getSearchId() );
+					counter++;
+					pstmt.setInt( counter,  item.getReportedPeptideId());
+					counter++;
+					pstmt.setInt( counter,  item.getPeptideIdInfoOnly() );
+	
+					counter++;
+					pstmt.setInt( counter,  item.getProteinSequenceVersionId() );
+	
+					counter++;
+					pstmt.setInt( counter,  item.getPeptidePosition() );
+					counter++;
+					pstmt.setInt( counter,  item.getProteinPosition() );
+					
+					counter++;
+					pstmt.setString( counter,  item.getPeptideResidueLetter() );
+					counter++;
+					pstmt.setString( counter,  item.getProteinResidueLetter() );
+				}
 				
 				pstmt.executeUpdate();
-
-				try ( ResultSet rs = pstmt.getGeneratedKeys() ) {
-			
-					if( rs.next() ) {
-						item.setId( rs.getInt( 1 ) );
-					}
-				}
 			}
 			
 		} catch ( Exception e ) {
-			log.error( "ERROR: sql: " + sql + "\nData to save: " + item, e );
+
+			log.error( "ERROR: insert_NOT_Update_ID_Property_InDTOParams(...) sql: " + sql
+					+ ".  First Item: " + itemList.get(0) , e );
+			
 			throw e;
 		} finally {
 			

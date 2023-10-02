@@ -41,13 +41,12 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchRe
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideDescriptiveAnnotation_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideFilterableAnnotation_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__BatchInserter__DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_BatchInserter_DAO;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SrchRepPept_PsmOpenModRounded_Lookup_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.Importer_Stats_GeneralData_DTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
@@ -217,7 +216,7 @@ public class ProcessReportedPeptidesAndPSMs {
 					Collections.sort( uniqueReporterIonMassesForTheReportedPeptideList );
 					int reportedPeptideId = savedReportedPeptideDTO.getId();
 
-					DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO db_Insert_Search_ReportedPeptide_ReporterIonMassDAO = DB_Insert_Search_ReportedPeptide_ReporterIonMassDAO.getInstance();
+					DB_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO db_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO = DB_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO.getSingletonInstance();
 
 					for ( BigDecimal reporterIonMass : uniqueReporterIonMassesForTheReportedPeptideList ) {
 
@@ -225,7 +224,7 @@ public class ProcessReportedPeptidesAndPSMs {
 						dto.setSearchId( searchId );
 						dto.setReportedPeptideId( reportedPeptideId );
 						dto.setReporterIonMass( reporterIonMass );
-						db_Insert_Search_ReportedPeptide_ReporterIonMassDAO.saveSearch_ReportedPeptide_ReporterIonMass( dto );
+						db_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO.insert_Batching_Object( dto );
 
 						uniqueReporterIonMassesForTheSearch.add( reporterIonMass );
 					}
@@ -251,7 +250,7 @@ public class ProcessReportedPeptidesAndPSMs {
 					Collections.sort( psmOpenModification_UniquePositions_List );
 					int reportedPeptideId = savedReportedPeptideDTO.getId();
 
-					DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO = DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.getInstance();
+					DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO = DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO.getSingletonInstance();
 
 					for ( PsmOpenModification_UniquePosition_InReportedPeptide_Entry entry : psmOpenModification_UniquePositions_List ) {
 
@@ -278,7 +277,7 @@ public class ProcessReportedPeptidesAndPSMs {
 							dto.setProteinResidueLetterIfAllSame( proteinResidueLetter_Only );
 						}
 
-						db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_DAO.saveToDatabase( dto );
+						db_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO.insert_Batching_Object( dto );
 					}
 				}
 
@@ -321,6 +320,10 @@ public class ProcessReportedPeptidesAndPSMs {
 			DB_Insert_SearchRepPeptSubGroup__BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
 			DB_Insert_SrchRepPept_IsotopeLabel_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_Search_ReportedPeptide_OpenMod_PsmUniquePositions_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+			DB_Insert_Search_ReportedPeptide_ReporterIonMass_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 			
 			
 			////////////////////
