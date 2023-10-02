@@ -445,7 +445,7 @@
 	
 				<div style="margin-bottom: 3px;" >
 					<div class="config_single_input_root_jq">
-						Scan File Max Size in GB: 
+						Generic Other File (--add-file= in Submit Import) Max Size in GB: 
 						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
 						data-config-key="<%= ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
 						>
