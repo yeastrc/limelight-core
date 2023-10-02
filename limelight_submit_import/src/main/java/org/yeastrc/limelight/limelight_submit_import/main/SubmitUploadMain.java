@@ -689,7 +689,7 @@ public class SubmitUploadMain {
 
 							}
 
-							System.out.println( "Sent Generic Other File to server: " + genericOtherFile.getCanonicalPath() );
+							System.out.println( "Sent Add File (--add-file=...) to server: " + genericOtherFile.getCanonicalPath() );
 						}
 					}
 				}
