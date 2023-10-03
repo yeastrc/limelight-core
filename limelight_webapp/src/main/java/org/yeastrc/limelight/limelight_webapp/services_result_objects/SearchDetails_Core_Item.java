@@ -27,6 +27,10 @@ public class SearchDetails_Core_Item {
 	
 	private List<SearchProgramsPerSearchDTO> searchProgramsPerSearchList;
 	
+	private List<String> scanFilenameList;
+	private String scanFilenames_CommaDelim;
+
+	
 	public String getPath() {
 		return path;
 	}
@@ -99,5 +103,17 @@ public class SearchDetails_Core_Item {
 	public void setFastaFilename_IfLimelightXMLHasDifferentFilename(
 			String fastaFilename_IfLimelightXMLHasDifferentFilename) {
 		this.fastaFilename_IfLimelightXMLHasDifferentFilename = fastaFilename_IfLimelightXMLHasDifferentFilename;
+	}
+	public List<String> getScanFilenameList() {
+		return scanFilenameList;
+	}
+	public void setScanFilenameList(List<String> scanFilenameList) {
+		this.scanFilenameList = scanFilenameList;
+	}
+	public String getScanFilenames_CommaDelim() {
+		return scanFilenames_CommaDelim;
+	}
+	public void setScanFilenames_CommaDelim(String scanFilenames_CommaDelim) {
+		this.scanFilenames_CommaDelim = scanFilenames_CommaDelim;
 	}
 }

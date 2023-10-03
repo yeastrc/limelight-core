@@ -20,15 +20,18 @@ package org.yeastrc.limelight.limelight_webapp.services;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_Return_Item;
@@ -36,6 +39,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcher.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcher__Retrieve_CLI_PARAMS;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcher.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcher__Retrieve_Path;
@@ -56,6 +60,9 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 	
 	@Autowired
 	private SearchProgramsPerSearchListForSearchIdSearcherIF searchProgramsPerSearchListForSearchIdSearcher;
+	
+	@Autowired
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
 	
 	@Autowired
 	private Search__SearchDetailsDisplay_ForProjectSearchIdsSearcherIF search_PathFastaFilenameImportEndTimestamp_ForProjectSearchIdsSearcher;
@@ -81,6 +88,7 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 			Get_SearchDetails_Core_For_ProjectSearchIds_Service__Populate_ConverterProgram_CLI_Parameters populate_ConverterProgram_CLI_Parameters 
 			) throws SQLException {
 		
+		List<Integer> searchIdList = new ArrayList<>( projectSearchIds.size() );
 		
 		//  Get FASTA File data from File Object Storage data tables to support download of FASTA file
 		
@@ -90,7 +98,6 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 			
 			Map<Integer, Integer> searchId_Map_Key_ProjectSearchId = new HashMap<>( projectSearchIds.size() );
 			Map<Integer, List<Integer>> projectSearchIdList_Map_Key_SearchId = new HashMap<>( projectSearchIds.size() );
-			List<Integer> searchIdList = new ArrayList<>( projectSearchIds.size() );
 			
 			for ( Integer projectSearchId : projectSearchIds ) {
 			
@@ -144,6 +151,25 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 				
 					fileObjectStorage_Data_Map_Key_ProjectSearchId.put(projectSearchId, item);
 				}
+			}
+		}
+		
+		///////  scan filenames
+		
+		Map<Integer, List<SearchScanFileDTO>> searchScanFileDTO_List_Map_Key_SearchId = new HashMap<>( searchIdList.size() );
+		
+		{
+			List<SearchScanFileDTO> dbResults = 
+					searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIdList);
+			
+			for ( SearchScanFileDTO dbItem : dbResults ) {
+				
+				List<SearchScanFileDTO> searchScanFileDTO_List = searchScanFileDTO_List_Map_Key_SearchId.get( dbItem.getSearchId() );
+				if ( searchScanFileDTO_List == null ) {
+					searchScanFileDTO_List = new ArrayList<>();
+					searchScanFileDTO_List_Map_Key_SearchId.put( dbItem.getSearchId(), searchScanFileDTO_List );
+				}
+				searchScanFileDTO_List.add(dbItem);
 			}
 		}
 		
@@ -231,6 +257,25 @@ public class Get_SearchDetails_Core_For_ProjectSearchIds_Service implements Get_
 					searchProgramsPerSearchListForSearchIdSearcher
 					.getSearchProgramsPerSearchForSearchId( search_PathFastaFilename_Item.getSearchId() );
 			searchDetails_Core_Item.setSearchProgramsPerSearchList( searchProgramsPerSearchList );
+
+			{
+				List<SearchScanFileDTO> searchScanFileDTO_List = searchScanFileDTO_List_Map_Key_SearchId.get( search_PathFastaFilename_Item.getSearchId() );
+				if ( searchScanFileDTO_List != null ) {
+					
+					List<String> scanFilenameList = new ArrayList<>( searchScanFileDTO_List.size() );
+					for ( SearchScanFileDTO searchScanFileDTO : searchScanFileDTO_List ) {
+						scanFilenameList.add( searchScanFileDTO.getFilename() );
+					}
+					
+					Collections.sort( scanFilenameList );
+					
+					searchDetails_Core_Item.setScanFilenameList(scanFilenameList);
+					
+					String scanFilenames_CommaDelim = StringUtils.join( scanFilenameList, ", " );
+					
+					searchDetails_Core_Item.setScanFilenames_CommaDelim(scanFilenames_CommaDelim);
+				}
+			}
 			
 			results.add( searchDetails_Core_Item );
 		}

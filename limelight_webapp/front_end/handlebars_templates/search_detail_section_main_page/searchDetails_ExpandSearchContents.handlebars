@@ -165,5 +165,19 @@
                     {{/if}}
                 </td>
             </tr>
+
+        {{#if scanFilenames_CommaDelim}}
+            <tr>
+                <td style="vertical-align: top; white-space: nowrap;  padding-right: 4px;">
+                    Scan Filenames:
+                </td>
+                <td style="vertical-align: top; padding-top: 0px;">
+                    {{ scanFilenames_CommaDelim }}
+                </td>
+            </tr>
+        {{/if}}
+
+
+
     </tbody>
 </table>
