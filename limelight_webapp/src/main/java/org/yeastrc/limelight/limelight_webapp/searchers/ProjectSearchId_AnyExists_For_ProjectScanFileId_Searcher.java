@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
 /**
@@ -43,8 +44,10 @@ public class ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher extends Li
 			+ " project_scan_filename_tbl "
 			+ " INNER JOIN project_scan_filename__search_scan_file__mapping_tbl"
 			+ 	" ON project_scan_filename_tbl.id = project_scan_filename__search_scan_file__mapping_tbl.project_scan_filename_id "
+			+ " INNER JOIN project_search_tbl ON project_scan_filename__search_scan_file__mapping_tbl.project_search_id = project_search_tbl.id "
 			+ " WHERE "
 			+ " project_scan_filename_tbl.project_scan_file_id = ? "
+			+ " AND project_search_tbl.status_id = " + SearchRecordStatus.IMPORT_COMPLETE_VIEW.value()
 			+ " LIMIT 1";
 	
 	
