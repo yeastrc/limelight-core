@@ -17,7 +17,7 @@ function smoothLowess(xCoords: number[], yCoords: number[], smoothingFactor: num
     // Apply the lowess smoother
     const smoothed = lowess(xCoords, yCoords, {f: smoothingFactor});
     smoothed.y = setNegativeToZero(smoothed.y);
-    
+
     return smoothed;
 }
 
