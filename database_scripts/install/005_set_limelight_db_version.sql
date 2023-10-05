@@ -1,15 +1,15 @@
 
 --   Set Limelight DB Version for initial install, BOTH records MUST have SAME value.
 
---      Current version is:  4
+--      Current version is:  5
 
 USE limelight ;
 
 
 INSERT INTO aa_limelight_database_version_tbl
 (row_label, limelight_database_version_number)
-VALUES ('DB Version In Progress', 4 );
+VALUES ('DB Version In Progress', 5 );
 
 
 INSERT INTO aa_limelight_database_version_tbl (row_label, limelight_database_version_number)
-VALUES ('DB Version Current', 4 );
+VALUES ('DB Version Current', 5 );
