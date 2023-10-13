@@ -186,6 +186,15 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
             dataPageStateManager
         });
 
+
+        const searchProgramsPerSearchItems_For_ProjectSearchId =
+            dataPageStateManager.get_searchProgramsPerSearchData_Root().searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId )
+        if ( ! searchProgramsPerSearchItems_For_ProjectSearchId ) {
+            const msg = "_getDataTableColumns(...): dataPageStateManager.get_searchProgramsPerSearchData_Root().searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId
+            console.warn(msg)
+            throw Error(msg)
+        }
+
         //  Columns
 
         const dataTable_Columns : Array<DataTable_Column> = [];
@@ -290,9 +299,41 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
 
             {  //  Reported Peptide Scores
                 const reportedPeptideAnnotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForAnnotationTypeIds;
+
+                const annotationNames_MoreThanOneInstance_InAnnotationList: Set<string> = new Set()
+
+                {
+                    const annotationNames_All: Set<string> = new Set()
+
+                    const annotationTypesForPeptideListEntries = annotationTypeRecords_DisplayOrder.reportedPeptideAnnotationTypesForAnnotationTypeIds;
+                    for ( const annotation of annotationTypesForPeptideListEntries ) {
+
+                        const displayName = annotation.name;
+
+                        if ( annotationNames_All.has( displayName ) ) {
+                            annotationNames_MoreThanOneInstance_InAnnotationList.add( displayName )
+                        } else {
+                            annotationNames_All.add( displayName )
+                        }
+                    }
+                }
+
                 for ( const reportedPeptideAnnotationType of reportedPeptideAnnotationTypesForPeptideListEntries ) {
 
-                    const displayName = reportedPeptideAnnotationType.name;
+                    let displayName = reportedPeptideAnnotationType.name;
+
+                    if ( annotationNames_MoreThanOneInstance_InAnnotationList.has( displayName ) ) {
+                        //  Same displayName more than once in list so add the search program name to the display
+
+                        const searchProgramsPerSearchItem = searchProgramsPerSearchItems_For_ProjectSearchId.searchProgramsPerSearchItem_Map.get( reportedPeptideAnnotationType.searchProgramsPerSearchId )
+                        if ( ! searchProgramsPerSearchItem ) {
+                            const msg = "searchProgramsPerSearchItems_For_ProjectSearchId.searchProgramsPerSearchItem_Map.get( reportedPeptideAnnotationType.searchProgramsPerSearchId ) returned NOTHING for reportedPeptideAnnotationType.searchProgramsPerSearchId: " + reportedPeptideAnnotationType.searchProgramsPerSearchId
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+                        displayName += " (" + searchProgramsPerSearchItem.name + ")"
+                    }
 
                     const dataTable_Column = new DataTable_Column({
                         id : "rp_" + reportedPeptideAnnotationType.name, // Used for tracking sort order. Keep short
@@ -433,6 +474,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                     }
                 }
                 { //  Score Columns
+
                     const annotationTypeRecords_DisplayOrder = createReportedPeptideDisplayData_result.annotationTypeRecords_DisplayOrder;
 
                     {  //  Reported Peptide Scores

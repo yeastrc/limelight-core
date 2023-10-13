@@ -298,6 +298,14 @@ const _getDataTableColumns = function({
     dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable>
 } {
 
+    const searchProgramsPerSearchItems_For_ProjectSearchId =
+        dataPageStateManager.get_searchProgramsPerSearchData_Root().searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId )
+    if ( ! searchProgramsPerSearchItems_For_ProjectSearchId ) {
+        const msg = "_getDataTableColumns(...): dataPageStateManager.get_searchProgramsPerSearchData_Root().searchProgramsPerSearchItems_PerProjectSearchId_Map.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId
+        console.warn(msg)
+        throw Error(msg)
+    }
+
     const dataTable_Columns : Array<DataTable_Column> = [];
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
@@ -408,21 +416,55 @@ const _getDataTableColumns = function({
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    for ( const annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
+    {
 
-        const displayName = annotation.name;
+        const annotationNames_MoreThanOneInstance_InAnnotationList: Set<string> = new Set()
 
-        const dataTable_Column = new DataTable_Column({
-            id :           annotation.annotationTypeId.toString(),
-            displayName,
-            width :        100,
-            sortable : true,
-        });
+        {
+            const annotationNames_All: Set<string> = new Set()
 
-        dataTable_Columns.push( dataTable_Column );
+            for ( const annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
 
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                const displayName = annotation.name;
+
+                if ( annotationNames_All.has( displayName ) ) {
+                    annotationNames_MoreThanOneInstance_InAnnotationList.add( displayName )
+                } else {
+                    annotationNames_All.add( displayName )
+                }
+            }
+        }
+
+        for ( const annotation of psmAnnotationTypesForPsmListEntries_DisplayOrder ) {
+
+            let displayName = annotation.name;
+
+            if ( annotationNames_MoreThanOneInstance_InAnnotationList.has( displayName ) ) {
+                //  Same displayName more than once in list so add the search program name to the display
+
+                const searchProgramsPerSearchItem = searchProgramsPerSearchItems_For_ProjectSearchId.searchProgramsPerSearchItem_Map.get( annotation.searchProgramsPerSearchId )
+                if ( ! searchProgramsPerSearchItem ) {
+                    const msg = "searchProgramsPerSearchItems_For_ProjectSearchId.searchProgramsPerSearchItem_Map.get( annotation.searchProgramsPerSearchId ) returned NOTHING for annotation.searchProgramsPerSearchId: " + annotation.searchProgramsPerSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                displayName += " (" + searchProgramsPerSearchItem.name + ")"
+            }
+
+            const dataTable_Column = new DataTable_Column( {
+                id: annotation.annotationTypeId.toString(),
+                displayName,
+                width: 100,
+                sortable: true,
+            } );
+
+            dataTable_Columns.push( dataTable_Column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
     }
 
     return { dataTable_Columns, dataTable_Column_DownloadTable_Entries };
