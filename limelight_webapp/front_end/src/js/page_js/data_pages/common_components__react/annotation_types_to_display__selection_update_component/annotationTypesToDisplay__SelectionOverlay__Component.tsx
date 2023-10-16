@@ -357,8 +357,8 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                         { ( this._searchesList.searches.length > 1 ) ? (
                             //  More than 1 search so show selector
                             <div >
-                                <div>
-                                    Search:
+                                <div style={ { fontSize: 18, fontWeight: "bold" } }>
+                                    Select Search:
                                 </div>
                                 <div>
                                     <select
