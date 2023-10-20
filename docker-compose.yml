@@ -68,6 +68,7 @@ services:
       SPECTR_BATCH_SIZE: ${SPECTR_MAX_SCAN_BATCH_SIZE:-200}
       WEBAPP_PORT: 3434
       APP_CLEAN_WORKDIR: ${FEATURE_DETECTION_CLEAN_WORKDIR:-yes}
+      HARDKLOR_TIMEOUT: ${HARDKLOR_TIMEOUT:-0}
     volumes:
       - feature_detection_finaldir:/data/app/finaldir
       - feature_detection_workdir:/data/app/workdir

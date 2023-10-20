@@ -12,6 +12,11 @@ IMPORTER_JAVA_OPTIONS=-Xmx3g -Xms500m
 FEATURE_DETECTION_IMPORTER_JAVA_OPTIONS=-Xmx3g -Xms500m
 WEBAPP_JAVA_OPTIONS=-Xms2024m -Xmx2024m
 
+# The timeout in seconds for running Hardklor. If Hardklor runs for longer
+# than this duration it will be terminated and an error generated
+# Set to 0 to disable timeout
+HARDKLOR_TIMEOUT=7200
+
 # This manages optimization settings for MySQL
 MYSQL_OPTIONS=--max-connections=500 --skip-ssl
 
