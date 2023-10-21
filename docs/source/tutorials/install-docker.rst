@@ -17,8 +17,10 @@ Microsoft Windows
 This tutorial will install WSL2 (Microsoft's Windows Subsystem for Linux) and Docker Desktop, which will allow you to
 run any Docker containers natively in Linux on Windows.
 
-1. Install WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_. If WSL2 is already installed, skip this step.
+1. Install WSL2 by `following these directions from Microsoft <https://learn.microsoft.com/en-us/windows/wsl/install>`_. If WSL2 is already installed, skip this step.
 2. Install Docker Desktop and link it to WSL2 by `following these directions from Microsoft <https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers>`_. If Docker Desktop is already installed, follow the link and follow the directions to ensure it is enabled in your Linux distribution.
+
+   You can skip the optional steps for installing Visual Studio Code and signing up for a Docker ID.
 
 Windows Terminal
 -------------------
