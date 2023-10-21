@@ -18,11 +18,11 @@ to get Docker installed.
 On Linux and MacOS, open a normal terminal. On Windows, if you followed our instructions for installing Docker,
 follow the directions on our :ref:`Docker Installation Tutorial <Windows Terminal>` to open a Linux terminal.
 
-2. (Optional) Install Docker Compose
+2. Install Docker Compose
 ====================================
-This step is only required if you are using an older version of Docker. Newer versions of Docker come with Docker
+This step is only required if you are using an older version of Docker. Docker Desktop comes with Docker
 Compose by default. To test if Docker Compose is installed type ``docker-compose``.  If the command is not found,
-you can update Docker or follow these directions to install Docker Compose.
+follow these directions to install Docker Compose.
 
 Docker Compose is an official add-on to Docker that greatly simplifies running applications that have multiple parts. Limelight
 has several parts, including a database, multiple web applications, and running programs. Docker Compose allows you to
@@ -33,7 +33,7 @@ Install Docker Compose by typing the following:
 
     .. code-block:: bash
 
-       sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+       sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
        sudo chmod +x /usr/local/bin/docker-compose
 
 If you run into any trouble installing Docker Compose, `please see Docker's official Docker Compose installation instructions <https://docs.docker.com/compose/install/>`_.
