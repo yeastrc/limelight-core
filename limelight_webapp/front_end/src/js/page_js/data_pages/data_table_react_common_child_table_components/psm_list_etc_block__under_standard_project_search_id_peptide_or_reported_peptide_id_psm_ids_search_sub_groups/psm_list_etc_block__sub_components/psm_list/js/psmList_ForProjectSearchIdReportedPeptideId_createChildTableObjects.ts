@@ -326,6 +326,9 @@ const _getDataTableColumns = function({
             dataTable_Columns.push( dataTable_Column );
         }
     }
+
+    //   TODO   WARNING:  If move scan number to different column or remove scan number from valueSort need to update various code that processes this data table for use in other than data table
+
     {    // Scan Number AND view spectrum link
 
         const displayName = "Scan Number";

@@ -3542,7 +3542,7 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                 const columnCount = this._psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_RootTableObject.tableDataObject.columns.length
 
-                // Start at index 1 to skip first column - The link to lorikeet
+                // Start at index 1 to skip first column (The link to Scan Browser) and the second column (Component for Scan Number and link to Lorikeet)
 
                 for ( let columnIndex = 1; columnIndex < columnCount; columnIndex++  ) {
 
@@ -3555,7 +3555,19 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                         throw Error("psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
                     }
 
-                    const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + tableRowData_ForColumn.valueDisplay;
+                    let valueToDisplay = tableRowData_ForColumn.valueDisplay
+
+                    if ( columnIndex === 1 ) {
+                        //  Process second column (Component for Scan Number and link to Lorikeet) Separately to get Scan Number from Sort Property
+
+                        if ( tableRowData_ForColumn.valueSort === undefined || tableRowData_ForColumn.valueSort === null ) {
+                            throw Error( "( columnIndex === 1 ) For Scan Number Cell AND ( tableRowData_ForColumn.valueSort === undefined || tableRowData_ForColumn.valueSort === null )")
+                        }
+
+                        valueToDisplay = tableRowData_ForColumn.valueSort.toString()
+                    }
+
+                    const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + valueToDisplay;
                     psmTooltipLines.push( psmTooltipLine )
                 }
 
