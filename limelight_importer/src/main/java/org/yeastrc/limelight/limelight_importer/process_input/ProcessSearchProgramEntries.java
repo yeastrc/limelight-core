@@ -591,7 +591,7 @@ public class ProcessSearchProgramEntries {
 			boolean annotationTypeDefaultVisible = getAnnotationTypeDefaultVisible( annotationTypeName, searchProgramName, visibleMatchedProteinDefaultVisibleAnnotationsSearchAnnotationList );
 			Integer annotationTypeDisplayOrder = getAnnotationTypeDisplayOrder( annotationTypeName, searchProgramName, visibleMatchedProteinDefaultVisibleAnnotationsSearchAnnotationList );
 			AnnotationTypeDTO item = new AnnotationTypeDTO();
-			item.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.PSM );
+			item.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN );
 			item.setFilterableDescriptiveAnnotationType( FilterableDescriptiveAnnotationType.DESCRIPTIVE );
 			item.setSearchId( searchId );
 			item.setSearchProgramsPerSearchId( searchProgramId );
