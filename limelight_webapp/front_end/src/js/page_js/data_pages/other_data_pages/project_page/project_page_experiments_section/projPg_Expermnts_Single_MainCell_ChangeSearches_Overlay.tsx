@@ -16,7 +16,7 @@ import {
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback,
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback_Params
 } from "page_js/data_pages/search_selection__displayed_nested_in_folders__React_Component/searchSelection_DisplayedNestedInFolders_Component";
-import {CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import {CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 
 /////
 
@@ -230,12 +230,14 @@ class ProjectPage_Experiments_SingleExperiment_MainCellMaint_ChangeSearches_Over
                      style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
                 >
                     <SearchSelection_DisplayedNestedInFolders_Component
+
+                        select_ONLY_ONE_Search={ false }
+
                         searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
                         projectIdentifier={ null }  /// Not required since pass in searchesSearchTagsFolders_Result_Root
 
                         projectSearchIds_Previously_Selected={ Array.from( this.props.projectSearchIds_Selected ) }
                         projectSearchIds_ContainedInAllOtherExperimentCells={ this.props.projectSearchIds_ContainedInAllOtherExperimentCells }
-                        callbackOn_Cancel_Close_Clicked={ this.props.callbackOn_Cancel_Close_Clicked }
                         callback_updateSelected_Searches={ this._callback__SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches_BindThis }
                     />
 

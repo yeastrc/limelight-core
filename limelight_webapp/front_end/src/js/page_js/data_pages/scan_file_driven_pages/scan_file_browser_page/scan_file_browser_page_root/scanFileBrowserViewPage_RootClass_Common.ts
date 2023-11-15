@@ -37,13 +37,18 @@ import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_m
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
-import {ScanFileBrowserPage_CentralStateManagerObjectClass} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPage_CentralStateManagerObjectClass";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 import {
 	ScanFileBrowserViewPage__Root_Component,
 	ScanFileBrowserViewPage__Root_Component_Props
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root_and_main_page_components/scanFileBrowserViewPage__Root_Component";
 import {ScanFileBrowserViewPage__MainPage_Component_Props_Prop} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root_and_main_page_components/scanFileBrowserViewPage__MainPage_Component";
+import { ScanFileBrowserPageRoot_CentralStateManagerObjectClass } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPageRoot_CentralStateManagerObjectClass";
+import {
+	ScanFileBrowserPage_SingleScan_UserSelections_StateObject,
+	ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange
+} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPage_SingleScan_UserSelections_StateObject";
+import { ParseURL_Into_PageStateParts } from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
 
 
 /**
@@ -56,7 +61,9 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 
 	///  Page Root Page State
 
-	private _scanFileBrowserPage_CentralStateManagerObjectClass : ScanFileBrowserPage_CentralStateManagerObjectClass;
+	private _scanFileBrowserPageRoot_CentralStateManagerObjectClass : ScanFileBrowserPageRoot_CentralStateManagerObjectClass;
+
+	private _scanFileBrowserPage_SingleScan_UserSelections_StateObject: ScanFileBrowserPage_SingleScan_UserSelections_StateObject
 
 	/**
 	 *
@@ -65,7 +72,7 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 
 		this._centralPageStateManager = new CentralPageStateManager();
 
-		this._scanFileBrowserPage_CentralStateManagerObjectClass = new ScanFileBrowserPage_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
+		this._scanFileBrowserPageRoot_CentralStateManagerObjectClass = new ScanFileBrowserPageRoot_CentralStateManagerObjectClass( { centralPageStateManager : this._centralPageStateManager } );
 	}
 
 	/**
@@ -82,97 +89,91 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 
 		// this._page_UserDefault_processing.page_UserDefault_processing();
 
-		// let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-		//
-		// let referrerFromURL = initialStateFromURL.referrer;
-		//
-		// if ( referrerFromURL === _REFERRER_PATH_STRING ) {
-		//
-		// 	//  TODO  do any needed processing of the URL since it is a referrer from another page
-		//
-		// 	//  Could do default URL processing here.
-		// 	//		IE: Replace the current URL with the default URL and then call again:
-		// 	//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-		// }
-		//
-		// //  Clear the referrer flag from URL, if it exists
-		// this._centralPageStateManager.clearReferrerFlagFromURL();
+		const initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+
+		let pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag = false
+
+		{
+			const referrerFromURL_Contents = initialStateFromURL.referrer;
+
+			pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag = true
+
+			if ( referrerFromURL_Contents === _REFERRER_PATH_STRING ) {
+
+				//  TODO  do any needed processing of the URL since it is a referrer from another page
+
+				//  Could do default URL processing here.
+				//		IE: Replace the current URL with the default URL and then call again:
+				//			let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+			}
+		}
+
+		//  Clear the referrer flag from URL, if it exists
+		this._centralPageStateManager.clearReferrerFlagFromURL();
 
 
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		mainPagesPopulateHeader.initialize();
 
-		this._scanFileBrowserPage_CentralStateManagerObjectClass.initialize();
+		////
 
-		//  "Root" Page State objects all initialized
+		this._scanFileBrowserPageRoot_CentralStateManagerObjectClass.initialize();
 
+		{ // this._scanFileBrowserPage_SingleScan_UserSelections_StateObject
 
-		const pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+			const valueChangedCallback = () => {
 
+				const singleSingleScanData = this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.getEncodedStateData();
+				this._scanFileBrowserPageRoot_CentralStateManagerObjectClass.set_SingleScanDataEncodedStateData({ singleSingleScanData })
+			}
+			this._scanFileBrowserPage_SingleScan_UserSelections_StateObject = new ScanFileBrowserPage_SingleScan_UserSelections_StateObject({
+				valueChangedCallback
+			});
 
-		//  Get URL after pageControllerPath
-
-		let windowPath = window.location.pathname;
-
-		if ( windowPath.endsWith( "/" ) ) {
-			//  Remove trailing "/"
-			windowPath = windowPath.substring( 0, windowPath.length - 1 );
-		}
-
-		const pageControllerPath_Index = windowPath.indexOf( pageControllerPath );
-		if ( pageControllerPath_Index === -1 ) {
-			throw Error( "Page controller path not found in window path.  windowPath: " + windowPath );
-		}
-		const index_AfterPageController = pageControllerPath_Index + pageControllerPath.length;
-
-		const windowPath_After_pageControllerPath = windowPath.substring( index_AfterPageController );
-
-		if ( ! windowPath_After_pageControllerPath.startsWith( "c/" ) ) {
-			throw Error("Missing 'c/' after Page controller path")
-		}
-
-		const windowPath_After_pageControllerPath__After_c_slash = windowPath_After_pageControllerPath.substring( 2 );
-
-		const windowPath_After_pageControllerPathSplitSlash = windowPath_After_pageControllerPath__After_c_slash.split( _PATH_SEPARATOR );
-
-		//  These next 2 checks should not fail since the server side will return 404 for any value but 'r'
-
-		//  If length is 2, then 2nd value must be _REFERRER_PATH_STRING (r)
-		if ( windowPath_After_pageControllerPathSplitSlash.length === 2 ) {
-			if ( windowPath_After_pageControllerPathSplitSlash[ 1 ] !== _REFERRER_PATH_STRING ) {
-
-				//  TODO  Present user an error message with link to take them back to project
-
-				throw Error( "URI Path for Project search id based URL after controller path contains 2 elements when split on '" +
-					_PATH_SEPARATOR + "' and 2nd element is not '" + _REFERRER_PATH_STRING + "'." +
-					"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			const encodedStateData = this._scanFileBrowserPageRoot_CentralStateManagerObjectClass.get_SingleScanData_EncodedStateData()
+			if ( encodedStateData ) {
+				this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
 
-		this.clearReferrerFlagFromURL();
+		if ( pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag ) {
 
-		const mainParametersCodeString = windowPath_After_pageControllerPathSplitSlash[ 0 ];
+			//  Page Load from other page
 
-		this._main_Render({ mainParametersCodeString });
-	}
+			//  ZoomRange_Selected().tic_Max_ZoomRange ensure is Integer.   Take Math.ceil if populated
 
-	/**
-	 *
-	 */
-	clearReferrerFlagFromURL() {
+			if ( this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected()
+				&& this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected().tic_Max_ZoomRange ) {
 
-		let windowPath = window.location.pathname;
+				const zoomRange_Selected_Existing = this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected()
 
-		if ( windowPath.endsWith( _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR ) ) {
+				const tic_Max_ZoomRange_Ceil = Math.ceil( zoomRange_Selected_Existing.tic_Max_ZoomRange )
+				if ( ! Number.isNaN( tic_Max_ZoomRange_Ceil ) ) {
 
-			const newURLlength = windowPath.length - _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR.length
+					const zoomRange_Selected_New: ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange = {
+						tic_Max_ZoomRange: tic_Max_ZoomRange_Ceil,
+						mz_Min_ZoomRange: zoomRange_Selected_Existing.mz_Min_ZoomRange,
+						mz_Max_ZoomRange: zoomRange_Selected_Existing.mz_Max_ZoomRange
+					}
 
-			let newURL = windowPath.substring( 0, newURLlength );
-
-			window.history.replaceState( null, null, newURL );
+					this._scanFileBrowserPage_SingleScan_UserSelections_StateObject.setZoomRange_Selected( zoomRange_Selected_New )
+				}
+			}
 		}
-	}
 
+		//  Save centralPageStateManager to URL '/q/...' on page load
+		this._centralPageStateManager._updateURL();
+
+		//  "Root" Page State objects all initialized
+
+		const parseURL_Into_PageStateParts = new ParseURL_Into_PageStateParts()
+
+		const url_Into_PageStateParts = parseURL_Into_PageStateParts.parseURL_Into_PageStateParts()
+
+		const mainParametersCodeString = url_Into_PageStateParts.projectScanFileId_Encoded
+
+		this._main_Render({ mainParametersCodeString, pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag });
+	}
 
 	/**
 	 *
@@ -180,9 +181,10 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 	 */
 	private _main_Render(
 		{
-			mainParametersCodeString
+			mainParametersCodeString, pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag
 		} : {
 			mainParametersCodeString : string
+			pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag: boolean
 		}) : void {
 
 		if ( ! mainParametersCodeString.startsWith( "a" ) ) {
@@ -207,7 +209,8 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 
 		const propsValue: ScanFileBrowserViewPage__MainPage_Component_Props_Prop = {
 
-			projectScanFileId
+			projectScanFileId, pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag,
+			scanFileBrowserPage_SingleScan_UserSelections_StateObject: this._scanFileBrowserPage_SingleScan_UserSelections_StateObject
 		}
 
 		const props : ScanFileBrowserViewPage__Root_Component_Props = {

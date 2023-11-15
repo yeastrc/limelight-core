@@ -333,7 +333,38 @@
 				
 	</target>
 
-	<!--     Mod Page Javascript Only Build Target  -->
+	<!--     Feature Detection View Page Javascript Only Build Target  -->
+
+	<target name="js_only_build_copy_FeatureDetectionView_Page" description="">
+
+		<echo>Executing webpack using executable: ${webpack_executable}</echo>
+
+		<exec executable="${webpack_executable}" dir="." failonerror="true"
+			  resolveexecutable="true" >
+			<!--
+            resolveexecutable:
+            When this attribute is true, the name of the executable is resolved firstly against the project basedir
+            and if that does not exist, against the execution directory if specified.
+            On Unix systems, if you only want to allow execution of
+            commands in the user's path, set this to false. since Ant 1.6
+            -->
+
+			<!-- Webpack directive  -->
+			<arg value="${webpack_param_mode_value}" />
+
+			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
+			<arg value="--env.build_entry=data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers" />
+			<arg value="--env.build_entry=data_pages/featureDetection_ViewPage_RootLaunch_PublicUser" />
+			<!--   <arg value="XXXX" /> -->
+		</exec>
+
+		<copy todir="${tomcat.static}${file.separator}js_generated_bundles" >
+			<fileset dir="webpack_build_output${file.separator}js_generated_bundles" />
+		</copy>
+
+	</target>
+
+	<!--     Scan File Browser Page Javascript Only Build Target  -->
 
 	<target name="js_only_build_copy_ScanFileBrowser_Page" description="">
 

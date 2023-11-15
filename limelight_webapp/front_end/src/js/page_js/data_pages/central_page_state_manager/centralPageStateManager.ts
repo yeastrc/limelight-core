@@ -52,7 +52,11 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_prefix_ExperimentId_Based_FromDOM } from 'page_js/data_pages/data_pages_common/controllerPath_Prefixes_FromDOM';
+import {
+	controller_path_prefix_ProjectSearchId_Based_FromDOM,
+	controller_path_prefix_ExperimentId_Based_FromDOM,
+	controller_path_prefix_FeatureDetectionId_Based_FromDOM, controller_path_prefix_ProjectScanFileId_Based_FromDOM
+} from 'page_js/data_pages/data_pages_common/controllerPath_Prefixes_FromDOM';
 
 import { StringCompressDecompress }  from 'page_js/data_pages/data_pages_common/compressDecompressString';
 
@@ -234,6 +238,8 @@ export class CentralPageStateManager {
 
 		const controller_path_prefix_ProjectSearchId_Based = controller_path_prefix_ProjectSearchId_Based_FromDOM();
 		const controller_path_prefix_ExperimentId_Based = controller_path_prefix_ExperimentId_Based_FromDOM();
+		const controller_path_prefix_FeatureDetectionId_Based = controller_path_prefix_FeatureDetectionId_Based_FromDOM()
+		const controller_path_prefix_ProjectScanFileId_Based = controller_path_prefix_ProjectScanFileId_Based_FromDOM()
 
 		if ( newURL.includes( controller_path_prefix_ProjectSearchId_Based ) ) {
 
@@ -244,6 +250,18 @@ export class CentralPageStateManager {
 		} else if ( newURL.includes( controller_path_prefix_ExperimentId_Based ) ) {
 
 			//  Update Navigation Links for Experiment Id Based URLs
+
+			navigation_dataPages_Maint_Instance.updateNavLinks();
+
+		} else if ( newURL.includes( controller_path_prefix_FeatureDetectionId_Based ) ) {
+
+			//  Update Navigation Links for Feature Detection Id Based URLs
+
+			navigation_dataPages_Maint_Instance.updateNavLinks();
+
+		} else if ( newURL.includes( controller_path_prefix_ProjectScanFileId_Based ) ) {
+
+			//  Update Navigation Links for Project Scan File Id Based URLs
 
 			navigation_dataPages_Maint_Instance.updateNavLinks();
 
@@ -262,6 +280,60 @@ export class CentralPageStateManager {
 	 * return: String of URL for current state (and componentOverridesAdditions if present)
 	 */
 	getURL_ForCurrentState( params? : CentralPageStateManager_Method_getURL_ForCurrentState_Params ) {
+
+		let componentOverridesAdditions: Array<any> = undefined;
+		let pageControllerPath_Override: string = undefined;
+
+		if ( params ) {
+			componentOverridesAdditions = params.componentOverridesAdditions;
+			pageControllerPath_Override = params.pageControllerPath_Override;
+		}
+
+		const stateAsJSON_Compressed = this.get_CurrentState_AsStringForUrl(params)
+
+		// Current URL contents
+		const pageStatePartsFromURL = this._parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
+
+		const experimentId = pageStatePartsFromURL.experimentId;
+
+		const searchDataLookupParametersCode = pageStatePartsFromURL.searchDataLookupParametersCode;
+
+		//  Not used
+		//		let pageStateIdentifier = pageStatePartsFromURL.pageStateIdentifier;
+
+		const referrer = pageStatePartsFromURL.referrer;
+
+		//		if ( ! pageStateIdentifier ) {
+		//			pageStateIdentifier = _STANDARD_PAGE_STATE_IDENTIFIER;
+		//		}
+
+		let pageControllerPath = pageControllerPath_Override;
+		if ( ! pageControllerPath ) {
+			pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
+		}
+
+		let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
+			pageControllerPath,
+			experimentId,
+			featureDetectionId_Encoded: pageStatePartsFromURL.featureDetectionId_Encoded,
+			projectScanFileId_Encoded: pageStatePartsFromURL.projectScanFileId_Encoded,
+			searchDataLookupParamsCode: searchDataLookupParametersCode,
+			pageStateIdentifier: _STANDARD_PAGE_STATE_IDENTIFIER,
+			pageStateString: stateAsJSON_Compressed,
+			referrer: undefined
+		});
+
+		return newURL;
+	}
+
+	/**
+	 * Params:
+	 * componentOverridesAdditions - Array of components that will be added after the registered components.  These will override page state values if the same unique id.
+	 *    								The array will be processed into an object with properties of unique id to remove duplicates.
+	 *
+	 * return: Current State as String for URL
+	 */
+	get_CurrentState_AsStringForUrl( params? : CentralPageStateManager_Method_getURL_ForCurrentState_Params ) {
 
 		let componentOverridesAdditions: Array<any> = undefined;
 		let pageControllerPath_Override: string = undefined;
@@ -290,40 +362,10 @@ export class CentralPageStateManager {
 			}
 		}
 
-		// Current URL contents
-		const pageStatePartsFromURL = this._parseURL_Into_PageStateParts.parseURL_Into_PageStateParts();
-
-		const experimentId = pageStatePartsFromURL.experimentId;
-
-		const searchDataLookupParametersCode = pageStatePartsFromURL.searchDataLookupParametersCode;
-
-		//  Not used
-		//		let pageStateIdentifier = pageStatePartsFromURL.pageStateIdentifier;
-
-		const referrer = pageStatePartsFromURL.referrer;
-
-		//		if ( ! pageStateIdentifier ) {
-		//			pageStateIdentifier = _STANDARD_PAGE_STATE_IDENTIFIER;
-		//		}
-
 		const stateAsJSON = JSON.stringify( pageStateObject );
 
-		let stateAsJSON_Compressed = this._stringCompressDecompress.compress(stateAsJSON);
+		const stateAsJSON_Compressed = this._stringCompressDecompress.compress( stateAsJSON );
 
-		let pageControllerPath = pageControllerPath_Override;
-		if ( ! pageControllerPath ) {
-			pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
-		}
-
-		let newURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
-			pageControllerPath,
-			experimentId,
-			searchDataLookupParamsCode: searchDataLookupParametersCode,
-			pageStateIdentifier: _STANDARD_PAGE_STATE_IDENTIFIER,
-			pageStateString: stateAsJSON_Compressed,
-			referrer: undefined
-		});
-
-		return newURL;
+		return stateAsJSON_Compressed
 	}
 }

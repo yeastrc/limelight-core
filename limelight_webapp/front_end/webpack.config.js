@@ -179,6 +179,11 @@ const mainConfig = (env, argv) => {
 		'data_pages/modExperimentPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/experiment_driven_data_pages/mod_exp__page/mod_exp_page_root/js/modExperimentPage_RootLaunch_PublicUser.ts',
 
 
+		//  Feature Detection View Data pages
+
+		'data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/featureDetection_ViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootLaunch_PublicUser.ts',
+
 		//  Scan File Data pages
 
 		'data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserViewPage_RootLaunch_LoggedInUsers.ts',

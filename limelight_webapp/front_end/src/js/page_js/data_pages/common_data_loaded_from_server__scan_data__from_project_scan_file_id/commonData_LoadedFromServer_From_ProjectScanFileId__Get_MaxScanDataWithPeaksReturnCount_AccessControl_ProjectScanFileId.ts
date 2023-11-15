@@ -22,19 +22,19 @@ export class CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksRe
  */
 export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId = function (
     {
-        projectSearchId
+        projectScanFileId
     } : {
-        projectSearchId: number
+        projectScanFileId: number
     }
 ) : Promise<CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result> {
 
     return new Promise<CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_Result>(( resolve, reject) => { try {
 
         let requestObject = {
-            projectSearchId: projectSearchId
+            projectScanFileId
         };
 
-        const url = "d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-search-id";
+        const url = "d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-scan-file-id";
 
         console.log("AJAX Call START: URL: " + url + new Date() );
 

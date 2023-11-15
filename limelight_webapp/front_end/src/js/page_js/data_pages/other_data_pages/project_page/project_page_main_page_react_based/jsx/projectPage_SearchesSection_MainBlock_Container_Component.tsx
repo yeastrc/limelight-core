@@ -35,7 +35,7 @@ import {
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
-} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 import {ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet";
 import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
@@ -770,8 +770,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
             ) : (
                 <div>
-                    {/*  Only For Logged In User  */}
-                    { ( this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails && ( ! this.state.showNoSearchesMessage_NoSearches_AfterPossibleFiltering ) ) ? (
+                    { ( ! this.state.showNoSearchesMessage_NoSearches_AfterPossibleFiltering ) ? (
 
                         <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
@@ -790,82 +789,86 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                    onClick={ this._collapse_All_Button_Clicked_BindThis }
                             />
 
-                            { ( this.props.projectPage_SearchesAdmin ) ? (
+                            {/*  Only For Logged In User  */}
+                            { ( this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails ) ? (
 
-                                // Show since projectPage_SearchesAdmin is populated
+                                <>
+                                    { ( this.props.projectPage_SearchesAdmin ) ? (
 
-                                <React.Fragment>
+                                        // Show since projectPage_SearchesAdmin is populated
 
-                                    <span> </span>
+                                        <React.Fragment>
 
-                                    {/*  Copy Searches */}
+                                            <span> </span>
 
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input type="button" value="Copy Searches"
-                                               disabled={ this.state.copy_move_ButtonsDisabled }
-                                               onClick={ this._copySearches_Clicked_BindThis }
-                                        />
-                                        { ( this.state.copy_move_ButtonsDisabled ) ? (
-                                            // overlay when button is disabled to show tooltip
-                                            <div
-                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                title="Click here to copy the selected searches to another project."
-                                            ></div>
-                                        ): null }
-                                    </div>
+                                            {/*  Copy Searches */}
 
-                                    <span> </span>
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input type="button" value="Copy Searches"
+                                                       disabled={ this.state.copy_move_ButtonsDisabled }
+                                                       onClick={ this._copySearches_Clicked_BindThis }
+                                                />
+                                                { ( this.state.copy_move_ButtonsDisabled ) ? (
+                                                    // overlay when button is disabled to show tooltip
+                                                    <div
+                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                        title="Click here to copy the selected searches to another project."
+                                                    ></div>
+                                                ): null }
+                                            </div>
 
-                                    {/*  Delete Searches */}
+                                            <span> </span>
 
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input type="button" value="Delete Searches"
-                                               disabled={ this.state.copy_move_ButtonsDisabled }
-                                               onClick={ this._deleteSearches_Clicked_BindThis }
-                                        />
-                                        { ( this.state.copy_move_ButtonsDisabled ) ? (
-                                            // overlay when button is disabled to show tooltip
-                                            <div
-                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                title="Click here to delete the selected searches."
-                                            ></div>
-                                        ): null }
-                                    </div>
+                                            {/*  Delete Searches */}
 
-                                    <span> </span>
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input type="button" value="Delete Searches"
+                                                       disabled={ this.state.copy_move_ButtonsDisabled }
+                                                       onClick={ this._deleteSearches_Clicked_BindThis }
+                                                />
+                                                { ( this.state.copy_move_ButtonsDisabled ) ? (
+                                                    // overlay when button is disabled to show tooltip
+                                                    <div
+                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                        title="Click here to delete the selected searches."
+                                                    ></div>
+                                                ): null }
+                                            </div>
 
-                                    {/*  Bulk set/update tags on Searches */}
+                                            <span> </span>
 
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input type="button" value="Tag Searches"
-                                               title="Click here to add/remove tags on the selected searches."
-                                               disabled={ this.state.copy_move_ButtonsDisabled }
-                                               onClick={ this._bulk_set_update_TagsOnSearches_BindThis }
-                                        />
-                                        { ( this.state.copy_move_ButtonsDisabled ) ? (
-                                            // overlay when button is disabled to show tooltip
-                                            <div
-                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                title="Click here to add/remove tags on the selected searches."
-                                            ></div>
-                                        ): null }
-                                    </div>
+                                            {/*  Bulk set/update tags on Searches */}
 
-                                    <span> </span>
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input type="button" value="Tag Searches"
+                                                       title="Click here to add/remove tags on the selected searches."
+                                                       disabled={ this.state.copy_move_ButtonsDisabled }
+                                                       onClick={ this._bulk_set_update_TagsOnSearches_BindThis }
+                                                />
+                                                { ( this.state.copy_move_ButtonsDisabled ) ? (
+                                                    // overlay when button is disabled to show tooltip
+                                                    <div
+                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                        title="Click here to add/remove tags on the selected searches."
+                                                    ></div>
+                                                ): null }
+                                            </div>
 
-                                    {/*  Manage ALL Tags in Project  */}
+                                            <span> </span>
 
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input type="button" value="Manage Tags"
-                                               title="Click here to manage tags on the project."
-                                               onClick={ this._manageTagsInProject_BindThis }
-                                        />
-                                    </div>
+                                            {/*  Manage ALL Tags in Project  */}
 
-                                    <span> </span>
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input type="button" value="Manage Tags"
+                                                       title="Click here to manage tags on the project."
+                                                       onClick={ this._manageTagsInProject_BindThis }
+                                                />
+                                            </div>
 
-                                    {/*  Move Searches */}
-                                    {/*
+                                            <span> </span>
+
+                                            {/*  Move Searches */}
+                                            {/*
 
                                         NO Longer support "Move Searches
 
@@ -888,29 +891,31 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                     */}
 
-                                    {/*  Organize Searches */}
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input
-                                            type="button"
-                                            value="Organize Searches"
-                                            title="CTRL-click or Command-click to open in new tab"
-                                            onClick={ this._organizeSearchesButton_Clicked_BindThis }
-                                        />
-                                    </div>
+                                            {/*  Organize Searches */}
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input
+                                                    type="button"
+                                                    value="Organize Searches"
+                                                    title="CTRL-click or Command-click to open in new tab"
+                                                    onClick={ this._organizeSearchesButton_Clicked_BindThis }
+                                                />
+                                            </div>
 
-                                    <span> </span>
+                                            <span> </span>
 
-                                    {/*  Open Set Filter Overrides Overlay  */}
-                                    <div style={ { position: "relative", display: "inline-block" } }>
-                                        <input type="button" value="Filter Overrides"
-                                               title="Click here to set custom cutoffs for all searches.."
-                                               onClick={ this._openFilterOverridesOverlay_Clicked_BindThis }
-                                        />
-                                    </div>
+                                            {/*  Open Set Filter Overrides Overlay  */}
+                                            <div style={ { position: "relative", display: "inline-block" } }>
+                                                <input type="button" value="Filter Overrides"
+                                                       title="Click here to set custom cutoffs for all searches.."
+                                                       onClick={ this._openFilterOverridesOverlay_Clicked_BindThis }
+                                                />
+                                            </div>
 
-                                </React.Fragment>
+                                        </React.Fragment>
+                                    ): null }
+                                </>
+
                             ): null }
-
                         </div>
 
                     ): null }

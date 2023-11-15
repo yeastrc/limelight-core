@@ -16,14 +16,8 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
-import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries";
-import {
-    DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root,
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber
-} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
 import {
-    QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
     QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
@@ -39,25 +33,13 @@ import {
     CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries";
 import { CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
 
-/**
- *
- */
-export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component_DataToPlot {
 
-    featureDetection_Root_Entry_Selection: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry
-    
-    projectSearchId: number
-    psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-    spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
-
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
-    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
-    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
-
-    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback__SectionLevel: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback
-    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
-}
 
 /**
  *
@@ -67,7 +49,7 @@ export interface QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCou
     //  Update 'shouldComponentUpdate' and 'componentDidUpdate' if change
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
-    dataToPlot: QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component_DataToPlot
+    dataToPlot: QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
 }
 
 /**
@@ -95,6 +77,8 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
     //  bind to 'this' for passing as parameters
 
     private _renderChart: boolean = true;
+
+    private _render_SearchBased_Parts = false
 
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
@@ -134,11 +118,21 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         //     }
         // }
 
-        //  Initialize to current passed value
-        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
-            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+        if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
 
-        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+            //  Property in props is passed when have one or more searches.
+
+            this._render_SearchBased_Parts = true
+        }
+
+        if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+
+            //  Initialize to current passed value
+            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+                props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register( { callbackItem: this } )
+        }
 
         /////
 
@@ -334,7 +328,9 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         }
 
         const psmTblData = this.props.dataToPlot.psmTblData
-        const spectralStorage_NO_Peaks_Data = this.props.dataToPlot.spectralStorage_NO_Peaks_Data
+        const searchScanFileId_EntriesFor_projectScanFileId_Set = this.props.dataToPlot.searchScanFileId_EntriesFor_projectScanFileId_Set
+
+        const commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = this.props.dataToPlot.commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
 
         const featureDetection_SingularFeature_Entries_Holder = this.props.dataToPlot.featureDetection_SingularFeature_Entries_Holder
         const featureDetection_PersistentFeature_Entries_Holder = this.props.dataToPlot.featureDetection_PersistentFeature_Entries_Holder
@@ -342,7 +338,8 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
         this._populateChart__Actual({
             psmTblData,
-            spectralStorage_NO_Peaks_Data,
+            searchScanFileId_EntriesFor_projectScanFileId_Set,
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
             featureDetection_PersistentFeature_Entries_Holder,
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
@@ -356,55 +353,49 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
     private _populateChart__Actual(
         {
             psmTblData,
-            spectralStorage_NO_Peaks_Data,
+            searchScanFileId_EntriesFor_projectScanFileId_Set,
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
             featureDetection_PersistentFeature_Entries_Holder,
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
         } : {
             psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-            spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
+            searchScanFileId_EntriesFor_projectScanFileId_Set: Set<number>
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
             featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
             featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
         }
     ) {
 
-        if (
-            (
-                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+            if (
+                (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )
                 )
-            )
-            || (
-                ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                || (
+                    ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                    )
                 )
-            )
-        ) {
-            //  Skip these params since they are not the "Latest"
-            return; // EARLY RETURN
+            ) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
         }
-
 
         let ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans = true;
 
         {  //  First confirm all scans have total ion current and ion injection time
 
-            const spectralStorage_NO_Peaks_DataFor_ProjectScanFileId =
-                spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_ProjectScanFileId( this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id )
-
-            if ( ! spectralStorage_NO_Peaks_DataFor_ProjectScanFileId ) {
-                const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_ProjectScanFileId(...) returned NOTHING for this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id: " + this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            for (const dataForSingleScanNumberEntry of spectralStorage_NO_Peaks_DataFor_ProjectScanFileId.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
+            for ( const dataForSingleScanNumberEntry of commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
                 if ( dataForSingleScanNumberEntry.totalIonCurrent_ForScan === undefined || dataForSingleScanNumberEntry.totalIonCurrent_ForScan === null ) {
 
                     console.warn( "No totalIonCurrent_ForScan for scanNumber: " + dataForSingleScanNumberEntry.scanNumber +
-                        ", project_scan_file_id: " + this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id );
+                        ", project_scan_file_id: " + this.props.dataToPlot.projectScanFileId );
 
                     this.setState({ show_NoData_Message: true })
 
@@ -421,113 +412,102 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
             }
         }
 
-        const projectSearchId = this.props.dataToPlot.projectSearchId;
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-        ////////////
-
-        const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
-            qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
-            });
-
-        const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
-
         ////////////
 
         //    Map PSM Id to it's Peptide Distinct Entry
 
-        const peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId: Map<number, {
+        let peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId: Map<number, {
             peptideDistinct_Entry: ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry
             psmTblData_Entry: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId
-        }> = new Map()
+        }> = undefined
 
-        for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
+        let psmTblData_Filtered: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId[]
 
-            const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId );
 
-            if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
-                // No data for this projectSearchId so skip
-                continue // EARLY CONTINUE
-            }
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
 
-            for ( const dataPerReportedPeptideId of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values() ) {
+            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId = new Map()
 
-                if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
+            const projectSearchId = this.props.dataToPlot.projectSearchId;
 
-                    const psmTblData_For_ReportedPeptideId = psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId )
-                    if ( ! psmTblData_For_ReportedPeptideId ) {
-                        const msg = "psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId ) returned NOTHING for dataPerReportedPeptideId.reportedPeptideId " +
-                            dataPerReportedPeptideId.reportedPeptideId +
-                            ", projectSearchId: " + projectSearchId;
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
 
-                    for ( const psmTblData_Entry of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
-                        peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmTblData_Entry.psmId, { peptideDistinct_Entry, psmTblData_Entry } );
-                    }
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-                } else if ( dataPerReportedPeptideId.psmIdsSet ) {
+            ////////////
 
-                    for ( const psmId of dataPerReportedPeptideId.psmIdsSet ) {
-                        const psmTblData_Entry_ForPsmId = psmTblData.get_PsmTblData_For_PsmId(psmId);
-                        if ( ! psmTblData_Entry_ForPsmId ) {
-                            const msg = "psmTblData.get_PsmTblData_For_PsmId(psmId); returned NOTHING for psmId: " + psmId +
-                                ", dataPerReportedPeptideId.reportedPeptideId " +
+            const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
+                qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
+                    projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                });
+
+            psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
+
+            for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
+
+                const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId );
+
+                if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                    // No data for this projectSearchId so skip
+                    continue // EARLY CONTINUE
+                }
+
+                for ( const dataPerReportedPeptideId of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values() ) {
+
+                    if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
+
+                        const psmTblData_For_ReportedPeptideId = psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId )
+                        if ( ! psmTblData_For_ReportedPeptideId ) {
+                            const msg = "psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId ) returned NOTHING for dataPerReportedPeptideId.reportedPeptideId " +
                                 dataPerReportedPeptideId.reportedPeptideId +
                                 ", projectSearchId: " + projectSearchId;
                             console.warn(msg)
                             throw Error(msg)
                         }
-                        peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmId, { peptideDistinct_Entry, psmTblData_Entry: psmTblData_Entry_ForPsmId } );
-                    }
 
-                } else {
-                    const msg = "NEITHER SET: dataPerReportedPeptideId.psmIdsSet, dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId. dataPerReportedPeptideId.reportedPeptideId " +
-                        dataPerReportedPeptideId.reportedPeptideId +
-                        ", projectSearchId: " + projectSearchId;
-                    console.warn(msg)
-                    throw Error(msg)
+                        for ( const psmTblData_Entry of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
+                            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmTblData_Entry.psmId, { peptideDistinct_Entry, psmTblData_Entry } );
+                        }
+
+                    } else if ( dataPerReportedPeptideId.psmIdsSet ) {
+
+                        for ( const psmId of dataPerReportedPeptideId.psmIdsSet ) {
+                            const psmTblData_Entry_ForPsmId = psmTblData.get_PsmTblData_For_PsmId(psmId);
+                            if ( ! psmTblData_Entry_ForPsmId ) {
+                                const msg = "psmTblData.get_PsmTblData_For_PsmId(psmId); returned NOTHING for psmId: " + psmId +
+                                    ", dataPerReportedPeptideId.reportedPeptideId " +
+                                    dataPerReportedPeptideId.reportedPeptideId +
+                                    ", projectSearchId: " + projectSearchId;
+                                console.warn(msg)
+                                throw Error(msg)
+                            }
+                            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmId, { peptideDistinct_Entry, psmTblData_Entry: psmTblData_Entry_ForPsmId } );
+                        }
+
+                    } else {
+                        const msg = "NEITHER SET: dataPerReportedPeptideId.psmIdsSet, dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId. dataPerReportedPeptideId.reportedPeptideId " +
+                            dataPerReportedPeptideId.reportedPeptideId +
+                            ", projectSearchId: " + projectSearchId;
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
                 }
             }
         }
-
-
-
-
-
 
         ////////////
 
         let found_PSM_NotForDisplayed_ScanFile = false;
 
-        const searchScanFileId_EntriesFor_projectScanFileId_Set = new Set<number>()
-
-        const scans_For_Selected_searchScanFileId_Map_Key_ScanNumber : Map<number,  QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
+        const scans_For_Selected_searchScanFileId_Map_Key_ScanNumber : Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map();
 
         {  // Populate scans_For_Selected_searchScanFileId_Map_Key_ScanNumber
 
-            for ( const spectralStorage_NO_Peaks_DataEntry of spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataEntries_Key_ProjectScanFileId_IterableIterator() ) {
+            for ( const spectralStorage_NO_Peaks_DataEntry of commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
-                if (spectralStorage_NO_Peaks_DataEntry.projectScanFileId !== this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id) {
-                    //  Data NOT for this scan file so skip
-
-                    found_PSM_NotForDisplayed_ScanFile = true;
-
-                    continue; // EARLY CONTINUE
-                }
-
-                searchScanFileId_EntriesFor_projectScanFileId_Set.add( spectralStorage_NO_Peaks_DataEntry.searchScanFileId )
-
-                for (const dataForSingleScanNumberEntry of spectralStorage_NO_Peaks_DataEntry.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
-                    scans_For_Selected_searchScanFileId_Map_Key_ScanNumber.set(dataForSingleScanNumberEntry.scanNumber, dataForSingleScanNumberEntry)
-                }
+                scans_For_Selected_searchScanFileId_Map_Key_ScanNumber.set(spectralStorage_NO_Peaks_DataEntry.scanNumber, spectralStorage_NO_Peaks_DataEntry)
             }
         }
 
@@ -540,23 +520,14 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans = ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans;
 
         //  Collected MS 1 Scans from Spectral Storage
-        const ms_1_ScanEntries_From_SpectralStorage_FilteredTo_Selected_SearchScanFileId: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = []
+        const ms_1_ScanEntries_From_SpectralStorage_FilteredTo_Selected_SearchScanFileId: Array<CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = []
 
         {
-            for ( const spectralStorage_NO_Peaks_DataEntry of spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataEntries_Key_ProjectScanFileId_IterableIterator() ) {
+            for ( const spectralStorage_NO_Peaks_DataEntry of commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
-                if (spectralStorage_NO_Peaks_DataEntry.projectScanFileId !== this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id) {
-                    //  Data NOT for this scan file so skip
-
-                    continue; // EARLY CONTINUE
-                }
-
-                for ( const dataForSingleScanNumberEntry of spectralStorage_NO_Peaks_DataEntry.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
-
-                    if ( dataForSingleScanNumberEntry.level === 1 ) {
-                        //  Level is === 1
-                        ms_1_ScanEntries_From_SpectralStorage_FilteredTo_Selected_SearchScanFileId.push( dataForSingleScanNumberEntry );
-                    }
+                if ( spectralStorage_NO_Peaks_DataEntry.level === 1 ) {
+                    //  Level is === 1
+                    ms_1_ScanEntries_From_SpectralStorage_FilteredTo_Selected_SearchScanFileId.push( spectralStorage_NO_Peaks_DataEntry );
                 }
             }
         }
@@ -669,16 +640,19 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
         //  Get MS 2 Scan Data Incl Scan Number for each PSM ID
 
-        // const ms_2_ScanData_Incl_ScanNumber_Map_Key_PsmId: Map<number, { ms_2_scanData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber }> = new Map()
+        // const ms_2_ScanData_Incl_ScanNumber_Map_Key_PsmId: Map<number, { ms_2_scanData: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber }> = new Map()
 
         //   Get Psm Id Set for each MS 2 Scan Number
 
-        const psmId_Set__Map_Key_MS_2_ScanNumber: Map<number, Set<number>> = new Map()
+        let psmId_Set__Map_Key_MS_2_ScanNumber: Map<number, Set<number>> = undefined
 
-        {
+        if ( psmTblData_Filtered ) {
+
             ///  Create Feature Detection Total Ion Current,  Feature Detection Entries Filtered on PSMs using MS 2 in Feature Detection entry
 
-            const ms_2_scanData_For_PSMs_Map_Key_ScanNumber: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
+            psmId_Set__Map_Key_MS_2_ScanNumber = new Map()
+
+            const ms_2_scanData_For_PSMs_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map();
 
             for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
 
@@ -834,7 +808,8 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
             displayTableContents.ionCount__Features_With_PSMs = ionCount__Features_With_PSMs;
         }
 
-        {
+        if ( psmTblData_Filtered ) {
+
             ///  Populate numberPSMs_with_no_predicted_feature, numberPSMs_with_no_predicted_feature_PercentageOfTotalNumberPSMs
 
             //  Get all MS2 scan numbers for Features
@@ -890,15 +865,10 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
             let numberPSMs_with_no_predicted_feature = 0;
 
-            const featureDetection_Root_Entry_Selection__searchScanFileEntry__searchScanFileId__Set = new Set()
-            for ( const searchScanFileEntry__featureDetection_Root_Entry of this.props.dataToPlot.featureDetection_Root_Entry_Selection.searchScanFileEntries ) {
-                featureDetection_Root_Entry_Selection__searchScanFileEntry__searchScanFileId__Set.add( searchScanFileEntry__featureDetection_Root_Entry.searchScanFileId )
-            }
-
             for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
 
                 {
-                    if ( ! featureDetection_Root_Entry_Selection__searchScanFileEntry__searchScanFileId__Set.has( psmTblData_Filtered_Entry.searchScanFileId ) ) {
+                    if ( ! this.props.dataToPlot.searchScanFileId_EntriesFor_projectScanFileId_Set.has( psmTblData_Filtered_Entry.searchScanFileId ) ) {
                         //  SKIP since PSM searchScanFileId NOT in featureDetection_Root_Entry_Selection.searchScanFileEntries
 
                         continue;  // EARLY CONTINUE
@@ -973,7 +943,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
         ////////////
 
-        {   //  Compute Percentage of Persistent Features with multiple distinct peptides ("distinct peptide" as specified on page in option: "Distinct Peptide Includes:")
+        if ( peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId ) {   //  Compute Percentage of Persistent Features with multiple distinct peptides ("distinct peptide" as specified on page in option: "Distinct Peptide Includes:")
 
             let persistentFeatures_With_NO_PSMs_Count = 0;
             let persistentFeatures_With_OneDistinctPeptides_Count = 0;
@@ -1152,98 +1122,108 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                                         </div>
                                     ) : null }
 
-                                    <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
-                                        Features w/ PSMs
+                                    { this._render_SearchBased_Parts ? (
+                                        <>
+                                            <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
+                                                Features w/ PSMs
 
-                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                    <p className="help-tip-actual">
-                                                        Total MS1 ion current for predicted features with at least 1 PSM.
-                                                    </p>
+                                                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                                    <div className=" inner-absolute-pos ">
+                                                        <div className=" main-div ">
+                                                            <p className="help-tip-actual">
+                                                                Total MS1 ion current for predicted features with at least 1 PSM.
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div style={ { whiteSpace: "nowrap" } }>
-                                        { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs.toExponential( _NumberToExponential ) }
-                                    </div>
-                                    { this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? (
-                                        <div style={ { whiteSpace: "nowrap", marginLeft: rowData_IonCount_MarginLeft } }>
-                                            { this.state.displayTableContents.ionCount__Features_With_PSMs.toExponential( _NumberToExponential ) }
-                                        </div>
-                                    ) : null }
+                                            <div style={ { whiteSpace: "nowrap" } }>
+                                                { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs.toExponential( _NumberToExponential ) }
+                                            </div>
+                                            { this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? (
+                                                <div style={ { whiteSpace: "nowrap", marginLeft: rowData_IonCount_MarginLeft } }>
+                                                    { this.state.displayTableContents.ionCount__Features_With_PSMs.toExponential( _NumberToExponential ) }
+                                                </div>
+                                            ) : null }
 
-                                    <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
-                                        % MS1 w/ PSMs
+                                            <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
+                                                % MS1 w/ PSMs
 
-                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                    <p className="help-tip-actual">
-                                                        Fraction of total MS1 ion current represented by a feature with at least 1 PSM.
-                                                    </p>
+                                                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
+                                                    <div className=" inner-absolute-pos ">
+                                                        <div className=" main-div ">
+                                                            <p className="help-tip-actual">
+                                                                Fraction of total MS1 ion current represented by a feature with at least 1 PSM.
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div style={ { whiteSpace: "nowrap" } }>
-                                        { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs_Percentage_Of_MS1_TotalIonCurrent.toFixed( _NumberToFixed ) }%
-                                    </div>
-                                    { this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? (
-                                        <div style={ { whiteSpace: "nowrap", marginLeft: rowData_IonCount_MarginLeft } }>
-                                            { this.state.displayTableContents.ionCount__Features_With_PSMs_Percentage_Of_MS1_IonCount.toFixed( _NumberToFixed ) }%
-                                        </div>
+                                            <div style={ { whiteSpace: "nowrap" } }>
+                                                { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs_Percentage_Of_MS1_TotalIonCurrent.toFixed( _NumberToFixed ) }%
+                                            </div>
+                                            { this.state.displayTableContents.ionInjectionTime_InMilliseconds_On_ALL_MS_1_Scans ? (
+                                                <div style={ { whiteSpace: "nowrap", marginLeft: rowData_IonCount_MarginLeft } }>
+                                                    { this.state.displayTableContents.ionCount__Features_With_PSMs_Percentage_Of_MS1_IonCount.toFixed( _NumberToFixed ) }%
+                                                </div>
+                                            ) : null }
+
+                                        </>
                                     ) : null }
                                 </div>
 
                                 <div>&nbsp;</div>  {/* Blank Line */}
 
-                                <div>
-                                    <span># PSMs </span>
 
-                                    { this.state.displayTableContents.found_PSM_NotForDisplayed_ScanFile ? (
+                                { this._render_SearchBased_Parts ? (
+                                    <>
+                                    <div>
+                                        <span># PSMs </span>
 
-                                        <span>
-                                            <span> from </span>
+                                        { this.state.displayTableContents.found_PSM_NotForDisplayed_ScanFile ? (
 
-                                            { this.props.dataToPlot.featureDetection_Root_Entry_Selection.searchScanFileEntries.map((value, index) => {
-                                                return (
-                                                    <React.Fragment key={ value.searchScanFileId }>
-                                                        { index !== 0 ? (
-                                                            <span>, </span>
-                                                        ) : null }
-                                                        <span>
-                                                            { value.searchScanFilename }
-                                                        </span>
-                                                    </React.Fragment>
-                                                )
-                                            }) }
-                                        </span>
+                                            <span>
+                                                        <span> from </span>
 
-                                    ) : null }
+                                                { this.props.dataToPlot.featureDetection_Root_Entry_Selection__ONLY_UsedIn_TableComponent.searchScanFileEntries.map((value, index) => {
+                                                    return (
+                                                        <React.Fragment key={ value.searchScanFileId }>
+                                                            { index !== 0 ? (
+                                                                <span>, </span>
+                                                            ) : null }
+                                                            <span>
+                                                                        { value.searchScanFilename }
+                                                                    </span>
+                                                        </React.Fragment>
+                                                    )
+                                                }) }
+                                                    </span>
 
-                                    <span> with no predicted feature: </span>
-                                    <span>{ this.state.displayTableContents.numberPSMs_with_no_predicted_feature.toLocaleString() }</span>
-                                    <span> (</span>
-                                    <span>{ this.state.displayTableContents.numberPSMs_with_no_predicted_feature_PercentageOfTotalNumberPSMs.toFixed( _NumberToFixed ) }</span>
-                                    <span>%)</span>
-                                </div>
+                                        ) : null }
 
-                                <div>&nbsp;</div>  {/* Blank Line */}
+                                        <span> with no predicted feature: </span>
+                                        <span>{ this.state.displayTableContents.numberPSMs_with_no_predicted_feature.toLocaleString() }</span>
+                                        <span> (</span>
+                                        <span>{ this.state.displayTableContents.numberPSMs_with_no_predicted_feature_PercentageOfTotalNumberPSMs.toFixed( _NumberToFixed ) }</span>
+                                        <span>%)</span>
+                                    </div>
 
-                                <div>
-                                    <span>% persistent features with no PSMs: </span>
-                                    <span>{ this.state.displayTableContents.persistentFeatures_With_NO_PSMs_Percentage.toFixed( _NumberToFixed ) }</span>
-                                    <span>%</span>
-                                </div>
+                                    <div>&nbsp;</div>  {/* Blank Line */}
+
+                                    <div>
+                                        <span>% persistent features with no PSMs: </span>
+                                        <span>{ this.state.displayTableContents.persistentFeatures_With_NO_PSMs_Percentage.toFixed( _NumberToFixed ) }</span>
+                                        <span>%</span>
+                                    </div>
 
 
-                                <div>
-                                    <span>% persistent features with one distinct peptide: </span>
-                                    <span>{ this.state.displayTableContents.persistentFeatures_With_ONE_DistinctPeptides_Percentage.toFixed( _NumberToFixed ) }</span>
-                                    <span>%</span>
-                                </div>
+                                    <div>
+                                        <span>% persistent features with one distinct peptide: </span>
+                                        <span>{ this.state.displayTableContents.persistentFeatures_With_ONE_DistinctPeptides_Percentage.toFixed( _NumberToFixed ) }</span>
+                                        <span>%</span>
+                                    </div>
+                                    </>
+                                ): null }
 
                             </div>
 

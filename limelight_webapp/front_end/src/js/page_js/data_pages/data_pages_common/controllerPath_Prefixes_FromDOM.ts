@@ -18,6 +18,8 @@
 
 let controller_path_prefix_ProjectSearchId_Based_Cached: string = undefined;
 let controller_path_prefix_ExperimentId_Based_Cached: string = undefined;
+let controller_path_prefix_FeatureDetectionId_Based_Cached: string = undefined;
+let controller_path_prefix_ProjectScanFileId_Based_Cached: string = undefined;
 
 /**
  * Controller Path Prefix for ProjectSearchId Based, placed on DOM by server code
@@ -63,5 +65,47 @@ const controller_path_prefix_ExperimentId_Based_FromDOM = function() {
     return controller_path_prefix_ExperimentId_Based_Cached;
 }
 
+/**
+ * Controller Path Prefix for Feature Detection Id Based, placed on DOM by server code
+ */
+const controller_path_prefix_FeatureDetectionId_Based_FromDOM = function() {
 
-export { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_prefix_ExperimentId_Based_FromDOM }
+    if ( controller_path_prefix_FeatureDetectionId_Based_Cached ) {
+        return controller_path_prefix_FeatureDetectionId_Based_Cached;
+    }
+
+    const main_page_feature_detection_id_based_controller_path_prefix_DOM = document.getElementById("main_page_feature_detection_id_based_controller_path_prefix");
+    if ( ! main_page_feature_detection_id_based_controller_path_prefix_DOM ) {
+        throw Error( "No page element with id 'main_page_feature_detection_id_based_controller_path_prefix'.  main_page_feature_detection_id_based_controller_path_prefix is set on the JSP. " );
+    }
+    const main_page_feature_detection_id_based_controller_path_prefix  = main_page_feature_detection_id_based_controller_path_prefix_DOM.textContent;
+
+    controller_path_prefix_FeatureDetectionId_Based_Cached = main_page_feature_detection_id_based_controller_path_prefix;
+
+    return controller_path_prefix_FeatureDetectionId_Based_Cached;
+}
+
+/**
+ * Controller Path Prefix for Project Scan File Id Based, placed on DOM by server code
+ */
+const controller_path_prefix_ProjectScanFileId_Based_FromDOM = function() {
+
+    if ( controller_path_prefix_ProjectScanFileId_Based_Cached ) {
+        return controller_path_prefix_ProjectScanFileId_Based_Cached;
+    }
+
+    const main_page_project_scan_file_id_based_controller_path_prefix_DOM = document.getElementById("main_page_project_scan_file_id_based_controller_path_prefix");
+    if ( ! main_page_project_scan_file_id_based_controller_path_prefix_DOM ) {
+        throw Error( "No page element with id 'main_page_project_scan_file_id_based_controller_path_prefix'.  main_page_project_scan_file_id_based_controller_path_prefix is set on the JSP. " );
+    }
+    const main_page_project_scan_file_id_based_controller_path_prefix  = main_page_project_scan_file_id_based_controller_path_prefix_DOM.textContent;
+
+    controller_path_prefix_ProjectScanFileId_Based_Cached = main_page_project_scan_file_id_based_controller_path_prefix;
+
+    return controller_path_prefix_ProjectScanFileId_Based_Cached;
+}
+
+
+
+
+export { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_prefix_ExperimentId_Based_FromDOM, controller_path_prefix_FeatureDetectionId_Based_FromDOM, controller_path_prefix_ProjectScanFileId_Based_FromDOM }

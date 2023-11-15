@@ -11,6 +11,7 @@
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import { limelight__IsVariableAString } from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
  *
@@ -18,15 +19,18 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder {
 
     private _projectScanFileId : number
+    private _scanFile_Code_FirstSix: string
 
     constructor(
         {
-            projectScanFileId
+            projectScanFileId, scanFile_Code_FirstSix
         } : {
             projectScanFileId : number
+            scanFile_Code_FirstSix: string
         }
     ) {
         this._projectScanFileId = projectScanFileId;
+        this._scanFile_Code_FirstSix = scanFile_Code_FirstSix
     }
 
     /**
@@ -35,6 +39,10 @@ export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_Fro
     get_projectScanFileId() {
         return this._projectScanFileId;
     }
+
+    get_scanFile_Code_FirstSix() {
+        return this._scanFile_Code_FirstSix
+    }
 }
 
 /**
@@ -42,7 +50,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_Fro
  */
 export class CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult {
 
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+    featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
 }
 
 /**
@@ -117,7 +125,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
                 //  Have loaded data so just return it
 
                 const data : CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
-                    featureDetection_SingularFeature_Entries_Holder
+                    featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: featureDetection_SingularFeature_Entries_Holder
                 }
 
                 return {  //  EARLY RETURN
@@ -146,7 +154,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
                     throw Error("this._featureDetection_Holder_Map_Key_feature_detection_root__project_scnfl_mapping_tbl__id.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
                 }
                 const data : CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id__get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder__FunctionResult = {
-                    featureDetection_SingularFeature_Entries_Holder
+                    featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: featureDetection_SingularFeature_Entries_Holder
                 }
                 resolve(data);
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -198,7 +206,7 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
                         console.log("END:  AJAX Call to get " + url + ", Now: " + new Date() );
 
                         const holder =
-                            new CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ projectScanFileId: responseData.projectScanFileId });
+                            new CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder({ projectScanFileId: responseData.projectScanFileId, scanFile_Code_FirstSix: responseData.scanFile_Code_FirstSix });
 
                         if ( holder.get_projectScanFileId() === undefined || holder.get_projectScanFileId() === null ) {
                             const msg = "( holder.get_projectScanFileId() === undefined || holder.get_projectScanFileId() === null )"
@@ -207,6 +215,17 @@ export class CommonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From
                         }
                         if ( ! variable_is_type_number_Check( holder.get_projectScanFileId() ) ) {
                             const msg = "( ! variable_is_type_number_Check( holder.get_projectScanFileId() ) )"
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+                        if ( holder.get_scanFile_Code_FirstSix() === undefined || holder.get_scanFile_Code_FirstSix() === null ) {
+                            const msg = "( holder.get_scanFile_Code_FirstSix() === undefined || holder.get_scanFile_Code_FirstSix() === null )"
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+                        if ( ! limelight__IsVariableAString( holder.get_scanFile_Code_FirstSix() ) ) {
+                            const msg = "( ! limelight__IsVariableAString( holder.get_scanFile_Code_FirstSix() ) )"
                             console.warn(msg)
                             throw Error(msg)
                         }

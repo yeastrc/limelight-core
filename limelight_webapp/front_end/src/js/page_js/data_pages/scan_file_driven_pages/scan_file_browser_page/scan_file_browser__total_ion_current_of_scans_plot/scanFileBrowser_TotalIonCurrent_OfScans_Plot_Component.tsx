@@ -1451,11 +1451,11 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
                     >
                         <svg width={ _CHART_WIDTH_OVERALL } height={ _CHART_HEIGHT_OVERALL } style={ { margin: 0, padding: 0 } }>
 
-                            {/*  Rect under the main chart area  */}
-                            <rect
-                                x={ _CHART_WIDTH_LEFT_MARGIN + 1 } y={ 0 - 1 } width={ _CHART_WIDTH_MAIN_CONTENTS - 1 } height={ _CHART_HEIGHT_TOP_MARGIN + _CHART_HEIGHT_MAIN_CONTENTS }
-                                fill="#EEEEEE"
-                            />
+                            {/* REMOVED -- Rect under the main chart area  */}
+                            {/*<rect*/}
+                            {/*    x={ _CHART_WIDTH_LEFT_MARGIN + 1 } y={ 0 - 1 } width={ _CHART_WIDTH_MAIN_CONTENTS - 1 } height={ _CHART_HEIGHT_TOP_MARGIN + _CHART_HEIGHT_MAIN_CONTENTS }*/}
+                            {/*    fill="#EEEEEE"*/}
+                            {/*/>*/}
 
                             {/*  Line and Tick Marks on Left Side  */}
 

@@ -37,13 +37,16 @@ import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_AuthError_Unauthorized_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.Feature_detection_root_Id__Project_scan_file_id_For_Feature_detection_root__project_scnfl_mapping_tbl_id_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectScanFileId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -80,6 +83,9 @@ public class FeatureDetection_ProjectScanFileId_From_feature_detection_root__pro
 	@Autowired
 	private ProjectScanFile_For_ProjectScanFileId_Searcher_IF projectScanFile_For_ProjectScanFileId_Searcher;
 
+	@Autowired
+	private ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_IF scanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher;
+	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
 
@@ -191,10 +197,40 @@ public class FeatureDetection_ProjectScanFileId_From_feature_detection_root__pro
 			//  End Authorization
 			
 			/////////////
+			
 
-    	
+			List<Integer> scanFileId_List = new ArrayList<>( 1 );
+			scanFileId_List.add( project_ScanFile_DTO.getScanFileId() );
+
+			List<ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem> spectralStorageAPIKey_Searcher_ResultItem_List = 
+					scanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher.getSpectralStorageAPIKeyList_From_ScanFileIdList(scanFileId_List);
+
+			if ( spectralStorageAPIKey_Searcher_ResultItem_List.isEmpty() ) {
+				String msg = "NO ScanFile_SpectralStorageAPIKey found for ScanFileId: " + project_ScanFile_DTO.getScanFileId();
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+
+			if ( spectralStorageAPIKey_Searcher_ResultItem_List.size() > 1 ) {
+				String msg = "> 1 result ScanFile_SpectralStorageAPIKey found for ScanFileId: " + project_ScanFile_DTO.getScanFileId();
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+			
+			ScanFile_SpectralStorageAPIKey_List_For_ScanFileId_List_Searcher_ResultItem scanFile__ResultItem = spectralStorageAPIKey_Searcher_ResultItem_List.get(0);
+
+			if ( scanFile__ResultItem == null ) {
+				String msg = "spectralStorageAPIKey_Searcher_ResultItem_List.get(0) returned null.  ScanFileId: " + project_ScanFile_DTO.getScanFileId();
+				log.error(msg);
+				throw new LimelightInternalErrorException(msg);
+			}
+
+			String scanFile_Code_FirstSix = scanFile__ResultItem.getSpectralStorage_API_Key().substring(0,6);
+	
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.projectScanFileId = project_ScanFile_DTO.getId();
+    		
+    		webserviceResult.scanFile_Code_FirstSix = scanFile_Code_FirstSix;
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 			
@@ -227,9 +263,14 @@ public class FeatureDetection_ProjectScanFileId_From_feature_detection_root__pro
     public static class WebserviceResult {
 
     	private int projectScanFileId;
+    	private String scanFile_Code_FirstSix;
 
 		public int getProjectScanFileId() {
 			return projectScanFileId;
+		}
+
+		public String getScanFile_Code_FirstSix() {
+			return scanFile_Code_FirstSix;
 		}
     }
 

@@ -951,7 +951,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                 }
 
                 dataRows = (
-                    <div className="table-rows-container selector_table_rows_container" data-component="div in 'have_DataGroups' in <DataTable_TableRoot>" >
+                    <div >
 
                         { dataGroupRowsReactComponents }
                     </div>

@@ -22,7 +22,7 @@ import {
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
-import {QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
 
 
 const _Overlay_Title = "QC Plot: Feature Detection Statistics"
@@ -80,7 +80,7 @@ export const open_FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent_Overla
  */
 export interface QcViewPage_SingleSearch__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot_OverlayContainer__Component_Params {
 
-    dataToPlot : QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot
+    dataToPlot : QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
 }
@@ -155,7 +155,7 @@ class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent
 
         this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection =
             {
-                feature_detection_root__project_scnfl_mapping_tbl__id: this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id,
+                feature_detection_root__project_scnfl_mapping_tbl__id: this.props.params.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id,
                 no_TotalIonCurrent: params.scans_NotContain_TotalIonCurrent
             }
 
@@ -168,7 +168,7 @@ class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent
     render() {
         try {
             if ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection &&
-                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id !== this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
+                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id !== this.props.params.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
                 this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = null;  // reset to null since not currently selected id
             }
 
@@ -189,16 +189,16 @@ class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent
 
             let scanFilenames = ""
 
-            for ( const searchScanFileEntry of this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.searchScanFileEntries ) {
+            for ( const scanFilename of this.props.params.dataToPlot.scanFilenames_Unique_Sorted_Array ) {
                 if ( scanFilenames ) {
                     scanFilenames += ", "
                 }
-                scanFilenames += searchScanFileEntry.searchScanFilename
+                scanFilenames += scanFilename
             }
 
             let searchNameDisplay: string = null
 
-            if ( this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length > 1 ) {
+            if ( this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent && this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length > 1 ) {
                 const projectSearchId = this.props.params.dataToPlot.projectSearchId
                 const searchData = this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId(projectSearchId)
                 if ( ! searchData ) {
@@ -258,11 +258,11 @@ class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent
                                     <div >
                                         <span style={ { fontWeight: "bold" } }>Feature Detection Run: </span>
                                         <span>
-                                            { this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.description }
+                                            { this.props.params.dataToPlot.featureDetection_Description }
                                         </span>
                                         <span> (</span>
                                         <span>
-                                            { this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.displayLabel }
+                                            { this.props.params.dataToPlot.featureDetection_DisplayLabel }
                                         </span>
                                         <span>)</span>
                                     </div>

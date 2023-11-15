@@ -38,6 +38,10 @@
   
   <script id="url_path__scan_browser" type="text/text"><%=AA_PageControllerPaths_Constants.SCAN_FILE_BROWSER_PAGE_CONTROLLER%></script>
   
+  <%--  Feature Detection Pages --%>
+  
+  <script id="url_path__feature_detection" type="text/text"><%=AA_PageControllerPaths_Constants.FEATURE_DETECTION_VIEW_PAGE_CONTROLLER%></script>
+  
 </head>
 <body class=" <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_standard_header_pages.jsp" 
 		  		%><%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_tag_class_start_include_data_pages.jsp" 

@@ -8,7 +8,6 @@
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 import {
     CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries_Holder,
@@ -23,13 +22,11 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_Statistics_Section__SelectFeatureDetectionOverlay_Component";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData";
-import {DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 import { CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries";
 import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
 import { CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries";
 import {
-    QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component,
-    QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component_DataToPlot
+    QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage_Common__FeatureDetection_Statistics_Section__ShownItem_DisplaySelect_Component} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_Statistics_Section__ShownItem_DisplaySelect_Component";
@@ -38,6 +35,9 @@ import {QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Singular_
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot_MainPageContainer";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
+import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
+import { CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch";
 
 /**
  *
@@ -60,7 +60,7 @@ interface Qc_SingleSearch_SubSearches_FeatureDetection_Statistics_Section_State 
     // featureDetection_Root_Entries?: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry[]
     // featureDetection_Root_Entry_Selection?: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry
 
-    statisticsTable_DataToPlot?: QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component_DataToPlot
+    statisticsTable_DataToPlot?: QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
 
     force_Rerender?: object
 }
@@ -352,35 +352,68 @@ export class Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section ex
             }
 
             let psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-            let spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
+            let scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder: CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
 
             let featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
             let featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
             let featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
 
+            let commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
+
             const promises: Array<Promise<void>> = [] // Always has at least 1 entry from first promise
 
-            {
-                const promise = new Promise<void>((resolve, reject) => { try {
-                    const promise_FromFunction =
-                        this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
-                        qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileStatistics_RetentionTime_Statistics_Data();   //  Call This to get MS1 data from Spectral Storage, retention time and total ion current
-                    promise_FromFunction.catch(reason => { reject(reason) })
-                    promise_FromFunction.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => { try {
+            if ( this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent ) {
+                {
+                    const promise = new Promise<void>((resolve, reject) => { try {
+                        const promise_FromFunction =
+                            this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
+                            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_PsmData_Only_PsmTblData();    //  Call This to get PSM Data
+                        promise_FromFunction.catch(reason => { reject(reason) })
+                        promise_FromFunction.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => { try {
 
-                        psmTblData = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData;
-                        spectralStorage_NO_Peaks_Data = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.spectralStorage_NO_Peaks_Data
+                            psmTblData = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.psmTblData;
 
-                        resolve();
+                            resolve();
 
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                promises.push(promise);
+                    promises.push(promise);
+                }
+
+                {
+                    const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                        this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
+
+                    if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                        const msg = "Returned NOTHING:  this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId). projectSearchId: " + projectSearchId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    const get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result =
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch()
+
+                    if ( get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result.data ) {
+                        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result.data.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder;
+                    } else if ( get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result.promise ) {
+                        const promise = new Promise<void>((resolve, reject) => { try {
+                            get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result.promise.catch(reason => { reject(reason) })
+                            get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result.promise.then(value => { try {
+                                scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = value.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder;
+                                resolve();
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        promises.push(promise);
+                    } else {
+                        throw Error("get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_Result no data or promise")
+                    }
+                }
             }
             {
                 const get_FeatureDetection_SingleFeature_EntriesHolder_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_ParentObject().get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
                     get_commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries().
                     get_FeatureDetection_SingularFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -401,8 +434,9 @@ export class Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section ex
             }
             {
                 const get_FeatureDetection_PersistentFeature_EntriesHolder_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_ParentObject().get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
                     get_commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries().
                     get_FeatureDetection_PersistentFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -423,8 +457,9 @@ export class Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section ex
             }
             {
                 const get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_ParentObject().get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT().
                     get_commonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries().
                     get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id });
 
@@ -435,6 +470,31 @@ export class Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section ex
                         get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder_Result.promise.catch(reason => { reject(reason) })
                         get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder_Result.promise.then(value => { try {
                             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = value.featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder;
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    throw Error("get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder_Result no data or promise")
+                }
+            }
+
+            {
+                const projectScanFileId = selected_FeatureDetectionEntry.project_scan_file_id
+
+                const get_ScanData_NO_Peaks_DataHolder_Result =
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().
+                    get_commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data().
+                    get_ScanData_NO_Peaks_DataHolder({ projectScanFileId, retrieved_ALL_Scans_ForFile: true, scanNumbers_RetrievedDataFor: undefined, get_ParentScanData: undefined })
+
+                if ( get_ScanData_NO_Peaks_DataHolder_Result.data ) {
+                    commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = get_ScanData_NO_Peaks_DataHolder_Result.data.scanData_NO_Peaks_Data_Holder
+                } else if ( get_ScanData_NO_Peaks_DataHolder_Result.promise ) {
+                    const promise = new Promise<void>((resolve, reject) => { try {
+                        get_ScanData_NO_Peaks_DataHolder_Result.promise.catch(reason => { reject(reason) })
+                        get_ScanData_NO_Peaks_DataHolder_Result.promise.then(value => { try {
+                            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = value.scanData_NO_Peaks_Data_Holder;
                             resolve();
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -476,20 +536,53 @@ export class Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section ex
                 //     return; // EARLY RETURN
                 // }
 
+                const scanFilenames_Unique_Sorted_Set = new Set<string>()
+                for ( const entry of selected_FeatureDetectionEntry.searchScanFileEntries ) {
+                    scanFilenames_Unique_Sorted_Set.add( entry.searchScanFilename )
+                }
+                const scanFilenames_Unique_Sorted_Array = Array.from( scanFilenames_Unique_Sorted_Set )
+                scanFilenames_Unique_Sorted_Array.sort()
 
-                const statisticsTable_DataToPlot: QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__Singular_Features__StatisticsTable_Component_DataToPlot = {
 
-                    featureDetection_Root_Entry_Selection: selected_FeatureDetectionEntry,
+                const searchScanFileId_EntriesFor_projectScanFileId_Set = new Set<number>()
+                {
+                    const projectScanFileId = selected_FeatureDetectionEntry.project_scan_file_id
+
+                    const scanFile_ProjectScanFileId_SearchScanFileId_For_ProjectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_ProjectScanFileId(projectScanFileId)
+
+                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId_For_ProjectScanFileId ) {
+                        const msg = "Returned NOTHING:  this.props.dataToPlot.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_ProjectScanFileId(projectScanFileId). projectScanFileId: " + projectScanFileId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                    searchScanFileId_EntriesFor_projectScanFileId_Set.add( scanFile_ProjectScanFileId_SearchScanFileId_For_ProjectScanFileId.searchScanFileId )
+                }
+
+
+                const statisticsTable_DataToPlot: QcViewPage_Common__FeatureDetection__DataToPlot_Parameters = {
+
+                    featureDetection_Root_Entry_Selection__ONLY_UsedIn_TableComponent: selected_FeatureDetectionEntry,
+
+                    feature_detection_root__project_scnfl_mapping_tbl__id: selected_FeatureDetectionEntry.feature_detection_root__project_scnfl_mapping_tbl__id,
+                    featureDetection_DisplayLabel: selected_FeatureDetectionEntry.displayLabel,
+                    featureDetection_Description: selected_FeatureDetectionEntry.description,
+                    scanFilenames_Unique_Sorted_Array,
+
+                    projectScanFileId: selected_FeatureDetectionEntry.project_scan_file_id,
+
+                    commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
+
                     projectSearchId: this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId,
                     psmTblData,
-                    spectralStorage_NO_Peaks_Data,
+                    searchScanFileId_EntriesFor_projectScanFileId_Set,
 
                     featureDetection_SingularFeature_Entries_Holder,
                     featureDetection_PersistentFeature_Entries_Holder,
                     featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder,
 
                     qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback__SectionLevel: this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback__SectionLevel,
-                    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel
+                    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel,
+                    qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override: undefined
                 }
 
                 if (

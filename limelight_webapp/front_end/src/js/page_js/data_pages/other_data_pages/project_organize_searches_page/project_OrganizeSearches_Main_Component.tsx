@@ -15,8 +15,8 @@ import React from "react";
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data,
-    getSearchesSearchTagsAndFolders_SingleProject
-} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+    getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds
+} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {
@@ -115,7 +115,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
 
     private _loadData_All() {
 
-        const promise = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier: this.props.propsValue.projectIdentifier })
+        const promise = getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: this.props.propsValue.projectIdentifier })
         promise.catch(reason => {
 
         })

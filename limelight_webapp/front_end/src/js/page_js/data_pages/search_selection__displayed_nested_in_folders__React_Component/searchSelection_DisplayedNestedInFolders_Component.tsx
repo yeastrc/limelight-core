@@ -8,6 +8,9 @@
  *
  *  MAIN CLASS:   React Component:  SearchSelection_DisplayedNestedInFolders_Component
  *
+ *
+ *  Main Prop:   'select_ONLY_ONE_Search: boolean' :   If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+ *
  */
 
 
@@ -25,8 +28,8 @@ import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data,
-    getSearchesSearchTagsAndFolders_SingleProject
-} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+    getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds
+} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
@@ -128,6 +131,13 @@ export type SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_
  */
 interface SearchSelection_DisplayedNestedInFolders_Component_Props {
 
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+
+    hide_SearchFilters?: boolean
+    hide_SearchTag_VerboseView_Checkbox?: boolean
+
+    defaultView_ExpandFoldersOnInitialView?: boolean
+
     //   MUST populate projectIdentifier or searchesSearchTagsFolders_Result_Root
 
     projectIdentifier : string
@@ -138,7 +148,6 @@ interface SearchSelection_DisplayedNestedInFolders_Component_Props {
     //  Experiment ONLY:  The Project Search Ids in all Cells excluding the cell identified by parameter conditionIds_Array
     projectSearchIds_ContainedInAllOtherExperimentCells : Set<number>
 
-    callbackOn_Cancel_Close_Clicked : () => void;
     callback_updateSelected_Searches : SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback
 }
 
@@ -196,6 +205,13 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
         if ( ( props.projectIdentifier === undefined || props.projectIdentifier === null ) &&
             ( props.searchesSearchTagsFolders_Result_Root === undefined || props.searchesSearchTagsFolders_Result_Root === null ) ) {
             const msg = "props.projectIdentifier AND props.searchesSearchTagsFolders_Result_Root CANNOT BOTH be undefined or null"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        if ( ( props.projectIdentifier !== undefined && props.projectIdentifier !== null ) &&
+            ( props.searchesSearchTagsFolders_Result_Root !== undefined && props.searchesSearchTagsFolders_Result_Root !== null ) ) {
+            const msg = "props.projectIdentifier AND props.searchesSearchTagsFolders_Result_Root CANNOT BOTH be NOT (undefined or null)"
             console.warn(msg)
             throw Error(msg)
         }
@@ -274,7 +290,7 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
             //  Load Searches and Folders to select from
 
-            const promise = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier: this.props.projectIdentifier })
+            const promise = getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: this.props.projectIdentifier })
             promise.catch(reason => {
 
             })
@@ -525,12 +541,22 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                 if ( this.state.folderIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering // null if no filtering
                     && ( ! this.state.folderIds_ToDisplay_FilteredIfNeeded__Null_IfNoFiltering.has( folderEntry.folderId ) ) ) {
                     //  Skip since filtering and not in filter
-                    continue;
+                    continue;  //  EARLY CONTINUE
+                }
+
+                if ( ( ! folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder ) || folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder.length === 0 ) {
+                    //  Skip empty folder
+                    continue;  //  EARLY CONTINUE
                 }
 
                 const element = (
                     <Internal_Component__FolderEntry
                         key={folderEntry.folderId}
+
+                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+
+                        defaultView_ExpandFoldersOnInitialView={ this.props.defaultView_ExpandFoldersOnInitialView }
+
                         folderEntry={folderEntry}
 
                         show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
@@ -575,6 +601,9 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
             const searchDisplayListEntry = (
                 <Internal_Component__SearchEntry
                     key={searchData.projectSearchId}
+
+                    select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+
                     searchDisplayListItem={searchData}
                     folderId={ undefined }
 
@@ -598,151 +627,158 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                 // style={ { padding : 6 } }
             >
 
-                <div style={ { marginBottom: 10 } }>
-                     <span
-                         style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
-                     >Verbose view: </span>
-                    <span>
-                        <input
-                            type="checkbox"
-                            checked={ this.state.show_SearchTag_Categories }
-                            onChange={ event => {
-                                this.setState({ show_SearchTag_Categories: event.target.checked })
-                            }}
-                        />
-                    </span>
-                </div>
-                <div>
-                    <span
-                        style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
-                    >Filter on Search Name or Id: </span>
-                    <input
-                        value={ this._searchName_SearchId_Filter_UserInput }
-                        onChange={ event => {
-                            this._searchName_SearchId_Filter_UserInput = event.target.value
+                { ! this.props.hide_SearchTag_VerboseView_Checkbox ? (
+                    <div style={ { marginBottom: 10 } }>
+                         <span
+                             style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                         >Verbose view: </span>
+                        <span>
+                            <input
+                                type="checkbox"
+                                checked={ this.state.show_SearchTag_Categories }
+                                onChange={ event => {
+                                    this.setState({ show_SearchTag_Categories: event.target.checked })
+                                }}
+                            />
+                        </span>
+                    </div>
+                ) : null }
 
-                            this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                            this.setState({ force_Rerender: {} })
-                        }}
-                    />
-                </div>
-
-                { this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
-
-                    <div
-                        style={ { display: "grid", gridTemplateColumns: "min-content auto", marginTop: 7 } }
-                    >
-                        <div style={ { marginRight: 10, marginTop: 5 } }>  {/*  marginTop to vertical align label with tag text  */}
-                            <div style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }>
-                                Filter On Tags:
-                            </div>
-                        </div>
-                        <div style={ { minWidth: 200 } }>
-
-                            <Search_Tags_SelectSearchTags_Component
-                                searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
-                                search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
-                                searchTagsSelected_Changed_Callback={ (params) => {
-
-                                    this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
+                { ! this.props.hide_SearchFilters ? (
+                    <>
+                        <div>
+                            <span
+                                style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }
+                            >Filter on Search Name or Id: </span>
+                            <input
+                                value={ this._searchName_SearchId_Filter_UserInput }
+                                onChange={ event => {
+                                    this._searchName_SearchId_Filter_UserInput = event.target.value
 
                                     this._searchesAndFolders_Update_FilterOnSearchTags()
 
                                     this.setState({ force_Rerender: {} })
-                                } }
+                                }}
                             />
-
                         </div>
 
-                    </div>
-
-                ) : null }
-
-                {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
-
-                { this._searchName_SearchId_Filter_UserInput.length > 0 || ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
-
-                    <div
-                        className=" filter-on-tags--currently-filtering "
-                        style={ { marginBottom: 15 } }
-                    >
-                        { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
-                            <div  //  Add marginBottom if also have Search Tags to display
-                                style={ { marginTop: 7, marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() ) ? 5 : null } }
-                            >
-                                        <span
-                                            style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
-                                        >Filtering on text: </span>
-                                <span>
-                                            { this._searchName_SearchId_Filter_UserInput }
-                                        </span>
-                                <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    style={ { fontSize: 10 } }
-                                    title="Clear text filters"
-                                    onClick={ event => {
-
-                                        this._searchName_SearchId_Filter_UserInput = "";
-
-                                        this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                        this.setState({ force_Rerender: {} })
-                                    }}
-                                >
-                                            clear
-                                        </span>
-                            </div>
-                        ) : null }
-
-                        { ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
+                        { this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root && this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root.searchTag_Array.length > 0 ? (
 
                             <div
-                                style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
+                                style={ { display: "grid", gridTemplateColumns: "min-content auto", marginTop: 7 } }
                             >
-                                <div style={ { marginTop: 2 } }>
-                                    <div>
-                                        <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
-                                        >
-                                            Filtering on tags:
-                                        </span>
-                                    </div>
-                                    <div style={ { fontSize: 10, marginBottom: 10 } }>
-                                        <span
-                                            className=" fake-link "
-                                            style={ { fontSize: 10 } }
-                                            title="Clear tag filters"
-                                            onClick={  () => {
-
-                                                this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
-
-                                                this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                                this.setState({ force_Rerender: {} })
-                                            }  }
-                                        >
-                                            clear
-                                        </span>
+                                <div style={ { marginRight: 10, marginTop: 5 } }>  {/*  marginTop to vertical align label with tag text  */}
+                                    <div style={ { whiteSpace: "nowrap", fontWeight: "bold", fontSize: 18 } }>
+                                        Filter On Tags:
                                     </div>
                                 </div>
-                                <div>
-                                    <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
+                                <div style={ { minWidth: 200 } }>
+
+                                    <Search_Tags_SelectSearchTags_Component
                                         searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
                                         search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
-                                        clearSelection_Callback={ () => {
+                                        searchTagsSelected_Changed_Callback={ (params) => {
 
-                                            this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
+                                            this._search_Tags_Selections_Object = params.search_Tags_Selections_Object
 
                                             this._searchesAndFolders_Update_FilterOnSearchTags()
 
                                             this.setState({ force_Rerender: {} })
                                         } }
                                     />
+
                                 </div>
+
+                            </div>
+
+                        ) : null }
+
+                        {/*  Display "Filtering On" to show what search name, search id, and search tags filtering on  */}
+
+                        { this._searchName_SearchId_Filter_UserInput.length > 0 || ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
+
+                            <div
+                                className=" filter-on-tags--currently-filtering "
+                                style={ { marginBottom: 15 } }
+                            >
+                                { this._searchName_SearchId_Filter_UserInput.length > 0 ? (  //  User Input value
+                                    <div  //  Add marginBottom if also have Search Tags to display
+                                        style={ { marginTop: 7, marginBottom : ( this._search_Tags_Selections_Object.is_any_selections() ) ? 5 : null } }
+                                    >
+                                                <span
+                                                    style={ { fontWeight: "bold", fontSize: 18, whiteSpace: "nowrap" } }
+                                                >Filtering on text: </span>
+                                        <span>
+                                                    { this._searchName_SearchId_Filter_UserInput }
+                                                </span>
+                                        <span> </span>
+                                        <span
+                                            className=" fake-link "
+                                            style={ { fontSize: 10 } }
+                                            title="Clear text filters"
+                                            onClick={ event => {
+
+                                                this._searchName_SearchId_Filter_UserInput = "";
+
+                                                this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                this.setState({ force_Rerender: {} })
+                                            }}
+                                        >
+                                            clear
+                                        </span>
+                                    </div>
+                                ) : null }
+
+                                { ( this._search_Tags_Selections_Object.is_any_selections() ) ? (
+
+                                    <div
+                                        style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }
+                                    >
+                                        <div style={ { marginTop: 2 } }>
+                                            <div>
+                                                <span style={ { fontSize: 18, fontWeight: "bold", whiteSpace: "nowrap", marginRight: 5 }}
+                                                >
+                                                    Filtering on tags:
+                                                </span>
+                                            </div>
+                                            <div style={ { fontSize: 10, marginBottom: 10 } }>
+                                                <span
+                                                    className=" fake-link "
+                                                    style={ { fontSize: 10 } }
+                                                    title="Clear tag filters"
+                                                    onClick={  () => {
+
+                                                        this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
+
+                                                        this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                        this.setState({ force_Rerender: {} })
+                                                    }  }
+                                                >
+                                                    clear
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component
+                                                searchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
+                                                search_Tags_Selections_Object={ this._search_Tags_Selections_Object }
+                                                clearSelection_Callback={ () => {
+
+                                                    this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
+
+                                                    this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                    this.setState({ force_Rerender: {} })
+                                                } }
+                                            />
+                                        </div>
+                                    </div>
+                                ) : null }
                             </div>
                         ) : null }
-                    </div>
+                    </>
                 ) : null }
 
                 { ( this.state.showNoSearchesMessage_NoSearches_AfterPossibleFiltering ) ? (
@@ -773,10 +809,19 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
 
                 ) : null }
 
-                { folderDisplayList }
-                {/*  Searches NOT in ANY Folder  */}
-                { searches_NOT_in_ANY_Folder_DisplayList }
+                { ( ( folderDisplayList && folderDisplayList.length > 0 ) || ( searches_NOT_in_ANY_Folder_DisplayList && searches_NOT_in_ANY_Folder_DisplayList.length > 0 ) ) ? (
+                    <>
+                        <div
+                            style={ { fontSize: 18, fontWeight: "bold", marginTop: 10, marginBottom: 10 } }
+                        >
+                            Search List
+                        </div>
 
+                        { folderDisplayList }
+                        {/*  Searches NOT in ANY Folder  */}
+                        { searches_NOT_in_ANY_Folder_DisplayList }
+                    </>
+                ) : null }
             </div>
 
         );
@@ -791,6 +836,9 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
  *
  */
 interface SearchEntry_Props {
+
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     folderId: number   //  Null or Undefined if not in folder
 
@@ -818,6 +866,7 @@ interface SearchEntry_State {
 class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props, SearchEntry_State > {
 
     private _searchRowClicked_BindThis = this._searchRowClicked.bind(this);
+    private _searchName_Clicked_BindThis = this._searchName_Clicked.bind(this)
 
     private _onMouseEnter_RootDiv_BindThis = this._onMouseEnter_RootDiv.bind(this);
     private _onMouseLeave_RootDiv_BindThis = this._onMouseLeave_RootDiv.bind(this);
@@ -878,20 +927,21 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
      *
      */
     private _searchRowClicked( event: React.MouseEvent<HTMLDivElement> ): void {
+        try {
+            this.props.callbackOn_Search_Selection_Changed({ projectSearchId: this.props.searchDisplayListItem.projectSearchId, folderId: this.props.folderId });
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
 
-        this.props.callbackOn_Search_Selection_Changed({ projectSearchId: this.props.searchDisplayListItem.projectSearchId, folderId: this.props.folderId });
+    private _searchName_Clicked( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ): void {
+         try {
+             this.props.callbackOn_Search_Selection_Changed({ projectSearchId: this.props.searchDisplayListItem.projectSearchId, folderId: this.props.folderId });
+         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
      *
      */
     render(): React.ReactNode {
-
-        let selectedClass = ""
-
-        if ( this.props.selected ) {
-            selectedClass = " search-entry-container-selected "
-        }
 
         let search_selectedInOtherCell = false;
 
@@ -905,8 +955,6 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
         if ( search_selectedInOtherCell ) {
             selectedOtherCellClass = " selected-other-cell "
         }
-
-        const cssClasses = " search-entry-container clickable " + selectedClass + selectedOtherCellClass;
 
         let onMouseEnter_RootDiv = null;
         let onMouseLeave_RootDiv = null;
@@ -950,8 +998,6 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             }
         }
 
-        let searchTagsBlock: JSX.Element = null
-
         { //  Search Tags
 
             let add_Change_SearchTags_Clicked_BindThis: () => void
@@ -969,26 +1015,80 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
             )
         }
 
+        let style_TopLevelDiv: React.CSSProperties = { display: "grid", gridTemplateColumns: "min-content auto" }
+
+        let searchName_SPAN_CSS_Classes = ""
+
+        if ( this.props.selected ) {
+            searchName_SPAN_CSS_Classes = " search-entry-container-selected "
+        }
+
+        let row_Div_ClickHandler = this._searchRowClicked_BindThis
+        let row_Div_CSS_Class_Clickable = " clickable "
+
+        let searchName_OnClick = undefined;
+
+        if ( this.props.select_ONLY_ONE_Search ) {
+
+            row_Div_ClickHandler = undefined
+            row_Div_CSS_Class_Clickable = ""
+
+            // searchName_SPAN_CSS_Classes += " fake-link "
+
+            // searchName_OnClick = this._searchName_Clicked_BindThis
+        }
+
+        const topLevelDiv_CSS_Classes = " search-entry-container " + row_Div_CSS_Class_Clickable + searchName_SPAN_CSS_Classes + selectedOtherCellClass;
+
+        let selectButton_Style: React.CSSProperties = undefined
+
+        if ( this.props.selected ) {
+            selectButton_Style = { visibility: "hidden" }
+        }
+
         return (
             <React.Fragment>
                 <div
                     ref={ this.rootDiv_Ref }
                     onMouseEnter={ onMouseEnter_RootDiv }
                     onMouseLeave={ onMouseLeave_RootDiv }
-                    onClick={ this._searchRowClicked_BindThis }
-                    className={ cssClasses }
-                    style={ { display: "grid", gridTemplateColumns: "min-content auto" } }
+                    onClick={ row_Div_ClickHandler }
+                    className={ topLevelDiv_CSS_Classes }
+                    style={ style_TopLevelDiv }
                 >
 
-                    {/*  2 Column Grid  */}
-                    <div style={ { marginRight: 8 } }>
-                        <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
-                    </div>
+                    { this.props.select_ONLY_ONE_Search ? (
+                        //  YES select_ONLY_ONE_Search
+                        <>
+                            {/*  2 Column Grid  */}
+                            <div style={ { marginRight: 8 } }>
+                                {/*  Button hidden if selected search  */}
+                                <button
+                                    style={ selectButton_Style }
+                                    title="Select this search"
+                                    onClick={ this._searchName_Clicked_BindThis }
+                                >
+                                    Select
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        //  NO select_ONLY_ONE_Search
+                        <>
+                            {/*  2 Column Grid  */}
+                            <div style={ { marginRight: 8 } }>
+                                <input type="checkbox" checked={ this.props.selected } onChange={ () => { /* nothing since have click handler on containing row div */ } } />
+                            </div>
+                        </>
+                    ) }
+
+                    {/*  Second Column or only Div */}
                     <div >
                         <div style={ { marginBottom: 2 } }>
                             <span
-                                className={ selectedClass }
+                                className={ searchName_SPAN_CSS_Classes }
                                 style={ { overflowWrap : "break-word"}}
+                                onClick={ searchName_OnClick }
                             >
                                 { searchNameDisplay }
                             </span>
@@ -1021,6 +1121,11 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
  *
  */
 interface FolderEntry_Props {
+
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.  Make the search name a fake link instead of using check boxes.
+
+    defaultView_ExpandFoldersOnInitialView: boolean  //  If true, show folder as expanded as default
+
     folderEntry: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
 
     show_SearchTag_Categories: boolean
@@ -1056,6 +1161,10 @@ class Internal_Component__FolderEntry extends React.Component< FolderEntry_Props
         super(props);
 
         let folderExpanded = false;
+
+        if ( props.defaultView_ExpandFoldersOnInitialView ) {
+            folderExpanded = true;
+        }
 
         for ( const projectSearchId of this.props.folderEntry.searchesInFolder_ProjectSearchIds_InDisplayOrder ) {
 
@@ -1123,6 +1232,9 @@ class Internal_Component__FolderEntry extends React.Component< FolderEntry_Props
                 const searchDisplayListEntry = (
                     <Internal_Component__SearchEntry
                         key={projectSearchId}
+
+                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+
                         searchDisplayListItem={searchEntry}
                         folderId={ this.props.folderEntry.folderId }
 
@@ -1269,14 +1381,14 @@ class Internal__All_SearchSelectionData {
     // }
 }
 
-/**
- *
- */
-class Internal__Single_SearchSelectionData {
-    readonly folderId: number
-    readonly projectSearchId: number
-    readonly previouslySelected: boolean //  was in props.projectSearchIds_Previously_Selected
-}
+// /**
+//  *
+//  */
+// class Internal__Single_SearchSelectionData {
+//     readonly folderId: number
+//     readonly projectSearchId: number
+//     readonly previouslySelected: boolean //  was in props.projectSearchIds_Previously_Selected
+// }
 
 ///////
 

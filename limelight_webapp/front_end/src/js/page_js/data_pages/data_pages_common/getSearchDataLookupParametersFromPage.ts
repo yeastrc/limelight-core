@@ -39,20 +39,42 @@ export class GetSearchDataLookupParametersFromPage {
 	}
 	
 	/**
+	 * Returns null IF function parameter 'returnNull_IF_NoDataOnPage' is true
+	 *
 	 * @return SearchDataLookupParameters from Page DOM
 	 */
-	public getSearchDataLookupParametersFromPage() : GetSearchDataLookupParametersFromPage_Result {
+	public getSearchDataLookupParametersFromPage(
+		params? : {
+			returnNull_IF_NoDataOnPage: boolean
+		}
+	) : GetSearchDataLookupParametersFromPage_Result {
 		
 		//   Process Search Data Lookup Parameters JSON and Code from DOM <script> text element 
 
 		const search_data_lookup_parameters_at_page_load_code = _getDOMElementContents_UnEncode_HTML_To_Text( "search_data_lookup_parameters_at_page_load_code" );
 		if ( search_data_lookup_parameters_at_page_load_code === undefined || search_data_lookup_parameters_at_page_load_code === null ) {
+
+			if ( params && params.returnNull_IF_NoDataOnPage ) {
+
+				console.log( "getSearchDataLookupParametersFromPage(...):return null since 'if ( search_data_lookup_parameters_at_page_load_code === undefined || search_data_lookup_parameters_at_page_load_code === null )' is true  ")
+
+				return null;
+			}
+
 			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_code' or contents failed to parse as HTML");
 		}
 
 		const search_data_lookup_parameters_at_page_load_json = _getDOMElementContents_UnEncode_HTML_To_Text( "search_data_lookup_parameters_at_page_load_json" );
-		if ( ! search_data_lookup_parameters_at_page_load_json === undefined || search_data_lookup_parameters_at_page_load_json === null ) {
-			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_json' or contents failed to parse as HTML");
+		if ( ( ! search_data_lookup_parameters_at_page_load_json === undefined ) || search_data_lookup_parameters_at_page_load_json === null || search_data_lookup_parameters_at_page_load_json === "" ) {
+
+			if ( params && params.returnNull_IF_NoDataOnPage ) {
+
+				console.log( "getSearchDataLookupParametersFromPage(...):return null since 'if ( ( ! search_data_lookup_parameters_at_page_load_json === undefined ) || search_data_lookup_parameters_at_page_load_json === null || search_data_lookup_parameters_at_page_load_json === \"\" )' is true  ")
+
+				return null;
+			}
+
+			throw Error("No DOM element with ID 'search_data_lookup_parameters_at_page_load_json' or contents failed to parse as HTML or is Empty String");
 		}
 		
 		let search_data_lookup_parameters_at_page_load_Parsed = undefined;

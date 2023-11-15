@@ -8,7 +8,6 @@
 
 import React from 'react'
 import {
-    ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber,
     scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData,
     ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData";
@@ -18,15 +17,26 @@ import {
     scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_LoadData,
     ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_LoadData";
-import {ScanFileBrowser_SingleScan_Plot_Component} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__single_scan_plot/scanFileBrowser_SingleScan_Plot_Component";
 import {
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component,
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback,
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_Params
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__total_ion_current_of_scans_plot/scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import { ScanFileBrowserPage_SingleScan_UserSelections_StateObject } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPage_SingleScan_UserSelections_StateObject";
+import { C13_MASS_DELTA } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
+import {
+    ScanFileBrowser_SingleScan_Plot__AutoZoom_Y_Axis_ValueChanged_CallbackFunction_Params,
+    ScanFileBrowser_SingleScan_Plot_Main_Container_Component
+} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__single_scan_plot/scanFileBrowser_SingleScan_Plot_Component";
+import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
+import { limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam } from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 
 /////////////////////////
+
+const _autoZoom_Y_Axis_Value__DEFAULT = true
+
+
 
 /**
  *
@@ -34,6 +44,8 @@ import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_Reac
 export interface ScanFileBrowserViewPage__MainPage_Component_Props_Prop {
 
     projectScanFileId: number
+    pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag: boolean
+    scanFileBrowserPage_SingleScan_UserSelections_StateObject: ScanFileBrowserPage_SingleScan_UserSelections_StateObject
 }
 
 /**
@@ -77,6 +89,10 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
     private readonly _scanNumber_Input_Ref :  React.RefObject<HTMLInputElement>
 
+    private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+
+    private _scanFilenames: Array<string>
+
     private _cached_SingleScanData_For_ScanFileId_Map_Key_ScanNumber = new Map<number, ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber>()
 
     private _promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber  = new Map<number, Promise<ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root>>()
@@ -85,6 +101,12 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
     private _scanNumber_CurrentlyShown: number
 
+    private _autoZoom_Y_Axis_Value = _autoZoom_Y_Axis_Value__DEFAULT
+
+    private _loadingMessage_SingleScanData: boolean = false
+
+    private _pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect: boolean // Set to false after all tasks complete
+
     /**
      *
      */
@@ -92,6 +114,12 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         super(props);
         try {
             this._scanNumber_Input_Ref = React.createRef();
+
+            this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()
+
+            if ( props.propsValue.pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag ) {
+                this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect = true
+            }
 
             this.state = {
                 showLoadingMessage_ForWholeScanFile: true,
@@ -106,9 +134,62 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
      */
     componentDidMount() {
         try {
-            this._loadData_Populate_State__scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root()
+            //  Update Zoom based on incoming page state.  Update the mz range here so at least if page reloaded before single scan loaded at least the mz range is set
+            this._update_ZoomRange_Selected_MZ_Min_Max_For_FeatureDetection_IndividualFeature_OR_PSM_Root_InState()
+
+            const get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnedPromise =
+                this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.
+                get_commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass().
+                get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnPromise( this.props.propsValue.projectScanFileId )
+
+            get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnedPromise.catch(reason => { })
+            get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnedPromise.then(value_get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_Returned => { try {
+
+                const projectScanFilenames_Data_For_ProjectScanFileId =
+                    value_get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_Returned.commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder.
+                    get_ProjectScanFilenames_Data_For_ProjectScanFileId( this.props.propsValue.projectScanFileId )
+
+                if ( ! projectScanFilenames_Data_For_ProjectScanFileId ) {
+                    const msg = "value_get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_Returned.commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder.get_ProjectScanFilenames_Data_For_ProjectScanFileId( this.props.propsValue.projectScanFileId ) returned nothing for this.props.propsValue.projectScanFileId: " + this.props.propsValue.projectScanFileId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                const projectScanFilenames: Array<string>  = Array.from( projectScanFilenames_Data_For_ProjectScanFileId.projectScanFilenames_ForScanFile_List )
+
+                projectScanFilenames.sort( (a,b) => {
+                    return limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam(a,b)
+                })
+
+                this._scanFilenames = projectScanFilenames
+
+                this._loadData_Populate_State__scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root()
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     * Update MZ Zoom ONLY based on incoming page state
+     * @private
+     */
+    private _update_ZoomRange_Selected_MZ_Min_Max_For_FeatureDetection_IndividualFeature_OR_PSM_Root_InState() {
+
+        if ( this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect ) {
+
+            const featureDetection_IndividualFeature_Root = this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root()
+
+            if ( featureDetection_IndividualFeature_Root ) {
+
+                const mz_Min_ZoomRange = featureDetection_IndividualFeature_Root.baseIsotopePeak__Containing_M_Over_Z - ( 1.5 * ( C13_MASS_DELTA / featureDetection_IndividualFeature_Root.charge ) )
+                const mz_Max_ZoomRange = featureDetection_IndividualFeature_Root.baseIsotopePeak__Containing_M_Over_Z + ( 4.5 * ( C13_MASS_DELTA / featureDetection_IndividualFeature_Root.charge ) )
+
+                this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.setZoomRange_Selected( {
+                    mz_Min_ZoomRange, mz_Max_ZoomRange, tic_Max_ZoomRange: undefined
+                } )
+            }
+        }
     }
 
     /**
@@ -122,12 +203,6 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         promise.catch(reason => {  })
         promise.then(scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root => { try {
 
-            //  TODO  FAKE  'FAKE_FOR_TESTING'
-
-            // const scanNumber_ShowOnLoad__FAKE_FOR_TESTING = 31370;
-            //
-            // let found__scanNumber_ShowOnLoad__FAKE_FOR_TESTING = false;
-
             for ( const scan of scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
                 if ( scan.totalIonCurrent_ForScan === undefined || scan.totalIonCurrent_ForScan === null ) {
                     //  Scan does NOT have totalIonCurrent_ForScan.  CANNOT show this chart
@@ -136,12 +211,6 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
                     return; // EARLY RETURN
                 }
-
-                //  TODO  FAKE  'FAKE_FOR_TESTING'
-
-                // if ( scan.scanNumber === scanNumber_ShowOnLoad__FAKE_FOR_TESTING ) {
-                //     found__scanNumber_ShowOnLoad__FAKE_FOR_TESTING = true;
-                // }
             }
 
             this._scanLevels_ToShow = new Set()
@@ -150,13 +219,24 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             this.setState({ scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root, showLoadingMessage_ForWholeScanFile: false })
             // console.warn( "returned from scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData: ", value )
 
-            //  TODO  FAKE  'FAKE_FOR_TESTING'
 
-            // if ( found__scanNumber_ShowOnLoad__FAKE_FOR_TESTING ) {
-            //
-            //     //  Load Scan Number since viewing in Lorikeet through Peptide page
-            //     this._display_SingleScan_For_ScanNumber({ scanNumber: scanNumber_ShowOnLoad__FAKE_FOR_TESTING })
-            // }
+            const scanNumber_AtPageLoad = this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getScanNumber_Selected()
+
+            if ( scanNumber_AtPageLoad !== undefined && scanNumber_AtPageLoad !== null ) {
+
+                for ( const scan of scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+                    if ( scan.scanNumber === scanNumber_AtPageLoad ) {
+
+                        // Ensure display scan level for this scan
+                        this._scanLevels_ToShow.add(scan.level)
+
+                        this._display_SingleScan_For_ScanNumber({ scanNumber: scanNumber_AtPageLoad })
+
+                        break
+                    }
+                }
+
+            }
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
@@ -190,10 +270,12 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                     continue; // EARLY CONTINUE
                 }
 
-                if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
-                    //  Not for selected scan level so skip
-                    continue; // EARLY CONTINUE
-                }
+                //  Remove checking that scan is selected scan number
+
+                // if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
+                //     //  Not for selected scan level so skip
+                //     continue; // EARLY CONTINUE
+                // }
 
                 scanNumber_Prev = scanNumber_New
 
@@ -228,10 +310,12 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                     continue; // EARLY CONTINUE
                 }
 
-                if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
-                    //  Not for selected scan level so skip
-                    continue; // EARLY CONTINUE
-                }
+                //  Remove checking that scan is selected scan number
+
+                // if ( ! this._scanLevels_ToShow.has( scanEntry.level ) ) {
+                //     //  Not for selected scan level so skip
+                //     continue; // EARLY CONTINUE
+                // }
 
                 scanNumber_Next = scanNumber_New
 
@@ -328,6 +412,12 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             scanNumber: number
         }
     ) {
+        if ( this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getScanNumber_Selected() !== scanNumber ) {
+
+            // Scan Number Changed SO Update State Object and URl with currently selected scan number
+
+            this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.setScanNumber_Selected( scanNumber )
+        }
 
         this._scanNumber_CurrentlyShown = scanNumber
 
@@ -339,6 +429,10 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
             return; // EARLY RETURN
         }
+
+        this._loadingMessage_SingleScanData = true;
+
+        this.setState({ force_ReRender: {} })
 
         {
             const promise = this._promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber.get(scanNumber)
@@ -355,7 +449,6 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                     }
 
                     //  Display now that data is loaded
-
                     this._show_SingleScanData({ singleScanData });
 
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -407,6 +500,58 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         }
     ) : void {
 
+        this._loadingMessage_SingleScanData = false;
+
+        if ( this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect ) {
+
+            {
+                //  Update Zoom based on incoming page state
+
+                const featureDetection_IndividualFeature_Root = this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root()
+
+                if ( featureDetection_IndividualFeature_Root ) {
+
+                    //   Zoom MZ range updated in this._update_ZoomRange_Selected_MZ_Min_Max_For_FeatureDetection_IndividualFeature_OR_PSM_Root_InState(), called from componentDidMount()
+
+                    const zoomRange_Selected_Existing = this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected()
+
+                    if ( ! zoomRange_Selected_Existing ) {
+                        const msg = " ( this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect ) AND this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root() AND ( ! this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected() )"
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+                    if ( ( ! zoomRange_Selected_Existing.mz_Min_ZoomRange ) || ( ! zoomRange_Selected_Existing.mz_Max_ZoomRange ) ) {
+                        const msg = " ( this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect ) AND this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root() AND ( ( ! zoomRange_Selected_Existing.mz_Min_ZoomRange ) || ( ! zoomRange_Selected_Existing.mz_Max_ZoomRange ) )"
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    const mz_Min_ZoomRange = zoomRange_Selected_Existing.mz_Min_ZoomRange
+                    const mz_Max_ZoomRange = zoomRange_Selected_Existing.mz_Max_ZoomRange
+
+                    let scanPeak_LargestIntensity_In_MZ_Range = 0
+
+                    for ( const scanPeak of singleScanData.scanPeaksList ) {
+
+                        if ( scanPeak.m_over_z >= mz_Min_ZoomRange && scanPeak.m_over_z <= mz_Max_ZoomRange ) {
+
+                            if ( scanPeak_LargestIntensity_In_MZ_Range < scanPeak.intensity ) {
+                                scanPeak_LargestIntensity_In_MZ_Range = scanPeak.intensity
+                            }
+                        }
+                    }
+
+                    const tic_Max_ZoomRange = Math.ceil( scanPeak_LargestIntensity_In_MZ_Range * 1.1 )  // 110% of max peak
+
+                    this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject.setZoomRange_Selected( {
+                        mz_Min_ZoomRange, mz_Max_ZoomRange, tic_Max_ZoomRange
+                    } )
+                }
+            }
+        }
+
+        this._pageIsLoaded_From_OtherPage_Using_URL_WithReferrerFlag__InEffect = false
+
         this.setState({ singleScanData });
     }
 
@@ -432,10 +577,23 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                 )
             }
 
+            const _OVERALL_CONTAINER_WITH_BORDER_PADDING = 10
 
             return (
-                <div >
+                <div style={ { marginBottom: 20 } }>
+
+                    { this._scanFilenames ? (
+                        <div
+                            style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }
+                            title={ this._scanFilenames.length === 1 ? "Scan Filename" : "Scan Filenames" }
+                        >
+                            { this._scanFilenames.join( ", " ) }
+                        </div>
+                    ) : null }
+
                     { this.state.scan_DoesNotHave_totalIonCurrent_ForScan ? (
+
+                        //  Unlikely but unsure if really old Spectr data has this field
 
                         <div>
                             Scan data does NOT have Total Ion Current.  Cannot show Data.
@@ -445,114 +603,181 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
                         <React.Fragment>
 
-                            <div style={ { marginBottom: 10 } }>
-                                <span>
-                                    Show data for scan level:
-                                </span>
-                                { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
-                                    return (
-                                        <React.Fragment key={ scanLevel }>
-                                            <span> </span>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    defaultChecked={ this._scanLevels_ToShow.has( scanLevel ) }
-                                                    // checked={ this._scanLevels_ToShow.has( scanLevel ) }
-                                                    onChange={ event => {
-                                                        if ( event.target.checked ) {
-                                                            this._scanLevels_ToShow.add(scanLevel)
-                                                        } else {
-                                                            this._scanLevels_ToShow.delete(scanLevel)
-                                                        }
-
-                                                        this.setState({ force_ReRender: {} })
-                                                    }}
-                                                />
-                                                <span>{ scanLevel }</span>
-                                            </label>
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </div>
-
-                            { ( this._scanLevels_ToShow.size === 0 ) ? (
-
-                                <div>
-                                    No scan levels selected.
+                            <div
+                                className=" standard-background-color "
+                                style={ { marginBottom: 10, borderStyle: "solid", borderWidth: 1, padding: _OVERALL_CONTAINER_WITH_BORDER_PADDING } }
+                            >
+                                <div style={ { fontSize: 18, fontWeight: "bold" } }>
+                                    File TIC Chromatogram
                                 </div>
 
-                            ) : (
+                                <div style={ { marginBottom: 10 } }>
+                                    <span>
+                                        Show data for scan level:
+                                    </span>
+                                    { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
+                                        return (
+                                            <React.Fragment key={ scanLevel }>
+                                                <span> </span>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        defaultChecked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                        // checked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                        onChange={ event => {
+                                                            if ( event.target.checked ) {
+                                                                this._scanLevels_ToShow.add(scanLevel)
+                                                            } else {
+                                                                this._scanLevels_ToShow.delete(scanLevel)
+                                                            }
 
-                                <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
-                                    projectScanFileId={ this.props.propsValue.projectScanFileId }
-                                    scanLevels_ToDisplay={ this._scanLevels_ToShow }
-                                    scanNumber_Selected={ this._scanNumber_CurrentlyShown }
-                                    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
-                                    scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
-                                />
-                            )}
+                                                            this.setState({ force_ReRender: {} })
+                                                        }}
+                                                    />
+                                                    <span>{ scanLevel }</span>
+                                                </label>
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </div>
+
+                                { ( this._scanLevels_ToShow.size === 0 ) ? (
+
+                                    <div>
+                                        No scan levels selected.
+                                    </div>
+
+                                ) : (
+                                    <>
+                                        <div style={ { marginBottom: 5 } }>
+                                            Click in plot to select a scan or enter scan number below.
+                                        </div>
+
+                                        <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
+                                            projectScanFileId={ this.props.propsValue.projectScanFileId }
+                                            scanLevels_ToDisplay={ this._scanLevels_ToShow }
+                                            scanNumber_Selected={ this._scanNumber_CurrentlyShown }
+                                            scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
+                                            scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
+                                        />
+                                    </>
+                                )}
+
+                            </div>
 
                         </React.Fragment>
 
                     ) : null }
 
-                    { this.state.singleScanData ? (
+                    <div
+                        className=" standard-background-color "
+                        style={ { borderStyle: "solid", borderWidth: 1, padding: _OVERALL_CONTAINER_WITH_BORDER_PADDING } }
+                    >
 
-                        <React.Fragment>
+                        <div style={ { fontSize: 18, fontWeight: "bold" } }>
 
-                            <div style={ { marginTop: 10, marginBottom: 10 } }>
-                                <button
-                                    style={ { marginRight: 10 } }
-                                    title="Within selected scan levels"
-                                    onClick={ event => { this._prevScan_Clicked() } }
-                                >
-                                    Previous Scan
-                                </button>
-                                <span > </span>
-                                <button
-                                    style={ { marginRight: 10 } }
-                                    title="Within selected scan levels"
-                                    onClick={ event => { this._nextScan_Clicked() } }
-                                >
-                                    Next Scan
-                                </button>
-                                <span> </span>
-                                <div style={ { display: "inline-block" } }>
-                                    <span style={ { whiteSpace: "nowrap" } }>
-                                        <form onSubmit={ event => {
-                                            event.preventDefault()
-                                            event.stopPropagation()
-                                            this._show_EnteredScanNumber_FormSubmit(event)
-                                        }}>
-                                            <input
-                                                ref={ this._scanNumber_Input_Ref }
-                                                style={ { width: 60 } }
-                                                placeholder="scan #"
-                                                title="Enter scan number to show and click button"
-                                            />
-                                            <span> </span>
-                                            <button
-                                                title="Show entered scan number"
-                                            >
-                                                Show Scan
-                                            </button>
-                                            { this.state.showScanNumber_ErrorMessage ? (
-                                                <>
-                                                    <span> </span>
-                                                    <span style={ { color: "red" } }>{ this.state.showScanNumber_ErrorMessage }</span>
-                                                </>
-                                            ) : null }
-                                        </form>
-                                    </span>
-                                </div>
+                        { this._scanNumber_CurrentlyShown === undefined || this._scanNumber_CurrentlyShown === null ? (
+
+                            <span>Enter scan number to show or click in File TIC Chromatogram above to select a scan to show</span>
+                        ) : (
+                            <span>Selected Scan</span>
+                        ) }
+
+                        </div>
+
+                        <div style={ { marginTop: 10, marginBottom: 10 } }>
+
+                            { this.state.singleScanData ? (
+
+                                <React.Fragment>
+
+                                    <button
+                                        style={ { marginRight: 10 } }
+                                        title="Within selected scan levels"
+                                        onClick={ event => { this._prevScan_Clicked() } }
+                                    >
+                                        Previous Scan
+                                    </button>
+                                    <span > </span>
+                                    <button
+                                        style={ { marginRight: 10 } }
+                                        title="Within selected scan levels"
+                                        onClick={ event => { this._nextScan_Clicked() } }
+                                    >
+                                        Next Scan
+                                    </button>
+                                    <span> </span>
+                                </React.Fragment>
+                            ) : null }
+
+
+                            <div style={ { display: "inline-block" } }>
+                                <span style={ { whiteSpace: "nowrap" } }>
+                                    <form onSubmit={ event => {
+                                        event.preventDefault()
+                                        event.stopPropagation()
+                                        this._show_EnteredScanNumber_FormSubmit(event)
+                                    }}>
+                                        <input
+                                            ref={ this._scanNumber_Input_Ref }
+                                            style={ { width: 60 } }
+                                            placeholder="scan #"
+                                            title="Enter scan number to show and click button"
+                                        />
+                                        <span> </span>
+                                        <button
+                                            title="Show entered scan number"
+                                        >
+                                            Show Scan
+                                        </button>
+                                        { this.state.showScanNumber_ErrorMessage ? (
+                                            <>
+                                                <span> </span>
+                                                <span style={ { color: "red" } }>{ this.state.showScanNumber_ErrorMessage }</span>
+                                            </>
+                                        ) : null }
+                                    </form>
+                                </span>
                             </div>
+                        </div>
 
-                            <ScanFileBrowser_SingleScan_Plot_Component
-                                scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber={ this.state.singleScanData }
-                            />
+                        { this.state.singleScanData ? (
 
-                        </React.Fragment>
-                    ): null}
+                            <React.Fragment>
+
+                                <div style={ { position: "relative" } }>
+                                    { this.state.singleScanData ? (
+                                    <ScanFileBrowser_SingleScan_Plot_Main_Container_Component
+                                        key={ this.state.singleScanData.scanNumber } //  'key=' added so React creates a NEW component when the scan number changes.
+                                        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber={ this.state.singleScanData }
+                                        scanFileBrowserPage_SingleScan_UserSelections_StateObject={ this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject }
+                                        autoZoom_Y_Axis_Value={ this._autoZoom_Y_Axis_Value }
+                                        autoZoom_Y_Axis_ValueChanged_Callback={ ( params : ScanFileBrowser_SingleScan_Plot__AutoZoom_Y_Axis_ValueChanged_CallbackFunction_Params ) => {
+
+                                            this._autoZoom_Y_Axis_Value = params.autoZoom_Y_Axis_Value
+                                        }}
+                                    />
+                                    ) : null }
+
+                                    { this._loadingMessage_SingleScanData ? (
+
+                                        <div
+                                            className=" standard-background-color "
+                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 }}
+                                        >
+                                            <div style={ { marginTop: 60, textAlign: "center" }}>
+                                                LOADING DATA
+                                            </div>
+                                            <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" }}>
+                                                <Spinner_Limelight_Component/>
+                                            </div>
+                                        </div>
+                                    ) : null }
+                                </div>
+
+                            </React.Fragment>
+                        ): null}
+                    </div>
                 </div>
             );
 

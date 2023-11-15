@@ -145,6 +145,7 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
                     <Qc_SingleSearch_FeatureDetection_Statistics_Section
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                         qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                        externallySpecified_FeatureDetection_Entry={ undefined }
                     />
                 </div>
                 <div style={ { clear: "both" } }>
@@ -154,9 +155,9 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
                     />
                 </div>
                 <div style={ { clear: "both" } }>
-                <Qc_SingleSearch_Target_Decoy_Analysis_Section
-                    qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                    <Qc_SingleSearch_Target_Decoy_Analysis_Section
+                        qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
+                        qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                     />
                 </div>
                 <div style={ { clear: "both" } }>

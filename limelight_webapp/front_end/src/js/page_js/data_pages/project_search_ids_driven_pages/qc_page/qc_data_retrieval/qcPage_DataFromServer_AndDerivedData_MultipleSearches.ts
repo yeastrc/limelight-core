@@ -170,7 +170,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
     /**
      *
      */
-    get_PsmTblData_SpectralStorage_NO_Peaks_Data_Data() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches> {
+    get_PsmTblData() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches> {
 
         const promises : Array<Promise<any>> = []
 
@@ -183,115 +183,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
             if ( promise ) {
                 promises.push(promise);
             }
-        }
-        {
-            const projectSearchIds_LoadScanData: Array<number> = [];
-
-            for ( const projectSearchId of this._retrievalParams.projectSearchIds ) {
-                const qcPage_Flags_SingleSearch = this._retrievalParams.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
-                if ( ! qcPage_Flags_SingleSearch ) {
-                    const msg = "this._retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( qcPage_Flags_SingleSearch.hasScanData ) {
-                    projectSearchIds_LoadScanData.push(projectSearchId);
-                }
-            }
-
-            const promise_loadScanData_Overall = new Promise<void>( (resolve, reject) => {
-                try {
-                    const promise_SearchScanFileData = this._qcPage_DataFromServerMultipleSearches_SearchScanFileData_LoadIfNeeded.multipleSearches_SearchScanFileData_LoadIfNeeded({
-                        projectSearchIds_Override: projectSearchIds_LoadScanData,
-                        retrievalParams: this._retrievalParams,
-                        retrievalParamsSingleSearch_Map_Key_ProjectSearchId: this._retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-                        data_Holder_MultipleSearches: this._data_Holder_MultipleSearches
-                    });
-
-                    if ( promise_SearchScanFileData ) {
-
-                        promise_SearchScanFileData.catch( reason => {
-                            try {
-                                reject(reason);
-
-                            } catch( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                throw e;
-                            }
-                        });
-
-                        promise_SearchScanFileData.then( result => {
-                            try {
-                                const promise_GetScanData =
-                                    this._qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded.multipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded({
-                                        projectSearchIds_Override: projectSearchIds_LoadScanData,
-                                        retrievalParams: this._retrievalParams,
-                                        retrievalParamsSingleSearch_Map_Key_ProjectSearchId: this._retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-                                        data_Holder_MultipleSearches: this._data_Holder_MultipleSearches
-                                    })
-
-                                promise_GetScanData.catch( reason => {
-                                    try {
-                                        reject(reason);
-
-                                    } catch( e ) {
-                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                        throw e;
-                                    }
-                                });
-
-                                promise_GetScanData.then( result => {
-                                    try {
-                                        resolve();
-
-                                    } catch( e ) {
-                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                        throw e;
-                                    }
-                                });
-                            } catch( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                throw e;
-                            }
-                        });
-                    } else {
-
-                        const promise_GetScanData =
-                            this._qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded.multipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded({
-                            projectSearchIds_Override: projectSearchIds_LoadScanData,
-                            retrievalParams: this._retrievalParams,
-                            retrievalParamsSingleSearch_Map_Key_ProjectSearchId: this._retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-                            data_Holder_MultipleSearches: this._data_Holder_MultipleSearches
-                        })
-
-                        promise_GetScanData.catch( reason => {
-                            try {
-                                reject(reason);
-
-                            } catch( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                throw e;
-                            }
-                        });
-
-                        promise_GetScanData.then( result => {
-                            try {
-                                resolve()
-
-                            } catch( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                throw e;
-                            }
-                        });
-                    }
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
-
-            promises.push(promise_loadScanData_Overall);
         }
 
         if ( promises.length === 0 ) {

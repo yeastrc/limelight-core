@@ -1,9 +1,7 @@
 /**
- * commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders.ts
+ * commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders.ts
  *
- * Javascript - Data from server for Project Identifier - Searches, Search Tags, Folders
- *
- * webservice path: "d/rws/for-page/project-view-page-search-list-v2"
+ * Javascript - Data from server for Project Identifier or Project Search Ids - Searches, Search Tags, Folders
  *
  * MAIN FUNCTION:   getSearchesSearchTagsAndFolders_SingleProject
  *
@@ -234,21 +232,22 @@ export class CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Re
 /**
  *
  */
-export const getSearchesSearchTagsAndFolders_SingleProject = function (
+export const getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds = function (
     {
-        projectIdentifier
+        projectIdentifier, projectSearchIds
     } : {
         projectIdentifier : string
+        projectSearchIds?: ReadonlyArray<number> //  Optional restriction to specific projectSearchIds.  projectIdentifier is then ignored if not populated.  projectIdentifier MUST be for same project if populated.
     }) : Promise<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root> {
 
     return new Promise<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root> ( ( resolve, reject ) => {
         try {
 
             let requestObj = {
-                projectIdentifier: projectIdentifier
+                projectIdentifier, projectSearchIds
             };
 
-            const url = "d/rws/for-page/project-view-page-search-list-v2";
+            const url = "d/rws/for-page/project-view-page-or-project-search-ids-search-list";
 
             const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
 

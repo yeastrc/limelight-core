@@ -16,13 +16,13 @@ import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_al
 import {qcPage_ChartOverlayDimensions} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot,
-    QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot,
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType,
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType_Params
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
 
 
 
@@ -94,7 +94,7 @@ export const open_FeatureDetection_TotalIonCurrent_VS_RetentionTime_OverlayConta
  */
 export interface QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_OverlayContainer__Component_Params {
 
-    dataToPlot: QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot
+    dataToPlot: QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
 }
 
@@ -164,7 +164,7 @@ class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Sing
         params: QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType_Params
     ) : void {
 
-        this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id
+        this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = this.props.params.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id
         this.setState({ force_Rerender: {} } )
     }
 
@@ -174,7 +174,7 @@ class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Sing
     render() {
         try {
             if ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection &&
-                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection !== this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
+                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection !== this.props.params.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
                 this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = null;  // reset to null since not currently selected id
             }
 
@@ -195,16 +195,16 @@ class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Sing
 
             let scanFilenames = ""
 
-            for ( const searchScanFileEntry of this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.searchScanFileEntries ) {
+            for ( const scanFilename of this.props.params.dataToPlot.scanFilenames_Unique_Sorted_Array ) {
                 if ( scanFilenames ) {
                     scanFilenames += ", "
                 }
-                scanFilenames += searchScanFileEntry.searchScanFilename
+                scanFilenames += scanFilename
             }
 
             let searchNameDisplay: string = null
 
-            if ( this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length > 1 ) {
+            if ( this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent && this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length > 1 ) {
                 const projectSearchId = this.props.params.dataToPlot.projectSearchId
                 const searchData = this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId(projectSearchId)
                 if ( ! searchData ) {
@@ -264,11 +264,11 @@ class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Sing
                                     <div >
                                         <span style={ { fontWeight: "bold" } }>Feature Detection Run: </span>
                                         <span>
-                                            { this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.description }
+                                            { this.props.params.dataToPlot.featureDetection_Description }
                                         </span>
                                         <span> (</span>
                                         <span>
-                                            { this.props.params.dataToPlot.featureDetection_Root_Entry_Selection.displayLabel }
+                                            { this.props.params.dataToPlot.featureDetection_DisplayLabel }
                                         </span>
                                         <span>)</span>
                                     </div>

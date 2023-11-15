@@ -10,7 +10,6 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot,
-    QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot,
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType,
     QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType_Params
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot";
@@ -20,13 +19,14 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/jsx/qcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_OverlayContainer";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
 
 /**
  *
  */
 export interface QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MainPageContainer_Props {
 
-    dataToPlot: QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot__DataToPlot
+    dataToPlot: QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
 }
 
@@ -85,7 +85,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTim
         params: QcViewPage_FeatureDetection_TotalIonCurrent_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_MissingData_Callback_FunctionType_Params
     ) : void {
 
-        this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = this.props.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id
+        this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = this.props.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id
         this.setState({ force_Rerender: {} } )
     }
 
@@ -95,7 +95,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_VS_RetentionTim
     render() {
         try {
             if ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection &&
-                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection !== this.props.dataToPlot.featureDetection_Root_Entry_Selection.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
+                ( this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection !== this.props.dataToPlot.feature_detection_root__project_scnfl_mapping_tbl__id ) ) {
                 this._show_No_TotalIonCurrent_Data_Message_For_FeatureDetection_Root_Entry_Selection = null;  // reset to null since not currently selected id
             }
 

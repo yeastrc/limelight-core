@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -26,7 +27,10 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
+import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRoot_ProjectScanFile_Mapping_DTO;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
+import org.yeastrc.limelight.limelight_webapp.db_dto.ExperimentDTO;
 
 /**
  * table feature_detection_root__project_scnfl_mapping_tbl
@@ -37,6 +41,63 @@ public class FeatureDetectionRoot_ProjectScanFile_Mapping_DAO extends Limelight_
 
 	private static final Logger log = LoggerFactory.getLogger( FeatureDetectionRoot_ProjectScanFile_Mapping_DAO.class );
 
+	/**
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public FeatureDetectionRoot_ProjectScanFile_Mapping_DTO getForId( int id ) throws SQLException {
+		
+		FeatureDetectionRoot_ProjectScanFile_Mapping_DTO result = null;
+		
+		final String querySQL = "SELECT * FROM feature_detection_root__project_scnfl_mapping_tbl WHERE id = ?";
+		
+		try ( Connection dbConnection = super.getDBConnection();
+			     PreparedStatement preparedStatement = dbConnection.prepareStatement( querySQL ) ) {
+			
+			preparedStatement.setInt( 1, id );
+			
+			try ( ResultSet rs = preparedStatement.executeQuery() ) {
+				if ( rs.next() ) {
+					result = populatePartialFromResultSet( rs );
+				}
+			}
+		} catch ( RuntimeException e ) {
+			String msg = "SQL: " + querySQL;
+			log.error( msg, e );
+			throw e;
+		} catch ( SQLException e ) {
+			String msg = "SQL: " + querySQL;
+			log.error( msg, e );
+			throw e;
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	private FeatureDetectionRoot_ProjectScanFile_Mapping_DTO populatePartialFromResultSet( ResultSet rs ) throws SQLException {
+		
+		FeatureDetectionRoot_ProjectScanFile_Mapping_DTO result = new FeatureDetectionRoot_ProjectScanFile_Mapping_DTO();
+		result.setId( rs.getInt( "id" ) );
+		result.setProjectScanFileId( rs.getInt( "project_scan_file_id" ) );
+		result.setDisplayLabel( rs.getString( "display_label" ) );
+		result.setDescription( rs.getString( "description" ) );
+
+		//  SKIP
+//				  `created_date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+//				  `updated_date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//				  `created_by_user_id` int unsigned NOT NULL,
+//				  `updated_by_user_id` int unsigned NOT NULL,
+				
+		return result;
+	}
+	
 	@Override
 	@Transactional( propagation = Propagation.REQUIRED )  //  Do NOT throw checked exceptions, they don't trigger rollback in Spring Transactions
 	public void update_DisplayLabel_Description( String displayLabel, String description, int id, int userId ) {

@@ -182,11 +182,13 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
                     // style={ { padding : 6 } }
                 >
                     <SearchSelection_DisplayedNestedInFolders_Component
+
+                        select_ONLY_ONE_Search={ false }
+
                         projectIdentifier={ this.props.projectIdentifier }
                         searchesSearchTagsFolders_Result_Root={ null } //  The component will load it since NOT passed in
                         projectSearchIds_Previously_Selected={ this.props.projectSearchIds_Selected }
                         projectSearchIds_ContainedInAllOtherExperimentCells={ null }  // Only for Experiment Definition
-                        callbackOn_Cancel_Close_Clicked={ this.props.callbackOn_Cancel_Close_Clicked }
                         callback_updateSelected_Searches={ this._callback__SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches_BindThis }
                     />
 

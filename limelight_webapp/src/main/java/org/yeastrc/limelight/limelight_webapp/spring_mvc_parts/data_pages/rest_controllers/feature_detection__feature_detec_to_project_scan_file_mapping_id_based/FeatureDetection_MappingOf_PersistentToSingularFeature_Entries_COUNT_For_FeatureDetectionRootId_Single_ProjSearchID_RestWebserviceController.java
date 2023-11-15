@@ -269,7 +269,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
 			int recordCount =
 					featureDetection_Map_PersistentToSingular_Feature_Entries_RecordCount__For_FeatureDetectionRootId_Searcher.
-					get_RecordCount_ForFeatureDetectionRootId( feature_detection_root_id );
+					get_RecordCount_ForFeatureDetectionRootId_And_optional__feature_detection_persistent_feature_entry_id( 
+							feature_detection_root_id, 
+							webserviceRequest.optional__feature_detection_persistent_feature_entry_id );
 		
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.recordCount = recordCount;
@@ -316,10 +318,17 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     public static class WebserviceRequest {
     	
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
+    	
+    	private Integer optional__feature_detection_persistent_feature_entry_id;
 
 		public void setFeature_detection_root__project_scnfl_mapping_tbl__id(
 				Integer feature_detection_root__project_scnfl_mapping_tbl__id) {
 			this.feature_detection_root__project_scnfl_mapping_tbl__id = feature_detection_root__project_scnfl_mapping_tbl__id;
+		}
+
+		public void setOptional__feature_detection_persistent_feature_entry_id(
+				Integer optional__feature_detection_persistent_feature_entry_id) {
+			this.optional__feature_detection_persistent_feature_entry_id = optional__feature_detection_persistent_feature_entry_id;
 		}
     }
     

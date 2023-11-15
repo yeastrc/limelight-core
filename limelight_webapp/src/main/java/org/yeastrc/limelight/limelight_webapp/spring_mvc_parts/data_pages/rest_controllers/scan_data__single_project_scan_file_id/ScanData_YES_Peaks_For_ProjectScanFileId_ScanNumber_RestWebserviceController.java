@@ -39,9 +39,9 @@ import java.util.List;
  *
  */
 @RestController
-public class SpectralStorage_ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController {
+public class ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController {
 
-    private static final Logger log = LoggerFactory.getLogger( SpectralStorage_ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController.class );
+    private static final Logger log = LoggerFactory.getLogger( ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController.class );
 
     @Autowired
     private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -70,7 +70,7 @@ public class SpectralStorage_ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber
     @Autowired
     private MarshalObjectToJSON marshalObjectToJSON;
 
-    public SpectralStorage_ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController() {
+    public ScanData_YES_Peaks_For_ProjectScanFileId_ScanNumber_RestWebserviceController() {
         super();
     }
 

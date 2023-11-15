@@ -23,6 +23,10 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
     private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_SingularFeatureEntry_Id :
         Map<number, Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry>>;
 
+    //  Populated on demand
+    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id :
+        Map<number, Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry>>;
+
     constructor(
         {
             featureDetection_MappingOf_PersistentToSingularFeature_Entries
@@ -60,6 +64,27 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
 
         return this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_SingularFeatureEntry_Id.get(featureDetection_SingularFeatureEntry_Id);
     }
+
+    /**
+     *
+     */
+    get_FeatureDetection_MappingOf_PersistentToSingularFeature_Entry_FOR_FeatureDetection_PersistentFeatureEntry_Id(featureDetection_PersistentFeatureEntry_Id: number) {
+
+        if ( ! this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id ) {
+            //  Populate Map
+            this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id = new Map();
+            for ( const entry of this._featureDetection_MappingOf_PersistentToSingularFeature_Entries ) {
+                let entries_For_PersistentId = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id.get( entry.featureDetection_PersistentFeatureEntry_Id );
+                if ( ! entries_For_PersistentId ) {
+                    entries_For_PersistentId = [];
+                    this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id.set( entry.featureDetection_PersistentFeatureEntry_Id, entries_For_PersistentId );
+                }
+                entries_For_PersistentId.push( entry );
+            }
+        }
+
+        return this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Map_Key_featureDetection_PersistentFeatureEntry_Id.get(featureDetection_PersistentFeatureEntry_Id);
+    }
 }
 
 /**
@@ -86,11 +111,27 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
 
     //  !! If these values change, then create a new instance of this class
 
-    //
+    //     NO Values passed in to constructor()
 
-    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId: Map<number, CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder> = new Map();
+    //   MappingId:    is feature_detection_root__project_scnfl_mapping_tbl__id
+    //   PersistentId: is optional__feature_detection_persistent_feature_entry_id
 
-    private _promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId: Map<number, Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>> = new Map();
+    /**
+     * Data loaded for all of Mapping Id
+     */
+    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId__Map_Key_MappingId: Map<number, CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder> = new Map();
+
+    //  Promises loading above data
+    private _promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId: Map<number, Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder>> = new Map();
+
+    /**
+     * Data loaded for Mapping Id and Persistent Id
+     */
+    private _featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId: Map<number, Map<number, CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder>> = new Map();
+
+    //  Promises loading above data
+    private _promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId: Map<number, Map<number, Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder>>> = new Map();
+
 
     /**
      *
@@ -148,49 +189,262 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
             promise: Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>
         } {
 
+        return this.get_FeatureDetection_MappingOf_PersistentToSingularFeature__With_optional__feature_detection_persistent_feature_entry_id_EntriesHolder({
+            feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id: undefined
+        })
+
+    }
+
+    /**
+     * !!!  Always return promise
+     *
+     */
+    get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__With_optional__feature_detection_persistent_feature_entry_id_ReturnPromise(
         {
-            const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
-            if ( featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder ) {
+            feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
+        } : {
+            feature_detection_root__project_scnfl_mapping_tbl__id: number
+            optional__feature_detection_persistent_feature_entry_id: number
+        }
+    ): Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult> {
 
-                //  Have loaded data so just return it
+        const result = this.get_FeatureDetection_MappingOf_PersistentToSingularFeature__With_optional__feature_detection_persistent_feature_entry_id_EntriesHolder({ feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id });
 
-                const data : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
-                    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
+        if (result.data) {
+
+            return Promise.resolve(result.data);
+        }
+
+        return result.promise;
+    }
+
+
+    /**
+     *
+     */
+    get_FeatureDetection_MappingOf_PersistentToSingularFeature__With_optional__feature_detection_persistent_feature_entry_id_EntriesHolder(
+        {
+            feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
+        } : {
+            feature_detection_root__project_scnfl_mapping_tbl__id: number
+            optional__feature_detection_persistent_feature_entry_id: number
+        }
+    ):
+        {
+            data: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult
+            promise: Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>
+        } {
+
+        if ( optional__feature_detection_persistent_feature_entry_id === undefined || optional__feature_detection_persistent_feature_entry_id === null ) {
+
+            // NOT HAVE parameter 'optional__feature_detection_persistent_feature_entry_id'
+
+            //  ONLY USE feature_detection_root__project_scnfl_mapping_tbl__id
+
+            {
+                const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
+                if ( featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder ) {
+
+                    //  Have loaded data so just return it
+
+                    const data: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
+                        featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
+                    }
+
+                    return {  //  EARLY RETURN
+                        data,
+                        promise: undefined
+                    };
+                }
+            }
+            {
+                const promise = this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
+                if ( promise ) {
+
+                    return {  //  EARLY RETURN
+                        data: undefined, promise: new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+
+                            promise.catch(reason => reject(reason))
+                            promise.then( result_Holder => { try {
+
+                                resolve({ featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: result_Holder });
+
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    };
+                }
+            }
+
+            const promise_Loading = this._load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id: undefined });
+
+            promise_Loading.catch( reason => {
+                //  Remove Promise
+                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId.delete(feature_detection_root__project_scnfl_mapping_tbl__id);
+            });
+            promise_Loading.then( result_Holder => { try {
+
+                //  Remove Promise
+
+                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId.delete(feature_detection_root__project_scnfl_mapping_tbl__id);
+
+                //  Save Holder
+
+                this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId__Map_Key_MappingId.set( feature_detection_root__project_scnfl_mapping_tbl__id, result_Holder );
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+            this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId.set( feature_detection_root__project_scnfl_mapping_tbl__id, promise_Loading )
+
+            //  returned Promise
+
+            const promise_Return = new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+                promise_Loading.catch(reason => reject(reason));
+                promise_Loading.then( result_Holder => { try {
+
+                    resolve({ featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: result_Holder });
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+            return {
+                data: undefined,
+                promise: promise_Return
+            }
+        }
+
+        ///////////
+
+        // YES HAVE parameter 'optional__feature_detection_persistent_feature_entry_id'
+
+        /////////
+
+        {
+            { //  Return Holder if already loaded
+
+                const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+                if ( featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId ) {
+
+                    const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId.get( optional__feature_detection_persistent_feature_entry_id );
+                    if ( featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder ) {
+
+                        //  Have loaded data so just return it
+
+                        const data: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
+                            featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
+                        }
+
+                        return {  //  EARLY RETURN
+                            data,
+                            promise: undefined
+                        };
+                    }
+                }
+            }
+            {   //  Next use "All" loaded if available
+
+                const return_Holder = this._create_HOLDER_from_ALL_ForMappingId_For_optional__feature_detection_persistent_feature_entry_id({ optional__feature_detection_persistent_feature_entry_id, feature_detection_root__project_scnfl_mapping_tbl__id })
+                if ( return_Holder ) {
+
+                    //  Have holder now created for persistent id so return it
+
+                    return {                   //  EARLY RETURN
+                        promise: undefined,
+                        data: { featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: return_Holder }
+                    }
+                }
+            }
+        }
+        {  //  Get existing Promise, if exists
+
+            const promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId =
+                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+            if ( promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId ) {
+
+                const promise = promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId.get( optional__feature_detection_persistent_feature_entry_id );
+                if ( promise ) {
+
+                    return {  //  EARLY RETURN
+                        data: undefined, promise: new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
+
+                            promise.catch(reason => reject(reason))
+                            promise.then(return_Holder => { try {
+
+                                resolve({ featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: return_Holder });
+
+                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    };
+                }
+            }
+        }
+
+        const promise_Loading = this._load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id });
+
+        { //  Store Promise for feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
+
+            let promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId =
+                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+            if ( ! promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId ) {
+                promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId = new Map()
+                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId.set(
+                    feature_detection_root__project_scnfl_mapping_tbl__id, promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId )
+            }
+
+            promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId.set( optional__feature_detection_persistent_feature_entry_id, promise_Loading );
+        }
+
+        promise_Loading.catch( reason => {
+            {  //  Remove Stored promise
+
+                const promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId =
+                    this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+                if ( promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId ) {
+
+                    promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId.delete( optional__feature_detection_persistent_feature_entry_id );
+                }
+            }
+        });
+        promise_Loading.then( return_Holder => { try {
+
+            {  //  Remove Stored promise
+
+                const promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId =
+                    this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+                if ( promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId ) {
+
+                    promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Array__Map_PersistentId.delete( optional__feature_detection_persistent_feature_entry_id );
+                }
+            }
+
+            {  //  Save Holder
+
+                let featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+                if ( ! featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId ) {
+                    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId = new Map()
+                    this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId )
                 }
 
-                return {  //  EARLY RETURN
-                    data,
-                    promise: undefined
-                };
+                featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId.set( optional__feature_detection_persistent_feature_entry_id, return_Holder )
             }
-        }
-        {
-            const promise = this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
-            if ( promise ) {
 
-                return {  //  EARLY RETURN
-                    promise, data: undefined
-                };
-            }
-        }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
-        const promise_Loading = this._load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data({ feature_detection_root__project_scnfl_mapping_tbl__id });
+        this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress__ALL_For_MappingId__Map_Key_MappingId.set( feature_detection_root__project_scnfl_mapping_tbl__id, promise_Loading )
 
         const promise_Return = new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult>((resolve, reject) => { try {
             promise_Loading.catch(reason => reject(reason));
-            promise_Loading.then(noValue => { try {
-                const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id );
-                if ( ! featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder ) {
-                    throw Error("this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.get( feature_detection_root__project_scnfl_mapping_tbl__id ); returned NOTHING inside promise_Loading.then")
-                }
-                const data : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries__get_FeatureDetection_MappingOf_PersistentToSingularFeature_EntriesHolder__FunctionResult = {
-                    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
-                }
-                resolve(data);
+            promise_Loading.then(return_Holder => { try {
+
+                resolve({ featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: return_Holder });
+
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-        this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId.set( feature_detection_root__project_scnfl_mapping_tbl__id, promise_Return );
 
         return {
             data: undefined,
@@ -199,23 +453,77 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
     }
 
     /**
+     * Create Holder for Persistent Id IF have holder for ALL For MappingId
+     *
+     * @param optional__feature_detection_persistent_feature_entry_id
+     * @param feature_detection_root__project_scnfl_mapping_tbl__id
+     * @private
+     */
+    private _create_HOLDER_from_ALL_ForMappingId_For_optional__feature_detection_persistent_feature_entry_id(
+        {
+            optional__feature_detection_persistent_feature_entry_id, feature_detection_root__project_scnfl_mapping_tbl__id
+        } : {
+            optional__feature_detection_persistent_feature_entry_id: number
+            feature_detection_root__project_scnfl_mapping_tbl__id: number
+        }
+    ) : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder {
+
+        const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId__Map_Key_MappingId.get(feature_detection_root__project_scnfl_mapping_tbl__id)
+
+        if ( ! featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId ) {
+            //  NO entry for Mapping Id for loaded ALL for Mapping Id so exit
+            return null  // EARLY RETURN
+        }
+
+        //  Create Holder for Persistent Id
+
+        const featureDetection_MappingOf_PersistentToSingularFeature_Entries__ForPersistentId: Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry> = []
+
+        for ( const entry of featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__ALL_For_MappingId.get_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries() ) {
+            if ( entry.featureDetection_PersistentFeatureEntry_Id === optional__feature_detection_persistent_feature_entry_id ) {
+                featureDetection_MappingOf_PersistentToSingularFeature_Entries__ForPersistentId.push(entry)
+            }
+        }
+
+        const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = new CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder({
+            featureDetection_MappingOf_PersistentToSingularFeature_Entries: featureDetection_MappingOf_PersistentToSingularFeature_Entries__ForPersistentId
+        })
+
+        //  Store Holder
+
+        let featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId = this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId.get( feature_detection_root__project_scnfl_mapping_tbl__id )
+
+        if ( ! featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId ) {
+            featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId = new Map()
+            this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId__Map_Key_MappingId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId )
+        }
+
+        featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder__Map__PersistentId.set( optional__feature_detection_persistent_feature_entry_id, featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder )
+
+        //  Return Holder
+
+        return featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
+    }
+
+    /**
      * Get Data For Single Project Search Id
      *
      */
     private _load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data(
         {
-            feature_detection_root__project_scnfl_mapping_tbl__id
+            feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
+            optional__feature_detection_persistent_feature_entry_id: number
         }
-    ) : Promise<void> {
+    ) : Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder> {
 
         try {
-            const promise = new Promise<void>(
+            const promise = new Promise<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder>(
                 ( resolve, reject ) => { try {
 
                     const promise_load_FeatureDetection_SingularFeature_RecordCount_MaxAllowed =
-                        this._load_FeatureDetection_Mapping_RecordCount_MaxAllowed({ feature_detection_root__project_scnfl_mapping_tbl__id })
+                        this._load_FeatureDetection_Mapping_RecordCount_MaxAllowed({ feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id })
 
                     promise_load_FeatureDetection_SingularFeature_RecordCount_MaxAllowed.catch( () => { reject() }  );
                     promise_load_FeatureDetection_SingularFeature_RecordCount_MaxAllowed.then( promiseResult => { try {
@@ -233,7 +541,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                             //  Make single call without offset or limit since then SQL not use ORDER BY improving performance
 
                             const promise = this._load_FeatureDetection_Entries_Data_GetDataForOffSetLimit({
-                                feature_detection_root__project_scnfl_mapping_tbl__id, limit_Offset: null, limit_Count: null
+                                feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id, limit_Offset: null, limit_Count: null
                             })
                             promises_GetData.push(promise)
 
@@ -242,7 +550,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                             for ( let limit_Offset = 0; limit_Offset <= promiseResult.recordCount; limit_Offset += batchSize ) {
 
                                 const promise = this._load_FeatureDetection_Entries_Data_GetDataForOffSetLimit({
-                                    feature_detection_root__project_scnfl_mapping_tbl__id, limit_Offset, limit_Count: batchSize
+                                    feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id, limit_Offset, limit_Count: batchSize
                                 })
                                 promises_GetData.push(promise)
                             }
@@ -253,21 +561,14 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                         promises_GetData_All.catch(reason => reject(reason))
                         promises_GetData_All.then(webserviceResponseData_Array => { try {
 
-                            this._process_WebserviceResponse({ webserviceResponseData_Array, feature_detection_root__project_scnfl_mapping_tbl__id });
+                            const resultHolder = this._process_WebserviceResponse({ webserviceResponseData_Array });
 
-                            resolve()
+                            resolve(resultHolder)
 
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-            promise.catch( reason => {
-                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId.delete(feature_detection_root__project_scnfl_mapping_tbl__id);
-            });
-            promise.then( valueIgnored => {
-                this._promise_Load_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries_Data_InProgress_Map_Key_FeatureDetectionRootId.delete(feature_detection_root__project_scnfl_mapping_tbl__id);
-            })
 
             return promise;
 
@@ -285,9 +586,10 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
      */
     private _load_FeatureDetection_Mapping_RecordCount_MaxAllowed(
         {
-            feature_detection_root__project_scnfl_mapping_tbl__id
+            feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number
+            optional__feature_detection_persistent_feature_entry_id: number
         }
     ) : Promise<{
         recordCount: number
@@ -301,7 +603,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
             }>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        feature_detection_root__project_scnfl_mapping_tbl__id
+                        feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
                     };
 
                     const url =  "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
@@ -344,11 +646,22 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
         }
     }
 
+    /**
+     *
+     * @param feature_detection_root__project_scnfl_mapping_tbl__id
+     * @param optional__feature_detection_persistent_feature_entry_id
+     * @param limit_Offset
+     * @param limit_Count
+     * @private
+     */
     private _load_FeatureDetection_Entries_Data_GetDataForOffSetLimit(
         {
-            feature_detection_root__project_scnfl_mapping_tbl__id, limit_Offset, limit_Count
+            feature_detection_root__project_scnfl_mapping_tbl__id,
+            optional__feature_detection_persistent_feature_entry_id,
+            limit_Offset, limit_Count
         } : {
             feature_detection_root__project_scnfl_mapping_tbl__id: number;
+            optional__feature_detection_persistent_feature_entry_id: number
             limit_Offset: number;
             limit_Count: number;
         }
@@ -358,7 +671,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
             const promise = new Promise<any>(
                 ( resolve, reject ) => { try {
                     const requestObject = {
-                        feature_detection_root__project_scnfl_mapping_tbl__id,
+                        feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id,
                         limit_Offset,
                         limit_Count
                     };
@@ -399,13 +712,12 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
      */
     private _process_WebserviceResponse(
         {
-            webserviceResponseData_Array, feature_detection_root__project_scnfl_mapping_tbl__id
+            webserviceResponseData_Array
         }: {
             webserviceResponseData_Array: Array<any>
-            feature_detection_root__project_scnfl_mapping_tbl__id: number
-        }) : void {
+        }) : CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder {
 
-        const featureDetection_MappingOf_PersistentToSingularFeature_EntriesList : Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry> = [];
+        const featureDetection_MappingOf_PersistentToSingularFeature_Entries : Array<CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entry> = [];
 
         for ( const responseData of webserviceResponseData_Array ) {
 
@@ -518,13 +830,15 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                     throw Error(msg);
                 }
 
-                featureDetection_MappingOf_PersistentToSingularFeature_EntriesList.push( entry );
+                featureDetection_MappingOf_PersistentToSingularFeature_Entries.push( entry );
             }
         }
 
-        const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = new CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder({ featureDetection_MappingOf_PersistentToSingularFeature_Entries: featureDetection_MappingOf_PersistentToSingularFeature_EntriesList });
+        const result_Holder = new CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder({
+            featureDetection_MappingOf_PersistentToSingularFeature_Entries
+        })
 
-        this._featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder_Map_Key_FeatureDetectionRootId.set( feature_detection_root__project_scnfl_mapping_tbl__id, featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder );
+        return result_Holder
     }
 
 }

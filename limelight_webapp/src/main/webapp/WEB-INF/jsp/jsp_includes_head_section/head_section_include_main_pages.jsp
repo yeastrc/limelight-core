@@ -23,5 +23,11 @@
  
  <script id="main_page_experiment_id_based_controller_path_prefix" type="text/text"><%= AA_PageControllerPaths_Constants.EXPERIMENT_ID_BASED_PAGE_CONTROLLER_START %></script>
  
+ <script id="main_page_feature_detection_id_based_controller_path_prefix" type="text/text"><%= AA_PageControllerPaths_Constants.FEATURE_DETECTION_ID_BASED_PAGE_CONTROLLER_START %></script>
+ 
+ <script id="main_page_project_scan_file_id_based_controller_path_prefix" type="text/text"><%= AA_PageControllerPaths_Constants.PROJECT_SCAN_FILE_ID_BASED_PAGE_CONTROLLER_START %></script>
+ 
  <script id="main_page_lorikeet_page_controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER %></script>
+	
+<script id="controller_path_scan_file_browser" type="text/text"><%= AA_PageControllerPaths_Constants.SCAN_FILE_BROWSER_PAGE_CONTROLLER %></script>
 	

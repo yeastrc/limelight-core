@@ -1,6 +1,17 @@
 package org.yeastrc.limelight.limelight_webapp.dao;
 
+import java.sql.SQLException;
+
+import org.yeastrc.limelight.limelight_shared.dto.FeatureDetectionRoot_ProjectScanFile_Mapping_DTO;
+
 public interface FeatureDetectionRoot_ProjectScanFile_Mapping_DAO_IF {
+	
+	/**
+	 * @param id
+	 * @return
+	 * @throws SQLException
+	 */
+	FeatureDetectionRoot_ProjectScanFile_Mapping_DTO getForId( int id ) throws SQLException;
 
 	//  Spring DB Transactions
 	/**

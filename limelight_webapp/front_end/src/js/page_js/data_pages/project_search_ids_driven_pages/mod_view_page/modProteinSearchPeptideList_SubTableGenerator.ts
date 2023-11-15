@@ -355,16 +355,6 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
             }
 
-            const subTableData = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter({
-                dataPageStateManager: dataPageStateManager_DataFrom_Server,
-                projectSearchId: projectSearchId,
-                psmIds_Include: proteinData.psmIds,
-                reportedPeptideId: undefined,
-                searchSubGroupId: undefined,
-                searchDataLookupParamsRoot: modViewDataManager.searchDataLookupParameters_Root,
-                openModPositionOverride: proteinData.openModPositionOverride
-            });
-
             const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
                 get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().get_commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root().
                 get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
@@ -374,6 +364,17 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 console.warn(msg)
                 throw Error(msg)
             }
+
+            const subTableData = new PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter({
+                dataPageStateManager: dataPageStateManager_DataFrom_Server,
+                projectSearchId: projectSearchId,
+                psmIds_Include: proteinData.psmIds,
+                reportedPeptideId: undefined,
+                searchSubGroupId: undefined,
+                searchDataLookupParamsRoot: modViewDataManager.searchDataLookupParameters_Root,
+                openModPositionOverride: proteinData.openModPositionOverride,
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+            });
 
             const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params = {
                 commonData_LoadedFromServer_PerSearch_For_ProjectSearchId

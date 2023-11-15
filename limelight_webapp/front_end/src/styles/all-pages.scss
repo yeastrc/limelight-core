@@ -77,6 +77,10 @@ a.no-underline {
 
 }
 
+.fake-link-disabled {
+  color: $font-color-light-gray; // 'fade out' the text
+}
+
 // used to create a fake link without an underline (instead of using .fake-link)
 .fake-link-no-underline {
   color: $link-color-unvisited;

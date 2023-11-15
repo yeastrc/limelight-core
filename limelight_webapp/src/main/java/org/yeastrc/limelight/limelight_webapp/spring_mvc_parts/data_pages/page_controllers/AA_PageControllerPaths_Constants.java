@@ -153,17 +153,59 @@ public class AA_PageControllerPaths_Constants {
 	 * QC View - QC View - 1 or multiple project search ids
 	 */
 	public static final String QC_VIEW_PAGE_CONTROLLER = "d/pg/psb/qc-view/";
+
+
+	///////  Feature Detection Pages
+
+	/**
+	 * All paths for Feature Detection Id based pages will start with this string
+	 */
+	public static final String FEATURE_DETECTION_ID_BASED_PAGE_CONTROLLER_START = "d/pg/ptfd/";
+	
+	/**
+	 * Feature Detection - Feature Detection View - Feature Detection to Project Scan File Mapping Id - feature_detection_root__project_scnfl_mapping_tbl.id
+	 */
+	public static final String FEATURE_DETECTION_VIEW_PAGE_CONTROLLER = "d/pg/ptfd/feat-detect/";
+	
+	public static final String FEATURE_DETECTION_VIEW_MAIN_CODE = "c/";
+	
+
+
+	///////////////
+	
+	//  Feature Detection Id "ONLY" based pages paths after each page type (ie: '/ptfd/feat-detect/').
+
+	/**
+	 * identifies the Feature Detection Id
+	 */
+	public static final String PATH_PARAMETER_FEATURE_DETECTION_ID = "c/";
+	
+	/**
+	 * Feature Detection id parameter data, next after PATH_PARAMETER_FEATURE_DETECTION_ID
+	 */
+	public static final String PATH_PARAMETER_FEATURE_DETECTION_ID__DATA = "featureDetectionIdData";
+
+	/**
+	 * Feature Detection id parameter data.  Spring MVC format for path parameter
+	 */
+	public static final String PATH_PARAMETER_FEATURE_DETECTION_ID__DATA__PATH_ADDITION =
+			"{" + PATH_PARAMETER_FEATURE_DETECTION_ID__DATA + "}";
+
 	
 	
 	///////  Scan File Pages
 
+	/**
+	 * All paths for Project Scan File Id based pages will start with this string
+	 */
+	public static final String PROJECT_SCAN_FILE_ID_BASED_PAGE_CONTROLLER_START = "d/pg/ptsb/";
+	
 	/**
 	 * Scan Browser - Scan File Browser View - 1 project id and 1 Scan File id
 	 */
 	public static final String SCAN_FILE_BROWSER_PAGE_CONTROLLER = "d/pg/ptsb/scan-browser/";
 	
 	public static final String SCAN_FILE_BROWSER_MAIN_CODE = "c/";
-	
 	
 
 	///////////////

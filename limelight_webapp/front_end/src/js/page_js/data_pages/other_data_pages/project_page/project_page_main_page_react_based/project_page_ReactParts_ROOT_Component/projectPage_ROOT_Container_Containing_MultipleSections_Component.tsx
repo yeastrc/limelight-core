@@ -15,8 +15,8 @@ import ReactDOM from "react-dom";
 
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
-    getSearchesSearchTagsAndFolders_SingleProject
-} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+    getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds
+} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
@@ -29,6 +29,7 @@ import { ProjectPage_SavedViewsSection_Root_Component } from "page_js/data_pages
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 import { ProjectPage_UploadData_MainPage_Main_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
 import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
+import { ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__feature_detection_runs_view_section/all_users_incl_public_user/projectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_Root_Component";
 
 export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params {
     projectIdentifierFromURL: string
@@ -327,7 +328,7 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
         this._searchesSearchTagsFolders_Result_Root_Promise = new Promise<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root>((resolve, reject) => { try {
 
-            const promise = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier: this.props.projectIdentifier })
+            const promise = getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: this.props.projectIdentifier })
             promise.catch(reason => {
 
                 this._searchesSearchTagsFolders_Result_Root_Promise = null
@@ -424,6 +425,18 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                     update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis}
+                />
+
+                <ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
+                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                    projectIdentifier={ this.props.projectIdentifier }
+                    projectIsLocked={ this.props.projectIsLocked }
+                    get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
+                    projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
+                    dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
                 />
 
                 <ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component

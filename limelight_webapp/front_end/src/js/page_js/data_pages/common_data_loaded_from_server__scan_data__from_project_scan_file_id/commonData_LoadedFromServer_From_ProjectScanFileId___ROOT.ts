@@ -7,6 +7,9 @@ import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_D
 import { CommonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_RetentionTimeRange__MS_1_ScanNumbers";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
+import { CommonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ProjectSearchIds";
+import { CommonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ProjectScanFilenames";
+import { CommonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanFileCode_FirstSix";
 
 /**
  * For Scan Data loaded using ProjectScanFileId
@@ -15,6 +18,12 @@ import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectSc
  *
  */
 export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT {
+
+    private _commonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass: CommonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass
+
+    private _commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass: CommonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass
+
+    private _commonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass: CommonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass
 
     private _commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass: CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass
 
@@ -30,6 +39,15 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT {
      * @param searchDataLookupParameters_Root
      */
     private constructor() {
+
+        this._commonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass =
+            CommonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass.getNewInstance()
+
+        this._commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass =
+            CommonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass.getNewInstance()
+
+        this._commonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass =
+            CommonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass.getNewInstance()
 
         this._commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass =
             CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass.getNewInstance()
@@ -55,6 +73,18 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT {
     }
 
     ///////////////
+
+    get_commonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass() {
+        return this._commonData_LoadedFromServer__ScanFileCode_FirstSix_Data_For_Single_ProjectScanFileId_MainClass
+    }
+
+    get_commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass() {
+        return this._commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass
+    }
+
+    get_commonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass() {
+        return this._commonData_LoadedFromServer__ProjectSearchIds_Data_For_Single_ProjectScanFileId_MainClass
+    }
 
     get_commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass() {
         return this._commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass

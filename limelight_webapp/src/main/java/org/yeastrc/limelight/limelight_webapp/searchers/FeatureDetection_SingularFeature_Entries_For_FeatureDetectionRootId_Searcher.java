@@ -84,15 +84,6 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 		}
 	}
 
-	
-	private static final String QUERY_SQL = 
-			"SELECT "
-			+ " * "
-			+ " FROM "
-			+ " feature_detection_singular_feature_entry_tbl "
-			+ " WHERE feature_detection_root_id = ?"
-			+ " AND id >= ? AND id <= ? ";
-
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_IF#getForFeatureDetectionRootId(int)
 	 */
@@ -100,6 +91,65 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 	public FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_StartId_EndId(
 			
 			int featureDetectionRootId, int startId, int endId 
+			
+			) throws Exception {
+
+		return get_INTERNAL( 
+				featureDetectionRootId, 
+				null, // singularFeatureIds_List
+				startId, endId );
+		
+	}
+	
+
+	@Override
+	public FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_SingularFeatureIds_List(
+			
+			int featureDetectionRootId, List<Integer> singularFeatureIds_List 
+			
+			) throws Exception {
+		
+		if ( singularFeatureIds_List.isEmpty() ) {
+			throw new IllegalArgumentException( "( singularFeatureIds_List.isEmpty() )" );
+		}
+
+		return get_INTERNAL( 
+				featureDetectionRootId, 
+				singularFeatureIds_List,
+				0, // startId, 
+				0 // endId 
+				);
+	}
+	
+	private static final String QUERY_SQL_MAIN = 
+			"SELECT "
+			+ " * "
+			+ " FROM "
+			+ " feature_detection_singular_feature_entry_tbl "
+			+ " WHERE feature_detection_root_id = ?";
+
+	private static final String QUERY_SQL_ID_LIST_START = 
+			" AND id IN ( ";
+	
+
+	private static final String QUERY_SQL_RANGE = 
+			" AND id >= ? AND id <= ? ";
+	
+
+	
+	//  INTERNAL Method
+	
+	/**
+	 * @param featureDetectionRootId
+	 * @param singularFeatureIds_List
+	 * @param startId
+	 * @param endId
+	 * @return
+	 * @throws Exception
+	 */
+	private FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  get_INTERNAL(
+			
+			int featureDetectionRootId, List<Integer> singularFeatureIds_List, int startId, int endId 
 			
 			) throws Exception {
 
@@ -118,7 +168,24 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 		result.analysis_window_end_m_z_List = new ArrayList<>(  potentialRecordCount );
 		result.correlation_score_List = new ArrayList<>(  potentialRecordCount );
 				
-		final String querySQL = QUERY_SQL;
+		String querySQL = QUERY_SQL_MAIN;
+		
+		if ( singularFeatureIds_List != null ) {
+			
+			StringBuilder sqlSB = new StringBuilder( 10000 );
+			for ( int counter = 1; counter <= singularFeatureIds_List.size(); counter++ ) {
+				if ( counter > 1 ) {
+					sqlSB.append( "," );
+				}
+				sqlSB.append( "?" );
+			}
+			
+			querySQL += QUERY_SQL_ID_LIST_START + sqlSB.toString() + " ) ";
+			
+		} else {
+			
+			querySQL += QUERY_SQL_RANGE;
+		}
 				
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
@@ -127,10 +194,21 @@ public class FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId
 			
 			counter++;
 			preparedStatement.setInt( counter, featureDetectionRootId );
-			counter++;
-			preparedStatement.setInt( counter, startId );
-			counter++;
-			preparedStatement.setInt( counter, endId );
+			
+			if ( singularFeatureIds_List != null ) {
+				
+				for ( Integer singularFeatureId : singularFeatureIds_List ) {
+
+					counter++;
+					preparedStatement.setInt( counter, singularFeatureId );
+				}
+				
+			} else {
+				counter++;
+				preparedStatement.setInt( counter, startId );
+				counter++;
+				preparedStatement.setInt( counter, endId );
+			}
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while ( rs.next() ) {

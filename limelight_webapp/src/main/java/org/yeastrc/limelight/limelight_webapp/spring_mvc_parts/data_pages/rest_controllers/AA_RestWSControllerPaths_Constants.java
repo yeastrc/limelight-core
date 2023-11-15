@@ -251,6 +251,15 @@ public class AA_RestWSControllerPaths_Constants {
 
 	///////////////////////
 	
+
+	public static final String PROJECT_FEATURE_DETECTION_RUNS_IN_PROJECT_LIST_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/feature-detection-runs-in-project-list";
+	
+
+	//  Feature Detection Run Details for Single Feature Detection Run - Data associated with this Project
+	
+	public static final String FEATURE_DETECTION_RUN_DETAILS_FOR_PROJECT_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/feature-detection-run-details-for-project";
+
+	
 	//   Feature Detection (Scan File) - Display Label - Description - Change
 
 	public static final String FEATURE_DETECTION_DISPLAY_LABEL_DESCRIPTION_CHANGE_REST_WEBSERVICE_CONTROLLER =
@@ -295,6 +304,25 @@ public class AA_RestWSControllerPaths_Constants {
 	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project scan file id
 	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__PROJECT_SCAN_FILE_ID =
 			"d/rws/for-page/ptsb/spectral-storage-data--no-peaks--project-scan-file-id";
+	
+	
+	//  Data other than Scan Data for Single Project Scan File Id
+
+	//  Scan File Details for Single Scan File - Data associated with this Project
+	
+	public static final String PROJECT_SEARCH_IDS_FOR_PROJECT_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-search-ids-for-project-scan-file-id";
+
+	//  Scan Filenames for Single Scan File - Data associated with this Project
+	
+	public static final String PROJECT_SCAN_FILENAMES_FOR_PROJECT_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-scan-filenames-for-project-scan-file-id";
+
+
+	//  ScanFileCode First Six (Spectrum Storage Code) for Single Scan File - Data associated with this Project
+	
+	public static final String PROJECT_SCAN_FILE_CODE_FIRST_SIX_FOR_PROJECT_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-scan-file-code-first-six-for-project-scan-file-id";
+
+	
+	
 
 	///////////////////////
 	
@@ -322,9 +350,9 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	///////////////////////
 	
-	//   Searches for Project
+	//   Searches for Project OR Project Search Ids
 
-	public static final String PROJECT_VIEW_PAGE_SEARCH_LIST_V2_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-search-list-v2";  //  added "-v2" as part of 4.0 release
+	public static final String PROJECT_VIEW_PAGE_OR_FROM_PROJECT_SEARCH_IDS__SEARCH_LIST__REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-or-project-search-ids-search-list";
 	
 	//        Project_HasAtLeastOneActive_ProjectSearchId_RestWebserviceController
 	public static final String PROJECT_HAS_AT_LEAST_ONE_ACTIVE_SEARCH_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-has-at-least-one-active-search";
@@ -784,6 +812,12 @@ public class AA_RestWSControllerPaths_Constants {
 	//   FROM:  Single Project Scan File Id
 
 
+	//  Scan with Peaks Max Return Count: Access Control: Project Scan File Id
+	public static final String SCAN_WITH_PEAKS_MAX_RETURN_COUNT_ACCESS_CONTROL_PROJECT_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-scan-file-id";
+	
+	
+
 	//  Get Summary Data for Single Scan File from Spectra Storage Data (Spectr) but NO Peaks for a search scan file id and project search id
 	public static final String SCAN_FILE_SUMMARY_DATA_FROM_SPECTRAL_STORAGE_DATA__SEARCH_SCAN_FILE_ID_SINGLE_PROJECT_SEARCH_ID =
 			"d/rws/for-page/psfb/scan-file-summary-data-from-spectral-storage-data--project-scan-file-id";
@@ -810,6 +844,9 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	//   FROM:  Single Feature Detection to Project Scan File Mapping Id
 	
+	public static final String FEATURE_DETECTION__NAME_FROM_FEATURE_DETECTION_ROOT__PROJECT_SCNFL_MAPPING_TBL__ID =
+			"d/rws/for-page/fdb/feature-detection--name-from-feature-detection-root--project-scnfl-mapping-tbl--id";
+			
 	public static final String FEATURE_DETECTION__PROJECT_SCAN_FILE_ID_FROM_FEATURE_DETECTION_ROOT__PROJECT_SCNFL_MAPPING_TBL__ID =
 			"d/rws/for-page/fdb/feature-detection--project-scan-file-id-from-feature-detection-root--project-scnfl-mapping-tbl--id";
 			
@@ -822,6 +859,9 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MIN_MAX_ID_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =
 			"d/rws/for-page/fdb/feature-detection-singular-feature-entries-min-max-id--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
 
+	public static final String FEATURE_DETECTION_SINGULAR_FEATURE_ENTRIES_MAX_ALLOWED_REQUESTED_SINGULAR_IDS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER =
+			"d/rws/for-page/fdb/feature-detection-singular-feature-entries-max-allowed-requested-singular-ids--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id";
+	
 	//  Scan File Feature Detection Persistent Feature Entries for Project Search Id and FeatureDetection Root Id
 	
 	public static final String FEATURE_DETECTION_PERSISTENT_FEATURE_ENTRIES_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 =

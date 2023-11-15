@@ -1,7 +1,7 @@
 /**
- * scanFileBrowserPage_CentralStateManagerObjectClass.ts
+ * featureDetection_View_CentralStateManagerObjectClass.ts
  *
- * Holds the state of the Scan File Browser Page.  Registers with CentralPageStateManager
+ * Holds the state of the Feature Detection View Page.  Registers with CentralPageStateManager
  *
  * For use with:  centralPageStateManager.js
  *
@@ -15,13 +15,13 @@
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
 import {
-    SCAN_FILE_BROWSER_PAGE__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY
+    FEATURE_DETECTION_VIEW_PAGE__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY
 } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager_Keys';
 
 
 
 
-const _COMPONENT_UNIQUE_ID = SCAN_FILE_BROWSER_PAGE__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY; // Key for use in Central State Manager
+const _COMPONENT_UNIQUE_ID = FEATURE_DETECTION_VIEW_PAGE__CENTRAL_STATE_MANAGER_OBJECT_CLASS__CENTRAL_STATE_MANAGER_KEY; // Key for use in Central State Manager
 
 ////
 
@@ -40,7 +40,7 @@ const _YYYY = 'c';
 /**
  *
  */
-export class ScanFileBrowserPage_CentralStateManagerObjectClass {
+export class FeatureDetection_View_CentralStateManagerObjectClass {
 
     private _value : {
         xxxx?: any //

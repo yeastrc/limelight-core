@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 
 /**
- * Get the feature_detection_map_persistnt_to_snglr_feature_tbl Record Count For feature_detection_root_id 
+ * Get the feature_detection_map_persistnt_to_snglr_feature_tbl Record Count For feature_detection_root_id and optional feature_detection_persistent_feature_entry_id
  *
  */
 @Component
@@ -48,11 +48,17 @@ public class FeatureDetection_Map_PersistentToSingular_Feature_Entries_RecordCou
 	 * @throws Exception
 	 */
 	@Override
-	public int  get_RecordCount_ForFeatureDetectionRootId( int featureDetectionRootId ) throws Exception {
+	public int  get_RecordCount_ForFeatureDetectionRootId_And_optional__feature_detection_persistent_feature_entry_id( 
+			
+			int featureDetectionRootId, Integer optional__feature_detection_persistent_feature_entry_id ) throws Exception {
 
 		int result = 0;
 		
-		final String querySQL = QUERY_SQL;
+		String querySQL = QUERY_SQL;
+		
+		if ( optional__feature_detection_persistent_feature_entry_id != null ) {
+			querySQL += " AND feature_detection_persistent_feature_entry_id = ? ";
+		}
 				
 		try ( Connection connection = super.getDBConnection();
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
@@ -61,6 +67,12 @@ public class FeatureDetection_Map_PersistentToSingular_Feature_Entries_RecordCou
 			
 			counter++;
 			preparedStatement.setInt( counter, featureDetectionRootId );
+			
+			if ( optional__feature_detection_persistent_feature_entry_id != null ) {
+
+				counter++;
+				preparedStatement.setInt( counter, optional__feature_detection_persistent_feature_entry_id );
+			}
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				if ( rs.next() ) {

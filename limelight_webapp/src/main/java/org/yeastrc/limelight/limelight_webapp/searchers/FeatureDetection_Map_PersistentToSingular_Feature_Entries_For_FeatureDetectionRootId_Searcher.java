@@ -66,18 +66,21 @@ public class FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_Featu
 			+ " feature_detection_map_persistnt_to_snglr_feature_tbl "
 			+ " WHERE feature_detection_root_id = ?";
 
-	private static final String QUERY_SQL_WITH_LIMIT_OFFSET_LIMIT_COUNT = 
-			QUERY_SQL
-			+ " order by feature_detection_persistent_feature_entry_id, feature_detection_singular_feature_entry_id"  // ORDER BY on primary index
+	private static final String QUERY_SQL_ADDITION__optional__feature_detection_persistent_feature_entry_id = 
+			" AND feature_detection_persistent_feature_entry_id = ? ";
+	
+	private static final String QUERY_SQL_ADDITION__LIMIT_OFFSET_LIMIT_COUNT = 
+			" order by feature_detection_persistent_feature_entry_id, feature_detection_singular_feature_entry_id"  // ORDER BY on primary index
 			+ " LIMIT ?, ?";  // LIMIT  offset, count     offset is zero based like an array index
 	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_IF#getForFeatureDetectionRootId(int)
 	 */
 	@Override
-	public FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_Limit_Offset_Limit_Count( 
+	public FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_Limit_Offset_Limit_Count__Optional_feature_detection_persistent_feature_entry_id( 
 			
 			int featureDetectionRootId,
+			Integer optional__feature_detection_persistent_feature_entry_id,
 			Integer limit_Offset, Integer limit_Count
 			
 			) throws Exception {
@@ -103,8 +106,12 @@ public class FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_Featu
 		
 		String querySQL = QUERY_SQL;
 		
+		if ( optional__feature_detection_persistent_feature_entry_id != null ) {
+			querySQL += QUERY_SQL_ADDITION__optional__feature_detection_persistent_feature_entry_id;
+		}
+		
 		if ( limit_Offset != null ) {
-			querySQL = QUERY_SQL_WITH_LIMIT_OFFSET_LIMIT_COUNT;
+			querySQL += QUERY_SQL_ADDITION__LIMIT_OFFSET_LIMIT_COUNT;
 		}
 				
 		try ( Connection connection = super.getDBConnection();
@@ -114,6 +121,12 @@ public class FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_Featu
 			
 			counter++;
 			preparedStatement.setInt( counter, featureDetectionRootId );
+
+			if ( optional__feature_detection_persistent_feature_entry_id != null ) {
+
+				counter++;
+				preparedStatement.setInt( counter, optional__feature_detection_persistent_feature_entry_id );
+			}
 			
 			if ( limit_Offset != null ) {
 

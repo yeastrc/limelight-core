@@ -292,6 +292,30 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
     /**
      * @returns null if no promise needed
      */
+    get_PsmData_Only_PsmTblData() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch> {
+
+        const promise = this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded.singleSearch_PsmTblData_LoadIfNeeded({
+            retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
+        });
+
+        if ( ! promise ) {
+            //  No wait so immediately return resolved promise
+            return Promise.resolve( this._data_Holder_SingleSearch );
+        }
+
+        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => {
+            promise.catch( reason => {
+                reject( reason );
+            });
+            promise.then( value => {
+                resolve( this._data_Holder_SingleSearch );
+            });
+        })
+    }
+
+    /**
+     * @returns null if no promise needed
+     */
     get_PsmStatistics_PerScore_Statistics_PsmTblData() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch> {
 
         const promise = this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded.singleSearch_PsmTblData_LoadIfNeeded({

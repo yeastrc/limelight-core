@@ -201,18 +201,34 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			log.warn( "feature_detection_root__project_scnfl_mapping_tbl__id is not assigned" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
-    		if ( webserviceRequest.startId == null ) {
-    			log.warn( "startId is not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
-    		if ( webserviceRequest.endId == null ) {
-    			log.warn( "endId is not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
     		
-    		if ( ( webserviceRequest.endId.intValue() - webserviceRequest.startId.intValue() + 1 ) > MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController ) {
-    			log.warn( "Too many entries requested.  ( endId - startId + 1 ) > " + MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		if ( webserviceRequest.optional__SingularFeatureIds_List != null ) {
+    			
+    			if ( webserviceRequest.optional__SingularFeatureIds_List.isEmpty() ) {
+        			log.warn( "optional__SingularFeatureIds_List is empty" );
+        			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+        		}
+
+    			if ( ( webserviceRequest.optional__SingularFeatureIds_List.size() ) > MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController ) {
+    				log.warn( "Too many entries requested.  ( optional__SingularFeatureIds_List.size() ) > " + MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    			
+    		} else {
+    		
+    			if ( webserviceRequest.startId == null ) {
+    				log.warn( "startId is not assigned" );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+    			if ( webserviceRequest.endId == null ) {
+    				log.warn( "endId is not assigned" );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
+
+    			if ( ( webserviceRequest.endId.intValue() - webserviceRequest.startId.intValue() + 1 ) > MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController ) {
+    				log.warn( "Too many entries requested.  ( endId - startId + 1 ) > " + MAX_START_END_ID_DIFFERENCE_INCLUSIVE__FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Single_ProjSearchID_RestWebserviceController );
+    				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    			}
     		}
 
 
@@ -282,13 +298,24 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     			}
     		}
     		
+    		FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result = null;
     		
-    		FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
+    		if ( webserviceRequest.optional__SingularFeatureIds_List != null ) {
+    			
+    			featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
+    					featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher
+    					.getForFeatureDetectionRootId_SingularFeatureIds_List(
+    							feature_detection_root_id, 
+    							webserviceRequest.optional__SingularFeatureIds_List );
+    			
+    		} else {
+    			featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
     				featureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher
     				.getForFeatureDetectionRootId_StartId_EndId(
     						feature_detection_root_id, 
     						webserviceRequest.startId, 
     						webserviceRequest.endId );
+    		}
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
     		
@@ -346,6 +373,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     public static class WebserviceRequest {
     	
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
+    	private List<Integer> optional__SingularFeatureIds_List;
     	private Integer startId;
     	private Integer endId;
 
@@ -359,6 +387,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		public void setEndId(Integer endId) {
 			this.endId = endId;
 		}
+		public void setOptional__SingularFeatureIds_List(List<Integer> optional__SingularFeatureIds_List) {
+			this.optional__SingularFeatureIds_List = optional__SingularFeatureIds_List;
+		}
+		
     }
     
     public static class WebserviceResult {

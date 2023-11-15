@@ -19,15 +19,11 @@ import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_
 import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
     QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
-    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
+    QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params,
+    QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
-import {CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries";
-import {
-    DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root,
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber
-} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 import {
     open_FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent_OverlayContainer,
     QcViewPage_SingleSearch__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot_OverlayContainer__TransformScoreChoice
@@ -37,10 +33,14 @@ import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries
 import { CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_MappingOf_PersistentToSingularFeature_Entries";
 import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData";
 import {
-    QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback,
     QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import { QcViewPage_Common__FeatureDetection__DataToPlot_Parameters } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__feature_detection/js/qcViewPage_Common__FeatureDetection__DataToPlot_Parameters";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
 
 
 const chartTitle = "Feature Count vs/ Total Ion Current";
@@ -48,26 +48,6 @@ const chartTitle = "Feature Count vs/ Total Ion Current";
 const _NUMBER_SIGNIFICANT_DIGITS_EXPONENTIAL_DISPLAY = 4;
 
 const _CHART_BIN_COUNT = 80;
-
-/**
- *
- */
-export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot__DataToPlot {
-
-    featureDetection_Root_Entry_Selection: CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry
-
-    projectSearchId: number
-    psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-    spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
-
-    featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
-    featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
-    featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
-
-    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback__SectionLevel: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback
-    qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
-}
-
 
 /**
  *
@@ -91,7 +71,7 @@ export interface QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTota
     //  Update 'shouldComponentUpdate' and 'componentDidUpdate' if change
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
-    dataToPlot : QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot__DataToPlot
+    dataToPlot : QcViewPage_Common__FeatureDetection__DataToPlot_Parameters
 
     transform_Score: QcViewPage_SingleSearch__FeatureDetection_FeatureCount_VS_FeatureTotalIonCurrent__Singular_Features__StatisticsPlot_OverlayContainer__TransformScoreChoice
 
@@ -177,11 +157,15 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
         this.plot_Ref = React.createRef();
         this.image_Ref = React.createRef();
 
-        //  Initialize to current passed value
-        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
-            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+        if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
 
-        props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register({ callbackItem: this })
+            //  Initialize to current passed value
+
+            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback =
+                props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+            props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.register( { callbackItem: this } )
+        }
 
         /////
 
@@ -223,8 +207,11 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
     componentWillUnmount() {
 
         try {
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-            qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+            if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback.un_register({ callbackItem: this })
+            }
         } catch (e) {
             //  Eat Exception
         }
@@ -359,40 +346,45 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                     //  Eat Exception
                 }
 
-                if (
-                    (
-                        ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+                    if (
+                        (
+                            ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                            )
                         )
-                    )
-                    || (
-                        ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
-                            this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                        || (
+                            ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
+                                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                            )
                         )
-                    )
-                ) {
-                    //  Skip these params since they are not the "Latest"
-                    return; // EARLY RETURN
+                    ) {
+                        //  Skip these params since they are not the "Latest"
+                        return; // EARLY RETURN
+                    }
                 }
 
                 this.setState({ showUpdatingMessage: true });
 
                 window.setTimeout(() => {
                     try {
-                        if (
-                            (
-                                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+
+                            if (
+                                (
+                                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                                    )
                                 )
-                            )
-                            || (
-                                ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
-                                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                                || (
+                                    ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
+                                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                                    )
                                 )
-                            )
-                        ) {
-                            //  Skip these params since they are not the "Latest"
-                            return; // EARLY RETURN
+                            ) {
+                                //  Skip these params since they are not the "Latest"
+                                return; // EARLY RETURN
+                            }
                         }
 
                         this._populateChart();
@@ -457,24 +449,28 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             return; // EARLY RETURN
         }
 
-        if (
-            (
-                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+            if (
+                (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )
                 )
-            )
-            || (
-                ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                || (
+                    ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                    )
                 )
-            )
-        ) {
-            //  Skip these params since they are not the "Latest"
-            return; // EARLY RETURN
+            ) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
         }
 
         const psmTblData = this.props.dataToPlot.psmTblData
-        const spectralStorage_NO_Peaks_Data = this.props.dataToPlot.spectralStorage_NO_Peaks_Data
+        const searchScanFileId_EntriesFor_projectScanFileId_Set = this.props.dataToPlot.searchScanFileId_EntriesFor_projectScanFileId_Set
+
+        const commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = this.props.dataToPlot.commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
 
         const featureDetection_SingularFeature_Entries_Holder = this.props.dataToPlot.featureDetection_SingularFeature_Entries_Holder
         const featureDetection_PersistentFeature_Entries_Holder = this.props.dataToPlot.featureDetection_PersistentFeature_Entries_Holder
@@ -482,7 +478,8 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
 
         this._populateChart__Actual({
             psmTblData,
-            spectralStorage_NO_Peaks_Data,
+            searchScanFileId_EntriesFor_projectScanFileId_Set,
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
             featureDetection_PersistentFeature_Entries_Holder,
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
@@ -495,54 +492,49 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
     private _populateChart__Actual(
         {
             psmTblData,
-            spectralStorage_NO_Peaks_Data,
+            searchScanFileId_EntriesFor_projectScanFileId_Set,
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
             featureDetection_PersistentFeature_Entries_Holder,
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
         } : {
             psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-            spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
+            searchScanFileId_EntriesFor_projectScanFileId_Set: Set<number>
+            commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
             featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
             featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder: CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentToSingularFeature_Entries_Holder
         }
     ) : void {
 
-        if (
-            (
-                ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
+            if (
+                (
+                    ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
+                    )
                 )
-            )
-            || (
-                ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
-                    this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                || (
+                    ! this.props.dataToPlot.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__SectionLevel.equals(
+                        this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback__SectionLevel
+                    )
                 )
-            )
-        ) {
-            //  Skip these params since they are not the "Latest"
-            return; // EARLY RETURN
+            ) {
+                //  Skip these params since they are not the "Latest"
+                return; // EARLY RETURN
+            }
         }
 
         {  //  First confirm all scans have total ion current
 
-            const spectralStorage_NO_Peaks_DataFor_ProjectScanFileId =
-                spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_ProjectScanFileId( this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id )
-
-            if ( ! spectralStorage_NO_Peaks_DataFor_ProjectScanFileId ) {
-                const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_ProjectScanFileId(...) returned NOTHING for this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id: " + this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
-            for (const dataForSingleScanNumberEntry of spectralStorage_NO_Peaks_DataFor_ProjectScanFileId.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
+            for (const dataForSingleScanNumberEntry of commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray) {
 
                 let scans_NotContain_TotalIonCurrent = false;
 
                 if ( dataForSingleScanNumberEntry.totalIonCurrent_ForScan === undefined || dataForSingleScanNumberEntry.totalIonCurrent_ForScan === null ) {
 
                     console.warn( "No totalIonCurrent_ForScan for scanNumber: " + dataForSingleScanNumberEntry.scanNumber +
-                        ", project_scan_file_id: " + this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id );
+                        ", project_scan_file_id: " + this.props.dataToPlot.projectScanFileId );
 
                     scans_NotContain_TotalIonCurrent = true;
                 }
@@ -560,14 +552,6 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             }
         }
 
-        const projectSearchId = this.props.dataToPlot.projectSearchId;
-
-        //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
-
-        const peptideDistinct_Array =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
         ////////////
 
         //  Only Put Chart in DOM in Overlay so Only remove existing chart in Overlay.
@@ -583,32 +567,12 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             }
         }
 
-        const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
-            qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
-            });
-
-        const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
-
-        const searchScanFileId_EntriesFor_projectScanFileId_Set = new Set<number>()
-
-        const scans_For_Selected_searchScanFileId_Map_Key_ScanNumber : Map<number,  QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
+        const scans_For_Selected_searchScanFileId_Map_Key_ScanNumber : Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map();
 
         {  // Populate scans_For_Selected_searchScanFileId_Map_Key_ScanNumber
 
-            for ( const spectralStorage_NO_Peaks_DataEntry of spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataEntries_Key_ProjectScanFileId_IterableIterator() ) {
-
-                if (spectralStorage_NO_Peaks_DataEntry.projectScanFileId !== this.props.dataToPlot.featureDetection_Root_Entry_Selection.project_scan_file_id) {
-                    //  Data NOT for this scan file so skip
-
-                    continue; // EARLY CONTINUE
-                }
-
-                searchScanFileId_EntriesFor_projectScanFileId_Set.add( spectralStorage_NO_Peaks_DataEntry.searchScanFileId )
-
-                for (const dataForSingleScanNumberEntry of spectralStorage_NO_Peaks_DataEntry.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
-                    scans_For_Selected_searchScanFileId_Map_Key_ScanNumber.set(dataForSingleScanNumberEntry.scanNumber, dataForSingleScanNumberEntry)
-                }
+            for ( const spectralStorage_NO_Peaks_DataEntry of commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
+                scans_For_Selected_searchScanFileId_Map_Key_ScanNumber.set(spectralStorage_NO_Peaks_DataEntry.scanNumber, spectralStorage_NO_Peaks_DataEntry)
             }
         }
 
@@ -774,10 +738,29 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             });
         }
 
-        {
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+            && this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result ) {
+
+            //  Plotly Trace "Features w/ PSMs"
+
             ///  Create Feature Detection Total Ion Current,  Feature Detection Entries Filtered on PSMs using MS 2 in Feature Detection entry
 
-            const ms_2_scanData_For_PSMs_Map_Key_ScanNumber: Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_SpectralStorage_NO_Peaks_DataForSingleScanNumber> = new Map();
+            const projectSearchId = this.props.dataToPlot.projectSearchId;
+
+            //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
+
+            const peptideDistinct_Array =
+                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+            const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
+                qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
+                    projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                });
+
+            const psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
+
+            const ms_2_scanData_For_PSMs_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map();
 
             for ( const psmTblData_Filtered_Entry of psmTblData_Filtered ) {
 
@@ -984,7 +967,12 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
             });
         }
 
-        {
+
+        if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+            && this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result ) {
+
+            //  Plotly Trace "Fraction IDed"
+
             ///  Create Identification Rate
 
             const chart_X: Array<number> = []
@@ -1149,7 +1137,17 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                 }
             });
 
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+            let qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+
+            if ( this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override ) {
+
+                qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override
+            } else {
+
+                qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+            }
+
+            qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
             qcPage_Plotly_RenderPlotOnPage__RenderOn_MainPage__As_PNG({
                 qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
             });
@@ -1172,7 +1170,18 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
                 }
             });
 
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+
+            let qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+
+            if ( this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override ) {
+
+                qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override
+            } else {
+
+                qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+            }
+
+            qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
             qcPage_Plotly_RenderPlotOnPage__RenderOn_Overlay__As_PlotlyPlot({
                 qcPage_Plotly_DOM_Updates___RenderPlotOnPage__RenderOn_Overlay_Params: this._qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_Overlay_Params
             });
@@ -1185,7 +1194,18 @@ export class QcViewPage_Common__FeatureDetection_FeatureCount_VS_FeatureTotalIon
     private _removeChart() : void {
         try {
             if ( this.plot_Ref.current ) {
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
+
+                let qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+
+                if ( this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override ) {
+
+                    qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.dataToPlot.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot__Override
+                } else {
+
+                    qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
+                }
+
+                qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot.
                 removeChart_InOverlay_FromDOM({ plot_Div_DOM_Element: this.plot_Ref.current });
             }
         } catch (e) {

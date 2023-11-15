@@ -25,7 +25,7 @@ import {
     DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein,
     DefaultFilter_Cutoffs_Overrides_ProjectWide_Root
 } from "page_js/data_pages/data_pages_common/defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval";
-import {getSearchesSearchTagsAndFolders_SingleProject} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+import {getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 
 /**
  *
@@ -104,7 +104,7 @@ export const set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer =
 
     return new Promise<Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result>((resolve,reject) => {
         try {
-            const promise_getSearches = getSearchesSearchTagsAndFolders_SingleProject({ projectIdentifier: projectIdentifierFromURL });
+            const promise_getSearches = getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: projectIdentifierFromURL });
 
             promise_getSearches.catch( (reason) => {
                 reject( reason )

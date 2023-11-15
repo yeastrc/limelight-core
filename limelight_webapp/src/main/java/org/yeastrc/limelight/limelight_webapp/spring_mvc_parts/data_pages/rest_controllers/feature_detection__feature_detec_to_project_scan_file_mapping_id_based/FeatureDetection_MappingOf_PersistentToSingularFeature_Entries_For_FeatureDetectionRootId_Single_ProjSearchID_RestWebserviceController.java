@@ -291,10 +291,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		
 			FeatureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher_Result featureDetection_PersistentFeature_Entries_For_FeatureDetectionRootId_Searcher_Result =
-					featureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.getForFeatureDetectionRootId_Limit_Offset_Limit_Count(
+					featureDetection_Map_PersistentToSingular_Feature_Entries_For_FeatureDetectionRootId_Searcher.getForFeatureDetectionRootId_Limit_Offset_Limit_Count__Optional_feature_detection_persistent_feature_entry_id(
 							feature_detection_root_id,
-							webserviceRequest.limit_Offset,
-							webserviceRequest.limit_Count
+							webserviceRequest.optional__feature_detection_persistent_feature_entry_id,
+							webserviceRequest.limit_Offset, webserviceRequest.limit_Count
 							);
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
@@ -344,6 +344,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     public static class WebserviceRequest {
     	
     	private Integer feature_detection_root__project_scnfl_mapping_tbl__id;
+
+    	private Integer optional__feature_detection_persistent_feature_entry_id;
+
     	private Integer limit_Offset; 
     	private Integer limit_Count;
 
@@ -356,6 +359,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		public void setLimit_Count(Integer limit_Count) {
 			this.limit_Count = limit_Count;
+		}
+		public void setOptional__feature_detection_persistent_feature_entry_id(
+				Integer optional__feature_detection_persistent_feature_entry_id) {
+			this.optional__feature_detection_persistent_feature_entry_id = optional__feature_detection_persistent_feature_entry_id;
 		}
     }
     

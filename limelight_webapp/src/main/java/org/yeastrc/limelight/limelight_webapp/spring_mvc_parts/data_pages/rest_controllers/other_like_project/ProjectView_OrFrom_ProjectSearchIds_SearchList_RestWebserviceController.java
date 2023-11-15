@@ -23,8 +23,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchIdCodeDTO;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
+import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
 import org.yeastrc.limelight.limelight_webapp.dao.ProjectSearchIdCodeDAO.LogDuplicateSQLException;
 import org.yeastrc.limelight.limelight_webapp.db_dto.FolderForProjectDTO;
@@ -71,28 +76,28 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.SearchNameReturnDefaultI
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
- * Old version copied to ProjectView_SearchList_RestWebserviceController__OLD_VERSION before updates for 4.0 release
  * 
- * uses new '-v2' controller path
- * 
- * Searches for Project Id
+ * Searches for Project Id OR Project Search Ids (from a single Project)
  * 
  * Searches, Folders, Search to folder mapping, Search Tags
  * 
- * Data is NOT cached since user can update.  v2 in controller path is since replaced existing response with different response.  
+ * Data is NOT cached since user can update.  
  *
  */
 @RestController
-public class ProjectView_SearchList_RestWebserviceController {
+public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceController {
   
-	private static final Logger log = LoggerFactory.getLogger( ProjectView_SearchList_RestWebserviceController.class );
+	private static final Logger log = LoggerFactory.getLogger( ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceController.class );
 	
 	private static final int RETRY_COUNT_MAX_ON_DUPLICATE_PROJECT_SEARCH_ID_CODE = 30;
 
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_SEARCH_LIST_V2_REST_WEBSERVICE_CONTROLLER;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROJECT_VIEW_PAGE_OR_FROM_PROJECT_SEARCH_IDS__SEARCH_LIST__REST_WEBSERVICE_CONTROLLER;
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
+
+	@Autowired
+	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
 
 	@Autowired
 	private SearchListForProjectIdSearcherIF searchListForProjectIdSearcher;
@@ -132,7 +137,7 @@ public class ProjectView_SearchList_RestWebserviceController {
     /**
 	 * 
 	 */
-	public ProjectView_SearchList_RestWebserviceController() {
+	public ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceController() {
 		super();
 //		log.warn( "constructor no params called" );
 	}
@@ -182,46 +187,112 @@ public class ProjectView_SearchList_RestWebserviceController {
     			log.warn( "No Post Body" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
+    		
+    		WebSessionAuthAccessLevel webSessionAuthAccessLevel = null; 
+			UserSession userSession = null;
+			int projectId = 0;
 
     		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
 
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
-
-    		String projectIdentifier = webserviceRequest.getProjectIdentifier();
     		
-    		if ( StringUtils.isEmpty( projectIdentifier ) ) {
-    			log.warn( "projectIdentifier is empty or not assigned" );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
+    		 List<Integer> projectSearchIds_Requested = webserviceRequest.projectSearchIds;
 
-    		int projectId = 0;
+     		String projectIdentifier_Requested = webserviceRequest.projectIdentifier;
+     		
+    		 if ( projectSearchIds_Requested != null ) {
+    			 
+    				if ( projectSearchIds_Requested.isEmpty() ) {
+    					log.warn( "projectSearchIds_Requested is NOT NULL and IS EMPTY" );
+    					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    				}
 
-    		try {
-    			projectId = Integer.parseInt( projectIdentifier );
+    				////////////////
 
-    		} catch ( RuntimeException e ) {
-    			log.warn( "Project Identifier not parsable to int: " + projectIdentifier );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    		}
+    				//  AUTH - validate access
 
-			List<Integer> projectIds = new ArrayList<>( 1 );
-			projectIds.add( projectId );
-			
-			GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
-					getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+    				//  throws an exception if access is not valid that is turned into a webservice response by Spring
 
-			WebSessionAuthAccessLevel webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+    				//  Comment out result since not use it
+    				ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result =
+    						validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.validatePublicAccessCodeReadAllowed( projectSearchIds_Requested, httpServletRequest );
 
-			if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
-					&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+    				webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getWebSessionAuthAccessLevel();
+    	
+    				userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getUserSession();
+    				List<Integer> projectIds = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds();
+
+    				if (projectIds.isEmpty() ) {
+    					String msg = "validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds(); returned empty list.";
+    					log.error(msg);
+    					throw new LimelightInternalErrorException(msg);
+    				}
+    				if (projectIds.size() > 1 ) {
+    					String msg = "validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result.getProjectIdsForProjectSearchIds(); returned > 1 entry.";
+    					log.error(msg);
+    					throw new LimelightInternalErrorException(msg);
+    				}
+
+    				projectId = projectIds.get(0);
+    				
+    				if ( StringUtils.isNotEmpty( projectIdentifier_Requested ) ) {
+    					
+    					//  Validate projectIdentifier_Requested is same project id
+
+    					int projectId_FROM__projectIdentifier_Requested = 0;
+    					
+    		    		try {
+    		    			projectId_FROM__projectIdentifier_Requested = Integer.parseInt( projectIdentifier_Requested );
+    		
+    		    		} catch ( RuntimeException e ) {
+    		    			log.warn( "Project Identifier not parsable to int: " + projectIdentifier_Requested );
+    		    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		    		}
+    		
+    					if ( projectId_FROM__projectIdentifier_Requested != projectId ) {
+    						log.warn( "Project Identifier not same project as project id for projectSearchids" );
+    		    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    					}
+    				}
+    			 
+    		 } else {
+    		 
+    			 //  NO projectSearchIds_Requested
+    			 
+    			 //  Process projectIdentifier_Requested
+	    			 
+	    		if ( StringUtils.isEmpty( projectIdentifier_Requested ) ) {
+	    			log.warn( "projectIdentifier is empty or not assigned" );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+	
+	    		try {
+	    			projectId = Integer.parseInt( projectIdentifier_Requested );
+	
+	    		} catch ( RuntimeException e ) {
+	    			log.warn( "Project Identifier not parsable to int: " + projectIdentifier_Requested );
+	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+	    		}
+	
+				List<Integer> projectIds = new ArrayList<>( 1 );
+				projectIds.add( projectId );
 				
-				//  No User session and not public project
-				throw new Limelight_WS_AuthError_Unauthorized_Exception();
-			}
+				GetWebSessionAuthAccessLevelForProjectIds_Result getWebSessionAuthAccessLevelForProjectIds_Result =
+						getWebSessionAuthAccessLevelForProjectIds.getAuthAccessLevelForProjectIds( projectIds, httpServletRequest );
+	
+				webSessionAuthAccessLevel = getWebSessionAuthAccessLevelForProjectIds_Result.getWebSessionAuthAccessLevel();
+	
+				if ( getWebSessionAuthAccessLevelForProjectIds_Result.isNoSession()
+						&& ( ! webSessionAuthAccessLevel.isPublicAccessCodeReadAllowed() )) {
+					
+					//  No User session and not public project
+					throw new Limelight_WS_AuthError_Unauthorized_Exception();
+				}
+				
+				userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
+    		 }
 			
-			UserSession userSession = getWebSessionAuthAccessLevelForProjectIds_Result.getUserSession();
-			
-			WebserviceResult webserviceResult = processRequest_CreateResult(projectId, requestingIPAddress, webSessionAuthAccessLevel, userSession);
+			WebserviceResult webserviceResult = processRequest_CreateResult( projectSearchIds_Requested,projectId, requestingIPAddress, webSessionAuthAccessLevel, userSession);
 
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
@@ -248,6 +319,7 @@ public class ProjectView_SearchList_RestWebserviceController {
 	 * @throws Exception 
 	 */
 	private WebserviceResult processRequest_CreateResult(
+			List<Integer> projectSearchIds_Requested,
 			int projectId,
 			String requestingIPAddress,
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel, 
@@ -260,34 +332,101 @@ public class ProjectView_SearchList_RestWebserviceController {
 			webserviceResult.userIsProjectOwner = true;
 		}
 		
+		Set<Integer> projectSearchIds_Requested_Set = null;
+
+		if ( projectSearchIds_Requested != null ) {
+			
+			projectSearchIds_Requested_Set = new HashSet<>( projectSearchIds_Requested );
+		}
+		
 		List<SearchItemMinimal> searchListDB = searchListForProjectIdSearcher.getSearchListForProjectId( projectId );
 		
-		List<FolderForProjectDTO> folderForProjectList_DB = folderForProjectDAO.getFolderForProjectDTO_ForProjectId( projectId );
-		List<FolderProjectSearchDTO> folderProjectSearchList_DB = folderProjectSearchDAO.getFolderProjectSearchDTO_ForProjectId( projectId );
-		
-		{ // populate webserviceResult.folderList
-			List<WebserviceResult_SingleFolder> folderList_Result = new ArrayList<>( folderForProjectList_DB.size() );
-			for ( FolderForProjectDTO folderForProjectItem_DB : folderForProjectList_DB ) {
+		if ( projectSearchIds_Requested_Set != null ) {
+			
+			//  Reduce searchListDB to ONLY projectSearchIds_Requested_Set
+			
+			List<SearchItemMinimal> searchListDB_Filtered = new ArrayList<>( searchListDB.size() );
+			
+			for ( SearchItemMinimal searchListDB_Entry : searchListDB ) {
 				
-				WebserviceResult_SingleFolder singleFolder_Result = new WebserviceResult_SingleFolder();
-				singleFolder_Result.id = folderForProjectItem_DB.getId();
-				singleFolder_Result.folderName = folderForProjectItem_DB.getName();
-				singleFolder_Result.displayOrder = folderForProjectItem_DB.getDisplayOrder();
-				folderList_Result.add(singleFolder_Result);
+				if ( ! projectSearchIds_Requested_Set.contains( searchListDB_Entry.getProjectSearchId() ) ) {
+					//  searchListDB_Entry.getProjectSearchId()  NOT in so SKIP
+					continue; // EARLY CONTINUE
+				}
+				
+				searchListDB_Filtered.add(searchListDB_Entry);
 			}
-			webserviceResult.folderList = folderList_Result;
+			
+			searchListDB = searchListDB_Filtered;
 		}
-		{ // populate webserviceResult.folderProjectSearchMappingList
-			List<WebserviceResult_SingleFolderProjectSearchMapping> folderProjectSearchMappingList_Result = new ArrayList<>( folderForProjectList_DB.size() );
-			for ( FolderProjectSearchDTO folderProjectSearchItem_DB : folderProjectSearchList_DB ) {
+
+		{
+			Set<Integer> folderIds_Filtered = null;
+
+			
+			{ // populate webserviceResult.folderProjectSearchMappingList
+
+				if ( projectSearchIds_Requested_Set != null ) {
 				
-				WebserviceResult_SingleFolderProjectSearchMapping singleFolderProjectSearchMapping_Result = new WebserviceResult_SingleFolderProjectSearchMapping();
-				singleFolderProjectSearchMapping_Result.folderId = folderProjectSearchItem_DB.getFolderId();
-				singleFolderProjectSearchMapping_Result.projectSearchId = folderProjectSearchItem_DB.getProjectSearchId();
-				singleFolderProjectSearchMapping_Result.searchDisplayOrder = folderProjectSearchItem_DB.getSearchDisplayOrder();
-				folderProjectSearchMappingList_Result.add(singleFolderProjectSearchMapping_Result);
+					folderIds_Filtered = new HashSet<>();
+				}
+
+				List<FolderProjectSearchDTO> folderProjectSearchList_DB = folderProjectSearchDAO.getFolderProjectSearchDTO_ForProjectId( projectId );
+
+				List<WebserviceResult_SingleFolderProjectSearchMapping> folderProjectSearchMappingList_Result = new ArrayList<>( folderProjectSearchList_DB.size() );
+				
+				for ( FolderProjectSearchDTO folderProjectSearchItem_DB : folderProjectSearchList_DB ) {
+
+					if ( projectSearchIds_Requested_Set != null ) {
+
+						//  process folderProjectSearchList_DB to ONLY projectSearchIds_Requested_Set
+
+						if ( ! projectSearchIds_Requested_Set.contains( folderProjectSearchItem_DB.getProjectSearchId() ) ) {
+							//  searchListDB_Entry.getProjectSearchId()  NOT in so SKIP
+							continue; // EARLY CONTINUE
+						}
+					}
+					
+					if ( folderIds_Filtered != null ) {
+						folderIds_Filtered.add( folderProjectSearchItem_DB.getFolderId() );
+					}
+
+					WebserviceResult_SingleFolderProjectSearchMapping singleFolderProjectSearchMapping_Result = new WebserviceResult_SingleFolderProjectSearchMapping();
+					singleFolderProjectSearchMapping_Result.folderId = folderProjectSearchItem_DB.getFolderId();
+					singleFolderProjectSearchMapping_Result.projectSearchId = folderProjectSearchItem_DB.getProjectSearchId();
+					singleFolderProjectSearchMapping_Result.searchDisplayOrder = folderProjectSearchItem_DB.getSearchDisplayOrder();
+					folderProjectSearchMappingList_Result.add(singleFolderProjectSearchMapping_Result);
+				}
+				webserviceResult.folderProjectSearchMappingList = folderProjectSearchMappingList_Result;
 			}
-			webserviceResult.folderProjectSearchMappingList = folderProjectSearchMappingList_Result;
+
+
+			{ // populate webserviceResult.folderList
+
+				List<FolderForProjectDTO> folderForProjectList_DB = folderForProjectDAO.getFolderForProjectDTO_ForProjectId( projectId );
+
+				List<WebserviceResult_SingleFolder> folderList_Result = new ArrayList<>( folderForProjectList_DB.size() );
+
+				for ( FolderForProjectDTO folderForProjectItem_DB : folderForProjectList_DB ) {
+
+					if ( folderIds_Filtered != null ) {
+						
+						if ( ! folderIds_Filtered.contains( folderForProjectItem_DB.getId() ) ) {
+							//  folderForProjectItem_DB.getId()  NOT in so SKIP
+							continue; // EARLY CONTINUE
+						}
+					}
+					
+					WebserviceResult_SingleFolder singleFolder_Result = new WebserviceResult_SingleFolder();
+
+					singleFolder_Result.id = folderForProjectItem_DB.getId();
+					singleFolder_Result.folderName = folderForProjectItem_DB.getName();
+					singleFolder_Result.displayOrder = folderForProjectItem_DB.getDisplayOrder();
+
+					folderList_Result.add(singleFolder_Result);
+				}
+				webserviceResult.folderList = folderList_Result;
+			}
 		}
 
 		if ( searchListDB.isEmpty() ) {
@@ -547,13 +686,16 @@ public class ProjectView_SearchList_RestWebserviceController {
      */
     public static class WebserviceRequest {
     	
+    	//  Either may be populated.  If Both are populated, 'projectSearchIds' is used and 'projectIdentifier' is validated to be same project
+    	
     	private String projectIdentifier;
+    	private List<Integer> projectSearchIds;
 
     	public void setProjectIdentifier(String projectIdentifier) {
 			this.projectIdentifier = projectIdentifier;
 		}
-		public String getProjectIdentifier() {
-			return projectIdentifier;
+		public void setProjectSearchIds(List<Integer> projectSearchIds) {
+			this.projectSearchIds = projectSearchIds;
 		}
     }
     

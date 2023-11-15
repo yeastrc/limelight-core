@@ -198,11 +198,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileI
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch(() => {
+                    console.log("END: REJECTED: getting data from URL: " + url);
                     reject()
                 });
 
                 promise_webserviceCallStandardPost.then(({responseData}: { responseData: any }) => { try {
-                    console.log("END: REJECTED: getting data from URL: " + url);
+                    console.log("END: SUCCESSFUL: getting data from URL: " + url);
 
                     this._process_WebserviceResponse({responseData});
 

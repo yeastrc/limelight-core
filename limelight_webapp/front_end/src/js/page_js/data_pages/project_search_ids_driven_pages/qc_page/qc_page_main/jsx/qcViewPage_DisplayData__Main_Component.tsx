@@ -120,6 +120,8 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
     propsValue : PeptidePage_Display_MainContent_Component_Props_Prop
     propsValue_QC: QcViewPage_DisplayData__Main_Component_Props_Prop
 
+    commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+
     dataPageStateManager : DataPageStateManager
     searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     qcPage_Searches_Flags: DataPage_common_Searches_Flags
@@ -1000,6 +1002,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
                 propsValue_QC : this.props.propsValue_QC,
+                commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT(),
                 searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
                 qcPage_Searches_Flags: this._dataPage_common_Searches_Flags,
                 qcPage_Searches_Info: this._dataPage_common_Searches_Info,
@@ -2036,6 +2039,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 searchSubGroup_Ids_Selected,
                 propsValue : this.props.propsValue,
                 propsValue_QC : this.props.propsValue_QC,
+                commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT(),
                 searchDataLookupParamsRoot : this.state.searchDataLookupParamsRoot,
                 qcPage_Searches_Flags: this._dataPage_common_Searches_Flags,
                 qcPage_Searches_Info: this._dataPage_common_Searches_Info,

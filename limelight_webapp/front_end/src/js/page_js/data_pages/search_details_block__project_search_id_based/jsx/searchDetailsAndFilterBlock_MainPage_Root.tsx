@@ -147,6 +147,11 @@ export class SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue {
  */
 export interface SearchDetailsAndFilterBlock_MainPage_Root_Props {
 
+    select_ONLY_ONE_Search?: boolean  //  If true, User can select only ONE Search.
+    changeSearches_Clicked_Override_Callback?: () => void  //  Override Internal Behavior
+
+    removeSearchesClickedCallback?: () => void  // ONLY render Remove Searches link when this is populated.  Render as "Remove Search" when  elect_ONLY_ONE_Search is true
+
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
     searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
@@ -223,6 +228,15 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
      * Called from child components
      */
     private _openUserChangeSearches_Overlay_Callback() : void {
+
+        if ( this.props.changeSearches_Clicked_Override_Callback ) {
+
+            //  Override Function for "Change Searches" so call it instead
+
+            this.props.changeSearches_Clicked_Override_Callback()
+
+            return // EARLY RETURN
+        }
 
         const dataUpdated_Callback = () => {
 
@@ -308,10 +322,12 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
             single_multiple_Root = (
                 <MultipleSearch_Only_Root
                     key={ multiSearchRootComponent_Key }
+                    select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
                     propValue={ this.props.propValue }
                     openUserChangeFiltersOverlay_Callback={ this._openUserChangeFiltersOverlay_Callback_BindThis }
                     changeSearchesClickedCallback={ this._openUserChangeSearches_Overlay_Callback_BindThis }
                     changeSearchesOrderClickedCallback={ this._openUserChangeSearchesOrder_Overlay_Callback_BindThis }
+                    removeSearchesClickedCallback={ this.props.removeSearchesClickedCallback }
                 />
             );
 
@@ -324,10 +340,12 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
             single_multiple_Root = (
                 <SingleSearch_Only_Root
                     key={ projectSearchId }
+                    select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
                     propValue={ this.props.propValue }
                     searchSubGroup_CentralStateManagerObjectClass={ this.props.searchSubGroup_CentralStateManagerObjectClass }
                     openUserChangeFiltersOverlay_Callback={ this._openUserChangeFiltersOverlay_Callback_BindThis }
                     changeSearchesClickedCallback={ this._openUserChangeSearches_Overlay_Callback_BindThis }
+                    removeSearchesClickedCallback={ this.props.removeSearchesClickedCallback }
                     searchSubGroup_SelectionsChanged_Callback={ this.props.searchSubGroup_SelectionsChanged_Callback }
                     searchSubGroup_ManageGroupNames_Clicked_Callback={ this.props.searchSubGroup_ManageGroupNames_Clicked_Callback }
                 />
@@ -355,11 +373,14 @@ export class SearchDetailsAndFilterBlock_MainPage_Root extends React.Component< 
  */
 interface SingleSearch_Only_Root_Props {
 
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
+
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     searchSubGroup_CentralStateManagerObjectClass : SearchSubGroup_CentralStateManagerObjectClass
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
     changeSearchesClickedCallback
+    removeSearchesClickedCallback
     searchSubGroup_SelectionsChanged_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_SelectionsChanged_Callback
     searchSubGroup_ManageGroupNames_Clicked_Callback : SearchSubGroup_In_SearchDetailsAndFilter_searchSubGroup_ManageGroupNames_Clicked_Callback
 }
@@ -430,9 +451,18 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
         if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
             changeSearchesJSX = (
-                <ChangeSearches
-                    changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
-                />
+                <>
+                    <ChangeSearches
+                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                        changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
+                    />
+                    { this.props.removeSearchesClickedCallback ? (
+                        <RemoveSearches
+                            select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                            removeSearchesClickedCallback={ this.props.removeSearchesClickedCallback }
+                        />
+                    ) : null }
+                </>
             )
         }
 
@@ -507,11 +537,14 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
  */
 interface MultipleSearch_Only_Root_Props {
 
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
+
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
     changeSearchesClickedCallback
     changeSearchesOrderClickedCallback
+    removeSearchesClickedCallback
 }
 
 /**
@@ -627,9 +660,18 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
         if ( ( ! this.props.propValue.displayOnly ) && ( ! this.props.propValue.do_NOT_Display_ChangeSearches_Link ) ) {
 
             changeSearchesJSX = (
-                <ChangeSearches
-                    changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
-                />
+                <>
+                    <ChangeSearches
+                        select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                        changeSearchesClickedCallback={ this.props.changeSearchesClickedCallback }
+                    />
+                    { this.props.removeSearchesClickedCallback ? (
+                        <RemoveSearches
+                            select_ONLY_ONE_Search={ this.props.select_ONLY_ONE_Search }
+                            removeSearchesClickedCallback={ this.props.removeSearchesClickedCallback }
+                        />
+                    ) : null }
+                </>
             )
         }
 
@@ -687,12 +729,69 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
 
 ////////////////////////////////////////
 
+////   Remove searches component
+
+/**
+ *
+ */
+interface RemoveSearches_Props {
+
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
+
+    removeSearchesClickedCallback
+}
+
+/**
+ *
+ */
+class RemoveSearches_State {
+
+    placeholder?
+}
+
+/**
+ *
+ */
+class RemoveSearches extends React.Component< RemoveSearches_Props, RemoveSearches_State > {
+
+    /**
+     *
+     */
+    constructor(props: RemoveSearches_Props) {
+        super(props);
+
+        this.state = {};
+    }
+
+    /**
+     *
+     */
+    render(): React.ReactNode {
+
+        return (
+            <div >
+                <span className={" fake-link "} style={ { fontSize : 12, whiteSpace : "nowrap" } } onClick={ this.props.removeSearchesClickedCallback }>
+                    { this.props.select_ONLY_ONE_Search ? (
+                        "Remove search"
+                    ) : (
+                        "Remove searches"
+                    )}
+                </span>
+            </div>
+        )
+    }
+}
+
+////////////////////////////////////////
+
 ////   Change searches and Re-order searches components
 
 /**
  *
  */
 interface ChangeSearches_Props {
+
+    select_ONLY_ONE_Search: boolean  //  If true, User can select only ONE Search.
 
     changeSearchesClickedCallback
 }
@@ -727,7 +826,11 @@ class ChangeSearches extends React.Component< ChangeSearches_Props, ChangeSearch
         return (
             <div >
                 <span className={" fake-link "} style={ { fontSize : 12, whiteSpace : "nowrap" } } onClick={ this.props.changeSearchesClickedCallback }>
-                    Change searches
+                    { this.props.select_ONLY_ONE_Search ? (
+                        "Change search"
+                    ) : (
+                        "Change searches"
+                    )}
                 </span>
             </div>
         )

@@ -29,7 +29,7 @@ import {refresh_ProjectPage_UploadData_MainPage_Main_Component} from "page_js/da
 import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
-} from "page_js/data_pages/common_data_loaded_from_server__for_project__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders";
+} from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
 import {ProjectPage_SearchEntry_UsedInMultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
 import {ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions} from "page_js/data_pages/other_data_pages/project_page/project_page__common/projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions";
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
@@ -43,6 +43,8 @@ import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
 import { GoldStandard_Label_Description_Change_Component_Change_Callback_Params } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/project_owner/goldStandard_Label_Description_Change_Component_and_WebserviceCall";
+import { scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc } from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
+import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /**
  *
@@ -78,6 +80,8 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
     standardRunImporter_IsFullyConfigured?: boolean
     runFeatureDetection_IsFullyConfigured?: boolean
 
+    expand_All___Show_ScanFile_Details__Global_Force?: Internal__Expand_All___Show_ScanFile_Details__Global_Force
+
     force_ReRender?: object
 }
 
@@ -85,6 +89,9 @@ interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_
  *
  */
 export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component extends React.Component< ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_Props, ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_List_Component_State > {
+
+    private _expand_All_Button_Clicked_BindThis = this._expand_All_Button_Clicked.bind(this);
+    private _collapse_All_Button_Clicked_BindThis = this._collapse_All_Button_Clicked.bind(this);
 
     private _updateFor_ScanFileEntry_Component_ExpandedChange_BindThis = this._updateFor_ScanFileEntry_Component_ExpandedChange.bind(this)
     private _updateFor_ScanFileSelection_Change_BindThis = this._updateFor_ScanFileSelection_Change.bind(this)
@@ -161,6 +168,23 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
             })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    }
+
+    /**
+     *
+     */
+    private _expand_All_Button_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+
+        this.setState({ expand_All___Show_ScanFile_Details__Global_Force: { expand_All___Show_ScanFile_Details__Global_ForceToValue: true } });
+    }
+
+
+    /**
+     *
+     */
+    private _collapse_All_Button_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+
+        this.setState({ expand_All___Show_ScanFile_Details__Global_Force: { expand_All___Show_ScanFile_Details__Global_ForceToValue: false } });
     }
 
     /**
@@ -297,6 +321,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                         <ScanFileEntry_Component
                             key={ scanFile_Entry.projectScanFileId }
                             showExpanded_OnMount={ this._scanFiles_Expanded_ProjectScanFileId_Set.has( scanFile_Entry.projectScanFileId )}
+                            expand_All___Show_ScanFile_Details__Global_Force={ this.state.expand_All___Show_ScanFile_Details__Global_Force }
                             scanFile_Entry={ scanFile_Entry }
                             standardRunImporter_IsFullyConfigured={ this.state.standardRunImporter_IsFullyConfigured }
                             runFeatureDetection_IsFullyConfigured={ this.state.runFeatureDetection_IsFullyConfigured }
@@ -311,6 +336,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             selectionCheckboxChanged_CallbackFunction={ this._updateFor_ScanFileSelection_Change_BindThis }
                             searchChanged_Callback={ this._searchChanged_Callback_BindThis }
                             callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
+                            update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
                         />
                     )
 
@@ -330,7 +356,24 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                         No scan files in this project.
                     </div>
                 ) : (
-                    <React.Fragment>
+                    <>
+                        <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
+
+                            {/*  Expand All and Collapse All Buttons  */}
+                            <input type="button" className="submit-button "
+                                   id="expand_all_search_details_button"
+                                   title="Show Details for All Feature Detection."
+                                   value="Expand All"
+                                   onClick={ this._expand_All_Button_Clicked_BindThis }
+                            />
+                            <span> </span>
+                            <input className="submit-button " type="button"
+                                   id="collapse_all_search_details_button"
+                                   title="Hide Details for All Feature Detection."
+                                   value="Collapse All"
+                                   onClick={ this._collapse_All_Button_Clicked_BindThis }
+                            />
+                        </div>
 
                         <div style={ { marginBottom: 10 } }>
                              <span
@@ -387,7 +430,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 
                         ) : null }
 
-                    </React.Fragment>
+                    </>
                 ) }
             </div>
         )
@@ -396,6 +439,18 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
 
 
 ////////////////////////////////////////////
+
+
+/**
+ * Create new Object and pass in as Props to force all Show Scan File Details to the new boolean value of true or false
+ *
+ * After the new object is processed, it's value is then ignored until a new object is passed.  tested using object reference
+ *
+ * If passed null, ignore
+ */
+class Internal__Expand_All___Show_ScanFile_Details__Global_Force {
+    expand_All___Show_ScanFile_Details__Global_ForceToValue : boolean  // true if Expand, false if Collapse
+}
 
 //  Component for Single Scan File - not exported
 
@@ -426,6 +481,9 @@ type ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction =
  */
 interface ScanFileEntry_Component_Props {
     showExpanded_OnMount: boolean
+
+    expand_All___Show_ScanFile_Details__Global_Force: Internal__Expand_All___Show_ScanFile_Details__Global_Force
+
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     standardRunImporter_IsFullyConfigured: boolean
     runFeatureDetection_IsFullyConfigured: boolean
@@ -441,6 +499,7 @@ interface ScanFileEntry_Component_Props {
     selectionCheckboxChanged_CallbackFunction: ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction
     searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
+    update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -498,15 +557,38 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
     /**
      *
      */
+    componentDidUpdate( prevProps: Readonly<ScanFileEntry_Component_Props>, prevState: Readonly<ScanFileEntry_Component_State>, snapshot?: any ) {
+
+        if ( prevProps.expand_All___Show_ScanFile_Details__Global_Force !== this.props.expand_All___Show_ScanFile_Details__Global_Force ) {
+
+            //  Force Expand All / Collapse All Changed
+
+            this._show_DetailsBlock = this.props.expand_All___Show_ScanFile_Details__Global_Force.expand_All___Show_ScanFile_Details__Global_ForceToValue
+
+            this._expandOrCollapse_Details_Updated()
+        }
+    }
+
+    /**
+     *
+     */
     private _iconOrMainRowClicked( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
 
         event.stopPropagation();
 
+        this._show_DetailsBlock = ! this._show_DetailsBlock
+
+        this._expandOrCollapse_Details_Updated()
+    }
+
+    /**
+     *
+     */
+    private _expandOrCollapse_Details_Updated() {
+
         if ( ! this._detailsBlock_EverShown ) {
             this._detailsBlock_EverShown = true;
         }
-
-        this._show_DetailsBlock = ! this._show_DetailsBlock
 
         this.props.expandedChange_CallbackFunction({ expanded: this._show_DetailsBlock, projectScanFileId: this.props.scanFile_Entry.projectScanFileId })
 
@@ -521,26 +603,18 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
         event.stopPropagation();
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
-        let url_path__scan_browser: string;
-
-        /**
-         * DOM <script> tags hold the paths to the data pages
-         */
-        let url_path__scan_browser__Element = document.getElementById("url_path__scan_browser");
-        if (!url_path__scan_browser__Element) {
-            throw Error("No DOM element for id 'url_path__scan_browser'");
+        if ( limelight__IsTextSelected() ) {
+            //  Text is selected so exit
+            return; // EARLY RETURN
         }
-        url_path__scan_browser = url_path__scan_browser__Element.innerHTML;
 
-        const pathCode_Version = "a";
+        const scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result =
+            scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc({
+                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+                scanFile_Code_FirstSix: this.props.scanFile_Entry.scanFile_Code_FirstSix
+            })
 
-        const pathCode =
-            "c/" +  // is path code
-            pathCode_Version +
-            this.props.scanFile_Entry.scanFile_Code_FirstSix +
-            this.props.scanFile_Entry.projectScanFileId.toString( 35 );
-
-        const url = url_path__scan_browser + pathCode + "/r";
+        const url = scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result.basePathURL_AND_codeForProjectScanFileId + "/r";
 
         if ( ctrlKeyOrMetaKey ) {
 
@@ -670,6 +744,11 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                                         event.stopPropagation();
 
+                                                        if ( limelight__IsTextSelected() ) {
+                                                            //  Text is selected so exit
+                                                            return; // EARLY RETURN
+                                                        }
+
                                                         this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
                                                         getFunction__open_Run_Hardklor_File_Contents_For_ScanFile_Project_Overlay__Function()({
                                                             component_Params: {
@@ -698,6 +777,11 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                     onClick={ event => {
 
                                                         event.stopPropagation();
+
+                                                        if ( limelight__IsTextSelected() ) {
+                                                            //  Text is selected so exit
+                                                            return; // EARLY RETURN
+                                                        }
 
                                                         this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
                                                         getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({
@@ -738,6 +822,11 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                 title="Delete Scan File"
                                                 onClick={ event => {
                                                     event.stopPropagation()
+
+                                                    if ( limelight__IsTextSelected() ) {
+                                                        //  Text is selected so exit
+                                                        return; // EARLY RETURN
+                                                    }
 
                                                     {
                                                         let confirmMessage = "Delete Scan File";
@@ -820,6 +909,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                 searchChanged_Callback={ this.props.searchChanged_Callback }
                                 callback_SearchDeleted={ this.props.callback_SearchDeleted }
+                                update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
                             />
                         ) : null }
                     </div>
@@ -859,6 +949,8 @@ interface ScanFile_Details_Component_Props {
 
     searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
+
+    update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 
     //  Any changes, update componentDidUpdate
 }
@@ -1034,16 +1126,13 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
      */
     private _updateDisplayLabel_FeatureDetection_Entry( id_MappingTbl: number, displayLabel: string ) : void {
 
-        //  Update DisplayLabel for id in featureDetection_List
+      if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+          this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
 
-        this.setState ((prevState, props) => {
-            for ( const entry of prevState.scanFile_Details_FromServer_Root.featureDetection_List ) {
-                if ( entry.id_MappingTbl === id_MappingTbl ) {
-                    entry.displayLabel = displayLabel;
-                }
-            }
-            return { scanFile_Details_FromServer_Root: prevState.scanFile_Details_FromServer_Root, forceRerender: {} };
-        });
+          return
+      }
+
+      window.location.reload(true)
     }
 
     /**
@@ -1051,17 +1140,13 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
      */
     private _remove_FeatureDetection_Entry( id_MappingTbl: number ) : void {
 
-        //  Remove id from featureDetection_List
+        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
 
-        this.setState ((prevState, props) => {
-            prevState.scanFile_Details_FromServer_Root.featureDetection_List = prevState.scanFile_Details_FromServer_Root.featureDetection_List.filter(value => {
-                if ( value.id_MappingTbl === id_MappingTbl ) {
-                    return false;
-                }
-                return true;
-            });
-            return { scanFile_Details_FromServer_Root: prevState.scanFile_Details_FromServer_Root, forceRerender: {} };
-        });
+            return
+        }
+
+        window.location.reload(true)
     }
 
     private _remove_GoldStandard_Entry( id_MappingTbl: number ) : void {
@@ -1202,6 +1287,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                                                 <FeatureDetection_Entry_Component
                                                     key={ value.id_MappingTbl}
                                                     featureDetection_Entry={ value }
+                                                    scanFile_Entry_Parent={ this.props.scanFile_Entry }
                                                     projectIdentifier={ this.props.projectIdentifier }
                                                     projectIsLocked={ this.props.projectIsLocked }
                                                     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
@@ -1266,6 +1352,7 @@ type FeatureDetection_Entry_Component__Deleted__Callback = ( id: number ) => voi
  */
 interface FeatureDetection_Entry_Component_Props {
     featureDetection_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_FeatureDetectionEntry
+    scanFile_Entry_Parent: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     projectIdentifier : string
     projectIsLocked : boolean
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
@@ -1292,6 +1379,7 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
 
     private _edit_DisplayLabel_Clicked_BindThis = this._edit_DisplayLabel_Clicked.bind(this);
     private _delete_Entry_Clicked_BindThis = this._delete_Entry_Clicked.bind(this);
+    private _featureDetectionView_Page_FakeLink_Clicked_BindThis = this._featureDetectionView_Page_FakeLink_Clicked.bind(this)
 
     // private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
     //
@@ -1313,6 +1401,9 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
         }
     }
 
+    /**
+     *
+     */
     private _edit_DisplayLabel_Clicked( event: React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
         event.stopPropagation();
@@ -1332,9 +1423,18 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
             this.props.featureDetection_Entry.displayLabel = newLabel;
             this.props.featureDetection_Entry.description = newDescription
 
-            this.props.entry_update_DisplayLabel_Description_Callback( this.props.featureDetection_Entry.id_MappingTbl, newLabel, newDescription );
-
             this.setState({ forceRerender: {} });
+
+            window.setTimeout( () => {
+                try {
+
+                    this.props.entry_update_DisplayLabel_Description_Callback( this.props.featureDetection_Entry.id_MappingTbl, newLabel, newDescription );
+                } catch ( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                    throw e
+                }
+            }, 10 )
+
         }
 
         this.props.
@@ -1350,6 +1450,9 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
         })
     }
 
+    /**
+     *
+     */
     private _delete_Entry_Clicked( event: React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
         event.stopPropagation();
@@ -1376,6 +1479,50 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
     /**
      *
      */
+    private _featureDetectionView_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+
+        event.stopPropagation();
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        let url_path__feature_detection: string;
+
+        /**
+         * DOM <script> tags hold the paths to the data pages
+         */
+        let url_path__feature_detection__Element = document.getElementById("url_path__feature_detection");
+        if (!url_path__feature_detection__Element) {
+            throw Error("No DOM element for id 'url_path__feature_detection'");
+        }
+        url_path__feature_detection = url_path__feature_detection__Element.innerHTML;
+
+        const pathCode_Version = "a";
+
+        const pathCode =
+            "c/" +  // is path code
+            pathCode_Version +
+            this.props.scanFile_Entry_Parent.scanFile_Code_FirstSix +
+            this.props.featureDetection_Entry.id_MappingTbl.toString( 35 ); //  35 kept in sync with other code
+
+        const url = url_path__feature_detection + pathCode + "/r";
+
+        if ( ctrlKeyOrMetaKey ) {
+
+            window.open(url, "_blank", "noopener");
+
+            return;  // EARLY RETURN
+        }
+
+        //  NO ctrlKeyOrMetaKey
+
+        window.location.href = url;
+
+        return;  // EARLY RETURN
+
+    }
+
+    /**
+     *
+     */
     render() {
 
         return (
@@ -1390,29 +1537,33 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
                     </React.Fragment>
                 ) : (
                     <React.Fragment>
-                        {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
-                        <React.Fragment>
-                            <span> </span>
-                            <img
-                                src="static/images/icon-edit.png" title="Change Label"
-                                className="icon-small clickable  "
-                                onClick={ this._edit_DisplayLabel_Clicked_BindThis }
-                            />
-                        </React.Fragment>
-                        ) : null
-                        )}
+                        { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
+                            <React.Fragment>
+                                <span> </span>
+                                <img
+                                    src="static/images/icon-edit.png" title="Change Label"
+                                    className="icon-small clickable  "
+                                    onClick={ this._edit_DisplayLabel_Clicked_BindThis }
+                                />
+                            </React.Fragment>
+                        ) : null }
 
-                        {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
-                        <React.Fragment>
-                            <span> </span>
-                            <img
-                                src="static/images/icon-circle-delete.png" title="Delete Feature Detection Entry"
-                                className="icon-small clickable  "
-                                onClick={ this._delete_Entry_Clicked_BindThis }
-                            />
-                        </React.Fragment>
-                        ) : null
-                        )}
+                        { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
+                            <React.Fragment>
+                                <span> </span>
+                                <img
+                                    src="static/images/icon-circle-delete.png" title="Delete Feature Detection Entry"
+                                    className="icon-small clickable  "
+                                    onClick={ this._delete_Entry_Clicked_BindThis }
+                                />
+                            </React.Fragment>
+                        ) : null }
+
+                        <span> </span>
+                        <span
+                            className=" fake-link "
+                            onClick={ this._featureDetectionView_Page_FakeLink_Clicked_BindThis }
+                        >[View Feature Detection Run]</span>
                     </React.Fragment>
                 ) }
             </div>

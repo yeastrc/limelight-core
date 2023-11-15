@@ -23,6 +23,8 @@ import {
 } from '../psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component';
 
 /**
+ * ASSUMPTION:  This Component is NEVER in an overlay so it is able to use Overlay that uses CSS: body.data-page div.modal-overlay-container
+ *
  * Returns Child Content callback function so can have more than child data table
  *
  * @param params
@@ -47,15 +49,14 @@ export const psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComp
             const get_RowChildContent_Return_ChildContent: DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent =
                 ( params : DataTable_DataRowEntry__Get_RowChildContent_CallParams ) : JSX.Element => {
 
-                return (
-                    <Internal_ReportedPeptide_SingleExpanded_ChildReactComponent
-                        params={ params }
-                        psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params={ psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params }
-                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results }
-                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter }
-                    />
-                )
-
+                    return (
+                        <Internal_ReportedPeptide_SingleExpanded_ChildReactComponent
+                            params={ params }
+                            psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params={ psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params }
+                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results }
+                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter }
+                        />
+                    )
                 }
 
             resolve( get_RowChildContent_Return_ChildContent )

@@ -38,7 +38,9 @@ import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {get_PsmList_ViewSpectrumCell_ExternalReactComponent} from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_spectrum_cell_ExternalComponent";
+import { get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_ScanNumber_AND_ViewSpectrum_TableCell_ExternalComponent";
+import { get_PsmList_MS_1_Scan_TableCell_ExternalReactComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_MS_1_Scan_TableCell_ExternalComponent";
+import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -60,6 +62,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
     readonly searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     readonly dataPageStateManager : DataPageStateManager
     readonly psmIds_Include : ReadonlySet<number> // Optional
+    readonly commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
 
     /**
      *
@@ -72,7 +75,8 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             searchDataLookupParamsRoot,
             dataPageStateManager,
             psmIds_Include,
-            openModPositionOverride
+            openModPositionOverride,
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
         } : {
             projectSearchId : number
             reportedPeptideId : number    // NOT required if have psmIds_Include
@@ -81,6 +85,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             dataPageStateManager : DataPageStateManager
             psmIds_Include? : ReadonlySet<number> // Optional
             openModPositionOverride? : OpenModPosition_DataType  // optional
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }) {
 
         if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
@@ -94,6 +99,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         this.dataPageStateManager = dataPageStateManager;
         this.psmIds_Include = psmIds_Include;
         this.openModPositionOverride = openModPositionOverride;
+        this.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
     }
 
     private _FAKE_TO_FORCE_USE_CONSTRUCTOR() {}
@@ -167,7 +173,8 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
                         dataPageStateManager, 
                         projectSearchId,
                         searchDataLookupParamsRoot,
-                        openModPositionOverride
+                        openModPositionOverride,
+                        topLevel_Params: params
                     });
 
                     resolve( { dataTable_Data, webserviceResult_Root: ajaxResponse } );
@@ -191,29 +198,26 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
  * Get DataTable_RootTableObject for the PSM table.
  * 
  */
-const _create_DataTable_RootTableObject = function({
+const _create_DataTable_RootTableObject = function(
+    {
+        ajaxResponse,
+        dataPageStateManager,
+        projectSearchId,
+        searchDataLookupParamsRoot,
+        openModPositionOverride,
 
-    ajaxResponse,
-    dataPageStateManager, 
-    projectSearchId,
-    searchDataLookupParamsRoot,
-    openModPositionOverride
+        topLevel_Params
 
-} : {
-    ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
-    dataPageStateManager : DataPageStateManager, 
-    projectSearchId : number,
-    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
-    openModPositionOverride : OpenModPosition_DataType
+    } : {
+        ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result
+        dataPageStateManager : DataPageStateManager
+        projectSearchId : number
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
+        openModPositionOverride : OpenModPosition_DataType
 
-}) : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data {
+        topLevel_Params :PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 
-    // ajaxResponse.resultList;
-    // ajaxResponse.searchHasScanData;
-    // ajaxResponse.search_anyPsmHas_DynamicModifications;
-    // ajaxResponse.search_anyPsmHas_ReporterIons;
-    // ajaxResponse.search_hasIsotopeLabel;
-    // ajaxResponse.search_hasScanFilenames
+    }) : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result_DataTable_Data {
 
     let psmList = ajaxResponse.resultList;
     let searchHasScanData = ajaxResponse.searchHasScanData;
@@ -223,7 +227,7 @@ const _create_DataTable_RootTableObject = function({
         _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, searchDataLookupParamsRoot, dataPageStateManager } );
     let psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem> = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPsmListEntries;
 
-    const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, ajaxResponse, openModPositionOverride });
+    const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, openModPositionOverride, ajaxResponse, topLevel_Params });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
     const dataTable_DataRowEntries_Map_Key_Psm_Id = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries_Map_Key_Psm_Id;
 
@@ -309,7 +313,7 @@ const _getDataTableColumns = function({
     const dataTable_Columns : Array<DataTable_Column> = [];
     const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
 
-    //  view spectrum link
+    //  view MS 1 Scan link
     if ( ajaxResponse.searchHasScanData ) {
         {
             const dataTable_Column = new DataTable_Column({
@@ -322,7 +326,8 @@ const _getDataTableColumns = function({
             dataTable_Columns.push( dataTable_Column );
         }
     }
-    {
+    {    // Scan Number AND view spectrum link
+
         const displayName = "Scan Number";
 
         const dataTable_Column = new DataTable_Column({
@@ -487,23 +492,27 @@ interface Get_DataTable_DataRowEntries_Result {
  * Get DataTable_DataRowEntry entries
  * 
  */
-const _get_DataTable_DataRowEntries = function({ 
-    
-    psmList,
-    projectSearchId,
-    dataPageStateManager,
-    psmAnnotationTypesForPsmListEntries_DisplayOrder,
-    openModPositionOverride,
-    ajaxResponse
-} : { 
-    psmList : Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>,
-    projectSearchId : number,
-    dataPageStateManager : DataPageStateManager
-    psmAnnotationTypesForPsmListEntries_DisplayOrder: Array<AnnotationTypeItem>,
-    ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result,
-    openModPositionOverride: OpenModPosition_DataType
+const _get_DataTable_DataRowEntries = function(
+    {
+        psmList,
+        projectSearchId,
+        dataPageStateManager,
+        psmAnnotationTypesForPsmListEntries_DisplayOrder,
+        openModPositionOverride,
+        ajaxResponse,
+        topLevel_Params
+    } : {
+        psmList : Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+        projectSearchId : number
+        dataPageStateManager : DataPageStateManager
+        psmAnnotationTypesForPsmListEntries_DisplayOrder: Array<AnnotationTypeItem>
+        openModPositionOverride: OpenModPosition_DataType
 
-}) : Get_DataTable_DataRowEntries_Result {
+        ajaxResponse: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result
+
+        topLevel_Params :PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
+
+    }) : Get_DataTable_DataRowEntries_Result {
 
     const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
     const dataTable_DataRowEntries_Map_Key_Psm_Id : Map<number, DataTable_DataRowEntry> = new Map()
@@ -563,10 +572,40 @@ const _get_DataTable_DataRowEntries = function({
         const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
         const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
 
-        //  View Spectrum link
+
         if ( ajaxResponse.searchHasScanData ) {
 
-            const psmId = psmListItem.psmId
+            //  View MS 1 Scan link (if ajaxResponse.searchHasScanData is true)
+
+            const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                    return get_PsmList_MS_1_Scan_TableCell_ExternalReactComponent({
+                        psmListItem,
+                        psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: topLevel_Params
+                    });
+                }
+
+            //  Scan Number for searchTableData and Download
+
+            const valueDisplay = psmListItem.scanNumber.toString();
+
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ];
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
+                searchTableData,
+                valueSort : psmListItem.scanNumber
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+
+        {  // Scan Number AND  View Spectrum link (if ajaxResponse.searchHasScanData is true)
 
             /*
                 If there is an open mod mass associated w/ this PSM and it localizes to a single position,
@@ -603,30 +642,25 @@ const _get_DataTable_DataRowEntries = function({
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
                 ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
-                    return get_PsmList_ViewSpectrumCell_ExternalReactComponent({ psmId, projectSearchId, openModPosition });
+                    return get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent({
+                        scanNumber: psmListItem.scanNumber,
+                        searchHasScanData: ajaxResponse.searchHasScanData,
+                        psmId: psmListItem.psmId,
+                        projectSearchId,
+                        openModPosition
+                    });
                 }
 
-            //  NO Data for searchTableData
-
-            // const searchEntriesForColumn : Array<string> = [];
-            // const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
-                //  NO Data for searchTableData
-            })
-            columnEntries.push( columnEntry );
-        }
-
-        {  // Scan Number
+            //  Scan Number for searchTableData and Download
 
             const valueDisplay = psmListItem.scanNumber.toString();
+
             const searchEntriesForColumn : Array<string> = [ valueDisplay ];
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
 
             const columnEntry = new DataTable_DataRow_ColumnEntry({
+                valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough,
                 searchTableData,
-                valueDisplay,
                 valueSort : psmListItem.scanNumber
             })
             columnEntries.push( columnEntry );

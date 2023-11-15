@@ -318,6 +318,37 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Pea
 
                 this._removeFrom_promise_And_scanNumbers_RetrieveInProgress_Array({ requestParams_AND_Promise })
 
+                let data_Holder_Array = this._data_Holder_Array__Map_Key_ProjectScanFileId.get( requestParams.projectScanFileId )
+
+                if ( ! data_Holder_Array ) {
+
+                    //  Add new data_Holder_Array
+
+                    data_Holder_Array = []
+
+                    data_Holder_Array.push( value )
+
+                    this._data_Holder_Array__Map_Key_ProjectScanFileId.set( requestParams.projectScanFileId, data_Holder_Array )
+
+                } else {
+
+                    //  ONLY add to data_Holder_Array if NOT already exists
+
+                    const data_Holder_FromArray = data_Holder_Array.find( data_Holder_Entry => {
+
+                        if ( _requestParams_Match__INTERNAL__SingleRequestToServer_RequestParams( requestParams, data_Holder_Entry.scanData ) ) {
+                            return data_Holder_Entry
+                        }
+                    } )
+
+                    if ( ! data_Holder_FromArray ) {
+
+                        //  NOT already exists so add
+
+                        data_Holder_Array.push( value )
+                    }
+                }
+
 
             } catch (e) {
                 console.warn("Exception caught: ", e);

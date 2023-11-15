@@ -302,9 +302,9 @@
                             //padding-bottom: 5px;
                             word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
 
-                            //span.table-data-cell-property-value {
-                            //    overflow-wrap: break-word;
-                            //}
+                            span.table-data-cell-property-value {
+                                overflow-wrap: break-word;
+                            }
                         }
 
                     }
@@ -342,61 +342,6 @@
 
 
    ////////////////
-
-    //  OLD, Likely UNUSED:   Data Table: Start
-
-    div.hoveredTableRow {
-        background-color:$site-color-medium;
-    }
-
-    div.div-table-container {
-        display: inline-block;
-    }
-
-    div.div-table-header-cell {
-        vertical-align:bottom;
-        display: inline-block;
-        white-space:normal;
-        padding:5px;
-        padding-left:2px;
-    }
-
-    div.div-table-cell {
-        display: inline-block;
-        white-space:normal;
-        padding:5px;
-        padding-left:2px;
-    }
-
-    div.div-table-header-row {
-        //font-size:14px;
-        font-weight:bold;
-        background-color:$site-color-medium;
-    }
-
-    div.table-rows-container { // Table Data Rows Container
-        margin: 0px;
-        padding: 0px;
-    }
-
-    div.div-table-row {
-        white-space:nowrap;
-    }
-
-    div.div-table-data-row {
-        vertical-align:top;
-    }
-
-    div.div-table-data-cell {
-        vertical-align:top;
-
-        span.table-data-cell-property-value {
-            overflow-wrap: break-word;
-        }
-    }
-
-    //  Data Table: End
-
 
 
     .navigation-links-block {

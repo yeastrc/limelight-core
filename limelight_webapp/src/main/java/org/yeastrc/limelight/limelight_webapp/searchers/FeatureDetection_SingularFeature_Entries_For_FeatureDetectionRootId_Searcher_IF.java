@@ -1,5 +1,7 @@
 package org.yeastrc.limelight.limelight_webapp.searchers;
 
+import java.util.List;
+
 import org.yeastrc.limelight.limelight_webapp.searchers.FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher.FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result;
 
 public interface FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRootId_Searcher_IF {
@@ -7,4 +9,9 @@ public interface FeatureDetection_SingularFeature_Entries_For_FeatureDetectionRo
 	FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result getForFeatureDetectionRootId_StartId_EndId(
 			int featureDetectionRootId, int startId, int endId) throws Exception;
 
+	FeatureDetection_SingleFeature_Entries_For_FeatureDetectionRootId_Searcher_Result  getForFeatureDetectionRootId_SingularFeatureIds_List(
+
+			int featureDetectionRootId, List<Integer> singularFeatureIds_List 
+
+			) throws Exception;
 }

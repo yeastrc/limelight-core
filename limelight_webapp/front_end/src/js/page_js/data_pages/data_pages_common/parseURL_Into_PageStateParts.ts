@@ -41,11 +41,23 @@
 
 ///////////////////////////////////////////
 
-import { controller_path_prefix_ProjectSearchId_Based_FromDOM, controller_path_prefix_ExperimentId_Based_FromDOM } from 'page_js/data_pages/data_pages_common/controllerPath_Prefixes_FromDOM';
+import {
+	controller_path_prefix_ProjectSearchId_Based_FromDOM,
+	controller_path_prefix_ExperimentId_Based_FromDOM,
+	controller_path_prefix_FeatureDetectionId_Based_FromDOM, controller_path_prefix_ProjectScanFileId_Based_FromDOM
+} from 'page_js/data_pages/data_pages_common/controllerPath_Prefixes_FromDOM';
 
 import { ControllerPath_forCurrentPage_FromDOM }  from 'page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM';
 
-import { _PATH_SEPARATOR, _EXPERIMENT_ID_IDENTIFIER, _SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER, _STANDARD_PAGE_STATE_IDENTIFIER, _REFERRER_PATH_STRING, _REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR } from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
+import {
+	_PATH_SEPARATOR,
+	_EXPERIMENT_ID_IDENTIFIER,
+	_SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER,
+	_STANDARD_PAGE_STATE_IDENTIFIER,
+	_REFERRER_PATH_STRING,
+	_REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR,
+	_FEATURE_DETECTION_ENCODED_IDENTIFIER
+} from 'page_js/data_pages/data_pages_common/a_dataPagesCommonConstants';
 
 /**
  * 
@@ -69,6 +81,8 @@ export class ParseURL_Into_PageStateParts {
 
 		const controller_path_prefix_ProjectSearchId_Based = controller_path_prefix_ProjectSearchId_Based_FromDOM();
 		const controller_path_prefix_ExperimentId_Based = controller_path_prefix_ExperimentId_Based_FromDOM();
+		const controller_path_prefix_FeatureDetectionId_Based = controller_path_prefix_FeatureDetectionId_Based_FromDOM()
+		const controller_path_prefix_ProjectScanFileId_Based = controller_path_prefix_ProjectScanFileId_Based_FromDOM()
 
 		// console.log("parseURL_Into_PageStateParts(): controller_path_prefix_ProjectSearchId_Based: " + controller_path_prefix_ProjectSearchId_Based + ", controller_path_prefix_ExperimentId_Based: " + controller_path_prefix_ExperimentId_Based )
 				
@@ -84,7 +98,9 @@ export class ParseURL_Into_PageStateParts {
 
 		let is_ProjectSearchId_Based_URL = false;
 		let is_ExperimentId_Based_URL = false;
-		
+		let is_FeatureDetectionId_Based_URL = false
+		let is_projectScanFileId_Based_URL = false
+
 		{
 			const projectSearchId_Based_URL_Index = windowPath.indexOf( controller_path_prefix_ProjectSearchId_Based );
 			if ( projectSearchId_Based_URL_Index !== -1 ) {
@@ -96,9 +112,21 @@ export class ParseURL_Into_PageStateParts {
 					//  URL is Experiment Based
 					is_ExperimentId_Based_URL = true;
 				} else {
-					const msg = "ERROR: Page URL is not Project Search Id Based or Experiment Id Based.  Page URL: " + windowPath;
-					console.warn( msg );
-					throw Error( msg );
+					const featureDetectionId_Based_URL_Index = windowPath.indexOf( controller_path_prefix_FeatureDetectionId_Based );
+					if ( featureDetectionId_Based_URL_Index !== -1 ) {
+						//  URL is Feature Detection Based
+						is_FeatureDetectionId_Based_URL = true;
+					} else {
+						const projectScanFileId_Based_URL_Index = windowPath.indexOf( controller_path_prefix_ProjectScanFileId_Based );
+						if ( projectScanFileId_Based_URL_Index !== -1 ) {
+							//  URL is Feature Detection Based
+							is_projectScanFileId_Based_URL = true;
+						} else {
+							const msg = "ERROR: Page URL is not Project Search Id Based or Experiment Id Based or Feature Detection Id Based or Project Scan File Id.  Page URL: " + windowPath;
+							console.warn( msg );
+							throw Error( msg );
+						}
+					}
 				}
 			}
 		}
@@ -112,20 +140,6 @@ export class ParseURL_Into_PageStateParts {
 		
 		const windowPath_After_pageControllerPath = windowPath.substring( index_AfterPageController );
 
-		//   FAKE VALUE
-
-
-		// const windowPath_After_pageControllerPath = "e/20/c/oooo/r";
-
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		// console.warn("FAKE VALUE FOR windowPath_After_pageControllerPath: " + windowPath_After_pageControllerPath );
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		// console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-
 		// Split URL after pageControllerPath on _PATH_SEPARATOR ('/')
 
 		const windowPath_After_pageControllerPathSplitSlash = windowPath_After_pageControllerPath.split( _PATH_SEPARATOR );
@@ -137,6 +151,8 @@ export class ParseURL_Into_PageStateParts {
 		//   Process other page state, just saving string (and label before it) off to returned object
 		
 		let experimentId = undefined;
+		let featureDetectionId_Encoded = undefined
+		let projectScanFileId_Encoded = undefined
 		let searchDataLookupParametersCode = undefined;
 		let pageStateIdentifier = undefined;
 		let pageStateString = undefined;
@@ -316,8 +332,249 @@ export class ParseURL_Into_PageStateParts {
 				throw Error( msg );
 			}
 
+		} else if ( is_FeatureDetectionId_Based_URL ) {
+
+			//  Feature Detection Id based URL:
+			/*
+			*     ..pagename/c/{FeatureDetectId_Encoded}/q/page_state_string
+			*
+			*    User changed Search Filters or Annotation Types to Desplay:
+			*        ..pagename/c/{FeatureDetectId_Encoded}/c/{searchDataLookupParametersCode}/q/page_state_string
+			*
+			*    Nav from project page:
+			*         ..pagename/c/{FeatureDetectId_Encoded}/r
+			*
+			*    Nav from other page:
+			*         ..pagename/c/{FeatureDetectId_Encoded}/q/page_state_string/r
+			*       or
+			*         ..pagename/c/{FeatureDetectId_Encoded}/c/{searchDataLookupParametersCode}/q/page_state_string/r
+			*/
+
+			if ( windowPath_After_pageControllerPathSplitSlash.length < 2 ||
+				windowPath_After_pageControllerPathSplitSlash.length > 7 ) {
+
+				throw Error( "URI Path for Feature Detect id based URL after controller path does not contain 2, 3, 4, 5, 6 or 7 elements when split on '" +
+					_PATH_SEPARATOR + "'.  Number of elements: " + windowPath_After_pageControllerPathSplitSlash.length +
+					", windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			}
+
+			//  The first identifier has to be _FEATURE_DETECTION_ENCODED_IDENTIFIER (c)
+			if ( windowPath_After_pageControllerPathSplitSlash[ 0 ] !== _FEATURE_DETECTION_ENCODED_IDENTIFIER ) {
+
+				//  TODO  Present user an error message with link to take them back to project
+
+				throw Error( "URI Path for Feature Detect id based URL after controller path contains 2 elements when split on '" +
+					_PATH_SEPARATOR + "' and 1st element is not '" + _FEATURE_DETECTION_ENCODED_IDENTIFIER + "'." +
+					"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			}
+
+			//  These next 2 checks should not fail since the server side will return 404 for any value but 'r'
+
+			//  If length is 3, then 2nd value must be _REFERRER_PATH_STRING (r)
+			// if ( windowPath_After_pageControllerPathSplitSlash.length === 2 ) {
+			// 	if ( windowPath_After_pageControllerPathSplitSlash[ 1 ] !== _REFERRER_PATH_STRING ) {
+
+			// 		//  TODO  Present user an error message with link to take them back to project
+
+			// 		throw Error( "URI Path for Feature Detect id based URL after controller path contains 2 elements when split on '" +
+			// 				_PATH_SEPARATOR + "' and 2nd element is not '" + _REFERRER_PATH_STRING + "'." +
+			// 				"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			// 	}
+			// }
+
+			// //  If length is 4, then 4th value must be _REFERRER_PATH_STRING (r)
+			// if ( windowPath_After_pageControllerPathSplitSlash.length === 4 ) {
+			// 	if ( windowPath_After_pageControllerPathSplitSlash[ 3 ] !== _REFERRER_PATH_STRING ) {
+
+			// 		//  TODO  Present user an error message with link to take them back to project
+
+			// 		throw Error( "URI Path for Feature Detect id based URL after controller path contains 4 elements when split on '" +
+			// 				_PATH_SEPARATOR + "' and 4th element is not '" + _REFERRER_PATH_STRING + "'." +
+			// 				"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			// 	}
+			// }
+
+			featureDetectionId_Encoded = windowPath_After_pageControllerPathSplitSlash[ 1 ];
+
+			let nextPartPartToParseIndex = 2;  // set after feature detection id
+
+			// searchDataLookupParametersCode
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER ) {
+				//  next element is 'c'
+
+				nextPartPartToParseIndex++; //  Advance past 'c' to searchDataLookupParametersCode
+
+				if ( windowPath_After_pageControllerPathSplitSlash.length <= nextPartPartToParseIndex ) {
+					//  nextPartPartToParseIndex does not exist in array
+					//    Value is required after 'c'
+					const msg = "ERROR parsing URL:  have '" + _SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER + "' but no value after it. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+					console.warn( msg );
+					throw Error( msg );
+				}
+
+				searchDataLookupParametersCode = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past searchDataLookupParametersCode
+			}
+
+			// pageStateString
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _STANDARD_PAGE_STATE_IDENTIFIER ) {
+				//  Found next element contains 'q'
+
+				pageStateIdentifier = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past 'q' to pageStateString
+
+				if ( windowPath_After_pageControllerPathSplitSlash.length <= nextPartPartToParseIndex ) {
+					//  nextPartPartToParseIndex does not exist in array
+					//    Value is required after 'q'
+					const msg = "ERROR parsing URL:  have '" + _STANDARD_PAGE_STATE_IDENTIFIER + "' but no value after it. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+					console.warn( msg );
+					throw Error( msg );
+				}
+
+				pageStateString = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past pageStateString
+			}
+
+			// referrer
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _REFERRER_PATH_STRING ) {
+				//  Found next element contains 'r'
+				referrer = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past referrer
+			}
+
+			if ( nextPartPartToParseIndex !== windowPath_After_pageControllerPathSplitSlash.length ) {
+				const msg = "ERROR parsing URL:  have more values than expected. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+				console.warn( msg );
+				throw Error( msg );
+			}
+
+		} else if ( is_projectScanFileId_Based_URL ) {
+
+
+			//  Project Scan File Id based URL:
+			/*
+			*     ..pagename/c/{ProjectScanFileId_Encoded}/q/page_state_string
+			*
+			*    User changed Search Filters or Annotation Types to Desplay:
+			*        ..pagename/c/{ProjectScanFileId_Encoded}/c/{searchDataLookupParametersCode}/q/page_state_string
+			*
+			*    Nav from project page:
+			*         ..pagename/c/{ProjectScanFileId_Encoded}/r
+			*
+			*    Nav from other page:
+			*         ..pagename/c/{ProjectScanFileId_Encoded}/q/page_state_string/r
+			*       or
+			*         ..pagename/c/{ProjectScanFileId_Encoded}/c/{searchDataLookupParametersCode}/q/page_state_string/r
+			*/
+
+			if ( windowPath_After_pageControllerPathSplitSlash.length < 2 ||
+				windowPath_After_pageControllerPathSplitSlash.length > 7 ) {
+
+				throw Error( "URI Path for Project Scan File id based URL after controller path does not contain 2, 3, 4, 5, 6 or 7 elements when split on '" +
+					_PATH_SEPARATOR + "'.  Number of elements: " + windowPath_After_pageControllerPathSplitSlash.length +
+					", windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			}
+
+			//  The first identifier has to be _FEATURE_DETECTION_ENCODED_IDENTIFIER (c)
+			if ( windowPath_After_pageControllerPathSplitSlash[ 0 ] !== _FEATURE_DETECTION_ENCODED_IDENTIFIER ) {
+
+				//  TODO  Present user an error message with link to take them back to project
+
+				throw Error( "URI Path for Project Scan File id based URL after controller path contains 2 elements when split on '" +
+					_PATH_SEPARATOR + "' and 1st element is not '" + _FEATURE_DETECTION_ENCODED_IDENTIFIER + "'." +
+					"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			}
+
+			//  These next 2 checks should not fail since the server side will return 404 for any value but 'r'
+
+			//  If length is 3, then 2nd value must be _REFERRER_PATH_STRING (r)
+			// if ( windowPath_After_pageControllerPathSplitSlash.length === 2 ) {
+			// 	if ( windowPath_After_pageControllerPathSplitSlash[ 1 ] !== _REFERRER_PATH_STRING ) {
+
+			// 		//  TODO  Present user an error message with link to take them back to project
+
+			// 		throw Error( "URI Path for Project Scan File id based URL after controller path contains 2 elements when split on '" +
+			// 				_PATH_SEPARATOR + "' and 2nd element is not '" + _REFERRER_PATH_STRING + "'." +
+			// 				"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			// 	}
+			// }
+
+			// //  If length is 4, then 4th value must be _REFERRER_PATH_STRING (r)
+			// if ( windowPath_After_pageControllerPathSplitSlash.length === 4 ) {
+			// 	if ( windowPath_After_pageControllerPathSplitSlash[ 3 ] !== _REFERRER_PATH_STRING ) {
+
+			// 		//  TODO  Present user an error message with link to take them back to project
+
+			// 		throw Error( "URI Path for Project Scan File id based URL after controller path contains 4 elements when split on '" +
+			// 				_PATH_SEPARATOR + "' and 4th element is not '" + _REFERRER_PATH_STRING + "'." +
+			// 				"  windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath );
+			// 	}
+			// }
+
+			projectScanFileId_Encoded = windowPath_After_pageControllerPathSplitSlash[ 1 ];
+
+			let nextPartPartToParseIndex = 2;  // set after feature detection id
+
+			// searchDataLookupParametersCode
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER ) {
+				//  next element is 'c'
+
+				nextPartPartToParseIndex++; //  Advance past 'c' to searchDataLookupParametersCode
+
+				if ( windowPath_After_pageControllerPathSplitSlash.length <= nextPartPartToParseIndex ) {
+					//  nextPartPartToParseIndex does not exist in array
+					//    Value is required after 'c'
+					const msg = "ERROR parsing URL:  have '" + _SEARCH_DATA_LOOKUP_PARAMETERS_CODE_IDENTIFIER + "' but no value after it. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+					console.warn( msg );
+					throw Error( msg );
+				}
+
+				searchDataLookupParametersCode = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past searchDataLookupParametersCode
+			}
+
+			// pageStateString
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _STANDARD_PAGE_STATE_IDENTIFIER ) {
+				//  Found next element contains 'q'
+
+				pageStateIdentifier = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past 'q' to pageStateString
+
+				if ( windowPath_After_pageControllerPathSplitSlash.length <= nextPartPartToParseIndex ) {
+					//  nextPartPartToParseIndex does not exist in array
+					//    Value is required after 'q'
+					const msg = "ERROR parsing URL:  have '" + _STANDARD_PAGE_STATE_IDENTIFIER + "' but no value after it. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+					console.warn( msg );
+					throw Error( msg );
+				}
+
+				pageStateString = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past pageStateString
+			}
+
+			// referrer
+			if ( windowPath_After_pageControllerPathSplitSlash.length > nextPartPartToParseIndex && windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ] === _REFERRER_PATH_STRING ) {
+				//  Found next element contains 'r'
+				referrer = windowPath_After_pageControllerPathSplitSlash[ nextPartPartToParseIndex ];
+
+				nextPartPartToParseIndex++; //  Advance past referrer
+			}
+
+			if ( nextPartPartToParseIndex !== windowPath_After_pageControllerPathSplitSlash.length ) {
+				const msg = "ERROR parsing URL:  have more values than expected. windowPath_After_pageControllerPath to split: " + windowPath_After_pageControllerPath + "  ::  windowPath: " + windowPath;
+				console.warn( msg );
+				throw Error( msg );
+			}
+
 		} else {
-			const msg = "ERROR: is_ProjectSearchId_Based_URL and is_ExperimentId_Based_URL are both false.  Page URL: " + windowPath;
+			const msg = "ERROR: is_ProjectSearchId_Based_URL and is_ExperimentId_Based_URL and is_FeatureDetectionId_Based_URL are all false.  Page URL: " + windowPath;
 			console.warn( msg );
 			throw Error( msg );
 		}
@@ -325,6 +582,8 @@ export class ParseURL_Into_PageStateParts {
 		// Object to return
 		const pageStateParts = { 
 			experimentId,  //  Only populated for experiment id based pages
+			featureDetectionId_Encoded,    //  Only populated for feature detection id based pages
+			projectScanFileId_Encoded,     //  Only populated for Project Scan File Id based pages
 			searchDataLookupParametersCode,
 			pageStateIdentifier,
 			pageStateString,
