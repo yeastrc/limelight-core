@@ -203,20 +203,25 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         promise.catch(reason => {  })
         promise.then(scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root => { try {
 
+            let scan_DoesNotHave_totalIonCurrent_ForScan = false
+
             for ( const scan of scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
                 if ( scan.totalIonCurrent_ForScan === undefined || scan.totalIonCurrent_ForScan === null ) {
                     //  Scan does NOT have totalIonCurrent_ForScan.  CANNOT show this chart
 
-                    this.setState({ scan_DoesNotHave_totalIonCurrent_ForScan: true, showLoadingMessage_ForWholeScanFile: false });
-
-                    return; // EARLY RETURN
+                    scan_DoesNotHave_totalIonCurrent_ForScan = true
+                    break
                 }
             }
 
             this._scanLevels_ToShow = new Set()
             this._scanLevels_ToShow.add( 1 ); // Default to 1
 
-            this.setState({ scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root, showLoadingMessage_ForWholeScanFile: false })
+            this.setState({
+                scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root,
+                scan_DoesNotHave_totalIonCurrent_ForScan,
+                showLoadingMessage_ForWholeScanFile: false
+            })
             // console.warn( "returned from scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData: ", value )
 
 
@@ -591,15 +596,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                         </div>
                     ) : null }
 
-                    { this.state.scan_DoesNotHave_totalIonCurrent_ForScan ? (
-
-                        //  Unlikely but unsure if really old Spectr data has this field
-
-                        <div>
-                            Scan data does NOT have Total Ion Current.  Cannot show Data.
-                        </div>
-
-                    ) : this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root ? (
+                    { ( this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root || this.state.scan_DoesNotHave_totalIonCurrent_ForScan ) ? (
 
                         <React.Fragment>
 
@@ -611,57 +608,71 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                     File TIC Chromatogram
                                 </div>
 
-                                <div style={ { marginBottom: 10 } }>
-                                    <span>
-                                        Show data for scan level:
-                                    </span>
-                                    { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
-                                        return (
-                                            <React.Fragment key={ scanLevel }>
-                                                <span> </span>
-                                                <label>
-                                                    <input
-                                                        type="checkbox"
-                                                        defaultChecked={ this._scanLevels_ToShow.has( scanLevel ) }
-                                                        // checked={ this._scanLevels_ToShow.has( scanLevel ) }
-                                                        onChange={ event => {
-                                                            if ( event.target.checked ) {
-                                                                this._scanLevels_ToShow.add(scanLevel)
-                                                            } else {
-                                                                this._scanLevels_ToShow.delete(scanLevel)
-                                                            }
+                                { this.state.scan_DoesNotHave_totalIonCurrent_ForScan ? (
 
-                                                            this.setState({ force_ReRender: {} })
-                                                        }}
-                                                    />
-                                                    <span>{ scanLevel }</span>
-                                                </label>
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </div>
+                                    //  Really old Spectr data does NOT have Total Ion Current per Scan
 
-                                { ( this._scanLevels_ToShow.size === 0 ) ? (
-
-                                    <div>
-                                        No scan levels selected.
+                                    <div style={ { marginTop: 10 } }>
+                                        Scan data does NOT have Total Ion Current.  Cannot show Data.
                                     </div>
 
-                                ) : (
+                                ) : this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root ? (
+
                                     <>
-                                        <div style={ { marginBottom: 5 } }>
-                                            Click in plot to select a scan or enter scan number below.
+                                        <div style={ { marginTop: 5, marginBottom: 10 } }>
+                                            <span>
+                                                Show data for scan level:
+                                            </span>
+                                            { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
+                                                return (
+                                                    <React.Fragment key={ scanLevel }>
+                                                        <span> </span>
+                                                        <label>
+                                                            <input
+                                                                type="checkbox"
+                                                                defaultChecked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                                // checked={ this._scanLevels_ToShow.has( scanLevel ) }
+                                                                onChange={ event => {
+                                                                    if ( event.target.checked ) {
+                                                                        this._scanLevels_ToShow.add(scanLevel)
+                                                                    } else {
+                                                                        this._scanLevels_ToShow.delete(scanLevel)
+                                                                    }
+
+                                                                    this.setState({ force_ReRender: {} })
+                                                                }}
+                                                            />
+                                                            <span>{ scanLevel }</span>
+                                                        </label>
+                                                    </React.Fragment>
+                                                )
+                                            })}
                                         </div>
 
-                                        <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
-                                            projectScanFileId={ this.props.propsValue.projectScanFileId }
-                                            scanLevels_ToDisplay={ this._scanLevels_ToShow }
-                                            scanNumber_Selected={ this._scanNumber_CurrentlyShown }
-                                            scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
-                                            scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
-                                        />
+                                        { ( this._scanLevels_ToShow.size === 0 ) ? (
+
+                                            <div>
+                                                No scan levels selected.
+                                            </div>
+
+                                        ) : (
+                                            <>
+                                                <div style={ { marginBottom: 5 } }>
+                                                    Click in plot to select a scan or enter scan number below.
+                                                </div>
+
+                                                <ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component
+                                                    projectScanFileId={ this.props.propsValue.projectScanFileId }
+                                                    scanLevels_ToDisplay={ this._scanLevels_ToShow }
+                                                    scanNumber_Selected={ this._scanNumber_CurrentlyShown }
+                                                    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
+                                                    scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
+                                                />
+                                            </>
+                                        )}
+
                                     </>
-                                )}
+                                ) : null }
 
                             </div>
 

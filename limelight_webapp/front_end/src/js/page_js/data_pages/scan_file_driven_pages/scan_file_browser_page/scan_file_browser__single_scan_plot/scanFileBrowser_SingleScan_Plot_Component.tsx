@@ -497,10 +497,13 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                             <div>
                                 RT (Min): { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.retentionTime_InSeconds / 60 ).toFixed( 2 ) }
                             </div>
-                            <div>
-                                TIC: { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan ).toExponential( 2 ) }
-                            </div>
+                            { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan !== undefined
+                                && this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan !== null ) ? (
 
+                                <div>
+                                    TIC: { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan ).toExponential( 2 ) }
+                                </div>
+                            ) : null }
                             { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== undefined
                                 && this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== null ) ? (
 
