@@ -39,6 +39,10 @@ public class ProjectScanFilename_For_ProjectScanFileId_Set_Searcher extends Lime
 		
 		List<Project_ScanFilename_DTO>  resultList = new ArrayList<>( projectScanFileId_Set.size() );
 		
+		if ( projectScanFileId_Set == null || projectScanFileId_Set.isEmpty() ) {
+			return resultList;
+		}
+		
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		sqlSB.append( SQL_START );
 		

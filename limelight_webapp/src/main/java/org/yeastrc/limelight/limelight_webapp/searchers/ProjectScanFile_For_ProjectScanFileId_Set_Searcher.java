@@ -39,6 +39,11 @@ public class ProjectScanFile_For_ProjectScanFileId_Set_Searcher extends Limeligh
 		
 		List<Project_ScanFile_DTO>  resultList = new ArrayList<>( projectScanFileId_Set.size() );
 		
+		if ( projectScanFileId_Set == null || projectScanFileId_Set.isEmpty() ) {
+			
+			return resultList;
+		}
+		
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		sqlSB.append( SQL_START );
 		
