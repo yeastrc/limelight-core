@@ -176,6 +176,8 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
         const zoomChange_Callback_From_SingleScanComponent: Internal__ScanFileBrowser_SingleScan_Plot_Component__ZoomChange_Callback = this._zoomChange_Callback_From_SingleScanComponent
     }
 
+    private _totalIonCurrent_ForScan: number
+
     private _min_Max_X_Y_Values: Min_Max_X_Y_Values
 
     private _valuesInvalidIn__ScanFileBrowserPage_SingleScan_UserSelections_StateObject: Internal__ValuesInvalidIn__ScanFileBrowserPage_SingleScan_UserSelections_StateObject
@@ -191,6 +193,14 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
             this._min_Max_X_Y_Values = _compute_Min_Max_X_Y_Values( props );
 
             this._scanFileBrowserPage_SingleScan_UserSelections_StateObject__CheckForInvalidValues_UpdateClassProperty( props )
+
+            //  Scan Total Ion Current
+            this._totalIonCurrent_ForScan = props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan
+
+            if ( this._totalIonCurrent_ForScan === undefined || this._totalIonCurrent_ForScan === null ) {
+                //  No value for this._totalIonCurrent_ForScan so compute from scan peaks
+                this._totalIonCurrent_ForScan = this._compute_Scan_TotalIonCurrent_FromScanPeaks( props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber )
+            }
 
             this.state = {
                 force_Rerender: {}
@@ -238,6 +248,34 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
             reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
             throw e
         }
+    }
+
+    /**
+     *
+     */
+    private _compute_Scan_TotalIonCurrent_FromScanPeaks( scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber ) : number {
+
+        const scanPeakList_Copy = Array.from( scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.scanPeaksList )
+
+        //  Sort smallest to largest intensity
+        scanPeakList_Copy.sort( (a,b) => {
+            if ( a.intensity < b.intensity ) {
+                return -1
+            }
+            if ( a.intensity > b.intensity ) {
+                return 1
+            }
+            return 0
+        })
+
+        let totalIonCurrent = 0
+
+        for ( const scanPeak of scanPeakList_Copy ) {
+
+            totalIonCurrent += scanPeak.intensity
+        }
+
+        return totalIonCurrent
     }
 
     /**
@@ -497,13 +535,11 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                             <div>
                                 RT (Min): { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.retentionTime_InSeconds / 60 ).toFixed( 2 ) }
                             </div>
-                            { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan !== undefined
-                                && this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan !== null ) ? (
 
-                                <div>
-                                    TIC: { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan ).toExponential( 2 ) }
-                                </div>
-                            ) : null }
+                            <div>
+                                TIC: { ( this._totalIonCurrent_ForScan ).toExponential( 2 ) }
+                            </div>
+
                             { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== undefined
                                 && this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== null ) ? (
 
