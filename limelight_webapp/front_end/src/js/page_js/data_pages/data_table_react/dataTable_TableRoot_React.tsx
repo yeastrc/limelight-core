@@ -104,6 +104,8 @@ interface DataTable_TableRoot_State {
     showItemsPerPage_SelectValue? : number
 
     currentPage_CurrentValue? : number
+
+    tableRows_TotalCount?: number
 }
 
 /**
@@ -934,6 +936,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                             dataTable_INTERNAL_DataGroupRowEntry={ dataTable_INTERNAL_DataGroupRowEntry }
                             columns={ this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns }
                             tableOptions={ this.state.tableOptions }
+                            tableRows_TotalCount={ this.state.tableRows_TotalCount }
                             dataTable_RootTableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
                             dataTableId={ this.props.tableObject.dataTableId }
                             highlightRow={ highlightRow }
@@ -998,6 +1001,7 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                             <DataTable_Table_DataRow
                                 columns={ this.state.tableDataObject_INTERNAL.dataTable_RootTableDataObject.columns }
                                 dataTable_DataRowEntry_INTERNAL={ dataTable_INTERNAL_DataRowEntry }
+                                tableRows_TotalCount={ this.state.tableRows_TotalCount }
                                 tableOptions={ this.state.tableOptions }
                                 dataTable_RootTableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
                                 dataTableId={ this.props.tableObject.dataTableId }
@@ -1188,11 +1192,28 @@ const _createStateObjectFrom_DataTable_RootTableObject = function ({ tableObject
 
 }) : DataTable_TableRoot_State {
 
+    let tableRows_TotalCount = 0
+
+    {
+        if ( tableObject.tableDataObject.dataTable_DataRowEntries ) {
+            tableRows_TotalCount = tableObject.tableDataObject.dataTable_DataRowEntries.length
+        }
+
+        if ( tableObject.tableDataObject.dataTable_DataGroupRowEntries ) {
+
+            for ( const dataTable_DataGroupRowEntry of tableObject.tableDataObject.dataTable_DataGroupRowEntries ) {
+
+                tableRows_TotalCount += dataTable_DataGroupRowEntry.dataTable_DataRowEntries.length
+            }
+        }
+    }
+
     const state : DataTable_TableRoot_State = {
         tableDataObject_INTERNAL: dataTable_React_INTERNAL_DataObjects_InitialPopulation({ dataTable_RootTableDataObject : tableObject.tableDataObject}),
         tableOptions : tableObject.tableOptions,
         tableDataObject_FromProps: tableObject.tableDataObject,
-        tableOptions_FromProps : tableObject.tableOptions
+        tableOptions_FromProps : tableObject.tableOptions,
+        tableRows_TotalCount
     };
 
     if ( callFromConstructor ) {

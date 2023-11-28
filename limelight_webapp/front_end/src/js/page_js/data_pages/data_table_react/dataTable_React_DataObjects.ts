@@ -79,6 +79,7 @@ class DataTable_RootTableObject {
 class DataTable_TableOptions {
 
     enable_Pagination_Download_Search : boolean
+    dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow: boolean // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 
     private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
 
@@ -89,6 +90,7 @@ class DataTable_TableOptions {
     constructor( params : DataTable_TableOptions_ContructorParams) {
         if ( params ) {
             this.enable_Pagination_Download_Search = params.enable_Pagination_Download_Search;
+            this.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow = params.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow
         }
     }
 }
@@ -98,6 +100,7 @@ class DataTable_TableOptions {
  */
 interface DataTable_TableOptions_ContructorParams {
     enable_Pagination_Download_Search : boolean
+    dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow?: boolean // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 }
 
 
@@ -553,6 +556,9 @@ class DataTable_DataRowEntry {
     //  function called to get 'Row Child Content' to display when this row is expanded.  Callback returns Promise<...> to be compatible with 'async' functions.
     dataRow_Get_RowChildContent_Return_Promise_ChildContent? : DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent
 
+    dataRow_Get_RowChildContent_At_RowMountTime: boolean  //  Get the Child Row Mount Data at Row Mount Time
+    dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow  = true // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
+
     //  Data Table INTERNAL Properties
 
     // Child Table:
@@ -593,7 +599,10 @@ class DataTable_DataRowEntry {
             dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject,
             dataRow_Get_RowChildContent_Return_ChildContent,
             dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent,
-            dataRow_Get_RowChildContent_Return_Promise_ChildContent
+            dataRow_Get_RowChildContent_Return_Promise_ChildContent,
+
+            dataRow_Get_RowChildContent_At_RowMountTime,  //    Get the Child Row Mount Data at Row Mount Time.  ONLY Applicable if one of the dataRow_GetChild... or dataRow_Get_RowChild... is populated
+            dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 
         } : DataTable_DataRowEntry__Constructor ) { // type DataTable_DataRowEntry__Constructor for constructor properties declared below to support XOR properties
 
@@ -616,6 +625,9 @@ class DataTable_DataRowEntry {
         this.dataRow_Get_RowChildContent_Return_ChildContent = dataRow_Get_RowChildContent_Return_ChildContent;
         this.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent = dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent;
         this.dataRow_Get_RowChildContent_Return_Promise_ChildContent = dataRow_Get_RowChildContent_Return_Promise_ChildContent;
+
+        this.dataRow_Get_RowChildContent_At_RowMountTime = dataRow_Get_RowChildContent_At_RowMountTime //  Get the Child Row Mount Data at Row Mount Time
+        this.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow = dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 
         DataTable_DataRowEntry.constructorDataValidation( this )
     }
@@ -689,6 +701,9 @@ interface DataTable_DataRowEntry__Constructor_Base {
 
     //  function called on row click.  No properties passed from this object.
     tableRowClickHandler_Callback_NoDataPassThrough? : DataTable_DataRowEntry__tableRowClickHandler_Callback_NoDataPassThrough
+
+    dataRow_Get_RowChildContent_At_RowMountTime?: boolean  //  Get the Child Row Mount Data at Row Mount Time
+    dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow?: boolean // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 
     //  More properties are added in the extends interfaces.  Done there to limit use to exactly 1 of the properties.
 }

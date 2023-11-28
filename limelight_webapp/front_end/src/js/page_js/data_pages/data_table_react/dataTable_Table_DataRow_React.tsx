@@ -40,6 +40,7 @@ export interface DataTable_Table_DataRow_Props {
     dataTable_DataRowEntry_INTERNAL : DataTable_INTERNAL_DataRowEntry
     tableOptions : DataTable_TableOptions
     columns : Array<DataTable_Column>
+    tableRows_TotalCount: number
     dataTable_RootTableDataObject_INTERNAL :  DataTable_INTERNAL_RootTableDataObject
     dataTableId : string
     isInGroup: boolean
@@ -149,6 +150,41 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
         };
     }
 
+    componentDidMount() {
+        try {
+
+            if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_At_RowMountTime
+            || ( ( this.props.tableRows_TotalCount  === 1 )
+                && ( ( ! this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow ) // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
+                    && ( ! this.props.tableOptions.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow )
+                    )
+                )
+            ) {
+
+                //  Trigger same processing as if user had clicked on the row
+
+                if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject_OR_Promise_DataTable_RootTableObject ||
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ) {
+
+                    this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject();
+
+                } else if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
+                    this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
+
+                    this._processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent();
+                }
+
+            }
+
+        } catch (e) {
+            console.warn("Error Caught: ", e);
+            reportWebErrorToServer.reportErrorObjectToServer({errorException: e});
+            throw e;
+        }
+    }
+
     /**
     * @returns true if should update, false otherwise
     */
@@ -243,13 +279,13 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
                 this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject ||
                 this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_GetChildTableData_Return_DataTable_RootTableObject ) {
 
-                this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event });
+                this._processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject();
 
             } else if ( this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent ||
                 this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent ||
                 this.props.dataTable_DataRowEntry_INTERNAL.dataTable_DataRowEntry.dataRow_Get_RowChildContent_Return_Promise_ChildContent ) {
 
-                this._processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent({ event });
+                this._processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent();
             }
 
         } catch( e ) {
@@ -270,7 +306,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
      *
      *  Process handlers directly on the dataObject
      */
-    _processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
+    _processChildTableClick_For_dataRow_GetChildTableData_Return_Promise_DataTable_RootTableObject() {
 
         // Invert state.displayChildTable to show/hide child table
 
@@ -384,7 +420,7 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
      *
      *  Process handlers directly on the dataObject
      */
-    _processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent({ event } : { event : React.MouseEvent<HTMLTableRowElement, MouseEvent> }) {
+    _processChildTableClick_For_dataRow_Get_RowChildContent_Return_ChildContent_Or_Promise_ChildContent() {
 
         // Invert state.displayChildTable to show/hide child table
 

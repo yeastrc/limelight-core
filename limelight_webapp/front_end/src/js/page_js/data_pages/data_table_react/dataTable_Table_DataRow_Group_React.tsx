@@ -27,6 +27,7 @@ export interface DataTable_Table_DataRow_Group_Props {
 
   dataTable_INTERNAL_DataGroupRowEntry : DataTable_INTERNAL_DataGroupRowEntry
   columns : Array<DataTable_Column>
+  tableRows_TotalCount: number
   tableOptions : DataTable_TableOptions
   dataTable_RootTableDataObject_INTERNAL :  DataTable_INTERNAL_RootTableDataObject
   dataTableId : string
@@ -62,6 +63,7 @@ export class DataTable_Table_DataRow_Group extends React.Component< DataTable_Ta
         const reactRowElement = (
             <DataTable_Table_DataRow 
               columns={ this.props.columns }
+              tableRows_TotalCount={ this.props.tableRows_TotalCount }
               dataTable_DataRowEntry_INTERNAL={ dataTable_DataRowEntry_INTERNAL }
               tableOptions={ this.props.tableOptions }
               dataTable_RootTableDataObject_INTERNAL={ this.props.dataTable_RootTableDataObject_INTERNAL }
