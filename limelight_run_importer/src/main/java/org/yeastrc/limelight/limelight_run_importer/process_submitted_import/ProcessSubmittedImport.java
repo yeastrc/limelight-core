@@ -654,7 +654,9 @@ public class ProcessSubmittedImport {
 		FileImportTrackingDTO currentTrackingDTO = FileImportTracking_Shared_Get_DAO.getInstance().getItem( trackingId );
 		if ( currentTrackingDTO.getStatus() != FileImportStatus.COMPLETE ) {
 			//  Status is not COMPLETE so NO DELETION
-			System.out.println( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) currentTrackingDTO.getStatus() != FileImportStatus.COMPLETE so return. currentTrackingDTO.getStatus(): " + currentTrackingDTO.getStatus() );
+			if ( log.isInfoEnabled() ) {
+				log.info( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) currentTrackingDTO.getStatus() != FileImportStatus.COMPLETE so return. currentTrackingDTO.getStatus(): " + currentTrackingDTO.getStatus() );
+			}
 			return;  //  EARLY EXIT
 		}
 		// Get configuration item

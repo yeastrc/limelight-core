@@ -63,6 +63,12 @@ public class ImportAndPipelineRun_Thread extends Thread {
 	//  Instance Properties
 	
 	private volatile boolean keepRunning = true;
+
+	public boolean isKeepRunning() {
+		return keepRunning;
+	}
+
+
 	private volatile ProcessSubmittedImportOrPipelineRun processSubmittedImportOrPipelineRun;
 	
 	private volatile boolean firstInstanceOfThisThread;
@@ -155,7 +161,7 @@ public class ImportAndPipelineRun_Thread extends Thread {
 	 */
 	public void stopRunningAfterProcessingImport() {
 
-		log.warn("INFO: stopRunningAfterProcessingJob() called:  ImportAndPipelineRun_Thread.getId() = " + this.getId() + ", ImportAndPipelineRun_Thread.getName() = " + this.getName() );
+		log.info("INFO: stopRunningAfterProcessingJob() called:  ImportAndPipelineRun_Thread.getId() = " + this.getId() + ", ImportAndPipelineRun_Thread.getName() = " + this.getName() );
 		synchronized (this) {
 			this.keepRunning = false;
 		}

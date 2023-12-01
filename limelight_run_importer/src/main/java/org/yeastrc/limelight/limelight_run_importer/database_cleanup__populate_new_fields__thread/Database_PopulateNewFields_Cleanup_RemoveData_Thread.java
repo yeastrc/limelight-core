@@ -72,6 +72,11 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 
 	private volatile boolean keepRunning = true;
 
+	public boolean isKeepRunning() {
+		return keepRunning;
+	}
+	
+ 
 	private volatile boolean logged_CloseAllConnections_Exception = false;
 	
 	private boolean getNewInstance_FirstCall;
@@ -170,7 +175,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	 */
 	public void stopRunningAfterProcessingImport() {
 
-		log.warn("INFO: stopRunningAfterProcessingJob() called:  ImportFiles_DelayedRemoval_Thread.getId() = " + this.getId() + ", ImportFiles_DelayedRemoval_Thread.getName() = " + this.getName() );
+		log.info("INFO: stopRunningAfterProcessingJob() called:  ImportFiles_DelayedRemoval_Thread.getId() = " + this.getId() + ", ImportFiles_DelayedRemoval_Thread.getName() = " + this.getName() );
 		synchronized (this) {
 			this.keepRunning = false;
 		}
@@ -182,7 +187,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 	 * If this is not heeded, the process may be killed by the operating system after some time has passed ( controlled by the operating system )
 	 */
 	public void shutdown() {
-		log.warn( "shutdown() called, setting keepRunning = false, calling awaken() " );
+		log.info( "shutdown() called, setting keepRunning = false, calling awaken() " );
 		keepRunning = false;
 
 		try {
@@ -192,7 +197,7 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 		}
 
 		awaken();
-		log.warn( "Exiting shutdown()" );
+		log.info( "Exiting shutdown()" );
 	}
 
 
@@ -479,5 +484,5 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 			}
 		}
 	}
- 
+
 }

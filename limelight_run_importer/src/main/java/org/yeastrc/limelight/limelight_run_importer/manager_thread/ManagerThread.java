@@ -225,7 +225,7 @@ public class ManagerThread extends Thread {
 		
 		//  TODO  Add code here
 		
-		log.warn( "Add code in public void completedSuccessful_FirstDatabaseSQL_ImportAndPipelineRun_Thread");
+		log.info( "Add code in public void completedSuccessful_FirstDatabaseSQL_ImportAndPipelineRun_Thread");
 	}
 	
 	
@@ -589,7 +589,8 @@ public class ManagerThread extends Thread {
 						maxTrackingRecordPriorityToRetrieve );
 
 				getImportAndProcessThreadCounter += 1;
-				if ( oldGetImportAndProcessThread != null ) {
+				if ( oldGetImportAndProcessThread != null && oldGetImportAndProcessThread.isKeepRunning() ) {
+					//  Only log when 'keepRunning' is true since thread did NOT intend to die
 					log.warn( "GetImportAndProcessThread thread '" + oldGetImportAndProcessThread.getName() + "' is dead.  Replacing it with GetImportAndProcessThread thread '" + getImportAndProcessThread.getName() + "'."  );
 				}
 				
@@ -607,7 +608,8 @@ public class ManagerThread extends Thread {
 						maxTrackingRecordPriorityToRetrieve );
 				
 				importAndPipelineRun_ThreadCounter += 1;
-				if ( old_importAndPipelineRun_Thread != null ) {
+				if ( old_importAndPipelineRun_Thread != null && old_importAndPipelineRun_Thread.isKeepRunning() ) {
+					//  Only log when 'keepRunning' is true since thread did NOT intend to die
 					log.warn( "ImportAndPipelineRun_Thread thread '" + old_importAndPipelineRun_Thread.getName() + "' is dead.  Replacing it with ImportAndPipelineRun_Thread thread '" + importAndPipelineRun_Thread.getName() + "'."  );
 				}
 				
@@ -632,7 +634,8 @@ public class ManagerThread extends Thread {
 					importFiles_DelayedRemoval_Thread = ImportFiles_DelayedRemoval_Thread.getNewInstance( 
 							IMPORT_FILES_DELAYED_REMOVAL_THREAD + "_" + importFiles_DelayedRemoval_ThreadCounter /* name */, dbConnectionParametersProvider );
 					importFiles_DelayedRemoval_ThreadCounter += 1;
-					if ( old_importFiles_DelayedRemoval_Thread != null ) {
+					if ( old_importFiles_DelayedRemoval_Thread != null && old_importFiles_DelayedRemoval_Thread.isKeepRunning() ) {
+						//  Only log when 'keepRunning' is true since thread did NOT intend to die
 						log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_importFiles_DelayedRemoval_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + importFiles_DelayedRemoval_Thread.getName() + "'."  );
 					}
 					importFiles_DelayedRemoval_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
@@ -666,8 +669,9 @@ public class ManagerThread extends Thread {
 								dbConnectionParametersProvider  );
 						
 						database_PopulateNewFields_Cleanup_RemoveData_ThreadCounter += 1;
-						if ( old_database_PopulateNewFields_Cleanup_RemoveData_Thread != null ) {
-							log.error( "ImportFiles_DelayedRemoval_Thread thread '" + old_database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with ImportFiles_DelayedRemoval_Thread thread '" + database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "'."  );
+						if ( old_database_PopulateNewFields_Cleanup_RemoveData_Thread != null && old_database_PopulateNewFields_Cleanup_RemoveData_Thread.isKeepRunning() ) {
+							//  Only log when 'keepRunning' is true since thread did NOT intend to die
+							log.warn( "Database_PopulateNewFields_Cleanup_RemoveData_Thread thread '" + old_database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "' is dead.  Replacing it with Database_PopulateNewFields_Cleanup_RemoveData_Thread thread '" + database_PopulateNewFields_Cleanup_RemoveData_Thread.getName() + "'."  );
 						}
 						database_PopulateNewFields_Cleanup_RemoveData_Thread.setDaemon(true);  //  If NOT Set true then need to change all 'Thread.sleep(...)'
 						

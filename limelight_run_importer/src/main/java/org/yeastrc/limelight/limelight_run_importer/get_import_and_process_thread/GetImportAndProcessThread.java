@@ -69,6 +69,12 @@ public class GetImportAndProcessThread extends Thread {
 	
 	
 	private volatile boolean keepRunning = true;
+
+	public boolean isKeepRunning() {
+		return keepRunning;
+	}
+
+
 	private volatile ProcessSubmittedImport processSubmittedImport;
 	
 	//  Parent ManagerThread managerThread
@@ -163,7 +169,7 @@ public class GetImportAndProcessThread extends Thread {
 	 */
 	public void stopRunningAfterProcessingImport() {
 
-		log.warn("INFO: stopRunningAfterProcessingJob() called:  GetImportAndProcessThread.getId() = " + this.getId() + ", GetImportAndProcessThread.getName() = " + this.getName() );
+		log.info("INFO: stopRunningAfterProcessingJob() called:  GetImportAndProcessThread.getId() = " + this.getId() + ", GetImportAndProcessThread.getName() = " + this.getName() );
 		synchronized (this) {
 			this.keepRunning = false;
 		}
@@ -652,7 +658,6 @@ public class GetImportAndProcessThread extends Thread {
 			//  Eat Exception
 		}
 	}
-
 
 	
 }

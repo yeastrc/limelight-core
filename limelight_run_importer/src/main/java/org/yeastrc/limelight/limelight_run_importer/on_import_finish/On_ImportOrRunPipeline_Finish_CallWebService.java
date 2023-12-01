@@ -426,7 +426,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 				} catch ( Exception ex ) {
 				}
 				LimelightCallWebserviceOnImportFinishException wcee = new LimelightCallWebserviceOnImportFinishException( "IOException sending XML to server at URL: " + webserviceURL, e );
@@ -443,7 +443,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 						closeOutputStreamFail = true;
 						byte[] errorStreamContents = null;
 						try {
-							errorStreamContents= getErrorStreamContents( httpURLConnection );
+							errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 						} catch ( Exception ex ) {
 						}
 						LimelightCallWebserviceOnImportFinishException wcee = new LimelightCallWebserviceOnImportFinishException( "IOException closing output Stream to server at URL: " + webserviceURL, e );
@@ -460,7 +460,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 									// Only throw exception if close of output stream successful
 									byte[] errorStreamContents = null;
 									try {
-										errorStreamContents= getErrorStreamContents( httpURLConnection );
+										errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 									} catch ( Exception ex ) {
 									}
 									LimelightCallWebserviceOnImportFinishException wcee = new LimelightCallWebserviceOnImportFinishException( "Exception closing output Stream to server at URL: " + webserviceURL, e );
@@ -479,7 +479,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 				if ( httpResponseCode != SUCCESS_HTTP_RETURN_CODE ) {
 					byte[] errorStreamContents = null;
 					try {
-						errorStreamContents= getErrorStreamContents( httpURLConnection );
+						errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 					} catch ( Exception ex ) {
 					}
 					LimelightCallWebserviceOnImportFinishException wcee = 
@@ -494,7 +494,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 				} catch ( Exception ex ) {
 				}
 				LimelightCallWebserviceOnImportFinishException wcee = 
@@ -517,7 +517,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 			} catch ( IOException e ) {
 				byte[] errorStreamContents = null;
 				try {
-					errorStreamContents= getErrorStreamContents( httpURLConnection );
+					errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 				} catch ( Exception ex ) {
 				}
 				LimelightCallWebserviceOnImportFinishException wcee = 
@@ -533,7 +533,7 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 					} catch ( IOException e ) {
 						byte[] errorStreamContents = null;
 						try {
-							errorStreamContents= getErrorStreamContents( httpURLConnection );
+							errorStreamContents= getErrorStreamContents( httpURLConnection, webserviceURL );
 						} catch ( Exception ex ) {
 						}
 						LimelightCallWebserviceOnImportFinishException wcee = 
@@ -559,7 +559,10 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 	 * @return
 	 * @throws IOException
 	 */
-	private byte[] getErrorStreamContents(HttpURLConnection httpURLConnection) throws IOException {
+	private byte[] getErrorStreamContents(
+			
+			HttpURLConnection httpURLConnection,
+			String webserviceURL ) throws IOException {
 		
 		InputStream inputStream = httpURLConnection.getErrorStream();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -575,11 +578,18 @@ public class On_ImportOrRunPipeline_Finish_CallWebService {
 			}
 		}
 		if ( baos.size() > 0 ) {
-			System.err.println( "Syserr returned from calling Limelight Web App Webservice.  Size: " + baos.size() );
-			System.err.println( "Syserr contents (START):" );
-			baos.writeTo( System.err );
-			System.err.println();
-			System.err.println( "Syserr contents (END):" );
+			
+			String baos_String = "Unable to convert Syserr from Limelight Webapp to Java String.";
+			
+			try {
+				baos_String = baos.toString();
+				
+			} catch ( Throwable t ) {
+				
+				
+			}
+			
+			log.warn( "Syserr returned from calling Limelight Web App Webservice. webserviceURL:" + webserviceURL + ", Size: " + baos.size() + ", Syserr Contents: "  + baos_String );
 		}
 		return baos.toByteArray();
 	}

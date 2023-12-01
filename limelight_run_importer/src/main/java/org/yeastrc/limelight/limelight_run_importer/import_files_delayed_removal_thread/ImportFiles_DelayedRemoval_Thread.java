@@ -46,6 +46,11 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 	
 	private volatile boolean keepRunning = true;
 
+	public boolean isKeepRunning() {
+		return keepRunning;
+	}
+	
+	
 	private ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory;
 	
 	/**
@@ -306,6 +311,7 @@ public class ImportFiles_DelayedRemoval_Thread extends Thread {
 			}
 		}
 	}
+
 
 
 }
