@@ -7,7 +7,7 @@
 
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data";
+import { Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__psm__ppm_error/qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {QcPage_ChartFiller_NoData} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
@@ -18,7 +18,7 @@ import {QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_StatisticsPlot} from
  */
 export interface QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_MainPageContainer_Props {
 
-    psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId: Map<number, Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>>
+    psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId: Map<number, Array<Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM>>
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
     qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent: QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent
 }
@@ -60,7 +60,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_PPM_Error_MainPageContain
 
         let show_NoData_Message = false;
 
-        if ( this.props.psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId.size === 0 ) {
+        if ( ( ! this.props.psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId ) || this.props.psm_PPM_Error_List_Filtered_Map_Key_SearchSubGroupId.size === 0 ) {
             //  NO Data
             show_NoData_Message = true;
         }

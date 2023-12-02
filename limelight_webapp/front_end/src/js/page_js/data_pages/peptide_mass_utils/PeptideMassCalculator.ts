@@ -90,6 +90,19 @@ class PeptideMassCalculator {
         const mz = (monoisotopicMass + (PROTON_MASS * charge)) / charge;
         return mz
     }
+
+    static calculate_MonoisotopicMass_From_MZ_Charge(
+        {
+            mz, charge
+        } : {
+            mz: number
+            charge: number
+        }
+    ): number {
+
+        const monoisotopicMass = ( mz * charge ) - (PROTON_MASS * charge)
+        return monoisotopicMass
+    }
 }
 
 const PROTON_MASS    = 1.00727647;

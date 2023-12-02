@@ -16,7 +16,6 @@ import {QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded} fro
 import {QcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded";
-import {QcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 /**
@@ -34,7 +33,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
     private _qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
     private _qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded
     private _qcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded
-    private _qcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded
 
     constructor(
         {
@@ -81,7 +79,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
         this._qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded();
         this._qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded();
         this._qcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_PsmTblData_LoadIfNeeded();
-        this._qcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded();
     }
 
     /**
@@ -420,33 +417,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
             });
         })
     }
-
-    /**
-     * @returns null if no promise needed
-     */
-    get_Psm_PPM_Error_Statistics_Data() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches> {
-
-        const promise = this._qcPage_DataFromServer_MultipleSearches_Psm_PPM_Error_Data_LoadIfNeeded.multipleSearches_Psm_PPM_Error_Data_LoadIfNeeded({
-            retrievalParams: this._retrievalParams,
-            retrievalParamsSingleSearch_Map_Key_ProjectSearchId: this._retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-            data_Holder_MultipleSearches: this._data_Holder_MultipleSearches
-        });
-
-        if ( ! promise ) {
-            //  No wait so immediately return resolved promise
-            return Promise.resolve( this._data_Holder_MultipleSearches );
-        }
-
-        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches>( (resolve, reject) => {
-            promise.catch( reason => {
-                reject( reason );
-            });
-            promise.then( value => {
-                resolve( this._data_Holder_MultipleSearches );
-            });
-        });
-    }
-
 }
 
 /**

@@ -9,14 +9,14 @@ import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
-import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId,
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_Root
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data";
-import {mean, deviation} from "d3";
 import {QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer";
 import {QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_MainPageContainer";
 import {QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_MainPageContainer";
+import {
+    qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch,
+    Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result,
+    Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__psm__ppm_error/qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch";
 
 /**
  *
@@ -35,7 +35,7 @@ interface Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_State {
 
     sectionExpanded?: boolean
     loadingData?: boolean
-    psm_PPM_Error_List_Filtered?: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId>
+    psm_PPM_Error_List_Filtered_New?: Array<Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM>
 }
 
 /**
@@ -54,7 +54,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
     private _projectSearchId: number
 
-    private _psm_PPM_Error_Data: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_Root
+    private _psm_PPM_Error_Data: Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result
 
     /**
      *
@@ -62,42 +62,48 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
     constructor(props: Qc_SingleSearch_PSM_PPM_Error_Statistics_Section_Props) {
         super(props);
 
-        if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 ) {
-            const msg = "ONLY valid for 1 search";
-            console.warn(msg);
-            throw Error(msg);
-        }
-
-
-        if ( ! ( props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData
-            || ( props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull
-                && props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) ) ) {
-            // No Data for section so NOT render it
-            this._renderSection = false;
-        } else {
-
-            const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
-            const qcPage_Flags_SingleSearch_ForProjectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId
-
-            if ( qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull && qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) {
-
-            } else if ( qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
-
-
-            } else {
-                const msg = "Neither is true. qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull, qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData "
+        try {
+            if ( props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds.length !== 1 ) {
+                const msg = "ONLY valid for 1 search";
                 console.warn(msg);
-                throw Error(msg)
+                throw Error(msg);
             }
 
+
+            if ( ! ( props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData
+                || ( props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull
+                    && props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) ) ) {
+                // No Data for section so NOT render it
+                this._renderSection = false;
+            } else {
+
+                const qcPage_Searches_Info_SingleSearch_ForProjectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Searches_Info_SingleSearch_ForProjectSearchId;
+                const qcPage_Flags_SingleSearch_ForProjectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.qcPage_Flags_SingleSearch_ForProjectSearchId
+
+                if ( qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull && qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_retention_time__NotNull ) {
+
+                } else if ( qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
+
+
+                } else {
+                    const msg = "Neither is true. qcPage_Searches_Info_SingleSearch_ForProjectSearchId.precursor_m_z__NotNull, qcPage_Flags_SingleSearch_ForProjectSearchId.hasScanData "
+                    console.warn(msg);
+                    throw Error(msg)
+                }
+
+            }
+
+            this._projectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
+
+            this.state =  {
+                sectionExpanded: this._sectionExpanded,
+                loadingData: true
+            };
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
         }
-
-        this._projectSearchId = props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
-
-        this.state =  {
-            sectionExpanded: this._sectionExpanded,
-            loadingData: true
-        };
     }
 
     /**
@@ -187,32 +193,25 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
         window.setTimeout( () => {
 
-            const promise_get_Psm_PPM_Error_Statistics_Data =
-                this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                qcPage_DataFromServer_AndDerivedData_SingleSearch.get_Psm_PPM_Error_Statistics_Data();
+            const promise__qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch =
+                qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch({
+                    projectSearchId: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId,
+                    qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+                })
 
-            promise_get_Psm_PPM_Error_Statistics_Data.catch( reason => {
+            promise__qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch.catch(reason => {})
+            promise__qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch.then(value => {
                 try {
+                    this._psm_PPM_Error_Data = value
+
+                    this._filterPSMs()
 
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
-            });
+            })
 
-            promise_get_Psm_PPM_Error_Statistics_Data.then( value => {
-                try {
-                    const psm_PPM_Error_Data: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_Root = value.psm_PPM_Error_Data;
-
-                    this._psm_PPM_Error_Data = psm_PPM_Error_Data;
-
-                    this._filterPSMs();
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            });
         }, 10 )
     }
 
@@ -229,8 +228,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
             this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
                 proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
 
-
-        const psm_PPM_Error_List_Filtered: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId> = [];
+        const psm_PPM_Error_List_Filtered: Array<Qc_Psm_PPM_Error__GetData_And_Compute_PPM_Error_All_PSMs_For_MainFilters_For_SingleSearch__Result__Single_PSM> = [];
 
         for (const peptideDistinct_Entry of peptideDistinct_Array) {
 
@@ -247,14 +245,14 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                 if (dataPerReportedPeptideId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId) {
 
-                    const psmTblData_For_ReportedPeptideId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId);
+                    const psmTblData_For_ReportedPeptideId = this._psm_PPM_Error_Data.get_PPM_Error__PSMs_For_ReportedPeptideId(reportedPeptideId);
                     if ( ! psmTblData_For_ReportedPeptideId ) {
-                        const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_ReportedPeptideId(reportedPeptideId);; returned nothing: reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                        const msg = "this._psm_PPM_Error_Data.get_PPM_Error__PSMs_For_ReportedPeptideId(reportedPeptideId); returned nothing: reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
                         console.warn(msg);
                         throw Error(msg);
                     }
 
-                    for ( const psm_PPM_Error_DataEntry of psmTblData_For_ReportedPeptideId.get_Psm_PPM_Error_Data_Entries_IterableIterator() ) {
+                    for ( const psm_PPM_Error_DataEntry of psmTblData_For_ReportedPeptideId.dataForPsms_For_ReportedPeptideId_Array ) {
                         psm_PPM_Error_List_Filtered.push( psm_PPM_Error_DataEntry );
                     }
 
@@ -263,7 +261,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                         for ( const psmId of dataPerReportedPeptideId_Value.psmIdsSet ) {
 
-                            const psm_PPM_Error_Data_For_PsmId = this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId);
+                            const psm_PPM_Error_Data_For_PsmId = this._psm_PPM_Error_Data.get_PPM_Error_For_PsmId(psmId);
                             if ( ! psm_PPM_Error_Data_For_PsmId ) {
                                 const msg = "this._psm_PPM_Error_Data.get_Psm_PPM_Error_Data_For_PsmId(psmId); returned nothing: psmId: " + psmId + ", projectSearchId: " + projectSearchId;
                                 console.warn(msg);
@@ -276,35 +274,8 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
             }
         }
 
-        //  Next remove outliers before first quartile and after 3rd quartile
-
-        const psm_PPM_Error_List_Filtered_RemovedOutliers: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_Psm_PPM_Error_Data_ForSinglePsmId> = [];
-
-        {
-            const data_array_ForQuartile : Array<number> = [];
-            for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered ) {
-
-                data_array_ForQuartile.push( psm_PPM_Error.ppmError );
-            }
-
-            const psm_PPM_Error_Mean = mean(data_array_ForQuartile);
-            const psm_PPM_Error_StandardDeviation = deviation(data_array_ForQuartile);
-
-            for ( const psm_PPM_Error of psm_PPM_Error_List_Filtered ) {
-
-                //  Keep everything within 2
-
-                const psmDeviation = Math.abs( psm_PPM_Error.ppmError - psm_PPM_Error_Mean )
-
-                if ( psmDeviation < ( 2 * psm_PPM_Error_StandardDeviation ) ) {
-                    psm_PPM_Error_List_Filtered_RemovedOutliers.push( psm_PPM_Error );
-                }
-            }
-        }
-
-        this.setState({ loadingData: false, psm_PPM_Error_List_Filtered: psm_PPM_Error_List_Filtered_RemovedOutliers })
+        this.setState({ loadingData: false, psm_PPM_Error_List_Filtered_New: psm_PPM_Error_List_Filtered })
     }
-
 
     /**
      *
@@ -357,7 +328,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_PPM_Error_MainPageContainer
-                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
+                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered_New }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                         />
@@ -365,7 +336,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_RetentionTime_MainPageContainer
-                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
+                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered_New }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                         />
@@ -373,7 +344,7 @@ export class Qc_SingleSearch_PSM_PPM_Error_Statistics_Section extends React.Comp
 
                                     <div className=" chart-container-multiple-on-same-row ">
                                         <QcViewPage_SingleSearch__PSM_Count__PSM_PPM_Error_VS_M_Z_MainPageContainer
-                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered }
+                                            psm_PPM_Error_List_Filtered={ this.state.psm_PPM_Error_List_Filtered_New }
                                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
                                             qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
                                         />

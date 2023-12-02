@@ -16,7 +16,6 @@ import {QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNe
 import {QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded";
-import {QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 
@@ -37,7 +36,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches {
     private _qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded
-    private _qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded
 
     constructor(
         {
@@ -65,7 +63,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches {
         this._qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded();
-        this._qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded();
     }
 
     /**
@@ -352,31 +349,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches {
             });
         })
     }
-
-    /**
-     * @returns null if no promise needed
-     */
-    get_Psm_PPM_Error_Statistics_Data() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches> {
-
-        const promise = this._qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded.singleSearch_Psm_PPM_Error_Data_LoadIfNeeded({
-            retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch__SubSearches.get_data_Holder_SingleSearch()
-        });
-
-        if ( ! promise ) {
-            //  No wait so immediately return resolved promise
-            return Promise.resolve( this._data_Holder_SingleSearch__SubSearches );
-        }
-
-        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches>( (resolve, reject) => {
-            promise.catch( reason => {
-                reject( reason );
-            });
-            promise.then( value => {
-                resolve( this._data_Holder_SingleSearch__SubSearches );
-            });
-        })
-    }
-
 }
 
 /**

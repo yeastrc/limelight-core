@@ -683,9 +683,6 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
 			"d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0002";
 
-	public static final String PSM_PPM_ERROR_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
-			"d/rws/for-page/psb/psm-ppm-error-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
-
 	public static final String PSM_REPORTER_ION_MASSES_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
 			"d/rws/for-page/psb/psm-reporter-ion-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 

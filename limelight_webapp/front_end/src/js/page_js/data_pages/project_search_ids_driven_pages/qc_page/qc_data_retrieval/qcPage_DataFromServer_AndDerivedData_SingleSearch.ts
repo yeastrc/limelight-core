@@ -12,7 +12,6 @@ import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch} from "page_js/
 import {QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded";
 import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {DataPage_common_Searches_Info_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
-import {QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded";
 import {QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
@@ -31,7 +30,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
     private _qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded
-    private _qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded
     private _qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded: QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded
@@ -49,7 +47,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
         this._qcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_SearchScanFileData_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmTblData_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_PsmFilterableAnnotationData_LoadIfNeeded();
-        this._qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded();
 
         this._qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded();
         this._qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded();
@@ -520,32 +517,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
             });
         })
     }
-
-
-    /**
-     * @returns null if no promise needed
-     */
-    get_Psm_PPM_Error_Statistics_Data() : Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch> {
-
-        const promise = this._qcPage_DataFromServer_SingleSearch_Psm_PPM_Error_Data_LoadIfNeeded.singleSearch_Psm_PPM_Error_Data_LoadIfNeeded({
-            retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
-        });
-
-        if ( ! promise ) {
-            //  No wait so immediately return resolved promise
-            return Promise.resolve( this._data_Holder_SingleSearch );
-        }
-
-        return new Promise<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch>( (resolve, reject) => {
-            promise.catch( reason => {
-                reject( reason );
-            });
-            promise.then( value => {
-                resolve( this._data_Holder_SingleSearch );
-            });
-        })
-    }
-
 }
 
 /**
