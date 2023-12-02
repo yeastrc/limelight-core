@@ -347,7 +347,7 @@ const _process_LoadedData = function (
 
 
 
-    // let CSV_Logging_TEMP = "\n\nPeptide Sequence, mods (variable and open mods semicolon separator,charge, peptideMass_Calculated = PeptideMassCalculator.calculatePeptideMass(peptideSequence, modifications_All_For_PSM), precursorMZ, 1000000 * (peptideMass_From_PrecursorMZ - peptideMass_Calculated_C13_Add_Closest) / peptideMass_From_PrecursorMZ, ScanNumber, SearchScanFileId, PsmId\n"
+    // let CSV_Logging_TEMP = "\n\nPeptide Sequence, mods (variable and open mods semicolon separator,charge, peptideMass_Calculated = PeptideMassCalculator.calculatePeptideMass(peptideSequence comma modifications_All_For_PSM), precursorMZ, 1000000 * (peptideMass_From_PrecursorMZ - peptideMass_Calculated_C13_Add_Closest) / peptideMass_From_PrecursorMZ, ScanNumber, SearchScanFileId, PsmId\n"
 
 
     for ( const psm of psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_Entries_IterableIterator() ) {
@@ -519,7 +519,7 @@ const _process_LoadedData = function (
             dataForPsms_For_ReportedPeptideId_Array.push( ppm_Error_Map_Entry )
         }
 
-        // CSV_Logging_TEMP += peptideSequence + "," + modifications_All_For_PSM.join(";") + psm.charge + "," + peptideMass_Calculated + "," + peptideMass_From_PrecursorMZ + "," + ppm_Error + "," + psm.scanNumber + "," + psm.searchScanFileId + "," + psm.psmId + "\n"
+        // CSV_Logging_TEMP += peptideSequence + "," + modifications_All_For_PSM.join(";") + "," + psm.charge + "," + peptideMass_Calculated + "," + peptideMass_From_PrecursorMZ + "," + ppm_Error + "," + psm.scanNumber + "," + psm.searchScanFileId + "," + psm.psmId + "\n"
     }
 
 
