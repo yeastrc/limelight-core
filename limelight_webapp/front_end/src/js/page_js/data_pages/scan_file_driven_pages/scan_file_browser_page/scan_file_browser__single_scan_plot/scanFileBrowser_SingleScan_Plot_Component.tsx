@@ -599,7 +599,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
 
                         return (  //  EARLY RETURN
 
-                            <div style={ { marginTop: 10, fontWeight: "bold" } }>
+                            <div style={ { marginTop: 10, marginBottom: 10, fontWeight: "bold" } }>
                                 No data since M/Z Start is greater than all scan peaks M/Z values
                             </div>
                         )
@@ -608,7 +608,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
 
                         return (  //  EARLY RETURN
 
-                            <div style={ { marginTop: 10, fontWeight: "bold" } }>
+                            <div style={ { marginTop: 10, marginBottom: 10, fontWeight: "bold" } }>
                                 No data since M/Z End is less than all scan peaks M/Z values
                             </div>
                         )
@@ -1400,7 +1400,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                         return (  //  EARLY RETURN
 
-                            <div style={ { marginTop: 10, fontWeight: "bold" } }>
+                            <div style={ { marginTop: 10, marginBottom: 10, fontWeight: "bold" } }>
                                 No data since M/Z Start is greater than all scan peaks M/Z values
                             </div>
                         )
@@ -1409,7 +1409,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                         return (  //  EARLY RETURN
 
-                            <div style={ { marginTop: 10, fontWeight: "bold" } }>
+                            <div style={ { marginTop: 10, marginBottom: 10, fontWeight: "bold" } }>
                                 No data since M/Z End is less than all scan peaks M/Z values
                             </div>
                         )
