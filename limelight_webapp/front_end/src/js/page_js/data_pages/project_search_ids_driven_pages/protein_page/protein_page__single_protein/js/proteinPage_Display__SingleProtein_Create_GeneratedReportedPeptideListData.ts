@@ -2107,11 +2107,11 @@ const _process_VariableModifications_ForSingleReportedPeptideId = function (
 
             if ( is_N_Terminal ) {
 
-                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
+                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
 
             } else if ( is_C_Terminal ) {
 
-                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
             }
 
             let modsRoundedSet = modsRoundedSet_KeyPosition.get(positionOnReportedPeptide);

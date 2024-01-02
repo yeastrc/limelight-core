@@ -13,9 +13,15 @@
  *   **  The Variable, Open, and Static Modification Masses are inserted into the Display String in the order listed in the Array
  *   **  The Variable, Open, and Static Modification Masses are likely rounded
  */
+import {
+    reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX,
+    reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX
+} from "page_js/data_pages/reported_peptide__generated_common__across_searches/reportedPeptide_CommonValue_AcrossSearches";
 
-export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX = -21;
-export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX = 99999999;  // higher number than any possible peptide length
+//  Assigned from "reportedPeptideDisplay_CommonValue_AcrossSearches..." since the values are used interchangably in the code
+
+export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_N_TERMINUS_POSITION_INDEX = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+export const reportedPeptideDisplay_CreateCommonDisplayString_AcrossSearches_C_TERMINUS_POSITION_INDEX = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;  // higher number than any possible peptide length
 
 /**
  * @param peptideSequence
