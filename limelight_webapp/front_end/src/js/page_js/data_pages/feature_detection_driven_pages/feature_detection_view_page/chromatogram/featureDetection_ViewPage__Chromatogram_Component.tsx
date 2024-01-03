@@ -3404,11 +3404,11 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
 
                         if ( is_N_Terminal ) {
 
-                            positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
+                            positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
 
                         } else if ( is_C_Terminal ) {
 
-                            positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                            positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
                         }
 
                         let modifications_combine_temp_Entry = modifications_combine_temp__Map_Key_Position.get( positionOnReportedPeptide );

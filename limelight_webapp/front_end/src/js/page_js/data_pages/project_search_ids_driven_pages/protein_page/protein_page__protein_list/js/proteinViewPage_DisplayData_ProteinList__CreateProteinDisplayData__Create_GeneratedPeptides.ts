@@ -813,9 +813,9 @@ const _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSMI
 
                         let open_Modification_Rounded_Position = positionEntry.position;
                         if (positionEntry.isNTerminal) {
-                            open_Modification_Rounded_Position = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
-                        } else if (positionEntry.isCTerminal) {
                             open_Modification_Rounded_Position = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                        } else if (positionEntry.isCTerminal) {
+                            open_Modification_Rounded_Position = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
                         }
                         _generatedReportedPeptide_Process_Single_ReportedPeptide_And_Possibly_PSM({
 
@@ -1214,11 +1214,11 @@ const _process_VariableModifications_ForSingleReportedPeptideId = function (
 
             if ( is_N_Terminal ) {
 
-                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
+                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
 
             } else if ( is_C_Terminal ) {
 
-                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_N_TERMINUS_POSITION_INDEX;
+                positionOnReportedPeptide = reportedPeptideDisplay_CommonValue_AcrossSearches_C_TERMINUS_POSITION_INDEX;
             }
 
             let modsRoundedArray = modsRoundedArray_KeyPosition.get(positionOnReportedPeptide);
