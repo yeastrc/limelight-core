@@ -7,16 +7,7 @@
 
 
 import React from 'react'
-import {
-    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData,
-    ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
-} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
-    scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_LoadData,
-    ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root
-} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_LoadData";
 import {
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component,
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback,
@@ -31,6 +22,11 @@ import {
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__single_scan_plot/scanFileBrowser_SingleScan_Plot_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import { limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam } from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult,
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 
 /////////////////////////
 
@@ -65,11 +61,11 @@ interface ScanFileBrowserViewPage__MainPage_Component_State {
 
     scan_DoesNotHave_totalIonCurrent_ForScan?: boolean
 
-    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root?: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
+    scanData_NO_Peaks_Data_Holder?: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
 
     showScanNumber_ErrorMessage?: string
 
-    singleScanData?: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+    singleScanData?: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
 
     force_ReRender?: object
 }
@@ -93,9 +89,9 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
     private _scanFilenames: Array<string>
 
-    private _cached_SingleScanData_For_ScanFileId_Map_Key_ScanNumber = new Map<number, ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber>()
+    private _cached_SingleScanData_For_ScanFileId_Map_Key_ScanNumber = new Map<number,  CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber>()
 
-    private _promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber  = new Map<number, Promise<ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_Root>>()
+    private _promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber  = new Map<number, Promise<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult>>()
 
     private _scanLevels_ToShow: Set<number> = new Set()
 
@@ -198,14 +194,20 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
     private _loadData_Populate_State__scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root() {
 
         const promise =
-            scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData({ projectScanFileId: this.props.propsValue.projectScanFileId })
+            this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.
+                get_commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data().get_ScanData_NO_Peaks_DataHolder_ReturnPromise({
+                projectScanFileId: this.props.propsValue.projectScanFileId, retrieved_ALL_Scans_ForFile: true, get_ParentScanData: undefined, scanNumbers_RetrievedDataFor: undefined
+            })
 
         promise.catch(reason => {  })
-        promise.then(scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root => { try {
+        promise.then( getResult => { try {
+
+            const scanData_NO_Peaks_Data_Holder = getResult.scanData_NO_Peaks_Data_Holder;
 
             let scan_DoesNotHave_totalIonCurrent_ForScan = false
 
-            for ( const scan of scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+            for ( const scan of scanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
+
                 if ( scan.totalIonCurrent_ForScan === undefined || scan.totalIonCurrent_ForScan === null ) {
                     //  Scan does NOT have totalIonCurrent_ForScan.  CANNOT show this chart
 
@@ -218,7 +220,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             this._scanLevels_ToShow.add( 1 ); // Default to 1
 
             this.setState({
-                scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root,
+                scanData_NO_Peaks_Data_Holder,
                 scan_DoesNotHave_totalIonCurrent_ForScan,
                 showLoadingMessage_ForWholeScanFile: false
             })
@@ -229,7 +231,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
             if ( scanNumber_AtPageLoad !== undefined && scanNumber_AtPageLoad !== null ) {
 
-                for ( const scan of scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator() ) {
+                for ( const scan of scanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
                     if ( scan.scanNumber === scanNumber_AtPageLoad ) {
 
                         // Ensure display scan level for this scan
@@ -269,7 +271,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
             for ( let scanNumber_New = ( this._scanNumber_CurrentlyShown - 1 ); scanNumber_New > 0; scanNumber_New-- ) {
 
-                const scanEntry = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanNumber_New)
+                const scanEntry = this.state.scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber(scanNumber_New)
                 if ( ! scanEntry ) {
                     // no entry so skip
                     continue; // EARLY CONTINUE
@@ -305,11 +307,11 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         try {
             let scanNumber_Next: number = undefined
 
-            const scanNumber_Max = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanNumber_Max()
+            const scanNumber_Max = this.state.scanData_NO_Peaks_Data_Holder.scanData.get_scanNumber_Max()
 
             for ( let scanNumber_New = ( this._scanNumber_CurrentlyShown + 1 ); scanNumber_New <= scanNumber_Max; scanNumber_New++ ) {
 
-                const scanEntry = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(scanNumber_New)
+                const scanEntry = this.state.scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber(scanNumber_New)
                 if ( ! scanEntry ) {
                     // no entry so skip
                     continue; // EARLY CONTINUE
@@ -360,7 +362,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         }
 
         {
-            const scanData_For_ScanNumber = this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( scanNumber );
+            const scanData_For_ScanNumber = this.state.scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( scanNumber );
 
             if ( ! scanData_For_ScanNumber  ) {
 
@@ -446,7 +448,19 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
                 promise.then(value => { try {
 
-                    const singleScanData = value.singleScanData
+                    if ( ! value.scanData_YES_Peaks_Data_Holder ) {
+                        throw Error( "( ! value.scanData_YES_Peaks_Data_Holder ) " );
+                    }
+
+                    const scanData_YES_Peaks_For_ScanNumber = value.scanData_YES_Peaks_Data_Holder.scanData.get_ScanData_YES_Peaks_For_ScanNumber( scanNumber )
+
+                    if ( ! scanData_YES_Peaks_For_ScanNumber ) {
+                        throw Error("value.scanData_YES_Peaks_Data_Holder.scanData.get_ScanData_YES_Peaks_For_ScanNumber( scanNumber ) returned NOTHING.  NO Scan data for scan number: " + scanNumber );
+                    }
+
+                    const singleScanData = scanData_YES_Peaks_For_ScanNumber
+
+                    this._cached_SingleScanData_For_ScanFileId_Map_Key_ScanNumber.set(scanNumber, singleScanData);
 
                     if ( this._scanNumber_CurrentlyShown !== singleScanData.scanNumber ) {
                         //  NO longer currently showing this scan number so return
@@ -463,8 +477,10 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         }
 
         const promise =
-            scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_LoadData({
-                projectScanFileId: this.props.propsValue.projectScanFileId, scanNumber
+            //  Called Code NOT Currently caching result !!!!
+            this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.
+            get_commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data().get_ScanData_YES_Peaks_DataHolder_ReturnPromise({
+                projectScanFileId: this.props.propsValue.projectScanFileId, scanNumberList: [ scanNumber ], m_over_Z_Ranges: undefined
             })
 
         this._promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber.set(scanNumber, promise)
@@ -476,11 +492,17 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
             this._promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber.delete(scanNumber)
 
-            if ( ! value.singleScanData ) {
-                throw Error("NO Scan data for scan number: " + scanNumber );
+            if ( ! value.scanData_YES_Peaks_Data_Holder ) {
+                throw Error( "( ! value.scanData_YES_Peaks_Data_Holder ) " );
             }
 
-            const singleScanData = value.singleScanData
+            const scanData_YES_Peaks_For_ScanNumber = value.scanData_YES_Peaks_Data_Holder.scanData.get_ScanData_YES_Peaks_For_ScanNumber( scanNumber )
+
+            if ( ! scanData_YES_Peaks_For_ScanNumber ) {
+                throw Error("value.scanData_YES_Peaks_Data_Holder.scanData.get_ScanData_YES_Peaks_For_ScanNumber( scanNumber ) returned NOTHING.  NO Scan data for scan number: " + scanNumber );
+            }
+
+            const singleScanData = scanData_YES_Peaks_For_ScanNumber
 
             this._cached_SingleScanData_For_ScanFileId_Map_Key_ScanNumber.set(scanNumber, singleScanData);
 
@@ -501,7 +523,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
         {
             singleScanData
         } : {
-            singleScanData: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+            singleScanData: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
         }
     ) : void {
 
@@ -536,9 +558,9 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
 
                     let scanPeak_LargestIntensity_In_MZ_Range = 0
 
-                    for ( const scanPeak of singleScanData.scanPeaksList ) {
+                    for ( const scanPeak of singleScanData.peaks ) {
 
-                        if ( scanPeak.m_over_z >= mz_Min_ZoomRange && scanPeak.m_over_z <= mz_Max_ZoomRange ) {
+                        if ( scanPeak.mz >= mz_Min_ZoomRange && scanPeak.mz <= mz_Max_ZoomRange ) {
 
                             if ( scanPeak_LargestIntensity_In_MZ_Range < scanPeak.intensity ) {
                                 scanPeak_LargestIntensity_In_MZ_Range = scanPeak.intensity
@@ -596,7 +618,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                         </div>
                     ) : null }
 
-                    { ( this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root || this.state.scan_DoesNotHave_totalIonCurrent_ForScan ) ? (
+                    { ( this.state.scanData_NO_Peaks_Data_Holder || this.state.scan_DoesNotHave_totalIonCurrent_ForScan ) ? (
 
                         <React.Fragment>
 
@@ -616,14 +638,14 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                         Scan data does NOT have Total Ion Current.  Cannot show Data.
                                     </div>
 
-                                ) : this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root ? (
+                                ) : this.state.scanData_NO_Peaks_Data_Holder ? (
 
                                     <>
                                         <div style={ { marginTop: 5, marginBottom: 10 } }>
                                             <span>
                                                 Show data for scan level:
                                             </span>
-                                            { this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_scanLevels_Sorted().map(( scanLevel, index, array) => {
+                                            { this.state.scanData_NO_Peaks_Data_Holder.scanData.get_scanLevels_ArraySorted().map(( scanLevel, index, array) => {
                                                 return (
                                                     <React.Fragment key={ scanLevel }>
                                                         <span> </span>
@@ -665,7 +687,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                                     projectScanFileId={ this.props.propsValue.projectScanFileId }
                                                     scanLevels_ToDisplay={ this._scanLevels_ToShow }
                                                     scanNumber_Selected={ this._scanNumber_CurrentlyShown }
-                                                    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root={ this.state.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root }
+                                                    scanData_NO_Peaks_Data_Holder={ this.state.scanData_NO_Peaks_Data_Holder }
                                                     scanNumber_Clicked_Callback={ this._scanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback_BindThis }
                                                 />
                                             </>
@@ -760,7 +782,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                     { this.state.singleScanData ? (
                                     <ScanFileBrowser_SingleScan_Plot_Main_Container_Component
                                         key={ this.state.singleScanData.scanNumber } //  'key=' added so React creates a NEW component when the scan number changes.
-                                        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber={ this.state.singleScanData }
+                                        scanData_YES_Peaks_DataForSingleScanNumber={ this.state.singleScanData }
                                         scanFileBrowserPage_SingleScan_UserSelections_StateObject={ this.props.propsValue.scanFileBrowserPage_SingleScan_UserSelections_StateObject }
                                         autoZoom_Y_Axis_Value={ this._autoZoom_Y_Axis_Value }
                                         autoZoom_Y_Axis_ValueChanged_Callback={ ( params : ScanFileBrowser_SingleScan_Plot__AutoZoom_Y_Axis_ValueChanged_CallbackFunction_Params ) => {

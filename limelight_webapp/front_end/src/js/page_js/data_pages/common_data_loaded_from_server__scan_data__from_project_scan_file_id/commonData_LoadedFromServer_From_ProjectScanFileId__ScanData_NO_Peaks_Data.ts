@@ -10,6 +10,10 @@
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+
+
+const SCAN_NUMBER_MAX__NOT_SET = Number.NEGATIVE_INFINITY
 
 /**
  *
@@ -23,9 +27,13 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Pea
 
     readonly scansArray: ReadonlyArray<CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber>
 
-    private _singleScanEntry_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> // Populate on first request from 'scansArray'
+    private _singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> // Populate on first request from 'scansArray'
 
-    // private _scanLevels: Set<number> // Populate on first request from 'scansArray'
+    private _scanNumber_Max__PopulatedOnDemand: number = SCAN_NUMBER_MAX__NOT_SET
+
+    private _scanLevels_Set__PopulatedOnDemand: ReadonlySet<number> // Populate on first request from 'scansArray'
+    private _scanLevels_ArraySorted__PopulatedOnDemand : ReadonlyArray<number> // Populate on first request from '_scanLevels_Set'
+
     // private _scanCount_Map_Key_ScanLevel: Map<number,number> // Populate on first request from 'scansArray'
 
     /**
@@ -55,38 +63,86 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Pea
      */
     get_ScanData_NO_Peaks_For_ScanNumber(scanNumber: number) {
 
-        if ( ! this._singleScanEntry_Map_Key_ScanNumber ) {
+        if ( ! this._singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand ) {
 
-            this._singleScanEntry_Map_Key_ScanNumber = new Map()
+            this._singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand = new Map()
 
             for ( const scan of this.scansArray ) {
-                if ( this._singleScanEntry_Map_Key_ScanNumber.has( scan.scanNumber ) ) {
+                if ( this._singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand.has( scan.scanNumber ) ) {
                     const msg = "Scan number in scansArray more than once. scan.scanNumber: " + scan.scanNumber
                     console.warn(msg)
                     throw Error(msg)
                 }
-                this._singleScanEntry_Map_Key_ScanNumber.set( scan.scanNumber, scan )
+                this._singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand.set( scan.scanNumber, scan )
             }
         }
 
-        return this._singleScanEntry_Map_Key_ScanNumber.get(scanNumber);
+        return this._singleScanEntry_Map_Key_ScanNumber__PopulatedOnDemand.get(scanNumber);
     }
 
-    // /**
-    //  *
-    //  */
-    // get_scanLevels_Set() : Set<number> {
-    //
-    //     if ( ! this._scanLevels ) {
-    //
-    //         this._scanLevels = new Set()
-    //
-    //         Populate this._scanLevels
-    //     }
-    //
-    //     return this._scanLevels;
-    // }
-    //
+    /**
+     * @returns undefined if no scans
+     */
+    get_scanNumber_Max () {
+
+        if ( this._scanNumber_Max__PopulatedOnDemand === SCAN_NUMBER_MAX__NOT_SET ) {
+
+            if ( this.scansArray.length === 0 ) {
+
+                this._scanNumber_Max__PopulatedOnDemand = undefined
+
+            } else {
+                for ( const scan of this.scansArray ) {
+                    if ( this._scanNumber_Max__PopulatedOnDemand === SCAN_NUMBER_MAX__NOT_SET ) {
+                        this._scanNumber_Max__PopulatedOnDemand = scan.scanNumber
+                    } else {
+                        if ( this._scanNumber_Max__PopulatedOnDemand < scan.scanNumber ) {
+                            this._scanNumber_Max__PopulatedOnDemand = scan.scanNumber
+                        }
+                    }
+                }
+            }
+        }
+
+        return this._scanNumber_Max__PopulatedOnDemand
+    }
+
+    /**
+     *
+     */
+    get_scanLevels_Set() {
+
+        if ( ! this._scanLevels_Set__PopulatedOnDemand ) {
+
+            const scanLevels_Set: Set<number> = new Set()
+
+            for ( const scan of this.scansArray ) {
+                scanLevels_Set.add( scan.level )
+            }
+
+            this._scanLevels_Set__PopulatedOnDemand = scanLevels_Set
+        }
+
+        return this._scanLevels_Set__PopulatedOnDemand
+    }
+
+    /**
+     *
+     */
+    get_scanLevels_ArraySorted() {
+
+        if ( ! this._scanLevels_ArraySorted__PopulatedOnDemand ) {
+
+            const scanLevels_ArraySorted = Array.from( this.get_scanLevels_Set() )
+
+            limelight__Sort_ArrayOfNumbers_SortArrayInPlace( scanLevels_ArraySorted )
+
+            this._scanLevels_ArraySorted__PopulatedOnDemand = scanLevels_ArraySorted
+        }
+
+        return this._scanLevels_ArraySorted__PopulatedOnDemand
+    }
+
     // /**
     //  * @returns undefined if scanLevel not found
     //  */

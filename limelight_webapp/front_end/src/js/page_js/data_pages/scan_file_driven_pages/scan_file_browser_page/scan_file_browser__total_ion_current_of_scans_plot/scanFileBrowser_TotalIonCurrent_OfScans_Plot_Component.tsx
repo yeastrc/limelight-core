@@ -10,9 +10,9 @@ import * as d3 from "d3";
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber,
-    ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
-} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_LoadData";
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
+    CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
 
 
 const _CHART_WIDTH_MAIN_CONTENTS = 1000
@@ -63,7 +63,7 @@ export interface ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_Props {
     scanLevels_ToDisplay: Set<number>
 
     scanNumber_Selected: number
-    scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
+    scanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
     scanNumber_Clicked_Callback: ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback
 }
 
@@ -185,8 +185,8 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
                 this._scanLevels_ToDisplay_PrevFromProps = new Set( this.props.scanLevels_ToDisplay )
             }
 
-            if ( prevProps.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root !==
-                this.props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root
+            if ( prevProps.scanData_NO_Peaks_Data_Holder !==
+                this.props.scanData_NO_Peaks_Data_Holder
                 || scanLevels_ToDisplay_CHANGED ) {
 
                 this._selected_X_Y_Value = undefined; // Reset selection
@@ -1209,8 +1209,8 @@ export class ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component extends Reac
             if ( this.state.binned_Entries && this.props.scanNumber_Selected !== undefined && this.props.scanNumber_Selected !== null ) {
 
                 const spectralStorage_NO_Peaks_DataFor_ScanNumber =
-                    this.props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.
-                    get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(this.props.scanNumber_Selected);
+                    this.props.scanData_NO_Peaks_Data_Holder.scanData.
+                    get_ScanData_NO_Peaks_For_ScanNumber(this.props.scanNumber_Selected);
 
                 if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
                     const msg = "this.props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber(this.props.scanNumber_Selected); returned NOTHING for this.props.scanNumber_Selected: " + this.props.scanNumber_Selected;
@@ -1585,7 +1585,7 @@ const _compute_Min_Max_X_Y_Values = function (props : ScanFileBrowser_TotalIonCu
     let x_value_MIN: number
     let x_value_MAX: number
 
-    for (const entry of props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
+    for (const entry of props.scanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
         if ( ! props.scanLevels_ToDisplay.has( entry.level ) ) {
             // Not showing this scan level so skip
@@ -1637,9 +1637,9 @@ class Binned_Entries_On_X_value_Root {
 }
 
 class Binned_Entries_On_X_value_Entry {
-    entries_Binned: Array<ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber>
+    entries_Binned: Array< CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber>
     // Compute from entries_Binned
-    entry_UseFor_Y_Value_ForPlot: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber
+    entry_UseFor_Y_Value_ForPlot:  CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
     y_value_FractionOfMax: number
 }
 
@@ -1681,7 +1681,7 @@ const _bin_Entries_On_X_value = function (
 
     const binned_Entries_On_X_Value: Array<Binned_Entries_On_X_value_Entry> = []
 
-    for (const entry of props.scanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_Root.get_SpectralStorage_NO_Peaks_DataForSingleScanNumberEntries_IterableIterator()) {
+    for (const entry of props.scanData_NO_Peaks_Data_Holder.scanData.scansArray ) {
 
         if ( ! props.scanLevels_ToDisplay.has( entry.level ) ) {
             // Not showing this scan level so skip
@@ -1717,7 +1717,7 @@ const _bin_Entries_On_X_value = function (
             continue; // EARLY CONTINUE
         }
 
-        let  singleEntryForPlot_EntryToUse: ScanFileBrowser__Get_SingleScanFileData_SpectralStorage_NO_Peaks_Data_ForSingleScanNumber = undefined
+        let  singleEntryForPlot_EntryToUse: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber = undefined
 
         for ( const singleEntryForPlot of binned_Entry.entries_Binned ) {
             if ( ! singleEntryForPlot_EntryToUse ) {

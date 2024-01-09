@@ -301,11 +301,6 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	public static final String PROJECT_SCAN_FILE_GOLD_STANDARD_ROOT_MAPPING_ENTRY_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/scan-file-gold-standard-root-mapping-entry-delete";
 	
-	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project scan file id
-	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__PROJECT_SCAN_FILE_ID =
-			"d/rws/for-page/ptsb/spectral-storage-data--no-peaks--project-scan-file-id";
-	
-	
 	//  Data other than Scan Data for Single Project Scan File Id
 
 	//  Scan File Details for Single Scan File - Data associated with this Project
@@ -825,10 +820,6 @@ public class AA_RestWSControllerPaths_Constants {
 	
 	public static final String SCAN_DATA_NO_PEAKS_AND_OPTIONAL_ALL_PARENTS__FOR_SCAN_NUMBERS_PROJECT_SCAN_FILE_ID_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psfb/scan-data-no-peaks-and-optional-all-parents-for-scan-numbers--project-scan-file-id";
-
-//  Scan Data With Peaks  for a project scan file id AND scan number
-	public static final String SCAN_DATA_YES_PEAKS_FOR_PROJECT_SCAN_FILE_ID_SCAN_NUMBER_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psfb/scan-data-yes-peaks-for-project-scan-file-id-scan-number";
 
 	public static final String SCAN_DATA_WITH_PEAKS_FOR_SCAN_NUMBERS_PROJECT_SEARCH_ID_SEARCH_SCAN_FILE_ID_OPTIONAL_M_OVER_Z_RANGES_REST_WEBSERVICE_CONTROLLER = 
 			"d/rws/for-page/psfb/scan-data-with-peaks-for-scan-numbers-project-search-id-search-scan-file-id-optional-m-over-z-ranges";

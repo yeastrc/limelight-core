@@ -11,10 +11,6 @@ import * as d3 from "d3";
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
-    ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
-    ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak
-} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser__get_data/scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_LoadData";
-import {
     ScanFileBrowserPage_SingleScan_UserSelections_StateObject,
     ScanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_OR_PSM_Root,
     ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange
@@ -25,6 +21,10 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import { limelight__Limelight_Colors_Etc__SyncWith_globalScss__Constants } from "page_js/common_all_pages/limelight__Limelight_Colors_Etc__SyncWith_global.scss__Constants";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber,
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 
 
 class Internal__SingleScan_Chart_Dimensions {
@@ -147,7 +147,7 @@ export type ScanFileBrowser_SingleScan_Plot__AutoZoom_Y_Axis_ValueChanged_Callba
  */
 export interface ScanFileBrowser_SingleScan_Plot_Main_Container_Component_Props {
 
-    scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+    scanData_YES_Peaks_DataForSingleScanNumber: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
 
     scanFileBrowserPage_SingleScan_UserSelections_StateObject: ScanFileBrowserPage_SingleScan_UserSelections_StateObject
 
@@ -195,11 +195,11 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
             this._scanFileBrowserPage_SingleScan_UserSelections_StateObject__CheckForInvalidValues_UpdateClassProperty( props )
 
             //  Scan Total Ion Current
-            this._totalIonCurrent_ForScan = props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.totalIonCurrent_ForScan
+            this._totalIonCurrent_ForScan = props.scanData_YES_Peaks_DataForSingleScanNumber.totalIonCurrent_ForScan
 
             if ( this._totalIonCurrent_ForScan === undefined || this._totalIonCurrent_ForScan === null ) {
                 //  No value for this._totalIonCurrent_ForScan so compute from scan peaks
-                this._totalIonCurrent_ForScan = this._compute_Scan_TotalIonCurrent_FromScanPeaks( props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber )
+                this._totalIonCurrent_ForScan = this._compute_Scan_TotalIonCurrent_FromScanPeaks( props.scanData_YES_Peaks_DataForSingleScanNumber )
             }
 
             this.state = {
@@ -216,8 +216,8 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
      */
     componentDidUpdate(prevProps: Readonly<ScanFileBrowser_SingleScan_Plot_Main_Container_Component_Props>, prevState: Readonly<ScanFileBrowser_SingleScan_Plot_Main_Container_Component_State>, snapshot?: any) {
         try {
-            if ( prevProps.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber !==
-                this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber ) {
+            if ( prevProps.scanData_YES_Peaks_DataForSingleScanNumber !==
+                this.props.scanData_YES_Peaks_DataForSingleScanNumber ) {
 
                 this._min_Max_X_Y_Values = _compute_Min_Max_X_Y_Values(this.props);
 
@@ -253,9 +253,9 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
     /**
      *
      */
-    private _compute_Scan_TotalIonCurrent_FromScanPeaks( scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber ) : number {
+    private _compute_Scan_TotalIonCurrent_FromScanPeaks( scanData_YES_Peaks_DataForSingleScanNumber: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber ) : number {
 
-        const scanPeakList_Copy = Array.from( scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.scanPeaksList )
+        const scanPeakList_Copy = Array.from( scanData_YES_Peaks_DataForSingleScanNumber.peaks )
 
         //  Sort smallest to largest intensity
         scanPeakList_Copy.sort( (a,b) => {
@@ -438,7 +438,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                 const binned_Entries_OnlyFor_ZoomOut__FakeSize_MainChart =
                     _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values( {
                         bin_Count: _CHART_MAIN__DIMENSIONS.mainContents.width,
-                        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
+                        scanData_YES_Peaks_DataForSingleScanNumber: this.props.scanData_YES_Peaks_DataForSingleScanNumber,
                         min_Max_X_Y_Values: {
                             x_value_MIN, x_value_MAX, y_value_MIN: undefined, y_value_MAX: undefined
                         },
@@ -455,7 +455,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                         continue
                     }
                     for ( const scanPeak of binnedEntry.entries_Binned ) {
-                        if ( scanPeak.m_over_z >= x_value_MIN && scanPeak.m_over_z <= x_value_MAX ) {
+                        if ( scanPeak.mz >= x_value_MIN && scanPeak.mz <= x_value_MAX ) {
                             if ( peakIntensity_Max < scanPeak.intensity ) {
                                 peakIntensity_Max = scanPeak.intensity
                             }
@@ -527,25 +527,25 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                         <div style={ { marginLeft: 10 } }>
                             <div>
                                 <span>Scan Number: </span>
-                                <span>{ this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.scanNumber }</span>
+                                <span>{ this.props.scanData_YES_Peaks_DataForSingleScanNumber.scanNumber }</span>
                             </div>
                             <div>
-                                Scan Level: { this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.level }
+                                Scan Level: { this.props.scanData_YES_Peaks_DataForSingleScanNumber.level }
                             </div>
                             <div>
-                                RT (Min): { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.retentionTime_InSeconds / 60 ).toFixed( 2 ) }
+                                RT (Min): { ( this.props.scanData_YES_Peaks_DataForSingleScanNumber.retentionTime / 60 ).toFixed( 2 ) }
                             </div>
 
                             <div>
                                 TIC: { ( this._totalIonCurrent_ForScan ).toExponential( 2 ) }
                             </div>
 
-                            { ( this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== undefined
-                                && this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds !== null ) ? (
+                            { ( this.props.scanData_YES_Peaks_DataForSingleScanNumber.ionInjectionTime !== undefined
+                                && this.props.scanData_YES_Peaks_DataForSingleScanNumber.ionInjectionTime !== null ) ? (
 
                                 <div>
                                     Ion Injection Time
-                                    (Milliseconds): { this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.ionInjectionTime_InMilliseconds }
+                                    (Milliseconds): { this.props.scanData_YES_Peaks_DataForSingleScanNumber.ionInjectionTime }
                                 </div>
                             ) : null }
 
@@ -631,7 +631,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                                     zoomVisualization_Instance={ true }
                                     singleScan_Chart_Dimensions={ _CHART_ZOOM_REPRESENTATION__DIMENSIONS } // { _CHART_MAIN__DIMENSIONS } //  Fake Main Dimensions to get it to run
                                     autoZoom_Y_Axis_Value={ this.props.autoZoom_Y_Axis_Value }
-                                    scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber={ this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber }
+                                    scanData_YES_Peaks_DataForSingleScanNumber={ this.props.scanData_YES_Peaks_DataForSingleScanNumber }
                                     scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart={ undefined }
                                     scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__ZoomVisualization_Instance_For_RectOnTop={ this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected() }
                                     scanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_Root={ this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root() }
@@ -646,7 +646,7 @@ export class ScanFileBrowser_SingleScan_Plot_Main_Container_Component extends Re
                         zoomVisualization_Instance={ false }
                         singleScan_Chart_Dimensions={ _CHART_MAIN__DIMENSIONS }
                         autoZoom_Y_Axis_Value={ this.props.autoZoom_Y_Axis_Value }
-                        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber={ this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber }
+                        scanData_YES_Peaks_DataForSingleScanNumber={ this.props.scanData_YES_Peaks_DataForSingleScanNumber }
                         scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart={ this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject.getZoomRange_Selected() }
                         scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__ZoomVisualization_Instance_For_RectOnTop={ undefined }
                         scanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_Root={ this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject.get_featureDetection_IndividualFeature_OR_PSM_Root() }
@@ -681,7 +681,7 @@ interface Internal__ScanFileBrowser_SingleScan_Plot_Component_Props {
 
     autoZoom_Y_Axis_Value: boolean
 
-    scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+    scanData_YES_Peaks_DataForSingleScanNumber: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
 
     scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart: ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange  //  Main Zooming In
 
@@ -739,7 +739,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
             binned_Entries = _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values( {
                 bin_Count: props.singleScan_Chart_Dimensions.mainContents.width,
-                scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
+                scanData_YES_Peaks_DataForSingleScanNumber: props.scanData_YES_Peaks_DataForSingleScanNumber,
                 min_Max_X_Y_Values: props.min_Max_X_Y_Values,
                 scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange: props.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart
             } )
@@ -802,8 +802,8 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
 
             if (
-                ( prevProps.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber !==
-                    this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber )
+                ( prevProps.scanData_YES_Peaks_DataForSingleScanNumber !==
+                    this.props.scanData_YES_Peaks_DataForSingleScanNumber )
                 || ( prevProps.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart !==
                 this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart )
                 || ( prevProps.scanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_Root !==
@@ -814,7 +814,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                 const binned_Entries = _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values( {
                     bin_Count: this.props.singleScan_Chart_Dimensions.mainContents.width,
-                    scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
+                    scanData_YES_Peaks_DataForSingleScanNumber: this.props.scanData_YES_Peaks_DataForSingleScanNumber,
                     min_Max_X_Y_Values: this.props.min_Max_X_Y_Values,
                     scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange: this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart
                 } )
@@ -1113,7 +1113,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                     continue
                 }
                 for ( const scanPeak of binnedEntry.entries_Binned ) {
-                    if ( scanPeak.m_over_z >= x_value_MIN && scanPeak.m_over_z <= x_value_MAX ) {
+                    if ( scanPeak.mz >= x_value_MIN && scanPeak.mz <= x_value_MAX ) {
                         if ( peakIntensity_Max < scanPeak.intensity ) {
                             peakIntensity_Max = scanPeak.intensity
                         }
@@ -1141,7 +1141,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
         const binned_Entries = _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values( {
             bin_Count: this.props.singleScan_Chart_Dimensions.mainContents.width,
-            scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: this.props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
+            scanData_YES_Peaks_DataForSingleScanNumber: this.props.scanData_YES_Peaks_DataForSingleScanNumber,
             min_Max_X_Y_Values: this.props.min_Max_X_Y_Values,
             scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange: this.props.scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange__MainChart
         } )
@@ -1979,7 +1979,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                 }
 
                 const binEntry__Entry_UseFor_Y_Value_ForPlot_Override__And_Data__Map_BinIndex: Map<number, {
-                    singleScanPeak: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak,
+                    singleScanPeak: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
                     line_Label: string,
                     line_Color: string
                 }> = new Map()
@@ -2042,7 +2042,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
                         let binIndex_Found: number
                         let binEntry_Found: Binned_Entries_On_X_value_Entry
 
-                        let entryBinned_Found_For_MZ_Ranges: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak = undefined
+                        let entryBinned_Found_For_MZ_Ranges: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
                         let mz_Range_To_Color_Found: {m_Over_Z_Window_Min: number, m_Over_Z_Window_Max: number, line_Label: string, line_Color: string} = undefined
 
                         const binned_Entries_Entries = this.state.binned_Entries.entries
@@ -2058,8 +2058,8 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                             for ( const entryBinned of binEntry.entries_Binned ) {
 
-                                if ( entryBinned.m_over_z >= mz_Range_To_Color.m_Over_Z_Window_Min
-                                    && entryBinned.m_over_z <= mz_Range_To_Color.m_Over_Z_Window_Max ) {
+                                if ( entryBinned.mz >= mz_Range_To_Color.m_Over_Z_Window_Min
+                                    && entryBinned.mz <= mz_Range_To_Color.m_Over_Z_Window_Max ) {
 
                                     if ( entryBinned_Found_For_MZ_Ranges ) {
 
@@ -2089,7 +2089,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                             binEntry__Entry_UseFor_Y_Value_ForPlot_Override__And_Data__Map_BinIndex.set( binIndex_Found, { singleScanPeak: entryBinned_Found_For_MZ_Ranges, line_Color: mz_Range_To_Color_Found.line_Color, line_Label: mz_Range_To_Color_Found.line_Label } )
 
-                            console.warn( "Entry for scan peak Found mz_Range_To_Color.  binIndex_Found: " + binIndex_Found + ", entry.m_over_z: " + entryBinned_Found_For_MZ_Ranges.m_over_z + ", entry.intensity: " + entryBinned_Found_For_MZ_Ranges.intensity )
+                            console.warn( "Entry for scan peak Found mz_Range_To_Color.  binIndex_Found: " + binIndex_Found + ", entry.m_over_z: " + entryBinned_Found_For_MZ_Ranges.mz + ", entry.intensity: " + entryBinned_Found_For_MZ_Ranges.intensity )
 
                             //  TODO  TEMP extra code to show that other peaks in the bin have a larger intensity
 
@@ -3066,7 +3066,7 @@ const _compute_Min_Max_X_Y_Values = function (props : ScanFileBrowser_SingleScan
     let x_value_MIN: number
     let x_value_MAX: number
 
-    for ( const scanPeak of props.scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.scanPeaksList ) {
+    for ( const scanPeak of props.scanData_YES_Peaks_DataForSingleScanNumber.peaks ) {
 
         if (y_value_MIN === undefined) {
             y_value_MIN = scanPeak.intensity
@@ -3081,14 +3081,14 @@ const _compute_Min_Max_X_Y_Values = function (props : ScanFileBrowser_SingleScan
         }
 
         if (x_value_MIN === undefined) {
-            x_value_MIN = scanPeak.m_over_z
-            x_value_MAX = scanPeak.m_over_z
+            x_value_MIN = scanPeak.mz
+            x_value_MAX = scanPeak.mz
         } else {
-            if (x_value_MIN > scanPeak.m_over_z) {
-                x_value_MIN = scanPeak.m_over_z;
+            if (x_value_MIN > scanPeak.mz) {
+                x_value_MIN = scanPeak.mz;
             }
-            if (x_value_MAX < scanPeak.m_over_z) {
-                x_value_MAX = scanPeak.m_over_z;
+            if (x_value_MAX < scanPeak.mz) {
+                x_value_MAX = scanPeak.mz;
             }
         }
     }
@@ -3111,11 +3111,11 @@ class Binned_Entries_On_X_value_M_over_Z_Root {
 }
 
 class Binned_Entries_On_X_value_Entry {
-    entries_Binned: Array<ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak>
+    entries_Binned: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>
 
     // Compute from entries_Binned
     //  Entry in entries_Binned with largest intensity
-    entry_UseFor_Y_Value_ForPlot: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak
+    entry_UseFor_Y_Value_ForPlot: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 }
 
 /**
@@ -3125,12 +3125,12 @@ class Binned_Entries_On_X_value_Entry {
 const _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values = function (
     {
         bin_Count,
-        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber,
+        scanData_YES_Peaks_DataForSingleScanNumber,
         min_Max_X_Y_Values,
         scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange
     } : {
         bin_Count: number
-        scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber
+        scanData_YES_Peaks_DataForSingleScanNumber: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
         min_Max_X_Y_Values: Min_Max_X_Y_Values
         scanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange: ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange
     }
@@ -3159,14 +3159,14 @@ const _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values = function (
 
     const binned_Entries_On_X_Value: Array<Binned_Entries_On_X_value_Entry> = []
 
-    for ( const scanPeak of scanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber.scanPeaksList ) {
+    for ( const scanPeak of scanData_YES_Peaks_DataForSingleScanNumber.peaks ) {
 
-        if ( scanPeak.m_over_z < x_Value_Min || scanPeak.m_over_z > x_Value_Max ) {
+        if ( scanPeak.mz < x_Value_Min || scanPeak.mz > x_Value_Max ) {
             //  Entry x_value outside the Min and Max so skip
             continue; //  EARLY CONTINUE
         }
 
-        const binIndex = Math.floor( ( scanPeak.m_over_z - x_Value_Min ) / binSize_On_x_value )
+        const binIndex = Math.floor( ( scanPeak.mz - x_Value_Min ) / binSize_On_x_value )
 
         const binEntry_Existing = binned_Entries_On_X_Value[ binIndex ];
         if ( binEntry_Existing ) {
@@ -3189,7 +3189,7 @@ const _bin_Entries_On_X_Y_ZoomRange__OR__min_Max_X_Y_Values = function (
 
         //  Find singleEntryForPlot with largest y_value / intensity
 
-        let  singleEntryForPlot_EntryToUse: ScanFileBrowser__Get_SingleScanData_SpectralStorage_YES_Peaks_Data_ForSingleScanNumber_SingleScanPeak = undefined
+        let  singleEntryForPlot_EntryToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak = undefined
 
         for ( const singleEntryForPlot of binned_Entry.entries_Binned ) {
             if ( ! singleEntryForPlot_EntryToUse ) {
