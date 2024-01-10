@@ -31,7 +31,7 @@
 // import {open_PSM_CumulativeErrorCount_VS_PSM_RankByAnnScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_CumulativeErrorCount_VS_PSM_RankByAnnScore_OverlayContainer";
 // import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
 // import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
-// import {QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_ForSinglePsmId} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered";
+// import {CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder_Unfiltered_ForSinglePsmId} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered";
 //
 // // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_ABOVE = "\u2265"; // ">=" as a single character
 // // const _PSM_COUNT_VS_SCORE_CHART_COMPARISON_DIRECTION_STRING_BELOW = "\u2264"; // "<=" as a single character
@@ -464,7 +464,7 @@
 //                     let psmFilterableAnnotation_Score_Min : number = undefined
 //                     let psmFilterableAnnotation_Score_Max : number = undefined
 //
-//                     const  psmTblData_Entries_ForProcessing: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_ForSinglePsmId> = []
+//                     const  psmTblData_Entries_ForProcessing: Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder_Unfiltered_ForSinglePsmId> = []
 //
 //                     {   //  Apply any filtering first
 //
@@ -923,6 +923,6 @@
 //
 // class Internal_AnnotationScore_Psm_Entries {
 //
-//     psmTblData_Entry_Array: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Unfiltered_ForSinglePsmId>
+//     psmTblData_Entry_Array: Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder_Unfiltered_ForSinglePsmId>
 //     annotationScore: number
 // }

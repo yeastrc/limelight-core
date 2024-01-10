@@ -12,22 +12,16 @@
 
 import React from "react";
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { QcViewPage_CommonData_To_AllComponents_From_MainComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
+import { QcPage_UpdatingData_BlockCover } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
+import { qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
-import {
-    QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
-import {QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
-import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId,
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData";
-import {qcPage_StandardChartLayout_StandardWidth} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
-import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
-import {ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
+import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
+import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import { qcPage_StandardChartLayout_StandardWidth } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
+import { QcPage_ChartBorder } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
+import { ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 import {
     CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder,
     CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
@@ -38,7 +32,10 @@ import {
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
-
+import {
+    CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder,
+    CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
 
 
 /**
@@ -327,7 +324,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
             throw Error(" ( ! this.props.dataToPlot ) ")
         }
 
-        const psmTblData = this.props.dataToPlot.psmTblData
+        const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = this.props.dataToPlot.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
         const searchScanFileId_EntriesFor_projectScanFileId_Set = this.props.dataToPlot.searchScanFileId_EntriesFor_projectScanFileId_Set
 
         const commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder = this.props.dataToPlot.commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
@@ -337,7 +334,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
         const featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder = this.props.dataToPlot.featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
 
         this._populateChart__Actual({
-            psmTblData,
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder,
             searchScanFileId_EntriesFor_projectScanFileId_Set,
             commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
@@ -352,14 +349,14 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
      */
     private _populateChart__Actual(
         {
-            psmTblData,
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder,
             searchScanFileId_EntriesFor_projectScanFileId_Set,
             commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
             featureDetection_SingularFeature_Entries_Holder,
             featureDetection_PersistentFeature_Entries_Holder,
             featureDetection_MappingOf_PersistentToSingularFeature_Entries_Holder
         } : {
-            psmTblData: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
             searchScanFileId_EntriesFor_projectScanFileId_Set: Set<number>
             commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder
             featureDetection_SingularFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries_Holder
@@ -416,17 +413,17 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
         //    Map PSM Id to it's Peptide Distinct Entry
 
-        let peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId: Map<number, {
+        let peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId: Map<number, {
             peptideDistinct_Entry: ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_Entry
-            psmTblData_Entry: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
         }> = undefined
 
-        let psmTblData_Filtered: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_ForSinglePsmId[]
+        let psmTblData_Filtered: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId[]
 
 
         if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent ) {
 
-            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId = new Map()
+            peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId = new Map()
 
             const projectSearchId = this.props.dataToPlot.projectSearchId;
 
@@ -440,7 +437,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
             const qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT =
                 qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array({
-                    projectSearchId, peptideDistinct_Array, qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_PsmTblData_Root: psmTblData
+                    projectSearchId, peptideDistinct_Array, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
                 });
 
             psmTblData_Filtered = qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array_RESULT.psmTblData_Filtered;
@@ -458,32 +455,32 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
                     if ( dataPerReportedPeptideId.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
 
-                        const psmTblData_For_ReportedPeptideId = psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId )
-                        if ( ! psmTblData_For_ReportedPeptideId ) {
-                            const msg = "psmTblData.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId ) returned NOTHING for dataPerReportedPeptideId.reportedPeptideId " +
+                        const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId )
+                        if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_For_ReportedPeptideId ) {
+                            const msg = "psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId( dataPerReportedPeptideId.reportedPeptideId ) returned NOTHING for dataPerReportedPeptideId.reportedPeptideId " +
                                 dataPerReportedPeptideId.reportedPeptideId +
                                 ", projectSearchId: " + projectSearchId;
                             console.warn(msg)
                             throw Error(msg)
                         }
 
-                        for ( const psmTblData_Entry of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
-                            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmTblData_Entry.psmId, { peptideDistinct_Entry, psmTblData_Entry } );
+                        for ( const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry of psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
+                            peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId.set( psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry.psmId, { peptideDistinct_Entry, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry } );
                         }
 
                     } else if ( dataPerReportedPeptideId.psmIdsSet ) {
 
                         for ( const psmId of dataPerReportedPeptideId.psmIdsSet ) {
-                            const psmTblData_Entry_ForPsmId = psmTblData.get_PsmTblData_For_PsmId(psmId);
-                            if ( ! psmTblData_Entry_ForPsmId ) {
-                                const msg = "psmTblData.get_PsmTblData_For_PsmId(psmId); returned NOTHING for psmId: " + psmId +
+                            const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_ForPsmId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_PsmId(psmId);
+                            if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_ForPsmId ) {
+                                const msg = "psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_PsmId(psmId); returned NOTHING for psmId: " + psmId +
                                     ", dataPerReportedPeptideId.reportedPeptideId " +
                                     dataPerReportedPeptideId.reportedPeptideId +
                                     ", projectSearchId: " + projectSearchId;
                                 console.warn(msg)
                                 throw Error(msg)
                             }
-                            peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.set( psmId, { peptideDistinct_Entry, psmTblData_Entry: psmTblData_Entry_ForPsmId } );
+                            peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId.set( psmId, { peptideDistinct_Entry, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry: psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_ForPsmId } );
                         }
 
                     } else {
@@ -943,7 +940,7 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
         ////////////
 
-        if ( peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId ) {   //  Compute Percentage of Persistent Features with multiple distinct peptides ("distinct peptide" as specified on page in option: "Distinct Peptide Includes:")
+        if ( peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId ) {   //  Compute Percentage of Persistent Features with multiple distinct peptides ("distinct peptide" as specified on page in option: "Distinct Peptide Includes:")
 
             let persistentFeatures_With_NO_PSMs_Count = 0;
             let persistentFeatures_With_OneDistinctPeptides_Count = 0;
@@ -960,14 +957,14 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
                             for ( const psmId of psmId_Set ) {
 
-                                const peptideDistinct_Entry_psmTblData_Entry = peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.get( psmId );
-                                if ( ! peptideDistinct_Entry_psmTblData_Entry ) {
-                                    const msg = "peptideDistinct_Entry_psmTblData_Entry_Map_Key_PsmId.get( psmId ); returned NOTHING. psmId: " + psmId;
+                                const peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry = peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId.get( psmId );
+                                if ( ! peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry ) {
+                                    const msg = "peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry_Map_Key_PsmId.get( psmId ); returned NOTHING. psmId: " + psmId;
                                     console.warn(msg);
                                     throw Error(msg);
                                 }
 
-                                reportedPeptide_CommonValue_EncodedString_All_Set.add( peptideDistinct_Entry_psmTblData_Entry.peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString )
+                                reportedPeptide_CommonValue_EncodedString_All_Set.add( peptideDistinct_Entry_psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Entry.peptideDistinct_Entry.reportedPeptide_CommonValue_EncodedString )
                             }
 
                         }
