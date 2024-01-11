@@ -288,7 +288,7 @@ public class ProcessSubmittedImportOrPipelineRun {
 		runSystemCommand = RunSystemCommand.getInstance();
 		try {
 			
-			log.warn( "ProcessSubmittedImportOrPipelineRun: BEFORE:  Calling: runSystemCommand.runCmd(...) ");
+			log.info( "ProcessSubmittedImportOrPipelineRun: BEFORE:  Calling: runSystemCommand.runCmd(...) ");
 			
 			RunSystemCommandResponse runSystemCommandResponse = 
 					runSystemCommand.runCmd( 
@@ -303,7 +303,7 @@ public class ProcessSubmittedImportOrPipelineRun {
 			
 			//      The executable will be killed when running in Docker so it must be handled.
 			
-			log.warn( "ProcessSubmittedImportOrPipelineRun: AFTER:  Calling: runSystemCommand.runCmd(...) ");
+			log.info( "ProcessSubmittedImportOrPipelineRun: AFTER:  Calling: runSystemCommand.runCmd(...) ");
 			
 			if ( runSystemCommandResponse.isShutdownRequested() ) {
 				log.warn( "command was aborted for run importer and pipeline run program shutdown: " + commandAndItsArgumentsAsList

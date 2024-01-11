@@ -286,7 +286,7 @@ public class ProcessSubmittedImport {
 		
 		runSystemCommand = RunSystemCommand.getInstance();
 		try {
-			log.warn( "ProcessSubmittedImport: BEFORE:  Calling: runSystemCommand.runCmd(...) ");
+			log.info( "ProcessSubmittedImport: BEFORE:  Calling: runSystemCommand.runCmd(...) ");
 			
 			RunSystemCommandResponse runSystemCommandResponse = 
 					runSystemCommand.runCmd( 
@@ -296,7 +296,7 @@ public class ProcessSubmittedImport {
 							fileToWriteSyserrTo /* fileToWriteSyserrTo*/,
 							false /* throwExceptionOnCommandFailure */ );
 
-			log.warn( "ProcessSubmittedImport: AFTER:  Calling: runSystemCommand.runCmd(...) ");
+			log.info( "ProcessSubmittedImport: AFTER:  Calling: runSystemCommand.runCmd(...) ");
 			
 			if ( runSystemCommandResponse.isShutdownRequested() ) {
 				log.warn( "command was aborted for run importer program shutdown: " + commandAndItsArgumentsAsList
@@ -666,7 +666,7 @@ public class ProcessSubmittedImport {
 					.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES );
 			if ( ! ConfigSystemsValuesSharedConstants.TRUE.equals( deleteFilesConfigValue ) ) {
 				//  Config value in table is not true string.
-				log.warn( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) IMPORT_DELETE_UPLOADED_FILES config value NOT TRUE so return. config value: " + deleteFilesConfigValue );
+				log.info( "!!!!!!!!!!!!  deleteUploadedFilesIfConfiguredAndStatusSuccess(...) IMPORT_DELETE_UPLOADED_FILES config value NOT TRUE so return. config value: " + deleteFilesConfigValue );
 				return;  //  EARLY EXIT
 			}
 		} catch ( IllegalStateException e ) {
