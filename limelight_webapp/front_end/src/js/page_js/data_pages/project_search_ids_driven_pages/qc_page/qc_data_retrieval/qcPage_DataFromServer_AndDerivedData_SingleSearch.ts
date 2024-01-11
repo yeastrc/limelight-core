@@ -84,14 +84,6 @@ export class QcPage_DataFromServer_AndDerivedData_SingleSearch{
 
         const promises : Array<Promise<any>> = []
         {
-            const promise = this._qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded.singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded({
-                searchScanFileId, retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
-            });
-            if ( promise ) {
-                promises.push(promise);
-            }
-        }
-        {
             const promise = this._qcPage_DataFromServer_SingleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded.singleSearch_SpectralStorage_NO_Peaks_Data_LoadIfNeeded({
                 retrievalParams: this._retrievalParams, data_Holder_SingleSearch: this._data_Holder_SingleSearch
             });

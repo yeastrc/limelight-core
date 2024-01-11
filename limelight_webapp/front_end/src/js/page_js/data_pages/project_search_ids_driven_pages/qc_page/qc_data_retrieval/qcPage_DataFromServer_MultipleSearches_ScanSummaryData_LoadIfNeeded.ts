@@ -9,6 +9,9 @@ import {QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_Params
 import {QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_MultipleSearches";
 import {QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
+import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
+import { DataPage_common_Searches_Flags } from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
+import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 
 /**
  *
@@ -26,13 +29,17 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
      */
     multipleSearches_ScanSummaryData_LoadIfNeeded(
         {
-            retrievalParams,
-            retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-            data_Holder_MultipleSearches
+            projectSearchIds,
+            qcPage_Searches_Flags,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+            data_Holder_MultipleSearches,
+            scanFile_SummaryPerLevelData_Root
         } : {
-            retrievalParams: QcPage_DataFromServer_AndDerivedData_MultipleSearches_Constructor_Params
-            retrievalParamsSingleSearch_Map_Key_ProjectSearchId : Map<number,QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params>
+            projectSearchIds: Array<number>
+            qcPage_Searches_Flags: DataPage_common_Searches_Flags
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             data_Holder_MultipleSearches : QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
+            scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root //  UPDATED
         }
     ) : Promise<void> {
 
@@ -42,9 +49,9 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
 
         const promises: Array<Promise<void>> = [];
 
-        for ( const projectSearchId of retrievalParams.projectSearchIds ) {
+        for ( const projectSearchId of projectSearchIds ) {
 
-            const qcPage_Flags_SingleSearch = retrievalParams.qcPage_Flags_MultipleSearches.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
+            const qcPage_Flags_SingleSearch = qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId);
             if ( ! qcPage_Flags_SingleSearch ) {
                 const msg = "retrievalParams.qcPage_Flags_MultipleSearches.get_QcPage_Flags_SingleSearch_ForProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId;
                 console.warn(msg);
@@ -69,17 +76,18 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
                 throw Error(msg);
             }
 
-            const retrievalParamsSingleSearch = retrievalParamsSingleSearch_Map_Key_ProjectSearchId.get(projectSearchId );
-            if ( ! retrievalParamsSingleSearch ) {
-                const msg = "retrievalParamsSingleSearch_Map_Key_ProjectSearchId.get(projectSearchId ); returned NOTHING. projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
             for ( const searchScanFileData of data_Holder_SingleSearch.searchScanFileData.get_SearchScanFileData_IterableIterator() ) {
 
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
+                if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                    const msg = "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
                 const promise = singleSearch_LoadIfNeeded_Map_Key_ProjectSearchId.singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded({
-                    searchScanFileId: searchScanFileData.searchScanFileId, retrievalParams: retrievalParamsSingleSearch, data_Holder_SingleSearch
+                    searchScanFileId: searchScanFileData.searchScanFileId, commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: commonData_LoadedFromServer_PerSearch_For_ProjectSearchId, scanFile_SummaryPerLevelData_Root
                 });
 
                 if (promise) {

@@ -5,21 +5,14 @@
  *
  */
 
-import {
-    QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params
-} from "./qcPage_DataFromServer_AndDerivedData_SingleSearch";
-import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
-import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_ForSingleScanLevel,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelDataForSingleSearchScanFileId
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
 import { CommonData_LoadedFromServer__ScanData_Summary_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
+import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 
 /**
  *
@@ -33,16 +26,16 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
      */
     singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded(
         {
-            searchScanFileId, retrievalParams, data_Holder_SingleSearch
+            searchScanFileId, commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+            scanFile_SummaryPerLevelData_Root //  UPDATED
         } : {
             searchScanFileId: number
-            retrievalParams: QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params
-            data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root //  UPDATED
         }
     ) : Promise<void> {
 
-        if ( data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root
-            && data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId ) ) {
+        if ( scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId ) ) {
             //  Data already loaded so return null
             return null
         }
@@ -57,7 +50,7 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
         const promise = new Promise<void>( (resolve, reject) => {
             try {
                 const promise_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch  =
-                    retrievalParams.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                     get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
                     get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
 
@@ -80,7 +73,7 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
                     const projectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId__For_SearchScanFileId.projectScanFileId
 
                     const promise_get_ScanData_Summary_DataHolder_For_ProjectScanFileId_ReturnPromise =
-                        retrievalParams.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                         get_ParentObject().
                         get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().
                         get_commonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId_MainClass().
@@ -99,7 +92,7 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
                         _populateHolder({
                             searchScanFileId, projectScanFileId,
                             commonData_LoadedFromServer__ScanData_Summary_Data_Holder: value_get_ScanData_Summary_DataHolder_For_ProjectScanFileId.commonData_LoadedFromServer__ScanData_Summary_Data_Holder,
-                            data_Holder_SingleSearch
+                            scanFile_SummaryPerLevelData_Root
                         });
 
                         resolve()
@@ -125,21 +118,15 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_Loa
  */
 const _populateHolder = function (
     {
-        searchScanFileId, projectScanFileId, commonData_LoadedFromServer__ScanData_Summary_Data_Holder, data_Holder_SingleSearch
+        searchScanFileId, projectScanFileId, commonData_LoadedFromServer__ScanData_Summary_Data_Holder, scanFile_SummaryPerLevelData_Root
     } : {
         searchScanFileId: number
         projectScanFileId: number
         commonData_LoadedFromServer__ScanData_Summary_Data_Holder: CommonData_LoadedFromServer__ScanData_Summary_Data_Holder
-        data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+        scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root
     }) : void {
 
-    let scanFile_SummaryPerLevelData_Root = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root;
-    if ( ! scanFile_SummaryPerLevelData_Root ) {
-        scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
-        data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root =  scanFile_SummaryPerLevelData_Root;
-    }
-
-    let scanFileData_For_SearchScanFileId = data_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId );
+    let scanFileData_For_SearchScanFileId = scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId( searchScanFileId );
     if ( ! scanFileData_For_SearchScanFileId ) {
         scanFileData_For_SearchScanFileId = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelDataForSingleSearchScanFileId({ searchScanFileId });
         scanFile_SummaryPerLevelData_Root.add_ScanFileDataFor_SingleSearchScanFileId( scanFileData_For_SearchScanFileId );

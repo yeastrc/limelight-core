@@ -16,6 +16,8 @@ import { QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_
 import { SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
+import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Data";
+import { QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded";
 
 /**
  *
@@ -46,6 +48,9 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
     //  bind to 'this' for passing as parameters
 
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
+
+    private _scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
+    private _qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded()
 
 
     /**
@@ -202,15 +207,15 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
         //  ALSO: use 'await' below in method '_compute_Data(...)' to load more data
 
-        const promise =
+        const promise_get_SearchScanFileData =
             this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
             qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
             get_SearchScanFileData();
 
-        promise.catch( reason => {
+        promise_get_SearchScanFileData.catch( reason => {
 
         })
-        promise.then( notUsed_qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => {
+        promise_get_SearchScanFileData.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_get_SearchScanFileData => {
 
             if (
                 ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
@@ -220,15 +225,54 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 return; // EARLY RETURN
             }
 
-            const promise_2 =
-                this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
-                qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
-                get_ScanFileSummaryPerLevelData();
+            let qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_Step_2: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches
 
-            promise_2.catch( reason => {
+            const promises_Step_2 : Array<Promise<void>> = []
+
+            {
+                const promise = new Promise<void>( (resolve, reject) => { try {
+
+                    const promise_get_ScanFileSummaryPerLevelData =
+                        this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
+                        qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
+                        get_ScanFileSummaryPerLevelData();
+                    promise_get_ScanFileSummaryPerLevelData.catch(reason => { reject(reason) })
+                    promise_get_ScanFileSummaryPerLevelData.then(qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_Step_2_Param => { try {
+                        qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_Step_2 = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_Step_2_Param
+                        resolve()
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises_Step_2.push(promise)
+            }
+            {
+                const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId;
+
+                const commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root;
+
+                const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+                if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                    throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId);
+                }
+
+                const promise = this._qcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_LoadIfNeeded.singleSearch__SubSearches_ScanSummaryData_LoadIfNeeded({
+                    projectSearchId,
+                    data_Holder_SingleSearch__SubSearches: qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_get_SearchScanFileData,
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                    qcPage_Flags_SingleSearch_ForProjectSearchId: this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.qcPage_Flags_SingleSearch_ForProjectSearchId,
+                    scanFile_SummaryPerLevelData_Root: this._scanFile_SummaryPerLevelData_Root  //  UPDATED
+                });
+                if ( promise ) {
+                    promises_Step_2.push(promise);
+                }
+            }
+
+            const promises_Step_2_All = Promise.all( promises_Step_2 )
+
+            promises_Step_2_All.catch( reason => {
 
             })
-            promise_2.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches => { try {
+            promises_Step_2_All.then( novalue => { try {
 
                 if (
                     ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
@@ -246,9 +290,9 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                 });
 
                 //  Ignore returned Promise
-                this._compute_Data({ qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches });
+                this._compute_Data({ qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches: qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch__SubSearches_From_Step_2 });
 
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         });
 
     }
@@ -479,7 +523,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
 
                 for ( const searchScanFileId of searchScanFileIds_For_SearchSubGroupId ) {
 
-                    const summaryPerLevelData_Entry = qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId);
+                    const summaryPerLevelData_Entry = this._scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId);
                     if ( ! summaryPerLevelData_Entry ) {
                         throw Error("qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(searchScanFileId); returned NOTHING. searchScanFileId: " + searchScanFileId);
                     }

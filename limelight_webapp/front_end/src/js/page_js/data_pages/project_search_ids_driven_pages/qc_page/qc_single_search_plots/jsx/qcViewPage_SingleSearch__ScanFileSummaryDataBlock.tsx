@@ -21,6 +21,7 @@ import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_
 import { qcPage_StandardChartLayout_StandardWidth } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import { QcPage_ChartBorder } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import { QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
 
 /**
  *
@@ -37,11 +38,11 @@ export interface QcViewPage_SingleSearch__ScanFileSummaryDataBlock_Props {
  */
 interface QcViewPage_SingleSearch__ScanFileSummaryDataBlock_State {
 
-    scanFile_SummaryPerLevelData_Root?: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root
     scanNumbersCount_For_FilteredPSMs?: ScanNumbersCount_For_FilteredPSMs
     totalIonCurrent_ForScanLevel_FilteredScans_Map_Key_ScanLevel?: Map<number, number>
     allScans_Have_TotalIonCurrent?: boolean
     showUpdatingMessage?: boolean
+    forceUpdate_Object?: object
 }
 
 class ScanNumbersCount_For_FilteredPSMs {
@@ -60,6 +61,8 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
+    private _scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root
+    private _qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded()
 
     /**
      *
@@ -139,7 +142,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
         if ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent !== nextProps.qcViewPage_CommonData_To_AllComponents_From_MainComponent
             || this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent !== nextProps.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
             || this.props.searchScanFileId_Selected !== nextProps.searchScanFileId_Selected
-            || this.state.scanFile_SummaryPerLevelData_Root !== nextState.scanFile_SummaryPerLevelData_Root
+            || this.state.forceUpdate_Object !== nextState.forceUpdate_Object
             || this.state.scanNumbersCount_For_FilteredPSMs !== nextState.scanNumbersCount_For_FilteredPSMs
         ) {
             return true;
@@ -224,11 +227,49 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
         const promises: Array<Promise<void>> = []
 
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        { // singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded
+
+            if ( ! this._scanFile_SummaryPerLevelData_Root ) {
+                this._scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
+            }
+
+            const promise =
+                this._qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded.singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded({
+                    searchScanFileId,
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                    scanFile_SummaryPerLevelData_Root : this._scanFile_SummaryPerLevelData_Root
+                });
+            if ( promise ) {
+                promises.push(promise)
+            }
+        }
+
         { // get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data
             const promise = new Promise<void>((resolve, reject) => { try {
                 const promise_Result =
-            this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileSummaryPerLevelData({ searchScanFileId });
+                    this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
+                    qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileSummaryPerLevelData({ searchScanFileId });
+                promise_Result.catch(reason => { reject(reason) })
+                promise_Result.then(value => { try {
+                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch = value
+                    resolve()
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            promises.push(promise)
+        }
+        { // get_PsmStatistics_PSMCount__PeptideLength_VS_RetentionTime_Statistics_Data
+            const promise = new Promise<void>((resolve, reject) => { try {
+                const promise_Result =
+                    this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
+                    qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFileSummaryPerLevelData({ searchScanFileId });
                 promise_Result.catch(reason => { reject(reason) })
                 promise_Result.then(value => { try {
                     qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch = value
@@ -238,13 +279,6 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
             promises.push(promise)
         }
         { // psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
-            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
-                this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
-            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-                const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
-                console.warn(msg)
-                throw Error(msg)
-            }
             const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result =
                 commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch()
             if ( get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
@@ -303,7 +337,7 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
                 return null;
             });
 
-            this.setState({ scanFile_SummaryPerLevelData_Root: qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_SummaryPerLevelData_Root });
+            this.setState({ forceUpdate_Object: {} });
 
             this._compute_ScanCount_ForFilteredPSMs({ qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder });
         })
@@ -419,9 +453,9 @@ export class QcViewPage_SingleSearch__ScanFileSummaryDataBlock
 
         let dataDisplay: JSX.Element = null;
 
-        if ( this.state.scanFile_SummaryPerLevelData_Root && this.state.scanNumbersCount_For_FilteredPSMs ) {
+        if ( this._scanFile_SummaryPerLevelData_Root && this.state.scanNumbersCount_For_FilteredPSMs ) {
 
-            const scanFileData_For_SearchScanFileId = this.state.scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(this.props.searchScanFileId_Selected);
+            const scanFileData_For_SearchScanFileId = this._scanFile_SummaryPerLevelData_Root.get_ScanFileData_For_SearchScanFileId(this.props.searchScanFileId_Selected);
             if ( scanFileData_For_SearchScanFileId ) {
                 const summaryPerLevelData_Array: Array<QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_ForSingleScanLevel> = [];
                 for ( const entry of scanFileData_For_SearchScanFileId.get_ScanLevel_IterableIterator() ) {

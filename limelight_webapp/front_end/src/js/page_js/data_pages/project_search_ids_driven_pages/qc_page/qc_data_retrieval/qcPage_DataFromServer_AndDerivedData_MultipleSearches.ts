@@ -29,7 +29,7 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
     private _data_Holder_MultipleSearches : QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
 
     private _qcPage_DataFromServerMultipleSearches_SearchScanFileData_LoadIfNeeded : QcPage_DataFromServer_MultipleSearches_SearchScanFileData_LoadIfNeeded
-    private _qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
+
     private _qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded: QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded
 
     constructor(
@@ -74,7 +74,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
         this._data_Holder_MultipleSearches = new QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches({ projectSearchIds: retrievalParams.projectSearchIds });
 
         this._qcPage_DataFromServerMultipleSearches_SearchScanFileData_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_SearchScanFileData_LoadIfNeeded();
-        this._qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded();
         this._qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded = new QcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded();
     }
 
@@ -112,16 +111,6 @@ export class QcPage_DataFromServer_AndDerivedData_MultipleSearches {
 
         const promises : Array<Promise<any>> = []
 
-        {
-            const promise = this._qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded.multipleSearches_ScanSummaryData_LoadIfNeeded({
-                retrievalParams: this._retrievalParams,
-                retrievalParamsSingleSearch_Map_Key_ProjectSearchId: this._retrievalParamsSingleSearch_Map_Key_ProjectSearchId,
-                data_Holder_MultipleSearches: this._data_Holder_MultipleSearches
-            });
-            if ( promise ) {
-                promises.push(promise);
-            }
-        }
         {
             const promise = this._qcPage_DataFromServer_MultipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded.multipleSearches_SpectralStorage_NO_Peaks_Data_LoadIfNeeded({
                 projectSearchIds_Override: undefined,
