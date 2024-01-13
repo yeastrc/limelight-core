@@ -393,6 +393,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING: undefined,
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING: undefined,
                         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING: undefined,
+                        scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: undefined,
+                        qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded: undefined,
                         qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: this._qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
                     };
 

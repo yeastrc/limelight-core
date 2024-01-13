@@ -5,14 +5,8 @@
  *
  */
 
-import {
-    QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params
-} from "./qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {
-    QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
-} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_SingleSearch";
 import {
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_ForSingle_SearchScanFileId,
     QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root
@@ -32,16 +26,17 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinned
      */
     singleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded(
         {
-            searchScanFileId, retrievalParams, data_Holder_SingleSearch
+            searchScanFileId,
+            projectSearchId,
+            scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root //  UPDATED
         } : {
             searchScanFileId: number
-            retrievalParams: QcPage_DataFromServer_AndDerivedData_SingleSearch_Constructor_Params
-            data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+            projectSearchId: number
+            scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root //  UPDATED
         }
     ) : Promise<void> {
 
-        if ( data_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root
-            && data_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( searchScanFileId ) ) {
+        if ( scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( searchScanFileId ) ) {
             //  Data already loaded so return null
             return null
         }
@@ -52,8 +47,6 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinned
                 return promise;
             }
         }
-
-        const projectSearchId = retrievalParams.projectSearchId;
 
         const promise = new Promise<void>( (resolve, reject) => {
             try {
@@ -87,7 +80,7 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinned
 
                         console.log( "END: Successful: getting data from URL: " + url );
 
-                        _populateHolder({ searchScanFileId, responseData, data_Holder_SingleSearch });
+                        _populateHolder({ searchScanFileId, responseData, scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root });
 
                         resolve();
 
@@ -113,18 +106,13 @@ export class QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinned
  */
 const _populateHolder = function (
     {
-        searchScanFileId, responseData, data_Holder_SingleSearch
+        searchScanFileId, responseData,
+        scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root // UPDATED
     } : {
         searchScanFileId: number
         responseData: any
-        data_Holder_SingleSearch : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch
+        scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root
     }) : void {
-
-    let scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root = data_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root;
-    if ( ! scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root ) {
-        scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root()
-        data_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root =  scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root;
-    }
 
     const item : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_ForSingle_SearchScanFileId = responseData;
 
@@ -276,6 +264,6 @@ const _populateHolder = function (
     }
 
 
-    data_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.add_ScanFileDataFor_SingleSearchScanFileId({ searchScanFileId, item });
+    scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.add_ScanFileDataFor_SingleSearchScanFileId({ searchScanFileId, item });
 
 }

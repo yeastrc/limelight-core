@@ -100,6 +100,8 @@ import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/co
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data";
+import { QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded";
 
 
 /**
@@ -143,6 +145,10 @@ export class QcViewPage_CommonData_To_AllComponents_From_MainComponent {
     //  Special Override of commonData... and getReported... for UNFILTERED Data
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING: QcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING
+
+
+    scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root
+    qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded : QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded
 
     ////
 
@@ -290,6 +296,9 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ReporterIonSelections : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
+
+    private _scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root()
+    private _qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded = new QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded();
 
     private _dataPage_common_Searches_Flags: DataPage_common_Searches_Flags; // Retrieved from server from dataPageStateManager
     private _dataPage_common_Searches_Info: DataPage_common_Searches_Info; // Retrieved from server
@@ -1015,6 +1024,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR___Scan_RetentionTime_MZ_UserSelections_StateObject__OUTSIDE_AssociatedComponent__Callback : this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR___Scan_RetentionTime_MZ_UserSelections_StateObject__OUTSIDE_AssociatedComponent__Callback_BindThis,
                 qcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING: this._create__QcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING_Object({ searchSubGroup_Ids_Selected }),
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING,
+                scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: this._scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root,
+                qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded : this._qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded,
                 getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING: this.state.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING,
                 qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: this._qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
             };
@@ -2053,6 +2064,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 qcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING: this._create__QcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING_Object({ searchSubGroup_Ids_Selected }),
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING,
                 getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING: this.state.getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING,
+                scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: this._scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root,
+                qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded : this._qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded,
                 qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot: this._qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot
             }
 

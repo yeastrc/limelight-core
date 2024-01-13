@@ -18,6 +18,8 @@ import {
     qcPage_StandardChartLayout_StandardWidth
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
+import { QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded";
+import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data";
 
 /**
  *
@@ -185,57 +187,80 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer e
         const searchScanFileId = this.props.searchScanFileId_Selected;
 
         const promise =
-            this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch.get_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ({ searchScanFileId });
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded.
+            singleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded({
+                searchScanFileId,
+                projectSearchId: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId,
+                scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root
+            });
+
+        if ( ! promise ) {
+            this._process_AfterLoadData({ searchScanFileId_InProgress: searchScanFileId })
+
+            return // EARLY RETURN
+        }
 
         promise.catch( reason => {
 
         })
-        promise.then( qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch => {
+        promise.then( novalue => {
             try {
-
-                if ( searchScanFileId !== this.props.searchScanFileId_Selected ) {
-
-                    //  Data NOT loaded for currently selected searchScanFileId_Selected so SKIP - USER Likely changed selection while data was loading
-
-                    return; // EARLY RETURN
-                }
-
-                const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData =
-                    qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( this.props.searchScanFileId_Selected );
-
-                const summaryData = ms1_PeakIntensityBinnedOn_RT_MZ_OverallData.summaryData;
-
-                if ( summaryData.binnedSummedIntensityCount === 0 ) {
-
-                    //  NO MS1 Data
-
-                    this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State =>  {
-
-                        if ( ! prevState.no_MS1_Data ) {
-                            return { no_MS1_Data: true };
-                        }
-                        return null;
-                    });
-
-                    return; //  EARLY RETURN
-                }
-
-                this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State =>  {
-
-                    if ( prevState.no_MS1_Data ) {
-                        return { no_MS1_Data: false };
-                    }
-                    return null;
-                });
-
-                this.setState({ ms1_PeakIntensityBinnedOn_RT_MZ_OverallData, showUpdatingMessage: false });
+                this._process_AfterLoadData({ searchScanFileId_InProgress: searchScanFileId })
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
             }
         })
+    }
+
+    /**
+     *
+     * @param searchScanFileId_InProgress
+     */
+    private _process_AfterLoadData(
+        {
+            searchScanFileId_InProgress
+        } : {
+            searchScanFileId_InProgress: number
+        }
+    ) {
+        if ( searchScanFileId_InProgress !== this.props.searchScanFileId_Selected ) {
+
+            //  Data NOT loaded for currently selected searchScanFileId_Selected so SKIP - USER Likely changed selection while data was loading
+
+            return; // EARLY RETURN
+        }
+
+        const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData =
+            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( this.props.searchScanFileId_Selected );
+
+        const summaryData = ms1_PeakIntensityBinnedOn_RT_MZ_OverallData.summaryData;
+
+        if ( summaryData.binnedSummedIntensityCount === 0 ) {
+
+            //  NO MS1 Data
+
+            this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State =>  {
+
+                if ( ! prevState.no_MS1_Data ) {
+                    return { no_MS1_Data: true };
+                }
+                return null;
+            });
+
+            return; //  EARLY RETURN
+        }
+
+        this.setState((prevState: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State>, props: Readonly<QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_Props>) : QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_MainPageContainer_State =>  {
+
+            if ( prevState.no_MS1_Data ) {
+                return { no_MS1_Data: false };
+            }
+            return null;
+        });
+
+        this.setState({ ms1_PeakIntensityBinnedOn_RT_MZ_OverallData, showUpdatingMessage: false });
     }
 
     /**
