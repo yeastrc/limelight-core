@@ -16,8 +16,6 @@ import { open_PSMCount_VS_RetentionTime_OverlayContainer } from "page_js/data_pa
 import { QcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_multiple_searches_sections/jsx/qc_MultipleSearches_AA__Root_DisplayBlock";
 import { QcViewPage_MultipleSearches__ComputeColorsForSearches } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_MultipleSearches__ComputeColorsForSearches";
 import { qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
-import { QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataLoaded_FromServer_MultipleSearches";
-import { DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root } from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 import { QcPage_CreatingPlot_BlockCover } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
 import { QcPage_ClickPlot_ForInteractivePlot_BlockCover } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
@@ -29,6 +27,7 @@ import { qcViewPage_MultipleSearches__Compute_Chart_X_Axis_Title_Etc } from "pag
 import { QcViewPage__Track_LatestUpdates_For_UserInput_CentralRegistration_And_Callback_Interface } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback";
 import { QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__track_latest_updates_for_user_input/qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput";
 import { CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import { CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data";
 
 
 const chartTitle = "Distribution of PSM Retention Time";
@@ -323,25 +322,92 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
             return; // EARLY RETURN
         }
 
-        let data_Holder_MultipleSearches: QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
-
+        const scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId: Map<number, CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder> = new Map()
         const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
 
         const promises: Array<Promise<void>> = []
 
         {
-            const promise = new Promise<void>((resolve, reject) => { try {
 
-                const promise_data_Holder_MultipleSearches =
-                    this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.
-                    qcPage_DataFromServer_AndDerivedData_MultipleSearches.get_PsmStatistics_RetentionTime_M_Z_Statistics_Data();
-                promise_data_Holder_MultipleSearches.catch(reason => { reject(reason) })
-                promise_data_Holder_MultipleSearches.then(value => { try {
-                    data_Holder_MultipleSearches = value
-                    resolve()
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-            promises.push(promise)
+            const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                let search__PSMS_precursor_retention_time__NotNull = false;
+                {
+                    const qcPage_Searches_Info_SingleSearch = this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
+                    if (!qcPage_Searches_Info_SingleSearch) {
+                        const msg = "this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    if (qcPage_Searches_Info_SingleSearch.precursor_retention_time__NotNull) {
+                        //  PSM Retention Time data for search IS SET
+                        search__PSMS_precursor_retention_time__NotNull = true;
+                    }
+                }
+
+                if ( ! search__PSMS_precursor_retention_time__NotNull ) {
+
+                    const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+                        this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId)
+                    if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+                        const msg = "this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId) returned NOTHING for projectSearchId: " + projectSearchId
+                        console.warn(msg)
+                        throw Error(msg)
+                    }
+
+                    const promise = new Promise<void>((resolve, reject) => { try {
+                        const promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch =
+                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
+                            get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
+
+                        promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.catch(reason => reject(reason))
+                        promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.then( value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch => { try {
+
+                            const promises_ScanData_Array: Array<Promise<void>> = []
+
+                            for ( const scanFile_ProjectScanFileId_SearchScanFileId_Entry of value_promise_get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All() ) {
+
+                                const searchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_Entry.searchScanFileId
+
+                                const get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result =
+                                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_NO_Peaks_Data().
+                                    get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId({ searchScanFileId })
+                                if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data ) {
+                                    scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.data.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
+                                } else if ( get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise ) {
+                                    const promise_For_Single_SearchScanFileId = new Promise<void>((resolve_For_Single_SearchScanFileId, reject_For_Single_SearchScanFileId) => { try {
+                                        get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.catch( reason => reject_For_Single_SearchScanFileId(reason) )
+                                        get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result.promise.then( value => { try {
+                                            scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.set( searchScanFileId, value.scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder )
+                                            resolve_For_Single_SearchScanFileId()
+                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                                    promises_ScanData_Array.push(promise_For_Single_SearchScanFileId)
+                                } else {
+                                    throw Error( "get_ScanData_ALL_For_Single_SearchScanFileId_NO_Peaks_Data_ForSearchScanFileId_Result NO data or promise" )
+                                }
+                            }
+
+                            if ( promises_ScanData_Array.length === 0 ) {
+
+                                resolve()
+
+                            } else {
+                                const promises_ScanData_Array_All = Promise.all( promises_ScanData_Array )
+                                promises_ScanData_Array_All.catch(reason => reject(reason))
+                                promises_ScanData_Array_All.then(novalue => { try {
+                                    resolve()
+                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                            }
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                    promises.push(promise)
+                }
+            }
         }
 
         for ( const projectSearchId of this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds ) {
@@ -405,7 +471,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
                     return; // EARLY RETURN
                 }
 
-                this._populateChart({ data_Holder_MultipleSearches, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId });
+                this._populateChart({ scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId });
 
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -419,9 +485,10 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
      */
     private _populateChart(
         {
-            data_Holder_MultipleSearches, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
+            scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId,
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId
         } : {
-            data_Holder_MultipleSearches: QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
+            scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId: Map<number, CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder>
             psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder>
         }
     ) : void {
@@ -449,13 +516,6 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
 
         for (const projectSearchId of projectSearchIds) {
 
-            const data_Holder_SingleSearch = data_Holder_MultipleSearches.get_Holder_For_projectSearchId({projectSearchId});
-            if (!data_Holder_SingleSearch) {
-                const msg = "data_Holder_MultipleSearches.get_Holder_For_projectSearchId({projectSearchId}); returned NOTHING for projectSearchId: " + projectSearchId;
-                console.warn(msg);
-                throw Error(msg);
-            }
-
             const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
             if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder) {
                 const msg = "psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId;
@@ -474,16 +534,6 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
                 if (qcPage_Searches_Info_SingleSearch.precursor_retention_time__NotNull) {
                     //  PSM Retention Time data for search IS SET
                     search__PSMS_precursor_retention_time__NotNull = true;
-                }
-            }
-
-            let spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root = undefined;
-            if ( ! search__PSMS_precursor_retention_time__NotNull ) {
-                spectralStorage_NO_Peaks_Data = data_Holder_SingleSearch.spectralStorage_NO_Peaks_Data
-                if (!spectralStorage_NO_Peaks_Data) {
-                    const msg = " ( ! search__PSMS_precursor_retention_time__NotNull ) AND (!spectralStorage_NO_Peaks_Data) for projectSearchId: " + projectSearchId;
-                    console.warn(msg);
-                    throw Error(msg);
                 }
             }
 
@@ -524,15 +574,21 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_RetentionTime_StatisticsPl
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    const spectralStorage_NO_Peaks_DataFor_SearchScanFileId = spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId);
-                    if ( ! spectralStorage_NO_Peaks_DataFor_SearchScanFileId ) {
-                        const msg = "spectralStorage_NO_Peaks_Data.get_SpectralStorage_NO_Peaks_DataFor_SearchScanFileId(psmTblData_Filtered_Entry.searchScanFileId); returned nothing for searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
+                    if ( ! scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId ) {
+                        const msg = " else of ( search__PSMS_precursor_retention_time__NotNull ) AND (! scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId ) for projectSearchId: " + projectSearchId;
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    const spectralStorage_NO_Peaks_DataFor_ScanNumber = spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
+
+                    const scanData_Single_SearchScanFileId_NO_Peaks_Data_HolderFor_SearchScanFileId = scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.get(psmTblData_Filtered_Entry.searchScanFileId);
+                    if ( ! scanData_Single_SearchScanFileId_NO_Peaks_Data_HolderFor_SearchScanFileId ) {
+                        const msg = "scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId.get(psmTblData_Filtered_Entry.searchScanFileId); returned nothing for searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
+                        console.warn(msg);
+                        throw Error(msg);
+                    }
+                    const spectralStorage_NO_Peaks_DataFor_ScanNumber = scanData_Single_SearchScanFileId_NO_Peaks_Data_HolderFor_SearchScanFileId.scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmTblData_Filtered_Entry.scanNumber );
                     if ( ! spectralStorage_NO_Peaks_DataFor_ScanNumber ) {
-                        const msg = "spectralStorage_NO_Peaks_DataFor_SearchScanFileId.get_SpectralStorage_NO_Peaks_DataFor_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing for scanNumber: " + psmTblData_Filtered_Entry.scanNumber + ", searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
+                        const msg = "scanData_Single_SearchScanFileId_NO_Peaks_Data_HolderFor_SearchScanFileId.scanData_NO_Peaks_Data_Holder.scanData.get_ScanData_NO_Peaks_For_ScanNumber( psmTblData_Filtered_Entry.scanNumber ); returned nothing for scanNumber: " + psmTblData_Filtered_Entry.scanNumber + ", searchScanFileId: " + psmTblData_Filtered_Entry.searchScanFileId + ", projectSearchId: " + projectSearchId;
                         console.warn(msg);
                         throw Error(msg);
                     }

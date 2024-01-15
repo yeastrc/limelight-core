@@ -615,10 +615,6 @@ public class AA_RestWSControllerPaths_Constants {
 			"d/rws/for-page/psb/scan-file-peak-intensity-binned-on-rt-mz-json-from-spectral-storage-data--search-scan-file-id-single-project-search-id";
 	
 	
-	//  Get Spectra Storage Data (Spectr) but NO Peaks for a project search id
-	public static final String SPECTRAL_STORAGE_DATA__NO_PEAKS__SINGLE_PROJECT_SEARCH_ID =
-			"d/rws/for-page/psb/spectral-storage-data--no-peaks--single-project-search-id";
-	
 	//  Used across various pages beyond just Reported Peptides Page
 	//    Pass in Project Search Id and Cutoff Criteria
 	//    Returns Reported Peptide Ids and in some cases the Number of PSMs

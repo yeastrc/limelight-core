@@ -6,7 +6,6 @@
  */
 
 
-import { DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root } from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data";
 import { DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData } from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 
 /**
@@ -15,5 +14,4 @@ import { DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData } fr
 export class QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch {
 
     searchScanFileData: DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData
-    spectralStorage_NO_Peaks_Data: DataPage_common_Data_Holder_SingleSearch_SpectralStorage_NO_Peaks_Data_Root
 }
