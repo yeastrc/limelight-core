@@ -35,7 +35,7 @@ head_section_include_every_page.jsp
     		'sha256-LtIWLBFFzfYXdIGWJ2t/yMJVIYyKlWYs6JwRq0ESN9U=' <%-- inline script in this file for IE testing. --%>
     		'sha256-zFC+///Xk4FAbxdUL7/FfF4qw3h5uHyU1+/S3dKmzLg=' <%-- inline script in this file for Page Error reporting. --%>
     		https://www.gstatic.com/  <%-- Google Charts Loader and Google Recaptcha data loaded from here --%>
-    		<%-- 'unsafe-eval' --%>  <%--  Required for Google Charts --%> 
+    		'unsafe-eval'             <%-- Required for Plotly WebGL detection and Google Charts (Google Charts currently NOT used) --%> 
     		https://www.googletagmanager.com/gtag/js  <%-- Google Analytics --%>
     		https://www.google-analytics.com/analytics.js   <%-- Google Analytics --%>
     		https://www.recaptcha.net/recaptcha/api.js  <%-- Google Recaptcha --%>
