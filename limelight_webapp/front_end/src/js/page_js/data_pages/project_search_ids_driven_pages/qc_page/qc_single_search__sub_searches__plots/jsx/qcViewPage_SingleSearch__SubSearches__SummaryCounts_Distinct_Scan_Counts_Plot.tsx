@@ -343,19 +343,6 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
             throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId)
         }
 
-        await
-            this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.
-            qcPage_DataFromServer_AndDerivedData_SingleSearch__SubSearches.
-            get_SearchScanFileData();
-
-        if (
-            ! this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput.equals(
-                this._qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback
-            )) {
-            //  Skip these params since they are not the "Latest"
-            return; // EARLY RETURN
-        }
-
         const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result =
             await
                 commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().

@@ -211,8 +211,6 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
             return null;
         });
 
-        // let qcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches: QcPage_DataFromServer_AndDerivedData_Holder_MultipleSearches
-
         const scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId: Map<number, Map<number, CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_NO_Peaks_Data_Holder>> = new Map()
 
         const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
@@ -220,40 +218,16 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
         const promises: Array<Promise<void>> = []
 
         {
-            const promise = new Promise<void>((resolve_TopLevel, reject_TopLevel) => { try {
+            const promise_multipleSearches_ScanSummaryData_LoadIfNeeded = this._qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded.multipleSearches_ScanSummaryData_LoadIfNeeded({
+                projectSearchIds: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds,
+                qcPage_Searches_Flags: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags,
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+                scanFile_SummaryPerLevelData_Root: this._scanFile_SummaryPerLevelData_Root
+            });
+            if ( promise_multipleSearches_ScanSummaryData_LoadIfNeeded ) {
 
-                const promise_get_SearchScanFileData =
-                    this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.
-                    qcPage_DataFromServer_AndDerivedData_MultipleSearches.get_SearchScanFileData();
-
-                promise_get_SearchScanFileData.catch(reason => { reject_TopLevel(reason) })
-                promise_get_SearchScanFileData.then( holder_MultipleSearches_Param => { try {
-
-                    const promise_multipleSearches_ScanSummaryData_LoadIfNeeded = this._qcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded.multipleSearches_ScanSummaryData_LoadIfNeeded({
-                        projectSearchIds: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds,
-                        qcPage_Searches_Flags: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags,
-                        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                        data_Holder_MultipleSearches: holder_MultipleSearches_Param,
-                        scanFile_SummaryPerLevelData_Root: this._scanFile_SummaryPerLevelData_Root
-                    });
-                    if ( promise_multipleSearches_ScanSummaryData_LoadIfNeeded ) {
-
-                        promise_multipleSearches_ScanSummaryData_LoadIfNeeded.catch(reason => { reject_TopLevel(reason) })
-                        promise_multipleSearches_ScanSummaryData_LoadIfNeeded.then( novalue => { try {
-
-                            resolve_TopLevel()
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-                    } else {
-
-                        resolve_TopLevel()
-                    }
-                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-            promises.push(promise)
+                promises.push( promise_multipleSearches_ScanSummaryData_LoadIfNeeded )
+            }
         }
 
         {
