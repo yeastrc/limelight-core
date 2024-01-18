@@ -17,6 +17,7 @@ import {
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
+import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 /**
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
@@ -41,6 +42,7 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
 //  Instantiated objects
 
     private _commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics: CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics
+    private _commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId
 
     /**
      *
@@ -65,6 +67,11 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
 
         this._commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics =
             CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics.getNewInstance({
+                projectSearchIds
+            });
+
+        this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId =
+            CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId.getNewInstance({
                 projectSearchIds
             });
     }
@@ -94,5 +101,9 @@ export class CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Exc
 
     get_commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics() {
         return this._commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics;
+    }
+
+    get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId() {
+        return this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId
     }
 }

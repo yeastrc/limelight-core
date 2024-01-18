@@ -10,7 +10,6 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {Qc_SingleSearch_SummaryStatistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_SummaryStatistics_Section";
 import {Qc_SingleSearch_Peptide_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_Peptide_Level_Statistics_Section";
 import {Qc_SingleSearch_PSM_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_PSM_Level_Statistics_Section";
-import {QcPage_DataFromServer_AndDerivedData_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {DataPage_common_Flags_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_Searches_Flags";
 import {DataPage_common_Searches_Info_SingleSearch} from "page_js/data_pages/data_pages_common/search_flags_and_info_retrieval_and_data_objects/dataPage_common_Get_dataPage_common__Searches_Info";
 import {Qc_SingleSearch_PSM_PPM_Error_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_PSM_PPM_Error_Statistics_Section";
@@ -29,7 +28,6 @@ import { Qc_SingleSearch_GoldStandard_Statistics_Section } from "page_js/data_pa
 export class QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent {
 
     projectSearchId: number
-    qcPage_DataFromServer_AndDerivedData_SingleSearch: QcPage_DataFromServer_AndDerivedData_SingleSearch
 
     qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
     qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
@@ -98,20 +96,8 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
             throw Error(msg);
         }
 
-        const qcPage_DataFromServer_AndDerivedData_SingleSearch = new QcPage_DataFromServer_AndDerivedData_SingleSearch({
-            retrievalParams: {
-                projectSearchId,
-                searchDataLookupParamsRoot: commonData.searchDataLookupParamsRoot,
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
-                dataPageStateManager: commonData.dataPageStateManager,
-                qcPage_Flags_SingleSearch_ForProjectSearchId,
-                qcPage_Searches_Info_SingleSearch_ForProjectSearchId
-            }
-        })
-
         this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent = {
             projectSearchId,
-            qcPage_DataFromServer_AndDerivedData_SingleSearch,
             qcPage_Flags_SingleSearch_ForProjectSearchId,
             qcPage_Searches_Info_SingleSearch_ForProjectSearchId
         }

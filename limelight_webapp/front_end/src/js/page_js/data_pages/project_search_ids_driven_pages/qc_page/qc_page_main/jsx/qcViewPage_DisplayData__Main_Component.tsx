@@ -77,8 +77,7 @@ import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_ma
 import {Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
 import {QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject";
-import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
-import {dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData";
+import {CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/jsx/scanFilenameId_On_PSM_Filter_UserSelection_Component";
 import {Scan_RetentionTime_MZ_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/jsx/scan_RetentionTime_MZ_UserSelections_Component";
 import {FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__show_hide__expand_collapse_container_component/filterSection_DataPage_ShowHide_ExpandCollapse_Container_Component";
@@ -201,7 +200,7 @@ interface QcViewPage_DisplayData__Main_Component_State {
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING?: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING?: GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class
 
-    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root?: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder?: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 
     searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue? : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
 
@@ -777,28 +776,42 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             promises_All_TopLevel_Array.push(promise_ToAdd);
         }
 
-        let dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root = undefined;
+        let commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = undefined;
 
         if ( this._allSearches_Have_ScanFilenames ) {  // allSearches_Have_ScanFilenames set in constructor
 
             const promise_ToAdd = new Promise<void>( (resolve, reject) => {
                 try {
-                    const promise = dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData({ projectSearchIds: this.props.propsValue.projectSearchIds });
-                    promise.catch( reason => {
-                        try {
-                            reject(reason)
+                    const get_ScanFileDataHolder_Result =
+                        this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                        get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
+                        get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder()
 
-                        } catch( e ) {
-                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                            throw e;
-                        }
-                    });
-                    promise.then( dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult => {
+                    if ( get_ScanFileDataHolder_Result.data ) {
 
-                        dataPage_common_Data_Holder_Holder_SearchScanFileData_Root = dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult;
+                        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = get_ScanFileDataHolder_Result.data.scanFileData_Holder
+                        resolve()
 
-                        resolve();
-                    })
+                    } else if ( get_ScanFileDataHolder_Result.promise ) {
+
+                        get_ScanFileDataHolder_Result.promise.catch( reason => {
+                            try {
+                                reject( reason )
+
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e;
+                            }
+                        } );
+                        get_ScanFileDataHolder_Result.promise.then( value => {
+
+                            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = value.scanFileData_Holder;
+
+                            resolve();
+                        } )
+                    } else {
+                        throw Error("get_ScanFileDataHolder_Result no data or promise")
+                    }
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
@@ -820,20 +833,20 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 {
                     //  Purge this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject if needed
 
-                    if ( ( ! this._allSearches_Have_ScanFilenames ) || ( ! dataPage_common_Data_Holder_Holder_SearchScanFileData_Root ) ) {
+                    if ( ( ! this._allSearches_Have_ScanFilenames ) || ( ! commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) ) {
 
                         this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.clearAll();
                     } else {
-                        //  Remove entries in scanFilenameId_On_PSM_Filter_UserSelection_StateObject NOT IN dataPage_common_Data_Holder_Holder_SearchScanFileData_Root (loaded from server)
+                        //  Remove entries in scanFilenameId_On_PSM_Filter_UserSelection_StateObject NOT IN commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder (loaded from server)
 
                         this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.
-                        remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root({dataPage_common_Data_Holder_Holder_SearchScanFileData_Root});
+                        remove_scanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder({commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder});
                     }
                 }
 
                 this._recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain({
                     initialPageLoad,
-                    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
                 });
 
             } catch( e ) {
@@ -851,16 +864,16 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
     private _recompute_FullPage_Except_SearchDetails__SubPart_RunBeforeMain(
         {
             initialPageLoad,
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         } : {
             initialPageLoad : boolean
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         }
     ) : void {
 
         this._recompute_FullPage_Except_SearchDetails__SubPart_Main({
             initialPageLoad,
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         });
     }
 
@@ -934,10 +947,10 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
     private async _recompute_FullPage_Except_SearchDetails__SubPart_Main(
         {
             initialPageLoad,
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         } : {
             initialPageLoad : boolean
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         }
     ) : Promise<void> {
         try {
@@ -1042,7 +1055,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
                 proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data: undefined,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
                 scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
                 psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                 psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
@@ -1053,7 +1066,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             this.setState({
                 mainDisplayData_Loaded : true,
 
-                dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
 
                 searchSubGroup_Are_All_SearchSubGroupIds_Selected,
                 searchSubGroup_PropValue,
@@ -2123,7 +2136,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_StateObject : this.props.propsValue.proteinPositionFilter_UserSelections_StateObject,
             proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data : undefined,
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
             psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
@@ -2402,7 +2415,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             <FilterOn_SearchProgramsGroup_ConditionalRender_Component
                                 searchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData={ this.state.searchSubGroup_PropValue }
                                 anySearches_Have_ScanFilenames={ this._anySearches_Have_ScanFilenames }
-                                dataPage_common_Data_Holder_Holder_SearchScanFileData_Root={ this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root }
+                                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
                             >
 
                                 {/*  Section Label  */}
@@ -2427,8 +2440,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                 { (
                                     this._anySearches_Have_ScanFilenames
                                     && (
-                                        ! ( this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
-                                            && this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_total_SearchScanFileCount() === 1 ) )
+                                        ! ( this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+                                            && this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_total_SearchScanFileCount() === 1 ) )
                                 ) ? (
 
                                     //  Show Scan Filename Selector
@@ -2436,7 +2449,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                     <ScanFilenameId_On_PSM_Filter_UserSelection_Component
                                         allSearches_Have_ScanFilenames={ this._allSearches_Have_ScanFilenames }
                                         projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                        dataPage_common_Data_Holder_Holder_SearchScanFileData_Root={ this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root }
+                                        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
                                         scanFilenameId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject }
                                         scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
                                         updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }

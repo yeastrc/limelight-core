@@ -10,9 +10,7 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainPageContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainPageContainer";
-import {DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
-import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data";
-import { QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded";
+import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 /**
  *
@@ -32,8 +30,8 @@ interface Qc_SingleSearch_ScanFile_Chromatography_Section_State {
     loadingData?: boolean
     noData?: boolean
 
-    searchScanFileData_Entries?: DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId[]
-    searchScanFileData_OnlyOne?: DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId
+    searchScanFileData_Entries?: Array<CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry>
+    searchScanFileData_OnlyOne?: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry
     searchScanFileId_Selection?: number
     searchScanFileName_Selection?: string
     searchScanFileId_Selected_IsFrom_Multiple_SearchScanFileIds?: boolean
@@ -128,23 +126,35 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
                 this.setState({ loadingData: true });
 
                 const promise =
-                    this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.
-                    qcPage_DataFromServer_AndDerivedData_SingleSearch.get_SearchScanFileData();
+                    this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                    get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
+                    get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder_ReturnPromise()
 
                 promise.catch( reason => {
 
                 })
-                promise.then( result => {
-                    if ( ( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 ) {
+                promise.then( result => { try {
 
-                        console.log( "( ! result.searchScanFileData ) || result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename().length == 0 )");
+                    const projectSearchId = this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId
+
+                    const scanFileData_Holder_For_ProjectSearchId = result.scanFileData_Holder.get_For_ProjectSearchId( projectSearchId )
+
+                    if ( ! scanFileData_Holder_For_ProjectSearchId ) {
 
                         this.setState({ noData: true, loadingData: false });
 
                         return;
                     }
 
-                    const searchScanFileData_Entries = result.searchScanFileData.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
+                    const searchScanFileData_Entries = scanFileData_Holder_For_ProjectSearchId.get_SearchScanFileData_PerSearchScanFileId_Array_OrderedBy_Filename()
+
+                    if ( searchScanFileData_Entries.length == 0 ) {
+
+                        this.setState({ noData: true, loadingData: false });
+
+                        return;
+                    }
 
                     const searchScanFileData_FirstEntry = searchScanFileData_Entries[0];
 
@@ -165,7 +175,7 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
 
                         this.setState({ searchScanFileData_OnlyOne: searchScanFileData_FirstEntry });
                     }
-                })
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             }
 
             this._sectionEverExpanded = true;
@@ -208,7 +218,7 @@ export class Qc_SingleSearch_ScanFile_Chromatography_Section extends React.Compo
 
                     <div className=" section-content-block " style={ { display: ( ! this.state.sectionExpanded ) ? ( "none" ) : null } }>
 
-                        <div >
+                        <div style={ { marginBottom: 20 } } >
 
                             { ( this.state.noData ) ? (
 

@@ -186,7 +186,7 @@ export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_Proje
 
                 this._promise_LoadingInProgress_Map_Key_ProjectScanFileId.delete(projectScanFileId)
 
-                console.log("END: REJECTED: getting data from URL: " + url);
+                console.log("END: SUCCESS: getting data from URL: " + url);
 
                 this._process_WebserviceResponse({responseData, projectScanFileId});
 

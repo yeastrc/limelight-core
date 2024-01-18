@@ -8,8 +8,8 @@
  *
  */
 
-import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 ////////////////////
 
@@ -86,13 +86,13 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
 
     /**
      *
-     * @param dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+     * @param commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
      */
-    remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root(
+    remove_scanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder(
         {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         } : {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         }
     ) : void {
 
@@ -101,14 +101,14 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
             return;  // EARLY EXIT
         }
 
-        if ( ! dataPage_common_Data_Holder_Holder_SearchScanFileData_Root ) {
+        if ( ! commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
             // No SearchScanFileData loaded
-            const msg = "No value in dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.  remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root(...)";
+            const msg = "No value in commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.  remove_scanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder(...)";
             console.warn(msg);
             throw Error(msg);
         }
 
-        const loaded_All_SearchScanFileIds = dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_All_SearchScanFileIds()
+        const loaded_All_SearchScanFileIds = commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds()
 
         let deletedEntries = false;
 
@@ -125,7 +125,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_StateObject {
         }
 
         if ( ! this._valueChangedCallback ) {
-            throw Error("remove_scanFilenameIds_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root::( ! this._valueChangedCallback )")
+            throw Error("remove_scanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();

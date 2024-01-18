@@ -127,7 +127,7 @@ export class Protein_Page_FiltersDisplay extends React.Component< Protein_Page_F
 
                 const currentFilter = currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection({
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.protein_Page_FiltersDisplay_ComponentData.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.props.protein_Page_FiltersDisplay_ComponentData.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.props.protein_Page_FiltersDisplay_ComponentData.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
                 });
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );

@@ -9,9 +9,9 @@
 import React from "react";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {
-    DataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
-    DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId
-} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry,
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 //  Set since what is returned is put into an Array.  Simply set to root function name.
 const _ROOT_REACT_ELEMENT_RETURNED__KEY = "currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection";
@@ -19,15 +19,15 @@ const _ROOT_REACT_ELEMENT_RETURNED__KEY = "currentFiltersDisplayBlock__ScanFilen
 /**
  *
  * @param scanFilenameId_On_PSM_Filter_UserSelection_StateObject
- * @param dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+ * @param commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
  */
 export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection = function (
     {
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-        dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
     } : {
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
-        dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root //  Use with scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder //  Use with scanFilenameId_On_PSM_Filter_UserSelection_StateObject
     }
 ) : JSX.Element {
 
@@ -43,7 +43,7 @@ export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelect
         return null;  // EARLY RETURN
     }
 
-    if ( ( ! dataPage_common_Data_Holder_Holder_SearchScanFileData_Root ) ) {
+    if ( ( ! commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) ) {
         //  Nothing to display
 
         return null;  // EARLY RETURN
@@ -64,10 +64,10 @@ export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelect
 
     //  scanFilenameIds_Selected contains entries
 
-    const searchScanFileDataEntries: Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId> = [];
+    const searchScanFileDataEntries: Array<CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry> = [];
 
     for (const scanFilenameId of scanFilenameIds_Selected) {
-        for (const data_Holder_Holder_SingleSearch_SearchScanFileData of dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_IterableIterator()) {
+        for (const data_Holder_Holder_SingleSearch_SearchScanFileData of commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_IterableIterator() ) {
             const searchScanFileData = data_Holder_Holder_SingleSearch_SearchScanFileData.get_SearchScanFileDataFor_SearchScanFileId(scanFilenameId);
             if (searchScanFileData) {
                 searchScanFileDataEntries.push(searchScanFileData);
@@ -76,7 +76,7 @@ export const currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelect
     }
 
     if ( searchScanFileDataEntries.length === 0 ) {
-        //  NO searchScanFileDataEntries for scanFilenameIds_Selected in dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData
+        //  NO searchScanFileDataEntries for scanFilenameIds_Selected in commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData
         //  Nothing to display
 
         return null;  // EARLY RETURN
@@ -113,7 +113,7 @@ const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection = f
     {
         searchScanFileDataEntries
     } : {
-        searchScanFileDataEntries: Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileDataForSingleSearchScanFileId>
+        searchScanFileDataEntries: Array<CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry>
     }
 ) : JSX.Element {
 

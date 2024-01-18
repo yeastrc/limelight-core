@@ -14,9 +14,9 @@ import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {
-    DataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
-    DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData
-} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_Entry
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 /**
  *
@@ -32,7 +32,7 @@ export interface ScanFilenameId_On_PSM_Filter_UserSelection_Component_Props {
      *
      * value for <option> of <select>
      */
-    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject;
     scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject : object
@@ -250,12 +250,12 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
 
         const multipleSearches = this.props.projectSearchIds.length > 1;
 
-        const searchScanFileData_For_ProjectSearchIdArray : Array<DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData> = [];
+        const searchScanFileData_For_ProjectSearchIdArray : Array<CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_Entry> = [];
 
         for ( const projectSearchId of this.props.projectSearchIds ) {
-            const searchScanFileData_For_ProjectSearchId = this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId(projectSearchId);
+            const searchScanFileData_For_ProjectSearchId = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId);
             if ( ! searchScanFileData_For_ProjectSearchId ) {
-                const msg = "this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_DataPage_common_Data_Holder_Holder_SingleSearch_SearchScanFileData_For_ProjectSearchId(projectSearchId); returned nothing for : " + projectSearchId;
+                const msg = "this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId); returned nothing for : " + projectSearchId;
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -294,7 +294,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                             let all_SearchScanFileIds : Set<number> = undefined;
                                             let scanFilenameIds_Selected_InOnChange = this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected();
                                             if ( ! scanFilenameIds_Selected_InOnChange ) {
-                                                all_SearchScanFileIds = this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_All_SearchScanFileIds();
+                                                all_SearchScanFileIds = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds();
                                                 scanFilenameIds_Selected_InOnChange = new Set( all_SearchScanFileIds );
                                             }
 
@@ -302,7 +302,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                                 scanFilenameIds_Selected_InOnChange.add( searchScanFileData.searchScanFileId );
 
                                                 if ( ! all_SearchScanFileIds ) {
-                                                    all_SearchScanFileIds = this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_All_SearchScanFileIds();
+                                                    all_SearchScanFileIds = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds();
                                                 }
                                                 if ( scanFilenameIds_Selected_InOnChange.size === all_SearchScanFileIds.size ) {
                                                     // All Selected so set to undefined

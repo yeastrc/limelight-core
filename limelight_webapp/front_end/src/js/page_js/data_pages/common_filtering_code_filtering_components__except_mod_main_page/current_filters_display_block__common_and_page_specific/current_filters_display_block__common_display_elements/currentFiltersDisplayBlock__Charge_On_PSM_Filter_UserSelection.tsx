@@ -16,7 +16,7 @@ const _ROOT_REACT_ELEMENT_RETURNED__KEY = "currentFiltersDisplayBlock__Charge_On
 /**
  *
  * @param psm_Charge_Filter_UserSelection_StateObject
- * @param dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+ * @param commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
  */
 export const currentFiltersDisplayBlock__Charge_On_PSM_Filter_UserSelection = function (
     {

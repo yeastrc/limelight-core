@@ -117,8 +117,7 @@ import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/da
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/jsx/scanFilenameId_On_PSM_Filter_UserSelection_Component";
 import {Scan_RetentionTime_MZ_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/jsx/scan_RetentionTime_MZ_UserSelections_Component";
-import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
-import {dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData";
+import {CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 import {FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__show_hide__expand_collapse_container_component/filterSection_DataPage_ShowHide_ExpandCollapse_Container_Component";
 import {Protein_Page_FiltersDisplay_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/protein_page/protein_Page_FiltersDisplay_ComponentData";
 import {Protein_Page_FiltersDisplay} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/protein_page/protein_Page_FiltersDisplay";
@@ -242,7 +241,7 @@ interface ProteinViewPage_DisplayData_ProteinList_Integrated_SingleMultipleSearc
 
     mainDisplayData_Loaded? : boolean;
 
-    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root?: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder?: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 
     reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds? : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds;  //  For some sub components
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result? : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
@@ -1491,28 +1490,42 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         const getDataFromServer_AllPromises = [];
 
         //  Load here since used in 2 places.  can move later
-        let dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root = undefined;
+        let commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = undefined;
 
         if ( this._allSearches_Have_ScanFilenames ) {  // allSearches_Have_ScanFilenames set in constructor
 
             const promise_ToAdd = new Promise<void>( (resolve, reject) => {
                 try {
-                    const promise = dataPage_common_Data_Holder_SearchScanFileData_Data_LoadData({ projectSearchIds: this.props.propsValue.projectSearchIds });
-                    promise.catch( reason => {
-                        try {
-                            reject(reason)
+                    const get_ScanFileDataHolder_Result =
+                        this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+                        get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
+                        get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder()
 
-                        } catch( e ) {
-                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                            throw e;
-                        }
-                    });
-                    promise.then( dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult => {
+                    if ( get_ScanFileDataHolder_Result.data ) {
 
-                        dataPage_common_Data_Holder_Holder_SearchScanFileData_Root = dataPage_common_Data_Holder_Holder_SearchScanFileData_Root_PromiseResult;
+                        commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = get_ScanFileDataHolder_Result.data.scanFileData_Holder
+                        resolve()
 
-                        resolve();
-                    })
+                    } else if ( get_ScanFileDataHolder_Result.promise ) {
+
+                        get_ScanFileDataHolder_Result.promise.catch( reason => {
+                            try {
+                                reject( reason )
+
+                            } catch ( e ) {
+                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                throw e;
+                            }
+                        } );
+                        get_ScanFileDataHolder_Result.promise.then( value => {
+
+                            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = value.scanFileData_Holder;
+
+                            resolve();
+                        } )
+                    } else {
+                        throw Error("get_ScanFileDataHolder_Result no data or promise")
+                    }
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
@@ -1547,7 +1560,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         promise_getDataFromServer_AllPromises.then( (value) => {
             try {
                 this._recompute_FullPage_Except_SearchDetails__SubPart_AfterLoaded_SecondaryData_IfNeeded({
-                    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
                 });
             } catch( e ) {
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -1561,14 +1574,14 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
      */
     private _recompute_FullPage_Except_SearchDetails__SubPart_AfterLoaded_SecondaryData_IfNeeded(
         {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
         } : {
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
             psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc: EstimatedError_Using_IndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc
         }
     ) {
 
-        this.setState({ dataPage_common_Data_Holder_Holder_SearchScanFileData_Root, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc });
+        this.setState({ commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder, psm_EstimatedPsmLevelError_Using_PsmIndependentDecoy_FastaFileStatistics__ComponentData_FastaFileStatistics_Etc });
 
         {
             const modificationMass_OpenModMassZeroNotOpenMod_UserSelection_Build_ComponentData_ForReactComponent_Result =
@@ -2090,7 +2103,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject : this.props.propsValue.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject : this.props.propsValue.proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root : this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder : this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
                     scan_RetentionTime_MZ_UserSelections_StateObject : this.props.propsValue.scan_RetentionTime_MZ_UserSelection_StateObject,
                     psm_Charge_Filter_UserSelection_StateObject: this.props.propsValue.psm_Charge_Filter_UserSelection_StateObject,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: this.props.propsValue.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
@@ -2572,7 +2585,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             proteinNameDescription : proteinNameDescriptionParam,
 
             //  Pass Here since for sure populated by here
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
         });
     }
 
@@ -2615,7 +2628,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
             dataPageStateManager_DataFrom_Server : this.props.propsValue.dataPageStateManager,
             searchDetailsBlockDataMgmtProcessing : this.props.propsValue.searchDetailsBlockDataMgmtProcessing,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-            dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root,
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
 
             singleProtein_CentralStateManagerObject : this.props.propsValue.singleProtein_CentralStateManagerObject,
 
@@ -2793,8 +2806,8 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         { (
                             this._anySearches_Have_ScanFilenames
                             && (
-                                ! ( this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
-                                    && this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_total_SearchScanFileCount() === 1 ) )
+                                ! ( this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+                                    && this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_total_SearchScanFileCount() === 1 ) )
                         ) ? (
 
                             //  Show Scan Filename Selector
@@ -2802,7 +2815,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                             <ScanFilenameId_On_PSM_Filter_UserSelection_Component
                                 allSearches_Have_ScanFilenames={ this._allSearches_Have_ScanFilenames }
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
-                                dataPage_common_Data_Holder_Holder_SearchScanFileData_Root={ this.state.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root }
+                                commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder={ this.state.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder }
                                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject={ this.props.propsValue.scanFilenameId_On_PSM_Filter_UserSelection_StateObject }
                                 scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject={ this.state.scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject }
                                 updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback={ this._updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback_BindThis }

@@ -84,7 +84,7 @@ export class Psm_Charge_Filter_UserSelection_StateObject {
 
     /**
      *
-     * @param dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+     * @param commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
      */
     remove_chargeValues_OnPSMs_Selected_NOT_in_All_ChargesSet(
         {
@@ -126,7 +126,7 @@ export class Psm_Charge_Filter_UserSelection_StateObject {
         }
 
         if ( ! this._valueChangedCallback ) {
-            throw Error("remove_chargeValues_OnPSMs_Selected_NOT_Loaded_In_dataPage_common_Data_Holder_Holder_SearchScanFileData_Root::( ! this._valueChangedCallback )")
+            throw Error("remove_chargeValues_OnPSMs_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();

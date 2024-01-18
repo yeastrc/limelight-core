@@ -107,7 +107,7 @@ export class SingleProtein_FiltersDisplay extends React.Component< SingleProtein
 
                 const currentFilter = currentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection({
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject: this.props.singleProtein_FiltersDisplay_ComponentData.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-                    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: this.props.singleProtein_FiltersDisplay_ComponentData.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.props.singleProtein_FiltersDisplay_ComponentData.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
                 });
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );

@@ -16,7 +16,6 @@ import {Qc_SingleSearch__SubSearches_PSM_Level_Statistics_Section} from "page_js
 import {Qc_SingleSearch__SubSearches_Peptide_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Peptide_Level_Statistics_Section";
 import {Qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_PSM_PPM_Error_Statistics_Section";
 import {Qc_SingleSearch__SubSearches_ErrorEstimation_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_ErrorEstimation_Section";
-import {QcPage_DataFromServer_AndDerivedData_SingleSearch} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {Qc_SingleSearch__SubSearches_Target_Decoy_Analysis_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Target_Decoy_Analysis_Section";
 import {Qc_SingleSearch__SubSearches_Protein_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_Protein_Level_Statistics_Section";
 import {Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section";
@@ -27,8 +26,6 @@ import {Qc_SingleSearch__SubSearches_FeatureDetection_Statistics_Section} from "
 export class QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent {
 
     projectSearchId: number
-
-    qcPage_DataFromServer_AndDerivedData_SingleSearch: QcPage_DataFromServer_AndDerivedData_SingleSearch
 
     qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
     qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
@@ -97,20 +94,8 @@ export class Qc_SingleSearch__SubSearches_AA__Root_DisplayBlock extends React.Co
             throw Error(msg);
         }
 
-        const qcPage_DataFromServer_AndDerivedData_SingleSearch = new QcPage_DataFromServer_AndDerivedData_SingleSearch({
-            retrievalParams: {
-                projectSearchId,
-                searchDataLookupParamsRoot: commonData.searchDataLookupParamsRoot,
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
-                dataPageStateManager: commonData.dataPageStateManager,
-                qcPage_Flags_SingleSearch_ForProjectSearchId,
-                qcPage_Searches_Info_SingleSearch_ForProjectSearchId
-            }
-        })
-
         this._qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent = {
             projectSearchId,
-            qcPage_DataFromServer_AndDerivedData_SingleSearch,
             qcPage_Flags_SingleSearch_ForProjectSearchId,
             qcPage_Searches_Info_SingleSearch_ForProjectSearchId
         }

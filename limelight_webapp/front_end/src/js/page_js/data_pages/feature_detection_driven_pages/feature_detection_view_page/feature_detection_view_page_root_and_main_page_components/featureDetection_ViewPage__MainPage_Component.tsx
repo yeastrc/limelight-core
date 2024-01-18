@@ -79,7 +79,6 @@ import { PeptidePage_Display_MainContent_Component_Props_Prop } from "page_js/da
 import { currentProjectId_ProjectSearchId_Based_DataPages_FromDOM } from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
 import { Qc_compute_Cache_create_GeneratedReportedPeptideListData } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/generatedReportedPeptideList_Compute/qc_compute_Cache_create_GeneratedReportedPeptideListData";
 import { QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
-import { QcPage_DataFromServer_AndDerivedData_SingleSearch } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_AndDerivedData_SingleSearch";
 import {
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides,
     ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
@@ -425,20 +424,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         throw Error(msg);
                     }
 
-                    const qcPage_DataFromServer_AndDerivedData_SingleSearch = new QcPage_DataFromServer_AndDerivedData_SingleSearch({
-                        retrievalParams: {
-                            projectSearchId,
-                            searchDataLookupParamsRoot: commonData.searchDataLookupParamsRoot,
-                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
-                            dataPageStateManager: commonData.dataPageStateManager,
-                            qcPage_Flags_SingleSearch_ForProjectSearchId,
-                            qcPage_Searches_Info_SingleSearch_ForProjectSearchId
-                        }
-                    })
-
                     this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent = {
                         projectSearchId,
-                        qcPage_DataFromServer_AndDerivedData_SingleSearch,
                         qcPage_Flags_SingleSearch_ForProjectSearchId,
                         qcPage_Searches_Info_SingleSearch_ForProjectSearchId
                     }

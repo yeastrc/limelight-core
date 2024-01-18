@@ -12,7 +12,7 @@ import {
     SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData,
     SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
-import {DataPage_common_Data_Holder_Holder_SearchScanFileData_Root} from "page_js/data_pages/data_pages_common/search_scan_file_data__scan_file_data/dataPage_common_Data_Holder_SearchScanFileData_Data";
+import {CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 /**
  *
@@ -26,7 +26,7 @@ export interface FilterOn_SearchProgramsGroup_ConditionalRender_Component_Props 
     //  Render control for ScanFilenameId_On_PSM_Filter_UserSelection_Component
 
     anySearches_Have_ScanFilenames: boolean
-    dataPage_common_Data_Holder_Holder_SearchScanFileData_Root: DataPage_common_Data_Holder_Holder_SearchScanFileData_Root
+    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 }
 
 
@@ -55,8 +55,8 @@ export class FilterOn_SearchProgramsGroup_ConditionalRender_Component extends Re
             || (
                 this.props.anySearches_Have_ScanFilenames
                 && (
-                    ! ( this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root
-                        && this.props.dataPage_common_Data_Holder_Holder_SearchScanFileData_Root.get_total_SearchScanFileCount() === 1
+                    ! ( this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+                        && this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_total_SearchScanFileCount() === 1
                     )
                 )
             )
