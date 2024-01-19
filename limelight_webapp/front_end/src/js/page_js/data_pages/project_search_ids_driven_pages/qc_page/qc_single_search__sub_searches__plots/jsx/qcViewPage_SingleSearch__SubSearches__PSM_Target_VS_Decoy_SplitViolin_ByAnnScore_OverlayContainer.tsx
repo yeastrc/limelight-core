@@ -9,7 +9,6 @@ import React from "react";
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
@@ -19,6 +18,7 @@ import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_
 import {qcPage_ChartOverlayDimensions} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import { QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot } from "./qcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot";
 import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_SingleScanFile_Entry } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
+import { QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 
 ////////
 
@@ -75,7 +75,7 @@ export const qcViewPage_SingleSearch__SubSearches__Open_PSM_Target_VS_Decoy_Spli
 export interface QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot_OverlayContainer__Component_Params {
 
     qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
-    qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent: QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent
+    qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent: QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent
 
     annotationTypeId_Score_X: number
 }
@@ -169,7 +169,7 @@ class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAn
             })
             promise.then( result => { try {
 
-                const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId
+                const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId
 
                 const scanFileData_Holder_For_ProjectSearchId = result.scanFileData_Holder.get_For_ProjectSearchId( projectSearchId )
 
@@ -292,7 +292,7 @@ class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAn
 
         const annotationNames_SelectOptionEntries: Array<JSX.Element> = [];
         {
-            const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId;
+            const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent.projectSearchId;
 
             const dataPageStateManager = this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager;
             const annotationTypeEntries = dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId);
@@ -533,7 +533,7 @@ class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAn
                                 <div style={ { height: "100%", position: "relative" } }>
                                     <QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot
                                         qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                                        qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent }
+                                        qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this.props.params.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
                                         searchScanFileId_Selection={ this.state.searchScanFileId_Selection }
                                         annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
                                         transform_Score={ this.state.transform_Score }

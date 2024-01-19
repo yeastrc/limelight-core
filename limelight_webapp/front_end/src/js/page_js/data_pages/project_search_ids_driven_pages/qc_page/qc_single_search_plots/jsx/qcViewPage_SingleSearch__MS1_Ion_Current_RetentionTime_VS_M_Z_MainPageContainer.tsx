@@ -18,8 +18,7 @@ import {
     qcPage_StandardChartLayout_StandardWidth
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qcPage_StandardChartLayout";
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
-import { QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data_Root } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_loaded/qcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Data";
-import { QcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded";
+import { CommonData_LoadedFromServer_SingleSearch__ScanData__MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData__MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId";
 
 /**
  *
@@ -188,32 +187,38 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
 
         const searchScanFileId = this.props.searchScanFileId_Selected;
 
-        const promise =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_DataFromServer_SingleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded.
-            singleSearch_ScanFile_MS1_PeakIntensityBinnedOn_RT_MZ_LoadIfNeeded({
-                searchScanFileId,
-                projectSearchId: this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId,
-                scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root
-            });
+        const get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result =
+            this.props.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+            get_commonData_LoadedFromServer_SingleSearch__ScanData__MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId().get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data({ searchScanFileId })
 
-        if ( ! promise ) {
-            this._process_AfterLoadData({ searchScanFileId_InProgress: searchScanFileId })
+        if ( get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result.data ) {
 
-            return // EARLY RETURN
+            this._process_AfterLoadData({
+                searchScanFileId_InProgress: searchScanFileId,
+                scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder: get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result.data.scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder
+            })
+
+        } else if ( get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result.promise ) {
+
+            get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result.promise.catch( reason => {
+
+            })
+            get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result.promise.then( value => {
+                try {
+                    this._process_AfterLoadData({
+                        searchScanFileId_InProgress: searchScanFileId,
+                        scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder: value.scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder
+                    })
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            })
+
+        } else {
+            throw Error("get_MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Data_Result no 'data' or 'promise'")
         }
-
-        promise.catch( reason => {
-
-        })
-        promise.then( novalue => {
-            try {
-                this._process_AfterLoadData({ searchScanFileId_InProgress: searchScanFileId })
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                throw e;
-            }
-        })
     }
 
     /**
@@ -222,9 +227,10 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
      */
     private _process_AfterLoadData(
         {
-            searchScanFileId_InProgress
+            searchScanFileId_InProgress, scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder
         } : {
             searchScanFileId_InProgress: number
+            scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder: CommonData_LoadedFromServer_SingleSearch__ScanData__MS1_PeakIntensityBinnedOn_RT_MZ_For_Single_SearchScanFileId_Holder
         }
     ) {
         if ( searchScanFileId_InProgress !== this.props.searchScanFileId_Selected ) {
@@ -234,8 +240,7 @@ export class QcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_MainP
             return; // EARLY RETURN
         }
 
-        const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData =
-            this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.scanFile_MS1_PeakIntensityBinnedOn_RT_MZ_Root.get_Data_For_SearchScanFileId( this.props.searchScanFileId_Selected );
+        const ms1_PeakIntensityBinnedOn_RT_MZ_OverallData = scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder.scanData_MS1_PeakIntensityBinnedOn_RT_MZ_Holder.scanData_ForSingle_ProjectScanFileId
 
         const summaryData = ms1_PeakIntensityBinnedOn_RT_MZ_OverallData.summaryData;
 

@@ -100,7 +100,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViol
                     <QcPage_ChartBorder>
                         <QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot
                             qcViewPage_CommonData_To_AllComponents_From_MainComponent={ this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent }
-                            qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
+                            qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent={ this.props.qcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent }
                             searchScanFileId_Selection={ QcViewPage_CommonAll_Constants.SEARCH_SCAN_FILE_ID_SELECTION__ALL_FILES }
                             annotationTypeId_Score_X={ this.state.annotationTypeId_Score_X }
                             transform_Score={ QcViewPage_SingleSearch__SubSearches__PSM_Target_VS_Decoy_SplitViolin_ByAnnScore_StatisticsPlot_OverlayContainer__TransformScoreChoice.NONE }

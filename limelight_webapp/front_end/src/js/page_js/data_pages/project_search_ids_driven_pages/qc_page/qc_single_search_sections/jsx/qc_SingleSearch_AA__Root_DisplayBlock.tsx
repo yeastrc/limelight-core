@@ -21,6 +21,7 @@ import {Qc_SingleSearch_Target_Decoy_Analysis_Section} from "page_js/data_pages/
 import {Qc_SingleSearch_FeatureDetection_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_FeatureDetection_Statistics_Section";
 import {Qc_SingleSearch_Protein_Level_Statistics_Section} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_Protein_Level_Statistics_Section";
 import { Qc_SingleSearch_GoldStandard_Statistics_Section } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_GoldStandard_Statistics_Section";
+import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 
 /**
  *
@@ -28,7 +29,7 @@ import { Qc_SingleSearch_GoldStandard_Statistics_Section } from "page_js/data_pa
 export class QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent {
 
     projectSearchId: number
-
+    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     qcPage_Flags_SingleSearch_ForProjectSearchId: DataPage_common_Flags_SingleSearch
     qcPage_Searches_Info_SingleSearch_ForProjectSearchId:  DataPage_common_Searches_Info_SingleSearch
 }
@@ -98,6 +99,7 @@ export class Qc_SingleSearch_AA__Root_DisplayBlock extends React.Component< Qc_S
 
         this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent = {
             projectSearchId,
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
             qcPage_Flags_SingleSearch_ForProjectSearchId,
             qcPage_Searches_Info_SingleSearch_ForProjectSearchId
         }

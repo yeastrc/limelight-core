@@ -3,6 +3,7 @@
  *
  * QC Page - Data From Server - SingleSearch__SubSearches - Scan Summary File Data - Load if Needed
  *
+ * Uses 'commonData_LoadedFromServer_From_ProjectScanFileId___ROOT' and 'QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded' so NO direct Webservice calls here
  */
 
 import {QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
@@ -127,38 +128,38 @@ export class QcPage_DataFromServer_SingleSearch__SubSearches_ScanSummaryData_Loa
         return this._promiseInProgress;
     }
 
-/**
- *
- * @param scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
- * @param singleSearch_LoadIfNeeded_For_ProjectSearchId
- * @param commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
- * @param scanFile_SummaryPerLevelData_Root
- * @param promises
- * @private
- */
-private _process_SearchScanFileIds_For_SingleSearch(
-    {
-        scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder,
-        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
-        scanFile_SummaryPerLevelData_Root, // UPDATED
-        promises // UPDATED
-    } : {
-    scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder: CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
-    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
-    scanFile_SummaryPerLevelData_Root: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root  // UPDATED
-    promises: Array<Promise<void>> // UPDATED
-}
-) : void {
+    /**
+     *
+     * @param scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
+     * @param singleSearch_LoadIfNeeded_For_ProjectSearchId
+     * @param commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+     * @param scanFile_SummaryPerLevelData_Root
+     * @param promises
+     * @private
+     */
+    private _process_SearchScanFileIds_For_SingleSearch(
+        {
+            scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder,
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+            scanFile_SummaryPerLevelData_Root, // UPDATED
+            promises // UPDATED
+        } : {
+            scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder: CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            scanFile_SummaryPerLevelData_Root: QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root  // UPDATED
+            promises: Array<Promise<void>> // UPDATED
+        }
+    ) : void {
 
-    for ( const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch__Single_SearchScanFileId_ProjectScanFileId_Pair of scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All() ) {
+        for ( const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch__Single_SearchScanFileId_ProjectScanFileId_Pair of scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_All() ) {
 
-    const promise = this._scanFile_SummaryPerLevelData_LoadIfNeeded.singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded({
-        searchScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch__Single_SearchScanFileId_ProjectScanFileId_Pair.searchScanFileId,
-        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: commonData_LoadedFromServer_PerSearch_For_ProjectSearchId, scanFile_SummaryPerLevelData_Root
-    });
-    if ( promise ) {
-        promises.push(promise)
+            const promise = this._scanFile_SummaryPerLevelData_LoadIfNeeded.singleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded({
+                searchScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch__Single_SearchScanFileId_ProjectScanFileId_Pair.searchScanFileId,
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: commonData_LoadedFromServer_PerSearch_For_ProjectSearchId, scanFile_SummaryPerLevelData_Root
+            });
+            if ( promise ) {
+                promises.push(promise)
+            }
+        }
     }
-}
-}
 }

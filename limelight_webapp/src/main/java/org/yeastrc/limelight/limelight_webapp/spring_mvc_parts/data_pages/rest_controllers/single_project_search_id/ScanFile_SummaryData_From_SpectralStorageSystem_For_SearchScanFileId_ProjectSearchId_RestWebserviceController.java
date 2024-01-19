@@ -98,6 +98,11 @@ public class ScanFile_SummaryData_From_SpectralStorageSystem_For_SearchScanFileI
 
             Integer projectScanFileId = webserviceRequest.projectScanFileId;
 
+            if ( projectScanFileId == null ) {
+                log.warn( "No projectScanFileId" );
+                throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+            }
+            
     		Project_ScanFile_DTO project_ScanFile_DTO = projectScanFileDAO.getById( projectScanFileId.intValue() );
      		if ( project_ScanFile_DTO == null ) {
     			log.warn( "projectScanFileId NOT in DB: projectScanFileId: " + projectScanFileId );

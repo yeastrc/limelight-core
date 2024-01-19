@@ -3,6 +3,8 @@
  *
  * QC Page - Data From Server - Single Search - Scan File - Summary Per Scan Level Data - Load if Needed
  *
+ * Uses 'commonData_LoadedFromServer_From_ProjectScanFileId___ROOT' so NO direct Webservice calls here
+ *
  */
 
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";

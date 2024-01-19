@@ -3,6 +3,9 @@
  *
  * QC Page - Data Loaded - From Server - Single Search - Scan File Summary Per Level Data
  *
+ * Uses data from CommonData_LoadedFromServer__ScanData_Summary_Data_Holder
+ *
+ * NO webservice for only this data.
  */
 
 

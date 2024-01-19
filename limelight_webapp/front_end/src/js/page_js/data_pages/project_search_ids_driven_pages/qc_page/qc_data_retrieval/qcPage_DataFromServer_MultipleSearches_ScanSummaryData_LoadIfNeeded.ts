@@ -3,6 +3,7 @@
  *
  * QC Page - Data From Server - Multiple Searches - Scan Summary File Data - Load if Needed
  *
+ * Uses 'commonData_LoadedFromServer_From_ProjectScanFileId___ROOT' and 'QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded' so NO direct Webservice calls here
  */
 
 import {QcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_retrieval/qcPage_DataFromServer_SingleSearch_ScanFile_SummaryPerLevelData_LoadIfNeeded";
