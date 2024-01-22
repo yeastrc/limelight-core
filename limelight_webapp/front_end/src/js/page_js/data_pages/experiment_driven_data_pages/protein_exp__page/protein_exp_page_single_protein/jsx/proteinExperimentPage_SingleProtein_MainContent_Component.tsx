@@ -2465,25 +2465,26 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     this.setState( (state : ProteinExperimentPage_SingleProtein_MainContent_Component_State, props : ProteinExperimentPage_SingleProtein_MainContent_Component_Props ) : ProteinExperimentPage_SingleProtein_MainContent_Component_State => {
                         return { proteinSequenceWidgetDisplay_Component_Data }
                     });
+
+                    window.setTimeout( () => {
+                        try {
+                            this.setState({
+                                updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
+                                reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
+                                create_GeneratedReportedPeptideListData_Result
+                            });
+
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 20 );
+
                 } catch( e ) {
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
             }, 10 );
-
-            window.setTimeout( () => {
-                try {
-                    this.setState({
-                        updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList : false,
-                        reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
-                        create_GeneratedReportedPeptideListData_Result
-                    });
-
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 20 );
 
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
@@ -3025,11 +3026,28 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                         </div> 
 
                         <div style={ { display: "inline-block" } } ref={ this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
-                            <ProteinSequenceWidgetDisplay_Root_Component_React
-                                proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
-                                proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
-                                updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
-                            />
+
+                            <div style={ { position: "relative" }}>
+
+                                <ProteinSequenceWidgetDisplay_Root_Component_React
+                                    proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
+                                    proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
+                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+
+                                    <div  className=" block-updating-overlay-container " >
+                                        Updating Peptide List
+                                    </div>
+                                ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+
+                                    <div  className=" block-updating-overlay-container " >
+                                        Loading Data to show Peptides
+                                    </div>
+                                ) : null }
+
+                            </div>
                         </div>
 
                     </div>  {/* END: Main Content above Reported Peptides  */}

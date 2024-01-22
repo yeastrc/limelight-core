@@ -3022,11 +3022,29 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         </div> 
 
                         <div style={ { display: "inline-block" } } ref={ this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
-                            <ProteinSequenceWidgetDisplay_Root_Component_React
-                                proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
-                                proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
-                                updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
-                            />
+
+                            <div style={ { position: "relative" }}>
+
+                                <ProteinSequenceWidgetDisplay_Root_Component_React
+                                    proteinSequenceWidgetDisplay_Component_Data={ this.state.proteinSequenceWidgetDisplay_Component_Data }
+                                    proteinSequenceWidget_StateObject={ this.props.propsValue.proteinSequenceWidget_StateObject }
+                                    updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinSequenceWidgetDisplay_UserSelections_StateObject_Callback_BindThis }
+                                />
+
+                                { ( this.state.updating_Next_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList ) ? (
+
+                                    <div  className=" block-updating-overlay-container " >
+                                        Updating Peptide List
+                                    </div>
+                                ) : ( this.state.gettingDataFor_Filtering_reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds ) ? (
+
+                                    <div  className=" block-updating-overlay-container " >
+                                        Loading Data to show Peptides
+                                    </div>
+                                ) : null }
+
+                            </div>
+
                         </div>
 
                     </div>  {/* END: Main Content above Reported Peptides  */}
