@@ -311,6 +311,8 @@ public class CopyProjectSearchIdToNewProjectUsingDBTransactionService implements
 	    			item.setTagCategoryId(tagCategoryId_OnTagRecord_OnNewRecord);
 	    			item.setTag_string(projectSearchTags_ForProjectSearchIdsSearcher_ResultItem.getTag_string());
 	    			item.setTag_Color_Background(projectSearchTags_ForProjectSearchIdsSearcher_ResultItem.getTag_Color_Background());
+	    			item.setTag_Color_Font( projectSearchTags_ForProjectSearchIdsSearcher_ResultItem.getTag_Color_Font() );
+	    			item.setTag_Color_Border( projectSearchTags_ForProjectSearchIdsSearcher_ResultItem.getTag_Color_Border() );
 	    			item.setCreatedBy_UserId(creatingUserId);
 	    			item.setUpdatedBy_UserId(creatingUserId);
 
