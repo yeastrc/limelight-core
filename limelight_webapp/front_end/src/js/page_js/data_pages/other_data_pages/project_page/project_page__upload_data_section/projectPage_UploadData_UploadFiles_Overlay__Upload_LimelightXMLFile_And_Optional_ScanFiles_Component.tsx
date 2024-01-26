@@ -628,7 +628,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                         isLimelightXMLFile : true,
                         uploadedFilename : this._limelight_XML_File_Data.filename,
                         fileType: this.props.mainParams.limelight_import_file_type_limelight_xml_file,
-                        fileIndex : this._limelight_XML_File_Data.internal_Identifier
+                        fileIndex : fileIndex
                     }
 
                     filesUploaded.push( submit_Upload_Request_Single_File )
@@ -671,7 +671,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                 isLimelightXMLFile : false,
                                 uploadedFilename : this._fasta_File_Data.filename,
                                 fileType: this.props.mainParams.limelight_import_file_type_fasta_file,
-                                fileIndex : this._fasta_File_Data.internal_Identifier
+                                fileIndex : fileIndex
                             }
 
                             filesUploaded.push( submit_Upload_Request_Single_File )
@@ -721,7 +721,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                 isLimelightXMLFile : false,
                                 uploadedFilename : scan_Files_Data_Entry.filename,
                                 fileType: this.props.mainParams.limelight_import_file_type_scan_file,
-                                fileIndex : scan_Files_Data_Entry.internal_Identifier
+                                fileIndex : fileIndex
                             }
 
                             filesUploaded.push( submit_Upload_Request_Single_File )
