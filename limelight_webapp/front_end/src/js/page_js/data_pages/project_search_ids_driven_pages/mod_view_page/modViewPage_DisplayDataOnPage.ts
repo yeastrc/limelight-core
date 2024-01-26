@@ -25,6 +25,7 @@ import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driv
 import {
 	SearchDataLookupParameters_Root,
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  * 
@@ -166,7 +167,7 @@ export class ModViewPage_DisplayDataOnPage {
 
 		// throw Error("filterValuesChanged_Callback callback not handled")
 
-		window.location.reload( true );  // TODO
+		limelight__ReloadPage_Function()  // TODO
 	}
 	
 	/**

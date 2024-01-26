@@ -10,7 +10,7 @@ import React from 'react'
 import {
     ProteinViewPage_DisplayData_ProteinList__Main_Component,
     ProteinViewPage_DisplayData_ProteinList__Main_Component_Props_Prop
-} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__Main_Component.tsx";
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__Main_Component";
 
 /////////////////////////
 

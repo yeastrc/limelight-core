@@ -18,6 +18,7 @@ import {
 } from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/jsx/searchSubGroup_Manage_GroupNames_OverlayComponent";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 export class SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params {
@@ -76,7 +77,7 @@ export const searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId =
                 searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback( searchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback_Params );
 
             } else {
-                window.location.reload( true );
+                limelight__ReloadPage_Function()
             }
         }
 

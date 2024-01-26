@@ -11,6 +11,9 @@ plugins {
     id 'java-library'
 }
 
+sourceCompatibility = 1.8      //    defaults to currently installed JVM
+// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+
 dependencies {
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
@@ -24,7 +27,7 @@ dependencies {
 	
 //  Specify dependency on Limelight Shared Code
 	
-	compile project(":limelight_shared_code")
+	implementation project(":limelight_shared_code")
 	
 
     // Use JUnit test framework

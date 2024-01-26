@@ -51,6 +51,7 @@ import {
 import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import { LoadCoreData_ProjectSearchIds_Based } from "page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based";
 import { SearchDetailsBlockDataMgmtProcessing } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  *
@@ -83,7 +84,7 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 
 		window.onpopstate = function(event) {
 			//  User clicked the back button so reload so page reflects that URL
-			window.location.reload(true);
+			limelight__ReloadPage_Function()
 		};
 
 		// this._page_UserDefault_processing.page_UserDefault_processing();

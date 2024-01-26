@@ -37,6 +37,7 @@ import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /////
 
@@ -302,7 +303,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                     return // EARLY RETURN
                 }
 
-                window.location.reload(true)  //  fallback when no callback
+                limelight__ReloadPage_Function()  //  fallback when no callback
             }
 
         this.props.projectPage_SearchesAdmin.openOverlay_Change_SearchName_SearchShortName({
@@ -330,7 +331,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                 return; // EARLY RETURN
             }
 
-            window.location.reload(true)
+            limelight__ReloadPage_Function()
         }
 
         this.props.projectPage_SearchesAdmin.deleteSearch({
@@ -478,7 +479,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                 return // EARLY RETURN
             }
 
-            window.location.reload(true)  // Fallback
+            limelight__ReloadPage_Function()  // Fallback
         }
 
         const mainParams : Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams = {

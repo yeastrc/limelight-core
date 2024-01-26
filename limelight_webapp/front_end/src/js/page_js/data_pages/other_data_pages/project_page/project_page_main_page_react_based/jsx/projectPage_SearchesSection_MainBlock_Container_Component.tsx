@@ -41,6 +41,7 @@ import {ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_se
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  *
@@ -473,7 +474,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -488,7 +489,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -503,7 +504,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -631,7 +632,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         }
 
         const deleteComplete_Callback = () => {
-            window.location.reload(true)
+            limelight__ReloadPage_Function()
         }
 
         this.props.projectPage_SearchesAdmin.deleteSearches({
@@ -667,7 +668,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                 return;  // EARLY RETURN
             }
 
-            window.location.reload(true)
+            limelight__ReloadPage_Function()
         }
 
         this.props.projectPage_SearchesAdmin.openOverlay_For_Search_Tags_Manage_TagsForSearches({
@@ -690,7 +691,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                 return;  // EARLY RETURN
             }
 
-            window.location.reload(true)
+            limelight__ReloadPage_Function()
         }
 
         this.props.projectPage_SearchesAdmin.openOverlay_For_Search_Tags_Manage_TagsForProject({

@@ -49,6 +49,7 @@ import {
 	ScanFileBrowserPage_SingleScan_UserSelections_StateObject__ZoomRange
 } from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPage_SingleScan_UserSelections_StateObject";
 import { ParseURL_Into_PageStateParts } from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 /**
@@ -84,7 +85,7 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 
 		window.onpopstate = function(event) {
 			//  User clicked the back button so reload so page reflects that URL
-			window.location.reload(true);
+			limelight__ReloadPage_Function()
 		};
 
 		// this._page_UserDefault_processing.page_UserDefault_processing();

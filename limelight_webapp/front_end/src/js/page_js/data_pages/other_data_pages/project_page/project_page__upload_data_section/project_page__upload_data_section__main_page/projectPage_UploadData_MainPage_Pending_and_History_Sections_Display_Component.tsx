@@ -21,6 +21,7 @@ import {
     projectPage_UploadData_UploadFiles__OpenOverlay,
     ProjectPage_UploadData_UploadFiles__Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles_Overlay";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 
@@ -387,7 +388,7 @@ export class ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Displa
 
                 //  Found new complete successful tracking id so prompt user to refresh page
                 if ( window.confirm( "Data has finished importing.  Reload page to display this data?" ) ) {
-                    window.location.reload(true);
+                    limelight__ReloadPage_Function()
                     return true;
                 }
             }

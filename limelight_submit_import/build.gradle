@@ -26,12 +26,12 @@ buildscript {
     }
   }
   dependencies {
-    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+    classpath "org.ajoberstar.grgit:grgit-gradle:4.1.1"
   }
 }
 
 plugins {
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
 	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
@@ -64,7 +64,7 @@ dependencies {
 
 //  Specify dependency on limelight_submit_import_client_connector to get Webservice Request and Response Java Classes
 	
-	compile project(":limelight_submit_import_client_connector")
+	implementation project(":limelight_submit_import_client_connector")
 	
 	
     // This dependency is found on compile classpath of this component and consumers.
@@ -80,18 +80,18 @@ dependencies {
 	
 	//  Logging
 	
-	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
-	compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.17.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.2'	
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.17.2' //  Needed for Web app
 	
 	// https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl
-	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.17.2'
 	
 	//  Jakarta Commons Logging to SLF4J
-	compile group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
+	implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.36'
 	
 	//  Log4j 1 to 2 bridge
-	compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version: '2.17.2'
 		
 		
 	//  Required for dependent project within this repo 'limelight_submit_import_client_connector' 	
@@ -106,12 +106,12 @@ dependencies {
 	
 	//     Took Gradle listing from https://mvnrepository.com/artifact/jargs/jargs/1.0
     // https://mvnrepository.com/artifact/jargs/jargs
-//	compile group: 'jargs', name: 'jargs', version: '1.0'
+//	implementation group: 'jargs', name: 'jargs', version: '1.0'
 
 	//////////////////////////////
 	
 	//  Jars copied and placed here	
-	compile fileTree(dir: '../lib_other', include: ['*.jar'])
+	implementation fileTree(dir: '../lib_other', include: ['*.jar'])
 
 }
 
@@ -161,17 +161,29 @@ jar {
     }
 }
 
+
+//  NOT NEEDED:  files from 'src/main/resources' copied to resulting jar without this.
+
 //  For creating runnable jar
-processResources {
-    from ('src/main/resources') {
-        include '**/*'
-    }
-}
+//  processResources {
+//    from ('src/main/resources') {
+//        include '**/*'
+//    }
+// }
+
+//   https://imperceptiblethoughts.com/shadow/configuration/#configuring-output-name
 
 shadowJar {
-    baseName = 'limelightSubmitImport'
-    classifier = null
-    version = null
+
+    archiveBaseName = 'limelightSubmitImport'
+    
+    // Required to output same as previous filename. 
+    //		Default is 'all' which will add '-all' to output filename before '.jar'
+    
+    archiveClassifier = '' 
+    
+    //  Default is empty string 
+    archiveVersion = ''
     
     //  For Log4J2
     transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)

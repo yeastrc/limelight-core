@@ -40,6 +40,7 @@ import {
     Project_OrganizeFolders_Re_Order_Folders_Overlay_OuterContainer_Component__Callback_update_OrderOf_Folders_Params
 } from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches__Re_Order_Folders_OverlayComponent";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  *
@@ -830,7 +831,7 @@ const _changeSearchesOrderInDB = function(
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
@@ -880,7 +881,7 @@ const _changeSearchesOrder_InFolder_InDB = function(
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
@@ -935,7 +936,7 @@ const _changeFolderOrderInDB = function(
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
@@ -985,7 +986,7 @@ const _deleteFolderInDB = function(
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 

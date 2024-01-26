@@ -23,6 +23,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 		
 /**
@@ -211,7 +212,7 @@ export class UserLogin_Subpart {
 			} else {
 				//  Were forwarded to the login page with some other URL on the browser address bar so just reload the page
 				//  reload current URL
-				window.location.reload(true);
+				limelight__ReloadPage_Function()
 				return;
 			}
 		}

@@ -74,6 +74,7 @@ import {Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject} from
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
 import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 /**
@@ -193,7 +194,7 @@ export class QcViewPage_RootClass_Common {
 
 		window.onpopstate = function(event) {
 			//  User clicked the back button so reload so page reflects that URL
-			window.location.reload(true);
+			limelight__ReloadPage_Function()
 		};
 
 		page_Update_From_search_data_lookup_parameters_lookup_code__computed();

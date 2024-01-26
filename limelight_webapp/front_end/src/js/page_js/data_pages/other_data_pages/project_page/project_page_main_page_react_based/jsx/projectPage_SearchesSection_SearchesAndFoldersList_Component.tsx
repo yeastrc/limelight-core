@@ -27,6 +27,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 //  Internal Constants
 
@@ -321,7 +322,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -348,7 +349,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -696,7 +697,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -711,7 +712,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
             return;
         }
 
-        window.location.reload(true)  // Fallback
+        limelight__ReloadPage_Function()  // Fallback
     }
 
     /**

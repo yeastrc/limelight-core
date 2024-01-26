@@ -81,7 +81,7 @@
 //
 //     const callback_TagsUpdated_Local = () : void => {
 //
-//         window.location.reload( true );
+//         limelight__ReloadPage_Function()
 //     }
 //
 //     const overlayComponent = get_Search_Tags_Manage_TagsForSearch_OverallTags_OverlayComponent_Overlay_Layout({
@@ -392,7 +392,7 @@
 //         promise.catch( reason => { })
 //         promise.then(value => { try {
 //
-//             window.location.reload(true)
+//             limelight__ReloadPage_Function()
 //
 //         } catch (e) {
 //             reportWebErrorToServer.reportErrorObjectToServer({

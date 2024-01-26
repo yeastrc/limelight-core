@@ -3,6 +3,8 @@
  *
  */
 
+@use "sass:math";
+
 body.qc-page {
 
   div.top-level-label {
@@ -38,13 +40,13 @@ body.qc-page {
         clear: both;  //  Reset Float Left
 
         // Split $single-chart-margin-bottom between this div and child div
-        margin-bottom: $single-chart-margin-bottom / 2;
+        margin-bottom: math.div( $single-chart-margin-bottom , 2 );
 
         div.chart-container-multiple-on-same-row {
 
           float: left;
-          margin-right: $single-chart-margin-bottom / 2;
-          margin-bottom: $single-chart-margin-bottom / 2;
+          margin-right: math.div( $single-chart-margin-bottom , 2 );
+          margin-bottom: math.div( $single-chart-margin-bottom , 2 );
         }
 
         div.chart-container-multiple-on-same-row-stop-float {

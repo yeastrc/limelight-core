@@ -26,12 +26,12 @@ buildscript {
     }
   }
   dependencies {
-    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+    classpath "org.ajoberstar.grgit:grgit-gradle:4.1.1"
   }
 }
 
 plugins {
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
 	//  moved to 'buildscript'. See Notes above	id 'org.ajoberstar.grgit' version '3.1.1'
 }
 
@@ -65,10 +65,10 @@ dependencies {
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	compile group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
+	implementation group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	compile group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
+	implementation group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
 	
 	
 	//   OLD V1
@@ -125,18 +125,18 @@ dependencies {
 	//////////////////////////////
 	
 	//  Jars copied and placed here	
-	compile fileTree(dir: '../lib_other', include: ['*.jar'])
+	implementation fileTree(dir: '../lib_other', include: ['*.jar'])
 	
 	//  Jars built from other Yeastrc Github repositories
-	compile fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
+	implementation fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
 	
 //  Specify dependency on Limelight Shared Code
 	
-	compile project(":limelight_shared_code")
+	implementation project(":limelight_shared_code")
 
 //  Specify dependency on limelight_importer_run_importer_shared
 
-	compile project(":limelight_importer_run_importer_shared")
+	implementation project(":limelight_importer_run_importer_shared")
 	
 }
 
@@ -185,17 +185,28 @@ jar {
     }
 }
 
+//  NOT NEEDED:  files from 'src/main/resources' copied to resulting jar without this.
+
 //  For creating runnable jar
-processResources {
-    from ('src/main/resources') {
-        include '**/*'
-    }
-}
+//  processResources {
+//    from ('src/main/resources') {
+//        include '**/*'
+//    }
+// }
+
+//   https://imperceptiblethoughts.com/shadow/configuration/#configuring-output-name
 
 shadowJar {
-    baseName = 'limelight_FeatureDetection_Run_Import'
-    classifier = null
-    version = null
+
+    archiveBaseName = 'limelight_FeatureDetection_Run_Import'
+    
+    // Required to output same as previous filename. 
+    //		Default is 'all' which will add '-all' to output filename before '.jar'
+    
+    archiveClassifier = '' 
+    
+    //  Default is empty string 
+    archiveVersion = ''
     
     //  For Log4J2
     transform(com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer)

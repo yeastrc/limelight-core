@@ -14,6 +14,9 @@ plugins {
     id 'java-library'
 }
 
+sourceCompatibility = 1.8      //    defaults to currently installed JVM
+// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+
 dependencies {
   
 	// JAXB dependencies (Required for Java 11+)

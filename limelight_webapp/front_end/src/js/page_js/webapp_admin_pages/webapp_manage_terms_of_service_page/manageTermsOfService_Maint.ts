@@ -14,7 +14,7 @@ import {
     ManageTermsOfService_MaintOverlayComponent__Component_SaveClicked_CallbackParams,
     open_manageTermsOfService_MaintOverlay,
     open_configureLimelightForAdminPage_TermsOfService_SavingDataOverlay
-} from "page_js/webapp_admin_pages/webapp_manage_terms_of_service_page/manageTermsOfService_MaintOverlay.tsx";
+} from "page_js/webapp_admin_pages/webapp_manage_terms_of_service_page/manageTermsOfService_MaintOverlay";
 import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";

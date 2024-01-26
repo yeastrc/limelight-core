@@ -195,7 +195,7 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                     //     //  Reload page to update Experiment List
                     //
                     //     //  reload current URL
-                    //     window.location.reload(true);
+                    //     limelight__ReloadPage_Function()
                     //
                     //     return;  // EARLY RETURN
                     // }
@@ -229,7 +229,7 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                 //  Just reload page since more parts need to be updated.
 
                 //  reload current URL
-                // window.location.reload(true);
+                // limelight__ReloadPage_Function()
 
                 //  WAS
 
@@ -238,7 +238,7 @@ class ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component extends React.Com
                 //     //  Reload page to update Experiment List
                 //
                 //     //  reload current URL
-                //     window.location.reload(true);
+                //     limelight__ReloadPage_Function()
                 //
                 //     return;  // EARLY RETURN
                 // }

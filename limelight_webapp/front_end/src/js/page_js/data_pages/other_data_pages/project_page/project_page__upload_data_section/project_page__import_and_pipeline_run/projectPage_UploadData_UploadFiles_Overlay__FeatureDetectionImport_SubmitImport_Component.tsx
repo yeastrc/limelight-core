@@ -21,6 +21,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Import_UploadFile_SendFileToServerWebservice";
 import {projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice";
 import {projectPage_UploadData_FeatureDetection_Import_Submit_CallWebservice} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Import_Submit_CallWebservice";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 
@@ -262,7 +263,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
 
             if ( projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice_Response.projectLocked ) {
                 //  reload page
-                window.location.reload(true)
+                limelight__ReloadPage_Function()
                 return
             }
             if ( ! projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice_Response.statusSuccess ) {

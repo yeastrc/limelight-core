@@ -16,6 +16,7 @@
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT = "webservice_sync_tracking_code_mismatch_text";
 const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE = 400;
@@ -95,7 +96,7 @@ function handleRawAJAXError( xhr ) {
 
 		//  reload current URL, pick up new tacking code and new Javascript code
 
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 
 		return true;
 
@@ -105,7 +106,7 @@ function handleRawAJAXError( xhr ) {
 
 		//  reload current URL
 		
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 		
 		return true;
 
@@ -116,7 +117,7 @@ function handleRawAJAXError( xhr ) {
 
 		//  reload current URL
 
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 
 		return true;
 	}
@@ -171,7 +172,7 @@ function handleAJAXError(
 
 		//  reload current URL, pick up new tacking code and new Javascript code
 
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 
 		return true;
 
@@ -181,7 +182,7 @@ function handleAJAXError(
 
 		//  reload current URL
 		
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 		
 		return;
 		
@@ -192,7 +193,7 @@ function handleAJAXError(
 
 		//  reload current URL
 		
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 		
 		return;
 		

@@ -41,6 +41,7 @@ import {ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SelectSc
 import {ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_Component_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_SubmitRun_Component";
 import { ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SubmitImport_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SubmitImport_Component";
 import { ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SelectScanFile_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_SelectScanFile_Component";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 const _Overlay_Title = "Import Data Files"
 
@@ -305,7 +306,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
                         if ( projectLocked ) {
                             //  Project is now locked so reload page so not display option to upload files for import
                             //  reload current URL
-                            window.location.reload(true);
+                            limelight__ReloadPage_Function()
                         }
                         //  Probably shouldn't get here
                         throw Error( "statusSuccess is false" );  ///  TODO  Need to display error

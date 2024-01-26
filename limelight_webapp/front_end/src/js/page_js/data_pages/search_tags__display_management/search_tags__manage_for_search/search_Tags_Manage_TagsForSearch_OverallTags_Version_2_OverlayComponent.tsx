@@ -28,6 +28,7 @@ import {
     SearchTagCategories__Get_For_ProjectId_Result, SearchTagCategories__Get_For_ProjectId_ResultItem_SingleTagCategory
 } from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_project/search_tag_categories___get__for__project_id__or__project_id_from_project_search_ids";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /////
 
@@ -209,7 +210,7 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
 
             } else {
 
-                window.location.reload( true )
+                limelight__ReloadPage_Function()
 
                 return;
             }

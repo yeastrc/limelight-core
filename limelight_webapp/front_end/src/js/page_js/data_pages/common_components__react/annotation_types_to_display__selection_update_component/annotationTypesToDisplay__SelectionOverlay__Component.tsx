@@ -23,6 +23,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {updatePageState_URL_With_New_SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages_common/updatePageState_URL_With_New_SearchDataLookupParameters_Root";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 const _Overlay_Title = "Change Displayed Data"
@@ -281,7 +282,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                 throw Error("updatePageState_URL_With_New_SearchDataLookupParameters_Root reject promise")
             });
             promise.then( value => {
-                window.location.reload(true);
+                limelight__ReloadPage_Function()
             })
 
         } catch( e ) {

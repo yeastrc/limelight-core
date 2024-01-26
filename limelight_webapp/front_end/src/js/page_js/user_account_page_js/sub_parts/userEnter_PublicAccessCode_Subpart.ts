@@ -24,6 +24,7 @@ import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'pa
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
 import {UserLoginPage_Root} from "page_js/user_account_page_js/root_parts/userLoginPage_Root";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 		
 /**
@@ -180,7 +181,7 @@ export class UserEnter_PublicAccessCode_Subpart {
 			} else {
 				//  Were forwarded to the login page with some other URL on the browser address bar so just reload the page
 				//  reload current URL
-				window.location.reload(true);
+				limelight__ReloadPage_Function()
 				return;
 			}
 		}

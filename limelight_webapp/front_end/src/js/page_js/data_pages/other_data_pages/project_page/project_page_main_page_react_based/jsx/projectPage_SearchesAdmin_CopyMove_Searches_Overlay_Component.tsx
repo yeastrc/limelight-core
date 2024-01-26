@@ -27,6 +27,7 @@ import {
     ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_ResultEntry
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 const _Overlay_Title_Move_Searches = "Move Searches"
@@ -717,7 +718,7 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
                                                     this.setState({ show_LoadingMessage: true });
                                                     window.setTimeout( () => {
                                                         try {
-                                                            window.location.reload(true);
+                                                            limelight__ReloadPage_Function()
 
                                                         } catch (e) {
                                                             reportWebErrorToServer.reportErrorObjectToServer({errorException: e});

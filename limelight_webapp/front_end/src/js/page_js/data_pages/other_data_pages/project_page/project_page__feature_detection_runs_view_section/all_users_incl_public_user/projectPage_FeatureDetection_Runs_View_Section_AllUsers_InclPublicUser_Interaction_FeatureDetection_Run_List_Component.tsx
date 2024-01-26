@@ -37,6 +37,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page__feature_detection_runs_view_section/all_users_incl_public_user/projectPage_ScanFiles_View_Section_Get_FeatureDetection_Run_Details_FromServer";
 import { FeatureDetection_Label_Description_Change_Component_Change_Callback_Params } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/project_owner/featureDetection_Label_Description_Change_Component_and_WebserviceCall";
 import { scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc } from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 /**
@@ -237,7 +238,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -252,7 +253,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -571,7 +572,7 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                 return
             }
 
-            window.location.reload(true)
+            limelight__ReloadPage_Function()
         }
 
         this.props.
@@ -760,7 +761,7 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                                             return // EARLY RETURN
                                                         }
 
-                                                        window.location.reload(true)
+                                                        limelight__ReloadPage_Function()
 
                                                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 

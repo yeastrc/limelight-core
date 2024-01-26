@@ -42,6 +42,7 @@ import {
 	Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_MainParams,
 	Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_Params_SingleSearch
 } from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  * 
@@ -174,7 +175,7 @@ export class ProjectPage_SearchesAdmin {
 		const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
 			(params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
 
-				window.location.reload(true)
+				limelight__ReloadPage_Function()
 			}
 
 		project_OrganizeSearches_Folder_AddRename_Component__openOverlay({

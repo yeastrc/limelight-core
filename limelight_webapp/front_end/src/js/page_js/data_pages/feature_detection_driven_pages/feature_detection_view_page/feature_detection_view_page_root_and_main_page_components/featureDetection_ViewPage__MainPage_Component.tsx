@@ -84,6 +84,7 @@ import {
     ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 import { QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /////////////////////////
 
@@ -998,7 +999,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                     // throw Error("filterValuesChanged_Callback callback not handled")
 
-                    window.location.reload( true );  // TODO
+                    limelight__ReloadPage_Function()  // TODO
                 }
 
                 searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue =  {

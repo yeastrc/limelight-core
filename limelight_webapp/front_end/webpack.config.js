@@ -33,10 +33,6 @@ const output = {
 const module_MAIN = {
 	rules:[
 		{
-			test: /node_modules/,
-			loader: 'ify-loader'
-		},
-		{
 			test: /\.(ts|tsx)$/,
 			exclude: /(node_modules|bower_components)/,
 			use: [
@@ -70,7 +66,7 @@ const module_MAIN = {
 				},
 				{
 					loader: 'css-loader',
-					options: { minimize: true }
+					options: {} //  WAS { minimize: true }  Output is minimized anyway
 				},
 				{
 					loader: 'sass-loader'

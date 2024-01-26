@@ -34,6 +34,7 @@ import {
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /////
 
@@ -284,7 +285,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
@@ -960,7 +961,7 @@ const _changeFolder_UpdateTo_NEW_SearchesInDB = function(
             promise_webserviceCallStandardPost.then( ({ responseData }) => {
                 try {
                     if ( ! responseData.status ) {
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 

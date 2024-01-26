@@ -60,6 +60,7 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 //  Put here since used in multiple places
@@ -1069,7 +1070,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         const change_Callback: SearchName_and_SearchShortName_Change_Component_Change_Callback =
             ( params: SearchName_and_SearchShortName_Change_Component_Change_Callback_Params ) : void => {
 
-                window.location.reload(true)
+                limelight__ReloadPage_Function()
 
                 // this.props.searchDisplayListItem.searchName = searchName_InputField_Value;
                 // this.setState({ changeSearchName_Active: false });

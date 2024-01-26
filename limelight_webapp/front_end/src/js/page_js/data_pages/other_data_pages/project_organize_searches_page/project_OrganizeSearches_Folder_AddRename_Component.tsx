@@ -12,6 +12,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 ///////
@@ -243,7 +244,7 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
                 promise_webserviceCallStandardPost.then( ({ responseData }) => {
                     try {
                         if ( ! responseData.status ) {
-                            window.location.reload(true);
+                            limelight__ReloadPage_Function()
                             return;
                         }
 

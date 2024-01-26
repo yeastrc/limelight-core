@@ -82,28 +82,28 @@ dependencies {
 	
 	//      Pulled from REPO (entered above): url 'https://raw.github.com/yeastrc/limelight-import-api/repository/'
 	
-	compile limelight_import
+	implementation limelight_import
 
 
 //  Specify dependency on Limelight Shared Code
 	
-	compile project(":limelight_shared_code")
+	implementation project(":limelight_shared_code")
 	
 //  Specify dependency on Limelight limelight__db_populate_new_fields__common_code Code
 	
-	compile project(":limelight__db_populate_new_fields__common_code")
+	implementation project(":limelight__db_populate_new_fields__common_code")
 	
 //  Specify dependency on limelight_submit_import_client_connector to get Webservice Request and Response Java Classes
 	
-	compile project(":limelight_submit_import_client_connector")
+	implementation project(":limelight_submit_import_client_connector")
 	
 	//   AWS  S3
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/s3
-	compile group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
+	implementation group: 'software.amazon.awssdk', name: 's3', version: '2.20.32'
 	
 	// https://mvnrepository.com/artifact/software.amazon.awssdk/apache-client
-	compile group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
+	implementation group: 'software.amazon.awssdk', name: 'apache-client', version: '2.20.33'
 	
 	
 	//   OLD V1
@@ -114,7 +114,7 @@ dependencies {
 	//  Mail
 	
 	// https://mvnrepository.com/artifact/javax.mail/mail
-	compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+	implementation group: 'javax.mail', name: 'mail', version: '1.4.1'
 	
 	//  Later versions like this have license CDDL and GPL
 	// https://mvnrepository.com/artifact/javax.mail/javax.mail-api
@@ -160,14 +160,14 @@ dependencies {
 	implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
 	
 	// https://mvnrepository.com/artifact/javax.servlet/jstl
-	compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+	implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
 
 	
 	//   Apache Commons
 	
 	//  Old StringUtils
 	// https://mvnrepository.com/artifact/commons-lang/commons-lang
-	compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+	implementation group: 'commons-lang', name: 'commons-lang', version: '2.6'
 
 	//  New StringUtils
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
@@ -177,7 +177,7 @@ dependencies {
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 	
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-math3
-	compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+	implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
 	
 	//   Apache HTPP Client
 
@@ -204,10 +204,10 @@ dependencies {
 	//  Other Yeastrc Jars
 	
 	//  Jars built from other Yeastrc Github repositories
-	compile fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
+	implementation fileTree(dir: '../libs_yeastrc_github_jars', include: ['*.jar'])
 
 	//  Jars built from other Yeastrc Github repositories - Webapp only	
-	compile fileTree(dir: 'libs_webapp__yeastrc_github_jars', include: ['*.jar'])
+	implementation fileTree(dir: 'libs_webapp__yeastrc_github_jars', include: ['*.jar'])
 	
 	
     // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core
@@ -228,7 +228,7 @@ dependencies {
     //  Mark provided since creating a war
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	// testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 

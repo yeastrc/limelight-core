@@ -19,6 +19,7 @@ import {
     projectPage_UploadData_GoldStandard_Import_UploadFile_SendFileToServerWebservice,
     ProjectPage_UploadData_GoldStandard_Import_UploadFile_SendFileToServerWebservice_SendDataObject
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_GoldStandard_Import_UploadFile_SendFileToServerWebservice";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 const _DISPLAY_LABEL__DEFAULT_VALUE = "GoldStd"
@@ -208,7 +209,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__GoldStandardImport_Subm
 
                 if ( result.projectLocked ) {
                     //  reload page
-                    window.location.reload(true)
+                    limelight__ReloadPage_Function()
 
                     return // EARLY RETURN
                 }

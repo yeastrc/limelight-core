@@ -12,6 +12,7 @@ import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserv
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
 //   INIT UPLOAD
@@ -93,7 +94,7 @@ export const projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightX
                     if ( projectLocked ) {
                         //  Project is now locked so reload page so not display option to upload files for import
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                     }
                     //  Probably shouldn't get here
                     throw Error( "statusSuccess is false" );  ///  TODO  Need to display error
@@ -227,13 +228,13 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initial
                     if ( projectLocked ) {
                         //  Project is now locked so reload page so not display option to upload files for import
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
                     if ( scanFileNotAllowed ) {
                         //  Scan files are no longer allowed.  reload the page to reflect that.
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
@@ -241,7 +242,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initial
                     // private boolean duplicateRecord_ForUploadKeyFileIndex;
 
                     //  Probably shouldn't get here
-                    window.location.reload(true);
+                    limelight__ReloadPage_Function()
                     return;
 //			throw Error( "statusSuccess is false" );  ///  TODO  Need to display error
                 }
@@ -340,18 +341,18 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Submit_
                     if ( projectLocked ) {
                         //  Project is now locked so reload page so not display option to upload files for import
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
                     if ( scanFileNotAllowed ) {
                         //  Scan files are no longer allowed.  reload the page to reflect that.
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
                     //  Probably shouldn't get here
-                    window.location.reload(true);
+                    limelight__ReloadPage_Function()
                     return;
 //			throw Error( "statusSuccess is false" );  ///  TODO  Need to display error
                 }
@@ -444,18 +445,18 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Cancel_
                     if ( projectLocked ) {
                         //  Project is now locked so reload page so not display option to upload files for import
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
                     if ( scanFileNotAllowed ) {
                         //  Scan files are no longer allowed.  reload the page to reflect that.
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
 
                     //  Probably shouldn't get here
-                    window.location.reload(true);
+                    limelight__ReloadPage_Function()
                     return;
 //			throw Error( "statusSuccess is false" );  ///  TODO  Need to display error
                 }
@@ -545,17 +546,17 @@ export const projectPage_UploadData_UploadFiles__Common_Submit_Upload__Limelight
                     if ( projectLocked ) {
                         //  Project is now locked so reload page so not display option to upload files for import
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
                     if ( scanFileNotAllowed ) {
                         //  Scan files are no longer allowed.  reload the page to reflect that.
                         //  reload current URL
-                        window.location.reload(true);
+                        limelight__ReloadPage_Function()
                         return;
                     }
                     //  Probably shouldn't get here
-                    window.location.reload(true);
+                    limelight__ReloadPage_Function()
                     return;
 //			throw Error( "statusSuccess is false" );  ///  TODO  Need to display error
                 }

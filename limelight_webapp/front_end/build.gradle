@@ -594,7 +594,9 @@ task runWebpack_DevelopmentMode(type: NodeTask ) { //  , dependsOn: 'npmInstall'
   } else {
     script = project.file('node_modules/.bin/webpack')
   }
-  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]  //  Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
+    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
+  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]
+
   //  specify mode development, defaults to production
   args = [ '--mode=development' ] // --mode=development does no minification, also React Library includes more code and validation
 }
@@ -613,7 +615,9 @@ task runWebpack_ProductionMode(type: NodeTask ) { //  , dependsOn: 'npmInstall')
   } else {
     script = project.file('node_modules/.bin/webpack')
   }
-  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]  //  Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
+    //  '--max_old_space_size=4096': Increase max memory of Node process running webpack.  Example with multiple values: environment = [ 'NODE_ENV': 'development', BASE_URL: '3000' ]
+  environment = [ 'NODE_OPTIONS': '--max_old_space_size=4096' ]
+
   //  specify mode development, defaults to production
   args = [ '--mode=production' ] // --mode=development does no minification
 }

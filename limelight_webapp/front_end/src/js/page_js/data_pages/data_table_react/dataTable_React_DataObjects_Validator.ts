@@ -247,15 +247,19 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
                     console.warn( msg );
                     throw Error( msg );
                 }
-                if ( dataTable_DataRow_ColumnEntry.valueSort > dataTable_ColumnEntry.graphMaxValue ) {
-                    const msg = (
-                        "Validator: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is  > dataTable_ColumnEntry.graphMaxValue.  Graph will be max width.  dataTable_DataRow_ColumnEntry.valueSort: "
-                        + dataTable_DataRow_ColumnEntry.valueSort
-                        + ", dataTable_ColumnEntry.graphMaxValue: "
-                        + dataTable_ColumnEntry.graphMaxValue
-                        + ", dataTableId: " + dataTableId
-                    );
-                    console.warn( msg );
+
+                {
+                    const graphMaxValue = dataTable_ColumnEntry.graphMaxValue as string | number
+                    if ( dataTable_DataRow_ColumnEntry.valueSort > graphMaxValue ) {
+                        const msg = (
+                            "Validator: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is  > dataTable_ColumnEntry.graphMaxValue.  Graph will be max width.  dataTable_DataRow_ColumnEntry.valueSort: "
+                            + dataTable_DataRow_ColumnEntry.valueSort
+                            + ", dataTable_ColumnEntry.graphMaxValue: "
+                            + dataTable_ColumnEntry.graphMaxValue
+                            + ", dataTableId: " + dataTableId
+                        );
+                        console.warn( msg );
+                    }
                 }
             }
         }

@@ -28,6 +28,7 @@ import {
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 import {SearchTag_ColorOptions_Constants} from "page_js/constants_across_webapp/search_tag_constants/SearchTag_ColorOptions_Constants";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /////
 
@@ -75,7 +76,7 @@ export const open_Search_Tags_Manage_TagsForProject_OverlayComponent_Overlay = f
 
             } else {
 
-                window.location.reload( true );
+                limelight__ReloadPage_Function()
 
                 return; // EARLY RETURN
             }

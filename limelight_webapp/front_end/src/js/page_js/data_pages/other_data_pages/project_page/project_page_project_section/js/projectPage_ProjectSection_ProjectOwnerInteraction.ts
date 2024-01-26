@@ -30,6 +30,7 @@ import {
 	projectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectTitle_Component__openOverlay,
 	ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectTitle_Component_Change_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectTitle_Component";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 //  Local imports
 
@@ -349,7 +350,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		}
 
 		//  reload current URL
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 	}
 	
 	/**
@@ -389,7 +390,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 		}
 
 		//  reload current URL
-		window.location.reload(true);
+		limelight__ReloadPage_Function()
 	}
 	
 };

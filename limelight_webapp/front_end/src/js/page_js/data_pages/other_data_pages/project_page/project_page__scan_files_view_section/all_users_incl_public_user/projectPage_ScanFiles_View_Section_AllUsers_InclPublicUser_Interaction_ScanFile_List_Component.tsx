@@ -45,6 +45,7 @@ import { ProjectPage_SearchesAdmin } from "page_js/data_pages/other_data_pages/p
 import { GoldStandard_Label_Description_Change_Component_Change_Callback_Params } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/project_owner/goldStandard_Label_Description_Change_Component_and_WebserviceCall";
 import { scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc } from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
+import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 /**
  *
@@ -282,7 +283,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -297,7 +298,7 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
             return; // EARLY RETURN
         }
 
-        window.location.reload(true) //  Fallback when no callback is available
+        limelight__ReloadPage_Function() //  Fallback when no callback is available
     }
 
     /**
@@ -872,7 +873,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                             window.alert( "Scan file not deleted.  Unable to delete scan files with associated searches." )
                                                         }
 
-                                                        window.location.reload(true)
+                                                        limelight__ReloadPage_Function()
 
                                                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
@@ -1132,7 +1133,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
           return
       }
 
-      window.location.reload(true)
+      limelight__ReloadPage_Function()
     }
 
     /**
@@ -1146,7 +1147,7 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
             return
         }
 
-        window.location.reload(true)
+        limelight__ReloadPage_Function()
     }
 
     private _remove_GoldStandard_Entry( id_MappingTbl: number ) : void {
