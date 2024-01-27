@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.other_like_project;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -137,8 +138,6 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     		) throws Exception {
     	
     	try {
-    		WebserviceResult webserviceResult = new WebserviceResult();
-
     		//		log.warn( "webserviceMethod(...) called" );
 
     		//  Throws exception extended from Limelight_WS_ErrorResponse_Base_Exception 
@@ -259,155 +258,11 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 				log.error( msg );
 				throw new LimelightInternalErrorException(msg);
 			}
-			Integer userId = userSession.getUserId();
-			if ( userId == null ) {
-				String msg = "userId == null";
-				log.error( msg );
-				throw new LimelightInternalErrorException(msg);
-			}
-			
 			
 
-			for( int projectSearchId : projectSearchIdsSelected ) {
-				SearchItemMinimal searchItemMinimal =
-						searchMinimalForProjectSearchIdSearcher.getSearchListForProjectSearchId( projectSearchId );
+    		WebserviceResult webserviceResult = internal_Process( webserviceRequest, projectId, userSession, doCopyOrDoMove );
 
-				if ( searchItemMinimal == null ) {
-					String msg = "Search not found in DB for projectSearchId: " + projectSearchId;
-					log.warn( msg );
-	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-				}
-				if ( projectId != searchItemMinimal.getProjectId() && copyOrMoveToProjectId != searchItemMinimal.getProjectId() ) {
-					//  Invalid request, searches not in from or to project
-					String msg = "search is not in project, projectSearchId: " + searchItemMinimal.getProjectSearchId() 
-						+ ", search_id: " + searchItemMinimal.getSearchId();
-					log.warn( msg );
-	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-				}
-			}
-			ProjectDTO projectDTO = projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( projectId );
-			if ( projectDTO == null ) {
-				log.warn( "projectId is not in database: " + projectId );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			ProjectDTO projectDTOcopyOrMoveToProjectId = 
-					projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( copyOrMoveToProjectId );
-			if ( projectDTOcopyOrMoveToProjectId == null ) {
-				log.warn( "copyToProjectId is not in database: " + copyOrMoveToProjectId );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			
-			boolean experimentsWhereDeleted = false;
-			
-			if ( projectDTOcopyOrMoveToProjectId.isMarkedForDeletion() ) {
-				webserviceResult.setCopyToProjectMarkedForDeletion(true);
-				webserviceResult.setStatus(false);
-			} else if ( ! projectDTOcopyOrMoveToProjectId.isEnabled() ) {
-				webserviceResult.setCopyToProjectDisabled(true);
-				webserviceResult.setStatus(false);
-			} else {
-				if ( doCopyOrDoMove == DoCopyOrDoMove.COPY ) {
-					
-					final int counterMAX = 3;
-					
-					int counter = 1;
-					
-					while (true) {  // exit loop with 'break'
-						
-						CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException log_DuplicateKeyException = 
-								CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException.NO;
-						
-						if ( counter >= counterMAX ) {
-							//  Final attempt
-							
-							log_DuplicateKeyException = CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException.YES;
-						}
-					
-						try {
-							//  Copy Project Search and associated records to new Project
-							copyProjectSearchIdToNewProjectUsingDBTransactionService
-							.copyProjectSearchIdsToNewProjectId( 
-									projectSearchIdsSelected, copyOrMoveToProjectId, webserviceRequest.copyAnyAssociatedTags, userId, 
-									log_DuplicateKeyException );
-							
-							
-							break; // EXIT LOOP since NO exception !!!!
-							
-							
-						} catch ( org.springframework.dao.DuplicateKeyException duplicateKeyException ) {
-							
-							if ( counter >= counterMAX ) {
-								
-								//  Exceeded max tries so throw exception
-								
-								throw duplicateKeyException;
-							}
-							
-							//  Duplicate key so try again by eating exception
-						}
-						
-						int randomSleep = (int) ( ( Math.random() * 1000 ) + 500 ); // random between 500 and 1500
-						
-						Thread.sleep( randomSleep );
-						
-						counter++;
-					}
-					
-				} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
-					
-					
-					throw new IllegalArgumentException( "NOT SUPPORTED:  ( doCopyOrDoMove == DoCopyOrDoMove.MOVE )");
-					
-					//  Move Project Search and associated records to new Project
-					
-					//  "MOVE" is NO LONGER supported.  Leaving code here as template for bulk delete
-					
-//					moveProjectSearchIdToNewProjectUsingDBTransactionService
-//					.moveProjectSearchIdsToNewProjectId( projectSearchIdsSelected, copyOrMoveToProjectId, experimentIds_Containing_ProjectSearchIds );
-//					
-//					if ( experimentIds_Containing_ProjectSearchIds != null && ( ! experimentIds_Containing_ProjectSearchIds.isEmpty() ) ) {
-//						experimentsWhereDeleted = true;
-//					}
-//
-//					if ( projectSearchIdsSelected != null && ( ! projectSearchIdsSelected.isEmpty() ) ) {
-//						
-//						// Next Delete all Experiment IDs containing Project Search Ids That were NOT deleted in call to .moveProjectSearchIdsToNewProjectId(...)
-//						
-//						Set<Integer> projectSearchIdsSelected_Set = new HashSet<>( projectSearchIdsSelected );
-//
-//						List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
-//								experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIdsSelected_Set);
-//
-//						if ( dbResultList != null && ( ! dbResultList.isEmpty() ) ) {
-//							experimentsWhereDeleted = true;
-//						}
-//
-//						if ( ! dbResultList.isEmpty() ) {
-//
-//							try {
-//
-//			    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
-//
-//			    					experimentDAO.delete( dbResult.getExperimentId() );
-//			    				}
-//							} catch( Exception e ) {
-//								log.error( "Failed to delete Experiment Ids for ProjectSearchId that remained after main deletion", e );
-//								
-//								//  Eat/Swallow Exception
-//							}
-//						}
-//					}
-					
-				} else {
-					//  Only way to get here is a coding error above
-					String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
-					log.error( msg );
-					throw new LimelightInternalErrorException(msg);
-				}
-				webserviceResult.setStatus(true);
-				webserviceResult.experimentsWhereDeleted = experimentsWhereDeleted;
-			}
-			
+		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
     		return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body( responseAsJSON );
@@ -424,6 +279,207 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     	}
     }
     
+    
+    /**
+     * @param webserviceRequest
+     * @param projectId
+     * @param userSession
+     * @return
+     * @throws SQLException 
+     * @throws InterruptedException 
+     */
+    private WebserviceResult internal_Process(
+    		
+    		WebserviceRequest webserviceRequest,
+    		int projectId,
+    		UserSession userSession,
+    		DoCopyOrDoMove doCopyOrDoMove
+    		) throws SQLException, InterruptedException {
+
+		WebserviceResult webserviceResult = new WebserviceResult();
+
+		List<Integer> projectSearchIdsSelected = webserviceRequest.getProjectSearchIdsSelected();
+		Integer copyOrMoveToProjectId = webserviceRequest.getCopyOrMoveToProjectId();
+		
+		
+    	Integer userId = userSession.getUserId();
+		if ( userId == null ) {
+			String msg = "userId == null";
+			log.error( msg );
+			throw new LimelightInternalErrorException(msg);
+		}
+		
+		List<Integer> projectSearchIds_NotFoundInDatabase = new ArrayList<>( projectSearchIdsSelected.size() );
+
+		for( int projectSearchId : projectSearchIdsSelected ) {
+			SearchItemMinimal searchItemMinimal =
+					searchMinimalForProjectSearchIdSearcher.getSearchListForProjectSearchId( projectSearchId );
+
+			if ( searchItemMinimal == null ) {
+				String msg = "Search not found in DB for projectSearchId: " + projectSearchId;
+				log.warn( msg );
+				
+				projectSearchIds_NotFoundInDatabase.add( projectSearchId );
+				
+				//  Skip to next Search
+				
+				continue; // EARLY CONTINUE
+			}
+			
+			if ( projectId != searchItemMinimal.getProjectId() && copyOrMoveToProjectId != searchItemMinimal.getProjectId() ) {
+				//  Invalid request, searches not in from or to project
+				String msg = "search is not in project, projectSearchId: " + searchItemMinimal.getProjectSearchId() 
+					+ ", search_id: " + searchItemMinimal.getSearchId();
+				log.warn( msg );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+		}
+		
+		if ( ! projectSearchIds_NotFoundInDatabase.isEmpty() ) {
+			
+			webserviceResult.status = false;
+			webserviceResult.projectSearchIds_NotFoundInDatabase = projectSearchIds_NotFoundInDatabase;
+	    	
+	    	return webserviceResult;
+		}
+		
+		
+		
+		
+		ProjectDTO projectDTO = projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( projectId );
+		if ( projectDTO == null ) {
+			log.warn( "projectId is not in database: " + projectId );
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		ProjectDTO projectDTOcopyOrMoveToProjectId = 
+				projectDAO.getProjectLockedPublicAccessLevelPublicAccessLockedForProjectId( copyOrMoveToProjectId );
+		if ( projectDTOcopyOrMoveToProjectId == null ) {
+			log.warn( "copyToProjectId is not in database: " + copyOrMoveToProjectId );
+			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+		}
+		
+		boolean experimentsWhereDeleted = false;
+		
+		if ( projectDTOcopyOrMoveToProjectId.isMarkedForDeletion() ) {
+			webserviceResult.setCopyToProjectMarkedForDeletion(true);
+			webserviceResult.setStatus(false);
+		} else if ( ! projectDTOcopyOrMoveToProjectId.isEnabled() ) {
+			webserviceResult.setCopyToProjectDisabled(true);
+			webserviceResult.setStatus(false);
+		} else {
+			if ( doCopyOrDoMove == DoCopyOrDoMove.COPY ) {
+				
+				final int counterMAX = 3;
+				
+				int counter = 1;
+				
+				while (true) {  // exit loop with 'break'
+					
+					CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException log_DuplicateKeyException = 
+							CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException.NO;
+					
+					if ( counter >= counterMAX ) {
+						//  Final attempt
+						
+						log_DuplicateKeyException = CopyProjectSearchIdToNewProjectUsingDBTransactionService.Log_DuplicateKeyException.YES;
+					}
+				
+					try {
+						//  Copy Project Search and associated records to new Project
+						copyProjectSearchIdToNewProjectUsingDBTransactionService
+						.copyProjectSearchIdsToNewProjectId( 
+								projectSearchIdsSelected, copyOrMoveToProjectId, webserviceRequest.copyAnyAssociatedTags, userId, 
+								log_DuplicateKeyException );
+						
+						
+						break; // EXIT LOOP since NO exception !!!!
+						
+						
+					} catch ( org.springframework.dao.DuplicateKeyException duplicateKeyException ) {
+						
+						if ( counter >= counterMAX ) {
+							
+							//  Exceeded max tries so throw exception
+							
+							throw duplicateKeyException;
+						}
+						
+						//  Duplicate key so try again by eating exception
+					}
+					
+					int randomSleep = (int) ( ( Math.random() * 1000 ) + 500 ); // random between 500 and 1500
+					
+					Thread.sleep( randomSleep );
+					
+					counter++;
+				}
+				
+			} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
+				
+				
+				throw new IllegalArgumentException( "NOT SUPPORTED:  ( doCopyOrDoMove == DoCopyOrDoMove.MOVE )");
+				
+				//  Move Project Search and associated records to new Project
+				
+				//  "MOVE" is NO LONGER supported.  Leaving code here as template for bulk delete
+				
+//				moveProjectSearchIdToNewProjectUsingDBTransactionService
+//				.moveProjectSearchIdsToNewProjectId( projectSearchIdsSelected, copyOrMoveToProjectId, experimentIds_Containing_ProjectSearchIds );
+//				
+//				if ( experimentIds_Containing_ProjectSearchIds != null && ( ! experimentIds_Containing_ProjectSearchIds.isEmpty() ) ) {
+//					experimentsWhereDeleted = true;
+//				}
+//
+//				if ( projectSearchIdsSelected != null && ( ! projectSearchIdsSelected.isEmpty() ) ) {
+//					
+//					// Next Delete all Experiment IDs containing Project Search Ids That were NOT deleted in call to .moveProjectSearchIdsToNewProjectId(...)
+//					
+//					Set<Integer> projectSearchIdsSelected_Set = new HashSet<>( projectSearchIdsSelected );
+//
+//					List<Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result> dbResultList = 
+//							experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher.getExperiments_ProjectSearchIds_List_ForProjectSearchIds(projectSearchIdsSelected_Set);
+//
+//					if ( dbResultList != null && ( ! dbResultList.isEmpty() ) ) {
+//						experimentsWhereDeleted = true;
+//					}
+//
+//					if ( ! dbResultList.isEmpty() ) {
+//
+//						try {
+//
+//		    				for ( Experiments_ProjectSearchIds_List_ForProjectSearchIds_Searcher_Result dbResult : dbResultList ) {
+//
+//		    					experimentDAO.delete( dbResult.getExperimentId() );
+//		    				}
+//						} catch( Exception e ) {
+//							log.error( "Failed to delete Experiment Ids for ProjectSearchId that remained after main deletion", e );
+//							
+//							//  Eat/Swallow Exception
+//						}
+//					}
+//				}
+				
+			} else {
+				//  Only way to get here is a coding error above
+				String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
+				log.error( msg );
+				throw new LimelightInternalErrorException(msg);
+			}
+			webserviceResult.setStatus(true);
+			webserviceResult.experimentsWhereDeleted = experimentsWhereDeleted;
+		}
+		
+    	
+    	return webserviceResult;
+    }
+    
+    
+    
+    /////////////////////////////////////////
+    /////////////////////////////////////////
+
+    
+    //  Webservice Request and Response classes
 
     public static class WebserviceRequest {
 
@@ -479,6 +535,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 		private boolean experimentsWhereDeleted;
 		private boolean copyToProjectMarkedForDeletion;
 		private boolean copyToProjectDisabled;
+		private List<Integer> projectSearchIds_NotFoundInDatabase;
 
 		public boolean isStatus() {
 			return status;
@@ -500,6 +557,9 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 		}
 		public boolean isExperimentsWhereDeleted() {
 			return experimentsWhereDeleted;
+		}
+		public List<Integer> getProjectSearchIds_NotFoundInDatabase() {
+			return projectSearchIds_NotFoundInDatabase;
 		}
     }
 

@@ -253,6 +253,7 @@ export class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
     experimentsWhereDeleted: boolean
     copyToProjectMarkedForDeletion: boolean
     copyToProjectDisabled: boolean
+    projectSearchIds_NotFoundInDatabase: Array<number>
 }
 
 /**
@@ -321,6 +322,11 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
                     }
                     if ( result.copyToProjectDisabled === undefined || result.copyToProjectDisabled === null ) {
                         const msg = "( result.copyToProjectDisabled === undefined || result.copyToProjectDisabled === null ): URL: " + url;
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
+                    if ( ! result.status && ( ! ( result.experimentsWhereDeleted || result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ) {
+                        const msg = "( ! result.status && ( ! ( result.experimentsWhereDeleted || result.copyToProjectMarkedForDeletion || result.copyToProjectDisabled || result.projectSearchIds_NotFoundInDatabase ) ) ): URL: " + url;
                         console.warn( msg );
                         throw Error( msg );
                     }

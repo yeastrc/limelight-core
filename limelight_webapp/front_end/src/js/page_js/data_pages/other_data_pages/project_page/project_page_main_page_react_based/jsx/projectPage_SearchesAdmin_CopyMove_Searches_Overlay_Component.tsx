@@ -28,6 +28,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import { ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
 
 
 const _Overlay_Title_Move_Searches = "Move Searches"
@@ -338,9 +339,9 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
         });
 
-        promise.then( result => {
+        promise.then( copyMove_Result => {
 
-            this.setState({ show_Copying_Moving_Message: false, show_CopyMove_Result: true, copyMove_Result: result });
+            this.setState({ show_Copying_Moving_Message: false, show_CopyMove_Result: true, copyMove_Result });
         });
     }
 
@@ -739,25 +740,56 @@ class ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_Component extends Reac
 
                             ) : ( this.state.copyMove_Result.copyToProjectMarkedForDeletion ) ? (
 
-                                    <div  style={ { marginBottom: 10 } }>
-                                        <div >
-                                            Copy Searches Failed.
-                                            {/*  Project copying to is marked for deletion.  */}
-                                            Project copying to has been deleted.
-                                        </div>
-                                        <div >
-                                            Please reload the page to get a current list of valid projects to copy to.
-                                        </div>
+                                <div  style={ { marginBottom: 10, fontWeight: "bold", fontSize: 18 } }>
+                                    <div >
+                                        Copy Searches Failed.
                                     </div>
+                                    <div style={ { marginTop: 10 } }>
+                                        {/*  Project copying to is marked for deletion.  */}
+                                        Project copying to has been deleted.
+                                    </div>
+                                    <div style={ { marginTop: 10 } }>
+                                        Please reload the page to get a current list of valid projects to copy to.
+                                    </div>
+                                </div>
+
                             ) : ( this.state.copyMove_Result.copyToProjectDisabled ) ? (
-                                    <div  style={ { marginBottom: 10 } }>
-                                        <div >
-                                            Copy Searches Failed.  Project copying to is disabled.
-                                        </div>
-                                        <div >
-                                            Please reload the page to get a current list of valid projects to copy to.
-                                        </div>
+
+                                <div  style={ { marginBottom: 10, fontWeight: "bold", fontSize: 18 } }>
+                                    <div >
+                                        Copy Searches Failed.
                                     </div>
+                                    <div style={ { marginTop: 10 } }>
+                                        Project copying to is disabled.
+                                    </div>
+                                    <div style={ { marginTop: 10 } }>
+                                        Please reload the page to get a current list of valid projects to copy to.
+                                    </div>
+                                </div>
+
+                            )  : ( this.state.copyMove_Result.projectSearchIds_NotFoundInDatabase ) ? (
+
+                                // Output Searches Not found in database List.
+
+                                <div  style={ { marginBottom: 10, fontWeight: "bold", fontSize: 18 } }>
+                                    <div >
+                                        Copy Searches Failed.
+                                    </div>
+                                    <div style={ { marginTop: 10 } }>
+                                        One or more searches selected are no longer in the project.
+                                    </div>
+
+                                    {/*
+
+                                    Could list the searches here using 'this.state.copyMove_Result_ContainingStateClass_Object.searches_NotFoundInDatabase'.
+                                    Could reload the search list on overlay close instead of prompting the user to reload the page.
+
+                                    */}
+
+                                    <div style={ { marginTop: 10 } }>
+                                        Please reload the page to get a current list of searches to copy.
+                                    </div>
+                                </div>
 
                             ) : null }
                             {/*
