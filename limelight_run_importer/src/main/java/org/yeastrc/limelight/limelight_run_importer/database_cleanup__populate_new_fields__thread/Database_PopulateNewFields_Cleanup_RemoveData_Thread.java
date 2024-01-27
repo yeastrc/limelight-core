@@ -472,7 +472,9 @@ public class Database_PopulateNewFields_Cleanup_RemoveData_Thread extends Thread
 		
 		if ( tomorrow_22_Hour_Minus_Now__Milliseconds > 0 ) {
 
-			log.warn( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again. wait time in milliseconds: " + tomorrow_22_Hour_Minus_Now__Milliseconds );
+			if ( log.isInfoEnabled() ) {
+				log.info( "INFO:: Database Cleanup (removal of deleted searches and projects and removal of failed search imports) will now wait until ** 10pm tomorrow ** before it runs again. wait time in milliseconds: " + tomorrow_22_Hour_Minus_Now__Milliseconds );
+			}
 
 
 			synchronized (this) {
