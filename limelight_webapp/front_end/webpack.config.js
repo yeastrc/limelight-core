@@ -113,6 +113,19 @@ const plugins = [
 
 const mainConfig = (env, argv) => {
 
+
+	//  NEW format for '--env'  Webpack 5.90.0
+
+	//  Listing same property more than once appears to NOT create an array
+	//  Coded below to split the param value on single space.
+
+	//  so:
+	//     param 1:  '--env'
+	//     param 2:  'build_entry=<entry key> <second entry key>"
+
+
+	//  OLD format for '--env'
+
 	// Choose which 'entry' properties to build using on command line:
 	//
 	//		Single
