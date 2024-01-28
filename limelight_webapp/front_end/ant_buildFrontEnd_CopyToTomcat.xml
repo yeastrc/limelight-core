@@ -133,8 +133,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/projectViewPage_ProjectOwner_W_User" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/projectViewPage_ProjectOwner_W_User" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
@@ -165,8 +166,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=webapp_admin/manage_ImporterPipelineExecution_Page_Root" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=webapp_admin/manage_ImporterPipelineExecution_Page_Root" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
@@ -197,8 +199,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/project_OrganizeSearches_Page" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/project_OrganizeSearches_Page" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
@@ -228,9 +231,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/qcViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/qcViewPage_RootLaunch_LoggedInUsers data_pages/qcViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 		
@@ -259,9 +262,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/peptideViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/peptideViewPage_RootLaunch_LoggedInUsers data_pages/peptideViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 		
@@ -290,9 +293,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/proteinViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/proteinViewPage_RootLaunch_LoggedInUsers data_pages/proteinViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 		
@@ -321,9 +324,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/modViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/modViewPage_RootLaunch_LoggedInUsers data_pages/modViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 		
@@ -352,9 +355,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/featureDetection_ViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/featureDetection_ViewPage_RootLaunch_LoggedInUsers data_pages/featureDetection_ViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 
@@ -383,9 +386,9 @@
 			<!-- Webpack directive  -->
 			<arg value="${webpack_param_mode_value}" />
 
-			<!-- env.build_entry=<Object key from 'entry' object in webpack.config.js>" -->
-			<arg value="--env.build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers" />
-			<arg value="--env.build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser" />
+			<!-- env build_entry=<Object key from 'entry' object in webpack.config.js>".  Space delimit to separate 'entry'.  See code in webpack.config.js -->
+			<arg value="--env" />
+			<arg value="build_entry=data_pages/scanFileBrowserViewPage_RootLaunch_LoggedInUsers data_pages/scanFileBrowserViewPage_RootLaunch_PublicUser" />
 			<!--   <arg value="XXXX" /> -->
 		</exec>
 

@@ -235,24 +235,29 @@ const mainConfig = (env, argv) => {
 			console.log("Entering processing in 'webpack.config.js'")
 			console.log()
 
-			console.log("'env.build_entry' has a value.  Processing it.")
+			console.log("'--env build_entry=' has a value.  Processing it.")
 
 			const entry_New = {}
 
 			if ( env.build_entry instanceof Array ) {
 
-				console.log("Specific 'entry' entries will be copied for build from command line params '--env.build_entry=': " + env.build_entry.join(", ") )
+				console.log("Specific 'entry' entries will be copied for build from command line params '--env build_entry=': " + env.build_entry.join(", ") )
 
+				console.log("env.build_entry.length: " + env.build_entry.length );
+				
+				
 				for ( const buildEntry of env.build_entry ) {
 
 					const existingEntry = entry[ buildEntry ];
 
 					if ( ! existingEntry ) {
-						const msg = "No 'entry' object key with string '" + buildEntry + "' from env.build_entry entries."
+						const msg = "ERROR IN --env build_entry= value.  No 'entry' object key with string '" + buildEntry + "'."
 						console.warn(msg)
 						throw Error(msg)
 					}
 
+					console.log("buildEntry copied to final build: " + buildEntry );
+					
 					entry_New[ buildEntry ] = existingEntry
 				}
 
@@ -260,21 +265,43 @@ const mainConfig = (env, argv) => {
 
 			} else {
 
-				console.log("Specific 'entry' entry will be copied for build from command line param '--env.build_entry=': " + env.build_entry )
+				console.log("Specific 'entry' entry will be copied for build from command line param '--env build_entry=': " + env.build_entry )
 
 				// console.log("env.build_entry not Array.  env.build_entry: " + env.build_entry)
 				//
 				// console.log("entry[ env.build_entry ]: " +  entry[ env.build_entry ] );
+				
+				const buildEntries_SplitOnSpaceChar = env.build_entry.split(" ")
+				
+				console.log("buildEntries_SplitOnSpaceChar.length: " + buildEntries_SplitOnSpaceChar.length );
+				
+				
+				for ( const buildEntry of buildEntries_SplitOnSpaceChar ) {
 
-				const existingEntry = entry[ env.build_entry ];
+					const existingEntry = entry[ buildEntry ];
 
-				if ( ! existingEntry ) {
-					const msg = "No 'entry' object key with string '" + env.build_entry + "' from env.build_entry."
-					console.warn(msg)
-					throw Error(msg)
+					if ( ! existingEntry ) {
+						const msg = "ERROR IN --env build_entry= value.  No 'entry' object key with string '" + buildEntry + "'."
+						console.warn(msg)
+						throw Error(msg)
+					}
+					
+					console.log("buildEntry copied to final build: " + buildEntry );
+					
+					entry_New[ buildEntry ] = existingEntry
 				}
 
-				entry_New[ env.build_entry ] = existingEntry
+				
+
+//				const existingEntry = entry[ env.build_entry ];
+//
+//				if ( ! existingEntry ) {
+//					const msg = "No 'entry' object key with string '" + env.build_entry + "' from env.build_entry."
+//					console.warn(msg)
+//					throw Error(msg)
+//				}
+//
+//				entry_New[ env.build_entry ] = existingEntry
 			}
 
 			entry = entry_New;
