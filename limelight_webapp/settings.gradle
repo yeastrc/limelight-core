@@ -48,10 +48,12 @@ project(":limelight_submit_import_client_connector").projectDir = new File( sett
 project(":limelight_submit_import").projectDir = new File( settingsDir, "../limelight_submit_import")
  
  
+
+//  Moved to ant file 'ant_create_war.xml':  
   
 /*
  *  Specify dependency on subdirectory "front_end"
  */
-  include "front_end"
+//  include "front_end"
   
   

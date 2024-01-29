@@ -13,12 +13,10 @@ plugins {
     id 'java-library'
 }
 
-//    defaults to currently installed JVM
-sourceCompatibility = 1.8
-
-//    defaults to sourceCompatibility
-//  targetCompatibility  = 1.8
-
+java {
+	sourceCompatibility = 1.8      //    defaults to currently installed JVM
+	// targetCompatibility  = 1.8  //    defaults to sourceCompatibility
+}
 
 dependencies {
 
