@@ -101,13 +101,13 @@ export class ModViewDataVizRenderer_MultiSearch {
         const height = ModViewDataVizRenderer_MultiSearch.getHeight({projectSearchIds:vizOptionsData.data.projectSearchIds, heightDefs});
 
         // set up our scales
-        // @ts-ignore
         let xScale = d3.scaleBand()
+            // @ts-ignore
             .domain(sortedModMasses)
             .range([0,width]);
 
-        // @ts-ignore
         let yScale = d3.scaleBand()
+            // @ts-ignore
             .domain(vizOptionsData.data.projectSearchIds)
             .range([0, height]);
 
@@ -119,27 +119,30 @@ export class ModViewDataVizRenderer_MultiSearch {
                 minCount = 0;
                 maxCount = 1;
 
-                // @ts-ignore
                 colorScale = d3.scalePow()
                     .exponent(0.25)
                     .domain([1, 0.05, 0])
+                    //  Typescript types for '.range(...)' is Array<number>
+                    // @ts-ignore
                     .range(["white", "#57c4ad", "#006164"]);
             } else {
-                // @ts-ignore
+
                 colorScale = d3.scalePow()
                     .exponent(1.4)
                     .domain([minCount, minCount / 2, 0, maxCount / 2, maxCount])
+                    //  Typescript types for '.range(...)' is Array<number>
+                    // @ts-ignore
                     .range(["#db4325", "#eda247", "white", "#57c4ad", "#006164"]);
             }
         } else {
             //const logScale = d3.scaleSqrt().domain([minCount, maxCount]);
             //colorScale = d3.scaleSequential((d) => d3.interpolatePlasma(logScale(d)));
 
-            // @ts-ignore
             colorScale = d3.scaleLinear()
                 .domain([0, maxCount/2, maxCount])
+                //  Typescript types for '.range(...)' is Array<number>
+                // @ts-ignore
                 .range(["white", "#57c4ad", "#006164"]);
-
         }
 
         // start drawing the actual viz
@@ -606,6 +609,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     selectedStateObject.data = {};
                 }
 
+                // @ts-ignore
                 const p = d3.mouse(this);
 
                 svg.select('#rect-group')
@@ -622,7 +626,10 @@ export class ModViewDataVizRenderer_MultiSearch {
                 let s = svg.select('#rect-group').select( "rect.selection");
 
                 if( !s.empty()) {
+
+                    // @ts-ignore
                     const p = d3.mouse(this)
+
                     let rectParams = {
                             x       : s.attr( "x"),
                             y       : s.attr( "y"),
