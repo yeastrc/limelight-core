@@ -873,6 +873,13 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                             window.alert( "Scan file not deleted.  Unable to delete scan files with associated searches." )
                                                         }
 
+                                                        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+                                                            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+                                                            return // EARLY RETURN
+                                                        }
+
                                                         limelight__ReloadPage_Function()
 
                                                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
