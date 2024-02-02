@@ -27,9 +27,12 @@ import { ProjectPage_ExperimentsSectionRoot_Root_Component } from "page_js/data_
 import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/project_page_experiments_section/projPg_Expermnts_LoggedInUsersInteraction";
 import { ProjectPage_SavedViewsSection_Root_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViewsSection_Root_Component";
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
-import { ProjectPage_UploadData_MainPage_Main_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
-import { ProjectPage_PublicAccessSection_ProjectOwnerInteraction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction_Root_Component";
 import { ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__feature_detection_runs_view_section/all_users_incl_public_user/projectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_Root_Component";
+import {
+    CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_Result,
+    get_CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_Result
+} from "page_js/data_pages/common_data_loaded_from_server__project_page_do_sections_have_any_data/commonData_LoadedFromServerFor_Project_DoSections_HaveAnyData";
+import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params {
     projectIdentifierFromURL: string
@@ -52,6 +55,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
     {
         projectIdentifierFromURL,
         projectIsLocked,
+        for_PublicUser,
         projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
         projectPage_SearchesAdmin,
@@ -62,6 +66,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
     } : {
         projectIdentifierFromURL: string
         projectIsLocked: boolean
+        for_PublicUser: boolean
 
         projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
@@ -87,7 +92,7 @@ export const add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Conta
 
 
         const projectPage_ROOT_Container_Containing_MultipleSections_Component_Props : ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props = {
-            projectIdentifier, projectIsLocked, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
+            projectIdentifier, projectIsLocked, for_PublicUser, projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions,
             dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
             projectPage_SearchesAdmin,
             projectPage_ExperimentsSection_LoggedInUsersInteraction,
@@ -231,6 +236,7 @@ export type ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Ge
 export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props {
     projectIdentifier : string
     projectIsLocked: boolean
+    for_PublicUser: boolean
 
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
@@ -246,6 +252,10 @@ export interface ProjectPage_ROOT_Container_Containing_MultipleSections_Componen
  *
  */
 interface ProjectPage_ROOT_Container_Containing_MultipleSections_Component_State {
+
+    show_Overall_Loading_Message?: boolean
+    do_ANY_Sections_HaveData?: boolean
+    doSections_HaveAnyData_Result?: CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_Result
 
     //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
     force_Rerender_EmptyObjectReference?: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
@@ -279,8 +289,15 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
     constructor(props: ProjectPage_ROOT_Container_Containing_MultipleSections_Component_Props) {
         super(props)
 
+        let show_Overall_Loading_Message = false
+        if ( props.for_PublicUser ) {
+            show_Overall_Loading_Message = true
+        }
+
         this.state = {
-            force_Rerender_EmptyObjectReference: {}, force_ReloadFromServer_EmptyObjectReference: {}
+            show_Overall_Loading_Message,
+            force_Rerender_EmptyObjectReference: {},
+            force_ReloadFromServer_EmptyObjectReference: {}
         }
     }
 
@@ -289,6 +306,35 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
      */
     componentDidMount() {
         try {
+
+            if ( this.props.for_PublicUser ) {
+
+                const promise = get_CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_Result({ projectIdentifier: this.props.projectIdentifier })
+
+                promise.catch(reason => {})
+                promise.then( result_Project_DoSections_HaveAnyData_Result => {
+                    try {
+                        let do_ANY_Sections_HaveData = false;
+
+                        if ( result_Project_DoSections_HaveAnyData_Result.has_Searches_Data
+                            || result_Project_DoSections_HaveAnyData_Result.has_ScanFile_Data
+                            || result_Project_DoSections_HaveAnyData_Result.has_Experiment_NOT_Drafts_Data
+                            || result_Project_DoSections_HaveAnyData_Result.has_DataPage_SavedView_Data
+                            || result_Project_DoSections_HaveAnyData_Result.has_FeatureDetectionRoot_ProjectMapping_Data
+                        ) {
+                            do_ANY_Sections_HaveData = true
+                        }
+
+                        this.setState({ show_Overall_Loading_Message: false, do_ANY_Sections_HaveData, doSections_HaveAnyData_Result: result_Project_DoSections_HaveAnyData_Result })
+
+                    } catch (e) {
+                        reportWebErrorToServer.reportErrorObjectToServer({
+                            errorException : e
+                        });
+                        throw e;
+                    }
+                })
+            }
 
         } catch (e) {
             reportWebErrorToServer.reportErrorObjectToServer({
@@ -386,8 +432,38 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
      */
     render() {
 
+        if ( this.state.show_Overall_Loading_Message ) {
+
+            return (
+                <div>
+                    <div style={ { fontSize: 28, fontWeight: "bold", textAlign: "center", marginTop: 40 } }>
+                        Loading Data
+                    </div>
+
+                    <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" } }>
+                        <Spinner_Limelight_Component/>
+                    </div>
+                </div>
+            )
+        }
+
+        if ( this.props.for_PublicUser && ( ! this.state.do_ANY_Sections_HaveData ) ) {
+
+            return (
+                <div style={ { fontSize: 24, fontWeight: "bold", marginTop: 40 } }>
+                    Project has no data
+                </div>
+            )
+        }
+
         return (
             <div>
+                {/*
+
+                As far as hiding sections that have NO data for Public User,
+                this code assumes that 'this.props.getSubComponents__Callback_Function' returns NOTHING for Public User, which is currently true
+
+                */}
 
                 { //  Add Components for User type
 
@@ -401,55 +477,65 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                     })
                 ) : null }
 
-                <ProjectPage_SavedViewsSection_Root_Component
-                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
-                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
-                    projectIdentifier={ this.props.projectIdentifier }
-                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                    projectPage_SavedViews_Section_LoggedInUsersInteraction={ this.props.projectPage_SavedViews_Section_LoggedInUsersInteraction }
-                />
+                { ( ! this.props.for_PublicUser ) || ( this.state.doSections_HaveAnyData_Result && this.state.doSections_HaveAnyData_Result.has_DataPage_SavedView_Data ) ? (
+                    <ProjectPage_SavedViewsSection_Root_Component
+                        force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                        projectIdentifier={ this.props.projectIdentifier }
+                        dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                        projectPage_SavedViews_Section_LoggedInUsersInteraction={ this.props.projectPage_SavedViews_Section_LoggedInUsersInteraction }
+                    />
+                ) : null }
 
-                <ProjectPage_ExperimentsSectionRoot_Root_Component
-                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
-                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
-                    projectIdentifier={ this.props.projectIdentifier }
-                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                    projectPage_ExperimentsSection_LoggedInUsersInteraction={ this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction }
-                />
+                { ( ! this.props.for_PublicUser ) || ( this.state.doSections_HaveAnyData_Result && this.state.doSections_HaveAnyData_Result.has_Experiment_NOT_Drafts_Data ) ? (
+                    <ProjectPage_ExperimentsSectionRoot_Root_Component
+                        force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                        projectIdentifier={ this.props.projectIdentifier }
+                        dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                        projectPage_ExperimentsSection_LoggedInUsersInteraction={ this.props.projectPage_ExperimentsSection_LoggedInUsersInteraction }
+                    />
+                ) : null }
 
-                <ProjectPage_SearchesSection_Root_Component
-                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
-                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
-                    projectIdentifier={ this.props.projectIdentifier }
-                    get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
-                    dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis}
-                />
+                { ( ! this.props.for_PublicUser ) || ( this.state.doSections_HaveAnyData_Result && this.state.doSections_HaveAnyData_Result.has_Searches_Data ) ? (
+                    <ProjectPage_SearchesSection_Root_Component
+                        force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                        projectIdentifier={ this.props.projectIdentifier }
+                        get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
+                        dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                        projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                        update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis}
+                    />
+                ) : null }
 
-                <ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
-                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
-                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
-                    projectIdentifier={ this.props.projectIdentifier }
-                    projectIsLocked={ this.props.projectIsLocked }
-                    get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
-                    projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
-                    dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
-                />
+                { ( ! this.props.for_PublicUser ) || ( this.state.doSections_HaveAnyData_Result && this.state.doSections_HaveAnyData_Result.has_FeatureDetectionRoot_ProjectMapping_Data ) ? (
+                    <ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
+                        force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                        projectIdentifier={ this.props.projectIdentifier }
+                        projectIsLocked={ this.props.projectIsLocked }
+                        get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
+                        projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
+                        dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                        projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                        update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
+                    />
+                ) : null }
 
-                <ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
-                    force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
-                    force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
-                    projectIdentifier={ this.props.projectIdentifier }
-                    projectIsLocked={ this.props.projectIsLocked }
-                    get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
-                    projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
-                    dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
-                    projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
-                    update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
-                />
+                { ( ! this.props.for_PublicUser ) || ( this.state.doSections_HaveAnyData_Result && this.state.doSections_HaveAnyData_Result.has_ScanFile_Data ) ? (
+                    <ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_ROOT_Component
+                        force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
+                        projectIdentifier={ this.props.projectIdentifier }
+                        projectIsLocked={ this.props.projectIsLocked }
+                        get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
+                        projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
+                        dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                        projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                        update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
+                    />
+                ) : null }
 
             </div>
         );

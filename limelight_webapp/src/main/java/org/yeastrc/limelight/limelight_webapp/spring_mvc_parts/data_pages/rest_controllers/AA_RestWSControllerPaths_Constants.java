@@ -327,6 +327,16 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROJECT_NOTE_ADD_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-note-add";
 	public static final String PROJECT_NOTE_UPDATE_TEXT_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-note-update-text";
 	public static final String PROJECT_NOTE_DELETE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-note-delete";
+	
+	
+
+	///////////////////////
+	
+	//  Project has data for each section of Project Page
+
+	public static final String PROJECT_VIEW_PAGE_HAS_DATA_FOR_EACH_SECTION_OF_PROJECT_PAGE_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/project-view-page-has-data-for-each-section-of-project-page";
+
+	
 
 	///////////////////////
 	

@@ -155,6 +155,7 @@ class ProjectViewPage_Root_ResearcherUser {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
 				projectIsLocked: projectLocked,
+				for_PublicUser: false,
 				projectPage_SearchesAdmin: null,
 				projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: null,
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
