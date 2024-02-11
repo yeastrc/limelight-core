@@ -19,6 +19,9 @@ import {
     ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_Common_TopLevelLabel_Component_Expanded_Default
 } from "page_js/data_pages/other_data_pages/project_page/project_page__feature_detection_runs_view_section/common/projectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_Common_TopLevelLabel_Component";
 import { ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDetection_Run_List_Component } from "page_js/data_pages/other_data_pages/project_page/project_page__feature_detection_runs_view_section/all_users_incl_public_user/projectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicUser_Interaction_FeatureDetection_Run_List_Component";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 
 /**
@@ -40,6 +43,10 @@ export interface ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPub
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -124,6 +131,8 @@ export class ProjectPage_FeatureDetection_Runs_View_Section_AllUsers_InclPublicU
                                 dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                                 update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
+                                update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
+                                searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                             />
                         ) : null }
                     </div>

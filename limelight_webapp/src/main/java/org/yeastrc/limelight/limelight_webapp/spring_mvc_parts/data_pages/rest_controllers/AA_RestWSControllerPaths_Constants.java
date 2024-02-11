@@ -497,15 +497,11 @@ public class AA_RestWSControllerPaths_Constants {
 
 	// Results from Multiple Project Search Ids
 	
-	// Search Details 'Core' for both Project Page and Data Pages
 
-	public static final String GET_SEARCH_DETAILS_CORE_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/get-search-details-core";
+	// Search Details 'All' for All Usage
 
-	// Search Details 'Project Page' for Project Page
-
-	public static final String GET_SEARCH_DETAILS_PROJECT_PAGE_REST_WEBSERVICE_CONTROLLER = 
-			"d/rws/for-page/psb/get-search-details-project-page";
+	public static final String GET_SEARCH_DETAILS_ALL_REST_WEBSERVICE_CONTROLLER = 
+			"d/rws/for-page/psb/get-search-details-all";
 
 	
 	

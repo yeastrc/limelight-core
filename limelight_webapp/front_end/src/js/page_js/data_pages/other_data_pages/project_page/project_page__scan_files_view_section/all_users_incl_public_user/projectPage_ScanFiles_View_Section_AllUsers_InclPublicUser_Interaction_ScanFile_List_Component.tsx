@@ -46,6 +46,9 @@ import { GoldStandard_Label_Description_Change_Component_Change_Callback_Params 
 import { scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc } from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 /**
  *
@@ -66,6 +69,10 @@ export interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFil
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -321,6 +328,10 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                     const element = (
                         <ScanFileEntry_Component
                             key={ scanFile_Entry.projectScanFileId }
+
+                            force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                            force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                             showExpanded_OnMount={ this._scanFiles_Expanded_ProjectScanFileId_Set.has( scanFile_Entry.projectScanFileId )}
                             expand_All___Show_ScanFile_Details__Global_Force={ this.state.expand_All___Show_ScanFile_Details__Global_Force }
                             scanFile_Entry={ scanFile_Entry }
@@ -338,6 +349,8 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                             searchChanged_Callback={ this._searchChanged_Callback_BindThis }
                             callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                             update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
+                            searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                            update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                         />
                     )
 
@@ -483,6 +496,12 @@ type ScanFileEntry_Component_SelectionCheckboxChanged_CallbackFunction =
 interface ScanFileEntry_Component_Props {
     showExpanded_OnMount: boolean
 
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     expand_All___Show_ScanFile_Details__Global_Force: Internal__Expand_All___Show_ScanFile_Details__Global_Force
 
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
@@ -501,6 +520,10 @@ interface ScanFileEntry_Component_Props {
     searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -906,6 +929,10 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                         { ( this._detailsBlock_EverShown ) ? (
                             <ScanFile_Details_Component
                                 forceReloadContents_Object={ this.state.forceReloadContents_Object__For__ScanFile_Details_Component }
+
+                                force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                                 scanFile_Entry={ this.props.scanFile_Entry }
                                 projectIdentifier={ this.props.projectIdentifier }
                                 projectIsLocked={ this.props.projectIsLocked }
@@ -918,6 +945,9 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 searchChanged_Callback={ this.props.searchChanged_Callback }
                                 callback_SearchDeleted={ this.props.callback_SearchDeleted }
                                 update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
+
+                                searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject  }
+                                update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                             />
                         ) : null }
                     </div>
@@ -944,6 +974,15 @@ interface ScanFile_Details_Component_Props {
 
     forceReloadContents_Object: object
 
+    //  Pass Through to children
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+
     scanFile_Entry: ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
     projectIdentifier : string
     projectIsLocked : boolean
@@ -959,6 +998,10 @@ interface ScanFile_Details_Component_Props {
     callback_SearchDeleted: () => void
 
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 
     //  Any changes, update componentDidUpdate
 }
@@ -1224,6 +1267,10 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                 const searchElement = (
                     <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                         key={ searchObject.projectSearchId }
+
+                        force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                         projectIdentifier={ this.props.projectIdentifier }
                         searchDisplayListItem={ searchObject }
                         searchesSearchTagsFolders_Result_Root={ this.state.searchesSearchTagsFolders_Result_Root }
@@ -1237,6 +1284,9 @@ class ScanFile_Details_Component extends React.Component< ScanFile_Details_Compo
                         callbackOn_Search_Entry_Clicked={ null }
                         searchChanged_Callback={ this.props.searchChanged_Callback }
                         deleteSearch_Callback={ this.props.callback_SearchDeleted }
+
+                        update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                     />
                 )
 

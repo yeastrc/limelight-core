@@ -29,7 +29,6 @@ import {
     SearchDetailsAndFilterBlock_UserInputInOverlay,
     SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
-import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
 import {SearchDetailsAndFilterBlock_ChangeSearches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_ChangeSearches";
 import {SearchDetailsAndFilterBlock_Re_Order_Searches} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_Re_Order_Searches";
 import {SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS";
@@ -41,7 +40,6 @@ import {
 } from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
 import {Limelight_Colors_For_MultipleSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_MultipleSearches";
-import {SearchTags_SearchTagCategories__Get_For_ProjectSearchIds_ResultItem_SingleProjectSearchId} from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_search/searchTags__Get_For_ProjectSearchIds";
 import {
     SearchName_and_SearchShortName_Change_Component_Change_Callback,
     SearchName_and_SearchShortName_Change_Component_Change_Callback_Params
@@ -61,6 +59,9 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component
+} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
 
 
 //  Put here since used in multiple places
@@ -921,13 +922,11 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
     private _searchName_Div_Ref: React.RefObject<HTMLDivElement>; //  React.createRef()
 
-    private _searchDetailsContainer_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div>
-
     private _showSearchDetails_Clicked_BindThis = this._showSearchDetails_Clicked.bind(this);
     private _hideSearchDetails_Clicked_BindThis = this._hideSearchDetails_Clicked.bind(this);
     private _add_Change_SearchTags_Clicked_BindThis = this._add_Change_SearchTags_Clicked.bind(this);
 
-    private _searchDetailsAddedToDOM : boolean = false;
+    private _searchDetails_EverShown : boolean = false;
 
     /**
      *
@@ -936,7 +935,6 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         super(props);
 
         this._searchName_Div_Ref = React.createRef<HTMLDivElement>();
-        this._searchDetailsContainer_div_Ref = React.createRef<HTMLDivElement>();
 
         this.state = {
             showSearchDetails : false
@@ -949,9 +947,6 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
     componentDidUpdate(prevProps: Readonly<SearchNameAndDetails_Root_Props>, prevState: Readonly<SearchNameAndDetails_Root_State>, snapshot?: any): void {
 
         if ( prevProps.projectSearchId !== this.props.projectSearchId ) {
-
-            this._removeSearchDetailsFromDOM(); //  Will also set this._searchDetailsAddedToDOM to false
-
             this.setState({ showSearchDetails : false });
         }
     }
@@ -961,18 +956,6 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
      */
     componentWillUnmount(): void {
 
-        this._removeSearchDetailsFromDOM();
-    }
-
-    /**
-     *
-     */
-    private _removeSearchDetailsFromDOM() {
-
-        const $detailsContainer = $( this._searchDetailsContainer_div_Ref.current );
-        $detailsContainer.empty()
-
-        this._searchDetailsAddedToDOM = false;
     }
 
     /**
@@ -980,9 +963,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
      */
     private _showSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
-        if ( ! this._searchDetailsAddedToDOM ) {
-            this._addSearchDetailToDOM();
-        }
+        this._searchDetails_EverShown = true
 
         this.setState({ showSearchDetails : true });
     }
@@ -994,22 +975,6 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
         this.setState({ showSearchDetails : false });
     }
-
-    /**
-     * Add Search Details to DOM
-     */
-    private _addSearchDetailToDOM() {
-
-        const projectSearchId = this.props.projectSearchId;
-        const searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers = (
-            new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({ dataPages_LoggedInUser_CommonObjectsFactory : this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory })
-        );
-
-        searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.showSearchDetailsClicked({ projectSearchId, domElementToInsertInto : this._searchDetailsContainer_div_Ref.current });
-
-        this._searchDetailsAddedToDOM = true;
-    }
-
 
     ////////////////////////////////////////
 
@@ -1209,7 +1174,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                             ref={ this._searchName_Div_Ref }
                         >
                             <span style={ { overflowWrap: "break-word" } }>
-                                { searchNameObject.name }
+                                searchNameObject.name: { searchNameObject.name }
                             </span>
                             { searchNameObject.searchShortName ? (
                                 <>
@@ -1273,8 +1238,22 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
                     </div>
 
-                    <div ref={ this._searchDetailsContainer_div_Ref } style={ searchDetailsContainer_div_Style }>
-                    </div>
+                    {/* Search Detail Container */}
+
+                    { this._searchDetails_EverShown ? (
+                        <div style={ searchDetailsContainer_div_Style }>
+                            <SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component
+                                key={ this.props.projectSearchId }  // NOT re-use for different projectSearchId
+                                projectSearchId={ this.props.projectSearchId }
+                                dataPages_LoggedInUser_CommonObjectsFactory={ this.props.propValue.dataPages_LoggedInUser_CommonObjectsFactory  }
+                                searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ null }
+                                update_force_ReRender_EmptyObjectReference_Callback={ null }
+                                force_Rerender_EmptyObjectReference={ null }
+                                force_ReloadFromServer_EmptyObjectReference={ null }
+                            />
+                        </div>
+                    ) : null }
+
                 </td>
             </React.Fragment>
         )

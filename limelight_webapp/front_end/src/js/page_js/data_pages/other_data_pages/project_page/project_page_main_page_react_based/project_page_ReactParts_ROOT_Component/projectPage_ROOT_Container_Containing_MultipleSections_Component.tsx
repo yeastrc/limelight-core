@@ -33,6 +33,9 @@ import {
     get_CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_Result
 } from "page_js/data_pages/common_data_loaded_from_server__project_page_do_sections_have_any_data/commonData_LoadedFromServerFor_Project_DoSections_HaveAnyData";
 import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 export class ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params {
     projectIdentifierFromURL: string
@@ -271,6 +274,7 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
 
     private _searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis = this._searchesAndFolders_From_Webservice_CalledByChildrenComponents.bind(this)
     private _update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis = this._update_force_ReloadFromServer_EmptyObjectReference_Callback.bind(this)
+    private _update_force_ReRender_EmptyObjectReference_Callback_BindThis = this._update_force_ReRender_EmptyObjectReference_Callback.bind(this)
 
     private _DONOTCALL() {
 
@@ -282,6 +286,9 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
     private _searchesSearchTagsFolders_Result_Root: CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root
     //  Only populated when a Promise is in progress to retrieve this data
     private _searchesSearchTagsFolders_Result_Root_Promise: Promise<CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root>
+
+    private _searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject = new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class()
+
 
     /**
      *
@@ -420,12 +427,14 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
         this.setState({ force_ReloadFromServer_EmptyObjectReference: {} })
     }
 
-    //   NOT Called Yet --  Called by children components when other children components need to refresh their data.  A way to avoid page reload
-    // private _forceReload_AllData() {
-    //
-    //     this._searchesSearchTagsFolders_Result_Root = null // Delete cached data
-    //     this.setState({ force_Reload_AllData_Object: { }})
-    // }
+    /**
+     * Called from Child components to force All child components to rerender to display updated data
+     */
+    private _update_force_ReRender_EmptyObjectReference_Callback() {
+
+        this._searchesSearchTagsFolders_Result_Root = null // Delete cached data
+        this.setState({ force_Rerender_EmptyObjectReference: {} })
+    }
 
     /**
      *
@@ -506,6 +515,8 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis}
+                        update_force_ReRender_EmptyObjectReference_Callback={ this._update_force_ReRender_EmptyObjectReference_Callback_BindThis }
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this._searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                     />
                 ) : null }
 
@@ -520,6 +531,8 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                         dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
+                        update_force_ReRender_EmptyObjectReference_Callback={ this._update_force_ReRender_EmptyObjectReference_Callback_BindThis }
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this._searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                     />
                 ) : null }
 
@@ -534,6 +547,8 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                         dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                         update_force_ReloadFromServer_EmptyObjectReference_Callback={ this._update_force_ReloadFromServer_EmptyObjectReference_Callback_BindThis }
+                        update_force_ReRender_EmptyObjectReference_Callback={ this._update_force_ReRender_EmptyObjectReference_Callback_BindThis }
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this._searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                     />
                 ) : null }
 

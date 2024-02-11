@@ -28,6 +28,9 @@ import {
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 //  Internal Constants
 
@@ -111,6 +114,13 @@ export type ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_
  *
  */
 export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Props {
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     show_SearchTag_Categories: boolean
     expand_All_Folders__ShowSearchDetailsTo_Global_Force: ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Expand_All_Folders__ShowSearchDetailsTo_Global_Force
@@ -124,9 +134,14 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
     projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet: ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_SaveGet
     callback_updateSelected_Searches : ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Update_Selected_ProjectSearchIds
 
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
+
     callback_SearchChanged: () => void
     callback_SearchDeleted: () => void
     callback_FolderDeleted: () => void
+
 }
 
 /**
@@ -394,6 +409,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                 <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                     key={searchData.projectSearchId}
 
+                    force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                     show_SearchTag_Categories={ this.props.show_SearchTag_Categories }
 
                     expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
@@ -408,6 +426,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                     deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                     callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
+
+                    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                    update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                 />
             )
             searchDisplayList.push(searchDisplayListEntry);
@@ -442,6 +463,10 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                 const element = (
                     <FolderEntry
                         key={folderEntry.folderId}
+
+                        force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                         projectIdentifier={ this.props.projectIdentifier }
                         folderEntry={folderEntry}
                         expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
@@ -459,6 +484,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                         callbackOn_SearchEntry_In_Folder_Selected_DeSelected={ this._searchEntry_In_Folder_Selected_DeSelected_Callback_BindThis }
                         callback_SearchChanged={ this._callback_SearchChanged_BindThis }
                         callback_FolderDeleted={ this.props.callback_FolderDeleted }
+
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                        update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                     />
                 )
                 folderDisplayList.push(element);
@@ -489,6 +517,10 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
             const searchDisplayListEntry = (
                 <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                     key={searchData.projectSearchId}
+
+                    force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                    force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                     expand_All_Folders__ShowSearchDetailsTo_Global_Force={ this.props.expand_All_Folders__ShowSearchDetailsTo_Global_Force }
                     projectIdentifier={ this.props.projectIdentifier }
                     searchesSearchTagsFolders_Result_Root={ this.props.searchesSearchTagsFolders_Result_Root }
@@ -504,6 +536,9 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                     searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                     deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                     callbackOn_Search_Entry_Clicked={this._searchEntry_NOT_In_Folder_Selected_DeSelected_Callback_BindThis}
+
+                    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                    update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                 />
             )
             searchDisplayList.push(searchDisplayListEntry);
@@ -558,6 +593,14 @@ type SearchEntry_In_Folder_Selected_DeSelected_Callback_Type =
  *
  */
 interface FolderEntry_Props {
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+
     projectIdentifier : string
     folderEntry : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleFolder_Data
 
@@ -580,6 +623,11 @@ interface FolderEntry_Props {
     callback_FolderDeleted: () => void
 
     callback_SearchChanged: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type
+
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -778,6 +826,10 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                         const searchDisplayListEntry = (
                             <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                                 key={searchData.projectSearchId}
+
+                                force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                                 projectIdentifier={ this.props.projectIdentifier }
                                 searchDisplayListItem={searchData}
 
@@ -793,6 +845,9 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                                 searchChanged_Callback={ this._callback_SearchChanged_BindThis }
                                 deleteSearch_Callback={ this._deleteSearch_Callback_BindThis }
                                 callbackOn_Search_Entry_Clicked={this._callbackOn_searchEntry_Clicked_BindThis}
+
+                                update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
+                                searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                             />
                         )
                         searchDisplayList.push(searchDisplayListEntry);

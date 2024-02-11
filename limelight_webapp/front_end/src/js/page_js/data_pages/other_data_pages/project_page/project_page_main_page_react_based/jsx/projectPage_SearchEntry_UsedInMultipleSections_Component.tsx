@@ -22,7 +22,6 @@ import {
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {ProjectPage_SearchesAdmin} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin";
 import {ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
-import {SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
 import {
     SearchName_and_SearchShortName_Change_Component_Change_Callback,
     SearchName_and_SearchShortName_Change_Component_Change_Callback_Params
@@ -38,6 +37,15 @@ import {
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
 import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component,
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component__DataChanged_Callback,
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component__DataChanged_Callback_Params
+} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 /////
 
@@ -63,6 +71,13 @@ export type ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSear
  *
  */
 interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
+
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
     projectIdentifier : string
     searchDisplayListItem : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
 
@@ -79,6 +94,11 @@ interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
     callbackOn_Search_Entry_Clicked : (projectSearchId : number ) => void;
     searchChanged_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type
     deleteSearch_Callback: ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Type
+
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -101,8 +121,12 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
     private _searchName_Div_Ref: React.RefObject<HTMLDivElement>; //  React.createRef()
 
-    private _searchDetailsContainer_div_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div>
+    private _searchDetails_AllUsers_Component__DataChanged_Callback__BindThis = this._searchDetails_AllUsers_Component__DataChanged_Callback.bind(this)
 
+    private _DO_NOT_CALL() {
+
+        const searchDetails_AllUsers_Component__DataChanged_Callback: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component__DataChanged_Callback = this._searchDetails_AllUsers_Component__DataChanged_Callback
+    }
 
     private _showSearchDetails_Clicked_BindThis = this._showSearchDetails_Clicked.bind(this);
     private _hideSearchDetails_Clicked_BindThis = this._hideSearchDetails_Clicked.bind(this);
@@ -121,7 +145,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
     private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
 
-    private _searchDetailsAddedToDOM : boolean = false;
+    private _searchDetails_EverShown : boolean = false;
 
 
     /**
@@ -131,13 +155,16 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         super(props);
 
         this._searchName_Div_Ref = React.createRef<HTMLDivElement>();
-        this._searchDetailsContainer_div_Ref = React.createRef<HTMLDivElement>();
 
         let showSearchDetails = false;
         if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force ) {
             if ( props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue ) {
                 showSearchDetails = true;
             }
+        }
+
+        if ( showSearchDetails ) {
+            this._searchDetails_EverShown = true
         }
 
         this.state = {
@@ -177,9 +204,6 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
      */
     componentDidMount() {
 
-        if ( this.state.showSearchDetails && ( ! this._searchDetailsAddedToDOM ) ) {
-            this._addSearchDetailToDOM()
-        }
     }
 
     /**
@@ -191,14 +215,13 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
             /// If update and projectSearchId changed, remove Search Details from DOM and set showSearchDetails to false
 
-            this._removeSearchDetailsFromDOM(); //  Will also set this._searchDetailsAddedToDOM to false
+            this._searchDetails_EverShown = false
+            this.setState({ showSearchDetails: false })
         }
 
-        if ( this.state.showSearchDetails && ( ! this._searchDetailsAddedToDOM ) ) {
-            this._addSearchDetailToDOM()
-        }
-
-        if ( prevProps.searchDisplayListItem.searchName !== this.props.searchDisplayListItem.searchName ) {
+        if ( ( prevProps.searchDisplayListItem !== this.props.searchDisplayListItem )
+            || ( prevProps.searchDisplayListItem.searchName !== this.props.searchDisplayListItem.searchName )
+            || ( prevProps.searchDisplayListItem.searchShortName !== this.props.searchDisplayListItem.searchShortName ) ) {
 
             this.setState( (prevState, props) => {
                 if ( prevState.show_UpdatingSearchName_Message ) {
@@ -210,28 +233,11 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
     }
 
     /**
-     *
-     */
-    componentWillUnmount(): void {
-
-        this._removeSearchDetailsFromDOM();
-    }
-
-    /**
-     *
-     */
-    private _removeSearchDetailsFromDOM() {
-
-        const $detailsContainer = $( this._searchDetailsContainer_div_Ref.current );
-        $detailsContainer.empty()
-
-        this._searchDetailsAddedToDOM = false;
-    }
-
-    /**
      * Show Search Details
      */
     private _showSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
+
+        this._searchDetails_EverShown = true
 
         this.setState({ showSearchDetails: true })
     }
@@ -252,9 +258,8 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         event.stopPropagation();
 
         try { // In try/catch block in case not supported in browser
-            const selectionObj = window.getSelection();
-            const selection = selectionObj.toString()
-            if ( selection ) {
+
+            if ( limelight__IsTextSelected() ) {
                 //  Found a Selection so exit with no further action
                 return; //  EARLY RETURN
             }
@@ -263,6 +268,8 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             //  Eat exception
             const znothing = 0;
         }
+
+        this._searchDetails_EverShown = true
 
         this.setState( (state, props) : ProjectPage_SearchEntry_UsedInMultipleSections_Component_State => {
 
@@ -442,23 +449,6 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
         })
     }
 
-    /**
-     * Add Search Details to DOM
-     */
-    private _addSearchDetailToDOM() {
-
-        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
-        const searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers = (
-            new SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers({
-                dataPages_LoggedInUser_CommonObjectsFactory : this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails
-            })
-        );
-
-        searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers.showSearchDetailsClicked({ projectSearchId, domElementToInsertInto : this._searchDetailsContainer_div_Ref.current });
-
-        this._searchDetailsAddedToDOM = true;
-    }
-
     ////////////////////////////////////////
 
     private _add_Change_SearchTags_Clicked() : void {
@@ -495,6 +485,21 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
     private _checkboxChanged( event: React.MouseEvent<HTMLDivElement> ): void {
 
         this.props.callbackOn_Search_Entry_Clicked( this.props.searchDisplayListItem.projectSearchId );
+    }
+
+    /**
+     *
+     */
+    private _searchDetails_AllUsers_Component__DataChanged_Callback( params: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component__DataChanged_Callback_Params ) {
+
+        if ( this.props.searchChanged_Callback ) {
+
+            this.props.searchChanged_Callback({ projectSearchId: params.projectSearchId })
+
+            return  // EARLY RETURN
+        }
+
+        limelight__ReloadPage_Function()
     }
 
     /**
@@ -671,13 +676,21 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                         </div>
 
                         {/* Search Detail Container */}
-                        <div ref={ this._searchDetailsContainer_div_Ref } style={ searchDetailsContainer_div_Style }>
-                            <span
-                                style={ { color: "green", fontSize: 18 } }
-                            >
-                                LOADING
-                            </span>
-                        </div>
+
+                        { this._searchDetails_EverShown ? (
+                            <div style={ searchDetailsContainer_div_Style }>
+                                <SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component
+                                    key={ this.props.searchDisplayListItem.projectSearchId }  // NOT re-use for different projectSearchId
+                                    projectSearchId={ this.props.searchDisplayListItem.projectSearchId }
+                                    dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
+                                    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                                    update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
+                                    force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                    force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+                                />
+                            </div>
+                        ) : null }
+
                     </div>
                 </div>
 

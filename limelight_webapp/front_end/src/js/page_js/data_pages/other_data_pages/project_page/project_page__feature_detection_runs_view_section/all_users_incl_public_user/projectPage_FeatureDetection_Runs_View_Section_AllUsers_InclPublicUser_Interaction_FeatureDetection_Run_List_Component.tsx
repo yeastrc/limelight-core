@@ -38,6 +38,9 @@ import {
 import { FeatureDetection_Label_Description_Change_Component_Change_Callback_Params } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/project_owner/featureDetection_Label_Description_Change_Component_and_WebserviceCall";
 import { scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc } from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 
 /**
@@ -57,6 +60,10 @@ export interface ProjectPage_Section_AllUsers_InclPublicUser_Interaction_Feature
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
 }
@@ -276,7 +283,12 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
                     const element = (
                         <FeatureDetection_Run_Entry_Component
                             key={ featureDetection_Run_Entry.featureDetection_Run_Mapping_Id }
+
                             showExpanded_OnMount={ this._featureDetection_Runs_Expanded_FeatureDetection_Run_Mapping_Id_Set.has( featureDetection_Run_Entry.featureDetection_Run_Mapping_Id )}
+
+                            force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                            force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                             expand_All___Show_FeatureDetectionRun_Details__Global_Force={ this.state.expand_All___Show_FeatureDetectionRun_Details__Global_Force }
                             featureDetection_Run_Entry={ featureDetection_Run_Entry }
                             standardRunImporter_IsFullyConfigured={ this.state.standardRunImporter_IsFullyConfigured }
@@ -293,6 +305,8 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
                             searchChanged_Callback={ this._searchChanged_Callback_BindThis }
                             callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                             update_force_ReloadFromServer_EmptyObjectReference_Callback={ this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback }
+                            searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                            update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                         />
                     )
 
@@ -408,6 +422,13 @@ type FeatureDetection_Run_Entry_Component_SelectionCheckboxChanged_CallbackFunct
 interface FeatureDetection_Run_Entry_Component_Props {
     showExpanded_OnMount: boolean
 
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+
     expand_All___Show_FeatureDetectionRun_Details__Global_Force: Internal__Expand_All___Show_FeatureDetectionRun_Details__Global_Force
 
     featureDetection_Run_Entry: ProjectPage_FeatureDetection_Runs_View_Section_Get_FeatureDetection_Runs_List_FromServer_FeatureDetection_Run_Entry
@@ -420,6 +441,11 @@ interface FeatureDetection_Run_Entry_Component_Props {
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 
     expandedChange_CallbackFunction: FeatureDetection_Run_Entry_Component_ExpandedChange_CallbackFunction
     selectionCheckboxChanged_CallbackFunction: FeatureDetection_Run_Entry_Component_SelectionCheckboxChanged_CallbackFunction
@@ -790,6 +816,9 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                                  {/* Component 'Internal__FeatureDetection_Run_Details_Component' is declared below  */}
                                 <Internal__FeatureDetection_Run_Details_Component
                                     forceReloadContents_Object={ this.state.forceReloadContents_Object__For__Internal__FeatureDetection_Run_Details_Component }
+                                    force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                    force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                                     featureDetection_Run_Entry={ this.props.featureDetection_Run_Entry }
                                     projectIdentifier={ this.props.projectIdentifier }
                                     projectIsLocked={ this.props.projectIsLocked }
@@ -798,6 +827,9 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions={ this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions }
                                     dataPages_LoggedInUser_CommonObjectsFactory={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                                     projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+
+                                    update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
+                                    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
 
                                     searchChanged_Callback={ this.props.searchChanged_Callback }
                                     callback_SearchDeleted={ this.props.callback_SearchDeleted }
@@ -828,6 +860,13 @@ interface Internal__FeatureDetection_Run_Details_Component_Props {
 
     forceReloadContents_Object: object
 
+    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
+    force_Rerender_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
+    force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
+
+
     featureDetection_Run_Entry: ProjectPage_FeatureDetection_Runs_View_Section_Get_FeatureDetection_Runs_List_FromServer_FeatureDetection_Run_Entry
     projectIdentifier : string
     projectIsLocked : boolean
@@ -838,6 +877,11 @@ interface Internal__FeatureDetection_Run_Details_Component_Props {
     projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions: ProjectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions
     dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
+
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 
     searchChanged_Callback: () => void
     callback_SearchDeleted: () => void
@@ -1092,6 +1136,10 @@ class Internal__FeatureDetection_Run_Details_Component extends React.Component< 
                 const searchElement = (
                     <ProjectPage_SearchEntry_UsedInMultipleSections_Component
                         key={ searchObject.projectSearchId }
+
+                        force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                        force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                         projectIdentifier={ this.props.projectIdentifier }
                         searchDisplayListItem={ searchObject }
                         searchesSearchTagsFolders_Result_Root={ this.state.searchesSearchTagsFolders_Result_Root }
@@ -1102,6 +1150,8 @@ class Internal__FeatureDetection_Run_Details_Component extends React.Component< 
                         showSeparatorBelow={ showSeparatorBelow }
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
+                        searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
+                        update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                         callbackOn_Search_Entry_Clicked={ null }
                         searchChanged_Callback={ this.props.searchChanged_Callback }
                         deleteSearch_Callback={ this.props.callback_SearchDeleted }

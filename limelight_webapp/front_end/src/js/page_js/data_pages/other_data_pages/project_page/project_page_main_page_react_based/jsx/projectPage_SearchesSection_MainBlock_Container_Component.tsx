@@ -42,6 +42,9 @@ import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component}
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
 
 /**
  *
@@ -60,6 +63,10 @@ export interface ProjectPage_SearchesSection_MainBlock_Component_Props {
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
 
     update_force_ReloadFromServer_EmptyObjectReference_Callback: () => void
+
+    searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
+
+    update_force_ReRender_EmptyObjectReference_Callback: () => void
 }
 
 /**
@@ -1139,6 +1146,9 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                             <ProjectPage_SearchesSection_SearchesAndFoldersList_Component
                                 projectIdentifier={ this.props.projectIdentifier }
+                                force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
+                                force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
+
                                 show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                                 searchesSearchTagsFolders_Result_Root={ this._searchesSearchTagsFolders_Result_Root }
                                 search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root={ this.state.search_Tags_SelectSearchTags_Component_SearchTagData_Root }
@@ -1152,6 +1162,9 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 callback_SearchChanged={ this._callback_SearchChanged_BindThis }
                                 callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
                                 callback_FolderDeleted={ this._callback_FolderDeleted_BindThis }
+
+                                searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject  }
+                                update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
                             />
 
                             <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
