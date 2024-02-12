@@ -32,6 +32,7 @@ export const manage_ImporterPipelineExecution_ForAdminPage_Main_Init = function 
         throw Error("No DOM element with id 'AdminPage_Root_Component'");
     }
 
+
     const manage_ImporterPipelineExecution_ForAdminPage_Root_Component_Props : Manage_ImporterPipelineExecution_ForAdminPage_Root_Component_Props = {
 
     }
@@ -46,7 +47,7 @@ export const manage_ImporterPipelineExecution_ForAdminPage_Main_Init = function 
         )
     )
 
-    this._renderedReactComponent_ProteinExperimentPage_Root_Component = ReactDOM.render(
+    ReactDOM.render(
         root_Component,
         containerDOMElement,
         renderCompleteCallbackFcn

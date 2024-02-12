@@ -50,7 +50,7 @@ export const manageCachedDataForAdminPage_Main_Init = function () {
         )
     )
 
-    this._renderedReactComponent_ProteinExperimentPage_Root_Component = ReactDOM.render(
+    ReactDOM.render(
         root_Component,
         containerDOMElement,
         renderCompleteCallbackFcn

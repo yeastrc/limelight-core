@@ -136,11 +136,11 @@ export class ManageCachedDataForAdminPage_Root_Component extends React.Component
 
             <div >
                 <div style={ { marginBottom : 10 }}>
-                    Click this when change any data in the database directly:
+                    <span>Click this when change any data in the database directly: </span>
                     <input type="button" value="Clear All Cached Data" onClick={ this._clearAllCachedDataClickHandler_BindThis } />
                 </div>
                 <div style={ { marginBottom : 10 }}>
-                    Click this to have current sizes of in memory data caches to the log file:
+                    <span>Click this to have current sizes of in memory data caches to the log file: </span>
                     <input type="button" value="Write Cached Data Sizes to log" onClick={ this._writeCachedDataSizesToLogClickHandler_BindThis } />
                 </div>
 
