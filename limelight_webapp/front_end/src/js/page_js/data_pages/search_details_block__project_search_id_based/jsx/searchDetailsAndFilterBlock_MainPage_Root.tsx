@@ -1174,7 +1174,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                             ref={ this._searchName_Div_Ref }
                         >
                             <span style={ { overflowWrap: "break-word" } }>
-                                searchNameObject.name: { searchNameObject.name }
+                                { searchNameObject.name }
                             </span>
                             { searchNameObject.searchShortName ? (
                                 <>
