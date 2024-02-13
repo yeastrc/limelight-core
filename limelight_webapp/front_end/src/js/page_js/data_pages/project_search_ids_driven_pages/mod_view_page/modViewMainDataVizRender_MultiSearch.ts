@@ -23,6 +23,13 @@ import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/m
 
 export class ModViewDataVizRenderer_MultiSearch {
 
+    /**
+     * Call for each update
+     *
+     * @param dataPageStateManager_DataFrom_Server
+     * @param vizOptionsData
+     * @param modViewDataManager
+     */
     static async renderDataViz(
         {
             dataPageStateManager_DataFrom_Server,
@@ -407,10 +414,8 @@ export class ModViewDataVizRenderer_MultiSearch {
      * Remove existing and add new data viz container to page. Assumes jquery is loaded.
      */
     static addDataVizContainerToPage() {
-        const $mainContentDiv = $('#mod_list_container');
+        const $mainContentDiv = $('#data_viz__outer_container');
 
-        // blow away loading message if it exists
-        $mainContentDiv.find("h2#loading-message").remove();
 
         // if an existing viz is here, blow it away
 
@@ -426,10 +431,7 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
     static addEmptyDataVizContainerToPage() {
-        const $mainContentDiv = $('#mod_list_container');
-
-        // blow away loading message if it exists
-        $mainContentDiv.find("h2#loading-message").remove();
+        const $mainContentDiv = $('#data_viz__outer_container');
 
         // if an existing viz is here, blow it away
         let $vizDiv = $mainContentDiv.find("div#data-viz-container");
@@ -456,7 +458,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             }
         }
 
-        const $mainContentDiv = $('#mod_list_container');
+        const $mainContentDiv = $('#data_table_container_container__outer_container');
 
         const template = _mod_table_template_bundle.dataTableContainer;
         const html = template( {  } );

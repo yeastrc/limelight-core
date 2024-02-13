@@ -50,10 +50,26 @@
 		<div class=" selector_share_page_root_container share-page-root-container " ></div>
 	</div>
 
-    <div id="mod_list_container">
+
+	<%-- Initial Loading message.  Removed from DOM during initial Javascript processing --%>
+    <div id="mod_list_loading_data_container">
   
 	  <h2 id="loading-message">Loading modification data...</h2>
  	
+    </div>
+  
+    <div>
+    	<%--  Main Data displayed --%>
+    
+    	<%-- The Options form above the visualization --%>
+       <div id="data_viz_options__outer_container"></div>
+       
+       <%--  The visualization graphic --%>
+       <div id="data_viz__outer_container"></div>
+       
+       <%--  The table below the visualization graphic.  A React Root is attached to a child of this element --%>
+       <div id="data_table_container_container__outer_container"></div>
+  
     </div>
   
    <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_footer_include_data_pages.jsp" %>

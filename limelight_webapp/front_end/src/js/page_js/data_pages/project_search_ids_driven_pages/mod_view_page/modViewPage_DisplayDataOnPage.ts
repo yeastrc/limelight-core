@@ -127,7 +127,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 * Named populateSearchDetailsAndOtherFiltersBlock for consistency with other pages that have other filters in same block
 	 * 
 	 */
-	populateSearchDetailsAndOtherFiltersBlock() {
+	populateSearchDetailsAndOtherFilters_And_Save_Set_Buttons_Underneath_Block() {
 
 		const containerDOMElement = document.getElementById("search_details_and_other_filters_outer_block_react_root_container");
 
@@ -151,7 +151,13 @@ export class ModViewPage_DisplayDataOnPage {
 		})
 
 		const jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer = (
-			modViewPage_DisplayDataOnPage_createSearchDetailsSection({ searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue })
+			modViewPage_DisplayDataOnPage_createSearchDetailsSection({
+				component_Props: {
+					projectSearchIds: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds(),
+					searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue,
+					dataPages_LoggedInUser_CommonObjectsFactory: this._dataPages_LoggedInUser_CommonObjectsFactory
+				}
+			})
 		)
 
 		create_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer({ jsxElement_Of_SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer, containerDOMElement, renderCompleteCallbackFcn : undefined })
@@ -187,11 +193,16 @@ export class ModViewPage_DisplayDataOnPage {
 	 * Render the page.
 	 *
 	 */
-	renderModDataPage() {
+	private async renderModDataPage() {
 
 		//  !!!  DO NOT  initialize any Page State variables here or later in the code.
 
 		//  !!!   ALL Page state variables MUST be initialized in the 'initialize' method of this class or sooner
+
+
+		//  Remove initial loading message in JSP from DOM
+		$("#mod_list_loading_data_container").remove()
+
 
 		let projectSearchIds = // array
 			this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
@@ -210,6 +221,7 @@ export class ModViewPage_DisplayDataOnPage {
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager: this._modViewDataManager
 		});
+
 	}
 
 }

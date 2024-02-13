@@ -32,19 +32,14 @@ import {navigation_dataPages_Maint_Instance} from 'page_js/data_pages/data_pages
 
 import {CentralPageStateManager} from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
-import {SharePage_dataPages} from 'page_js/data_pages/data_pages_common/sharePage_dataPages';
-
-
 //  From main_pages
 
 //  Import for typing only
 import { DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
-import { SaveView_dataPages } from 'page_js/data_pages/data_pages_common/saveView_dataPages';
 
 import {MainPagesPopulateHeader} from 'page_js/main_pages/mainPagesPopulateHeader';
 //  From local dir
 import {ModViewPage_DisplayDataOnPage} from './modViewPage_DisplayDataOnPage';
-import {SetDefaultView_dataPages} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages";
 import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__mod_page_embed_single_protein/js/protein_SingleProtein_Embed_in_ModPage_Root";
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
 import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
@@ -58,8 +53,6 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 export class ModViewPage_RootClass_Common {
 	
 	_dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory;
-	_saveView_dataPages : SaveView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
-	private _setDefaultView_dataPages : SetDefaultView_dataPages; //  Comes from _dataPages_LoggedInUser_CommonObjectsFactory
 
 	_page_UserDefault_processing : Page_UserDefault_processing;
 	_centralPageStateManager : CentralPageStateManager;
@@ -74,7 +67,6 @@ export class ModViewPage_RootClass_Common {
 	private _called__populateModDataBlock: boolean = false;
 
 	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
-	_sharePage_dataPages : SharePage_dataPages;
 
 	_loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
 
@@ -84,11 +76,6 @@ export class ModViewPage_RootClass_Common {
 	constructor({ dataPages_LoggedInUser_CommonObjectsFactory } : { dataPages_LoggedInUser_CommonObjectsFactory? : DataPages_LoggedInUser_CommonObjectsFactory }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
-
-		if ( this._dataPages_LoggedInUser_CommonObjectsFactory ) {
-			this._saveView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SaveView_dataPages();
-			this._setDefaultView_dataPages = this._dataPages_LoggedInUser_CommonObjectsFactory.instantiate_SetDefaultView_dataPages();
-		}
 
 		this._page_UserDefault_processing = new Page_UserDefault_processing();
 
@@ -113,8 +100,6 @@ export class ModViewPage_RootClass_Common {
 		});
 
 		this._getSearchDataLookupParametersFromPage = new GetSearchDataLookupParametersFromPage();
-		
-		this._sharePage_dataPages = new SharePage_dataPages();
 	}
 	
 
@@ -181,16 +166,6 @@ export class ModViewPage_RootClass_Common {
 		}
 		navigation_dataPages_Maint_Instance.initializePageOnLoad({ navigationType }); // Initialize
 
-		if ( this._saveView_dataPages ) {
-			this._saveView_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined, experimentId : undefined });
-		}
-		if ( projectSearchIds.length === 1 && this._setDefaultView_dataPages ) {
-			const projectSearchId = projectSearchIds[ 0 ]
-			this._setDefaultView_dataPages.initialize({ projectSearchId, container_DOM_Element : undefined, experimentId : undefined });
-		}
-		
-		this._sharePage_dataPages.initialize({ projectSearchIds, container_DOM_Element : undefined });
-				
 		this._loadCoreData_ProjectSearchIds_Based = new LoadCoreData_ProjectSearchIds_Based( {
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server
@@ -220,7 +195,7 @@ export class ModViewPage_RootClass_Common {
 	 *   
 	 * This is handling when the page is initially loaded and the data needs to be loaded from the URL
 	 */
-	_createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : void {
+	private _createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : void {
 
 		//  pageState excludes project search id (or other similar things) filters and ann type display 
 		
@@ -291,7 +266,7 @@ export class ModViewPage_RootClass_Common {
 
 		this._modViewPage_DisplayDataOnPage.initialUpdates_To_PageStateVariables();
 
-		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFiltersBlock();
+		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFilters_And_Save_Set_Buttons_Underneath_Block();
 
 		if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
 

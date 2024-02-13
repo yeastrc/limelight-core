@@ -148,6 +148,10 @@ import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject}
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+import {
+    Get_SetDefaultView_Component_React_Type,
+    SetDefaultView_Component_React_Params
+} from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
 
 /**
  *
@@ -2643,6 +2647,17 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
         try {
         let modificationMass_CommonRounding_ReturnNumber_Param = modificationMass_CommonRounding_ReturnNumber;
 
+        let setDefaultView_Component : JSX.Element = undefined;
+
+        if ( this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory &&  this.props.propsValue.projectSearchIds.length === 1 ) {
+
+            const get_SetDefaultView_Component_React : Get_SetDefaultView_Component_React_Type =
+                this.props.propsValue.dataPages_LoggedInUser_CommonObjectsFactory.getFunctionToGet_SetDefaultView_Component_React();
+
+            const param = new SetDefaultView_Component_React_Params({ projectSearchId : this.props.propsValue.projectSearchIds[ 0 ] });
+            setDefaultView_Component = get_SetDefaultView_Component_React( param )
+        }
+
         let saveView_Component : JSX.Element = undefined;
 
         if ( this.state.saveView_Component_React ) {
@@ -2921,6 +2936,7 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
 
                             <div style={ { paddingBottom: 15 } }>
 
+                                { setDefaultView_Component }
                                 { saveView_Component }
 
                                 <SharePage_Component

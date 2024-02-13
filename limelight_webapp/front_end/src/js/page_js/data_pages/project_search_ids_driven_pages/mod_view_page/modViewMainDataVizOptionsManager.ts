@@ -698,7 +698,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     static addFormToPage() {
 
-        const $mainContentDiv = $('#mod_list_container');
+        const $mainContentDiv = $('#data_viz_options__outer_container');
 
         // blow away existing form if it exists
         $mainContentDiv.find("div#data-viz-options-container").remove();
@@ -712,7 +712,11 @@ export class ModViewDataVizRendererOptionsHandler {
     }
 
     static clearDiv() {
-        const $mainContentDiv = $('#mod_list_container');
+        const $mainContentDiv = $('#data_viz_options__outer_container');
+
+        const $children = $mainContentDiv.children()
+        const childrenLength = $children.length
+
         $mainContentDiv.empty();
     }
 
