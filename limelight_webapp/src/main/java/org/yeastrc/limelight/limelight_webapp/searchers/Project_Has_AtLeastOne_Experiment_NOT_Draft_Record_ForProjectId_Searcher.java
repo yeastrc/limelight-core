@@ -40,7 +40,7 @@ public class Project_Has_AtLeastOne_Experiment_NOT_Draft_Record_ForProjectId_Sea
 			"SELECT id "
 			+ " FROM "
 			+ " experiment_tbl "
-			+ " WHERE project_id = ? AND draft_flag = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE
+			+ " WHERE project_id = ? AND draft_flag = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE
 			+ " LIMIT 1";
 
 	/* (non-Javadoc)
