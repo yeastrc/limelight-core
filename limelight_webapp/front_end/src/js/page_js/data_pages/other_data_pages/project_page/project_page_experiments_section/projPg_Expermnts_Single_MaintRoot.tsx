@@ -481,6 +481,13 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             conditionGroupsDataContainer : this.state.conditionGroupsDataContainer
         });
 
+        if ( ! promise_saveExperimentToServer ) {
+
+            //  Did NOT perform the save.  Likely due to NO searches.  window.alert used to display message to user.
+
+            return // EARLY RETURN
+        }
+
         promise_saveExperimentToServer.catch( (reason) => {} );
 
         promise_saveExperimentToServer.then( (result) => {
@@ -2748,6 +2755,13 @@ const _save_Experiment = (
 
     const experimentRoot = result_getExperimentRootForSave.experimentRoot;
     const searchDataLookupParamsRoot = result_getExperimentRootForSave.searchDataLookupParamsRoot;
+
+    if ( ! searchDataLookupParamsRoot ) {
+
+        window.alert( "At least 1 search is required to be on the experiment before it can be saved.")
+
+        return // EARLY RETURN
+    }
 
     const experiment = {
         projectIdentifier,
