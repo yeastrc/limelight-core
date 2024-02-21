@@ -62,6 +62,9 @@ import { Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass 
 //  Import for typing only
 import { Experiment_DataPages_LoggedInUser_CommonObjectsFactory } from 'page_js/data_pages/experiment_data_pages_common/experiment_DataPages_LoggedInUser_CommonObjectsFactory';
 import { SearchDataLookupParameters_Root } from 'page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters';
+import {
+	Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_Order_CentralStateManagerObjectClass";
 
 /**
  * 
@@ -73,6 +76,7 @@ export class ModExperimentPage_RootClass_Common {
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
 	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
+	private _experiment_ConditionGroups_Order_CentralStateManagerObjectClass: Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
 
 	private _dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay = new DataPageStateManager();
 
@@ -99,6 +103,10 @@ export class ModExperimentPage_RootClass_Common {
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_MainPage({
 			centralPageStateManager : this._centralPageStateManager
 		});
+
+		this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass = Experiment_ConditionGroups_Order_CentralStateManagerObjectClass.getNewInstance_MainPage({
+			centralPageStateManager: this._centralPageStateManager
+		})
 
 		//  Instances of class DataPageStateManager
 		
@@ -134,6 +142,8 @@ export class ModExperimentPage_RootClass_Common {
 		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_MainPageInstance();
+
+		this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass.initialize_MainPageInstance()
 
 		let referrerFromURL = initialStateFromURL.referrer;
 		
@@ -222,6 +232,7 @@ export class ModExperimentPage_RootClass_Common {
 				// 	experimentConditions_GraphicRepresentation_PropsData,
 				// 	// centralPageStateManager : this._centralPageStateManager,
 				// 	experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+				//  experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
 				// 	modGrouping_CentralStateManagerObjectClass : this._modGrouping_CentralStateManagerObjectClass,
 				// 	singleMod_ExpPage_CentralStateManagerObjectClass : this._singleMod_ExpPage_CentralStateManagerObjectClass
 				// });

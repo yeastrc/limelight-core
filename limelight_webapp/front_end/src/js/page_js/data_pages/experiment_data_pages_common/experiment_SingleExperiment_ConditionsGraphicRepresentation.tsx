@@ -150,6 +150,7 @@ export interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_Pro
     conditionCellClickHandler? : ExperimentConditions_GraphicRepresentation_ConditionCellClickHandler
     mainCellClickHandler? : ExperimentConditions_GraphicRepresentation_MainCellClickHandler
     mainCell_getHoverContents?: any
+    conditionGroups_ChangeOrder_Clicked_Callback?: () => void
 }
 
 interface Experiment_SingleExperiment_ConditionsGraphicRepresentation_State {
@@ -165,6 +166,7 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
     private _mainCellTooltipDisplayManager : MainCellTooltipDisplayManager;
 
     private  _clearSelectionClickHandler_BindThis = this._clearSelectionClickHandler.bind(this);
+    private _conditionGroups_ChangeOrder_Clicked_Callback_BindThis = this._conditionGroups_ChangeOrder_Clicked_Callback.bind(this)
 
     /**
      * 
@@ -188,6 +190,8 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
 
     private _clearSelectionClickHandler( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
         try {
+            event.stopPropagation()
+
             this.props.selectedCells.clear_All_ConditionSelection_Entries();
 
         } catch( e ) {
@@ -195,6 +199,19 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
             throw e;
         }
     }
+
+    private _conditionGroups_ChangeOrder_Clicked_Callback( event: React.MouseEvent<HTMLDivElement, MouseEvent> ) {
+        try {
+            event.stopPropagation()
+
+            this.props.conditionGroups_ChangeOrder_Clicked_Callback();
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
 
     /**
      * 
@@ -252,6 +269,17 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
        
         }
 
+        let anySelection = false
+
+        if ( this.props.selectedCells ) {
+
+            if ( ( this.props.selectedCells.get_selected_ConditionCells_First_ConditionGroup() && this.props.selectedCells.get_selected_ConditionCells_First_ConditionGroup().is_Any_ConditionCell_Selected() )
+                || ( this.props.selectedCells.get_selected_ConditionCells_OtherThanFirst_ConditionGroup()  && this.props.selectedCells.get_selected_ConditionCells_OtherThanFirst_ConditionGroup().is_Any_ConditionCell_Selected() )
+            ) {
+                anySelection = true
+            }
+        }
+
         let clearSelectionLinkClickHandler = undefined;
 
         if ( this.props.manage_SelectedCells_ConditionCell_Selection_UserClick_Updates ) {
@@ -259,19 +287,40 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
             clearSelectionLinkClickHandler = this._clearSelectionClickHandler_BindThis;
         }
 
+        let conditionGroups_ChangeOrder_Clicked_Callback_Local = undefined
+        if ( this.props.conditionGroups_ChangeOrder_Clicked_Callback ) {
+
+            conditionGroups_ChangeOrder_Clicked_Callback_Local = this._conditionGroups_ChangeOrder_Clicked_Callback_BindThis
+        }
+
         return (
             <div className=" experiment-display-container ">
                 <table className=" root-table ">
                     <tbody>
-                        { rowsDisplay }
+                    { rowsDisplay }
                     </tbody>
                 </table>
-                { ( clearSelectionLinkClickHandler ? (
+                { ( ( clearSelectionLinkClickHandler && anySelection ) || conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
 
-                    <div >
-                        <span className=" fake-link " onClick={ clearSelectionLinkClickHandler }>Clear selection</span>
+                    <div style={ { marginTop: 5 } }>
+
+                        { ( clearSelectionLinkClickHandler && anySelection ) ? (
+                            <span className=" fake-link " onClick={ clearSelectionLinkClickHandler }>Clear selection</span>
+                        ) : null }
+                        { ( clearSelectionLinkClickHandler && conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
+                            //  Space between
+                            <span style={ { paddingRight: 10 } }> </span>
+                        ) : null ) }
+                        { ( conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
+                            <span
+                                className=" fake-link "
+                                onClick={ conditionGroups_ChangeOrder_Clicked_Callback_Local }
+                            >
+                                Condition Groups Change Order
+                            </span>
+                        ) : null ) }
                     </div>
-                ) : undefined )}
+                ) : null ) }
             </div>
         );
     }
@@ -281,8 +330,8 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
 
 interface TableCell_Props {
 
-    cell : ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell
-    experiment_SingleExperiment_ConditionsGraphicRepresentation_Props : Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props
+    cell: ExperimentConditions_GraphicRepresentation_PropsData_DisplayTableCell
+    experiment_SingleExperiment_ConditionsGraphicRepresentation_Props: Experiment_SingleExperiment_ConditionsGraphicRepresentation_Props
     mainCellTooltipDisplayManager: any
 }
 

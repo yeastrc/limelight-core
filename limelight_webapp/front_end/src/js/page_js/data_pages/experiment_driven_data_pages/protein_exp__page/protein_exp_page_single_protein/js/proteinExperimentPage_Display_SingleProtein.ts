@@ -92,7 +92,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 	private _searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
 
-	private _conditionGroupsContainer : Experiment_ConditionGroupsContainer;
+	private _conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM : Experiment_ConditionGroupsContainer;
 	private _conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
 	
 	private _experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData;
@@ -163,7 +163,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			experimentName,
 			projectSearchIds,
 			searchDataLookupParamsRoot,
-			conditionGroupsContainer,
+			conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM,
 			conditionGroupsDataContainer,
 			experimentConditions_GraphicRepresentation_PropsData,
 
@@ -182,7 +182,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 			experimentName : string,
 			projectSearchIds : Array<number>,
 			searchDataLookupParamsRoot : SearchDataLookupParameters_Root;
-			conditionGroupsContainer : Experiment_ConditionGroupsContainer,
+			conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM : Experiment_ConditionGroupsContainer,
 			conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer,
 			experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData,
 			singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass,
@@ -205,7 +205,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 
 		this._searchDataLookupParamsRoot = searchDataLookupParamsRoot;
 
-		this._conditionGroupsContainer = conditionGroupsContainer;
+		this._conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM = conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM;
 		this._conditionGroupsDataContainer = conditionGroupsDataContainer;
         
 		this._experimentConditions_GraphicRepresentation_PropsData = experimentConditions_GraphicRepresentation_PropsData;
@@ -889,7 +889,7 @@ export class ProteinExperimentPage_Display_SingleProtein {
 				proteinNames : proteinNames ,
 				proteinDescriptions : proteinDescriptions ,
 				proteinSequenceString : proteinSequenceString ,
-				conditionGroupsContainer : this._conditionGroupsContainer ,
+				conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM__In_Props_Prop : this._conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM ,
 				conditionGroupsDataContainer : this._conditionGroupsDataContainer ,
 				commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root ,
 				getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object: this._getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object,

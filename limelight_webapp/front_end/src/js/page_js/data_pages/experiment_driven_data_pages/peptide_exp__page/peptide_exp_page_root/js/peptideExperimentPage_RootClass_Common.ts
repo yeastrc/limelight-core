@@ -51,7 +51,6 @@ import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_m
 
 import { Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
 import { Experiment_ConditionGroupsDataContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class';
-import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 
 
 //  From main_pages
@@ -83,6 +82,15 @@ import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/co
 import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import {
+	Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_Order_CentralStateManagerObjectClass";
+import {
+	experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject";
+import {
+	experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment
+} from "page_js/data_pages/experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment";
 
 /**
  * 
@@ -94,6 +102,7 @@ export class PeptideExperimentPage_RootClass_Common {
 	private _page_UserDefault_processing : Page_UserDefault_processing;
 	private _centralPageStateManager : CentralPageStateManager;
 	private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass;
+	private _experiment_ConditionGroups_Order_CentralStateManagerObjectClass: Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
 	private _singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass;
 
 	private _peptideExperimentPageRoot_CentralStateManagerObjectClass : PeptideExperimentPageRoot_CentralStateManagerObjectClass;
@@ -143,6 +152,10 @@ export class PeptideExperimentPage_RootClass_Common {
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass = Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getNewInstance_MainPage({
 			centralPageStateManager : this._centralPageStateManager
 		});
+
+		this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass = Experiment_ConditionGroups_Order_CentralStateManagerObjectClass.getNewInstance_MainPage({
+			centralPageStateManager: this._centralPageStateManager
+		})
 
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass = new SingleProtein_ExpPage_CentralStateManagerObjectClass({
 			centralPageStateManager : this._centralPageStateManager, initialProteinSequenceVersionId : undefined
@@ -201,6 +214,8 @@ export class PeptideExperimentPage_RootClass_Common {
 		this._singleProtein_ExpPage_CentralStateManagerObjectClass.initialize();
 
 		this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_MainPageInstance();
+
+		this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass.initialize_MainPageInstance()
 
 		this._peptideExperimentPageRoot_CentralStateManagerObjectClass.initialize();
 		{
@@ -378,13 +393,9 @@ export class PeptideExperimentPage_RootClass_Common {
 		const experimentName : string = exerimentMainDataFromPage.experiment_name;
 		const projectSearchIds : Array<number> = exerimentMainDataFromPage.experiment_project_search_ids_at_page_load;
 		
-		const conditionGroupsContainer : Experiment_ConditionGroupsContainer = exerimentMainDataFromPage.experiment_ConditionGroupsContainer;
+		const conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM : Experiment_ConditionGroupsContainer = exerimentMainDataFromPage.experiment_ConditionGroupsContainer;
 		const conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer = exerimentMainDataFromPage.conditionGroupsDataContainer;
 
-        const experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData = ( 
-            create_experimentConditions_GraphicRepresentation_PropsData({ conditionGroupsContainer, conditionGroupsDataContainer }) //  Call External Function
-		);
-		
 		////  !!!   Not using existing Search Details Block
 		
 		// this._searchDetailsBlockDataMgmtProcessing.storeSearchDetails_Filters_AnnTypeDisplay_Root( {
@@ -401,6 +412,27 @@ export class PeptideExperimentPage_RootClass_Common {
 		// this._peptideExperimentPage_DisplayDataOnPage.initialize({ projectSearchIds });
 		
 		// navigation_dataPages_Maint_Instance.initializePageOnLoad({ projectSearchIds }); // Initialize
+
+
+
+		//  Put this here so update URL as needed before render page
+
+		const {
+			conditionGroupsContainer
+		} = experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject({
+			experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass, // Updated as needed
+			conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM
+		})
+
+
+
+
+		//  Remove selection if any conditions NOT found in the experiment (meaning the experiment design has changed)
+		experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment({
+			experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+			conditionGroupsContainer
+		})
+
 
 		//  loadCoreData_ProjectSearchIds_Based - Loads Annotation Type data, Per Program data, search names, etc.   Annotation Type data is needed for displaying data.
 		
@@ -421,8 +453,6 @@ export class PeptideExperimentPage_RootClass_Common {
 		loadCoreData_ProjectSearchIds_Based_Promise.then( ( value ) => {
 			try {
 				//  Continue processing
-
-
 
 				//  For getting search info for projectSearchIds.  Object with property name being project search id
 				const searchNamesMap_KeyProjectSearchId = this._dataPageStateManager_DataFrom_Server.get_searchNames_AsMap();
@@ -449,12 +479,13 @@ export class PeptideExperimentPage_RootClass_Common {
 
 					experimentId,
 					experimentName,
+					conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM,
 					conditionGroupsContainer,
 					conditionGroupsDataContainer,
 					searchNamesMap_KeyProjectSearchId,
-					experimentConditions_GraphicRepresentation_PropsData,
 					centralPageStateManager: this._centralPageStateManager,
 					experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+					experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
 					modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : this._modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
 
 					peptideExperimentPageRoot_CentralStateManagerObjectClass: this._peptideExperimentPageRoot_CentralStateManagerObjectClass,

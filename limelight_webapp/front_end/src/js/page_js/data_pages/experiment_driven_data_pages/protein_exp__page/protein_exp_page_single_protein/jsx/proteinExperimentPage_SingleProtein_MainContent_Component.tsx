@@ -51,7 +51,10 @@ import {
     ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents,
     ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents_Params
 } from 'page_js/data_pages/experiment_data_pages_common/experiment_SingleExperiment_ConditionsGraphicRepresentation';
-import {ExperimentConditions_GraphicRepresentation_PropsData} from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
+import {
+    create_experimentConditions_GraphicRepresentation_PropsData,
+    ExperimentConditions_GraphicRepresentation_PropsData
+} from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 
 import {ProteinSequenceWidgetDisplay_Component_Data} from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidgetDisplay_Component_Data';
 import {ProteinSequenceWidget_StateObject} from 'page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__protein_page__components/protein_sequence_display_widget/js/proteinSequenceWidget_StateObject';
@@ -141,6 +144,19 @@ import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
+import {
+    Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_Order_CentralStateManagerObjectClass";
+import {
+    Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params,
+    open_experiment_DataPage_Re_Order_ConditionGroups_Overlay
+} from "page_js/data_pages/experiment_data_pages_common/experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component_WithOpenFunction";
+import {
+    experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject";
+import {
+    experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment
+} from "page_js/data_pages/experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment";
 //   Reporter Ion Mass Rounding to provide some level of commonality between searches
 
 
@@ -178,7 +194,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Pro
     proteinNames : string;
     proteinDescriptions : string
     proteinSequenceString : string
-    conditionGroupsContainer : Experiment_ConditionGroupsContainer
+    conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM__In_Props_Prop : Experiment_ConditionGroupsContainer  //  For Revert
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer
 
     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
@@ -275,6 +291,8 @@ interface ProteinExperimentPage_SingleProtein_MainContent_Component_State {
 
     saveView_Component_React?: any //  React Component for Save View
     saveView_Component_Props_Prop?: any //  Object passed to saveView_Component_React as property propsValue
+
+    force_ReRender_Object?: object
 }
 
 /**
@@ -289,6 +307,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     //        (missing or mis-typed parameters will error.  extra properties in a object in the parameters will not error)
 
     private _selectedConditionsChanged_Callback_BindThis = this._selectedConditionsChanged_Callback.bind(this);
+    private _conditionGroups_ChangeOrder_Clicked_Callback_BindThis = this._conditionGroups_ChangeOrder_Clicked_Callback.bind(this)
 
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
 
@@ -356,6 +375,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
     private _experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
 
+    private _experiment_ConditionGroups_Order_CentralStateManagerObjectClass: Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+
     private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
     private _modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects : ModificationMass_ReporterIon__UserSelections__Coordinator_Class
@@ -377,6 +398,15 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
     private _searchesContains_OpenModifications = false;
     private _searchesContains_StaticModifications = false;
 
+
+    /**
+     * Local Copy.  Possibly updated
+     */
+    private _conditionGroupsContainer_Local_PossiblyUpdated : Experiment_ConditionGroupsContainer;
+
+    private _experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated : ExperimentConditions_GraphicRepresentation_PropsData
+
+
     /**
      * 
      */    
@@ -397,6 +427,13 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.initialize_SingleProteinInstance({encodedStateData});
         }
         {
+            this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass =
+                Experiment_ConditionGroups_Order_CentralStateManagerObjectClass.getNewInstance_SingleProtein()
+
+            const encodedStateData = props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.getExperiment_ConditionGroups_Order__EncodedStateData();
+            this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass.initialize_SingleProteinInstance({encodedStateData});
+        }
+        {
             this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({
                 valueChangedCallback: this._updateMadeTo_generatedPeptideContents_UserSelections_StateObject_Callback_BindThis
             });
@@ -407,6 +444,30 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         let projectSearchIds_PossiblyFiltered : Array<number> = props.propsValue.projectSearchIds;
 
+        //  Put this here so update URL as needed before render page
+
+        const {
+            conditionGroupsContainer
+        } = experiment_ConditionGroups_UpdateOrderFrom_Order_StateObject({
+            experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass, // Updated as needed
+            conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM: props.propsValue.conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM__In_Props_Prop
+        })
+
+
+        this._conditionGroupsContainer_Local_PossiblyUpdated = conditionGroupsContainer
+
+
+        this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated = create_experimentConditions_GraphicRepresentation_PropsData({
+            conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated, conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer
+        }) //  Call External Function
+
+
+        //  Remove selection if any conditions NOT found in the experiment (meaning the experiment design has changed)
+        experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment({
+            experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+            conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated
+        })
+
         //  Set object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
 
         const graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells = (
@@ -415,7 +476,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells
                 // Will be Updated for changes in Selected Conditions
                 experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
-                conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
                 selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis //  NEEDS: this._selectedConditionsChanged_Callback_BindThis
             })
         );
@@ -443,7 +504,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 }
 
                 props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
-                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : props.propsValue.conditionGroupsContainer
+                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
                 });
 
                 projectSearchIds_PossiblyFiltered = [];
@@ -582,7 +643,8 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
             scanFilenameId_On_PSM_Filter_UserSelection_Object_Force_ResetToStateObject: {},
             scan_RetentionTime_MZ_UserSelections_Object_Force_ResetToStateObject: {},
             peptideSequence_MissedCleavageCount_UserSelections_Object_Force_ResetToStateObject: {},
-            psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject: {}
+            psm_Charge_Filter_UserSelection_Object_Force_ResetToStateObject: {},
+            force_ReRender_Object: {}
         };
     }
 
@@ -731,7 +793,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                 dataPageStateManager: this.props.propsValue.dataPageStateManager,
                 proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                 projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
-                conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                 conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
             } );
@@ -1021,6 +1083,137 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 	// }
 
     /**
+     *
+     */
+    private _conditionGroups_ChangeOrder_Clicked_Callback(): void {
+        try {
+            const callback_update_OrderOf_ConditionGroups = ( params : Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params ) : void => {
+
+                this._conditionGroups_ChangeOrder_Callback( params )
+            }
+
+            open_experiment_DataPage_Re_Order_ConditionGroups_Overlay({
+                conditionGroupsContainer__Input: this._conditionGroupsContainer_Local_PossiblyUpdated,
+                conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM: this.props.propsValue.conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM__In_Props_Prop,
+                conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
+                experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
+                experimentConditions_GraphicRepresentation_MainCell_getHoverContents: this._mainCell_getHoverContents_BindThis,
+                callbackOn_Cancel_Close_Clicked: undefined,
+                callback_update_OrderOf_ConditionGroups
+            })
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+
+    /**
+     *
+     */
+    private _conditionGroups_ChangeOrder_Callback( params : Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params ) {
+        try {
+            // Update URL
+            {
+                const experiment_ConditionGroups_Order__EncodedStateData = this._experiment_ConditionGroups_Order_CentralStateManagerObjectClass.getDataForEncoding();
+                this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_ConditionGroups_Order__EncodedStateData({ experiment_ConditionGroups_Order__EncodedStateData })
+            }
+
+            //  Remove selected conditions since changed Experiment shape
+            this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.clearAll()
+
+            window.setTimeout( () => {
+                try {
+                    this._conditionGroupsContainer_Local_PossiblyUpdated.conditionGroups = Array.from( params.updated_conditionGroups )
+
+
+                    //  Set object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
+
+                    const graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells = (
+                        create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ // External Function
+
+                            //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells
+                            // Will be Updated for changes in Selected Conditions
+                            experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this._experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                            conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
+                            selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis //  NEEDS: this._selectedConditionsChanged_Callback_BindThis
+                        })
+                    );
+
+                    let projectSearchIds_PossiblyFiltered : Array<number> = this.props.propsValue.projectSearchIds;
+
+                    if ( graphicRepresentation_SelectedCells.get_selected_ConditionCells_First_ConditionGroup().is_Any_ConditionCell_Selected() ||
+                        graphicRepresentation_SelectedCells.get_selected_ConditionCells_OtherThanFirst_ConditionGroup().is_Any_ConditionCell_Selected() ) {
+
+                        {
+                            const projectSearchIds_Selected_Set = new Set();
+
+                            const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
+
+                                const data = param.data;
+
+                                const dataProperty = data.data;
+                                if ( dataProperty ) {
+                                    const projectSearchIds = dataProperty.projectSearchIds;
+                                    if ( projectSearchIds && projectSearchIds.size !== 0 ) {
+
+                                        for ( const projectSearchId of projectSearchIds ) {
+                                            projectSearchIds_Selected_Set.add( projectSearchId );
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            this.props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
+                                callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
+                            });
+
+                            projectSearchIds_PossiblyFiltered = [];
+
+                            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+                                if ( projectSearchIds_Selected_Set.has( projectSearchId ) ) {
+                                    projectSearchIds_PossiblyFiltered.push( projectSearchId );
+                                }
+                            }
+                        }
+                    }
+
+
+                    this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated = create_experimentConditions_GraphicRepresentation_PropsData({
+                        conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated, conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer
+                    }) //  Call External Function
+
+
+                    this.setState({ force_ReRender_Object: {}, projectSearchIds_PossiblyFiltered, graphicRepresentation_SelectedCells })
+
+                    // Trigger update of rest of page
+
+                    window.setTimeout( () => {
+                        try {
+                            //  Now update dependent page parts
+
+                            this._updateRestOfPage_ForUserInteraction();
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 10 );
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 10 )
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
      * 
      */
     private _selectedConditionsChanged_Callback( params : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams ) {
@@ -1064,7 +1257,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     }
                 }
                 this.props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
-                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells_Local, conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer
+                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells_Local, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
                 });
 
                 projectSearchIds_PossiblyFiltered = [];
@@ -1103,7 +1296,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         const conditionIdPath = params.conditionIdPath;
 
-        const conditionGroupsContainer = this.props.propsValue.conditionGroupsContainer;
+        const conditionGroupsContainer = this._conditionGroupsContainer_Local_PossiblyUpdated;
         const conditionGroupsDataContainer = this.props.propsValue.conditionGroupsDataContainer;
         const searchNamesMap_KeyProjectSearchId = this.props.propsValue.searchNamesMap_KeyProjectSearchId;
 
@@ -1199,7 +1392,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                     proteinSequenceVersionId,
                     projectSearchIds,
-                    conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                     conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
                 } );
@@ -1209,7 +1402,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
             const reportedPeptideDisplayDownloadDataAsString : string = peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString({
                 peptideList,
-                conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                 conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                 dataPageStateManager: this.props.propsValue.dataPageStateManager
             });
@@ -1233,7 +1426,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
         const reportedPeptideDisplayDownloadDataAsString : string = peptide_And_SingleProtein_Experiment__CreateReportedPeptideDisplayDownloadDataAsString({
             peptideList,
-            conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
             conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
             dataPageStateManager: this.props.propsValue.dataPageStateManager
         });
@@ -1263,7 +1456,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         try {
             const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } =
                 experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
-                    conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
                     conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
                 });
 
@@ -1364,7 +1557,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
         try {
             const { conditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId, conditionGroupLabels_Only_InSameOrder } =
                 experiment_getConditionGroupLabel_and_ConditionLabel_Data_Map_Key_ProjectSearchId({
-                    conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
                     conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer
                 });
 
@@ -2405,7 +2598,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     dataPageStateManager: this.props.propsValue.dataPageStateManager,
                     proteinSequenceVersionId : this.props.propsValue.proteinSequenceVersionId,
                     projectSearchIds : this.state.projectSearchIds_PossiblyFiltered,
-                    conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                     conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                     commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root : this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
                 } );
@@ -2793,12 +2986,13 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
 
                         <div style={ { marginBottom: 20, overflowX : "auto" } } >
                             <Experiment_SingleExperiment_ConditionsGraphicRepresentation 
-                                data={ this.props.propsValue.experimentConditions_GraphicRepresentation_PropsData }
+                                data={ this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated }
                                 mainCellClickHandler={ undefined }
                                 mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
                                 selectedCells={ this.state.graphicRepresentation_SelectedCells }
                                 manage_SelectedCells_ConditionCell_Selection_UserClick_Updates={ true }
-                                conditionGroupsContainer={ this.props.propsValue.conditionGroupsContainer }
+                                conditionGroups_ChangeOrder_Clicked_Callback={ this._conditionGroups_ChangeOrder_Clicked_Callback_BindThis }
+                                conditionGroupsContainer={ this._conditionGroupsContainer_Local_PossiblyUpdated }
                             />
                         </div>
 
@@ -3215,7 +3409,7 @@ export class ProteinExperimentPage_SingleProtein_MainContent_Component extends R
                     
                         create_GeneratedReportedPeptideListData_Result={ this.state.create_GeneratedReportedPeptideListData_Result }
 
-                        conditionGroupsContainer={ this.props.propsValue.conditionGroupsContainer }
+                        conditionGroupsContainer={ this._conditionGroupsContainer_Local_PossiblyUpdated }
                         conditionGroupsDataContainer={ this.props.propsValue.conditionGroupsDataContainer }
 
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds={ this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForPeptideList }

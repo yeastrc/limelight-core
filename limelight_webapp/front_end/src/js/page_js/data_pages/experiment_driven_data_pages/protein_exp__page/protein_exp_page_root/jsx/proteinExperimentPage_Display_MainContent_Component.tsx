@@ -146,6 +146,16 @@ import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject}
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+import {
+    Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_Order_CentralStateManagerObjectClass";
+import {
+    create_experimentConditions_GraphicRepresentation_PropsData
+} from "page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData";
+import {
+    Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params,
+    open_experiment_DataPage_Re_Order_ConditionGroups_Overlay
+} from "page_js/data_pages/experiment_data_pages_common/experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component_WithOpenFunction";
 
 
 ////
@@ -170,14 +180,16 @@ export class ProteinExperimentPage_Display_MainContent_Component_Props_Prop {
 
     experimentId : number;
     experimentName : string;
+    conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM : Experiment_ConditionGroupsContainer;
     conditionGroupsContainer : Experiment_ConditionGroupsContainer;
     conditionGroupsDataContainer : Experiment_ConditionGroupsDataContainer;
     searchNamesMap_KeyProjectSearchId : SearchNames_AsMap; // Map with key being project search id
-    experimentConditions_GraphicRepresentation_PropsData : ExperimentConditions_GraphicRepresentation_PropsData
 
     centralPageStateManager: CentralPageStateManager
 
     experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+    experiment_ConditionGroups_Order_CentralStateManagerObjectClass: Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
+
     proteinExperimentPageRoot_CentralStateManagerObjectClass: ProteinList_ExpPage_CentralStateManagerObjectClass
     singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
 
@@ -220,6 +232,8 @@ interface ProteinList_DataCounts {
  *
  */
 interface ProteinExperimentPage_Display_MainContent_Component_State {
+
+    force_ReRender_Object?: object
 
     projectSearchIds_PossiblyFiltered? : Array<number>;
 
@@ -280,6 +294,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     //  bind to 'this' for passing as parameters
 
     private _selectedConditionsChanged_Callback_BindThis = this._selectedConditionsChanged_Callback.bind(this);
+    private _conditionGroups_ChangeOrder_Clicked_Callback_BindThis = this._conditionGroups_ChangeOrder_Clicked_Callback.bind(this)
 
     private _mainCell_getHoverContents_BindThis = this._mainCell_getHoverContents.bind(this);
 
@@ -346,6 +361,15 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     private _anySearches_Have_ScanFilenames: boolean
     private _anySearches_Have_PSM_RetentionTime_Precursor_MZ_OR_ScanData: boolean
 
+
+    /**
+     * Local Copy.  Possibly updated
+     */
+    private _conditionGroupsContainer_Local_PossiblyUpdated : Experiment_ConditionGroupsContainer;
+
+    private _experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated : ExperimentConditions_GraphicRepresentation_PropsData
+
+
     /**
      *
      */
@@ -353,6 +377,13 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         super(props);
 
         const projectSearchIds = props.propsValue.projectSearchIds;
+
+        this._conditionGroupsContainer_Local_PossiblyUpdated = props.propsValue.conditionGroupsContainer
+
+        this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated = create_experimentConditions_GraphicRepresentation_PropsData({
+            conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated, conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer
+        }) //  Call External Function
+
 
         this._modificationMass_ReporterIon__UserSelections__Coordinator_Class__For_ModificationSelects =
             new ModificationMass_ReporterIon__UserSelections__Coordinator_Class({
@@ -423,7 +454,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                 //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells
                 // Will be Updated for changes in Selected Conditions
                 experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
-                conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+                conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
                 selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis //  NEEDS: this._selectedConditionsChanged_Callback_BindThis
             })
         );
@@ -454,7 +485,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
 
                 props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
-                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : props.propsValue.conditionGroupsContainer
+                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
                 });
 
                 projectSearchIds_PossiblyFiltered = [];
@@ -544,6 +575,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         }
 
         this.state = {
+            force_ReRender_Object: {},
             show_InitialLoadingData_Message: true,
             projectSearchIds_PossiblyFiltered,
             searchDataLookupParamsRoot,
@@ -767,6 +799,131 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
     /**
      *
      */
+    private _conditionGroups_ChangeOrder_Clicked_Callback(): void {
+        try {
+            const callback_update_OrderOf_ConditionGroups = ( params : Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params ) : void => {
+
+                this._conditionGroups_ChangeOrder_Callback( params )
+            }
+
+            open_experiment_DataPage_Re_Order_ConditionGroups_Overlay({
+                conditionGroupsContainer__Input: this._conditionGroupsContainer_Local_PossiblyUpdated,
+                conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM: this.props.propsValue.conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM,
+                conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
+                experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this.props.propsValue.experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
+                experimentConditions_GraphicRepresentation_MainCell_getHoverContents: this._mainCell_getHoverContents_BindThis,
+                callbackOn_Cancel_Close_Clicked: undefined,
+                callback_update_OrderOf_ConditionGroups
+            })
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+
+    /**
+     *
+     */
+    private _conditionGroups_ChangeOrder_Callback( params : Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params ) {
+        try {
+
+            window.setTimeout( () => {
+                try {
+                    //  Remove selected conditions since changed Experiment shape
+                    this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.clearAll()
+
+                    this._conditionGroupsContainer_Local_PossiblyUpdated.conditionGroups = Array.from( params.updated_conditionGroups )
+
+                    //  Set object used by Experiment_SingleExperiment_ConditionsGraphicRepresentation
+
+                    const graphicRepresentation_SelectedCells : ExperimentConditions_GraphicRepresentation_SelectedCells = (
+                        create_ExperimentConditions_GraphicRepresentation_SelectedCells__YES__ExperimentPageCommon_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass({ // External Function
+
+                            //  Will be used for population of ExperimentConditions_GraphicRepresentation_SelectedCells
+                            // Will be Updated for changes in Selected Conditions
+                            experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+                            conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated,
+                            selectedConditionsChanged_Callback : this._selectedConditionsChanged_Callback_BindThis //  NEEDS: this._selectedConditionsChanged_Callback_BindThis
+                        })
+                    );
+
+                    let projectSearchIds_PossiblyFiltered : Array<number> = this.props.propsValue.projectSearchIds;
+
+                    if ( graphicRepresentation_SelectedCells.get_selected_ConditionCells_First_ConditionGroup().is_Any_ConditionCell_Selected() ||
+                        graphicRepresentation_SelectedCells.get_selected_ConditionCells_OtherThanFirst_ConditionGroup().is_Any_ConditionCell_Selected() ) {
+
+                        {
+                            const projectSearchIds_Selected_Set = new Set();
+
+                            const processAllDataEntries_Callback = ( param : Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param ) => {
+
+                                const data = param.data;
+
+                                const dataProperty = data.data;
+                                if ( dataProperty ) {
+                                    const projectSearchIds = dataProperty.projectSearchIds;
+                                    if ( projectSearchIds && projectSearchIds.size !== 0 ) {
+
+                                        for ( const projectSearchId of projectSearchIds ) {
+                                            projectSearchIds_Selected_Set.add( projectSearchId );
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            this.props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
+                                callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
+                            });
+
+                            projectSearchIds_PossiblyFiltered = [];
+
+                            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+                                if ( projectSearchIds_Selected_Set.has( projectSearchId ) ) {
+                                    projectSearchIds_PossiblyFiltered.push( projectSearchId );
+                                }
+                            }
+                        }
+                    }
+
+
+                    this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated = create_experimentConditions_GraphicRepresentation_PropsData({
+                        conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated, conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer
+                    }) //  Call External Function
+
+
+                    this.setState({ force_ReRender_Object: {}, projectSearchIds_PossiblyFiltered, graphicRepresentation_SelectedCells })
+
+                    // Trigger update of rest of page
+
+                    window.setTimeout( () => {
+                        try {
+                            //  Now update dependent page parts
+
+                            this._re_renderPage();
+                        } catch( e ) {
+                            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                            throw e;
+                        }
+                    }, 10 );
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }
+            }, 10 )
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
     private _selectedConditionsChanged_Callback( params : ExperimentConditions_GraphicRepresentation_SelectedCells_SelectedConditionsChanged_CallbackParams ) {
         try {
 
@@ -802,7 +959,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                     }
                 }
                 this.props.propsValue.conditionGroupsDataContainer.processAllDataEntries_ForSelectedConditionIds_ConditionGroupsDataContainer({
-                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells_Local, conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer
+                    callback : processAllDataEntries_Callback, experimentConditions_GraphicRepresentation_SelectedCells : graphicRepresentation_SelectedCells_Local, conditionGroupsContainer : this._conditionGroupsContainer_Local_PossiblyUpdated
                 });
 
                 projectSearchIds_PossiblyFiltered = [];
@@ -828,7 +985,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                     reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                     throw e;
                 }
-            }, 0 );
+            }, 10 );
         } catch( e ) {
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
@@ -842,7 +999,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
         const conditionIdPath = params.conditionIdPath;
 
-        const conditionGroupsContainer = this.props.propsValue.conditionGroupsContainer;
+        const conditionGroupsContainer = this._conditionGroupsContainer_Local_PossiblyUpdated;
         const conditionGroupsDataContainer = this.props.propsValue.conditionGroupsDataContainer;
         const searchNamesMap_KeyProjectSearchId = this.props.propsValue.searchNamesMap_KeyProjectSearchId;
 
@@ -1817,12 +1974,12 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             }
 
             //  First Condition Group Conditions since that is the conditions that are displayed
-            const first_conditionGroup: Experiment_ConditionGroup = this.props.propsValue.conditionGroupsContainer.conditionGroups[0];
+            const first_conditionGroup: Experiment_ConditionGroup = this._conditionGroupsContainer_Local_PossiblyUpdated.conditionGroups[0];
 
             const conditions_with_their_project_search_ids_for_First_condition_group: Array<ProteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_groupResultEntry> =
                 proteinExperiment_Create_conditions_with_their_project_search_ids_for_condition_group({
                     conditionGroup: first_conditionGroup,
-                    conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                    conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                     conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                     experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
                 });
@@ -1831,7 +1988,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Combine_ReportedPeptideIdsPsmIds_Per_ExperimentConditionId({
                 proteinDisplayData,
                 conditions_with_their_project_search_ids_for_First_condition_group,
-                conditionGroupsContainer: this.props.propsValue.conditionGroupsContainer,
+                conditionGroupsContainer: this._conditionGroupsContainer_Local_PossiblyUpdated,
                 conditionGroupsDataContainer: this.props.propsValue.conditionGroupsDataContainer,
                 experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
             });
@@ -2182,6 +2339,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         //  Copy Selected SelectedConditionIdsAndPaths if not set for Single Protein
         _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
             experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+            experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this.props.propsValue.experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
             singleProtein_ExpPage_CentralStateManagerObjectClass: this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass
         });
 
@@ -2222,6 +2380,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
         //  Copy Selected SelectedConditionIdsAndPaths if not set for Single Protein
         _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated({
             experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass: this.props.propsValue.experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,
+            experiment_ConditionGroups_Order_CentralStateManagerObjectClass: this.props.propsValue.experiment_ConditionGroups_Order_CentralStateManagerObjectClass,
             singleProtein_ExpPage_CentralStateManagerObjectClass: singleProtein_ExpPage_CentralStateManagerObjectClass_ForNewWindow
         });
 
@@ -2330,10 +2489,10 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
             projectSearchIds : this.props.propsValue.projectSearchIds,
 
             searchDataLookupParamsRoot,
-            conditionGroupsContainer : this.props.propsValue.conditionGroupsContainer,
+            conditionGroupsContainer_FromDb_FromExperimentBuilder_RetrievedFromDOM : this._conditionGroupsContainer_Local_PossiblyUpdated,
             conditionGroupsDataContainer : this.props.propsValue.conditionGroupsDataContainer,
 
-            experimentConditions_GraphicRepresentation_PropsData : this.props.propsValue.experimentConditions_GraphicRepresentation_PropsData,
+            experimentConditions_GraphicRepresentation_PropsData : this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated,
 
             singleProtein_ExpPage_CentralStateManagerObjectClass : this.props.propsValue.singleProtein_ExpPage_CentralStateManagerObjectClass,
 
@@ -2602,10 +2761,11 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
                             <div style={ { marginBottom: 20 } }>
                                 <Experiment_SingleExperiment_ConditionsGraphicRepresentation
-                                    data={ this.props.propsValue.experimentConditions_GraphicRepresentation_PropsData }
+                                    data={ this._experimentConditions_GraphicRepresentation_PropsData_Local_PossiblyUpdated }
                                     selectedCells={ this.state.graphicRepresentation_SelectedCells }
-                                    conditionGroupsContainer={ this.props.propsValue.conditionGroupsContainer }
+                                    conditionGroupsContainer={ this._conditionGroupsContainer_Local_PossiblyUpdated }
                                     manage_SelectedCells_ConditionCell_Selection_UserClick_Updates={ true }
+                                    conditionGroups_ChangeOrder_Clicked_Callback={ this._conditionGroups_ChangeOrder_Clicked_Callback_BindThis }
                                     conditionCellClickHandler={ undefined }
                                     mainCellClickHandler={ undefined }
                                     mainCell_getHoverContents={ this._mainCell_getHoverContents_BindThis }
@@ -2757,9 +2917,11 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 const _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass__to__singleProtein_ExpPage_CentralStateManagerObjectClass_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass_SingleProtein__IfNOTPopulated = function (
     {
         experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass,  //  Page Level
+        experiment_ConditionGroups_Order_CentralStateManagerObjectClass,  //  Page Level
         singleProtein_ExpPage_CentralStateManagerObjectClass
     } : {
         experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass : Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass
+        experiment_ConditionGroups_Order_CentralStateManagerObjectClass: Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
         singleProtein_ExpPage_CentralStateManagerObjectClass : SingleProtein_ExpPage_CentralStateManagerObjectClass
 
     }) : void {
@@ -2774,9 +2936,16 @@ const _copy_experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCla
         }
     }
 
-    const experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getDataForEncoding();
+    {
+        const experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData = experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass.getDataForEncoding();
 
-    singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData({ experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData });
+        singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData({ experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData });
+    }
+    {
+        const experiment_ConditionGroups_Order__EncodedStateData = experiment_ConditionGroups_Order_CentralStateManagerObjectClass.getDataForEncoding();
+
+        singleProtein_ExpPage_CentralStateManagerObjectClass.setExperiment_ConditionGroups_Order__EncodedStateData({ experiment_ConditionGroups_Order__EncodedStateData })
+    }
 }
 
 /**
