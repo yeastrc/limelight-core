@@ -60,18 +60,37 @@
 	 <tr>
 	 	<td style="width: 20px;"></td>
 	 	<td colspan="2" style="font-weight: bold">
-	 		Searches for Project:
+	 		<div style="margin-top: 10px">
+	 			Searches for Project:
+	 		</div>
 	 	</td>
 	 </tr>
-	  <c:forEach var="search" items="${ project.searches }">
-		 <tr>
-		 	<td></td>
-		 	<td style="width: 20px;"></td>
-		 	<td>
-		 		<c:out value="${ search.name }"></c:out> (<c:out value="${ search.searchId }"></c:out>)
-		 	</td>
-		 </tr>
-	  </c:forEach>
+	  <tr>
+	 	<td></td>
+	 	<td style="width: 20px;"></td>
+	 	<td>
+	 		<ul>
+	 		
+	  			<c:forEach var="search" items="${ project.searches }">
+		 			<li>
+		 				<c:choose>
+			 				<c:when test="${ empty search.name }">
+			 					Search: <c:out value="${ search.searchId }"></c:out>
+			 				
+			 				</c:when>
+			 				<c:otherwise>
+			 				
+			 					<c:out value="${ search.name }"></c:out>
+			 				</c:otherwise>
+		 				</c:choose>
+		 				
+		 				 (<c:out value="${ search.searchId }"></c:out>)
+	 				</li>
+				 </c:forEach>
+	 				
+	 		</ul>
+	 	</td>
+	 </tr>
 	 <tr  class="project_separator_row_jq">
 	   <td colspan="3">	
 		<div class="project-container-bottom-border" ></div>

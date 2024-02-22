@@ -44,6 +44,23 @@
 	</div>
 	
 	<h2>
+		List all Projects and contained searches
+	</h2>
+	
+	<div >
+		<a 
+			href="d/pg/project-search-list"
+			target="_blank" 
+			title="Opens in new tab"
+		>
+			List all Projects and contained searches
+		</a>
+	</div>
+	<div>
+		Any non-admin user can use this to see projects that they have any access to.  (owner, researcher, viewer)
+	</div>
+   
+	<h2>
 		Advanced Administration
 	</h2>
 	
