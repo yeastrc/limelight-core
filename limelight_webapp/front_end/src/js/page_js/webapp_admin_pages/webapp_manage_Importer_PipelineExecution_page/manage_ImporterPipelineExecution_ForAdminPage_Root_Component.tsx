@@ -39,6 +39,10 @@ import {
     Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Schedule_Get_Response_JSON_Root
 } from "page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage__importer_pipeline_execution__for_admin_page__webservice_call__schedule_get";
 import { manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Schedule_InsertUpdate } from "page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage__importer_pipeline_execution__for_admin_page__webservice_call__schedule_insert_update";
+import {
+    manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount,
+    Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount_Response
+} from "page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage__importer_pipeline_execution__for_admin_page__webservice_call__get__running_and_queued_job_counts";
 
 
 //   Root component and below that is MAIN component
@@ -185,6 +189,8 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
     private _webserviceCall_Get_CurrentStatus_Response: Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_CurrentStatus_Response
     private _webserviceCall_Schedule_Get_Response: Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Schedule_Get_Response
 
+    private _webserviceCall_Get_Running_Queued_JobCount_Response: Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount_Response
+
     private _allDataLoaded_InitialLoad: boolean = false
 
     private _allDataLoaded_Reload: boolean = true //  True until do reload
@@ -324,6 +330,36 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
 
             promises.push( promiseTopLevel )
         }
+        {
+            const promiseTopLevel = new Promise<void>((resolve, reject) => { try {
+
+                const promiseData = manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount()
+                promiseData.catch( (reason) => { try {
+                    reject(reason)
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }} )
+                promiseData.then(value => { try {
+
+                    this._webserviceCall_Get_Running_Queued_JobCount_Response = value;
+
+                    resolve()
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                    throw e;
+                }} )
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }} )
+
+            promises.push( promiseTopLevel )
+        }
+
+
 
         const promisesAll = Promise.all( promises );
 
@@ -519,8 +555,8 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
     private _is_AllInputsSetForAddToSchedule() : boolean {
 
         if ( this._forAddToScheduleBlock_DaysOfWeek_SelectionSet.size > 0
-        && this._forAddToScheduleBlock_HoursOfDay_Selection !== null
-        && this._forAddToScheduleBlock_Duration_Selection !== null ) {
+            && this._forAddToScheduleBlock_HoursOfDay_Selection !== null
+            && this._forAddToScheduleBlock_Duration_Selection !== null ) {
 
             return true;
         }
@@ -883,6 +919,9 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                 </div>
             )
         }
+        
+        const importsCurrentlyRunning_Boolean = ( this._webserviceCall_Get_Running_Queued_JobCount_Response.importAndPipelineRun_Running_JobCount + this._webserviceCall_Get_Running_Queued_JobCount_Response.importer_Running_JobCount ) > 0
+        const importsInQueue_Count = this._webserviceCall_Get_Running_Queued_JobCount_Response.importAndPipelineRun_Queued_OR_Requeued_JobCount + this._webserviceCall_Get_Running_Queued_JobCount_Response.importer_Queued_OR_Requeued_JobCount
 
         return (
 
@@ -940,7 +979,68 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
 
                 ) : null }
 
-                <div style={ { marginTop: 10, position: "relative" } }>
+                <div style={ { marginTop: 30, position: "relative" } }>
+
+                    <div>
+                        <span  style={ { fontSize: 18, fontWeight: "bold" } }>
+                            Imports running and waiting to run
+                        </span>
+                        <button
+                            style={ { marginLeft: 10 } }
+                            onClick={ event => {
+                                try {
+                                    event.stopPropagation()
+
+                                    const promiseData = manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount()
+                                    promiseData.catch( (reason) => { try {
+                                        // reject(reason)
+                                    } catch( e ) {
+                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                        throw e;
+                                    }} )
+                                    promiseData.then(value => { try {
+
+                                        this._webserviceCall_Get_Running_Queued_JobCount_Response = value;
+
+                                        this.setState({ force_Rerender: {} })
+
+                                    } catch( e ) {
+                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                        throw e;
+                                    }})
+
+                                } catch( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }
+                            }}
+                        >
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div style={ { fontSize: 16, marginLeft: 30 } }>
+                        <div style={ { marginTop: 6 } }>
+                            { importsCurrentlyRunning_Boolean ? (
+                                "Import(s) are currently running"
+                            ) : (
+                                "NO Imports are currently running"
+                            )}
+                        </div>
+                        <div style={ { marginTop: 6 } }>
+                            <span>There are </span>
+                            { importsInQueue_Count > 0 ? (
+                                importsInQueue_Count
+                            ) : (
+                                "NO"
+                            )}
+                            <span> import(s) waiting to run</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div style={ { marginTop: 30, position: "relative" } }>
 
                     <div style={ { fontWeight: "bold", fontSize: 18 } }>
                         Scheduled pause of running imports (based on server time)

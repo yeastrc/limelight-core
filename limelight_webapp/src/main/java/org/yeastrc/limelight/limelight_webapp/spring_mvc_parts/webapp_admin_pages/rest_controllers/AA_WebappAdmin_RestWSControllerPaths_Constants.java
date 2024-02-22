@@ -84,6 +84,8 @@ public class AA_WebappAdmin_RestWSControllerPaths_Constants {
 
 	public static final String WEBAPP_ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION__PAUSE_SCHEDULE_INSERT_UPDATE_REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-schedule-insert-update";
 
+	public static final String WEBAPP_ADMIN_MANAGE_RUN_IMPORTER_PAUSE_GET_RUNNING_QUEUED_JOB_COUNT__REST_WEBSERVICE_CONTROLLER = "admin/rws/for-page/manage-run-importer-pause-get-running-queued-job-count";
+	
 
 	//  Under general User Account since shared code:
 	//     Create Account Performed By Admin User
