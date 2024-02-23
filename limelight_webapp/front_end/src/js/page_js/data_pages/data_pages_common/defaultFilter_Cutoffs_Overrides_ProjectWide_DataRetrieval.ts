@@ -152,12 +152,15 @@ const _processWebserviceResult = function ( response ) : DefaultFilter_Cutoffs_O
 
     const reportedPeptideEntriesList = cutoffValues.reportedPeptideEntriesList;
     const psmEntriesList = cutoffValues.psmEntriesList;
+    const proteinEntriesList = cutoffValues.proteinEntriesList
 
     const result = new DefaultFilter_Cutoffs_Overrides_ProjectWide_Root();
     result.defaultFilter_Cutoffs_Overrides_ReportedPeptide =
         _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : reportedPeptideEntriesList });
     result.defaultFilter_Cutoffs_Overrides_PSM =
         _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : psmEntriesList });
+    result.defaultFilter_Cutoffs_Overrides_MatchedProtein =
+        _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : proteinEntriesList });
 
     return result;
 }

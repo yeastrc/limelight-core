@@ -17,6 +17,7 @@
 */
 package org.yeastrc.limelight.limelight_webapp.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +27,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher;
 
 /**
  * Get ProteinVersionIds For SearchId and Search Criteria
@@ -42,7 +44,7 @@ public class ProteinVersionIdsFor_SearchID_SearchCriteriaService implements Prot
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 	
 	@Autowired
-	private ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher;
+	private ProteinVersionIdsFor_SearchID_ReportedPeptideIdList_SearcherIF proteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher;
 	
 	/* (non-Javadoc)
 	 * @see org.yeastrc.limelight.limelight_webapp.services.ProteinVersionIdsFor_SearchID_SearchCriteriaIF#getProteinVersionIdsFor_ProjSearchID_SearchCriteria(int, org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValuesSearchLevel)
@@ -59,14 +61,21 @@ public class ProteinVersionIdsFor_SearchID_SearchCriteriaService implements Prot
 		
 		List<ReportedPeptide_MinimalData_List_FromSearcher_Entry> peptideList = 
 				reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service.getPeptideDataList( searchId, searcherCutoffValuesSearchLevel, minimumNumberOfPSMsPerReportedPeptide );
-				
+
+		List<Integer> reportedPeptideIdList = new ArrayList<Integer>( peptideList.size() );
+		
 		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideList ) {
 			
-			List<Integer> proteinVersionIdsForSearchIdReportedPeptideId = 
-					proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher
-					.getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher( searchId, entry.getReportedPeptideId() );
+			reportedPeptideIdList.add( entry.getReportedPeptideId() );
+		}
+		
+		
+		List<ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher> reportedPeptide_ProteinSequenceVersionId_Pair_Item_List =  
+				proteinVersionIdsFor_SearchID_ReportedPeptideIdList_Searcher.getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher(searchId, reportedPeptideIdList, searcherCutoffValuesSearchLevel);
+				
+		for ( ReportedPeptide_ProteinSequenceVersionId_Pair_Item_FromSearcher entry : reportedPeptide_ProteinSequenceVersionId_Pair_Item_List ) {
 			
-			proteinVersionIds.addAll( proteinVersionIdsForSearchIdReportedPeptideId );
+			proteinVersionIds.add( entry.getProteinSequenceVersionId() );
 		}
 		
 		return proteinVersionIds;

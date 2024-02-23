@@ -78,10 +78,28 @@ public class GetProteinsForPeptide {
 	private MatchedProteins matchedProteinsFromLimelightXML;
 
 	//  Built from matchedProteinsFromLimelightXML
+	private List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList_All_SingleList = null;
+
+	//  Built from matchedProteinsFromLimelightXML
 	private Map<Integer, List<InternalHolder_ProteinsFromMatchedProteins>> proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId = new HashMap<>();
 
 	//  Built from matchedProteinsFromLimelightXML
 	private Map<Integer, Map<BigInteger, InternalHolder_ProteinsFromMatchedProteins>> proteinsFromMatchedProteinsMap_KeyedOnId_KeyedOn_IsotopeLabelId = new HashMap<>();
+	
+	
+	/**
+	 * @return
+	 */
+	public boolean is_All_MatchedProteins_WereMatchedTo_ReportedPeptides() {
+		
+		for ( InternalHolder_ProteinsFromMatchedProteins holder : proteinsFromMatchedProteinsList_All_SingleList ) {
+			if ( ! holder.matchedToPeptide ) {
+				return false; // EARLY RETURN
+			}
+		}
+		
+		return true;
+	}
 	
 	
 	/**
@@ -524,8 +542,7 @@ public class GetProteinsForPeptide {
 		proteinSequence_IsotopeLabelId.peptideOrProteinSequence_ForProteinInference =  matchedProteinFromLimelightXMLFile.getSequence();
 		proteinSequence_IsotopeLabelId.isotopeLabelId = protein_IsotopeLabelId;
 		
-		ProteinImporterContainer proteinImporterContainer =
-				proteinSequenceToProteinImporterContainer_Map.get( proteinSequence_IsotopeLabelId );
+		ProteinImporterContainer proteinImporterContainer = proteinSequenceToProteinImporterContainer_Map.get( proteinSequence_IsotopeLabelId );
 		if ( proteinImporterContainer == null ) {
 			//  getIsotopeLabelIdFor_Protein_FromLimelightXMLFile also called in here.  May want to pass in protein_IsotopeLabelId instead 
 			proteinImporterContainer = ProteinImporterContainer.getInstance( matchedProteinFromLimelightXMLFile );
@@ -538,8 +555,7 @@ public class GetProteinsForPeptide {
 		getProteinsForPeptideResult_EntryPerProtein.proteinResidueLetters_Map_Key_PeptidePosition = proteinResidueLetters_Map_Key_PeptidePosition;
 		
 
-		Object proteinPositionListPrev =
-				proteins_EntryPerProtein.put(proteinImporterContainer, getProteinsForPeptideResult_EntryPerProtein);
+		Object proteinPositionListPrev = proteins_EntryPerProtein.put(proteinImporterContainer, getProteinsForPeptideResult_EntryPerProtein);
 		if ( proteinPositionListPrev != null ) {
 			String isotopeLabelIdText = ", No protein isotope label id available since not set yet.";
 			if ( proteinImporterContainer.getProteinSequenceVersionDTO() != null ) {
@@ -552,6 +568,8 @@ public class GetProteinsForPeptide {
 			log.error( msg );
 			throw new LimelightImporterInternalException(msg);
 		}
+		
+		holder.matchedToPeptide = true;  // Track that All Matched Proteins were matched to Reported Peptides
 		
 		return true; // found peptide to protein mapping
 	}
@@ -590,6 +608,8 @@ public class GetProteinsForPeptide {
 
 		List<MatchedProtein> matchedProteinList = matchedProteinsFromLimelightXML.getMatchedProtein();
 		
+		proteinsFromMatchedProteinsList_All_SingleList = new ArrayList<>( matchedProteinList.size() );
+		
 		//  Special instance of proteinsFromMatchedProteinsList for no labels
 		List<InternalHolder_ProteinsFromMatchedProteins> proteinsFromMatchedProteinsList_IsotopeLabelId_None = new ArrayList<>( matchedProteinList.size() );
 		proteinsFromMatchedProteinsList_KeyedOn_IsotopeLabelId.put( IsotopeLabelsConstants.ID_NONE, proteinsFromMatchedProteinsList_IsotopeLabelId_None );
@@ -618,6 +638,10 @@ public class GetProteinsForPeptide {
 			holder.matchedProteinFromLimelightXML = matchedProteinFromLimelightXMLFile;
 			holder.proteinSequenceForProteinInference = proteinSequenceForProteinInference;
 			holder.protein_IsotopeLabelId = protein_IsotopeLabelId;
+			
+			
+			proteinsFromMatchedProteinsList_All_SingleList.add(holder);
+			
 
 			if ( protein_IsotopeLabelId == IsotopeLabelsConstants.ID_NONE ) {
 				// Optimize for no isotope label
@@ -714,6 +738,11 @@ public class GetProteinsForPeptide {
 		MatchedProtein matchedProteinFromLimelightXML;
 		String proteinSequenceForProteinInference;
 		int protein_IsotopeLabelId; 
+		
+		/**
+		 *  Track that All Matched Proteins were matched to Reported Peptides
+		 */
+		boolean matchedToPeptide = false;
 	}
 
 }

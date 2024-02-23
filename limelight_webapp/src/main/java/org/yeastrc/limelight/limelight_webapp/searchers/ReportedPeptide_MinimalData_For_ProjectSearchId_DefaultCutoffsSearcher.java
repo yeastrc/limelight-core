@@ -65,7 +65,7 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 
 	
 	
-	private final String SQL = 
+	private final String SQL_START = 
 			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
 					+ " search__rep_pept__lookup_tbl.has_dynamic_modifictions, "
 					+ " search__rep_pept__lookup_tbl.any_psm_has_dynamic_modifications, "
@@ -75,10 +75,28 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 					+ " search__rep_pept__lookup_tbl.psm_num_indpendent_decoys_only_at_default_cutoff, "
 					+ " search__rep_pept__lookup_tbl.psm_num_decoys_only_at_default_cutoff "
 					
-			+ " FROM search__rep_pept__lookup_tbl "
+			+ " FROM search__rep_pept__lookup_tbl ";
+	
+	
+	private final String SQL_INNER_JOIN__FILTERED_PROTEIN_TABLE =  // Filter on Protein meets Default Filter.  Subquery to remove duplicate reported_peptide_id 
+			
+			" INNER JOIN ( "
+			
+			+ 		" SELECT DISTINCT reported_peptide_id " 
+			+ 		" FROM srch_rep_pept__prot_seq_v_id_tbl "
+			+ 		" "
+			+ 		" WHERE "
+			+ 		" srch_rep_pept__prot_seq_v_id_tbl.protein_meets_default_filters = " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE + " "
+			+ 		" AND search_id = ? "
+			
+			+ "  ) AS protein_filtered_reported_peptide_ids "
+			+ " ON search__rep_pept__lookup_tbl.reported_peptide_id = protein_filtered_reported_peptide_ids.reported_peptide_id ";
 
-			+ " WHERE search__rep_pept__lookup_tbl.search_id = ? ";
+	private final String SQL_WHERE_START = 
 
+			" WHERE search__rep_pept__lookup_tbl.search_id = ? ";
+
+	
 	private final String SQL_PSM_NUM_CHECK__TARGET_COUNTS = 
 			//  # targets >= minimumNumberOfPSMsPerReportedPeptide
 			" AND ( search__rep_pept__lookup_tbl.psm_num_targets_only_at_default_cutoff >= ? ) ";
@@ -119,8 +137,19 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 		
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		
-		sqlSB.append( SQL );
+		sqlSB.append( SQL_START );
+		
+		if ( searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList() != null && ( ! searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList().isEmpty() ) ) {
+			
+			//  Have Protein (Matched Protein) Filter Cutoffs so need to join table srch_rep_pept__prot_seq_v_id_tbl
 
+			sqlSB.append( SQL_INNER_JOIN__FILTERED_PROTEIN_TABLE );
+		}
+		
+		//  WHERE start
+		
+		sqlSB.append( SQL_WHERE_START );
+		
 		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsIndependentDecoy_True() ) {
 			
@@ -150,6 +179,15 @@ public class ReportedPeptide_MinimalData_For_ProjectSearchId_DefaultCutoffsSearc
 			     PreparedStatement pstmt = connection.prepareStatement( querySQL ) ) {
 			
 			int paramCounter = 0;
+
+			if ( searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList() != null && ( ! searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList().isEmpty() ) ) {
+				
+				//  Have Protein (Matched Protein) Filter Cutoffs so need to join table srch_rep_pept__prot_seq_v_id_tbl
+
+				paramCounter++;
+				pstmt.setInt( paramCounter, searchId );
+			}
+			
 			paramCounter++;
 			pstmt.setInt( paramCounter, searchId );
 			paramCounter++;

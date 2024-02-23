@@ -140,6 +140,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	private final String PSM_BEST_VALUE_FOR_PEPTIDE_FILTER_TABLE_ALIAS = "psm_fltrbl_tbl_";
 	private final String PEPTIDE_VALUE_FILTER_TABLE_ALIAS = "srch__rep_pept_fltrbl_tbl_";
+	private final String PROTEIN_VALUE_FILTER_TABLE_ALIAS = "srch__protein_fltrbl_tbl_";
 	
 	private final String SQL_FIRST_PART = 
 			"SELECT search__rep_pept__lookup_tbl.reported_peptide_id, "
@@ -150,7 +151,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 					+ " FROM search__rep_pept__lookup_tbl ";
 
 
-	//  search__rep_pept__psm_... tables
+	
+	//  search__rep_pept__psm_... (best PSM value) tables
 
 	private static final String TABLE_NAME_TARGET = "search__rep_pept__psm_target_psm_best_psm_value_lookup_tbl";
 
@@ -211,6 +213,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesList = searcherCutoffValuesSearchLevel.getPeptidePerAnnotationCutoffsList();
+		List<SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesList = searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList();
 		//  If null, create empty lists
 		if ( peptideCutoffValuesList == null ) {
 			peptideCutoffValuesList = new ArrayList<>();
@@ -218,14 +221,82 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		if ( psmCutoffValuesList == null ) {
 			psmCutoffValuesList = new ArrayList<>();
 		}
+		if ( proteinCutoffValuesList == null ) {
+			proteinCutoffValuesList = new ArrayList<>();
+		}
 		
 		//////////////////////
 		
 		/////   Start building the SQL
 		
-		StringBuilder sqlSB = new StringBuilder( 1000 );
+		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
 		sqlSB.append( SQL_FIRST_PART );
+		
+		
+		if ( ! proteinCutoffValuesList.isEmpty() ) {
+			
+			// Filter on Protein Annotations.  Subquery to remove duplicate reported_peptide_id 
+					
+			sqlSB.append( " INNER JOIN ( " );
+
+			sqlSB.append( " SELECT DISTINCT reported_peptide_id " ); 
+			sqlSB.append( " FROM srch_rep_pept__prot_seq_v_id_tbl " );
+
+			//  Add inner join for each Protein cutoff
+
+			for ( int counter = 1; counter <= proteinCutoffValuesList.size(); counter++ ) {
+				sqlSB.append( " INNER JOIN " );
+				sqlSB.append( " srch__protein_filterable_annotation_tbl AS " );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( " ON "  );
+				sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.search_id = "  );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".search_id" );
+				sqlSB.append( " AND " );
+				sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.protein_sequence_version_id = "  );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".protein_sequence_version_id" );
+			}
+
+			sqlSB.append( " WHERE " );
+			sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.search_id = ? " );
+
+			//  Process Protein Cutoffs for WHERE
+			{
+				int counter = 0; 
+				for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesProteinAnnotationLevel : proteinCutoffValuesList ) {
+					AnnotationTypeDTO proteinAnnotationTypeDTO = searcherCutoffValuesProteinAnnotationLevel.getAnnotationTypeDTO();
+					counter++;
+					sqlSB.append( " AND " );
+					sqlSB.append( " ( " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".search_id = ? AND " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".annotation_type_id = ? AND " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".value_double " );
+					if ( proteinAnnotationTypeDTO.getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() 
+							== FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+						sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
+					} else {
+						sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
+					}
+					sqlSB.append( "? " );
+					sqlSB.append( " ) " );
+				}
+			}	
+
+			sqlSB.append( "  ) AS protein_filtered_reported_peptide_ids " );
+			sqlSB.append( " ON search__rep_pept__lookup_tbl.reported_peptide_id = protein_filtered_reported_peptide_ids.reported_peptide_id " );
+			
+		}
 		
 		{
 			//  Add inner join for each PSM cutoff
@@ -326,7 +397,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				sqlSB.append( "? " );
 				sqlSB.append( " ) " );
 			}
-		}		
+		}	
+		
+		
+		
 		sqlSB.append( SQL_LAST_PART );
 		
 		
@@ -337,6 +411,26 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			     PreparedStatement pstmt = connection.prepareStatement( querySQL ) ) {
 			
 			int paramCounter = 0;
+			
+			if ( ! proteinCutoffValuesList.isEmpty() ) {
+			
+				// Process Protein Cutoffs for SubSelect WHERE
+				
+				paramCounter++;
+				pstmt.setInt( paramCounter, searchId );
+				
+				{
+					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesProteinAnnotationLevel : proteinCutoffValuesList ) {
+						AnnotationTypeDTO srchPgmFilterableProteinAnnotationTypeDTO = searcherCutoffValuesProteinAnnotationLevel.getAnnotationTypeDTO();
+						paramCounter++;
+						pstmt.setInt( paramCounter, searchId );
+						paramCounter++;
+						pstmt.setInt( paramCounter, srchPgmFilterableProteinAnnotationTypeDTO.getId() );
+						paramCounter++;
+						pstmt.setDouble( paramCounter, searcherCutoffValuesProteinAnnotationLevel.getAnnotationCutoffValue() );
+					}
+				}
+			}
 
 			
 			//   For:   unified_rp__search__rep_pept__generic_lookup.search_id = ? 

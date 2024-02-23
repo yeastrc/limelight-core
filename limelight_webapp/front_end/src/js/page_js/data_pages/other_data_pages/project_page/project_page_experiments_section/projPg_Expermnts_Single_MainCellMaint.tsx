@@ -46,6 +46,7 @@ import {
 
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
+const _FILTER_LABEL_PROTEIN = "Protein";
 
 /**
  *
@@ -77,6 +78,7 @@ class SearchSelected_Entry {
     wrappedSearch : CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
     psmFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
     reportedPeptideFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
+    matchedProteinFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
 }
 
 /**
@@ -525,7 +527,7 @@ const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, cond
 
     const psmFilters = conditionGroupsData_PerProjectSearchIdData.get_psmFilters_PerProjectSearchId();
     const reportedPeptideFilters = conditionGroupsData_PerProjectSearchIdData.get_reportedPeptideFilters_PerProjectSearchId();
-    // const matchedProteinFilters = conditionGroupsData_PerProjectSearchIdData.get_matchedProteinFilters_PerProjectSearchId();
+    const matchedProteinFilters = conditionGroupsData_PerProjectSearchIdData.get_matchedProteinFilters_PerProjectSearchId();
 
     const result_searchSelectedEntry : SearchSelected_Entry = { wrappedSearch: searchEntry };
 
@@ -549,10 +551,15 @@ const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, cond
         result_searchSelectedEntry.reportedPeptideFilters = result_reportedPeptideFilters;
     }
 
-    // if ( matchedProteinFilters ) {
+    if ( matchedProteinFilters ) {
 
-    //     ......
-    // }
+        const result_matchedProteinFilters = _createSearchSelectedEntry_PerType({
+            filterData_PerType_All : matchedProteinFilters,
+            filterableAnnotationTypes : searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes,
+            searchProgramsPerSearch_Key_searchProgramsPerSearchId
+        });
+        result_searchSelectedEntry.matchedProteinFilters = result_matchedProteinFilters;
+    }
 
     return result_searchSelectedEntry;
 }
@@ -684,13 +691,29 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                 );
             }
 
+            let matchedProteinFilters : JSX.Element = undefined;
+
+            if ( this.props.searchSelectedEntry.matchedProteinFilters ) {
+
+                matchedProteinFilters = (
+                    <Search_Assigned_FilterData_ForType
+                        filters={ this.props.searchSelectedEntry.matchedProteinFilters }
+                        filterLabel={ _FILTER_LABEL_PROTEIN }
+                        filterableAnnotationTypes={ this.props.annotationTypeItems_ForProjectSearchId.matchedProteinFilterableAnnotationTypes }
+                        filterEntryClicked={ this._filterEntryClicked_BindThis }
+                    />
+                );
+            }
+
+
             let filters = undefined;
-            if ( psmFilters || peptideFilters ) {
+            if ( psmFilters || peptideFilters || matchedProteinFilters ) {
 
                 filters = (
                     <div style= { { marginLeft: 30, marginTop: 4 }}>
                         { psmFilters }
                         { peptideFilters }
+                        { matchedProteinFilters }
                     </div>
                 );
             }

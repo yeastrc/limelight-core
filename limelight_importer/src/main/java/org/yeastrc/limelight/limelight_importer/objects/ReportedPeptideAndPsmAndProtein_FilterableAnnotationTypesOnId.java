@@ -25,8 +25,9 @@ import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
  * Created in ProcessLimelightInput
  *
  */
-public class ReportedPeptideAndPsmFilterableAnnotationTypesOnId {
-	
+public class ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId {
+
+	private Map<Integer, AnnotationTypeDTO> filterableMatchedProteinAnnotationTypesOnId;
 	private Map<Integer, AnnotationTypeDTO> filterableReportedPeptideAnnotationTypesOnId;
 	private Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId;
 	
@@ -42,5 +43,12 @@ public class ReportedPeptideAndPsmFilterableAnnotationTypesOnId {
 	}
 	public void setFilterablePsmAnnotationTypesOnId(Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId) {
 		this.filterablePsmAnnotationTypesOnId = filterablePsmAnnotationTypesOnId;
+	}
+	public Map<Integer, AnnotationTypeDTO> getFilterableMatchedProteinAnnotationTypesOnId() {
+		return filterableMatchedProteinAnnotationTypesOnId;
+	}
+	public void setFilterableMatchedProteinAnnotationTypesOnId(
+			Map<Integer, AnnotationTypeDTO> filterableMatchedProteinAnnotationTypesOnId) {
+		this.filterableMatchedProteinAnnotationTypesOnId = filterableMatchedProteinAnnotationTypesOnId;
 	}
 }

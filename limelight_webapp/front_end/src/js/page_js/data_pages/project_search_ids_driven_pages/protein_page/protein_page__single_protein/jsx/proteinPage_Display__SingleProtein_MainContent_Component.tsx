@@ -81,7 +81,10 @@ import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from "page_
 import {GeneratedPeptideContents_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/js/generatedPeptideContents_UserSelections_StateObject";
 import {GeneratedPeptideContents_UserSelections_Root_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/generated_peptide_contents__user_controls/jsx/generatedPeptideContents_UserSelections_Root_Component";
 import {SingleProtein_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/singleProtein_CentralStateManagerObjectClass";
-import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {PeptideUnique_UserSelection} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/jsx/peptideUnique_UserSelection";
 import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
@@ -122,6 +125,29 @@ import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "pa
 import {PeptideSequence_MissedCleavageCount_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/jsx/peptideSequence_MissedCleavageCount_UserSelections_Component";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
+import { ProteinDisplayData_From_createProteinDisplayData_ProteinList } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes";
+import {
+    CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_For_ProteinId,
+    CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues";
+import {
+    CommonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues_For_ProteinId,
+    CommonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues";
+import {
+    DataTable_Column,
+    DataTable_Column_DownloadTable,
+    DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry_SearchTableData,
+    DataTable_DataRowEntry,
+    DataTable_DataRowEntry_DownloadTable,
+    DataTable_DataRowEntry_DownloadTable_SingleColumn,
+    DataTable_RootTableDataObject,
+    DataTable_RootTableObject,
+    DataTable_TableOptions
+} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
+import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
+import { AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component } from "page_js/data_pages/common_components__react/annotation_types_to_display__selection_update_component/annotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component";
 
 
 ////
@@ -317,8 +343,10 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     private _proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinSequenceWidgetDisplay_Root_Component_React>
 
     private _proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
+    private _proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()  for container <div> around <ProteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component>
 
     private _domMutationObserver_reported_peptides_outer_container : MutationObserver;
+    private _domMutationObserver_ProteinAnnotationDataEtc_outer_container : MutationObserver;
 
     private _updated_OverlayWidth: number = undefined;  // Updated whenever call function in parent Component to update width of overlay
 
@@ -357,6 +385,8 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         this._proteinSequenceWidgetDisplay_Root_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
+
+        this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref = React.createRef<HTMLDivElement>();
 
         {
             this._generatedPeptideContents_UserSelections_StateObject = new GeneratedPeptideContents_UserSelections_StateObject({
@@ -519,12 +549,16 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
             this._remove_MutationObserver_From_reported_peptides_outer_container();
 
+            this._remove_MutationObserver_From_ProteinAnnotationDataEtc_Table_Container()
+
         } catch( e ) {
             console.log("Exception caught in componentWillUnmount()");
             console.log( e );
             reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
             throw e;
         }
+
+
     }
 
     /**
@@ -921,9 +955,11 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
             }
         }
 
-        this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
+        this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
 
         this._add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded();
+
+        this._add_MutationObserver_To_ProteinAnnotationDataEtc_Table_Container_For_MakingWidthChangesAsNeeded()
 
         // this._adjustBoxesOnRight_So_AtRigthtEdgeOfViewPort();
 
@@ -2555,7 +2591,7 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     //   have a way to detect that and change the width to wider
 
 	/**
-	 * called by this._createSingleProteinModalOverlay
+	 * called by this.componentWillUnmount
 	 */
 	_remove_MutationObserver_From_reported_peptides_outer_container() {
 
@@ -2574,10 +2610,9 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
     }
 
 	/**
-	 * called by this.componentDidMount()
+	 * called by this._update_Overlay_Add_Listeners__After_MainPaint()
 	 */
 	_add_MutationObserver_To_reported_peptides_outer_container_For_MakingWidthChangesAsNeeded() {
-
 		{
 			//  Remove _domMutationObserver_reported_peptides_outer_container if set
 			// stop observing
@@ -2617,11 +2652,12 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 				timeoutId = window.setTimeout( () => {
 					timeoutId = null;
 					// console.log('At least 1 child node has been added or removed.');
-					this._resize_OverlayWidth_BasedOnReportedPeptidesTableWidth();
+					this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
 				}, 200 );
 			}
-
 		};
+
+
 		// Create an observer instance linked to the callback function
         this._domMutationObserver_reported_peptides_outer_container = new MutationObserver( domMutationCallback );
 
@@ -2636,44 +2672,158 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
         }
 	}
 
-	/**
-	 * Adjust overlay width to fit reported peptide
-	 *
-	 * called internally from this class
-	 */
-	_resize_OverlayWidth_BasedOnReportedPeptidesTableWidth() {
+    ///
 
-		//  Adjust overlay width to fit reported peptide list
+    //   Since the Protein Annotation Data Etc can end up wider than the current width,
+    //   have a way to detect that and change the width to wider
 
-        const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
-            this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
-
-        if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
-
-            const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
-
-            const reported_peptides_data_table_container_Width = containerRect_GeneratedReportedPeptideListSection.width;
-
-            let overlayWidth = (
-                reported_peptides_data_table_container_Width
-                + this.props.view_single_protein_overlay_body_PaddingLeft
-                + this.props.view_single_protein_overlay_body_PaddingRight
-                + 2 //  Little Extra
-            );
-            if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
-                overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
+    /**
+     * called by this.componentWillUnmount
+     */
+    _remove_MutationObserver_From_ProteinAnnotationDataEtc_Table_Container() {
+        {
+            //  Remove _domMutationObserver_ProteinAnnotationDataEtc_outer_container if set
+            // stop observing
+            try {
+                if ( this._domMutationObserver_ProteinAnnotationDataEtc_outer_container ) {
+                    this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.disconnect();
+                }
+            } catch ( e ) {
+                var z = 0;
             }
+            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = undefined;
+        }
+    }
 
-            if ( overlayWidth !== this._updated_OverlayWidth ) {
+    /**
+     * called by this._update_Overlay_Add_Listeners__After_MainPaint()
+     */
+    _add_MutationObserver_To_ProteinAnnotationDataEtc_Table_Container_For_MakingWidthChangesAsNeeded() {
+        {
+            //  Remove _domMutationObserver_reported_peptides_outer_container if set
+            // stop observing
+            try {
+                if ( this._domMutationObserver_ProteinAnnotationDataEtc_outer_container ) {
+                    this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.disconnect();
+                }
+            } catch ( e ) {
+                var z = 0;
+            }
+            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = undefined;
+        }
 
-                //  overlayWidth has changed
+        // Options for the observer (which mutations to observe)
+        // const config = { attributes: true, childList: true, subtree: true };
+        const config = { childList: true, subtree: true };
 
-                this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
+        let timeoutId: number = null;
 
-                this._updated_OverlayWidth = overlayWidth;
+        // Callback function to execute when mutations are observed
+        const domMutationCallback = ( mutationsList: any, observer: any ) => {
+
+            let foundChildListMutation = false;
+
+            for ( const mutation of mutationsList ) {
+                if  ( mutation.type == 'childList' ) {
+                    foundChildListMutation = true;
+                }
+                // else if ( mutation.type == 'attributes' ) {
+                // 	console.log( 'The ' + mutation.attributeName + ' attribute was modified.' );
+                // }
+            }
+            if ( foundChildListMutation ) {
+                if ( timeoutId ) {
+                    window.clearTimeout( timeoutId );
+                }
+                timeoutId = window.setTimeout( () => {
+                    timeoutId = null;
+                    // console.log('At least 1 child node has been added or removed.');
+                    this._resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width();
+                }, 200 );
+            }
+        };
+
+
+        // Create an observer instance linked to the callback function
+        this._domMutationObserver_ProteinAnnotationDataEtc_outer_container = new MutationObserver( domMutationCallback );
+
+
+        const proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM =
+            this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref.current;
+
+        if ( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM ) {
+
+            // Start observing the target node for configured mutations
+            this._domMutationObserver_ProteinAnnotationDataEtc_outer_container.observe( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM, config );
+        }
+    }
+
+    /////
+
+    /**
+     * Adjust overlay width to fit reported peptide block AND Protein Annotation Etc Block
+     *
+     * called internally from this class
+     */
+    _resize_OverlayWidth_BasedOn_ReportedPeptidesTableWidth_AND_ProteinAnnotationDataEtc_Table_Width() {
+
+        //  Adjust overlay width to fit reported peptide list AND Protein Annotation Etc Block
+
+        let container_Width_MaxOfValues: number = undefined
+
+        {
+            // reported peptide list
+            const proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM =
+                this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref.current;
+
+            if ( proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM ) {
+
+                const containerRect_GeneratedReportedPeptideListSection = proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref_DOM.getBoundingClientRect();
+
+                container_Width_MaxOfValues = containerRect_GeneratedReportedPeptideListSection.width;
             }
         }
-	}
+        {
+            // Protein Annotation Etc Block
+            const proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM =
+                this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref.current;
+
+            if ( proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM ) {
+
+                const containerRect = proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref_DOM.getBoundingClientRect();
+
+                const container_Width = containerRect.width;
+
+                if ( ( ! container_Width_MaxOfValues ) || container_Width_MaxOfValues < container_Width ) {
+                    container_Width_MaxOfValues = container_Width
+                }
+            }
+        }
+
+        if ( ! container_Width_MaxOfValues ) {
+            //  NO value set to exit
+            return // EARLY RETURN
+        }
+
+        let overlayWidth = (
+            container_Width_MaxOfValues
+            + this.props.view_single_protein_overlay_body_PaddingLeft
+            + this.props.view_single_protein_overlay_body_PaddingRight
+            + 2 //  Little Extra
+        );
+        if ( overlayWidth < _OUTERMOST_CONTAINER_MIN_WIDTH ) {
+            overlayWidth = _OUTERMOST_CONTAINER_MIN_WIDTH; // Min width
+        }
+
+        if ( overlayWidth !== this._updated_OverlayWidth ) {
+
+            //  overlayWidth has changed and is wider
+
+            this.props.setWidth__view_single_protein_inner_overlay_div({ width : overlayWidth });
+
+            this._updated_OverlayWidth = overlayWidth;
+        }
+    }
 
     ////////////////////////////////////////
 
@@ -3199,11 +3349,22 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
 
                 </div>  {/* Close display of data above Reported Peptides */}
 
-                    {/* Display of Reported Peptides  */}
+                <div>
+                    <div
+                        ref={ this._proteinPage_Display__SingleProtein_ProteinAnnotationDataEtc_Component_React_Container_Ref } // ref to allow measuring width of component
+                        style={ { display: "inline-block" } } // 'display: "inline-block"' so can measure the width when width exceeds parent div
+                    >
+                        <Internal__ProteinLevel_DataDisplay_AnnotationsEtc
+                            propsValue_To_MainComponent={ this.props.propsValue }
+                        />
+                    </div>
+                </div>
+
+                {/* Display of Reported Peptides  */}
 
                 {/*{ ( this.state.create_GeneratedReportedPeptideListData_Result ) ? (*/}
 
-                    <React.Fragment>
+                <div>
 
                     <div style={ { display: "inline-block" } }  //  display: "inline-block" so can measure width of this div, including width of Peptide table and sub-tables
                         ref={ this._proteinPage_Display__SingleProtein_GeneratedReportedPeptideListSection_Component_React_Container_Ref }> {/* ref to allow measuring width of component */}
@@ -3228,13 +3389,760 @@ export class ProteinPage_Display__SingleProtein_MainContent_Component extends Re
                         />
                     </div>
 
-                    </React.Fragment>
+                </div>
 
                 {/*): null }*/}
 
             </React.Fragment>
 
         );
+    }
+
+}
+
+//////////////////////
+
+//   Internal Components
+
+
+////////   Main/Root - ProteinLevel_DataDisplay_AnnotationsEtc
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props {
+
+    propsValue_To_MainComponent : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
+}
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc_State {
+
+    _placeHolder?: unknown
+}
+
+/**
+ *
+ */
+class Internal__ProteinLevel_DataDisplay_AnnotationsEtc extends React.Component< Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props, Internal__ProteinLevel_DataDisplay_AnnotationsEtc_State > {
+
+    private _render_Component = false
+
+    /**
+     *
+     */
+    constructor( props: Internal__ProteinLevel_DataDisplay_AnnotationsEtc_Props ) {
+        super( props );
+
+        //  Populate Protein Filterable/Descriptive Annotations if needed
+
+        let any_MatchedProtein_AnnotationTypes_Found = false
+
+        for ( const projectSearchId of this.props.propsValue_To_MainComponent.projectSearchIds ) {
+
+            const annotationTypeItems_For_ProjectSearchId = this.props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+            if ( ! annotationTypeItems_For_ProjectSearchId ) {
+                const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            if ( ( annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 )
+                || ( annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 ) ) {
+
+                any_MatchedProtein_AnnotationTypes_Found = true
+                break;
+            }
+        }
+
+        if ( any_MatchedProtein_AnnotationTypes_Found ) {
+
+            //  Have Matched Protein Annotation Types
+
+            this._render_Component = true
+        }
+    }
+
+    render() {
+
+        if ( ! this._render_Component ) {
+            return null
+        }
+
+        if ( this.props.propsValue_To_MainComponent.projectSearchIds.length > 1 ) {
+
+            return ( //  EARLY RETURN
+
+                <div style={ { display: "inline-block" } }>
+                    <div className="top-level-label-bottom-border"></div>
+
+                    <Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches
+                        propsValue_To_MainComponent={ this.props.propsValue_To_MainComponent }
+                    />
+
+                    <div className="top-level-label-bottom-border"></div>
+                </div>
+            )
+        }
+
+        const projectSearchId = this.props.propsValue_To_MainComponent.projectSearchIds[ 0 ]
+
+        return (
+            <div style={ { display: "inline-block" } }>
+                <div className="top-level-label-bottom-border"></div>
+
+                <div style={ { fontSize: 18, fontWeight: "bold" } }>
+                    Protein Level Annotations (Scores)
+                </div>
+
+                <div style={ { marginBottom: 5 } }>
+                    <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                        projectSearchIds={ this.props.propsValue_To_MainComponent.projectSearchIds }
+                        searchDataLookupParameters_Root={ this.props.propsValue_To_MainComponent.searchDataLookupParamsRoot }
+                        dataPageStateManager_DataFrom_Server={ this.props.propsValue_To_MainComponent.dataPageStateManager }
+                    />
+                </div>
+
+                <Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch
+                    projectSearchId={ projectSearchId }
+                    propsValue_To_MainComponent={ this.props.propsValue_To_MainComponent }
+                />
+
+                <div className="top-level-label-bottom-border"></div>
+            </div>
+        );
+    }
+}
+
+////////   Multiple Searches - ProteinLevel_DataDisplay_AnnotationsEtc
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches_Props {
+
+    propsValue_To_MainComponent : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
+}
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches_State {
+
+    force_Rerender_Object?: object
+}
+
+
+/**
+ * For a Single Search
+ */
+class Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches extends React.Component< Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches_Props, Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches_State > {
+
+    private _expandCollapse_Called_BindThis = this._expandCollapse_Called.bind(this)
+
+    private _section_Expanded = false
+    private _section_EverExpanded = false
+
+    /**
+     *
+     */
+    constructor( props: Internal__ProteinLevel_DataDisplay_AnnotationsEtc__MultipleSearches_Props ) {
+        super( props );
+
+        this.state = { force_Rerender_Object: {} }
+    }
+
+    /**
+     *
+     */
+    private _expandCollapse_Called( event: React.MouseEvent<HTMLImageElement, MouseEvent> ) {
+        try {
+            event.stopPropagation()
+
+            this._section_EverExpanded = true
+
+            this._section_Expanded = ! this._section_Expanded
+
+            this.setState({ force_Rerender_Object: {} })
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    render() {
+        try {
+            let section_Expanded_Contents: JSX.Element
+
+            if ( this._section_EverExpanded ) {
+
+                const entryPerSearch_Array: Array<JSX.Element> = []
+
+                for ( const projectSearchId of this.props.propsValue_To_MainComponent.projectSearchIds ) {
+
+                    const searchNameObject = this.props.propsValue_To_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId );
+                    if ( ! searchNameObject ) {
+                        throw Error( "No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                    }
+
+                    const searchName_And_Id = searchNameObject.name + " (" + searchNameObject.searchId + ")"
+
+                    const entryPerSearch_Entry = (
+                        <React.Fragment key={ projectSearchId }>
+                            <div style={ {  marginTop: 15, marginBottom: 3, fontSize: 16, fontWeight: "bold" } }>
+                                { searchName_And_Id }
+                            </div>
+                            <div style={ { marginLeft: 5 } }>
+                                <Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch
+                                    projectSearchId={ projectSearchId }
+                                    propsValue_To_MainComponent={ this.props.propsValue_To_MainComponent }
+                                />
+                            </div>
+                        </React.Fragment>
+                    )
+                    entryPerSearch_Array.push( entryPerSearch_Entry )
+                }
+
+                section_Expanded_Contents = (
+                    <div>
+                        <div style={ { display: this._section_Expanded ? "" : "none" } }>
+                            <div >
+                                <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
+                                    projectSearchIds={ this.props.propsValue_To_MainComponent.projectSearchIds }
+                                    searchDataLookupParameters_Root={ this.props.propsValue_To_MainComponent.searchDataLookupParamsRoot }
+                                    dataPageStateManager_DataFrom_Server={ this.props.propsValue_To_MainComponent.dataPageStateManager }
+                                />
+                            </div>
+                            <div style={ { marginLeft: 4, marginTop: 8 } }>
+                                { entryPerSearch_Array }
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div style={ { display: "grid", gridTemplateColumns: "min-content auto"}}>
+                    {/* Column 1 */}
+                    <div style={ { display: "inline-block", width: 16, float: "left" } }>
+                        { ! this._section_Expanded ? (
+                            <img
+                                className="icon-small fake-link-image " src="static/images/pointer-right.png"
+                                onClick={ this._expandCollapse_Called_BindThis }
+                            />
+                        ) : (
+                            <img
+                                className="icon-small fake-link-image " src="static/images/pointer-down.png"
+                                onClick={ this._expandCollapse_Called_BindThis }
+                            />
+                        ) }
+                    </div>
+                    {/* Column 2 */}
+                    <div>
+                        <div
+                            className=" clickable "
+                            style={ { display: "inline-block", fontSize: 18, fontWeight: "bold" } }
+                            onClick={ this._expandCollapse_Called_BindThis }
+                        >
+                            Protein Level Annotations (Scores) By Search
+                        </div>
+
+
+                        { section_Expanded_Contents }
+
+                    </div>
+                </div>
+
+            )
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+}
+
+///////////
+
+////////   Single Search - ProteinLevel_DataDisplay_AnnotationsEtc
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch_Props {
+
+    projectSearchId: number
+
+    propsValue_To_MainComponent : ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop
+}
+
+/**
+ *
+ */
+interface Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch_State {
+
+    dataTable_RootTableObject?: DataTable_RootTableObject
+}
+
+
+/**
+ * For a Single Search
+ */
+class Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch extends React.Component< Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch_Props, Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch_State > {
+
+    private _table_Container_Ref : React.RefObject<HTMLDivElement>; //  React.createRef()
+
+    private _searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
+
+    private _protein_Filterable_AnnotationTypeIds_ToRetrieve_Set: Set<number>
+    private _protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set: Set<number>
+
+    private _show_NoData_Message = false
+
+    /**
+     *
+     */
+    constructor( props: Internal__ProteinLevel_DataDisplay_AnnotationsEtc__SingleSearch_Props ) {
+        super( props );
+        try {
+
+            this._table_Container_Ref = React.createRef<HTMLDivElement>();
+
+            const projectSearchId = props.projectSearchId
+
+            let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
+            {
+                for (const paramsForProjectSearchIdsList_Entry of this.props.propsValue_To_MainComponent.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList) {
+                    if (paramsForProjectSearchIdsList_Entry.projectSearchId === projectSearchId) {
+                        searchDataLookupParams_For_Single_ProjectSearchId = paramsForProjectSearchIdsList_Entry;
+                        break;
+                    }
+                }
+                if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+
+                    this._show_NoData_Message = true
+
+                    // const msg = "No entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                    // console.warn(msg)
+                    // throw Error(msg)
+                }
+            }
+
+            if ( ! this._show_NoData_Message ) {
+
+                //  Retrieve data for these AnnotationTypeIds
+                this._protein_Filterable_AnnotationTypeIds_ToRetrieve_Set = new Set()
+                this._protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set = new Set()
+
+                const annotationTypeItems_For_ProjectSearchId = props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+                if ( ! annotationTypeItems_For_ProjectSearchId ) {
+                    const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                //  Add AnnotationTypeIds Used For Display
+                for ( const annTypeIdDisplay_Entry of searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
+                    if ( annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.get( annTypeIdDisplay_Entry ) ) {
+                        this._protein_Filterable_AnnotationTypeIds_ToRetrieve_Set.add( annTypeIdDisplay_Entry )
+                    } else if ( annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes.get( annTypeIdDisplay_Entry ) ) {
+                        this._protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set.add( annTypeIdDisplay_Entry )
+                    } else {
+                        const msg = "annTypeIdDisplay_Entry not found in annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes or annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes. annTypeIdDisplay_Entry: " + annTypeIdDisplay_Entry
+                        console.warn( msg )
+                        throw Error( msg )
+                    }
+                }
+
+                if ( this._protein_Filterable_AnnotationTypeIds_ToRetrieve_Set.size === 0 && this._protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set.size === 0 ) {
+                    //  NO Annotation Types to get data for
+                    this._show_NoData_Message = true
+                }
+            }
+
+            this.state = {}
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    componentDidMount() {
+        try {
+            if ( ! this._show_NoData_Message ) {
+
+                const result_Promise =
+                    this._get_MatchedProtein_FilterableDescriptiveAnnotations()
+
+                result_Promise.catch(reason => {  })
+                result_Promise.then(dataTable_RootTableObject => { try {
+
+                    this.setState({ dataTable_RootTableObject } )
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _get_MatchedProtein_FilterableDescriptiveAnnotations() : Promise<DataTable_RootTableObject> {
+
+        return new Promise<DataTable_RootTableObject>((resolve, reject) => { try {
+            this._get_MatchedProtein_FilterableDescriptiveAnnotations_PromiseContents({ resolve_TopLevel: resolve, reject_TopLevel: reject })
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    }
+
+    /**
+     *
+     */
+    private _get_MatchedProtein_FilterableDescriptiveAnnotations_PromiseContents(
+        {
+            resolve_TopLevel, reject_TopLevel
+        } : {
+            resolve_TopLevel: ( value: DataTable_RootTableObject) => void
+            reject_TopLevel: ( reason?: any) => void
+        }
+    ) : void {
+
+        // const proteinSequenceVersionId = this.props.propsValue_To_MainComponent.proteinSequenceVersionId
+
+        let protein_Filterable_AnnotationValues_Holder: CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_Holder
+        let protein_Descriptive_AnnotationValues_Holder: CommonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues_Holder
+
+        const promises: Array<Promise<void>> = []
+
+        const projectSearchId = this.props.projectSearchId
+
+        const proteinSequenceVersionId_Set: Set<number> = new Set()
+        proteinSequenceVersionId_Set.add( this.props.propsValue_To_MainComponent.proteinSequenceVersionId )
+
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =  // state object populated in constructor
+            this.props.propsValue_To_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            throw new Error("No value from this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); for projectSearchId: " + projectSearchId );
+        }
+
+        if ( this._protein_Filterable_AnnotationTypeIds_ToRetrieve_Set.size > 0 ) {
+
+            //  Get Filterable Data
+
+            const get_Protein_Filterable_AnnotationValues_Result =
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues().get_Protein_Filterable_AnnotationValues({
+                    proteinSequenceVersionIds: proteinSequenceVersionId_Set, annotationTypeIds: this._protein_Filterable_AnnotationTypeIds_ToRetrieve_Set
+                })
+            if ( get_Protein_Filterable_AnnotationValues_Result.data ) {
+                protein_Filterable_AnnotationValues_Holder = get_Protein_Filterable_AnnotationValues_Result.data.protein_Filterable_AnnotationValues_Holder
+            } else if ( get_Protein_Filterable_AnnotationValues_Result.promise ) {
+                const promise = new Promise<void>( (resolve, reject) => { try {
+                    get_Protein_Filterable_AnnotationValues_Result.promise.catch(reason => { reject(reason)})
+                    get_Protein_Filterable_AnnotationValues_Result.promise.then(value => { try {
+                        protein_Filterable_AnnotationValues_Holder = value.protein_Filterable_AnnotationValues_Holder
+                        resolve()
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise)
+            } else {
+                throw Error("get_Protein_Filterable_AnnotationValues_Result NO data or promise")
+            }
+        }
+
+        if ( this._protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set.size > 0 ) {
+
+            //  Get Descriptive Data
+
+            const get_Protein_Descriptive_AnnotationValues_Result =
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues().get_Protein_Descriptive_AnnotationValues({
+                    proteinSequenceVersionIds: proteinSequenceVersionId_Set, annotationTypeIds: this._protein_Descriptive_AnnotationTypeIds_ToRetrieve_Set
+                })
+            if ( get_Protein_Descriptive_AnnotationValues_Result.data ) {
+                protein_Descriptive_AnnotationValues_Holder = get_Protein_Descriptive_AnnotationValues_Result.data.protein_Descriptive_AnnotationValues_Holder
+            } else if ( get_Protein_Descriptive_AnnotationValues_Result.promise ) {
+                const promise = new Promise<void>( (resolve, reject) => { try {
+                    get_Protein_Descriptive_AnnotationValues_Result.promise.catch(reason => { reject(reason)})
+                    get_Protein_Descriptive_AnnotationValues_Result.promise.then(value => { try {
+                        protein_Descriptive_AnnotationValues_Holder = value.protein_Descriptive_AnnotationValues_Holder
+                        resolve()
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise)
+            } else {
+                throw Error("get_Protein_Descriptive_AnnotationValues_Result NO data or promise")
+            }
+        }
+
+
+        if ( promises.length === 0 ) {
+
+            const dataTable_RootTableObject =
+                this._get_MatchedProtein_FilterableDescriptiveAnnotations_ProcessLoadedData({
+                    protein_Filterable_AnnotationValues_Holder,
+                    protein_Descriptive_AnnotationValues_Holder
+                })
+
+            resolve_TopLevel( dataTable_RootTableObject )
+
+            return // EARLY RETURN
+        }
+
+        const promisesALl = Promise.all(promises)
+
+        promisesALl.catch(reason => { reject_TopLevel(reason)})
+        promisesALl.then(novalue => { try {
+
+            const dataTable_RootTableObject =
+                this._get_MatchedProtein_FilterableDescriptiveAnnotations_ProcessLoadedData({
+                    protein_Filterable_AnnotationValues_Holder,
+                    protein_Descriptive_AnnotationValues_Holder
+                })
+
+            resolve_TopLevel( dataTable_RootTableObject )
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+    }
+
+    /**
+     *
+     */
+    private _get_MatchedProtein_FilterableDescriptiveAnnotations_ProcessLoadedData(
+        {
+            protein_Filterable_AnnotationValues_Holder,
+            protein_Descriptive_AnnotationValues_Holder
+        } : {
+            protein_Filterable_AnnotationValues_Holder: CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_Holder
+            protein_Descriptive_AnnotationValues_Holder: CommonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues_Holder
+        }
+    ) : DataTable_RootTableObject {
+
+        const proteinSequenceVersionId = this.props.propsValue_To_MainComponent.proteinSequenceVersionId
+
+        const projectSearchId = this.props.projectSearchId
+
+        //  Column entries for this data row in data table
+        const columnEntries : DataTable_DataRow_ColumnEntry[] = [];
+        const dataColumns_tableDownload : Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
+        const annotationTypeItems_For_ProjectSearchId = this.props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
+        if ( ! annotationTypeItems_For_ProjectSearchId ) {
+            const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+            console.warn( msg )
+            throw Error( msg )
+        }
+
+        let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
+        {
+            for ( const paramsForProjectSearchIdsList_Entry of this.props.propsValue_To_MainComponent.searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                if ( paramsForProjectSearchIdsList_Entry.projectSearchId === projectSearchId ) {
+                    searchDataLookupParams_For_Single_ProjectSearchId = paramsForProjectSearchIdsList_Entry;
+                    break;
+                }
+            }
+            if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+
+                const msg = "No entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
+            }
+        }
+
+        let protein_Filterable_AnnotationValues_For_ProteinId: CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_AnnotationValues_For_ProteinId
+        let protein_Descriptive_AnnotationValues_For_ProteinId: CommonData_LoadedFromServer_SingleSearch__Protein_Descriptive_AnnotationValues_For_ProteinId
+
+        if ( protein_Filterable_AnnotationValues_Holder ) {
+            protein_Filterable_AnnotationValues_For_ProteinId = protein_Filterable_AnnotationValues_Holder.get_Protein_Filterable_AnnotationValues_For_ProteinId( proteinSequenceVersionId )
+        }
+        if ( protein_Descriptive_AnnotationValues_Holder ) {
+            protein_Descriptive_AnnotationValues_For_ProteinId = protein_Descriptive_AnnotationValues_Holder.get_Protein_Descriptive_AnnotationValues_For_ProteinId( proteinSequenceVersionId )
+        }
+
+        if ( searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay.length > 0 ) {
+
+            //  Add AnnotationTypeIds Used For Display
+            for ( const annotationTypeId of searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
+
+                let valueDisplay: string = undefined
+                let valueSort: number | string
+
+                if ( protein_Filterable_AnnotationValues_Holder ) {
+
+                    const filterable_AnnotationValue = protein_Filterable_AnnotationValues_For_ProteinId.get_Protein_Filterable_AnnotationValues_For_AnnotationTypeId( annotationTypeId )
+                    if ( filterable_AnnotationValue ) {
+                        valueDisplay = filterable_AnnotationValue.valueDouble.toString();
+                        valueSort = filterable_AnnotationValue.valueDouble
+                    }
+                }
+                if ( valueDisplay === undefined ) {
+                    if ( protein_Descriptive_AnnotationValues_Holder ) {
+
+                        const descriptive_AnnotationValue = protein_Descriptive_AnnotationValues_For_ProteinId.get_Protein_Descriptive_AnnotationValues_For_AnnotationTypeId( annotationTypeId )
+                        if ( descriptive_AnnotationValue ) {
+                            valueDisplay = descriptive_AnnotationValue.valueString;
+                            valueSort = descriptive_AnnotationValue.valueString
+                        }
+                    }
+                }
+                if ( valueDisplay === undefined ) {
+
+                    const msg = "AnnotationTypeId NOT found in Filterable or Descriptive Annotations: " + annotationTypeId + ", proteinSequenceVersionId: " + proteinSequenceVersionId + ", projectSearchId: " + projectSearchId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+                const searchEntriesForColumn: Array<string> = [valueDisplay]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                const columnEntry = new DataTable_DataRow_ColumnEntry({
+                    searchTableData,
+                    valueDisplay,
+                    valueSort
+                })
+                columnEntries.push(columnEntry);
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+        }
+
+        const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable({ dataColumns_tableDownload });
+
+        //  Create DataTable_DataRowEntry
+
+        const dataTable_DataRowEntry = new DataTable_DataRowEntry({
+            uniqueId : proteinSequenceVersionId,
+            sortOrder_OnEquals : 1, // Original Sort Order
+            greyOutRow : false,
+            columnEntries,
+            dataTable_DataRowEntry_DownloadTable
+        })
+
+
+        const dataTable_DataRowEntry_Array : Array<DataTable_DataRowEntry> = [];
+
+        dataTable_DataRowEntry_Array.push( dataTable_DataRowEntry )
+
+        /////////   Column Headers
+
+        let columns : Array<DataTable_Column> = [ ];
+        const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
+
+        {  //  Filterable and/or Descriptive Annotations at Protein Level
+
+            const annotationTypeItems_For_ProjectSearchId = this.props.propsValue_To_MainComponent.dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
+            if ( ! annotationTypeItems_For_ProjectSearchId ) {
+                const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            if ( searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay.length > 0 ) {
+
+                //  Add AnnotationTypeIds Used For Display
+                for ( const annTypeIdDisplay_Entry of searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
+
+                    {  //  Try Filterable
+                        const matchedProteinFilterableAnnotationType = annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.get( annTypeIdDisplay_Entry )
+                        if ( matchedProteinFilterableAnnotationType ) {
+
+                            //  Have Filterable Annotation Type Data for Annotation Type Id
+
+                            const displayName = matchedProteinFilterableAnnotationType.name
+
+                            const column = new DataTable_Column( {
+                                id: displayName,
+                                displayName,
+                                width: 80,
+                                sortable: false, //  Since only 1 row set to false
+                                onlyShow_ValueDisplay_FirstRowOfGroup: true
+                            } );
+
+                            columns.push( column );
+
+                            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+
+                            continue // EARLY CONTINUE
+                        }
+                    }
+                    {  //  Try Descriptive
+                        const matchedProteinDescriptiveAnnotationType = annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes.get( annTypeIdDisplay_Entry )
+                        if ( matchedProteinDescriptiveAnnotationType ) {
+
+                            //  Have Descriptive Annotation Type Data for Annotation Type Id
+
+                            const displayName = matchedProteinDescriptiveAnnotationType.name
+
+                            const column = new DataTable_Column( {
+                                id: displayName,
+                                displayName,
+                                width: 80,
+                                sortable: false, //  Since only 1 row set to false
+                                onlyShow_ValueDisplay_FirstRowOfGroup: true
+                            } );
+
+                            columns.push( column );
+
+                            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+
+                            continue // EARLY CONTINUE
+                        }
+                    }
+
+                    //  NOT found in Filterable or Descriptive so error
+
+                    const msg = "annTypeIdDisplay_Entry not found in annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes or annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes. annTypeIdDisplay_Entry: " + annTypeIdDisplay_Entry
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+            }
+        }
+
+        ///  Final Table
+
+        const tableDataObject = new DataTable_RootTableDataObject({
+            columns: columns,
+            columns_tableDownload: dataTable_Column_DownloadTable_Entries,
+            dataTable_DataRowEntries: dataTable_DataRowEntry_Array,
+            dataTable_DataGroupRowEntries: undefined
+        });
+
+
+        const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
+
+        const tableObject_SingleProtein_FilterableDescriptive_AnnotationValues = new DataTable_RootTableObject({ tableDataObject, tableOptions, dataTableId: "Protein List (Search(es)" });
+
+        return tableObject_SingleProtein_FilterableDescriptive_AnnotationValues
+    }
+
+    render() {
+
+        if ( this._show_NoData_Message ) {
+
+            return (  // EARLY RETURN
+                <div>
+                    No protein level annotations
+                </div>
+            );
+        }
+
+        if ( ! this.state.dataTable_RootTableObject ) {
+
+            return (  // EARLY RETURN
+                <div>
+                    Loading Data
+                </div>
+            );
+        }
+
+        return (
+            <div
+                ref={ this._table_Container_Ref }
+                style={ { display: "inline-block" } } //  inline-block since measure the width
+            >
+                <DataTable_TableRoot tableObject={ this.state.dataTable_RootTableObject } />
+            </div>
+        )
+
     }
 
 }

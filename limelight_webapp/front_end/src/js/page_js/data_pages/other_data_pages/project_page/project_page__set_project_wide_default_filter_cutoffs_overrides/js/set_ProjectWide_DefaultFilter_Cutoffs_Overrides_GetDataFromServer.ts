@@ -47,6 +47,7 @@ export class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_R
     searchProgram_name: string
     data_PerType_PSM: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein
     data_PerType_Peptide: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein
+    data_PerType_Protein: Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein
 
     private _onlyToForceUseContructor() {}
 }
@@ -347,6 +348,50 @@ const add_AnnotationType_SearchProgram_Data__To__Set_ProjectWide_DefaultFilter_C
                 }
             }
         }
+
+        //  Process Matched Protein Annotation Type Entries
+
+        if ( annotationTypeItems_ForProjectSearchId.matchedProteinFilterableAnnotationTypes ) {
+
+            for ( const filterableAAnnotationTypes_Entry of annotationTypeItems_ForProjectSearchId.matchedProteinFilterableAnnotationTypes.entries() ) {
+
+                const filterableAAnnotationType = filterableAAnnotationTypes_Entry[ 1 ];
+
+                const searchProgramsPerSearchItem = searchProgramsPerSearchItem_Map.get( filterableAAnnotationType.searchProgramsPerSearchId);
+                if ( ! searchProgramsPerSearchItem ) {
+                    const msg = "matchedProteinFilterableAnnotationTypes: searchProgramsPerSearchItem_Map.get( filterableAAnnotationType.searchProgramsPerSearchId); returned nothing. filterableAAnnotationType.searchProgramsPerSearchId: " +
+                        filterableAAnnotationType.searchProgramsPerSearchId + ", projectSearchId: " + projectSearchId;
+                    console.warn( msg + ", searchProgramsPerSearchItem_Map: ", searchProgramsPerSearchItem_Map )
+                    throw Error(msg)
+                }
+
+                let data_Per_SearchProgram = data_Per_SearchProgram_Map_Key_searchProgramName.get( searchProgramsPerSearchItem.displayName )
+                if ( ! data_Per_SearchProgram ) {
+                    data_Per_SearchProgram = new Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_SearchProgram()
+                    data_Per_SearchProgram_Map_Key_searchProgramName.set( searchProgramsPerSearchItem.displayName, data_Per_SearchProgram )
+                }
+                if ( ! data_Per_SearchProgram.data_PerType_Protein ) {
+                    data_Per_SearchProgram.data_PerType_Protein = new Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein();
+                }
+                if ( ! data_Per_SearchProgram.data_PerType_Protein.data_Per_AnnotationType_Name_Map_Key_AnnotationName ) {
+                    data_Per_SearchProgram.data_PerType_Protein.data_Per_AnnotationType_Name_Map_Key_AnnotationName = new Map()
+                }
+                let data_Per_AnnotationType_Name = data_Per_SearchProgram.data_PerType_Protein.data_Per_AnnotationType_Name_Map_Key_AnnotationName.get( filterableAAnnotationType.name );
+                if ( ! data_Per_AnnotationType_Name ) {
+                    data_Per_AnnotationType_Name = new Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_AnnotationType_Name();
+                    data_Per_AnnotationType_Name.annotationType_Name = filterableAAnnotationType.name
+                    data_Per_SearchProgram.data_PerType_Protein.data_Per_AnnotationType_Name_Map_Key_AnnotationName.set( filterableAAnnotationType.name, data_Per_AnnotationType_Name );
+                }
+
+                if ( filterableAAnnotationType.defaultFilterValue !== undefined && filterableAAnnotationType.defaultFilterValue !== null ) {
+
+                    if ( ! data_Per_AnnotationType_Name.defaultValues_From_AnnotationType_Records_Set ) {
+                        data_Per_AnnotationType_Name.defaultValues_From_AnnotationType_Records_Set = new Set()
+                    }
+                    data_Per_AnnotationType_Name.defaultValues_From_AnnotationType_Records_Set.add( filterableAAnnotationType.defaultFilterValue );
+                }
+            }
+        }
     }
 
     //  Apply defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Result to data structure
@@ -386,6 +431,15 @@ const add_AnnotationType_SearchProgram_Data__To__Set_ProjectWide_DefaultFilter_C
                         searchProgram_name,
                         resultData_PerType: result_For_Per_SearchProgram.data_PerType_PSM,
                         defaultFilter_Cutoffs_Overrides_PerType: defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Result.defaultFilter_Cutoffs_Overrides_PSM
+                    });
+                }
+
+                if ( result_For_Per_SearchProgram.data_PerType_Protein ) {
+
+                    _get_defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Data_Per_Type({
+                        searchProgram_name,
+                        resultData_PerType: result_For_Per_SearchProgram.data_PerType_Protein,
+                        defaultFilter_Cutoffs_Overrides_PerType: defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Result.defaultFilter_Cutoffs_Overrides_MatchedProtein
                     });
                 }
             }
@@ -467,6 +521,7 @@ const _populate_Arrays_From_Maps_And_Sort__Result_Per_SearchProgram = function (
 
     _populate_Arrays_From_Maps_And_Sort__Result_Per_Type_PSM_Peptide_Protein( result_Per_SearchProgram.data_PerType_Peptide );
     _populate_Arrays_From_Maps_And_Sort__Result_Per_Type_PSM_Peptide_Protein( result_Per_SearchProgram.data_PerType_PSM );
+    _populate_Arrays_From_Maps_And_Sort__Result_Per_Type_PSM_Peptide_Protein( result_Per_SearchProgram.data_PerType_Protein );
 }
 
 /**

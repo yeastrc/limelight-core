@@ -16,6 +16,7 @@ import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserv
 import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
+import { SearchDataLookupParams_For_Single_ProjectSearchId } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 
 export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder__ProteinCoverage_Entry {
@@ -210,6 +211,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
     //  !! If these values change, then create a new instance of this class
 
     private _projectSearchId: number
+    private _searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
 
     //  Parent Object class
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
@@ -230,13 +232,15 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
      */
     private constructor(
         {
-            projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }: {
             projectSearchId: number
+            searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }
     ) {
         this._projectSearchId = projectSearchId;
+        this._searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId
         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId;
     }
 
@@ -247,14 +251,15 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
      */
     static getNewInstance(
         {
-            projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }: {
             projectSearchId: number
+            searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }
     ) {
         return new CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters({
-            projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            projectSearchId, searchDataLookupParams_For_Single_ProjectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         });
     }
 
@@ -400,11 +405,12 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
                     const requestObject = {
                         projectSearchId : this._projectSearchId,
                         reportedPeptideIds : reportedPeptideIds_Sorted,
+                        searchDataLookupParams_For_Single_ProjectSearchId : this._searchDataLookupParams_For_Single_ProjectSearchId
                     };
 
                     console.log("AJAX Call to get protein-coverage-per-reported-peptide-id START, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0002";
+                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0003";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
 

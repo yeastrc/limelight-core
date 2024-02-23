@@ -46,11 +46,11 @@ public class DB_Insert_SearchReportedPeptideProteinVersionDAO {
 
 	private static final String INSERT_SQL = "INSERT INTO srch_rep_pept__prot_seq_v_id_tbl "
 
-			+ " ( search_id, reported_peptide_id, protein_sequence_version_id, protein_is_decoy, protein_is_independent_decoy )"
+			+ " ( search_id, reported_peptide_id, protein_sequence_version_id, protein_is_decoy, protein_is_independent_decoy, protein_meets_default_filters )"
 
 			+ " VALUES ";
 	
-	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "( ?, ?, ?, ?, ? )";
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL = "( ?, ?, ?, ?, ?, ?  )";
 
 	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
 
@@ -127,6 +127,13 @@ public class DB_Insert_SearchReportedPeptideProteinVersionDAO {
 					} else {
 						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
 					}
+					counter++;
+					if ( item.isProtein_meetsDefaultFilters() ) {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );	
+					} else {
+						pstmt.setInt( counter,  Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_FALSE );
+					}
+
 				}
 				
 				pstmt.executeUpdate();

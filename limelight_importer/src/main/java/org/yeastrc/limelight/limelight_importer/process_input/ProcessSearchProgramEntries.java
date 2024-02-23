@@ -452,9 +452,15 @@ public class ProcessSearchProgramEntries {
 	 */
 	private void processMatchedProteinAnnotationTypes( SearchProgram searchProgram, SearchProgramEntry searchProgramEntry, int searchProgramId, int searchId, SearchProgramInfo searchProgramInfo ) throws Exception {
 
+		Map<String, AnnotationTypeDTO> proteinAnnotationTypeDTOMap = searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap();
+		if ( proteinAnnotationTypeDTOMap == null ) {
+			proteinAnnotationTypeDTOMap = new HashMap<>();
+			searchProgramEntry.setMatchedProteinAnnotationTypeDTOMap( proteinAnnotationTypeDTOMap );
+		}
+		
 		SearchProgram.MatchedProteinAnnotationTypes proteinAnnotationTypes =
 				searchProgram.getMatchedProteinAnnotationTypes();
-		
+
 		if ( proteinAnnotationTypes == null ) {
 			
 			//  No Matched protein annotation types to process 

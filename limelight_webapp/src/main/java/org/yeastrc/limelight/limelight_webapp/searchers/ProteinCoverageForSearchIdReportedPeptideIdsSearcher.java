@@ -27,6 +27,11 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
+import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
+import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
@@ -134,16 +139,20 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 		public boolean isProteinIsIndependentDecoy() {
 			return proteinIsIndependentDecoy;
 		}
-
-
 	}
+	
+	private final String PROTEIN_VALUE_FILTER_TABLE_ALIAS = "srch__protein_fltrbl_tbl_";
+	
 
-	private static final String QUERY_SQL = 
-			"SELECT id, reported_peptide_id, protein_sequence_version_id, protein_start_position, protein_end_position, protein_is_independent_decoy,"
+	private static final String QUERY_SQL_START = 
+			"SELECT id, reported_peptide_id, protein_coverage_tbl.protein_sequence_version_id, protein_start_position, protein_end_position, protein_is_independent_decoy,"
 			+ " protein_pre_residue, protein_post_residue, peptide_at_protein_start_flag, peptide_at_protein_end_flag "
 			+ " FROM "
-			+ " protein_coverage_tbl "
-			+ " WHERE search_id = ? AND reported_peptide_id IN ( "; //  Add closing ")" in code
+			+ " protein_coverage_tbl ";
+	
+	
+	private static final String QUERY_SQL_WHERE_START = 
+			" WHERE search_id = ? AND protein_coverage_tbl.reported_peptide_id IN ( "; //  Add closing ")" in code
 
 	/**
 	 * @param searchId
@@ -153,7 +162,9 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 	 */
 	@Override
 	public ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result getProteinCoverageForSearchIdReportedPeptideIds(
-			int searchId, List<Integer> reportedPeptideIds ) throws Exception {
+			int searchId, 
+			List<Integer> reportedPeptideIds,
+			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel ) throws Exception {
 
 		if ( reportedPeptideIds == null ) {
 			final String msg = "reportedPeptideIds == null";
@@ -170,6 +181,12 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 			
 			return result; //  EARLY RETURN
 		}
+
+		List<SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesList = searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList();
+		//  If null, create empty list
+		if ( proteinCutoffValuesList == null ) {
+			proteinCutoffValuesList = new ArrayList<>();
+		}
 		
 		List<ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item> results = new ArrayList<>();
 
@@ -177,7 +194,80 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 				
 		StringBuilder sqlSB = new StringBuilder( 100000 );
 		
-		sqlSB.append( QUERY_SQL );
+		sqlSB.append( QUERY_SQL_START );
+		
+		
+		//  TODO  Optimize for where ALL Protein Filters match Default Filters
+
+		
+		if ( ! proteinCutoffValuesList.isEmpty() ) {
+			
+			// Filter on Protein Annotations.  Subquery to remove duplicate reported_peptide_id 
+					
+			sqlSB.append( " INNER JOIN ( " );
+
+			sqlSB.append( " SELECT DISTINCT " ); 
+			
+			sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.protein_sequence_version_id " ); 
+			sqlSB.append( " FROM srch_rep_pept__prot_seq_v_id_tbl " );
+
+			//  Add inner join for each Protein cutoff
+
+			for ( int counter = 1; counter <= proteinCutoffValuesList.size(); counter++ ) {
+				sqlSB.append( " INNER JOIN " );
+				sqlSB.append( " srch__protein_filterable_annotation_tbl AS " );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( " ON "  );
+				sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.search_id = "  );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".search_id" );
+				sqlSB.append( " AND " );
+				sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.protein_sequence_version_id = "  );
+				sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+				sqlSB.append( Integer.toString( counter ) );
+				sqlSB.append( ".protein_sequence_version_id" );
+			}
+
+			sqlSB.append( " WHERE " );
+			sqlSB.append( " srch_rep_pept__prot_seq_v_id_tbl.search_id = ? " );
+
+			//  Process Protein Cutoffs for WHERE
+			{
+				int counter = 0; 
+				for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesProteinAnnotationLevel : proteinCutoffValuesList ) {
+					AnnotationTypeDTO proteinAnnotationTypeDTO = searcherCutoffValuesProteinAnnotationLevel.getAnnotationTypeDTO();
+					counter++;
+					sqlSB.append( " AND " );
+					sqlSB.append( " ( " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".search_id = ? AND " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".annotation_type_id = ? AND " );
+					sqlSB.append( PROTEIN_VALUE_FILTER_TABLE_ALIAS );
+					sqlSB.append( Integer.toString( counter ) );
+					sqlSB.append( ".value_double " );
+					if ( proteinAnnotationTypeDTO.getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() 
+							== FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+						sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
+					} else {
+						sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
+					}
+					sqlSB.append( "? " );
+					sqlSB.append( " ) " );
+				}
+			}	
+
+			sqlSB.append( "  ) AS protein_filtered_reported_peptide_ids " );
+			sqlSB.append( " ON protein_coverage_tbl.protein_sequence_version_id = protein_filtered_reported_peptide_ids.protein_sequence_version_id " );
+			
+		}
+		
+		
+		sqlSB.append( QUERY_SQL_WHERE_START );
 		
 		for ( int i = 0; i < reportedPeptideIds.size(); i++ ) {
 			if ( i != 0 ) {
@@ -198,6 +288,27 @@ public class ProteinCoverageForSearchIdReportedPeptideIdsSearcher extends Limeli
 			     PreparedStatement preparedStatement = connection.prepareStatement( querySQL ) ) {
 			
 			int counter = 0;
+
+			if ( ! proteinCutoffValuesList.isEmpty() ) {
+			
+				// Process Protein Cutoffs for SubSelect WHERE
+				
+				counter++;
+				preparedStatement.setInt( counter, searchId );
+				
+				{
+					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesProteinAnnotationLevel : proteinCutoffValuesList ) {
+						AnnotationTypeDTO srchPgmFilterableProteinAnnotationTypeDTO = searcherCutoffValuesProteinAnnotationLevel.getAnnotationTypeDTO();
+						counter++;
+						preparedStatement.setInt( counter, searchId );
+						counter++;
+						preparedStatement.setInt( counter, srchPgmFilterableProteinAnnotationTypeDTO.getId() );
+						counter++;
+						preparedStatement.setDouble( counter, searcherCutoffValuesProteinAnnotationLevel.getAnnotationCutoffValue() );
+					}
+				}
+			}
+
 			counter++;
 			preparedStatement.setInt( counter, searchId );
 			

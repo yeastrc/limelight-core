@@ -509,7 +509,7 @@ class SingleSearch_Only_Root extends React.Component< SingleSearch_Only_Root_Pro
                         show_SearchTag_Categories={ this.state.show_SearchTag_Categories }
                     />
                 </tr>
-                <FiltersFor_A_Search__PSM_Peptide_Protein_Root
+                <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
                     forMultipleSearches={ false }
                     propValue={ this.props.propValue }
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
@@ -637,7 +637,7 @@ class MultipleSearch_Only_Root extends React.Component< MultipleSearch_Only_Root
                             <td>
                                 <table style={ { borderWidth : 0 } } className=" table-no-border-no-cell-spacing-no-cell-padding ">
                                     <tbody>
-                                        <FiltersFor_A_Search__PSM_Peptide_Protein_Root
+                                        <Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root
                                             forMultipleSearches={ true }
                                             propValue={ this.props.propValue }
                                             openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
@@ -1268,7 +1268,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 /**
  *
  */
-interface FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props {
+interface Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props {
 
     forMultipleSearches : boolean
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
@@ -1283,7 +1283,7 @@ interface FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props {
 /**
  *
  */
-interface FiltersFor_A_Search__PSM_Peptide_Protein_Root_State {
+interface Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_State {
 
     placeholder?
 }
@@ -1291,12 +1291,12 @@ interface FiltersFor_A_Search__PSM_Peptide_Protein_Root_State {
 /**
  *
  */
-class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props, FiltersFor_A_Search__PSM_Peptide_Protein_Root_State > {
+class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props, Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_State > {
 
     /**
      *
      */
-    constructor(props : FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props) {
+    constructor(props : Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root_Props) {
         super(props);
 
         this.state = {};
@@ -1318,7 +1318,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
         if ( annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes.size > 0 ) {
 
             psmFilters = (
-                <FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
+                <Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
@@ -1335,7 +1335,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
         if ( annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.reportedPeptideFilterableAnnotationTypes.size > 0 ) {
 
             peptideFilters = (
-                <FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
+                <Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
@@ -1352,7 +1352,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
         if ( annotationTypeDataForProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 ) {
 
             proteinFilters = (
-                <FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
+                <Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
                     forMultipleSearches={ this.props.forMultipleSearches }
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
@@ -1384,7 +1384,7 @@ class FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Component< Fil
 /**
  *
  */
-interface FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props {
+interface Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props {
 
     forMultipleSearches : boolean
     propValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue
@@ -1400,7 +1400,7 @@ interface FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props {
 /**
  *
  */
-interface FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State {
+interface Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State {
 
     placeholder?
 }
@@ -1408,14 +1408,14 @@ interface FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State {
 /**
  *
  */
-class FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Component< FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props, FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State > {
+class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends React.Component< Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props, Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_State > {
 
     private _filterTypeLabel_ClickHandler_BindThis = this._filterTypeLabel_ClickHandler.bind(this);
 
     /**
      *
      */
-    constructor(props : FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props) {
+    constructor(props : Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props) {
         super(props);
 
         this.state = {};

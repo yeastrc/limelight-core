@@ -393,7 +393,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 				ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
 	    				proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher
-	    				.getProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIds( searchId, reportedPeptideIds );
+	    				.getProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIds( searchId, reportedPeptideIds, searcherCutoffValuesSearchLevel );
 	    		List<ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item> dbItemList =
 	    				searcherResult.getResults();
     		

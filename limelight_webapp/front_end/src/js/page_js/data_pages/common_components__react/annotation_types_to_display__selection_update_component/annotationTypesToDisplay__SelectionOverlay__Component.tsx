@@ -398,7 +398,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                     >
                         {/*  Main Body:  Scrollable Div  */}
 
-                        <PerType_PSM_Peptide_Protein__Section__Component
+                        <Internal__PerType_PSM_Peptide_Protein__Section__Component
                             type_HeaderLabelText="PSM Data"
                             annTypeDisplay={ psmAnnTypeDisplay }
                             filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.psmFilterableAnnotationTypes }
@@ -410,7 +410,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                             } }
                         />
 
-                        <PerType_PSM_Peptide_Protein__Section__Component
+                        <Internal__PerType_PSM_Peptide_Protein__Section__Component
                             type_HeaderLabelText="Peptide Data"
                             annTypeDisplay={ reportedPeptideAnnTypeDisplay }
                             filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.reportedPeptideFilterableAnnotationTypes }
@@ -422,6 +422,21 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                             } }
                         />
 
+                        { ( ( annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 )
+                            || ( annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 ) ) ? (
+
+                            <Internal__PerType_PSM_Peptide_Protein__Section__Component
+                                type_HeaderLabelText="Protein Data"
+                                annTypeDisplay={ matchedProteinAnnTypeDisplay }
+                                filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes }
+                                descriptiveAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes }
+                                searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                                callbackOn_DataChanged={ () => {
+                                    //  Force Rerender
+                                    this.setState({ forceRerenderObject: {} });
+                                } }
+                            />
+                        ) : null }
                     </div>
 
                     <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
@@ -499,7 +514,7 @@ const _create_local_AnnTypeDisplay_ForAll_ProjectSearchId = function(props: Anno
 /**
  *
  */
-interface PerType_PSM_Peptide_Section__Component_Props {
+interface Internal__PerType_PSM_Peptide_Section__Component_Props {
 
     type_HeaderLabelText: string
 
@@ -514,7 +529,7 @@ interface PerType_PSM_Peptide_Section__Component_Props {
 /**
  *
  */
-interface PerType_PSM_Peptide_Section__Component_State {
+interface Internal__PerType_PSM_Peptide_Section__Component_State {
 
     _placeholder: any
 }
@@ -522,7 +537,7 @@ interface PerType_PSM_Peptide_Section__Component_State {
 /**
  *
  */
-class PerType_PSM_Peptide_Protein__Section__Component extends React.Component< PerType_PSM_Peptide_Section__Component_Props, PerType_PSM_Peptide_Section__Component_State > {
+class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Component< Internal__PerType_PSM_Peptide_Section__Component_Props, Internal__PerType_PSM_Peptide_Section__Component_State > {
 
     private _onDragEnd_CurrentDisplayItem_BindThis = this._onDragEnd_CurrentDisplayItem.bind(this);
 
@@ -536,7 +551,7 @@ class PerType_PSM_Peptide_Protein__Section__Component extends React.Component< P
     /**
      *
      */
-    constructor(props: PerType_PSM_Peptide_Section__Component_Props) {
+    constructor(props: Internal__PerType_PSM_Peptide_Section__Component_Props) {
         super(props);
 
         this.state = {

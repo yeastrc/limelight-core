@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_importer.process_input;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,10 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotation;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotation;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProtein;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteinLabel;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
@@ -35,6 +40,10 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PeptideModifications;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psm;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPosition;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgram;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgram.MatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchProgramInfo;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchPrograms;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinImporterContainerDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceAnnotationDAO;
 import org.yeastrc.limelight.limelight_importer.dao.ProteinSequenceDAO;
@@ -42,25 +51,34 @@ import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinC
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_ProteinCoverage_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchProteinVersionDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_Protein_DescriptiveAnnotation_AndChildren_BatchInserter_DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_Protein_FilterableAnnotation_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceAnnotationDTO;
 import org.yeastrc.limelight.limelight_importer.dto.ProteinSequenceVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchDTO_Importer;
-import org.yeastrc.limelight.limelight_importer.dto.SearchProteinVersionDTO;
 import org.yeastrc.limelight.limelight_importer.dto.SearchReportedPeptideProteinVersionDTO;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object;
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.objects.ProteinImporterContainer;
-import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
+import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.peptide_protein_position.ProteinCoverageDTO_SaveToDB_NoDups;
 import org.yeastrc.limelight.limelight_importer.process_input.GetProteinsForPeptide.GetProteinsForPeptideResult_EntryPerProtein;
 import org.yeastrc.limelight.limelight_importer.utils.Create_ProteinSequenceAnnotationDTO_From_MatchedProteinLabel_Util;
+import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoverageDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProteinCoveragePeptideProteinProteinResidueDifferentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchProteinVersionDTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_Protein_DescriptiveAnnotation_DTO;
+import org.yeastrc.limelight.limelight_shared.dto.Search_Protein_FilterableAnnotation_DTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FilterableDescriptiveAnnotationType;
 import org.yeastrc.limelight.limelight_shared.protein_coverage_common.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util;
 import org.yeastrc.limelight.limelight_shared.protein_coverage_common.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util.Compute_Peptide_Pre_Post_Residues_For_ProteinSequence_Peptide_StartEnd_Positions_Util__Result;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
@@ -93,7 +111,7 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 			Input_LimelightXMLFile_InternalHolder_Root_Object input_LimelightXMLFile_InternalHolder_Root_Object, 
 			SearchDTO_Importer search,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
-			ReportedPeptideAndPsmFilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
+			ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries
 			) throws Exception {
 
@@ -117,9 +135,57 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 			//  Inserted proteinSequenceVersionIds
 			Set<Integer> proteinSequenceVersionIdsAll = new HashSet<>();
+			
+			//////
+			
 
-			//  To be Inserted 
-			Set<SearchProteinVersionDTO> searchProteinVersionDTO_ToBeInserted = new HashSet<>();
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable = null;
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable = null;
+			
+			{
+				Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_Local_ToBuild = new HashSet<>();
+				Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_Local_ToBuild = new HashSet<>();
+
+				for ( SearchProgramEntry searchProgramEntry : searchProgramEntryMap.values() ) {
+
+					if ( searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap() != null && ( ! searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap().isEmpty() ) ) {
+						for ( AnnotationTypeDTO annotationTypeDTO : searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap().values() ) {
+							if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType() == FilterableDescriptiveAnnotationType.FILTERABLE ) {
+
+								annotationTypeIds_All_MatchedProtein_Filterable_Local_ToBuild.add( annotationTypeDTO.getId() );
+
+							} else if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType() == FilterableDescriptiveAnnotationType.DESCRIPTIVE ) {
+
+								annotationTypeIds_All_MatchedProtein_Descriptive_Local_ToBuild.add( annotationTypeDTO.getId() );
+
+							} else {
+								String msg = "annotationTypeDTO.getFilterableDescriptiveAnnotationType() NOT FILTERABLE or DESCRIPTIVE";
+								log.error(msg);
+								throw new LimelightImporterInternalException(msg);
+							}
+						}
+					}
+				}
+				
+				//  Copy to main as unmodifiable
+				
+				annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable = Collections.unmodifiableSet( annotationTypeIds_All_MatchedProtein_Filterable_Local_ToBuild );
+				annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable = Collections.unmodifiableSet( annotationTypeIds_All_MatchedProtein_Descriptive_Local_ToBuild );
+			}
+			
+			//////
+			
+			int internal__MatchedProtein_SearchProteinVersionDTO__Holder_ToBeInserted_List_InitialSize =
+					input_LimelightXMLFile_InternalHolder_Root_Object.get_InternalHolder_ReportedPeptide_Object_Unmodifiable().size() * 100;
+			
+			if ( internal__MatchedProtein_SearchProteinVersionDTO__Holder_ToBeInserted_List_InitialSize < 1000000 ) {
+				internal__MatchedProtein_SearchProteinVersionDTO__Holder_ToBeInserted_List_InitialSize = 1000000;
+			}
+
+			//  Already Inserted 
+			Map<Integer, SearchProteinVersionDTO> searchProteinVersionDTO_InsertedEntries_Map_Key_ProteinSequenceVersionId = new HashMap<>( internal__MatchedProtein_SearchProteinVersionDTO__Holder_ToBeInserted_List_InitialSize );
+			
+			/////
 
 			int reportedPeptides_SearchImportInProgress_Counter = 0; // NOT a total counter. Is reset to zero.
 
@@ -155,11 +221,13 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 				Set<Integer> peptidePositionsToGetProteinResidueLettersFor = getPeptidePositionsToGetProteinResidueLettersFor( reportedPeptide );
 
+				
+				//   Get Proteins for Peptide
+				
 				GetProteinsForPeptide.GetProteinsForPeptideResult getProteinsForPeptideResult =
 						GetProteinsForPeptide.getSingletonInstance().getProteinsForPeptide( reportedPeptide, peptidePositionsToGetProteinResidueLettersFor );
 
-				Map<ProteinImporterContainer, GetProteinsForPeptideResult_EntryPerProtein> proteins_PeptidePositionsInProtein =
-						getProteinsForPeptideResult.getProteins_EntryPerProtein();
+				Map<ProteinImporterContainer, GetProteinsForPeptideResult_EntryPerProtein> proteins_PeptidePositionsInProtein = getProteinsForPeptideResult.getProteins_EntryPerProtein();
 
 				//  If no proteins Mapped, throw error
 				if ( proteins_PeptidePositionsInProtein.isEmpty() ) {
@@ -212,26 +280,22 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 					proteinVersionIdsForReportedPeptide.add( proteinSequenceVersionDTO.getId() );
 					proteinSequenceVersionIdsAll.add( proteinSequenceVersionDTO.getId() );
 
-					boolean protein_IsDecoy = false;
-					boolean protein_IsIndependentDecoy = false;
+					SearchProteinVersionDTO searchProteinVersionDTO = searchProteinVersionDTO_InsertedEntries_Map_Key_ProteinSequenceVersionId.get( proteinSequenceVersionDTO.getId() );
+					
+					if ( searchProteinVersionDTO == null ) {
 
-					{
-						MatchedProtein matchedProtein = proteinImporterContainer.getMatchedProteinFromLimelightXMLFile();
-						if ( matchedProtein.isIsDecoy() != null && matchedProtein.isIsDecoy().booleanValue() ) {
-							protein_IsDecoy = true;
-						}
-						if ( matchedProtein.isIsIndependentDecoy() != null && matchedProtein.isIsIndependentDecoy().booleanValue() ) {
-							protein_IsIndependentDecoy = true;
-						}
-					}
+						searchProteinVersionDTO = create_And_Insert__SearchProteinVersionDTO__Return_SearchProteinVersionDTO( 
 
-					{
-						SearchProteinVersionDTO item = new SearchProteinVersionDTO();
-						item.setSearchId(searchId);
-						item.setProteinSequenceVersionId(proteinSequenceVersionDTO.getId());
-						item.setProtein_IsDecoy(protein_IsDecoy);
-						item.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
-						searchProteinVersionDTO_ToBeInserted.add(item);
+								proteinImporterContainer.getMatchedProteinFromLimelightXMLFile(),
+								proteinSequenceVersionDTO,
+								searchProgramEntryMap,
+								search,
+								annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable,
+								annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable
+								);
+
+						//  Save to Map for next proteinSequenceVersionDTO.getId()
+						searchProteinVersionDTO_InsertedEntries_Map_Key_ProteinSequenceVersionId.put( proteinSequenceVersionDTO.getId(), searchProteinVersionDTO );
 					}
 
 					{
@@ -239,8 +303,9 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 						searchReportedPeptideProteinVersionDTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
 						searchReportedPeptideProteinVersionDTO.setSearchId( searchId );
 						searchReportedPeptideProteinVersionDTO.setReportedPeptideId( reportedPeptideDTO.getId() );
-						searchReportedPeptideProteinVersionDTO.setProtein_IsDecoy(protein_IsDecoy);
-						searchReportedPeptideProteinVersionDTO.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
+						searchReportedPeptideProteinVersionDTO.setProtein_IsDecoy( searchProteinVersionDTO.isProtein_IsDecoy() );
+						searchReportedPeptideProteinVersionDTO.setProtein_IsIndependentDecoy( searchProteinVersionDTO.isProtein_IsIndependentDecoy() );
+						searchReportedPeptideProteinVersionDTO.setProtein_meetsDefaultFilters( searchProteinVersionDTO.isProtein_meetsDefaultFilters() );
 						
 						DB_Insert_SearchReportedPeptideProteinVersion_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( searchReportedPeptideProteinVersionDTO );
 					}
@@ -276,8 +341,8 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 						proteinCoverageDTO.setProteinStartPosition( peptidePositionInProtein );
 						proteinCoverageDTO.setProteinEndPosition( peptidePositionInProtein + peptideLength - 1 );
 						proteinCoverageDTO.setPeptideProteinMatchNotExactMatch( peptideProteinMatchNotExactMatch );
-						proteinCoverageDTO.setProtein_IsDecoy(protein_IsDecoy);
-						proteinCoverageDTO.setProtein_IsIndependentDecoy(protein_IsIndependentDecoy);
+						proteinCoverageDTO.setProtein_IsDecoy( searchProteinVersionDTO.isProtein_IsDecoy() );
+						proteinCoverageDTO.setProtein_IsIndependentDecoy( searchProteinVersionDTO.isProtein_IsIndependentDecoy() );
 						proteinCoverageDTO.setProtein_PreResidue(protein_PreResidue);
 						proteinCoverageDTO.setProtein_PostResidue(protein_PostResidue);
 						proteinCoverageDTO.setPeptideAtProteinStart_Flag(peptideAtProteinStart_Flag);
@@ -299,14 +364,72 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 			}
 
 
-			insert_searchProteinVersionDTO_ToBeInserted( searchProteinVersionDTO_ToBeInserted, search );
-
 		} // End if ( input_LimelightXMLFile_InternalHolder_Root_Object.is_Any_InternalHolder_ReportedPeptide_Objects() )
 		
+		
+		DB_Insert_Search_Protein_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+			
+		DB_Insert_Search_Protein_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
 		DB_Insert_ProteinCoverage_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
 		DB_Insert_ProteinCoveragePeptideProteinProteinResidueDifferent_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		
+		{
+			//  If there are Matched Protein level Filterable and/or Descriptive Type Annotations,
+			//     Validate that ALL Matched Proteins have been Matched to Reported Peptides
+			
+			
+			boolean found_ANY_MatchedProtein_Filterable_AndOr_Descriptive_Type_Annotations = false;
+
+			SearchProgramInfo searchProgramInfo = input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getSearchProgramInfo();
+			
+			if ( searchProgramInfo != null ) {
+				SearchPrograms searchPrograms = searchProgramInfo.getSearchPrograms();
+				if ( searchPrograms != null ) {
+					List<SearchProgram> searchProgramList = searchPrograms.getSearchProgram();
+					if ( searchProgramList != null ) {
+						for ( SearchProgram searchProgram : searchProgramList ) {
+							MatchedProteinAnnotationTypes matchedProteinAnnotationTypes = searchProgram.getMatchedProteinAnnotationTypes();
+							if ( matchedProteinAnnotationTypes != null ) {
+								{
+									FilterableMatchedProteinAnnotationTypes filterableMatchedProteinAnnotationTypes = matchedProteinAnnotationTypes.getFilterableMatchedProteinAnnotationTypes();
+									if ( filterableMatchedProteinAnnotationTypes != null ) {
+										if ( ! filterableMatchedProteinAnnotationTypes.getFilterableMatchedProteinAnnotationType().isEmpty()  ) {
+
+											//  Found Filterable so set to true and exit loop
+											found_ANY_MatchedProtein_Filterable_AndOr_Descriptive_Type_Annotations = true;
+											break;
+										}
+									}
+								}
+								{
+									DescriptiveMatchedProteinAnnotationTypes descriptiveMatchedProteinAnnotationTypes = matchedProteinAnnotationTypes.getDescriptiveMatchedProteinAnnotationTypes();
+									if ( descriptiveMatchedProteinAnnotationTypes != null ) {
+										if ( ! descriptiveMatchedProteinAnnotationTypes.getDescriptiveMatchedProteinAnnotationType().isEmpty()  ) {
+											found_ANY_MatchedProtein_Filterable_AndOr_Descriptive_Type_Annotations = true;
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			if ( found_ANY_MatchedProtein_Filterable_AndOr_Descriptive_Type_Annotations ) {
+
+				if ( ! GetProteinsForPeptide.getSingletonInstance().is_All_MatchedProteins_WereMatchedTo_ReportedPeptides() ) {
+
+					String msg = "Not ALL Matched Proteins are Matched to Reported Peptides.  This is REQUIRED since Matched Proteins have Filterable and/or Descriptive Annotation Types.";
+					log.error(msg);
+					throw new LimelightImporterDataException(msg);
+
+				}
+			}
+		}
 		
 
 		GetProteinsForPeptide.getSingletonInstance().logTotalElapsedTime_SaveToImporterStatsTable( search );
@@ -399,26 +522,302 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 	/**
 	 * @throws Exception
 	 */
-	private void insert_searchProteinVersionDTO_ToBeInserted( Set<SearchProteinVersionDTO> searchProteinVersionDTO_ToBeInserted, SearchDTO_Importer search ) throws Exception {
+	private SearchProteinVersionDTO create_And_Insert__SearchProteinVersionDTO__Return_SearchProteinVersionDTO( 
+			
+			MatchedProtein matchedProtein,
+			ProteinSequenceVersionDTO proteinSequenceVersionDTO,
+			
+			Map<String, SearchProgramEntry> searchProgramEntryMap,
+			SearchDTO_Importer search,
 
-		int searchImportInProgress_Counter = 0; // NOT a total counter. Is reset to zero.
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable,
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable
+			
+			) throws Exception {
 
-		for ( SearchProteinVersionDTO searchProteinVersionDTO : searchProteinVersionDTO_ToBeInserted ) {
 
-			{
-				searchImportInProgress_Counter++;
-				if ( searchImportInProgress_Counter > 400 ) {
-					//  at 400th entry every 400 entry, Updates 'heart beat'
-					Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter.getSingletonInstance().saveOrUpdate_ForSearchId(search.getId());
+		boolean protein_IsDecoy = false;
+		boolean protein_IsIndependentDecoy = false;
 
-					searchImportInProgress_Counter = 0;  	//  reset
-				}
-			}
+		if ( matchedProtein.isIsDecoy() != null && matchedProtein.isIsDecoy().booleanValue() ) {
+			protein_IsDecoy = true;
+		}
+		if ( matchedProtein.isIsIndependentDecoy() != null && matchedProtein.isIsIndependentDecoy().booleanValue() ) {
+			protein_IsIndependentDecoy = true;
+		}
 
-			DB_Insert_SearchProteinVersionDAO.getInstance().save( searchProteinVersionDTO );
-		}	
+		SearchProteinVersionDTO searchProteinVersionDTO = new SearchProteinVersionDTO();
+
+		searchProteinVersionDTO.setSearchId( search.getId() );
+		searchProteinVersionDTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
+		searchProteinVersionDTO.setProtein_IsDecoy( protein_IsDecoy );
+		searchProteinVersionDTO.setProtein_IsIndependentDecoy( protein_IsIndependentDecoy );
+
+		Internal__MatchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject =
+				matchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues( 
+
+						matchedProtein,
+						proteinSequenceVersionDTO,
+						
+						searchProgramEntryMap,
+						search,
+
+						annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable,
+						annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable
+						
+						);
+
+		boolean protein_meetsDefaultFilters = create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject.protein_meetsDefaultFilters;
+
+		searchProteinVersionDTO.setProtein_meetsDefaultFilters(protein_meetsDefaultFilters);
+		
+		DB_Insert_SearchProteinVersionDAO.getInstance().save( searchProteinVersionDTO );
+
+		
+		//  Save Filterable Annotation Data
+		for ( Search_Protein_FilterableAnnotation_DTO search_Protein_FilterableAnnotation_DTO : create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject.search_Protein_FilterableAnnotation_DTO_List ) {
+			
+			DB_Insert_Search_Protein_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object(search_Protein_FilterableAnnotation_DTO);
+		}
+		
+		//  Save Descriptive Annotation Data
+		for ( Search_Protein_DescriptiveAnnotation_DTO search_Protein_DescriptiveAnnotation_DTO : create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject.search_Protein_DescriptiveAnnotation_DTO_List ) {
+			
+			DB_Insert_Search_Protein_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( search_Protein_DescriptiveAnnotation_DTO );
+		}
+		
+		return searchProteinVersionDTO;
+	}	
+
+	/**
+	 * Returned from internal method 'matchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues'
+	 *
+	 */
+	private static class Internal__MatchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject {
+		
+		boolean protein_meetsDefaultFilters;
+		
+		List<Search_Protein_FilterableAnnotation_DTO> search_Protein_FilterableAnnotation_DTO_List;
+		
+		List<Search_Protein_DescriptiveAnnotation_DTO> search_Protein_DescriptiveAnnotation_DTO_List;
 	}
 
+	/**
+	 * @param holder
+	 * @param searchProgramEntryMap
+	 * @return
+	 * @throws Exception 
+	 */
+	private 
+	
+	Internal__MatchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject
+	
+	matchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues(
+			
+			MatchedProtein matchedProtein,
+			ProteinSequenceVersionDTO proteinSequenceVersionDTO,
+			
+			Map<String, SearchProgramEntry> searchProgramEntryMap,
+			SearchDTO_Importer search,
+
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable,
+			Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable
+			
+			) throws Exception {
+
+
+		Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_LocalCopy_ForDeletions = new HashSet<>( annotationTypeIds_All_MatchedProtein_Filterable_Unmodifiable );
+		Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_LocalCopy_ForDeletions = new HashSet<>( annotationTypeIds_All_MatchedProtein_Descriptive_Unmodifiable );
+		
+		Set<Integer> annotationTypeIds_All_MatchedProtein_Filterable_DuplicateCheck = new HashSet<>();
+		Set<Integer> annotationTypeIds_All_MatchedProtein_Descriptive_DuplicateCheck = new HashSet<>();
+		
+		////
+
+		List<Search_Protein_FilterableAnnotation_DTO> search_Protein_FilterableAnnotation_DTO_List = new ArrayList<>();
+		
+		List<Search_Protein_DescriptiveAnnotation_DTO> search_Protein_DescriptiveAnnotation_DTO_List = new ArrayList<>();
+		
+		////
+		
+		boolean protein_meetsDefaultFilters = true;  //  Default to true
+
+		if ( matchedProtein.getMatchedProteinAnnotations() != null 
+				&& matchedProtein.getMatchedProteinAnnotations().getFilterableMatchedProteinAnnotations() != null ) {
+
+			if ( matchedProtein.getMatchedProteinAnnotations().getFilterableMatchedProteinAnnotations().getFilterableMatchedProteinAnnotation() != null
+					&& ( ! matchedProtein.getMatchedProteinAnnotations().getFilterableMatchedProteinAnnotations().getFilterableMatchedProteinAnnotation().isEmpty() ) ) {
+
+				//  Process Filterable Annotations on Matched Protein
+				
+				for ( FilterableMatchedProteinAnnotation filterableMatchedProteinAnnotation : matchedProtein.getMatchedProteinAnnotations().getFilterableMatchedProteinAnnotations().getFilterableMatchedProteinAnnotation() ) {
+
+					SearchProgramEntry searchProgramEntry = searchProgramEntryMap.get( filterableMatchedProteinAnnotation.getSearchProgram() );
+					if ( searchProgramEntry == null ) {
+						//  TODO  Maybe change this exception text
+						throw new LimelightImporterDataException( "'search_program' on 'matched_protein_filterable_annotation' not found in matched_protein filterable types: " + filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+
+					AnnotationTypeDTO annotationTypeDTO = searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap().get( filterableMatchedProteinAnnotation.getAnnotationName() );
+					if ( annotationTypeDTO == null ) {
+						//  TODO  Maybe change this exception text
+						throw new LimelightImporterDataException( "'annotation_name' on 'matched_protein_filterable_annotation' not found in matched_protein filterable types: " 
+								+ filterableMatchedProteinAnnotation.getAnnotationName()
+								+ ", 'search_program' : "
+								+ filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+
+					if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType() != FilterableDescriptiveAnnotationType.FILTERABLE ) {
+						throw new LimelightImporterDataException( "'annotation_name' on 'matched_protein_filterable_annotation' is a 'filterable' type but in in matched_protein filterable types it is NOT a 'filterable' type: " 
+								+ filterableMatchedProteinAnnotation.getAnnotationName()
+								+ ", 'search_program' : "
+								+ filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+					
+					AnnotationTypeFilterableDTO annotationTypeFilterableDTO = annotationTypeDTO.getAnnotationTypeFilterableDTO();
+					if ( annotationTypeFilterableDTO == null ) {
+						throw new LimelightImporterInternalException( "annotationTypeDTO is FILTERABLE BUT annotationTypeDTO.getAnnotationTypeFilterableDTO() returned null. annotationTypeDTO.getId(): " + annotationTypeDTO.getId()
+						+ ", Annotation name: " 
+						+ filterableMatchedProteinAnnotation.getAnnotationName()
+						+ ", 'search_program' : "
+						+ filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+					
+					if ( ! annotationTypeIds_All_MatchedProtein_Filterable_DuplicateCheck.add( annotationTypeDTO.getId() ) ) {
+						//  Duplicate Search Program/Annotation Name under Matched Protein
+						throw new LimelightImporterDataException( "'search_program' / 'annotation_name' on 'matched_protein_filterable_annotation' is duplicate. Annotation name: " 
+								+ filterableMatchedProteinAnnotation.getAnnotationName()
+								+ ", 'search_program' : "
+								+ filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+					
+					//  '.remove' for validating all entries in matched proteins types have entries in matched protein
+					if ( ! annotationTypeIds_All_MatchedProtein_Filterable_LocalCopy_ForDeletions.remove( annotationTypeDTO.getId() ) ) {
+						throw new LimelightImporterInternalException( "Remove failed 'annotationTypeIds_All_MatchedProtein_Filterable_LocalCopy_ForDeletions.remove( annotationTypeDTO.getId() )'. annotationTypeDTO.getId(): " + annotationTypeDTO.getId()
+								+ ", Annotation name: " 
+								+ filterableMatchedProteinAnnotation.getAnnotationName()
+								+ ", 'search_program' : "
+								+ filterableMatchedProteinAnnotation.getSearchProgram() );
+					}
+					
+					if ( annotationTypeFilterableDTO.isDefaultFilter() ) {
+						
+						if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+							if ( filterableMatchedProteinAnnotation.getValue().doubleValue() 
+									< annotationTypeFilterableDTO.getDefaultFilterValueAtDatabaseLoad() ) {
+							
+								protein_meetsDefaultFilters = false;
+							}
+						} else if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
+							if ( filterableMatchedProteinAnnotation.getValue().doubleValue() 
+									> annotationTypeFilterableDTO.getDefaultFilterValueAtDatabaseLoad() ) {
+							
+								protein_meetsDefaultFilters = false;
+							}
+						} else {
+							String msg = " Unexpected FilterDirectionType value:  " + annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum()
+									+ ", for annotationTypeFilterableDTO.getAnnotationTypeId(): " + annotationTypeFilterableDTO.getAnnotationTypeId();
+							log.error( msg );
+							throw new LimelightImporterInternalException(msg);
+						}
+					}
+					
+
+					Search_Protein_FilterableAnnotation_DTO search_Protein_FilterableAnnotation_DTO = new Search_Protein_FilterableAnnotation_DTO();
+					
+					search_Protein_FilterableAnnotation_DTO.setSearchId( search.getId() );
+					search_Protein_FilterableAnnotation_DTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
+					search_Protein_FilterableAnnotation_DTO.setAnnotationTypeId( annotationTypeDTO.getId() );
+					search_Protein_FilterableAnnotation_DTO.setValueDouble( filterableMatchedProteinAnnotation.getValue().doubleValue() );
+					search_Protein_FilterableAnnotation_DTO.setValueString( filterableMatchedProteinAnnotation.getValue().toString() );
+					
+					search_Protein_FilterableAnnotation_DTO_List.add( search_Protein_FilterableAnnotation_DTO );
+				}
+			
+			
+				if ( ! annotationTypeIds_All_MatchedProtein_Filterable_LocalCopy_ForDeletions.isEmpty() ) {
+					
+					//  Failed to find Search Program / Annotation for all entries under Matched Protein Types
+
+					//  TODO  Maybe change this exception text
+					throw new LimelightImporterDataException( "Not all matched_protein filterable types found under 'matched_protein'" );
+					
+				}
+			}
+			
+
+			//  Process Descriptive Annotations on Matched Protein
+			
+			for ( DescriptiveMatchedProteinAnnotation descriptiveMatchedProteinAnnotation : matchedProtein.getMatchedProteinAnnotations().getDescriptiveMatchedProteinAnnotations().getDescriptiveMatchedProteinAnnotation() ) {
+
+				SearchProgramEntry searchProgramEntry = searchProgramEntryMap.get( descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				if ( searchProgramEntry == null ) {
+					//  TODO  Maybe change this exception text
+					throw new LimelightImporterDataException( "'search_program' on 'matched_protein_descriptive_annotation' not found in matched_protein descriptive types: " + descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				}
+
+				AnnotationTypeDTO annotationTypeDTO = searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap().get( descriptiveMatchedProteinAnnotation.getAnnotationName() );
+				if ( annotationTypeDTO == null ) {
+					//  TODO  Maybe change this exception text
+					throw new LimelightImporterDataException( "'annotation_name' on 'matched_protein_descriptive_annotation' not found in matched_protein descriptive types: " 
+							+ descriptiveMatchedProteinAnnotation.getAnnotationName()
+							+ ", 'search_program' : "
+							+ descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				}
+
+				if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType() != FilterableDescriptiveAnnotationType.DESCRIPTIVE ) {
+					throw new LimelightImporterDataException( "'annotation_name' on 'matched_protein_descriptive_annotation' is a 'descriptive' type but in in matched_protein descriptive types it is NOT a 'descriptive' type: " 
+							+ descriptiveMatchedProteinAnnotation.getAnnotationName()
+							+ ", 'search_program' : "
+							+ descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				}
+								
+				if ( ! annotationTypeIds_All_MatchedProtein_Descriptive_DuplicateCheck.add( annotationTypeDTO.getId() ) ) {
+					//  Duplicate Search Program/Annotation Name under Matched Protein
+					throw new LimelightImporterDataException( "'search_program' / 'annotation_name' on 'matched_protein_descriptive_annotation' is duplicate. Annotation name: " 
+							+ descriptiveMatchedProteinAnnotation.getAnnotationName()
+							+ ", 'search_program' : "
+							+ descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				}
+				
+				//  '.remove' for validating all entries in matched proteins types have entries in matched protein
+				if ( ! annotationTypeIds_All_MatchedProtein_Descriptive_LocalCopy_ForDeletions.remove( annotationTypeDTO.getId() ) ) {
+					throw new LimelightImporterInternalException( "Remove failed 'annotationTypeIds_All_MatchedProtein_Descriptive_LocalCopy_ForDeletions.remove( annotationTypeDTO.getId() )'. annotationTypeDTO.getId(): " + annotationTypeDTO.getId()
+							+ ", Annotation name: " 
+							+ descriptiveMatchedProteinAnnotation.getAnnotationName()
+							+ ", 'search_program' : "
+							+ descriptiveMatchedProteinAnnotation.getSearchProgram() );
+				}
+				
+				Search_Protein_DescriptiveAnnotation_DTO search_Protein_DescriptiveAnnotation_DTO = new Search_Protein_DescriptiveAnnotation_DTO();
+				
+				search_Protein_DescriptiveAnnotation_DTO.setSearchId( search.getId() );
+				search_Protein_DescriptiveAnnotation_DTO.setProteinSequenceVersionId( proteinSequenceVersionDTO.getId() );
+				search_Protein_DescriptiveAnnotation_DTO.setAnnotationTypeId( annotationTypeDTO.getId() );
+				search_Protein_DescriptiveAnnotation_DTO.setValueString( descriptiveMatchedProteinAnnotation.getValue().toString() );
+				
+				search_Protein_DescriptiveAnnotation_DTO_List.add( search_Protein_DescriptiveAnnotation_DTO );
+			}
+		
+		
+			if ( ! annotationTypeIds_All_MatchedProtein_Descriptive_LocalCopy_ForDeletions.isEmpty() ) {
+				
+				//  Failed to find Search Program / Annotation for all entries under Matched Protein Types
+
+				//  TODO  Maybe change this exception text
+				throw new LimelightImporterDataException( "Not all matched_protein descriptive types found under 'matched_protein'" );
+				
+			}
+		}
+		
+		Internal__MatchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject methodResult = new Internal__MatchedProtein__Create__AnnotationRecrds_Determine_If_Filterable_Annotations_Pass_Default_FilterValues__ReturnObject();
+		
+		methodResult.protein_meetsDefaultFilters = protein_meetsDefaultFilters;
+		methodResult.search_Protein_FilterableAnnotation_DTO_List = search_Protein_FilterableAnnotation_DTO_List;
+		methodResult.search_Protein_DescriptiveAnnotation_DTO_List = search_Protein_DescriptiveAnnotation_DTO_List;
+				
+		return methodResult;
+	}
 
 
 	/**
@@ -499,5 +898,6 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 			}
 		}
 	}
-
+	
+	
 }

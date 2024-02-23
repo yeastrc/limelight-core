@@ -432,7 +432,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
             try {
                 const requestObject = {
                     projectSearchId : this._projectSearchId,
-                    searchDataLookupParams_For_Single_ProjectSearchId : this._searchDataLookupParams_For_Single_ProjectSearchId,
+                    searchDataLookupParams_For_Single_ProjectSearchId : this._searchDataLookupParams_For_Single_ProjectSearchId
                 };
 
                 console.log("AJAX Call to get Peptide List START, Now: " + new Date() );

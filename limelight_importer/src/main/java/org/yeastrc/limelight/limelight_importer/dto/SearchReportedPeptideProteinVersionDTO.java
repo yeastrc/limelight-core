@@ -29,13 +29,16 @@ public class SearchReportedPeptideProteinVersionDTO {
 	private boolean protein_IsDecoy;
 	private boolean protein_IsIndependentDecoy;
 
+	private boolean protein_meetsDefaultFilters;  // Set to True if NO Default Filters (Protein Filterable Annotation Types)
+
 	@Override
 	public String toString() {
 		return "SearchReportedPeptideProteinVersionDTO [searchId=" + searchId + ", reportedPeptideId="
 				+ reportedPeptideId + ", proteinSequenceVersionId=" + proteinSequenceVersionId + ", protein_IsDecoy="
-				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy + "]";
+				+ protein_IsDecoy + ", protein_IsIndependentDecoy=" + protein_IsIndependentDecoy
+				+ ", protein_meetsDefaultFilters=" + protein_meetsDefaultFilters + "]";
 	}
-
+	
 
 	public int getSearchId() {
 		return searchId;
@@ -68,5 +71,10 @@ public class SearchReportedPeptideProteinVersionDTO {
 	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
 		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
 	}
-	
+	public boolean isProtein_meetsDefaultFilters() {
+		return protein_meetsDefaultFilters;
+	}
+	public void setProtein_meetsDefaultFilters(boolean protein_meetsDefaultFilters) {
+		this.protein_meetsDefaultFilters = protein_meetsDefaultFilters;
+	}
 }

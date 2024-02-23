@@ -360,12 +360,24 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
     proteinCoverageRatio : number
     proteinCoverageRatioDisplay : string
 
+    filterableDescriptiveAnnotationDisplayItem_Map_Key_AnnotationTypeId: Map<number, ProteinDataDisplay_ProteinList_Sub_Item__FilterableDescriptiveAnnotationDisplayItem>
+
     get peptideCount() {
         if ( ! this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set ) {
             return 0;
         }
         return this.reportedPeptide_CommonValue_EncodedString_ForProtein_Set.size;
     }
+}
+
+/**
+ *
+ */
+export class ProteinDataDisplay_ProteinList_Sub_Item__FilterableDescriptiveAnnotationDisplayItem {
+
+    annotationTypeId: number
+    valueDisplay: string
+    valueSort: number | string //  DataTable valueSort
 }
 
 /**

@@ -19,6 +19,7 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 
 import java.util.List;
 
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcher.ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result;
 
 /**
@@ -34,6 +35,6 @@ public interface ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF {
 	 * @throws Exception
 	 */
 	ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result getProteinCoverageForSearchIdReportedPeptideIds(
-			int searchId, List<Integer> reportedPeptideIds) throws Exception;
+			int searchId, List<Integer> reportedPeptideIds, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
 
 }

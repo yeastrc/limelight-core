@@ -199,7 +199,8 @@ public class SearcherCutoffValues_Factory {
 		return createSearcherCutoffValuesSearchLevel_Internal( 
 				inputItem, 
 				psmFilterableAnnotationTypeDTO, 
-				reportedPeptideFilterableAnnotationTypeDTO );
+				reportedPeptideFilterableAnnotationTypeDTO,
+				matchedProteinFilterableAnnotationTypeDTO );
 	}
 
 	/**
@@ -210,24 +211,20 @@ public class SearcherCutoffValues_Factory {
 	public SearcherCutoffValuesSearchLevel createSearcherCutoffValuesSearchLevel_Internal( 
 			SearchDataLookupParams_For_Single_ProjectSearchId inputItem,
 			Map<Integer, AnnotationTypeDTO> srchPgmFilterablePsmAnnotationTypeDTOMap,
-			Map<Integer, AnnotationTypeDTO> srchPgmFilterableReportedPeptideAnnotationTypeDTOMap
+			Map<Integer, AnnotationTypeDTO> srchPgmFilterableReportedPeptideAnnotationTypeDTOMap,
+			Map<Integer, AnnotationTypeDTO> srchPgmFilterableMatchedProteinAnnotationTypeDTOMap
 
 			//  TODO  Add Matched Protein
 
 			) {
-		
-		if ( inputItem.getMatchedProteinFilters() != null && ( ! inputItem.getMatchedProteinFilters().isEmpty() ) ) {
-			
-			String msg = "Matched Proteins Annotation Filters/Cutoffs are not supported yet.";
-			log.error( msg );
-			throw new IllegalArgumentException( msg );
-		}
 		
 		
 		// inputs
 		int projectSearchId = inputItem.getProjectSearchId();
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> psmCutoffValues = inputItem.getPsmFilters();
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> peptideCutoffValues = inputItem.getReportedPeptideFilters();
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> proteinCutoffValues = inputItem.getMatchedProteinFilters();
+
 		//  outputs
 		
 		SearcherCutoffValuesSearchLevel_Builder searcherCutoffValuesSearchLevel_Builder = SearcherCutoffValuesSearchLevel.builder();
@@ -261,6 +258,20 @@ public class SearcherCutoffValues_Factory {
 									cutoffValuesAnnotationLevel, 
 									srchPgmFilterableReportedPeptideAnnotationTypeDTOMap );
 					searcherCutoffValuesSearchLevel_Builder.addPeptidePerAnnotationCutoffs( output );
+				}
+			}
+		}
+		if ( proteinCutoffValues != null && ( ! proteinCutoffValues.isEmpty() ) ) {
+			for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : proteinCutoffValues ) {
+				Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
+				if ( cutoffValuesAnnotationLevel.getValue() != null ) {
+					//  Only add to the output data structure if the input cutoff value is not empty 
+					SearcherCutoffValuesAnnotationLevel output = 
+							createSearcherCutoffRequestPerAnnotationType( 
+									annotationTypeId, 
+									cutoffValuesAnnotationLevel, 
+									srchPgmFilterableMatchedProteinAnnotationTypeDTOMap );
+					searcherCutoffValuesSearchLevel_Builder.addProteinPerAnnotationCutoffs( output );
 				}
 			}
 		}

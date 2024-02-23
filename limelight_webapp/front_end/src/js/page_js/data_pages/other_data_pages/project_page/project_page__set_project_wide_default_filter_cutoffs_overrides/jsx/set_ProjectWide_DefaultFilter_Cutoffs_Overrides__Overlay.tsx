@@ -351,6 +351,17 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
                     </React.Fragment>
                 ) : null }
 
+                { (data_For_SearchProgram.data_PerType_Protein ) ? (
+                    <React.Fragment>
+                        <div
+                            key={ data_For_SearchProgram.searchProgram_name + "__Protein_Label" }
+                            style={ psmPeptide_Style }
+                        >
+                            Protein filters
+                        </div>
+                        { this._getMainDisplayArea_For_AnnotationTypes( data_For_SearchProgram.data_PerType_Protein, data_For_SearchProgram.searchProgram_name + "__Protein" ) }
+                    </React.Fragment>
+                ) : null }
             </React.Fragment>
         )
     }

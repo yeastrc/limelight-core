@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.yeastrc.limelight.limelight_import.api.xml_dto.MatchedProteins;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_importer.batch_insert_db_records.SearchReportedPeptideLevelLookupRecords_Records_BatchInsert_DB_Records;
 import org.yeastrc.limelight.limelight_importer.constants.Importer_Stats_GeneralData_Table__Label_Values_Enum;
@@ -55,7 +54,7 @@ import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_o
 import org.yeastrc.limelight.limelight_importer.lookup_records_create_update.LookupRecordsCreate_Main;
 import org.yeastrc.limelight.limelight_importer.objects.PsmOpenModification_UniquePosition_InReportedPeptide_Entry;
 import org.yeastrc.limelight.limelight_importer.objects.PsmStatisticsAndBestValues;
-import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
+import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessSave_SingleReportedPeptide.ProcessSave_SingleReportedPeptide_Results;
@@ -99,7 +98,7 @@ public class ProcessReportedPeptidesAndPSMs {
 			boolean skip_SubGroup_Processing,
 			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
-			ReportedPeptideAndPsmFilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
+			ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries
 			) throws Exception {
 
@@ -112,10 +111,6 @@ public class ProcessReportedPeptidesAndPSMs {
 		
 		
 		int searchId = search.getId();
-		
-		// Put MatchedProteins in Singleton class GetProteinsForPeptides
-		MatchedProteins matchedProteinsFromLimelightXML = input_LimelightXMLFile_InternalHolder_Root_Object.getLimelightInput().getMatchedProteins();
-		GetProteinsForPeptide.getSingletonInstance().setMatchedProteinsFromLimelightXML( matchedProteinsFromLimelightXML );
 		
 		Map<Integer, AnnotationTypeDTO> filterableReportedPeptideAnnotationTypesOnId = 
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterableReportedPeptideAnnotationTypesOnId();

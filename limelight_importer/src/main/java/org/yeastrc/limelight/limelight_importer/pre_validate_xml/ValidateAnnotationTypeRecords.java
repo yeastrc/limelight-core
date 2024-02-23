@@ -25,6 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPeptideAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPeptideAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
@@ -83,12 +87,74 @@ public class ValidateAnnotationTypeRecords {
 	 * @throws LimelightImporterDataException 
 	 */
 	private void validateMatchedProteinAnnotationNamesUniqueWithinSearchProgramAndType( SearchProgram searchProgram ) throws LimelightImporterDataException {
-		if ( searchProgram.getMatchedProteinAnnotationTypes() != null ) {
-			String msg = "Matched Protein Annotation Types are not supported yet.  ";
-			log.error( msg );
-			throw new LimelightImporterDataException( msg );
+		Set<String> annotationNames = new HashSet<>();
+		SearchProgram.MatchedProteinAnnotationTypes matchedProteinAnnotationTypes =
+				searchProgram.getMatchedProteinAnnotationTypes();
+		if ( matchedProteinAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No Matched Protein Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+			return;
 		}
-		
+		//////	Filterable Protein Annotations
+		FilterableMatchedProteinAnnotationTypes filterableProteinAnnotationTypes =
+				matchedProteinAnnotationTypes.getFilterableMatchedProteinAnnotationTypes();
+		if ( filterableProteinAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No Filterable Matched Protein Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+		} else {
+			List<FilterableMatchedProteinAnnotationType> filterableProteinAnnotationTypeList =
+					filterableProteinAnnotationTypes.getFilterableMatchedProteinAnnotationType();
+			if ( filterableProteinAnnotationTypeList == null || filterableProteinAnnotationTypeList.isEmpty() ) {
+				if ( log.isInfoEnabled() ) {
+					String msg = "No Filterable Matched Protein Annotation Types for search program name: " + searchProgram.getName();
+					log.info(msg);
+				}
+			} else {
+				for ( FilterableMatchedProteinAnnotationType filterableProteinAnnotationType : filterableProteinAnnotationTypeList ) {
+					String annotationName = filterableProteinAnnotationType.getName();
+					if ( ! annotationNames.add( annotationName ) ) {
+						String msg = "Annotation name '" + annotationName + "'"
+								+ " occurs more than once for Matched Protein annotation types for search program  "
+								+ "'" + searchProgram.getName() + "'.";
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+			}
+		}
+		////////   Descriptive Protein Annotations
+		DescriptiveMatchedProteinAnnotationTypes descriptiveProteinAnnotationTypes =
+				matchedProteinAnnotationTypes.getDescriptiveMatchedProteinAnnotationTypes();
+		if ( descriptiveProteinAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No Descriptive Matched Protein Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+		} else {
+			List<DescriptiveMatchedProteinAnnotationType> descriptiveProteinAnnotationTypeList =
+					descriptiveProteinAnnotationTypes.getDescriptiveMatchedProteinAnnotationType();
+			if ( descriptiveProteinAnnotationTypeList == null || descriptiveProteinAnnotationTypeList.isEmpty() ) {
+				if ( log.isInfoEnabled() ) {
+					String msg = "No Descriptive Matched Protein Annotation Types for search program name: " + searchProgram.getName();
+					log.info(msg);
+				}
+			} else {
+				for ( DescriptiveMatchedProteinAnnotationType descriptiveProteinAnnotationType : descriptiveProteinAnnotationTypeList ) {
+					String annotationName = descriptiveProteinAnnotationType.getName();
+					if ( ! annotationNames.add( annotationName ) ) {
+						String msg = "Annotation name '" + annotationName + "'"
+								+ " occurs more than once for Matched Protein annotation types for search program  "
+								+ "'" + searchProgram.getName() + "'.";
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+			}
+		}
 	}
 	
 	/**

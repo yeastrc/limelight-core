@@ -709,7 +709,8 @@ public class AA_RestWSControllerPaths_Constants {
 
 	public static final String REPORTED_PEPTIDE_STRINGS_FOR_REPORTED_PEPTIDES_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids";
 
-	public static final String PROTEIN_SEQUENCE_VERSION_IDS_FOR_REPORTED_PEPTIDE_IDS_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-sequence-version-ids-for-reported-peptide-ids";
+	//  !!!!!!!!!!    Unused and Untested
+//	public static final String PROTEIN_SEQUENCE_VERSION_IDS_FOR_REPORTED_PEPTIDE_IDS_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-sequence-version-ids-for-reported-peptide-ids";
 
 	public static final String PROTEIN_INFO_PROTEIN_SEQUENCE_VERSION_IDS_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-info-prot-seq-v-ids-list";
 
@@ -718,13 +719,28 @@ public class AA_RestWSControllerPaths_Constants {
 	public static final String PROTEIN_SEQUENCES_FOR_PROT_SEQ_VER_ID_REST_WEBSERVICE_CONTROLLER = "d/rws/for-page/psb/protein-sequences-for-prot-seq-ver-ids";
 
 
+	//  !!!!!!!!!!    Unused and Untested
 	//  Protein Sequence Version Ids for each Reported Peptide Id in request
-	public static final String PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 
-			"d/rws/for-page/psb/protein-seq-version-id-list-for-reported-peptide-ids-single-project-search-id-version-0001";
+//	public static final String PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
+//			"d/rws/for-page/psb/protein-seq-version-id-list-for-reported-peptide-ids-single-project-search-id-version-0002";
 
 	//  Protein Sequence Coverage for each Reported Peptide Id in request
-	public static final String PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002 = 
-			"d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0002";
+	public static final String PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003 = 
+			"d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0003";
+	
+	//  Protein (Matched Protein) Filterable Annotation data for Protein Sequence Version Ids, Annotation Type Ids, Project Search Id
+	public static final String PROTEIN_FILTRBL_ANN_DATA_LIST_PROTEIN_SEQ_V_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/protein-filtrbl-ann-data-list-protein-seq-v-ids-ann-type-ids-single-project-search-id";
+
+	//  Protein (Matched Protein) Descriptive Annotation data for Protein Sequence Version Ids, Annotation Type Ids, Project Search Id
+	public static final String PROTEIN_DESCRIPTIVE_ANN_DATA_LIST_PROTEIN_SEQ_V_IDS_ANN_TYPE_IDS_SINGLE_PROJECT_SEARCH_ID =
+			"d/rws/for-page/psb/protein-descriptive-ann-data-list-protein-seq-v-ids-ann-type-ids-single-project-search-id";
+
+	
+	///////////////////////////
+	
+	
+	//  !! SPECIAL !!  for MOD PAGE 
 
 	//  !! SPECIAL !!  for MOD PAGE Mod Data Per Rounded Mod Masses in request
 	public static final String MOD_PAGE_SPECIAL__GET_MOD_INFO_FOR_Rounded_MOD_MASSES_CUTOFFS_SINGLE_PROJECT_SEARCH_ID__REST_WEBSERVICE_CONTROLLER_VERSION_0001 = 

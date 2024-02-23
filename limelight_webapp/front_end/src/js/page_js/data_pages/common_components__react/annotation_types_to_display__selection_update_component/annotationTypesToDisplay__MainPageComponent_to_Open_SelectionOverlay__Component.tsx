@@ -32,7 +32,7 @@ export interface AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOv
  */
 interface AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component_State {
 
-    _placeholder: any
+    fakeLinkLabelText: string
 }
 
 /**
@@ -52,8 +52,52 @@ export class AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverla
     constructor(props: AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component_Props) {
         super(props);
 
+
+        let found_PSM_AnnTypes = false;
+        let found_Peptide_AnnTypes = false;
+        let found_Protein_AnnTypes = false;
+
+        for ( const annotationTypeItems_For_ProjectSearchId of this.props.dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.values() ) {
+
+            if ( ( annotationTypeItems_For_ProjectSearchId.psmFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.psmFilterableAnnotationTypes.size > 0 )
+                ||  ( annotationTypeItems_For_ProjectSearchId.psmDescriptiveAnnotationTypes && annotationTypeItems_For_ProjectSearchId.psmDescriptiveAnnotationTypes.size > 0 ) ) {
+
+                found_PSM_AnnTypes = true
+            }
+            if ( ( annotationTypeItems_For_ProjectSearchId.reportedPeptideFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.reportedPeptideFilterableAnnotationTypes.size > 0 )
+                ||  ( annotationTypeItems_For_ProjectSearchId.reportedPeptideDescriptiveAnnotationTypes && annotationTypeItems_For_ProjectSearchId.reportedPeptideDescriptiveAnnotationTypes.size > 0 ) ) {
+
+                found_Peptide_AnnTypes = true
+            }
+            if ( ( annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes && annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.size > 0 )
+                ||  ( annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes && annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes.size > 0 ) ) {
+
+                found_Protein_AnnTypes = true
+            }
+        }
+
+
+        const labelTypeStrings: Array<string> = []
+
+        if ( found_PSM_AnnTypes ) {
+            labelTypeStrings.push( "PSM" )
+        }
+        if ( found_Peptide_AnnTypes ) {
+            labelTypeStrings.push( "Peptide" )
+        }
+        if ( found_Protein_AnnTypes ) {
+            labelTypeStrings.push( "Protein" )
+        }
+
+        let fakeLinkLabelText: string
+
+        if ( labelTypeStrings.length > 0 ) {
+
+            fakeLinkLabelText = "Change Displayed " + labelTypeStrings.join( " and " ) + " data";
+        }
+
         this.state = {
-            _placeholder: {}
+            fakeLinkLabelText
         };
     }
 
@@ -85,34 +129,10 @@ export class AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverla
      */
     render() {
 
-        let found_PSM_AnnTypes = false;
-        let found_Peptide_AnnTypes = false;
-
-        for ( const searchDataLookupParameters_Single_ProjectSearchId of this.props.searchDataLookupParameters_Root.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
-
-            if ( searchDataLookupParameters_Single_ProjectSearchId.psmAnnTypeDisplay && searchDataLookupParameters_Single_ProjectSearchId.psmAnnTypeDisplay.length > 0 ) {
-                found_PSM_AnnTypes = true;
-            }
-            if ( searchDataLookupParameters_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay && searchDataLookupParameters_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay.length > 0 ) {
-                found_Peptide_AnnTypes = true;
-            }
+        if ( ! this.state.fakeLinkLabelText ) {
+            //  Nothing so render nothing
+            return null
         }
-
-        let peptideLabel = "";
-        let andLabel = "";
-        let psmLabel = "";
-
-        if ( found_Peptide_AnnTypes ) {
-            peptideLabel = "Peptide";
-        }
-        if ( found_Peptide_AnnTypes && found_PSM_AnnTypes ) {
-            andLabel = " and ";
-        }
-        if ( found_PSM_AnnTypes ) {
-            psmLabel = "PSM";
-        }
-
-        const fakeLinkLabelText = "Change Displayed " + peptideLabel + andLabel + psmLabel + " data";
 
         return (
             <div>
@@ -120,7 +140,7 @@ export class AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverla
                     className=" fake-link "
                     onClick={ this._openOverlay_ClickHandler_BindThis }
                 >
-                    { fakeLinkLabelText }
+                    { this.state.fakeLinkLabelText }
                 </span>
             </div>
         );

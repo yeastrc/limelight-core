@@ -110,9 +110,7 @@ const _create_SearchFilterValues_SingleSearchContents = (
     //  Map key ann type id
     const psmFilterableAnnotationTypes = searchAnnotationTypesData.psmFilterableAnnotationTypes;
     const reportedPeptideFilterableAnnotationTypes = searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes;
-
-    //   matchedProteinFilters not currently processed
-    // const matchedProteinFilters = searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes;
+    const matchedProteinFilters = searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes;
 
     const defaultFilter_Cutoffs_Overrides_PSM = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_PSM;
     const defaultFilter_Cutoffs_Overrides_ReportedPeptide = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_ReportedPeptide;
@@ -138,6 +136,15 @@ const _create_SearchFilterValues_SingleSearchContents = (
         });
         data_conditionGroupsDataContainer.set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilterData );
     }
+    // Process Matched Protein filters
+    if ( defaultFilter_Cutoffs_Overrides_MatchedProtein ) {
+        const matchedProteinFilterData : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({
+            filterableAnnotationTypes : matchedProteinFilters,
+            defaultFilter_Cutoffs_Overrides: defaultFilter_Cutoffs_Overrides_MatchedProtein,
+            searchProgramsPerSearchData
+        });
+        data_conditionGroupsDataContainer.set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilterData );
+    }
 
     //   Default Annotation Type Ids to display
 
@@ -150,12 +157,20 @@ const _create_SearchFilterValues_SingleSearchContents = (
         data_conditionGroupsDataContainer.set_psmAnnTypeDisplay_PerProjectSearchId( psmAnnTypeDisplay );
     }
     // Process Reported Peptide filters
-    if ( searchAnnotationTypesData.psmFilterableAnnotationTypes || searchAnnotationTypesData.psmDescriptiveAnnotationTypes ) {
+    if ( searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes || searchAnnotationTypesData.reportedPeptideDescriptiveAnnotationTypes ) {
         const reportedPeptideAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({ 
             param_FilterableAnnotationTypes : searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes, 
             param_DescriptiveAnnotationTypes : searchAnnotationTypesData.reportedPeptideDescriptiveAnnotationTypes
         });
         data_conditionGroupsDataContainer.set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( reportedPeptideAnnTypeDisplay );
+    }
+    // Process Matched Protein filters
+    if ( searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes || searchAnnotationTypesData.matchedProteinDescriptiveAnnotationTypes ) {
+        const matchedProteinAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({
+            param_FilterableAnnotationTypes : searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes,
+            param_DescriptiveAnnotationTypes : searchAnnotationTypesData.matchedProteinDescriptiveAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( matchedProteinAnnTypeDisplay );
     }
 }
 

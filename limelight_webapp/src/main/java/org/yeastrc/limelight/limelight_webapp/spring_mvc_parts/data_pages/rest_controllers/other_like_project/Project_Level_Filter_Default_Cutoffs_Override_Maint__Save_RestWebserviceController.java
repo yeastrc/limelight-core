@@ -229,6 +229,26 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Save_RestWebse
 					entriesToSave.add( entry );
 				}
 			}
+
+			if ( cutoffValues.proteinEntriesList != null ) {
+				for ( WebserviceRequestEntry webserviceRequestEntry : cutoffValues.proteinEntriesList ) {
+					ProjectLevelDefaultFltrAnnCutoffs_DTO projectLevelDefaultFltrAnnCutoffs_DTO = new ProjectLevelDefaultFltrAnnCutoffs_DTO();
+					ProjectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO = new ProjectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO();
+					projectLevelDefaultFltrAnnCutoffs_DTO.setProjectId( projectId );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setSearchProgramName( webserviceRequestEntry.searchProgramName );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setAnnotationTypeName( webserviceRequestEntry.annotationTypeName );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setAnnotationCutoffValue( webserviceRequestEntry.annotationCutoffValue );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setCreatedUserId( userId );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setLastUpdatedUserId( userId );
+					projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO.setAnnotationCutoffValueString( webserviceRequestEntry.annotationCutoffValueString );
+					
+					ProjectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService__Entry entry = new ProjectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService__Entry();
+					entry.projectLevelDefaultFltrAnnCutoffs_DTO = projectLevelDefaultFltrAnnCutoffs_DTO;
+					entry.projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO = projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO;
+					entriesToSave.add( entry );
+				}
+			}
 			
 			projectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService.saveUpdate( projectId, entriesToSave );
 
@@ -277,12 +297,16 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Save_RestWebse
 
 		private List<WebserviceRequestEntry> reportedPeptideEntriesList;
 		private List<WebserviceRequestEntry> psmEntriesList;
+		private List<WebserviceRequestEntry> proteinEntriesList;
 		
 		public void setReportedPeptideEntriesList(List<WebserviceRequestEntry> reportedPeptideEntriesList) {
 			this.reportedPeptideEntriesList = reportedPeptideEntriesList;
 		}
 		public void setPsmEntriesList(List<WebserviceRequestEntry> psmEntriesList) {
 			this.psmEntriesList = psmEntriesList;
+		}
+		public void setProteinEntriesList(List<WebserviceRequestEntry> proteinEntriesList) {
+			this.proteinEntriesList = proteinEntriesList;
 		}
 	}
 

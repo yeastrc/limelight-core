@@ -67,6 +67,8 @@ public class DefaultCutoffsExactlyMatchAnnTypeDataToSearchData implements Defaul
 		
 		boolean defaultCutoffsExactlyMatchAnnTypeDataToSearchData = true;
 		
+		List<SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesList = 
+				searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesList = 
 				searcherCutoffValuesSearchLevel.getPeptidePerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = 
@@ -74,26 +76,17 @@ public class DefaultCutoffsExactlyMatchAnnTypeDataToSearchData implements Defaul
 		
 		//  Get Filterable Annotation Type records for Reported Peptides and PSMs
 		GetAnnotationTypeDataResult getAnnotationTypeDataResult = getAnnotationTypeData.getAnnotationTypeDataForSearchId( searchId );  
-		
 
-		//  TODO  Not currently support Matched Protein Cutoffs
-		
-		if ( getAnnotationTypeDataResult.getMatchedProteinFilterableAnnotationTypeData() != null 
-				&& ( ! getAnnotationTypeDataResult.getMatchedProteinFilterableAnnotationTypeData().isEmpty() ) ) {
-			
-//			log.error( "WARNING: MatchedProteinFilterableAnnotationTypeData is not empty.  Will NOT consider MatchedProteinFilterableAnnotationTypeData when determining if cutoffs are default cutoffs" );
-			
-			String msg = "Matched Protein Annotation Type data not supported";
-			log.error( msg );
-			throw new LimelightInternalErrorException();
+		//  Test Protein Cutoffs
+		if ( ! processProteinOrPeptideOrPSM( proteinCutoffValuesList,  getAnnotationTypeDataResult.getMatchedProteinFilterableAnnotationTypeData() ) ) {
+			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
 		}
-		
 		//  Test Peptide Cutoffs
-		if ( ! processPeptideOrPSM( peptideCutoffValuesList,  getAnnotationTypeDataResult.getReportedPeptideFilterableAnnotationTypeData() ) ) {
+		if ( ! processProteinOrPeptideOrPSM( peptideCutoffValuesList,  getAnnotationTypeDataResult.getReportedPeptideFilterableAnnotationTypeData() ) ) {
 			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
 		}
 		//  Test PSM Cutoffs
-		if ( ! processPeptideOrPSM( psmCutoffValuesList,  getAnnotationTypeDataResult.getPsmFilterableAnnotationTypeData() ) ) {
+		if ( ! processProteinOrPeptideOrPSM( psmCutoffValuesList,  getAnnotationTypeDataResult.getPsmFilterableAnnotationTypeData() ) ) {
 			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
 		}
 		result.defaultCutoffsExactlyMatchAnnTypeDataToSearchData = defaultCutoffsExactlyMatchAnnTypeDataToSearchData;
@@ -107,7 +100,7 @@ public class DefaultCutoffsExactlyMatchAnnTypeDataToSearchData implements Defaul
 	 * @throws LimelightInternalErrorException
 	 * @throws LimelightErrorDataInWebRequestException 
 	 */
-	private boolean processPeptideOrPSM( 
+	private boolean processProteinOrPeptideOrPSM( 
 			List<SearcherCutoffValuesAnnotationLevel> cutoffValuesList, 
 			Map<Integer, AnnotationTypeDTO> filterableAnnotationTypesForSearchId ) throws LimelightInternalErrorException, LimelightErrorDataInWebRequestException {
 		

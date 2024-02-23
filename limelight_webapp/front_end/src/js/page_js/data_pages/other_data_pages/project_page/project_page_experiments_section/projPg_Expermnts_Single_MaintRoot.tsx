@@ -2905,15 +2905,20 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 
     const reportedPeptideFilterData = data_conditionGroupsDataContainer.get_reportedPeptideFilters_PerProjectSearchId();
     const psmFilterDataMap = data_conditionGroupsDataContainer.get_psmFilters_PerProjectSearchId();
+    const matchedProteinFilterDataMap = data_conditionGroupsDataContainer.get_matchedProteinFilters_PerProjectSearchId()
 
     let psmFilters = undefined;
     let reportedPeptideFilters = undefined;
+    let matchedProteinFilters = undefined
 
     if ( reportedPeptideFilterData ) {
         reportedPeptideFilters = _getSearchFilterData_ForAnnType({ filterData : reportedPeptideFilterData });
     } 
     if ( psmFilterDataMap ) {
         psmFilters = _getSearchFilterData_ForAnnType({ filterData : psmFilterDataMap });
+    }
+    if ( matchedProteinFilterDataMap ) {
+        matchedProteinFilters = _getSearchFilterData_ForAnnType({ filterData : matchedProteinFilterDataMap });
     }
 
 
@@ -2928,17 +2933,15 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 	// private List<Integer> psmAnnTypeDisplay;
 	// private List<Integer> reportedPeptideAnnTypeDisplay;
     // private List<Integer> matchedProteinAnnTypeDisplay;
-    
-    // let matchedProteinFilters = undefined;
 
     let psmAnnTypeDisplay = data_conditionGroupsDataContainer.get_psmAnnTypeDisplay_PerProjectSearchId();
     let reportedPeptideAnnTypeDisplay = data_conditionGroupsDataContainer.get_reportedPeptideAnnTypeDisplay_PerProjectSearchId();
 
-    let matchedProteinAnnTypeDisplay = data_conditionGroupsDataContainer.get_matchedProteinAnnTypeDisplay_PerProjectSearchId(); //  NOT SET
+    let matchedProteinAnnTypeDisplay = data_conditionGroupsDataContainer.get_matchedProteinAnnTypeDisplay_PerProjectSearchId();
 
     return { 
         projectSearchId, 
-        psmFilters, reportedPeptideFilters, // matchedProteinFilters,
+        psmFilters, reportedPeptideFilters, matchedProteinFilters,
         psmAnnTypeDisplay, reportedPeptideAnnTypeDisplay, matchedProteinAnnTypeDisplay
     };
 }

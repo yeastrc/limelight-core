@@ -42,7 +42,7 @@ import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInte
 import org.yeastrc.limelight.limelight_importer.input_xml_file_internal_holder_objects.Input_LimelightXMLFile_InternalHolder_Root_Object;
 import org.yeastrc.limelight.limelight_importer.log_limelight_xml_stats.SearchStatistics_General_SavedToDB;
 import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
-import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmFilterableAnnotationTypesOnId;
+import org.yeastrc.limelight.limelight_importer.objects.ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.SearchProgramEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
@@ -243,31 +243,20 @@ public class ProcessLimelightInput {
 					ProcessSearchProgramEntries.getInstance()
 					.processSearchProgramEntries( input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO.getId() );
 			
-			//  Throw error if have MatchedProteinAnnotation Types
-			
-			//    Look at all uses of ReportedPeptideAndPsmFilterableAnnotationTypesOnId
-			//      when add Matched Proteins
-			
-			for ( Map.Entry<String, SearchProgramEntry> searchProgramEntryMapEntry : searchProgramEntryMap.entrySet() ) {
-				if ( searchProgramEntryMapEntry.getValue().getMatchedProteinAnnotationTypeDTOMap() != null ) {
-					String msg = "MatchedProteinAnnotation Types not supported Yet.";
-					log.error( msg );
-					throw new LimelightImporterDataException(msg);
-				}
-			}
-			
-			ReportedPeptideAndPsmFilterableAnnotationTypesOnId reportedPeptideAndPsmFilterableAnnotationTypesOnId = new ReportedPeptideAndPsmFilterableAnnotationTypesOnId();
-			reportedPeptideAndPsmFilterableAnnotationTypesOnId.setFilterableReportedPeptideAnnotationTypesOnId( 
+			ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId = new ReportedPeptideAndPsmAndProtein_FilterableAnnotationTypesOnId();
+			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterableMatchedProteinAnnotationTypesOnId( 
+					createMatchedProteinFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
+			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterableReportedPeptideAnnotationTypesOnId( 
 					createReportedPeptideFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
-			reportedPeptideAndPsmFilterableAnnotationTypesOnId.setFilterablePsmAnnotationTypesOnId( 
+			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterablePsmAnnotationTypesOnId( 
 					createPsmFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
 			
-			if ( reportedPeptideAndPsmFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId() == null ) {
+			if ( reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId() == null ) {
 				String msg = "filterablePsmAnnotationTypesOnId == null";
 				log.error( msg );
 				throw new LimelightImporterInternalException(msg);
 			}
-			if ( reportedPeptideAndPsmFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId().isEmpty() ) {
+			if ( reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId().isEmpty() ) {
 				String msg = "filterablePsmAnnotationTypesOnId.isEmpty() ";
 				log.error( msg );
 				throw new LimelightImporterInternalException(msg);
@@ -303,7 +292,7 @@ public class ProcessLimelightInput {
 				Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins.getInstance().
 				process_PeptidesToProteinsMapping_ProteinInference_InsertProteins( 
 						input_LimelightXMLFile_InternalHolder_Root_Object, searchDTO,
-						searchProgramEntryMap, reportedPeptideAndPsmFilterableAnnotationTypesOnId, searchScanFileEntry_AllEntries
+						searchProgramEntryMap, reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId, searchScanFileEntry_AllEntries
 						);
 
 				// Process Reported Peptides and their children PSMs etc and insert to DB
@@ -314,7 +303,7 @@ public class ProcessLimelightInput {
 						skip_SubGroup_Processing,
 						searchSubGroupDTOMap_Key_searchSubGroupLabel,
 						searchProgramEntryMap,
-						reportedPeptideAndPsmFilterableAnnotationTypesOnId,
+						reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId,
 						searchScanFileEntry_AllEntries
 						);
 
@@ -362,6 +351,30 @@ public class ProcessLimelightInput {
 		} catch ( Exception e ) {
 			throw e;
 		}
+	}
+	
+
+	/**
+	 * @param searchProgramEntryMap
+	 * @return
+	 */
+	private Map<Integer, AnnotationTypeDTO> createMatchedProteinFilterableAnnotationTypesOnId( Map<String, SearchProgramEntry> searchProgramEntryMap ) {
+	
+		///  Build list of Filterable annotation type ids
+		Map<Integer, AnnotationTypeDTO> filterableAnnotationTypesOnId = new HashMap<>();
+		for ( Map.Entry<String, SearchProgramEntry> searchProgramEntryMapEntry : searchProgramEntryMap.entrySet() ) {
+			SearchProgramEntry searchProgramEntry = searchProgramEntryMapEntry.getValue();
+			Map<String, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMap =
+					searchProgramEntry.getMatchedProteinAnnotationTypeDTOMap();
+			for ( Map.Entry<String, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMapEntry : matchedProteinAnnotationTypeDTOMap.entrySet() ) {
+				AnnotationTypeDTO matchedProteinAnnotationTypeDTO = matchedProteinAnnotationTypeDTOMapEntry.getValue();
+				 if ( matchedProteinAnnotationTypeDTO.getFilterableDescriptiveAnnotationType()
+						 == FilterableDescriptiveAnnotationType.FILTERABLE ) {
+					 filterableAnnotationTypesOnId.put( matchedProteinAnnotationTypeDTO.getId(), matchedProteinAnnotationTypeDTO );
+				 }
+			}
+		}
+		return filterableAnnotationTypesOnId;
 	}
 
 

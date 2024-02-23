@@ -74,9 +74,9 @@ import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_P
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
@@ -172,7 +172,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 
 	@Autowired
-	private ProteinVersionIdsFor_SearchID_ReportedPeptideId_SearcherIF proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher;
+	private ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher_IF reportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher;
 
 	@Autowired
 	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
@@ -829,26 +829,19 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry entry : peptideMinimalObjectsList ) {
 				reportedPeptideIds_ForAdditionalProcessing.add( entry.getReportedPeptideId() );
 			}
-			
+						
 			if ( webserviceRequest.proteinSequenceVersionIds != null && ( ! webserviceRequest.proteinSequenceVersionIds.isEmpty() ) ) {
 				
 				//  If protein sequence version id restriction, filter Reported Peptide Ids to those protein sequence version ids
 				
-				List<Integer> reportedPeptideIdsFiltered = new ArrayList<>( reportedPeptideIds_ForAdditionalProcessing.size() );
+				Set<Integer> reportedPeptideIdsFiltered = 
+						reportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher.
+						get_ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds(
+								searchId, 
+								webserviceRequest.proteinSequenceVersionIds, 
+								reportedPeptideIds_ForAdditionalProcessing );
 				
-				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
-					List<Integer> proteinSequenceVersionIdsForReportedPeptideId =
-							proteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher
-							.getProteinVersionIdsFor_SearchID_ReportedPeptideId_Searcher( searchId, reportedPeptideId );
-					
-					for ( Integer proteinSequenceVersionId : webserviceRequest.proteinSequenceVersionIds ) {
-						if ( proteinSequenceVersionIdsForReportedPeptideId.contains( proteinSequenceVersionId ) ) {
-							reportedPeptideIdsFiltered.add( reportedPeptideId );
-						}
-						break;
-					}
-				}
-				reportedPeptideIds_ForAdditionalProcessing = reportedPeptideIdsFiltered;
+				reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsFiltered );
 			}
 
 			if ( reportedPeptideIds_ForAdditionalProcessing != null && ( ! reportedPeptideIds_ForAdditionalProcessing.isEmpty() ) ) {
@@ -900,8 +893,6 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			}
 		}
 		
-		
-
 		if ( psmWebDisplayListForReportedPeptideIds != null && (  ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
 			
 			//  Have PSMs

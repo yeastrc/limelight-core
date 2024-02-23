@@ -158,6 +158,7 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Get_RestWebser
 
 			List<WebserviceResultEntry> reportedPeptideEntriesList = new ArrayList<>( dbList.size() );
 			List<WebserviceResultEntry> psmEntriesList = new ArrayList<>( dbList.size() );
+			List<WebserviceResultEntry> proteinEntriesList = new ArrayList<>( dbList.size() );
 
 			for ( ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem resultItem : dbList ) {
 				
@@ -175,7 +176,11 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Get_RestWebser
 				} else if ( resultItem.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM ) {
 					
 					psmEntriesList.add( webserviceResultEntry );
+
+				} else if ( resultItem.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					
+					proteinEntriesList.add( webserviceResultEntry );
+
 				} else {
 					String msg = "Unknown value for resultItem.getPsmPeptideAnnotationType(): " + resultItem.getPsmPeptideMatchedProteinAnnotationType();
 					log.error( msg );
@@ -186,6 +191,7 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Get_RestWebser
 			WebserviceResult_CutoffValues cutoffValues = new WebserviceResult_CutoffValues();
 			cutoffValues.reportedPeptideEntriesList = reportedPeptideEntriesList;
 			cutoffValues.psmEntriesList = psmEntriesList;
+			cutoffValues.proteinEntriesList = proteinEntriesList;
 						
     		WebserviceResult webserviceResult = new WebserviceResult();
 			webserviceResult.status = true;
@@ -246,12 +252,16 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Get_RestWebser
 
 		private List<WebserviceResultEntry> reportedPeptideEntriesList;
 		private List<WebserviceResultEntry> psmEntriesList;
+		private List<WebserviceResultEntry> proteinEntriesList;
 		
 		public List<WebserviceResultEntry> getReportedPeptideEntriesList() {
 			return reportedPeptideEntriesList;
 		}
 		public List<WebserviceResultEntry> getPsmEntriesList() {
 			return psmEntriesList;
+		}
+		public List<WebserviceResultEntry> getProteinEntriesList() {
+			return proteinEntriesList;
 		}
 		
 	}

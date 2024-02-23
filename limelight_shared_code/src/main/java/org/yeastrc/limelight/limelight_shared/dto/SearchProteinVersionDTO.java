@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.yeastrc.limelight.limelight_importer.dto;
+package org.yeastrc.limelight.limelight_shared.dto;
 
 /**
  * table srch__prot_seq_v_id_tbl
@@ -27,49 +27,42 @@ public class SearchProteinVersionDTO {
 	private int proteinSequenceVersionId;
 	private boolean protein_IsDecoy;
 	private boolean protein_IsIndependentDecoy;
-
 	
-	//  Put in a Set so hashCode/equals used for unique values
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + proteinSequenceVersionId;
-		result = prime * result + (protein_IsDecoy ? 1231 : 1237);
-		result = prime * result + (protein_IsIndependentDecoy ? 1231 : 1237);
-		result = prime * result + searchId;
-		return result;
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SearchProteinVersionDTO other = (SearchProteinVersionDTO) obj;
-		if (proteinSequenceVersionId != other.proteinSequenceVersionId)
-			return false;
-		if (protein_IsDecoy != other.protein_IsDecoy)
-			return false;
-		if (protein_IsIndependentDecoy != other.protein_IsIndependentDecoy)
-			return false;
-		if (searchId != other.searchId)
-			return false;
-		return true;
-	}
+	private boolean protein_meetsDefaultFilters;  // Set to True if NO Default Filters (Protein Filterable Annotation Types)
+	
 	
 	@Override
 	public String toString() {
 		return "SearchProteinVersionDTO [searchId=" + searchId + ", proteinSequenceVersionId="
 				+ proteinSequenceVersionId + ", protein_IsDecoy=" + protein_IsDecoy + ", protein_IsIndependentDecoy="
-				+ protein_IsIndependentDecoy + "]";
+				+ protein_IsIndependentDecoy + ", protein_meetsDefaultFilters=" + protein_meetsDefaultFilters + "]";
 	}
 
+
+	//////////////////////////////
+	
+	
+	/**
+	 * Set to True if NO Default Filters
+	 * 
+	 * @return
+	 */
+	public boolean isProtein_meetsDefaultFilters() {
+		return protein_meetsDefaultFilters;
+	}
+
+	/**
+	 * Set to True if NO Default Filters
+	 * 
+	 * @param protein_meetsDefaultFilters
+	 */
+	public void setProtein_meetsDefaultFilters(boolean protein_meetsDefaultFilters) {
+		this.protein_meetsDefaultFilters = protein_meetsDefaultFilters;
+	}
+	
+	
+
+	//////////////////////////////
 
 	public int getSearchId() {
 		return searchId;
@@ -100,5 +93,7 @@ public class SearchProteinVersionDTO {
 	public void setProtein_IsIndependentDecoy(boolean protein_IsIndependentDecoy) {
 		this.protein_IsIndependentDecoy = protein_IsIndependentDecoy;
 	}
+
+
 
 }

@@ -1503,6 +1503,7 @@ CREATE TABLE  srch_rep_pept__prot_seq_v_id_tbl (
   protein_sequence_version_id INT UNSIGNED NOT NULL,
   protein_is_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
   protein_is_independent_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  protein_meets_default_filters TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '1/true if NO Default Protein Filters',
   PRIMARY KEY (search_id, reported_peptide_id, protein_sequence_version_id),
   CONSTRAINT srch_rppt_prtsqv_srch_id_fk
     FOREIGN KEY (search_id)
@@ -1749,6 +1750,7 @@ CREATE TABLE  srch__prot_seq_v_id_tbl (
   protein_sequence_version_id INT UNSIGNED NOT NULL,
   protein_is_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
   protein_is_independent_decoy TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  protein_meets_default_filters TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '1/true if NO Default Protein Filters',
   PRIMARY KEY (search_id, protein_sequence_version_id),
   CONSTRAINT srch_rppt_prtsqv_srch_id_fk0
     FOREIGN KEY (search_id)
@@ -4221,6 +4223,94 @@ CREATE TABLE  gold_standard_single_entry_unique_mod_mass_tbl (
     REFERENCES gold_standard_single_entry_tbl (id)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table srch__protein_filterable_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__protein_filterable_annotation_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  protein_sequence_version_id INT(10) UNSIGNED NOT NULL,
+  annotation_type_id INT(10) UNSIGNED NOT NULL,
+  value_double DOUBLE NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (id),
+  CONSTRAINT srch_protn_filann_antp_id_fk
+    FOREIGN KEY (annotation_type_id)
+    REFERENCES annotation_type_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_protn_filann_psvid_id_fk
+    FOREIGN KEY (protein_sequence_version_id)
+    REFERENCES protein_sequence_version_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE UNIQUE INDEX srch__protein_search_id_protseqvid_ann__type_id_fk_idx ON srch__protein_filterable_annotation_tbl (search_id ASC, protein_sequence_version_id ASC, annotation_type_id ASC) VISIBLE;
+
+CREATE INDEX srch_protn_filann_antp_id_fk_idx ON srch__protein_filterable_annotation_tbl (annotation_type_id ASC) VISIBLE;
+
+CREATE INDEX srch_protn_filann_psvid_id_fk_idx ON srch__protein_filterable_annotation_tbl (protein_sequence_version_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table srch__protein_descriptive_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__protein_descriptive_annotation_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  search_id MEDIUMINT UNSIGNED NOT NULL,
+  protein_sequence_version_id INT(10) UNSIGNED NOT NULL,
+  annotation_type_id INT(10) UNSIGNED NOT NULL,
+  value_location ENUM('local','large_value_table') NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (id),
+  CONSTRAINT srch_protn_desann_antp_id_fk
+    FOREIGN KEY (annotation_type_id)
+    REFERENCES annotation_type_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT srch_protn_desann_psvid_id_fk
+    FOREIGN KEY (protein_sequence_version_id)
+    REFERENCES protein_sequence_version_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE INDEX srch__rep_pept__ann__rep_pept_id_fk_idx ON srch__protein_descriptive_annotation_tbl (protein_sequence_version_id ASC) VISIBLE;
+
+CREATE UNIQUE INDEX srch__rep_pept_search_id_reppeptid_ann__type_id_fk_idx ON srch__protein_descriptive_annotation_tbl (search_id ASC, protein_sequence_version_id ASC, annotation_type_id ASC) VISIBLE;
+
+CREATE INDEX srch__rep_pept_srch_id_reppeptid_ann_tp__idx ON srch__protein_descriptive_annotation_tbl (search_id ASC, protein_sequence_version_id ASC) VISIBLE;
+
+CREATE INDEX srch_protn_desann_antp_id_fk_idx ON srch__protein_descriptive_annotation_tbl (annotation_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table srch__protein_desc_ann_large_value_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__protein_desc_ann_large_value_tbl (
+  srch__protein_descriptive_annotation_id INT UNSIGNED NOT NULL,
+  value_string LONGTEXT NULL,
+  PRIMARY KEY (srch__protein_descriptive_annotation_id),
+  CONSTRAINT srch__protein_desc_ann_lrg_val_primary_id_fk
+    FOREIGN KEY (srch__protein_descriptive_annotation_id)
+    REFERENCES srch__protein_descriptive_annotation_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table srch__protein_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  srch__protein_descriptive_annotation__insert_id_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
 ENGINE = InnoDB;
 
 

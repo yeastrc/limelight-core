@@ -48,6 +48,10 @@ import {
 } from './proteinViewPage_DisplayData_ProteinList__ProteinDisplayData_Classes';
 import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject";
 import {proteinView_nsaf_formatNumber_ForDisplayInTable} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_nsaf_formatNumber_ForDisplayInTable";
+import {
+    SearchDataLookupParameters_Root,
+    SearchDataLookupParams_For_Single_ProjectSearchId
+} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__Proteins = "Proteins";
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__ProteinGroups = "Protein Groups";
@@ -82,7 +86,9 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
         searchSubGroupIds,
         projectSearchIds,
-        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, dataPageStateManager_DataFrom_Server
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
+        dataPageStateManager_DataFrom_Server,
+        searchDataLookupParamsRoot
     } : {
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
@@ -92,13 +98,15 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         projectSearchIds : Array<number>
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         dataPageStateManager_DataFrom_Server : DataPageStateManager
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
 
     }) : DataTable_RootTableDataObject {
 
     // the columns for the data being shown on the page
     const dataTable_RootTableDataObject_Both_ColumnArrays : DataTable_RootTableDataObject_Both_ColumnArrays = _getProteinDataTableColumns( {
         projectSearchIds, searchSubGroupIds, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
-        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
+        searchDataLookupParamsRoot
     } );
 
     let dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = undefined;
@@ -115,6 +123,8 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
             proteinDisplayData,
             projectSearchIds,
             searchSubGroupIds,
+            dataPageStateManager_DataFrom_Server,
+            searchDataLookupParamsRoot,
             proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId,
             singleProteinRowClickHandler_Callback,
             proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -131,7 +141,8 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
         dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             groupNumber: undefined, greyOutRow, isSubsetGroup: undefined,
             proteinList: proteinDisplayData.proteinList,
-            projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
+            projectSearchIds, searchSubGroupIds, dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+            proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
             proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         });
     }
@@ -153,12 +164,13 @@ export const proteinViewPage_renderToPageProteinList__Create_DataTable_RootTable
  */
 const _getProteinDataTableColumns = function(
     {
-        projectSearchIds, searchSubGroupIds, dataPageStateManager_DataFrom_Server, proteinGrouping_CentralStateManagerObjectClass,
-        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+        projectSearchIds, searchSubGroupIds, dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot, proteinGrouping_CentralStateManagerObjectClass,
+        proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject,
     } : {
         projectSearchIds : Array<number>
         searchSubGroupIds : Array<number>  //  undefined or null when not applicable
         dataPageStateManager_DataFrom_Server : DataPageStateManager
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
         proteinGrouping_CentralStateManagerObjectClass : ProteinGrouping_CentralStateManagerObjectClass
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
 
@@ -640,6 +652,109 @@ const _getProteinDataTableColumns = function(
         }
     }
 
+    {  //  Filterable and/or Descriptive Annotations at Protein Level
+
+        for ( const projectSearchId of projectSearchIds ) {
+
+            const annotationTypeItems_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get(projectSearchId)
+            if ( ! annotationTypeItems_For_ProjectSearchId ) {
+                const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
+            {
+                for (const paramsForProjectSearchIdsList_Entry of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList) {
+                    if (paramsForProjectSearchIdsList_Entry.projectSearchId === projectSearchId) {
+                        searchDataLookupParams_For_Single_ProjectSearchId = paramsForProjectSearchIdsList_Entry;
+                        break;
+                    }
+                }
+                if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+
+                    continue // EARLY CONTINUE
+
+                    // const msg = "No entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                    // console.warn(msg)
+                    // throw Error(msg)
+                }
+            }
+
+            let searchId_Addition_For_AnnotationTypeName_ForWhen_MultipleSearches = ""
+
+            if ( projectSearchIds.length > 1 ) {
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObject ) {
+                    throw Error( "No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                }
+                searchId_Addition_For_AnnotationTypeName_ForWhen_MultipleSearches = " (" + searchNameObject.searchId + ")"
+            }
+
+            if ( searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay.length > 0 ) {
+
+                //  Add AnnotationTypeIds Used For Display
+                for ( const annTypeIdDisplay_Entry of searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
+
+                    {  //  Try Filterable
+                        const matchedProteinFilterableAnnotationType = annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes.get( annTypeIdDisplay_Entry )
+                        if ( matchedProteinFilterableAnnotationType ) {
+
+                            //  Have Filterable Annotation Type Data for Annotation Type Id
+
+                            const displayName = matchedProteinFilterableAnnotationType.name + searchId_Addition_For_AnnotationTypeName_ForWhen_MultipleSearches
+
+                            const column = new DataTable_Column( {
+                                id: displayName,
+                                displayName,
+                                width: 80,
+                                sortable: true,
+                                onlyShow_ValueDisplay_FirstRowOfGroup: true
+                            } );
+
+                            columns.push( column );
+
+                            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+
+                            continue // EARLY CONTINUE
+                        }
+                    }
+                    {  //  Try Descriptive
+                        const matchedProteinDescriptiveAnnotationType = annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes.get( annTypeIdDisplay_Entry )
+                        if ( matchedProteinDescriptiveAnnotationType ) {
+
+                            //  Have Descriptive Annotation Type Data for Annotation Type Id
+
+                            const displayName = matchedProteinDescriptiveAnnotationType.name + searchId_Addition_For_AnnotationTypeName_ForWhen_MultipleSearches
+
+                            const column = new DataTable_Column( {
+                                id: displayName,
+                                displayName,
+                                width: 80,
+                                sortable: false,
+                                onlyShow_ValueDisplay_FirstRowOfGroup: true
+                            } );
+
+                            columns.push( column );
+
+                            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable( { cell_ColumnHeader_String: displayName } );
+                            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+
+                            continue // EARLY CONTINUE
+                        }
+                    }
+
+                    //  NOT found in Filterable or Descriptive so error
+
+                    const msg = "annTypeIdDisplay_Entry not found in annotationTypeItems_For_ProjectSearchId.matchedProteinFilterableAnnotationTypes or annotationTypeItems_For_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes. annTypeIdDisplay_Entry: " + annTypeIdDisplay_Entry
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+            }
+        }
+    }
+
     ///  !!!!!
 
     //  Next are ONLY for Download
@@ -684,6 +799,7 @@ const _getProteinDataTableColumns = function(
 const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = function(
     {
         proteinDisplayData, projectSearchIds, searchSubGroupIds,
+        dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
@@ -691,6 +807,8 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
         proteinDisplayData: ProteinDisplayData_From_createProteinDisplayData_ProteinList
         projectSearchIds  : Array<number>
         searchSubGroupIds : Array<number>  //  undefined or null when not applicable
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -722,6 +840,7 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
 
         const dataTable_DataRowEntries = _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups({
             groupNumber, greyOutRow, isSubsetGroup, proteinList : groupedProteinItem.proteinList_Grouped, projectSearchIds, searchSubGroupIds,
+            dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
             proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
             proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
         });
@@ -753,7 +872,9 @@ const _renderToPageProteinList_Create_dataGroupObjects_YES_ProteinGroups = funct
  */
 const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds,
+        dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
         groupNumber: number
@@ -762,6 +883,8 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
         proteinList : Array<ProteinDataDisplay_ProteinList_Item>
         projectSearchIds : Array<number>
         searchSubGroupIds : Array<number>  //  undefined or null when not applicable
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -769,7 +892,9 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
     }) : Array<DataTable_DataRowEntry> {
 
     const dataTable_DataRowEntries = _createProteinList_ForDataTable( {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds,
+        dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } );
 
@@ -781,7 +906,9 @@ const _renderToPageProteinList_Create_dataObjects_NO_ProteinGroups = function(
  */
 const _createProteinList_ForDataTable = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
+        groupNumber, greyOutRow, isSubsetGroup, proteinList, projectSearchIds, searchSubGroupIds,
+        dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+        proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId, singleProteinRowClickHandler_Callback, proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
         groupNumber: number
         greyOutRow : boolean  //  Set greyOutRow on all rows
@@ -789,6 +916,8 @@ const _createProteinList_ForDataTable = function(
         proteinList : Array<ProteinDataDisplay_ProteinList_Item>
         projectSearchIds : Array<number>
         searchSubGroupIds : Array<number>  //  undefined or null when not applicable
+        dataPageStateManager_DataFrom_Server : DataPageStateManager
+        searchDataLookupParamsRoot: SearchDataLookupParameters_Root
         proteinNameDescriptionForToolip_Key_ProteinSequenceVersionId : Map<number, Array<ProteinNameDescriptionCacheEntry>>
         singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -816,7 +945,9 @@ const _createProteinList_ForDataTable = function(
 
         proteinList_ForDataTable.push(
             _createProteinItem_DataTableEntry( {
-                groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex : index, projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback,
+                groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex : index, projectSearchIds, searchSubGroupIds,
+                dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+                proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback,
                 proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
             } )
         );
@@ -832,7 +963,9 @@ const _createProteinList_ForDataTable = function(
  */
 const _createProteinItem_DataTableEntry = function(
     {
-        groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex, projectSearchIds, searchSubGroupIds, proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback,
+        groupNumber, greyOutRow, isSubsetGroup, proteinListItem, arrayIndex, projectSearchIds, searchSubGroupIds,
+        dataPageStateManager_DataFrom_Server, searchDataLookupParamsRoot,
+        proteinNameDescriptionForToolip, singleProteinRowClickHandler_Callback,
         proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
     } : {
     groupNumber: number
@@ -842,6 +975,8 @@ const _createProteinItem_DataTableEntry = function(
     arrayIndex : number
     projectSearchIds : Array<number>
     searchSubGroupIds : Array<number>  //  undefined or null when not applicable
+    dataPageStateManager_DataFrom_Server : DataPageStateManager
+    searchDataLookupParamsRoot: SearchDataLookupParameters_Root
     proteinNameDescriptionForToolip : Array<ProteinNameDescriptionCacheEntry>
     singleProteinRowClickHandler_Callback : ProteinViewPage_Display__singleProteinRow_ClickHandler
     proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject: ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject
@@ -1333,6 +1468,71 @@ const _createProteinItem_DataTableEntry = function(
 
                 const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
                 dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+            }
+        }
+    }
+
+    {  //  Filterable and/or Descriptive Annotations at Protein Level
+
+        for ( const projectSearchId of projectSearchIds ) {
+
+            const annotationTypeItems_For_ProjectSearchId = dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map.get( projectSearchId )
+            if ( ! annotationTypeItems_For_ProjectSearchId ) {
+                const msg = "No entry in dataPageStateManager.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map for projectSearchId: " + projectSearchId;
+                console.warn( msg )
+                throw Error( msg )
+            }
+
+            let searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
+            {
+                for ( const paramsForProjectSearchIdsList_Entry of searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList ) {
+                    if ( paramsForProjectSearchIdsList_Entry.projectSearchId === projectSearchId ) {
+                        searchDataLookupParams_For_Single_ProjectSearchId = paramsForProjectSearchIdsList_Entry;
+                        break;
+                    }
+                }
+                if ( ! searchDataLookupParams_For_Single_ProjectSearchId ) {
+
+                    continue // EARLY CONTINUE
+
+                    // const msg = "No entry in searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList for projectSearchId: " + projectSearchId;
+                    // console.warn(msg)
+                    // throw Error(msg)
+                }
+            }
+
+            if ( searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay && searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay.length > 0 ) {
+
+                const proteinItemRecord = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get(projectSearchId);
+
+                //  proteinItemRecord will be undefined if no data for this projectSearchId
+
+                //  Add AnnotationTypeIds Used For Display
+                for ( const annTypeIdDisplay_Entry of searchDataLookupParams_For_Single_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
+
+                    let valueDisplay: string = ""
+                    let valueSort: number | string = ""   // Would be nice if no data always sorted to the bottom.  Maybe need another property that set to true.
+
+                    if ( proteinItemRecord && proteinItemRecord.filterableDescriptiveAnnotationDisplayItem_Map_Key_AnnotationTypeId ) {
+
+                        const annotationDisplayItem = proteinItemRecord.filterableDescriptiveAnnotationDisplayItem_Map_Key_AnnotationTypeId.get( annTypeIdDisplay_Entry )
+                        if ( annotationDisplayItem ) {
+                            valueDisplay = annotationDisplayItem.valueDisplay;
+                            valueSort = annotationDisplayItem.valueSort
+                        }
+                    }
+                    const searchEntriesForColumn: Array<string> = [valueDisplay]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({searchEntriesForColumn})
+                    const columnEntry = new DataTable_DataRow_ColumnEntry({
+                        searchTableData,
+                        valueDisplay,
+                        valueSort
+                    })
+                    columnEntries.push(columnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({cell_ColumnData_String: valueDisplay})
+                    dataColumns_tableDownload.push(dataTable_DataRowEntry_DownloadTable_SingleColumn);
+                }
             }
         }
     }

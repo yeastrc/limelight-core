@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects;
 import org.yeastrc.limelight.db_populate_new_fields__common_code.populate_table_protein_converage_tbl_new_fields_protein_pre_post_residue.main.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects.Limelight_DatabasePopulateNewFields__Table_ProteinCoverageTbl_NewFields_ProteinPrePostResidue_FROM_PerRecordObjects_RequestItem;
+import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
@@ -45,6 +46,8 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorE
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
+import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
+import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverageForSearchIdReportedPeptideIdsSearcher.ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result;
@@ -68,6 +71,9 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * 
  * Retrieve Protein Coverage Per Reported Peptide Id for Reported Peptide Ids, Project Search ID
+ * 
+ * 
+ * Uses SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId to filter on Protein Filters if populated
  *
  */
 @RestController
@@ -81,7 +87,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_COVERAGE_PER_REPORTED_PEPTIDE_ID_FOR_REP_PEPT_IDS_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -106,6 +112,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
 
+	@Autowired
+	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+	
 	@Autowired
 	private ProteinCoverageForSearchIdReportedPeptideIdsSearcherIF proteinCoverageForSearchIdReportedPeptideIdsSearcher;
 	
@@ -193,7 +202,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		Integer projectSearchId = webserviceRequest.projectSearchId;
 
     		if ( projectSearchId == null ) {
-    			log.warn( "No Project Search Ids" );
+    			log.warn( "No Project Search Id" );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 			if ( webserviceRequest.reportedPeptideIds == null ) {
@@ -201,8 +210,14 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-
-    		List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
+			if ( webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId == null ) {
+				String msg = "webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId == null: " + projectSearchId;
+				log.warn( msg );
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			}
+			
+	
+			List<Integer> projectSearchIdsForValidate = new ArrayList<>( 1 );
     		projectSearchIdsForValidate.add( projectSearchId );
 
     		////////////////
@@ -242,14 +257,19 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
-    		
+
+   			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel =
+    				searcherCutoffValuesRootLevel_Factory
+    				.createSearcherCutoffValuesSearchLevel( projectSearchIdMapToSearchId, webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
+
+
     		List<ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result_Item> dbItemList = null;
     		
     		{
     			{
     				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
     						proteinCoverageForSearchIdReportedPeptideIdsSearcher
-    						.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
+    						.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds, searcherCutoffValuesSearchLevel );
     				dbItemList = searcherResult.getResults();
     			}
     			
@@ -284,7 +304,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				//  Re-query the data
     				ProteinCoverageForSearchIdReportedPeptideIdsSearcher_Result searcherResult = 
         					proteinCoverageForSearchIdReportedPeptideIdsSearcher
-        					.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds );
+        					.getProteinCoverageForSearchIdReportedPeptideIds( searchId, webserviceRequest.reportedPeptideIds, searcherCutoffValuesSearchLevel );
         			dbItemList = searcherResult.getResults();
         			
         			//  Validate ALL Pre and Post residue populated
@@ -402,12 +422,18 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     	
 		private Integer projectSearchId;
 		private List<Integer> reportedPeptideIds;
+		private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
+		
 		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}
 		public void setReportedPeptideIds(List<Integer> reportedPeptideIds) {
 			this.reportedPeptideIds = reportedPeptideIds;
+		}
+		public void setSearchDataLookupParams_For_Single_ProjectSearchId(
+				SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId) {
+			this.searchDataLookupParams_For_Single_ProjectSearchId = searchDataLookupParams_For_Single_ProjectSearchId;
 		}
     }
 

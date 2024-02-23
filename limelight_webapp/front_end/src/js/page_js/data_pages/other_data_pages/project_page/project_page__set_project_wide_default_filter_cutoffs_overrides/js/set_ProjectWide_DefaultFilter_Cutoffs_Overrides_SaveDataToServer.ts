@@ -91,14 +91,13 @@ const _create_saveObject = function (
 
     const cutoffValues = {
         reportedPeptideEntriesList: [],
-        psmEntriesList: []
+        psmEntriesList: [],
+        proteinEntriesList: []
     }
 
     for (const data_For_SearchProgram of set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result.data_Per_SearchProgram_Array) {
 
         const searchProgram_name = data_For_SearchProgram.searchProgram_name
-        data_For_SearchProgram.data_PerType_PSM
-        data_For_SearchProgram.data_PerType_Peptide
 
         { //  Process PSM
             _create_saveObject_PerType_PSM_Peptide({
@@ -113,6 +112,13 @@ const _create_saveObject = function (
                     data_PerType_Input: data_For_SearchProgram.data_PerType_Peptide,
                     entriesList_Output: cutoffValues.reportedPeptideEntriesList
                 });
+        }
+        { //  Process Protein
+            _create_saveObject_PerType_PSM_Peptide({
+                searchProgram_name,
+                data_PerType_Input: data_For_SearchProgram.data_PerType_Protein,
+                entriesList_Output: cutoffValues.proteinEntriesList
+            });
         }
     }
 
