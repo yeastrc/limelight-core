@@ -27,8 +27,12 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPep
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPeptideAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModificationPositionAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModificationPositionAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveModificationPositionAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveModificationPositionAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.LimelightInput;
@@ -76,6 +80,7 @@ public class ValidateAnnotationTypeRecords {
 			validateMatchedProteinAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
 			validateReportedPeptideAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
 			validatePsmAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
+			validateModificationPositionAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
 		}
 	}
 	
@@ -311,24 +316,108 @@ public class ValidateAnnotationTypeRecords {
 		}
 	}
 
+	/**
+	 *  validate Modification Position Annotation Types
+	 *  
+	 * @param searchProgram
+	 * @throws LimelightImporterDataException 
+	 */
+	private void validateModificationPositionAnnotationNamesUniqueWithinSearchProgramAndType( SearchProgram searchProgram ) throws LimelightImporterDataException {
+			
+		Set<String> annotationNames = new HashSet<>();
+		SearchProgram.ModificationPositionAnnotationTypes psmAnnotationTypes =
+				searchProgram.getModificationPositionAnnotationTypes();
+		if ( psmAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No ModificationPosition Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+			return;
+		} 
+		//////	Filterable ModificationPosition Annotations
+		FilterableModificationPositionAnnotationTypes filterableModificationPositionAnnotationTypes =
+				psmAnnotationTypes.getFilterableModificationPositionAnnotationTypes();
+		if ( filterableModificationPositionAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No Filterable ModificationPosition Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+		} else {
+			List<FilterableModificationPositionAnnotationType> filterableModificationPositionAnnotationTypeList =
+					filterableModificationPositionAnnotationTypes.getFilterableModificationPositionAnnotationType();
+			if ( filterableModificationPositionAnnotationTypeList == null || filterableModificationPositionAnnotationTypeList.isEmpty() ) {
+				if ( log.isInfoEnabled() ) {
+					String msg = "No Filterable ModificationPosition Annotation Types for search program name: " + searchProgram.getName();
+					log.info(msg);
+				}
+			} else {
+				for ( FilterableModificationPositionAnnotationType filterableModificationPositionAnnotationType : filterableModificationPositionAnnotationTypeList ) {
+					String annotationName = filterableModificationPositionAnnotationType.getName();
+					if ( ! annotationNames.add( annotationName ) ) {
+						String msg = "Annotation name '" + annotationName + "'"
+								+ " occurs more than once for Modification Position annotation types for search program  "
+								+ "'" + searchProgram.getName() + "'.";
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+			}
+		}
+		////////   Descriptive ModificationPosition Annotations
+		DescriptiveModificationPositionAnnotationTypes descriptiveModificationPositionAnnotationTypes =
+				psmAnnotationTypes.getDescriptiveModificationPositionAnnotationTypes();
+		if ( descriptiveModificationPositionAnnotationTypes == null ) {
+			if ( log.isInfoEnabled() ) {
+				String msg = "No Descriptive ModificationPosition Annotation Types for search program name: " + searchProgram.getName();
+				log.info(msg);
+			}
+		} else {
+			List<DescriptiveModificationPositionAnnotationType> descriptiveModificationPositionAnnotationTypeList =
+					descriptiveModificationPositionAnnotationTypes.getDescriptiveModificationPositionAnnotationType();
+			if ( descriptiveModificationPositionAnnotationTypeList == null || descriptiveModificationPositionAnnotationTypeList.isEmpty() ) {
+				if ( log.isInfoEnabled() ) {
+					String msg = "No Descriptive ModificationPosition Annotation Types for search program name: " + searchProgram.getName();
+					log.info(msg);
+				}
+			} else {
+				for ( DescriptiveModificationPositionAnnotationType descriptiveModificationPositionAnnotationType : descriptiveModificationPositionAnnotationTypeList ) {
+					String annotationName = descriptiveModificationPositionAnnotationType.getName();
+					if ( ! annotationNames.add( annotationName ) ) {
+						String msg = "Annotation name '" + annotationName + "'"
+								+ " occurs more than once for ModificationPosition annotation types for search program  "
+								+ "'" + searchProgram.getName() + "'.";
+						log.error( msg );
+						throw new LimelightImporterDataException( msg );
+					}
+				}
+			}
+		}
+	}
+
 	////////////////////////////////
 	/**
 	 * Validate presence of Peptide and PSM Annotation Types
 	 * 
 	 * Throw LimelightImporterDataException if:
 	 *   No PSM filterable annotation types.
+	 *   
+	 *   COMMENTED OUT: 
 	 *   At least one PSM filterable  annotation type but none of them are a default filter.
 	 *   At least one Peptide filterable  annotation type but none of them are a default filter.
+	 *   
+	 *   NOT CODED OR COMMENTED OUT:
+	 *   Matched Protein validation
+	 *   Modification Position validation
 	 *   
 	 * @param limelightInput
 	 * @throws LimelightImporterDataException for data errors
 	 */
 	private void validatePresenceOfPeptideAndPSMAnnotationTypes( LimelightInput limelightInput ) throws LimelightImporterDataException {
 		
-		boolean foundPeptideFilterableAnnotationType = false;
-		boolean foundPeptideDefaultFilterableAnnotationType = false;
+//		boolean foundPeptideFilterableAnnotationType = false;
+//		boolean foundPeptideDefaultFilterableAnnotationType = false;
 		boolean foundPsmFilterableAnnotationType = false;
-		boolean foundPsmDefaultFilterableAnnotationType = false;
+//		boolean foundPsmDefaultFilterableAnnotationType = false;
 		SearchProgramInfo searchProgramInfo = limelightInput.getSearchProgramInfo(); 
 		SearchPrograms limelightInputSearchPrograms = searchProgramInfo.getSearchPrograms();
 		List<SearchProgram> searchProgramList =
@@ -352,13 +441,13 @@ public class ValidateAnnotationTypeRecords {
 			if ( filterablePeptideAnnotationTypeList == null || filterablePeptideAnnotationTypeList.isEmpty() ) {
 				continue;  //  EARLY CONTINUE
 			}
-			for ( FilterableReportedPeptideAnnotationType filterablePeptideAnnotationType : filterablePeptideAnnotationTypeList ) {
-				foundPeptideFilterableAnnotationType = true;
-				if ( filterablePeptideAnnotationType.getDefaultFilterValue() != null ) {
-					foundPeptideDefaultFilterableAnnotationType = true;
-					break;
-				}
-			}
+//			for ( FilterableReportedPeptideAnnotationType filterablePeptideAnnotationType : filterablePeptideAnnotationTypeList ) {
+//				foundPeptideFilterableAnnotationType = true;
+//				if ( filterablePeptideAnnotationType.getDefaultFilterValue() != null ) {
+//					foundPeptideDefaultFilterableAnnotationType = true;
+//					break;
+//				}
+//			}
 		}
 		///////////////////////
 		//   Process PSM Annotation Types
@@ -380,10 +469,10 @@ public class ValidateAnnotationTypeRecords {
 			}
 			for ( FilterablePsmAnnotationType filterablePsmAnnotationType : filterablePsmAnnotationTypeList ) {
 				foundPsmFilterableAnnotationType = true;
-				if ( filterablePsmAnnotationType.getDefaultFilterValue() != null ) {
-					foundPsmDefaultFilterableAnnotationType = true;
-					break;
-				}
+//				if ( filterablePsmAnnotationType.getDefaultFilterValue() != null ) {
+//					foundPsmDefaultFilterableAnnotationType = true;
+//					break;
+//				}
 			}
 		}
 		//  Not really needed since covered by XSD validation

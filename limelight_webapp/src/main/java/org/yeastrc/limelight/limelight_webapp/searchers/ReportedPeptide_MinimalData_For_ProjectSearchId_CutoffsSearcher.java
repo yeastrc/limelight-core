@@ -103,7 +103,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private static final Logger log = LoggerFactory.getLogger( ReportedPeptide_MinimalData_For_ProjectSearchId_CutoffsSearcher.class );
 	
 	@Autowired
-	private PsmCountForSearchIdReportedPeptideIdCutoffsSearcherIF psmCountForSearchIdReportedPeptideIdSearcher;
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmCountForSearchIdReportedPeptideIdSearcher;
 
 	@Autowired
 	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
@@ -214,6 +214,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesList = searcherCutoffValuesSearchLevel.getPeptidePerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesList = searcherCutoffValuesSearchLevel.getProteinPerAnnotationCutoffsList();
+		List<SearcherCutoffValuesAnnotationLevel> modificationPositionCutoffValuesList = searcherCutoffValuesSearchLevel.getModificationPositionPerAnnotationCutoffsList();
+		
 		//  If null, create empty lists
 		if ( peptideCutoffValuesList == null ) {
 			peptideCutoffValuesList = new ArrayList<>();
@@ -223,6 +225,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		}
 		if ( proteinCutoffValuesList == null ) {
 			proteinCutoffValuesList = new ArrayList<>();
+		}
+		if ( modificationPositionCutoffValuesList == null ) {
+			modificationPositionCutoffValuesList = new ArrayList<>();
 		}
 		
 		//////////////////////
@@ -485,22 +490,25 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 					
 					ReportedPeptide_MinimalData_List_FromSearcher_Entry item = 
 							populateFromResultSet( rs );
+					
+					//  Remove 'if' since moved this logic to below
 
-					if ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
-							|| minimumNumberOfPSMsPerReportedPeptide > 1 ) {
-
-						// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
-						//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
-						
-						int numPsms = 
-								psmCountForSearchIdReportedPeptideIdSearcher
-								.getPsmCountForSearchIdReportedPeptideIdCutoffs( item.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
-						
-						if ( numPsms <= 0 ) {
-							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
-							continue;  //  EARY CONTINUE
-						}
-					}
+//					if ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
+//							|| ( modificationPositionCutoffValuesList != null && ( ! modificationPositionCutoffValuesList.isEmpty() ) )
+//							|| minimumNumberOfPSMsPerReportedPeptide > 1 ) {
+//
+//						// PSM cutoffs list size is > 1 OR modificationPositionCutoffValuesList has entries OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+//						//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
+//						
+//						int numPsms = 
+//								psmCountForSearchIdReportedPeptideIdSearcher
+//								.getPsmCountForSearchIdReportedPeptideIdCutoffs( item.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
+//						
+//						if ( numPsms < minimumNumberOfPSMsPerReportedPeptide ) {
+//							//  !!!!!!!   Number of PSMs is < minimumNumberOfPSMsPerReportedPeptide this this isn't really a peptide that meets the cutoffs
+//							continue;  //  EARY CONTINUE
+//						}
+//					}
 						
 					
 					if ( item != null ) {
@@ -511,9 +519,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 				if ( ( ! resultList_Temp.isEmpty() )
 						&& ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
+								|| ( modificationPositionCutoffValuesList != null && ( ! modificationPositionCutoffValuesList.isEmpty() ) )
 								|| minimumNumberOfPSMsPerReportedPeptide > 1 ) ) {
 
-					// PSM cutoffs lists is > 1 OR minimumNumberOfPSMsPerReportedPeptide > 1: 
+					// PSM cutoffs list size is > 1  OR modificationPositionCutoffValuesList has entries OR minimumNumberOfPSMsPerReportedPeptide > 1: 
 					//   need to determine that Reported Peptide has at least minimumNumberOfPSMsPerReportedPeptide PSM that meets all cutoffs
 					
 					//  Perform Additional filtering
@@ -549,8 +558,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    										reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), 
 		    										params.searchId, params.searcherCutoffValuesSearchLevel );
 		    						
-		    						if ( numPsms <= 0 ) {
-		    							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
+		    						if ( numPsms < minimumNumberOfPSMsPerReportedPeptide ) {
+		    							//  !!!!!!!   Number of PSMs is < minimumNumberOfPSMsPerReportedPeptide this this isn't really a peptide that meets the cutoffs
 		    							  //  EARY CONTINUE
 		    						} else {
 		    						
@@ -584,8 +593,8 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		    								psmCountForSearchIdReportedPeptideIdSearcher
 		    								.getPsmCountForSearchIdReportedPeptideIdCutoffs( reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId(), searchId, searcherCutoffValuesSearchLevel );
 		    						
-		    						if ( numPsms <= 0 ) {
-		    							//  !!!!!!!   Number of PSMs is zero this this isn't really a peptide that meets the cutoffs
+		    						if ( numPsms < minimumNumberOfPSMsPerReportedPeptide ) {
+		    							//  !!!!!!!   Number of PSMs is < minimumNumberOfPSMsPerReportedPeptide this this isn't really a peptide that meets the cutoffs
 		    							  //  EARY CONTINUE
 		    						} else {
 		    						

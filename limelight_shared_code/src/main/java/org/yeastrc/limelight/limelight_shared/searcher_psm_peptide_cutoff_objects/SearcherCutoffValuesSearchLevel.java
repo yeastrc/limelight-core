@@ -46,11 +46,16 @@ public class SearcherCutoffValuesSearchLevel {
 	 * Key is annotation id
 	 */
 	private Map<Integer, SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesPerAnnotationId = new HashMap<>();
+	/**
+	 * Key is annotation id
+	 */
+	private Map<Integer, SearcherCutoffValuesAnnotationLevel> modificationPositionCutoffValuesPerAnnotationId = new HashMap<>();
 	
 	//  List version of data in map.  Updated when Map is updated
 	private List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesPerAnnotationIdList = new ArrayList<>();
 	private List<SearcherCutoffValuesAnnotationLevel> peptideCutoffValuesPerAnnotationIdList = new ArrayList<>();
 	private List<SearcherCutoffValuesAnnotationLevel> proteinCutoffValuesPerAnnotationIdList = new ArrayList<>();
+	private List<SearcherCutoffValuesAnnotationLevel> modificationPositionCutoffValuesPerAnnotationIdList = new ArrayList<>();
 	
 	/**
 	 * Make compact string for comparing to another SearcherCutoffValuesSearchLevel value 
@@ -164,13 +169,43 @@ public class SearcherCutoffValuesSearchLevel {
 		return proteinCutoffValuesPerAnnotationIdList;
 	}
 
+	///////////////////
+	
+	//  Modification Position
+
+	/**
+	 * Get SearcherCutoffValuesAnnotationLevel object for annotation id
+	 * @param annotationId
+	 * @return
+	 */
+	public SearcherCutoffValuesAnnotationLevel getModificationPositionPerAnnotationCutoffs( Integer annotationId ) {
+		return modificationPositionCutoffValuesPerAnnotationId.get( annotationId );
+	}
+
+	/**
+	 * Get searches in list form
+	 * @return
+	 */
+	public List<SearcherCutoffValuesAnnotationLevel> getModificationPositionPerAnnotationCutoffsList() {
+		
+		return modificationPositionCutoffValuesPerAnnotationIdList;
+	}
+
+	
+	//////////////////////////////////
+	//////////////////////////////////
+	
+	//  hashCode and equals methods
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((modificationPositionCutoffValuesPerAnnotationId == null) ? 0
+				: modificationPositionCutoffValuesPerAnnotationId.hashCode());
 		result = prime * result
 				+ ((peptideCutoffValuesPerAnnotationId == null) ? 0 : peptideCutoffValuesPerAnnotationId.hashCode());
-		result = prime * result + projectSearchId;
 		result = prime * result
 				+ ((proteinCutoffValuesPerAnnotationId == null) ? 0 : proteinCutoffValuesPerAnnotationId.hashCode());
 		result = prime * result
@@ -187,12 +222,16 @@ public class SearcherCutoffValuesSearchLevel {
 		if (getClass() != obj.getClass())
 			return false;
 		SearcherCutoffValuesSearchLevel other = (SearcherCutoffValuesSearchLevel) obj;
+		if (modificationPositionCutoffValuesPerAnnotationId == null) {
+			if (other.modificationPositionCutoffValuesPerAnnotationId != null)
+				return false;
+		} else if (!modificationPositionCutoffValuesPerAnnotationId
+				.equals(other.modificationPositionCutoffValuesPerAnnotationId))
+			return false;
 		if (peptideCutoffValuesPerAnnotationId == null) {
 			if (other.peptideCutoffValuesPerAnnotationId != null)
 				return false;
 		} else if (!peptideCutoffValuesPerAnnotationId.equals(other.peptideCutoffValuesPerAnnotationId))
-			return false;
-		if (projectSearchId != other.projectSearchId)
 			return false;
 		if (proteinCutoffValuesPerAnnotationId == null) {
 			if (other.proteinCutoffValuesPerAnnotationId != null)
@@ -207,7 +246,7 @@ public class SearcherCutoffValuesSearchLevel {
 		return true;
 	}
 
-
+	
 	/////////////////////////
 	
 	//  Builder
@@ -274,7 +313,7 @@ public class SearcherCutoffValuesSearchLevel {
 				});
 			}
 
-			{  //  Populate psmCutoffValuesPerAnnotationIdList
+			{  //  Populate proteinCutoffValuesPerAnnotationIdList
 				
 
 				newInstance.proteinCutoffValuesPerAnnotationIdList = new ArrayList<>( newInstance.proteinCutoffValuesPerAnnotationId.values() );
@@ -282,6 +321,24 @@ public class SearcherCutoffValuesSearchLevel {
 				// sort by name alphabetical
 				
 				Collections.sort( newInstance.proteinCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
+
+					@Override
+					public int compare(SearcherCutoffValuesAnnotationLevel o1,
+							SearcherCutoffValuesAnnotationLevel o2) {
+
+						return o1.getAnnotationTypeDTO().getName().compareTo( o1.getAnnotationTypeDTO().getName() );
+					}
+				});
+			}
+
+			{  //  Populate modificationPositionCutoffValuesPerAnnotationIdList
+				
+
+				newInstance.modificationPositionCutoffValuesPerAnnotationIdList = new ArrayList<>( newInstance.modificationPositionCutoffValuesPerAnnotationId.values() );
+				
+				// sort by name alphabetical
+				
+				Collections.sort( newInstance.modificationPositionCutoffValuesPerAnnotationIdList, new Comparator<SearcherCutoffValuesAnnotationLevel>() {
 
 					@Override
 					public int compare(SearcherCutoffValuesAnnotationLevel o1,
@@ -302,6 +359,8 @@ public class SearcherCutoffValuesSearchLevel {
 				addCutoffsPerAnnotationDataAsCompactString( newInstance.psmCutoffValuesPerAnnotationId, asStringSB);
 				asStringSB.append( "prt" );
 				addCutoffsPerAnnotationDataAsCompactString( newInstance.proteinCutoffValuesPerAnnotationId, asStringSB);
+				asStringSB.append( "mdPs" );
+				addCutoffsPerAnnotationDataAsCompactString( newInstance.modificationPositionCutoffValuesPerAnnotationId, asStringSB);
 				
 				newInstance.asCompactString = asStringSB.toString();
 			}
@@ -392,6 +451,18 @@ public class SearcherCutoffValuesSearchLevel {
 		public void addProteinPerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
 			
 			newInstance.proteinCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
+		}		
+
+		///////////////////
+		
+		//  Modification Position
+
+		/**
+		 * @param perAnnotationCutoffs
+		 */
+		public void addModificationPositionPerAnnotationCutoffs( SearcherCutoffValuesAnnotationLevel perAnnotationCutoffs ) {
+			
+			newInstance.modificationPositionCutoffValuesPerAnnotationId.put( perAnnotationCutoffs.getAnnotationTypeId(), perAnnotationCutoffs);
 		}		
 	}
 

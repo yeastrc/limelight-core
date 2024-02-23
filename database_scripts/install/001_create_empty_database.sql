@@ -634,7 +634,7 @@ CREATE TABLE  annotation_type_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   search_id MEDIUMINT UNSIGNED NOT NULL,
   search_programs_per_search_id INT(10) UNSIGNED NOT NULL,
-  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein') NOT NULL COMMENT '\'peptide\' is actually reported peptide',
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein', 'modification_position') NOT NULL COMMENT '\'peptide\' is actually reported peptide',
   filterable_descriptive_type ENUM('filterable','descriptive') NOT NULL,
   name VARCHAR(255) NOT NULL,
   default_visible INT(1) NOT NULL,
@@ -2478,7 +2478,7 @@ CREATE TABLE  project_level_default_fltr_ann_cutoffs_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   project_id INT UNSIGNED NOT NULL,
   search_program_name VARCHAR(200) NOT NULL,
-  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein', 'modification_position') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
   annotation_type_name VARCHAR(255) NOT NULL,
   annotation_cutoff_value DOUBLE UNSIGNED NOT NULL,
   created_user_id INT UNSIGNED NOT NULL,
@@ -2519,7 +2519,7 @@ CREATE TABLE  project_level_default_fltr_ann_cutoffs_prev_tbl (
   id INT UNSIGNED NOT NULL,
   project_id INT UNSIGNED NOT NULL,
   search_program_name VARCHAR(200) NOT NULL,
-  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
+  psm_peptide_protein_type ENUM('psm', 'peptide', 'matched_protein', 'modification_position') NOT NULL COMMENT '\'peptide\' is actually reported peptide\'',
   annotation_type_name VARCHAR(255) NOT NULL,
   annotation_cutoff_value DOUBLE UNSIGNED NOT NULL,
   created_user_id INT UNSIGNED NOT NULL,
@@ -4312,6 +4312,161 @@ CREATE TABLE  srch__protein_descriptive_annotation__insert_id_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table psm_modification_position_filterable_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_modification_position_filterable_annotation_tbl (
+  psm_id BIGINT UNSIGNED NOT NULL,
+  srch_rep_pept__dynamic_mod_id INT UNSIGNED NOT NULL COMMENT 'srch_rep_pept__dynamic_mod_tbl.id',
+  annotation_type_id INT UNSIGNED NOT NULL,
+  value_double DOUBLE NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (psm_id, annotation_type_id, srch_rep_pept__dynamic_mod_id),
+  CONSTRAINT psm_mod_pos_fltrbl_annttn__psm_id_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table psm_modification_position_descriptive_annotation_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_modification_position_descriptive_annotation_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_id BIGINT UNSIGNED NOT NULL,
+  srch_rep_pept__dynamic_mod_id INT UNSIGNED NOT NULL COMMENT 'srch_rep_pept__dynamic_mod_tbl.id',
+  annotation_type_id INT UNSIGNED NOT NULL,
+  value_location ENUM('local','large_value_table') NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (id),
+  CONSTRAINT psm_mod_pos_dsc_annttn__psm_id_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_modification_position_descriptive_annotation_tbl (psm_id ASC, srch_rep_pept__dynamic_mod_id ASC, annotation_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table psm_modification_position_descriptive_annotation_large_value_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_modification_position_descriptive_annotation_large_value_tbl (
+  psm_modification_position_descriptive_annotation_id BIGINT UNSIGNED NOT NULL,
+  value_string LONGTEXT NOT NULL,
+  CONSTRAINT psm_mod_pos_ann_large_value_primary_id_fk
+    FOREIGN KEY (psm_modification_position_descriptive_annotation_id)
+    REFERENCES psm_modification_position_descriptive_annotation_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX psm_mod_pos_ann_large_value_primary_id_fk_idx ON psm_modification_position_descriptive_annotation_large_value_tbl (psm_modification_position_descriptive_annotation_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table psm_modification_position_descriptive_annotation__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_modification_position_descriptive_annotation__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_modification_position_descriptive_annotation_tbl';
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position_dscrptv_annttn_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position_dscrptv_annttn_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  psm_open_modification_position_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  value_location ENUM('local','large_value_table') NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (id),
+  CONSTRAINT psm_mod_pos_dsc_annttn__psm_omp_id_fk
+    FOREIGN KEY (psm_open_modification_position_id)
+    REFERENCES psm_open_modification_position_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX psm_annotation_psm_id_ann_typ_id_idx ON psm_open_modification_position_dscrptv_annttn_tbl (psm_open_modification_position_id ASC, annotation_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position_dscrptv_annttn__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position_dscrptv_annttn__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_modification_position_descriptive_annotation_tbl';
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position_dscrptv_annttn_large_value_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position_dscrptv_annttn_large_value_tbl (
+  psm_open_modification_position_descriptive_annotation_id BIGINT UNSIGNED NOT NULL,
+  value_string LONGTEXT NOT NULL,
+  CONSTRAINT psm_opn_mod_pos_ann_large_value_primary_id_fk
+    FOREIGN KEY (psm_open_modification_position_descriptive_annotation_id)
+    REFERENCES psm_open_modification_position_dscrptv_annttn_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+CREATE INDEX psm_mod_pos_ann_large_value_primary_id_fk_idx ON psm_open_modification_position_dscrptv_annttn_large_value_tbl (psm_open_modification_position_descriptive_annotation_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position_filtrbl_annttn_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position_filtrbl_annttn_tbl (
+  psm_open_modification_position_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  value_double DOUBLE NOT NULL,
+  value_string VARCHAR(50) NOT NULL COMMENT 'Length is also coded in Java class AnnotationValueStringLocalFieldLengthConstants',
+  PRIMARY KEY (psm_open_modification_position_id, annotation_type_id),
+  CONSTRAINT psm_opn_mod_pos_fltrbl_annttn_psm_omp_id_fk
+    FOREIGN KEY (psm_open_modification_position_id)
+    REFERENCES psm_open_modification_position_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table psm_open_modification_position__insert_id_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_open_modification_position__insert_id_tbl (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id))
+ENGINE = InnoDB
+COMMENT = 'Get next id value for insert table psm_open_modification_position_tbl';
+
+
+-- -----------------------------------------------------
+-- Table psm_mod_pos_worst_filterable_annotation_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  psm_mod_pos_worst_filterable_annotation_lookup_tbl (
+  psm_id BIGINT UNSIGNED NOT NULL,
+  annotation_type_id INT UNSIGNED NOT NULL,
+  worst_value_double DOUBLE NOT NULL,
+  PRIMARY KEY (psm_id, annotation_type_id),
+  CONSTRAINT psm_mod_pos_worst_filterbl_annttn_lkp__psm_id_fk
+    FOREIGN KEY (psm_id)
+    REFERENCES psm_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
+ENGINE = InnoDB
+COMMENT = 'Worst Modification Position Annotation Values at PSM Level.  PSM Mod Position and PSM Open Mod Position.';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

@@ -660,11 +660,13 @@ class AnnotationTypeItems_PerProjectSearchId {
 	psmFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 	reportedPeptideFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 	matchedProteinFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
+	modificationPositionFilterableAnnotationTypes : Map<number, AnnotationTypeItem>;
 
 	//  Descriptive Annotation Types
 	psmDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem>;
 	reportedPeptideDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem>;
 	matchedProteinDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem>;
+	modificationPositionDescriptiveAnnotationTypes : Map<number, AnnotationTypeItem>;
 }
 
 /**

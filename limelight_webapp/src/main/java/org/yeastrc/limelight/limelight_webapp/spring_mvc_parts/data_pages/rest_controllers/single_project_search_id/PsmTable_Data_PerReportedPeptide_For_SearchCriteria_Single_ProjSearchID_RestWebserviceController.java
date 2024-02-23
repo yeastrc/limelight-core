@@ -47,8 +47,9 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher.PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
@@ -116,7 +117,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 
 	@Autowired
-	private PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_IF psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher;
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
+
+	@Autowired
+	private PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_IF psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -290,13 +294,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		for ( Integer reportedPeptideId : reportedPeptideIds ) {
     			
-    			List<PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry> psmTblData_List = 
-    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher
-    					.getPsmTblData_ForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    			List<Long> psmIds =
+    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    			
+    			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
+    					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
     			
     			List<WebserviceResult_PerPSM_Entry> psms = new ArrayList<>( psmTblData_List.size() );
     			
-    			for ( PsmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry dbEntry : psmTblData_List ) {
+    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry dbEntry : psmTblData_List ) {
     				WebserviceResult_PerPSM_Entry resultEntry = new WebserviceResult_PerPSM_Entry();
     				resultEntry.psmId = dbEntry.getPsmId();
     				resultEntry.charge = dbEntry.getCharge();

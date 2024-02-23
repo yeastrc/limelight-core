@@ -9,6 +9,9 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionDescriptiveAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry;
@@ -51,6 +54,13 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		List<PsmFilterableAnnotationDTO> psmFilterableAnnotationDTO__List = new ArrayList<>();
 		
 		List<PsmDescriptiveAnnotationDTO> psmAnnotationDTO_Descriptive__List = new ArrayList<>();
+		
+		List<PsmModificationPositionFilterableAnnotationDTO> psmModificationPositionFilterableAnnotationDTO_Filterable_List;
+
+		List<PsmModificationPositionDescriptiveAnnotationDTO> psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List;
+		
+		List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List;
+
 
 
 		///
@@ -75,6 +85,27 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 		}
 		public void setPsmDTO(PsmDTO psmDTO) {
 			this.psmDTO = psmDTO;
+		}
+		public List<PsmModificationPositionDescriptiveAnnotationDTO> getPsmModificationPositionDescriptiveAnnotationDTO_Descriptive_List() {
+			return psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List;
+		}
+		public void setPsmModificationPositionDescriptiveAnnotationDTO_Descriptive_List(
+				List<PsmModificationPositionDescriptiveAnnotationDTO> psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List) {
+			this.psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List = psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List;
+		}
+		public List<PsmModificationPositionFilterableAnnotationDTO> getPsmModificationPositionFilterableAnnotationDTO_Filterable_List() {
+			return psmModificationPositionFilterableAnnotationDTO_Filterable_List;
+		}
+		public void setPsmModificationPositionFilterableAnnotationDTO_Filterable_List(
+				List<PsmModificationPositionFilterableAnnotationDTO> psmModificationPositionFilterableAnnotationDTO_Filterable_List) {
+			this.psmModificationPositionFilterableAnnotationDTO_Filterable_List = psmModificationPositionFilterableAnnotationDTO_Filterable_List;
+		}
+		public List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> getPsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List() {
+			return psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List;
+		}
+		public void setPsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List(
+				List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List) {
+			this.psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List = psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List;
 		}
 		
 		
@@ -148,6 +179,11 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 
 		DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 		
+		DB_Insert_PsmModificationPosition_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		DB_Insert_PsmModificationPosition_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		
+		DB_Insert_PsmModificationPosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 	}
 	
 	
@@ -233,6 +269,26 @@ public class DB_Insert_Psm_AndChildren_BatchInserter_DAO implements DB_BatchInse
 
 				for ( PsmDescriptiveAnnotationDTO psmDescriptiveAnnotationDTO : saveHolder_AndChildren.psmAnnotationDTO_Descriptive__List ) {
 					DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmDescriptiveAnnotationDTO );
+				}
+				
+				if ( saveHolder_AndChildren.psmModificationPositionFilterableAnnotationDTO_Filterable_List != null ) {
+					for ( PsmModificationPositionFilterableAnnotationDTO psmModificationPositionFilterableAnnotationDTO : saveHolder_AndChildren.psmModificationPositionFilterableAnnotationDTO_Filterable_List ) {	
+						DB_Insert_PsmModificationPosition_FilterableAnnotation_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmModificationPositionFilterableAnnotationDTO );
+					}
+				}
+
+				if ( saveHolder_AndChildren.psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List != null ) {
+					for ( PsmModificationPositionDescriptiveAnnotationDTO psmModificationPositionDescriptiveAnnotationDTO : saveHolder_AndChildren.psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List ) {	
+						DB_Insert_PsmModificationPosition_DescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmModificationPositionDescriptiveAnnotationDTO );
+					}
+				}
+				
+				if ( saveHolder_AndChildren.psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List != null ) {
+				
+					for ( PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO : saveHolder_AndChildren.psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List ) {
+
+						DB_Insert_PsmModificationPosition_Worst_FilterableAnnotation_Lookup_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO );
+					}
 				}
 			}
 		}

@@ -23,6 +23,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 
 
 const _Overlay_Title = "Set Custom Filters for Project"
@@ -164,122 +165,134 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
      *
      */
     render() {
+        try {
+            return (
+                <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                    widthMinimum={ _Overlay_Width_Min }
+                    widthMaximum={ _Overlay_Width_Max }
+                    heightMinimum={ _Overlay_Height_Min }
+                    heightMaximum={ _Overlay_Height_Max }
+                    title={ _Overlay_Title }
+                    callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
+                    close_OnBackgroundClick={ false }>
 
-        return (
-            <ModalOverlay_Limelight_Component_v001_B_FlexBox
-                widthMinimum={ _Overlay_Width_Min }
-                widthMaximum={ _Overlay_Width_Max }
-                heightMinimum={ _Overlay_Height_Min }
-                heightMaximum={ _Overlay_Height_Max }
-                title={ _Overlay_Title }
-                callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
-                close_OnBackgroundClick={ false } >
+                    { ( this.state.showLoadingMessage || this.state.showSavingMessage ) ? (
 
-                { ( this.state.showLoadingMessage || this.state.showSavingMessage ) ? (
-
-                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-
-                        // style={ { padding : 6 } }
-                    >
                         <div
-                             style={ { textAlign: "center" } }
+                            className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+
+                            // style={ { padding : 6 } }
                         >
-                            { ( this.state.showLoadingMessage ) ? (
-                                <span>LOADING DATA</span>
-                            ) : (
-                                <span>SAVING DATA</span>
-                            ) }
+                            <div
+                                style={ { textAlign: "center" } }
+                            >
+                                { ( this.state.showLoadingMessage ) ? (
+                                    <span>LOADING DATA</span>
+                                ) : (
+                                    <span>SAVING DATA</span>
+                                ) }
+                            </div>
+
+                            <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" } }>
+                                <Spinner_Limelight_Component/>
+                            </div>
+
                         </div>
 
-                        <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" } }>
-                            <Spinner_Limelight_Component/>
-                        </div>
+                    ) : ( this.state.showDataSavedMessage ) ? (
 
-                    </div>
-
-                ) : ( this.state.showDataSavedMessage ) ? (
-
-                    <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-
-                        // style={ { padding : 6 } }
-                    >
                         <div
-                            style={ { textAlign: "center" } }
+                            className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+
+                            // style={ { padding : 6 } }
                         >
-                            <span>Data Saved</span>
-                            <span> </span>
-                            <span style={ { marginLeft: 10 } }>
+                            <div
+                                style={ { textAlign: "center" } }
+                            >
+                                <span>Data Saved</span>
+                                <span> </span>
+                                <span style={ { marginLeft: 10 } }>
                                 <button onClick={ this.props.callbackOn_Cancel_Close_Clicked }>
                                     Close
                                 </button>
                             </span>
-                        </div>
-
-                    </div>
-
-                ) : (
-
-                    <React.Fragment>
-
-                        <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                             style={ { marginBottom: 12 } }
-                            // style={ { padding : 6 } }
-                        >
-
-                            <div>
-                                All data in project will be filtered using these values.
-                            </div>
-                            <div>
-                                Remove all values to disable project-level filtering.
                             </div>
 
                         </div>
 
-                        <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
-                             style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
-                        >
-                            {/*  Main Body:  Scrollable Div  */}
+                    ) : (
 
-                            <div className="  " >
+                        <React.Fragment>
 
-                                <div
-                                    // style={ { padding : 6 } }
-                                >
-                                    {  this._getMainDisplayArea() }
+                            <div
+                                className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                                style={ { marginBottom: 12 } }
+                                // style={ { padding : 6 } }
+                            >
 
+                                <div>
+                                    All data in project will be filtered using these values.
+                                </div>
+                                <div>
+                                    Remove all values to disable project-level filtering.
+                                </div>
+
+                            </div>
+
+                            <div
+                                className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                                style={ {
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                    borderStyle: "solid",
+                                    borderWidth: 1
+                                } }
+                            >
+                                {/*  Main Body:  Scrollable Div  */ }
+
+                                <div className="  ">
+
+                                    <div
+                                        // style={ { padding : 6 } }
+                                    >
+                                        { this._getMainDisplayArea() }
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div
+                                className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                                // style={ { padding : 6 } }
+                            >
+                                <div style={ { marginTop: 15 } }>
+                                    <div style={ { display: "inline-block", position: "relative", marginRight: 5 } }>
+                                        <input
+                                            type="button" value="Save"
+                                            disabled={ this.state.disable_SaveButton }
+                                            onClick={ this._save_Button_Clicked_BindThis }
+                                        />
+                                        { ( this.state.disable_SaveButton ) ? (
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                title="Save not available while invalid numbers are entered"
+                                            >
+                                            </div>
+                                        ) : null }
+                                    </div>
+
+                                    <input type="button" value="Cancel"
+                                           onClick={ this.props.callbackOn_Cancel_Close_Clicked }/>
                                 </div>
                             </div>
 
-                        </div>
+                        </React.Fragment>
+                    ) }
 
-                        <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
-                            // style={ { padding : 6 } }
-                        >
-                            <div style={ { marginTop: 15 } }>
-                                <div style={ { display: "inline-block", position: "relative", marginRight: 5 } }>
-                                    <input
-                                        type="button" value="Save"
-                                        disabled={ this.state.disable_SaveButton }
-                                        onClick={ this._save_Button_Clicked_BindThis }
-                                    />
-                                    { (this.state.disable_SaveButton ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Save not available while invalid numbers are entered"
-                                        >
-                                        </div>
-                                    ) : null }
-                                </div>
-
-                                <input type="button" value="Cancel" onClick={ this.props.callbackOn_Cancel_Close_Clicked } />
-                            </div>
-                        </div>
-
-                    </React.Fragment>
-                ) }
-
-            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
-        );
+                </ModalOverlay_Limelight_Component_v001_B_FlexBox>
+            );
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 
     /**
@@ -362,6 +375,18 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
                         { this._getMainDisplayArea_For_AnnotationTypes( data_For_SearchProgram.data_PerType_Protein, data_For_SearchProgram.searchProgram_name + "__Protein" ) }
                     </React.Fragment>
                 ) : null }
+
+                { (data_For_SearchProgram.data_PerType_ModificationPosition ) ? (
+                    <React.Fragment>
+                        <div
+                            key={ data_For_SearchProgram.searchProgram_name + "__ModPos_Label" }
+                            style={ psmPeptide_Style }
+                        >
+                            Modification Position Filters
+                        </div>
+                        { this._getMainDisplayArea_For_AnnotationTypes( data_For_SearchProgram.data_PerType_ModificationPosition, data_For_SearchProgram.searchProgram_name + "__Mod" ) }
+                    </React.Fragment>
+                ) : null }
             </React.Fragment>
         )
     }
@@ -375,6 +400,13 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
         parentkey: string
 
     ) : JSX.Element {
+
+        if ( ( ! data_Per_Type_PSM_Peptide_Protein ) || ( ! data_Per_Type_PSM_Peptide_Protein.data_Per_AnnotationType_Name_Array ) ) {
+            // NO object or property
+            const msg = "_getMainDisplayArea_For_AnnotationTypes(...): ( ( ! data_Per_Type_PSM_Peptide_Protein ) || ( ! data_Per_Type_PSM_Peptide_Protein.data_Per_AnnotationType_Name_Array ) )"
+            console.warn(msg)
+            throw Error(msg)
+        }
 
         //  Currently 3 column Grid
 

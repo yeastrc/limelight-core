@@ -62,10 +62,10 @@ public class DB_Insert_PsmOpenModificationPosition_InsertOnly_DAO {
 	private static final String INSERT_SQL =
 			
 			"INSERT INTO psm_open_modification_position_tbl "
-			+ " ( psm_open_modification_id, position, is_n_terminal, is_c_terminal )"
+			+ " ( id, psm_open_modification_id, position, is_n_terminal, is_c_terminal )"
 			+ " VALUES ";
 			
-	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL =  "( ?, ?, ?, ? )";
+	private static final String INSERT_VALUES_SINGLE_ENTRY_SQL =  "( ?, ?, ?, ?, ? )";
 
 	private ConcurrentMap<Integer, String> insertSQL_Map_Key_StringLength = new ConcurrentHashMap<>();
 
@@ -109,7 +109,7 @@ public class DB_Insert_PsmOpenModificationPosition_InsertOnly_DAO {
 		if ( itemList.isEmpty() ) {
 			throw new IllegalArgumentException( "( itemList.isEmpty() )" );
 		}
-		
+	
 		final String insertSQL = this.create_insert_SQL( itemList.size() );
 
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( insertSQL ) ) {
@@ -117,6 +117,9 @@ public class DB_Insert_PsmOpenModificationPosition_InsertOnly_DAO {
 			int counter = 0;
 
 			for ( PsmOpenModificationPositionDTO item : itemList ) {
+
+				counter++;
+				pstmt.setLong( counter,  item.getId() );
 
 				counter++;
 				pstmt.setLong( counter,  item.getPsmOpenModificationId() );

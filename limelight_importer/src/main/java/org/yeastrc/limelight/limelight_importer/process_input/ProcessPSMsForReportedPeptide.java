@@ -36,10 +36,10 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.PsmOpenModificationPos
 import org.yeastrc.limelight.limelight_import.api.xml_dto.Psms;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReportedPeptide;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.ReporterIon;
-import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmReporterIonMassDAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Psm_AndChildren_BatchInserter_DAO.DB_Insert_Psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_Search_ReportedPeptide_SubGroup__Lookup__BatchInserter__DAO;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationPosition_AndChildren_BatchInserter_DAO.DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
@@ -51,17 +51,24 @@ import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllE
 import org.yeastrc.limelight.limelight_importer.utils.ReporterIonMass_Round_IfNecessary;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.Importer_SearchImportInProgress_Tracking_DAO__Importer_RunImporter;
 import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeFilterableDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmDynamicModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionDescriptiveAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPositionFilterableAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPosition_DescriptiveAnnotationDTO;
+import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPosition_FilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmReporterIonMassDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmSearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ReportedPeptideDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.dto.Search_ReportedPeptide_SubGroup__Lookup__DTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
 
 /**
  * 
@@ -116,6 +123,7 @@ public class ProcessPSMsForReportedPeptide {
 	 * @throws Exception
 	 */
 	public PsmStatisticsAndBestValues savePSMs( 
+			
 			Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object, 
 			int searchId, 
 			ReportedPeptideDTO reportedPeptideDTO, 
@@ -123,6 +131,7 @@ public class ProcessPSMsForReportedPeptide {
 			Map<String, SearchSubGroupDTO> searchSubGroupDTOMap_Key_searchSubGroupLabel,
 			Map<String, SearchProgramEntry> searchProgramEntryMap,
 			Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId,
+			Map<Integer, AnnotationTypeDTO> filterable_ModificationPosition_AnnotationTypesOnId,
 			SearchScanFileEntry_AllEntries searchScanFileEntry_AllEntries,
 			Set<BigDecimal> uniqueReporterIonMassesForTheReportedPeptide
 			) throws LimelightImporterDataException, Exception {
@@ -142,8 +151,13 @@ public class ProcessPSMsForReportedPeptide {
 		List<Psm> psmList = psms.getPsm();
 		
 		PopulatePsmAnnotations populatePsmAnnotations = PopulatePsmAnnotations.getInstance( searchProgramEntryMap, filterablePsmAnnotationTypesOnId );
+
+		PopulatePsm_ModificationPosition_Annotations populatePsmModificationPositionAnnotations = 
+				PopulatePsm_ModificationPosition_Annotations.getInstance( internalHolder_ReportedPeptide_Object, searchProgramEntryMap );
 		
-		DB_Insert_PsmReporterIonMassDAO db_Insert_PsmReporterIonMassDAO = DB_Insert_PsmReporterIonMassDAO.getInstance();
+		PopulatePsm_Open_ModificationPosition_Annotations populatePsm_Open_ModificationPosition_Annotations =
+				PopulatePsm_Open_ModificationPosition_Annotations.getInstance( searchProgramEntryMap );
+				
 
 		List<InternalClass_PsmSortingContainer> psmSortingContainerList = new ArrayList<>( psmList.size() );
 
@@ -391,6 +405,22 @@ public class ProcessPSMsForReportedPeptide {
 				}
 			}
 			
+			//  PSM Modification Position Annotations ( associated with Variable Modifications on Reported Peptide )
+
+			List<PsmModificationPositionFilterableAnnotationDTO> psmModificationPositionFilterableAnnotationDTO_Filterable_List = 
+					populatePsmModificationPositionAnnotations.populatePsmModificationPositionilterableAnnotations( psm, psmDTO );
+
+			List<PsmModificationPositionDescriptiveAnnotationDTO> psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List =
+					populatePsmModificationPositionAnnotations.populatePsmModificationPositionDescriptivePsmAnnotations( psm, psmDTO );
+
+			psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.setPsmModificationPositionFilterableAnnotationDTO_Filterable_List(psmModificationPositionFilterableAnnotationDTO_Filterable_List);
+			psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.setPsmModificationPositionDescriptiveAnnotationDTO_Descriptive_List(psmModificationPositionDescriptiveAnnotationDTO_Descriptive_List);
+			
+
+			//  PSM Open Modifications
+			
+			List<PsmOpenModificationPosition_FilterableAnnotationDTO> psmOpenModificationPosition_FilterableAnnotationDTO_List__ALL_OpenMods_For_DefaultCutoff_AND_WorstValue_Processing = new ArrayList<>();
+			
 			if ( psm.getPsmOpenModification() != null ) {
 				
 				BigDecimal massBD = psm.getPsmOpenModification().getMass();
@@ -423,14 +453,14 @@ public class ProcessPSMsForReportedPeptide {
 					psmOpenModification_UniqueMassesRounded.add( massInt );
 				}
 				
-				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List = null;
+				List<DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren> psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List = null;
 				
 				if ( ! psm.getPsmOpenModification().getPsmOpenModificationPosition().isEmpty() ) {
 					
-					psmOpenModificationPositionDTO_List = new ArrayList<>( psm.getPsmOpenModification().getPsmOpenModificationPosition().size() );
+					psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List = new ArrayList<>( psm.getPsmOpenModification().getPsmOpenModificationPosition().size() );
 
 					for ( PsmOpenModificationPosition psmOpenModificationPosition : psm.getPsmOpenModification().getPsmOpenModificationPosition() ) {
-
+						
 						PsmOpenModificationPositionDTO psmOpenModificationPositionDTO = new PsmOpenModificationPositionDTO();
 						psmOpenModificationPositionDTO.setPsmOpenModificationId( psmOpenModificationDTO.getId() );
 						if ( psmOpenModificationPosition.getPosition() != null ) {
@@ -445,33 +475,43 @@ public class ProcessPSMsForReportedPeptide {
 							psmOpenModificationPositionDTO.setPosition( peptideString.length() );
 						}
 						
-						psmOpenModificationPositionDTO_List.add(psmOpenModificationPositionDTO);
+						DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren = new DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren();
 
+						psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren.setPsmOpenModificationPositionDTO( psmOpenModificationPositionDTO );
+						
 						PsmOpenModification_UniquePosition_InReportedPeptide_Entry psmOpenModification_UniquePosition_InReportedPeptide_Entry = new PsmOpenModification_UniquePosition_InReportedPeptide_Entry();
 						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setPosition( psmOpenModificationPositionDTO.getPosition() );
 						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setIs_N_Terminal( psmOpenModificationPositionDTO.isIs_N_Terminal() );
 						psmOpenModification_UniquePosition_InReportedPeptide_Entry.setIs_C_Terminal( psmOpenModificationPositionDTO.isIs_C_Terminal() );
 
 						psmOpenModification_UniquePositions.add( psmOpenModification_UniquePosition_InReportedPeptide_Entry );
+						
+						
+						
+						List<PsmOpenModificationPosition_FilterableAnnotationDTO> psmOpenModificationPosition_FilterableAnnotationDTO_List = 
+								populatePsm_Open_ModificationPosition_Annotations.populatePsmOpenModificationPositionilterableAnnotations( psmOpenModificationPosition );
+						
+						List<PsmOpenModificationPosition_DescriptiveAnnotationDTO> psmOpenModificationPosition_DescriptiveAnnotationDTO_List =
+								populatePsm_Open_ModificationPosition_Annotations.populatePsmOpenModificationPositionDescriptivePsmAnnotations( psmOpenModificationPosition );
+						
+						psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren.setPsmOpenModificationPosition_FilterableAnnotationDTO_List(psmOpenModificationPosition_FilterableAnnotationDTO_List);
+						psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren.setPsmOpenModificationPosition_DescriptiveAnnotationDTO_List(psmOpenModificationPosition_DescriptiveAnnotationDTO_List);
+						
+						psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List.add( psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren );
+						
+						//  Add to list for DefaultCutoff Processing below
+						psmOpenModificationPosition_FilterableAnnotationDTO_List__ALL_OpenMods_For_DefaultCutoff_AND_WorstValue_Processing.addAll( psmOpenModificationPosition_FilterableAnnotationDTO_List );
 					}
 				}
 				
-				//  Save psmOpenModificationDTO, psmOpenModificationPositionDTO_List
+				//  Save psmOpenModificationDTO, setPsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List
 				
 				DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren = new DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren();
-				saveHolder_AndChildren.setPsmOpenModificationDTO(psmOpenModificationDTO);
-				saveHolder_AndChildren.setPsmOpenModificationPositionDTO_List(psmOpenModificationPositionDTO_List);
+				saveHolder_AndChildren.setPsmOpenModificationDTO( psmOpenModificationDTO );
+				saveHolder_AndChildren.setPsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List( psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List );
 
 				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getSaveHolder_PsmOpenModification_AndChildren__List().add( saveHolder_AndChildren );
-				
-				//  Insert Last Batch by calling:
-				//  DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
-				//
-				//   Call this when done processing ALL Reported Peptides
 			}
-			
-			
-			
 			
 			
 			//  PSM Filterable Annotations
@@ -484,11 +524,7 @@ public class ProcessPSMsForReportedPeptide {
 				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmFilterableAnnotationDTO__List().add( psmFilterableAnnotationDTO );
 			}
 			
-			//   Commented out since insert now done in psm_FilterableAnnotation_Records_BatchInsert_DB_Records
-			
-			//  db_Insert_PsmFilterableAnnotationDAO.saveToDatabase( currentPsm_psmAnnotationDTO_Filterable_List );
-			
-			
+			//  PSM Descriptive Annotations
 			
 			List<PsmDescriptiveAnnotationDTO> currentPsm_psmAnnotationDTO_Descriptive_List =
 					populatePsmAnnotations.populatePsmDescriptivePsmAnnotations( psm, psmDTO );
@@ -496,18 +532,18 @@ public class ProcessPSMsForReportedPeptide {
 			for ( PsmDescriptiveAnnotationDTO psmDescriptiveAnnotationDTO : currentPsm_psmAnnotationDTO_Descriptive_List ) {
 				
 				psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.getPsmAnnotationDTO_Descriptive__List().add( psmDescriptiveAnnotationDTO );
-				
-				//  Insert Last Batch by calling:
-				//  DB_Insert_PsmDescriptiveAnnotation_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
-				//
-				//   Call this when done processing ALL Reported Peptides
 			}
-			
 			
 			{
 				boolean doesPsmPassDefaultCutoffs = 
-						DoesPsmPassDefaultCutoffs.getInstance()
-						.doesPsmPassDefaultCutoffs( currentPsm_psmAnnotationDTO_Filterable_List, filterablePsmAnnotationTypesOnId );
+						DoesPsmPassDefault_PsmFilterable_Cutoffs.getInstance()
+						.doesPsmPassDefault_PsmFilterable_Cutoffs( currentPsm_psmAnnotationDTO_Filterable_List, filterablePsmAnnotationTypesOnId )
+						&& 
+						DoesPsmPassDefault_ModificationPosition_Cutoffs.getInstance()
+						.doesPsmPassDefault_ModificationPosition_Cutoffs( 
+								psmModificationPositionFilterableAnnotationDTO_Filterable_List,
+								psmOpenModificationPosition_FilterableAnnotationDTO_List__ALL_OpenMods_For_DefaultCutoff_AND_WorstValue_Processing,
+								filterable_ModificationPosition_AnnotationTypesOnId );
 				
 				InternalClass_DataPer_PerSubGroup dataPerSubGroupName = null;
 
@@ -560,6 +596,120 @@ public class ProcessPSMsForReportedPeptide {
 				}
 			}
 			
+			{  //  WORST Modification Position Scores Processing
+				
+				Map<Integer, Double> worstPositionScore_Map_Key_AnnotationId = new HashMap<>();
+				
+				if ( psmModificationPositionFilterableAnnotationDTO_Filterable_List != null ) {
+					for ( PsmModificationPositionFilterableAnnotationDTO psmModificationPositionFilterableAnnotationDTO : psmModificationPositionFilterableAnnotationDTO_Filterable_List ) {
+
+						Integer annotationTypeId = psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId();
+						
+						AnnotationTypeDTO annotationTypeDTO = filterable_ModificationPosition_AnnotationTypesOnId.get( annotationTypeId );
+						if ( annotationTypeDTO == null ) {
+							String msg = "filterable_ModificationPosition_AnnotationTypesOnId.get( psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId() ); returned null for psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId(): "
+									+ psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+						AnnotationTypeFilterableDTO annotationTypeFilterableDTO = annotationTypeDTO.getAnnotationTypeFilterableDTO();
+						if ( annotationTypeFilterableDTO == null ) {
+							String msg = "( annotationTypeDTO.getAnnotationTypeFilterableDTO() == null ) FROM filterable_ModificationPosition_AnnotationTypesOnId.get( psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId() ); for psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId(): "
+									+ psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+						if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+							
+							Double existingScore = worstPositionScore_Map_Key_AnnotationId.get( annotationTypeId );
+							if ( existingScore == null ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmModificationPositionFilterableAnnotationDTO.getValueDouble() ); // Add as Worst Score
+							} else if ( existingScore.doubleValue() > psmModificationPositionFilterableAnnotationDTO.getValueDouble().doubleValue() ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmModificationPositionFilterableAnnotationDTO.getValueDouble() ); // New Worst Score
+							}
+							
+						} else if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
+
+							Double existingScore = worstPositionScore_Map_Key_AnnotationId.get( annotationTypeId );
+							if ( existingScore == null ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmModificationPositionFilterableAnnotationDTO.getValueDouble() ); // Add as Worst Score
+							} else if ( existingScore.doubleValue() < psmModificationPositionFilterableAnnotationDTO.getValueDouble().doubleValue() ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmModificationPositionFilterableAnnotationDTO.getValueDouble() ); // New Worst Score
+							}
+							
+						} else {
+							String msg = "( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() NOT ABOVE or BELOW FROM filterable_ModificationPosition_AnnotationTypesOnId.get( psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId() ); for psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId(): " 
+									+ psmModificationPositionFilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+					}
+				}
+				
+				if ( psmOpenModificationPosition_FilterableAnnotationDTO_List__ALL_OpenMods_For_DefaultCutoff_AND_WorstValue_Processing != null ) {
+					for ( PsmOpenModificationPosition_FilterableAnnotationDTO psmOpenModificationPosition_FilterableAnnotationDTO : psmOpenModificationPosition_FilterableAnnotationDTO_List__ALL_OpenMods_For_DefaultCutoff_AND_WorstValue_Processing ) {
+
+						Integer annotationTypeId = psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId();
+						
+						AnnotationTypeDTO annotationTypeDTO = filterable_ModificationPosition_AnnotationTypesOnId.get( annotationTypeId );
+						if ( annotationTypeDTO == null ) {
+							String msg = "filterable_ModificationPosition_AnnotationTypesOnId.get( psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId() ); returned null for psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId(): "
+									+ psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+						AnnotationTypeFilterableDTO annotationTypeFilterableDTO = annotationTypeDTO.getAnnotationTypeFilterableDTO();
+						if ( annotationTypeFilterableDTO == null ) {
+							String msg = "( annotationTypeDTO.getAnnotationTypeFilterableDTO() == null ) FROM filterable_ModificationPosition_AnnotationTypesOnId.get( psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId() ); for psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId(): " 
+									+ psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+						if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
+							
+							Double existingScore = worstPositionScore_Map_Key_AnnotationId.get( annotationTypeId );
+							if ( existingScore == null ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble() ); // Add as Worst Score
+							} else if ( existingScore.doubleValue() > psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble().doubleValue() ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble() ); // New Worst Score
+							}
+							
+						} else if ( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.BELOW ) {
+
+							Double existingScore = worstPositionScore_Map_Key_AnnotationId.get( annotationTypeId );
+							if ( existingScore == null ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble() ); // Add as Worst Score
+							} else if ( existingScore.doubleValue() < psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble().doubleValue() ) {
+								worstPositionScore_Map_Key_AnnotationId.put( annotationTypeId, psmOpenModificationPosition_FilterableAnnotationDTO.getValueDouble() ); // New Worst Score
+							}
+							
+						} else {
+							String msg = "( annotationTypeFilterableDTO.getFilterDirectionTypeJavaCodeEnum() NOT ABOVE or BELOW FROM filterable_ModificationPosition_AnnotationTypesOnId.get( psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId() ); for psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId(): "
+									+ psmOpenModificationPosition_FilterableAnnotationDTO.getAnnotationTypeId();
+							log.error(msg);
+							throw new LimelightImporterInternalException(msg);
+						}
+					}
+				}
+				
+				if ( ! worstPositionScore_Map_Key_AnnotationId.isEmpty() ) {
+
+					List<PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO> psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List = new ArrayList<>( worstPositionScore_Map_Key_AnnotationId.size() );
+
+					psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren.setPsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List(psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List);
+
+					for ( Map.Entry<Integer, Double> mapEntry : worstPositionScore_Map_Key_AnnotationId.entrySet() ) {
+
+						PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO dto = new PsmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO();
+						dto.setPsmId( psmDTO.getId() );
+						dto.setAnnotationTypeId( mapEntry.getKey() );
+						dto.setWorstValueDouble( mapEntry.getValue() );
+
+						psmModificationPosition_Worst_FilterableAnnotation_Lookup_DTO_List.add( dto );
+					}
+				}
+			}
+			
 			//  Update "Best" PSM Annotation Value using current PSM
 
 			if ( psmDTO.isDecoy() ) {
@@ -599,7 +749,7 @@ public class ProcessPSMsForReportedPeptide {
 			
 			//  Add PSM and it's children to batch
 			
-			DB_Insert_Psm_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren(psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren);
+			DB_Insert_Psm_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_ObjectAndChildren( psm_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren );
 			
 			
 			

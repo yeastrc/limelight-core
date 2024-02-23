@@ -135,7 +135,6 @@ export const psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             let requestObject = {
                 projectSearchId,
                 psmIds_Include : psmIds_Include_Array, // Optional.  If provided, override psmIds retrieved based on searchDataLookupParams_For_Single_ProjectSearchId
-                // psmIds_Exclude : undefined, // Optional.  If provided, Additive to
                 reportedPeptideId,    // NOT required if have psmIds_Include
                 searchSubGroupId,   // Optional, only allowed if reportedPeptideId is populated
                 searchDataLookupParams_For_Single_ProjectSearchId : searchDetails_Filters_AnnTypeDisplay_ForProjectSearchId,

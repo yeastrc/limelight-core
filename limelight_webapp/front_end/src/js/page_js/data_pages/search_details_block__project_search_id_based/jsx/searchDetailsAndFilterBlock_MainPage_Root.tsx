@@ -1314,6 +1314,7 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
         let psmFilters : JSX.Element = undefined;
         let peptideFilters : JSX.Element = undefined;
         let proteinFilters : JSX.Element = undefined;
+        let modificationPositionFilters : JSX.Element = undefined;
 
         if ( annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.psmFilterableAnnotationTypes.size > 0 ) {
 
@@ -1323,7 +1324,9 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
                     typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PSM }
-                    type_label={"PSM"}
+                    type_label={ "PSM" }
+                    type_label_ForTooltip_Plural={ "PSMs" }
+                    type_label_TooltipText_Addition={ undefined }
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.psmFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
                     searchProgramsPerSearchDataForProjectSearchId={ this.props.searchProgramsPerSearchDataForProjectSearchId  }
@@ -1340,7 +1343,9 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
                     typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PEPTIDE }
-                    type_label={"Peptide"}
+                    type_label={ "Peptide" }
+                    type_label_ForTooltip_Plural={ "Peptides" }
+                    type_label_TooltipText_Addition={ undefined }
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.reportedPeptideFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
                     searchProgramsPerSearchDataForProjectSearchId={ this.props.searchProgramsPerSearchDataForProjectSearchId  }
@@ -1357,11 +1362,32 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
                     propValue={this.props.propValue}
                     openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
                     typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_PROTEIN }
-                    type_label={"Protein"}
+                    type_label={ "Protein" }
+                    type_label_ForTooltip_Plural={ "Proteins" }
+                    type_label_TooltipText_Addition={ undefined }
                     cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.matchedProteinFilters}
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
                     searchProgramsPerSearchDataForProjectSearchId={ this.props.searchProgramsPerSearchDataForProjectSearchId  }
                     filterableAnnotationTypes_ForType={annotationTypeDataForProjectSearchId.matchedProteinFilterableAnnotationTypes}
+                />
+            )
+        }
+
+        if ( annotationTypeDataForProjectSearchId.modificationPositionFilterableAnnotationTypes && annotationTypeDataForProjectSearchId.modificationPositionFilterableAnnotationTypes.size > 0 ) {
+
+            modificationPositionFilters = (
+                <Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root
+                    forMultipleSearches={ this.props.forMultipleSearches }
+                    propValue={this.props.propValue}
+                    openUserChangeFiltersOverlay_Callback={this.props.openUserChangeFiltersOverlay_Callback}
+                    typeIdentifierForOpenOverlay={ SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS.USER_CLICKED_IN_TYPE_MODIFICATION_POSITION }
+                    type_label={ "Modification Position" }
+                    type_label_ForTooltip_Plural={ "PSMs where All Modification Positions on PSM" }
+                    type_label_TooltipText_Addition={ "Only applies to modifications that have annotations (scores)." }
+                    cutoffs_ForType={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId.modificationPositionFilters}
+                    filtersAnnTypeDisplay_For_Single_ProjectSearchId={this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId}
+                    searchProgramsPerSearchDataForProjectSearchId={ this.props.searchProgramsPerSearchDataForProjectSearchId  }
+                    filterableAnnotationTypes_ForType={annotationTypeDataForProjectSearchId.modificationPositionFilterableAnnotationTypes}
                 />
             )
         }
@@ -1371,6 +1397,7 @@ class Internal__FiltersFor_A_Search__PSM_Peptide_Protein_Root extends React.Comp
                 { psmFilters }
                 { peptideFilters }
                 { proteinFilters }
+                { modificationPositionFilters }
             </React.Fragment>
         )
     }
@@ -1391,6 +1418,8 @@ interface Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root_Props {
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
     typeIdentifierForOpenOverlay : string
     type_label : string
+    type_label_ForTooltip_Plural : string
+    type_label_TooltipText_Addition : string
     cutoffs_ForType : SearchDataLookupParams_Filter_Per_AnnotationType[]
     filtersAnnTypeDisplay_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
     searchProgramsPerSearchDataForProjectSearchId : SearchProgramsPerSearchItems_PerProjectSearchId
@@ -1471,6 +1500,8 @@ class Internal__FiltersFor_A_SingleType_OF__PSM_Peptide_Protein_Root extends Rea
                         openUserChangeFiltersOverlay_Callback={ this.props.openUserChangeFiltersOverlay_Callback }
                         typeIdentifierForOpenOverlay={ this.props.typeIdentifierForOpenOverlay }
                         type_label={ this.props.type_label }
+                        type_label_ForTooltip_Plural={ this.props.type_label_ForTooltip_Plural }
+                        type_label_TooltipText_Addition={ this.props.type_label_TooltipText_Addition }
                         cutoffItem={ cutoffItem }
                         filtersAnnTypeDisplay_For_Single_ProjectSearchId={ this.props.filtersAnnTypeDisplay_For_Single_ProjectSearchId }
                         searchProgramsPerSearchDataForProjectSearchId={ this.props.searchProgramsPerSearchDataForProjectSearchId }
@@ -1542,6 +1573,8 @@ interface SingleFilterEntryDisplay_Root_Props {
     openUserChangeFiltersOverlay_Callback : OpenUserChangeFiltersOverlay_Callback
     typeIdentifierForOpenOverlay : string
     type_label : string
+    type_label_ForTooltip_Plural : string
+    type_label_TooltipText_Addition : string
     cutoffItem: SearchDataLookupParams_Filter_Per_AnnotationType
     filtersAnnTypeDisplay_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId
     searchProgramsPerSearchDataForProjectSearchId : SearchProgramsPerSearchItems_PerProjectSearchId
@@ -1641,13 +1674,26 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
 
         const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
 
-        const tooltip_Text = "Only " + this.props.type_label + "s with a " + annotationName + " " + filterDirection_Symbol + " " + cutoffItem.value + " will be included.";
+        const tooltip_Text = "Only " + this.props.type_label_ForTooltip_Plural + " with score '" + annotationName + "' " + filterDirection_Symbol + " " + cutoffItem.value + " will be included."
 
         const tooltip_Element_Main = (
             <div>
                 { tooltip_Text }
             </div>
         )
+
+        let tooltip_Element__Type_label_TooltipText_Addition: JSX.Element = undefined
+
+        if ( this.props.type_label_TooltipText_Addition ) {
+
+            tooltip_Element__Type_label_TooltipText_Addition = (
+                <div
+                    style={ { marginTop: 10 } }
+                >
+                    { this.props.type_label_TooltipText_Addition }
+                </div>
+            )
+        }
 
         let tooltip_Element_Addition_For_NonDefault: JSX.Element = undefined
 
@@ -1657,7 +1703,8 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
 
             tooltip_Element_Addition_For_NonDefault = (
                 <div
-                    style={ { marginTop: 10 } }>
+                    style={ { marginTop: 10 } }
+                >
                     This filter value has been changed from the import defaults for this search.
                 </div>
             )
@@ -1671,6 +1718,7 @@ class SingleFilterEntryDisplay_Root extends React.Component< SingleFilterEntryDi
         const tooltip_Element = (
             <div>
                 { tooltip_Element_Main }
+                { tooltip_Element__Type_label_TooltipText_Addition }
                 { tooltip_Element_Addition_For_NonDefault }
             </div>
         )

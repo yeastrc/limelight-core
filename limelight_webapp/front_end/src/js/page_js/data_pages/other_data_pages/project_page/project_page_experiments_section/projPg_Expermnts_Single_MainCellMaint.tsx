@@ -47,6 +47,7 @@ import {
 const _FILTER_LABEL_PSM = "PSM";
 const _FILTER_LABEL_PEPTIDE = "Peptide";
 const _FILTER_LABEL_PROTEIN = "Protein";
+const _FILTER_LABEL_MODIFICATION_POSITION = "Modification Position";
 
 /**
  *
@@ -79,6 +80,7 @@ class SearchSelected_Entry {
     psmFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
     reportedPeptideFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
     matchedProteinFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
+    modificationPositionFilters? : Array<SearchSelected_Entry_FiltersForType_PSM_Etc>
 }
 
 /**
@@ -528,6 +530,7 @@ const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, cond
     const psmFilters = conditionGroupsData_PerProjectSearchIdData.get_psmFilters_PerProjectSearchId();
     const reportedPeptideFilters = conditionGroupsData_PerProjectSearchIdData.get_reportedPeptideFilters_PerProjectSearchId();
     const matchedProteinFilters = conditionGroupsData_PerProjectSearchIdData.get_matchedProteinFilters_PerProjectSearchId();
+    const modificationPositionFilters = conditionGroupsData_PerProjectSearchIdData.get_modificationPositionFilters_PerProjectSearchId()
 
     const result_searchSelectedEntry : SearchSelected_Entry = { wrappedSearch: searchEntry };
 
@@ -559,6 +562,16 @@ const _createSearchSelectedEntry = function({ searchEntry, projectSearchId, cond
             searchProgramsPerSearch_Key_searchProgramsPerSearchId
         });
         result_searchSelectedEntry.matchedProteinFilters = result_matchedProteinFilters;
+    }
+
+    if ( modificationPositionFilters ) {
+
+        const result_modificationPositionFilters = _createSearchSelectedEntry_PerType({
+            filterData_PerType_All : modificationPositionFilters,
+            filterableAnnotationTypes : searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes,
+            searchProgramsPerSearch_Key_searchProgramsPerSearchId
+        });
+        result_searchSelectedEntry.modificationPositionFilters = result_modificationPositionFilters;
     }
 
     return result_searchSelectedEntry;
@@ -705,15 +718,32 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                 );
             }
 
+            let modificationPositionFilters : JSX.Element = undefined;
+
+            if ( this.props.searchSelectedEntry.modificationPositionFilters ) {
+
+                modificationPositionFilters = (
+                    <Search_Assigned_FilterData_ForType
+                        filters={ this.props.searchSelectedEntry.modificationPositionFilters }
+                        filterLabel={ _FILTER_LABEL_MODIFICATION_POSITION }
+                        filterableAnnotationTypes={ this.props.annotationTypeItems_ForProjectSearchId.modificationPositionFilterableAnnotationTypes }
+                        filterEntryClicked={ this._filterEntryClicked_BindThis }
+                    />
+                );
+            }
+
 
             let filters = undefined;
-            if ( psmFilters || peptideFilters || matchedProteinFilters ) {
+            if ( psmFilters || peptideFilters || matchedProteinFilters || modificationPositionFilters ) {
 
                 filters = (
-                    <div style= { { marginLeft: 30, marginTop: 4 }}>
-                        { psmFilters }
-                        { peptideFilters }
-                        { matchedProteinFilters }
+                    <div style= { { marginLeft: 30, marginTop: 4 } } >
+                        <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }>
+                            { psmFilters }
+                            { peptideFilters }
+                            { matchedProteinFilters }
+                            { modificationPositionFilters }
+                        </div>
                     </div>
                 );
             }
@@ -814,19 +844,21 @@ class Search_Assigned_FilterData_ForType extends React.Component< Search_Assigne
 
             return (
                 <React.Fragment>
-                    <div style={ { display: "grid", gridTemplateColumns: "120px 1fr" } }>
-
-                        <div style={ { lineHeight, marginBottom: 1, whiteSpace: "nowrap" } }>
-                            <span className=" clickable " onClick={ this._filterLabelOrEditIconClicked_BindThis }>
-                                { this.props.filterLabel } Filters:
-                            </span>
-                            <img className=" fake-link-image icon-small " title="Edit Filters" src="static/images/icon-edit.png"
-                                onClick={ this._filterLabelOrEditIconClicked_BindThis }
-                            />
-                        </div>
-                        <div style={ { lineHeight } }>
-                            { filterEntriesDisplay }
-                        </div>
+                    {/*  2 Column Grid  */}
+                    <div style={ { lineHeight, marginBottom: 1, whiteSpace: "nowrap" } }>
+                        <span className=" clickable " onClick={ this._filterLabelOrEditIconClicked_BindThis }>
+                            { this.props.filterLabel } Filters:
+                        </span>
+                        <img
+                            className=" fake-link-image icon-small "
+                            style={ { marginLeft: 2, marginRight: 8 } }
+                            title="Edit Filters"
+                            src="static/images/icon-edit.png"
+                            onClick={ this._filterLabelOrEditIconClicked_BindThis }
+                        />
+                    </div>
+                    <div style={ { lineHeight } }>
+                        { filterEntriesDisplay }
                     </div>
                 </React.Fragment>
             );

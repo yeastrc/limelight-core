@@ -61,6 +61,7 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModific
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_FastaFilename_Matches_Submitted_FastaFile_Filename;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ModificationPositionAnnotations_OnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
@@ -439,6 +440,9 @@ public class ImporterCoreEntryPoint {
 			
 			//   Throws LimelightImporterDataException if data error found
 			ValidateModificationsOnReportedPeptidesAndPSMs.getInstance().validateModificationsOnReportedPeptidesAndPSMs( limelightInputForImport );
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_ModificationPositionAnnotations_OnReportedPeptidesAndPSMs.getInstance().validateModificationsOnReportedPeptidesAndPSMs( limelightInputForImport );
 
 			//   Throws LimelightImporterDataException if data error found
 			Validate_ReporterIons_OnPSMs.getInstance().validate_ReporterIons_OnPSMs( limelightInputForImport );

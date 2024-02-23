@@ -68,6 +68,8 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 					result.reportedPeptideFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					result.matchedProteinFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+					result.modificationPositionFilterableAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -83,6 +85,8 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 					result.reportedPeptideDescriptiveAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					result.matchedProteinDescriptiveAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+					result.modificationPositionDescriptiveAnnotationTypeData.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -116,6 +120,8 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 		private Map<Integer, AnnotationTypeDTO> reportedPeptideDescriptiveAnnotationTypeData = new HashMap<>();
 		private Map<Integer, AnnotationTypeDTO> matchedProteinFilterableAnnotationTypeData = new HashMap<>();
 		private Map<Integer, AnnotationTypeDTO> matchedProteinDescriptiveAnnotationTypeData = new HashMap<>();
+		private Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeData = new HashMap<>();
+		private Map<Integer, AnnotationTypeDTO> modificationPositionDescriptiveAnnotationTypeData = new HashMap<>();
 		
 		public Map<Integer, AnnotationTypeDTO> getAllEntriesAnnotationTypeData() {
 			return allEntriesAnnotationTypeData;
@@ -162,6 +168,20 @@ public class GetAnnotationTypeData implements GetAnnotationTypeDataIF {
 		public void setMatchedProteinDescriptiveAnnotationTypeData(
 				Map<Integer, AnnotationTypeDTO> matchedProteinDescriptiveAnnotationTypeData) {
 			this.matchedProteinDescriptiveAnnotationTypeData = matchedProteinDescriptiveAnnotationTypeData;
+		}
+		public Map<Integer, AnnotationTypeDTO> getModificationPositionFilterableAnnotationTypeData() {
+			return modificationPositionFilterableAnnotationTypeData;
+		}
+		public void setModificationPositionFilterableAnnotationTypeData(
+				Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeData) {
+			this.modificationPositionFilterableAnnotationTypeData = modificationPositionFilterableAnnotationTypeData;
+		}
+		public Map<Integer, AnnotationTypeDTO> getModificationPositionDescriptiveAnnotationTypeData() {
+			return modificationPositionDescriptiveAnnotationTypeData;
+		}
+		public void setModificationPositionDescriptiveAnnotationTypeData(
+				Map<Integer, AnnotationTypeDTO> modificationPositionDescriptiveAnnotationTypeData) {
+			this.modificationPositionDescriptiveAnnotationTypeData = modificationPositionDescriptiveAnnotationTypeData;
 		}
 		
 	}

@@ -2906,10 +2906,12 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
     const reportedPeptideFilterData = data_conditionGroupsDataContainer.get_reportedPeptideFilters_PerProjectSearchId();
     const psmFilterDataMap = data_conditionGroupsDataContainer.get_psmFilters_PerProjectSearchId();
     const matchedProteinFilterDataMap = data_conditionGroupsDataContainer.get_matchedProteinFilters_PerProjectSearchId()
+    const modificationPositionFilterDataMap = data_conditionGroupsDataContainer.get_modificationPositionFilters_PerProjectSearchId()
 
     let psmFilters = undefined;
     let reportedPeptideFilters = undefined;
     let matchedProteinFilters = undefined
+    let modificationPositionFilters = undefined
 
     if ( reportedPeptideFilterData ) {
         reportedPeptideFilters = _getSearchFilterData_ForAnnType({ filterData : reportedPeptideFilterData });
@@ -2920,9 +2922,12 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
     if ( matchedProteinFilterDataMap ) {
         matchedProteinFilters = _getSearchFilterData_ForAnnType({ filterData : matchedProteinFilterDataMap });
     }
+    if ( modificationPositionFilterDataMap ) {
+        modificationPositionFilters = _getSearchFilterData_ForAnnType({ filterData : modificationPositionFilterDataMap });
+    }
 
 
-	// private int projectSearchId;
+    // private int projectSearchId;
 	
 	// //  Filter values (cutoffs per annotation type)
 	// private List<SearchDataLookupParams_Filter_Per_AnnotationType> psmFilters;
@@ -2941,7 +2946,7 @@ const _getSearchFilterData_ForProjectSearchId = ({ data_conditionGroupsDataConta
 
     return { 
         projectSearchId, 
-        psmFilters, reportedPeptideFilters, matchedProteinFilters,
+        psmFilters, reportedPeptideFilters, matchedProteinFilters, modificationPositionFilters,
         psmAnnTypeDisplay, reportedPeptideAnnTypeDisplay, matchedProteinAnnTypeDisplay
     };
 }

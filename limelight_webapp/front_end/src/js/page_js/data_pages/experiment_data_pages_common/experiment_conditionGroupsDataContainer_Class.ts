@@ -923,16 +923,19 @@ const _construct_from_experimentConditionData_Serialized_Internal_Process_search
         const reportedPeptideFilterData = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.reportedPeptideFilters });
         const psmFilterData = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.psmFilters });
         const matchedProteinFilters = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.matchedProteinFilters });
+        const modificationPositionFilters = _construct_from_experimentConditionData_Serialized_Internal_Process_SearchFilter_ForType({ filtersForType_InArray : paramsForProjectSearchId_Entry.modificationPositionFilters });
 
         const perSearchData = new Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData();
 
         perSearchData.set_reportedPeptideFilters_PerProjectSearchId( reportedPeptideFilterData );
         perSearchData.set_psmFilters_PerProjectSearchId( psmFilterData );
         perSearchData.set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilters )
+        perSearchData.set_modificationPositionFilters_PerProjectSearchId( modificationPositionFilters )
 
         perSearchData.set_psmAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.psmAnnTypeDisplay );
         perSearchData.set_reportedPeptideAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.reportedPeptideAnnTypeDisplay );
         perSearchData.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( paramsForProjectSearchId_Entry.matchedProteinAnnTypeDisplay );
+        //  NO paramsForProjectSearchId_Entry.modificationPositionAnnTypeDisplay
 
         perSearchData_KeyProjectSearchId.set( paramsForProjectSearchId_Entry.projectSearchId, perSearchData );
     }

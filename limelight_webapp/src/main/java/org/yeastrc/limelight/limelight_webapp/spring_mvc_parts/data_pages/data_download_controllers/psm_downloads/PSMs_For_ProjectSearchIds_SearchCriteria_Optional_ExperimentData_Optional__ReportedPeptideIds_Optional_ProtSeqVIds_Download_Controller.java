@@ -74,6 +74,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_P
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher_IF;
@@ -179,6 +180,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private PeptideStringForSearchIdReportedPeptideIdSearcherIF peptideStringForSearchIdReportedPeptideIdSearcher;
+	
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 	
 	@Autowired
 	private PsmWebDisplaySearcherIF psmWebDisplaySearcher;
@@ -364,39 +368,6 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				log.warn( "No paramsForProjectSearchIdsList" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
-			
-			//  Validate don't have both populated:  psmIds_Include and psmIds_Exclude
-
-//			{
-//	    		for ( RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : projectSearchIdsReportedPeptideIdsPsmIds ) {
-//	    			
-//	    			//  Passed from client - Optional
-//	    			List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
-//
-//	    			if ( reportedPeptideIdsAndTheirPsmIds != null ) {
-//
-//
-//	    				for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
-//
-//	    					Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
-//	    					List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
-//	    					List<Long> psmIds_Exclude = reportedPeptideIdAndItsPsmIds.psmIds_Exclude;
-//
-//	    					if ( psmIds_Include != null && ( ! psmIds_Include.isEmpty() )
-//	    							&& psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
-//	    						
-//	    						String msg = "Invalid Input: true: psmIds_Include != null && ( ! psmIds_Include.isEmpty() ) && psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ). reportedPeptideId: " 
-//	    								+ reportedPeptideId
-//	    								+ ", projectSearchId: "
-//	    								+ singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
-//	    						log.warn( msg );
-//	    						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-//	    					}
-//	    					
-//	    				}
-//	    			}
-//	    		}
-//			}
 			
     		//  Validate that Project Search Ids provided are in paramsForProjectSearchIdsList
 
@@ -769,47 +740,31 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				
 				Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
 				List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
-				List<Long> psmIds_Exclude = reportedPeptideIdAndItsPsmIds.psmIds_Exclude;
 				
 				reportedPeptideIds_ForAdditionalProcessing.add( reportedPeptideId );
 
-				if ( searchSubGroup_Ids_Selected != null ) {
+				List<Long> psmId_List_For_psmWebDisplayList = psmIds_Include;
+				
+				if ( psmId_List_For_psmWebDisplayList == null || psmId_List_For_psmWebDisplayList.isEmpty() ) {
 
-					for ( Integer searchSubGroup_Id : searchSubGroup_Ids_Selected ) {
-
-						List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-								psmWebDisplaySearcher.getPsmsWebDisplay( 
-										searchId, 
-										reportedPeptideId, 
-										searchSubGroup_Id, // searchSubGroupId, 
-										psmIds_Include, 
-										psmIds_Exclude, 
-										searcherCutoffValuesSearchLevel );
-
-						transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
-								psmWebDisplayListForReportedPeptideIds, 
-								reportedPeptideId,
-								psmWebDisplayList,
-								searchSubGroupData_KeyedOn_SearchSubGroupId );
-					}
-
-				} else {
-
-					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-							psmWebDisplaySearcher.getPsmsWebDisplay( 
-									searchId, 
-									reportedPeptideId, 
-									null, // searchSubGroupId 
-									psmIds_Include, 
-									psmIds_Exclude, 
-									searcherCutoffValuesSearchLevel );
-
-					transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
-							psmWebDisplayListForReportedPeptideIds, 
-							reportedPeptideId,
-							psmWebDisplayList,
-							searchSubGroupData_KeyedOn_SearchSubGroupId );
+					//  No PSM IDs passed in to webservice so get PSM IDs from cutoffs and reportedPeptideId for searchId
+					
+					psmId_List_For_psmWebDisplayList =
+							psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
+							.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
 				}
+				
+				List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+						psmWebDisplaySearcher.getPsmsWebDisplay( 
+								searchId, 
+								searchSubGroup_Ids_Selected, 
+								psmId_List_For_psmWebDisplayList );
+
+				transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+						psmWebDisplayListForReportedPeptideIds, 
+						reportedPeptideId,
+						psmWebDisplayList,
+						searchSubGroupData_KeyedOn_SearchSubGroupId );
 			}
 
 		} else {
@@ -854,41 +809,17 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 				for ( Integer reportedPeptideId : reportedPeptideIds_ForAdditionalProcessing ) {
 
-					if ( searchSubGroup_Ids_Selected != null ) {
+					List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
+							psmWebDisplaySearcher.getPsmsWebDisplay( 
+									searchId, 
+									searchSubGroup_Ids_Selected, 
+									null );
 
-						for ( Integer searchSubGroup_Id : searchSubGroup_Ids_Selected ) {
-
-							List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-									psmWebDisplaySearcher.getPsmsWebDisplay( 
-											searchId, 
-											reportedPeptideId, 
-											searchSubGroup_Id, // searchSubGroupId, 
-											null, // psmIds_Include
-											null, // psmIds_Exclude
-											searcherCutoffValuesSearchLevel );
-
-							transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
-									psmWebDisplayListForReportedPeptideIds, 
-									reportedPeptideId,
-									psmWebDisplayList,
-									searchSubGroupData_KeyedOn_SearchSubGroupId );
-						}
-						
-					} else {
-							
-						List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-								psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, 
-										null, // searchSubGroupId, 
-										null, // psmIds_Include
-										null, // psmIds_Exclude
-										searcherCutoffValuesSearchLevel );
-	
-						transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
-								psmWebDisplayListForReportedPeptideIds, 
-								reportedPeptideId,
-								psmWebDisplayList,
-								searchSubGroupData_KeyedOn_SearchSubGroupId );
-					}
+					transferToResult_psmWebDisplayList_Populate_PsmEntry_InternalClass(
+							psmWebDisplayListForReportedPeptideIds, 
+							reportedPeptideId,
+							psmWebDisplayList,
+							searchSubGroupData_KeyedOn_SearchSubGroupId );
 				}
 			}
 		}
@@ -2061,16 +1992,12 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private Integer reportedPeptideId;
 		private List<Long> psmIds_Include;
-		private List<Long> psmIds_Exclude;
 		
 		public void setReportedPeptideId(Integer reportedPeptideId) {
 			this.reportedPeptideId = reportedPeptideId;
 		}
 		public void setPsmIds_Include(List<Long> psmIds_Include) {
 			this.psmIds_Include = psmIds_Include;
-		}
-		public void setPsmIds_Exclude(List<Long> psmIds_Exclude) {
-			this.psmIds_Exclude = psmIds_Exclude;
 		}
 	}
 

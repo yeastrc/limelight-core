@@ -4,9 +4,14 @@ ZZZ_Front_End_First_Install_Things_Globally.txt
 
 Things to install:
 
-Node - Use latest - a package manager may/probably will install an old version.
+Node - 
 
-npm - if not installed by node - same install latest.
-		Google how to have node update itself.
-		
+npm - 
+
+
+For which version of Node and npm to use
+
+https://github.com/yeastrc/limelight-build-docker
+
+File: Dockerfile
 

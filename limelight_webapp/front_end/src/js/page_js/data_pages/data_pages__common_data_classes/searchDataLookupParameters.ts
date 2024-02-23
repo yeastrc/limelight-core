@@ -12,7 +12,6 @@
 
 ///////////////////////////////////////////
 
-import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString'
 import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
 
 
@@ -56,6 +55,7 @@ class SearchDataLookupParams_For_Single_ProjectSearchId {
 	psmFilters : Array<SearchDataLookupParams_Filter_Per_AnnotationType>;
 	reportedPeptideFilters : Array<SearchDataLookupParams_Filter_Per_AnnotationType>;
 	matchedProteinFilters : Array<SearchDataLookupParams_Filter_Per_AnnotationType>;
+    modificationPositionFilters : Array<SearchDataLookupParams_Filter_Per_AnnotationType>;
 
 	//  Annotation Type Ids to Display
 	psmAnnTypeDisplay : Array<number>;
@@ -137,6 +137,7 @@ const copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root = function
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.reportedPeptideFilters = _copyFilters( paramsForProjectSearchIdsList_Entry_Input.reportedPeptideFilters, "reportedPeptideFilters" );
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.psmFilters = _copyFilters( paramsForProjectSearchIdsList_Entry_Input.psmFilters, "psmFilters" );
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.matchedProteinFilters = _copyFilters( paramsForProjectSearchIdsList_Entry_Input.matchedProteinFilters, "matchedProteinFilters" );
+                searchDataLookupParams_For_Single_ProjectSearchId_Output.modificationPositionFilters = _copyFilters( paramsForProjectSearchIdsList_Entry_Input.modificationPositionFilters, "modificationPositionFilters" );
 
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.reportedPeptideAnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.reportedPeptideAnnTypeDisplay, "reportedPeptideAnnTypeDisplay" );
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.psmAnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.psmAnnTypeDisplay, "psmAnnTypeDisplay" );

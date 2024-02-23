@@ -111,10 +111,12 @@ const _create_SearchFilterValues_SingleSearchContents = (
     const psmFilterableAnnotationTypes = searchAnnotationTypesData.psmFilterableAnnotationTypes;
     const reportedPeptideFilterableAnnotationTypes = searchAnnotationTypesData.reportedPeptideFilterableAnnotationTypes;
     const matchedProteinFilters = searchAnnotationTypesData.matchedProteinFilterableAnnotationTypes;
+    const modificationPositionFilters = searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes;
 
     const defaultFilter_Cutoffs_Overrides_PSM = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_PSM;
     const defaultFilter_Cutoffs_Overrides_ReportedPeptide = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_ReportedPeptide;
     const defaultFilter_Cutoffs_Overrides_MatchedProtein = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_MatchedProtein;
+    const defaultFilter_Cutoffs_Overrides_ModificationPosition = defaultFilter_Cutoffs_Overrides_ProjectWide_Root.defaultFilter_Cutoffs_Overrides_ModificationPosition;
 
     //   Default Search Filters/Cutoffs
 
@@ -145,6 +147,16 @@ const _create_SearchFilterValues_SingleSearchContents = (
         });
         data_conditionGroupsDataContainer.set_matchedProteinFilters_PerProjectSearchId( matchedProteinFilterData );
     }
+    // Process Modification Position filters
+    if ( defaultFilter_Cutoffs_Overrides_ModificationPosition ) {
+        const modificationPositionFilterData : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = _create_SearchFilterValues_SingleFilterableType({
+            filterableAnnotationTypes : modificationPositionFilters,
+            defaultFilter_Cutoffs_Overrides: defaultFilter_Cutoffs_Overrides_ModificationPosition,
+            searchProgramsPerSearchData
+        });
+        data_conditionGroupsDataContainer.set_modificationPositionFilters_PerProjectSearchId( modificationPositionFilterData );
+    }
+
 
     //   Default Annotation Type Ids to display
 
@@ -171,6 +183,14 @@ const _create_SearchFilterValues_SingleSearchContents = (
             param_DescriptiveAnnotationTypes : searchAnnotationTypesData.matchedProteinDescriptiveAnnotationTypes
         });
         data_conditionGroupsDataContainer.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( matchedProteinAnnTypeDisplay );
+    }
+    // Process Modification Position filters
+    if ( searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes || searchAnnotationTypesData.modificationPositionDescriptiveAnnotationTypes ) {
+        const modificationPositionAnnTypeDisplay = _getDefaultsAnnTypeDisplayForType({
+            param_FilterableAnnotationTypes : searchAnnotationTypesData.modificationPositionFilterableAnnotationTypes,
+            param_DescriptiveAnnotationTypes : searchAnnotationTypesData.modificationPositionDescriptiveAnnotationTypes
+        });
+        data_conditionGroupsDataContainer.set_matchedProteinAnnTypeDisplay_PerProjectSearchId( modificationPositionAnnTypeDisplay );
     }
 }
 

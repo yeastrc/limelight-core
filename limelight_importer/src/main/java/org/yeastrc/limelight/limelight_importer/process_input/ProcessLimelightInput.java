@@ -250,6 +250,8 @@ public class ProcessLimelightInput {
 					createReportedPeptideFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
 			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterablePsmAnnotationTypesOnId( 
 					createPsmFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
+			reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.setFilterable_ModificationPosition_AnnotationTypesOnId(
+					createModificationPositionFilterableAnnotationTypesOnId( searchProgramEntryMap ) );
 			
 			if ( reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId() == null ) {
 				String msg = "filterablePsmAnnotationTypesOnId == null";
@@ -418,6 +420,29 @@ public class ProcessLimelightInput {
 				if ( psmAnnotationTypeDTO.getFilterableDescriptiveAnnotationType()
 						== FilterableDescriptiveAnnotationType.FILTERABLE ) {
 					filterableAnnotationTypesOnId.put( psmAnnotationTypeDTO.getId(), psmAnnotationTypeDTO );
+				}
+			}
+		}
+		return filterableAnnotationTypesOnId;
+	}
+
+	/**
+	 * @param searchProgramEntryMap
+	 * @return
+	 */
+	private Map<Integer, AnnotationTypeDTO> createModificationPositionFilterableAnnotationTypesOnId( Map<String, SearchProgramEntry> searchProgramEntryMap ) {
+		
+		///  Build list of Filterable annotation type ids
+		Map<Integer, AnnotationTypeDTO> filterableAnnotationTypesOnId = new HashMap<>();
+		for ( Map.Entry<String, SearchProgramEntry> searchProgramEntryMapEntry : searchProgramEntryMap.entrySet() ) {
+			SearchProgramEntry searchProgramEntry = searchProgramEntryMapEntry.getValue();
+			
+			Map<String, AnnotationTypeDTO> annotationTypeDTOMap = searchProgramEntry.getModificationPositionAnnotationTypeDTOMap();
+			for ( Map.Entry<String, AnnotationTypeDTO> annotationTypeDTOMapEntry : annotationTypeDTOMap.entrySet() ) {
+				AnnotationTypeDTO annotationTypeDTO = annotationTypeDTOMapEntry.getValue();
+				if ( annotationTypeDTO.getFilterableDescriptiveAnnotationType()
+						== FilterableDescriptiveAnnotationType.FILTERABLE ) {
+					filterableAnnotationTypesOnId.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				}
 			}
 		}

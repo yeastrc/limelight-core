@@ -25,19 +25,11 @@ import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
-import org.yeastrc.limelight.limelight_shared.constants.SearcherGeneralConstants;
-import org.yeastrc.limelight.limelight_shared.dto.AnnotationTypeDTO;
-import org.yeastrc.limelight.limelight_shared.enum_classes.FilterDirectionTypeJavaCodeEnum;
-import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesAnnotationLevel;
-import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
-import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
  * 
@@ -47,9 +39,6 @@ import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearc
 public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWebDisplaySearcherIF {
 
 	private static final Logger log = LoggerFactory.getLogger( PsmWebDisplaySearcher.class );
-
-	@Autowired
-	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
 	private static final String SQL_MAIN = 
 			"SELECT psm_tbl.id AS psm_id, psm_tbl.reported_peptide_id, "
@@ -70,133 +59,44 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 
 	/**
 	 * @param searchId
-	 * @param reportedPeptideId - Optional
-	 * @param searchSubGroupId - Optional
-	 * @param psmIds_Include - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
-	 * @param psmIds_Exclude - Optional.  Currently no value ever passed
-	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
+	 * @param searchSubGroup_Id_List - Optional
+	 * @param psmIds_Include - Required
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
 	public List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay( 
 			int searchId, 
-			Integer reportedPeptideId, //  Optional
-			Integer searchSubGroupId,  //  Optional
-			List<Long> psmIds_Include, //  Optional
-			List<Long> psmIds_Exclude, //  Optional - Currently no value ever passed 
-			SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel  ) throws Exception {
+			List<Integer> searchSubGroup_Id_List, //  Optional
+			List<Long> psmIds_Include  ) throws Exception {
 
-		if ( reportedPeptideId == null && ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
-			String msg = "reported peptide id is null and ( psmIds_Include is null or empty ).";
+		if ( ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
+			String msg = "( psmIds_Include is null or empty ).";
 			log.warn(msg);
 			throw new LimelightInternalErrorException(msg);
 		}
-
-		if ( reportedPeptideId == null && searchSubGroupId != null ) {
-			String msg = "reported peptide id is null and searchSubGroupId != null.";
-			log.warn(msg);
-			throw new LimelightInternalErrorException(msg);
-		}
-		
-//		if ( psmIds_Include != null && ( ! psmIds_Include.isEmpty() )
-//				&& psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
-//			
-//			String msg = "Invalid Input: true: psmIds_Include != null && ( ! psmIds_Include.isEmpty() ) && psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() )";
-//			log.error( msg );
-//			throw new LimelightInternalErrorException(msg);
-//		}
 		
 		List<PsmWebDisplayWebServiceResult> psms = new ArrayList<PsmWebDisplayWebServiceResult>();
 		
-		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
-
-		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = 
-				searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
 		StringBuilder sqlSB = new StringBuilder( 1000 );
 		//////////////////////
 		/////   Start building the SQL
 		sqlSB.append( SQL_MAIN );
 		
-		if ( searchSubGroupId != null ) {
+		if ( searchSubGroup_Id_List != null ) {
 			
 			sqlSB.append( SQL_INNER_JOIN_SEARCH_SUB_GROUP_TABLE );
-		}
-		
-		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
-			//  Add inner join for each PSM cutoff
-			for ( int counter = 1; counter <= psmCutoffValuesList.size(); counter++ ) {
-				sqlSB.append( " INNER JOIN " );
-				sqlSB.append( " psm_filterable_annotation_tbl AS psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( " ON "  );
-				sqlSB.append( " psm_tbl.id = "  );
-				sqlSB.append( "psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".psm_id" );
-			}
 		}
 		
 		///////////
 		sqlSB.append( SQL_WHERE_START );
 		//////////
 		
-		if ( reportedPeptideId != null ) {
-			sqlSB.append( " AND psm_tbl.reported_peptide_id = ?  " );
-		}
-		
-
-		// Include  records where is_independent_decoy = 'true'
-		
-		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
+		if ( searchSubGroup_Id_List != null ) {
 			
-			// Exclude  records where is_decoy = 'true'
+			sqlSB.append( " AND psm_search_sub_group_tbl.search_sub_group_id IN (  " );
 			
-			sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
-		}
-
-		
-		if ( searchSubGroupId != null ) {
-			
-			sqlSB.append( " AND psm_search_sub_group_tbl.search_sub_group_id = ?  " );
-		}
-		
-		if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
-
-			// Process PSM Cutoffs for WHERE
-
-			int counter = 0; 
-			for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
-				AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
-				counter++;
-				sqlSB.append( " AND " );
-				sqlSB.append( " ( " );
-				sqlSB.append( "psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".annotation_type_id = ? AND " );
-				sqlSB.append( "psm_fltrbl_tbl_" );
-				sqlSB.append( Integer.toString( counter ) );
-				sqlSB.append( ".value_double " );
-				if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO() == null ) {
-					String msg = "ERROR: Annotation type data must contain Filterable DTO data.  Annotation type id: " + srchPgmFilterablePsmAnnotationTypeDTO.getId();
-					log.error( msg );
-					throw new Exception(msg);
-				}
-				if ( srchPgmFilterablePsmAnnotationTypeDTO.getAnnotationTypeFilterableDTO().getFilterDirectionTypeJavaCodeEnum() == FilterDirectionTypeJavaCodeEnum.ABOVE ) {
-					sqlSB.append( SearcherGeneralConstants.SQL_END_BIGGER_VALUE_BETTER );
-				} else {
-					sqlSB.append( SearcherGeneralConstants.SQL_END_SMALLER_VALUE_BETTER );
-				}
-				sqlSB.append( " ? " );
-				sqlSB.append( " ) " );
-			}
-		} else {
-			
-			//  Filter using psmIds Includes
-			
-			sqlSB.append( " AND psm_tbl.id IN ( " );
-			
-			for ( int counter = 1; counter <= psmIds_Include.size(); counter++ ) {
+			for ( int counter = 1; counter <= searchSubGroup_Id_List.size(); counter++ ) {
 				if ( counter != 1 ) {
 					sqlSB.append( "," );
 				}
@@ -204,22 +104,18 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			}
 			sqlSB.append( " ) " );
 		}
-		
 
-		if ( psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+		//  Filter using psmIds Includes
 
-			//  Filter using psmIds Excludes
-			
-			sqlSB.append( " AND psm_tbl.id NOT IN ( " );
-			
-			for ( int counter = 1; counter <= psmIds_Exclude.size(); counter++ ) {
-				if ( counter != 1 ) {
-					sqlSB.append( "," );
-				}
-				sqlSB.append( "?" );
+		sqlSB.append( " AND psm_tbl.id IN ( " );
+
+		for ( int counter = 1; counter <= psmIds_Include.size(); counter++ ) {
+			if ( counter != 1 ) {
+				sqlSB.append( "," );
 			}
-			sqlSB.append( " ) " );
+			sqlSB.append( "?" );
 		}
+		sqlSB.append( " ) " );
 		
 		String sql = sqlSB.toString();
 		
@@ -229,49 +125,19 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			int paramCounter = 0;
 			paramCounter++;
 			preparedStatement.setInt( paramCounter, searchId );
-			
-			if ( reportedPeptideId != null ) {
-				paramCounter++;
-				preparedStatement.setInt( paramCounter, reportedPeptideId );
-			}
-			
-			if ( searchSubGroupId != null ) {
-				paramCounter++;
-				preparedStatement.setInt( paramCounter, searchSubGroupId );
-			}
-			
-			if ( psmIds_Include == null || psmIds_Include.isEmpty() ) {
-
-				// Process PSM Cutoffs for WHERE
-				
-//				if ( ! onlyDefaultPsmCutoffs ) {
-					//  PSM Cutoffs are not the default 
-					for ( SearcherCutoffValuesAnnotationLevel searcherCutoffValuesPsmAnnotationLevel : psmCutoffValuesList ) {
-						AnnotationTypeDTO srchPgmFilterablePsmAnnotationTypeDTO = searcherCutoffValuesPsmAnnotationLevel.getAnnotationTypeDTO();
-						paramCounter++;
-						preparedStatement.setInt( paramCounter, srchPgmFilterablePsmAnnotationTypeDTO.getId() );
-						paramCounter++;
-						preparedStatement.setDouble( paramCounter, searcherCutoffValuesPsmAnnotationLevel.getAnnotationCutoffValue() );
-					}
-//				}
-			} else {
-
-				//  Filter using psmIds Includes
-
-				for ( Long psmId : psmIds_Include ) {
+						
+			if ( searchSubGroup_Id_List != null ) {
+				for ( Integer searchSubGroup_Id : searchSubGroup_Id_List ) {
 					paramCounter++;
-					preparedStatement.setLong(paramCounter, psmId );
+					preparedStatement.setInt( paramCounter, searchSubGroup_Id );
 				}
 			}
 
-			if ( psmIds_Exclude != null && ( ! psmIds_Exclude.isEmpty() ) ) {
+			//  Filter using psmIds Includes
 
-				//  Filter using psmIds Excludes
-				
-				for ( Long psmId : psmIds_Exclude ) {
-					paramCounter++;
-					preparedStatement.setLong(paramCounter, psmId );
-				}
+			for ( Long psmId : psmIds_Include ) {
+				paramCounter++;
+				preparedStatement.setLong(paramCounter, psmId );
 			}
 			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {

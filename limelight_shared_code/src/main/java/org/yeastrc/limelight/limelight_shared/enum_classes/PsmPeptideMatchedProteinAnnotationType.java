@@ -40,7 +40,12 @@ public enum PsmPeptideMatchedProteinAnnotationType {
     /**
      * Annotation type records for Matched Proteins
      */
-    MATCHED_PROTEIN("matched_protein");
+    MATCHED_PROTEIN("matched_protein"),
+
+    /**
+     * Annotation type records for Modification Position
+     */
+    MODIFICATION_POSITION("modification_position");
     
     
     private final String value;

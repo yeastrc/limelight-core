@@ -104,6 +104,7 @@ class Internal_Single_For_ProjectSearchId_Entry {
     reportedPeptideFilterDataMap_KeyAnnTypeId : Map<number, Internal_SingleFilterValue_Entry>
     psmFilterDataMap_KeyAnnTypeId : Map<number, Internal_SingleFilterValue_Entry>
     matchedProteinFilterDataMap_KeyAnnTypeId : Map<number, Internal_SingleFilterValue_Entry>
+    modificationPositionFilterDataMap_KeyAnnTypeId : Map<number, Internal_SingleFilterValue_Entry>
 }
 
 class DataMapPerProjectSearchId_KeyProjectSearchId_Holder {
@@ -320,6 +321,20 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
                     let newFilters = replaceResults.newFilters;
                     filtersAnnTypeDisplay_For_Single_ProjectSearchId_NEW.matchedProteinFilters = newFilters;
                 }
+                {
+                    //  Modification Position cutoffs
+                    let replaceResults =
+                        this._replaceCutoffsWithUserEnteredForType( {
+                            filtersExisting_ForType : filtersAnnTypeDisplay_For_Single_ProjectSearchId.modificationPositionFilters,
+                            userEnteredCutoffs_ForType : userDataResultPerProjectSearchId.modificationPositionFilterDataMap_KeyAnnTypeId
+                        } );
+                    if ( replaceResults.anyCutoffsChanged ) {
+                        anyCutoffsChanged = true;
+                        projectSearchIdsForCutoffsChanged.add( projectSearchId );
+                    }
+                    let newFilters = replaceResults.newFilters;
+                    filtersAnnTypeDisplay_For_Single_ProjectSearchId_NEW.modificationPositionFilters = newFilters;
+                }
             }
 
             if ( anyCutoffsChanged ) {
@@ -519,6 +534,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
         const reportedPeptideFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.reportedPeptideFilterDataMap_KeyAnnTypeId;
         const psmFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.psmFilterDataMap_KeyAnnTypeId;
         const matchedProteinFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.matchedProteinFilterDataMap_KeyAnnTypeId;
+        const modificationPositionFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.modificationPositionFilterDataMap_KeyAnnTypeId;
 
         let valueUpdateResult = undefined;
 
@@ -544,6 +560,15 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
         }
         if ( matchedProteinFilterDataMap_KeyAnnTypeId ) {
             const filterDataValue = matchedProteinFilterDataMap_KeyAnnTypeId.get( annotationTypeId );
+            if ( filterDataValue ) {
+                foundAndProcessed_AnnTypeId = true;
+                valueUpdateResult = this._update_data_ForProjectSearchId_AnnTypeData_CurrentEntry_ProcessForAnnTypeId({
+                    newValue, filterDataValue
+                });
+            }
+        }
+        if ( modificationPositionFilterDataMap_KeyAnnTypeId ) {
+            const filterDataValue = modificationPositionFilterDataMap_KeyAnnTypeId.get( annotationTypeId );
             if ( filterDataValue ) {
                 foundAndProcessed_AnnTypeId = true;
                 valueUpdateResult = this._update_data_ForProjectSearchId_AnnTypeData_CurrentEntry_ProcessForAnnTypeId({
@@ -580,6 +605,7 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
             const reportedPeptideFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.reportedPeptideFilterDataMap_KeyAnnTypeId;
             const psmFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.psmFilterDataMap_KeyAnnTypeId;
             const matchedProteinFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.matchedProteinFilterDataMap_KeyAnnTypeId;
+            const modificationPositionFilterDataMap_KeyAnnTypeId = data_ForProjectSearchId_ReportedPeptidePSM_Local.modificationPositionFilterDataMap_KeyAnnTypeId;
 
             for ( const filterDataValue of reportedPeptideFilterDataMap_KeyAnnTypeId.values() ) {
                 if ( filterDataValue.currentValueInvalidValue ) {
@@ -594,6 +620,12 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
             }
 
             for ( const filterDataValue of matchedProteinFilterDataMap_KeyAnnTypeId.values() ) {
+                if ( filterDataValue.currentValueInvalidValue ) {
+                    return true; // EARLY RETURN
+                }
+            }
+
+            for ( const filterDataValue of modificationPositionFilterDataMap_KeyAnnTypeId.values() ) {
                 if ( filterDataValue.currentValueInvalidValue ) {
                     return true; // EARLY RETURN
                 }
@@ -771,11 +803,13 @@ const _create_SearchFilters_LocalCopy = function(
         const reportedPeptideFilters = searchDataLookupParams_For_ProjectSearchId.reportedPeptideFilters;
         const psmFilters = searchDataLookupParams_For_ProjectSearchId.psmFilters;
         const matchedProteinFilters = searchDataLookupParams_For_ProjectSearchId.matchedProteinFilters;
+        const modificationPositionFilters = searchDataLookupParams_For_ProjectSearchId.modificationPositionFilters;
 
         //  Output Maps
         const result_reportedPeptideFilterDataMap_KeyAnnTypeId = new Map();
         const result_psmFilterDataMap_KeyAnnTypeId = new Map();
         const result_matchedProteinFilterDataMap_KeyAnnTypeId = new Map();
+        const result_modificationPositionFilterDataMap_KeyAnnTypeId = new Map();
 
         if ( reportedPeptideFilters && reportedPeptideFilters.length !== 0 ) {
 
@@ -814,6 +848,7 @@ const _create_SearchFilters_LocalCopy = function(
                 result_psmFilterDataMap_KeyAnnTypeId.set( annotationTypeId, localValue );
             }
         }
+
         if ( matchedProteinFilters && matchedProteinFilters.length !== 0 ) {
 
             for ( const entry of matchedProteinFilters ) {
@@ -833,12 +868,32 @@ const _create_SearchFilters_LocalCopy = function(
             }
         }
 
+        if ( modificationPositionFilters && modificationPositionFilters.length !== 0 ) {
+
+            for ( const entry of modificationPositionFilters ) {
+                const annotationTypeId = entry.annTypeId
+                const filterValue = entry.value;
+                const mapValue_filterValue_String = filterValue.toString();
+                const localValue : Internal_SingleFilterValue_Entry = {
+                    annotationTypeId : annotationTypeId,
+                    initialValue : filterValue,
+                    initialValueString  : mapValue_filterValue_String,
+                    currentValue : filterValue,
+                    currentValueString  : mapValue_filterValue_String,
+                    currentValueInvalidValue : false,
+                    currentValueSameAsInitialValue : true,
+                };
+                result_modificationPositionFilterDataMap_KeyAnnTypeId.set( annotationTypeId, localValue );
+            }
+        }
+
         //  Output Object per Project Search Id
         const result_ForProjectSearchId : Internal_Single_For_ProjectSearchId_Entry = {
             projectSearchId : projectSearchId,
             reportedPeptideFilterDataMap_KeyAnnTypeId : result_reportedPeptideFilterDataMap_KeyAnnTypeId,
             psmFilterDataMap_KeyAnnTypeId : result_psmFilterDataMap_KeyAnnTypeId,
-            matchedProteinFilterDataMap_KeyAnnTypeId: result_matchedProteinFilterDataMap_KeyAnnTypeId
+            matchedProteinFilterDataMap_KeyAnnTypeId: result_matchedProteinFilterDataMap_KeyAnnTypeId,
+            modificationPositionFilterDataMap_KeyAnnTypeId: result_modificationPositionFilterDataMap_KeyAnnTypeId
         }
 
         resultMap_KeyProjectSearchId.set( projectSearchId, result_ForProjectSearchId );
@@ -853,6 +908,7 @@ const _create_SearchFilters_LocalCopy = function(
         const psmFilterableAnnotationTypes = root_MapValue.psmFilterableAnnotationTypes
         const reportedPeptideFilterableAnnotationTypes = root_MapValue.reportedPeptideFilterableAnnotationTypes
         const matchedProteinFilterableAnnotationTypes = root_MapValue.matchedProteinFilterableAnnotationTypes
+        const modificationPositionFilterableAnnotationTypes = root_MapValue.modificationPositionFilterableAnnotationTypes
 
         let resultMap_For_ProjectSearchId = resultMap_KeyProjectSearchId.get( projectSearchId );
         if ( ! resultMap_For_ProjectSearchId ) {
@@ -860,7 +916,8 @@ const _create_SearchFilters_LocalCopy = function(
                 projectSearchId,
                 reportedPeptideFilterDataMap_KeyAnnTypeId : new Map<number, Internal_SingleFilterValue_Entry>(),
                 psmFilterDataMap_KeyAnnTypeId : new Map<number, Internal_SingleFilterValue_Entry>(),
-                matchedProteinFilterDataMap_KeyAnnTypeId : new Map<number, Internal_SingleFilterValue_Entry>()
+                matchedProteinFilterDataMap_KeyAnnTypeId : new Map<number, Internal_SingleFilterValue_Entry>(),
+                modificationPositionFilterDataMap_KeyAnnTypeId : new Map<number, Internal_SingleFilterValue_Entry>()
             }
         }
         if ( psmFilterableAnnotationTypes && psmFilterableAnnotationTypes.size > 0 ) {
@@ -927,6 +984,28 @@ const _create_SearchFilters_LocalCopy = function(
                     currentValueSameAsInitialValue : true,
                 }
                 resultMap_For_ProjectSearchId.matchedProteinFilterDataMap_KeyAnnTypeId.set( annotationTypeId, resultMap_For_ProjectSearchId_Entry )
+            }
+        }
+        if ( modificationPositionFilterableAnnotationTypes && modificationPositionFilterableAnnotationTypes.size > 0 ) {
+            for ( const annTypesEntry of modificationPositionFilterableAnnotationTypes ) {
+                const annTypesEntryValue = annTypesEntry[ 1 ];
+                const annotationTypeId = annTypesEntryValue.annotationTypeId;
+
+                if ( resultMap_For_ProjectSearchId.modificationPositionFilterDataMap_KeyAnnTypeId.has( annotationTypeId ) ) {
+                    // annotationTypeId already in map
+                    continue;  // EARLY CONTINUE
+                }
+
+                const resultMap_For_ProjectSearchId_Entry : Internal_SingleFilterValue_Entry = {
+                    annotationTypeId,
+                    initialValue : undefined,
+                    initialValueString  : "",
+                    currentValue : undefined,
+                    currentValueString  : "",
+                    currentValueInvalidValue : false,
+                    currentValueSameAsInitialValue : true,
+                }
+                resultMap_For_ProjectSearchId.modificationPositionFilterDataMap_KeyAnnTypeId.set( annotationTypeId, resultMap_For_ProjectSearchId_Entry )
             }
         }
     }
@@ -1047,6 +1126,7 @@ class Single_Search_Entry extends React.Component< Single_Search_Entry_Props, Si
         const reportedPeptideFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeData_For_projectSearchId.reportedPeptideFilterableAnnotationTypes;
         const psmFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeData_For_projectSearchId.psmFilterableAnnotationTypes;
         const matchedProteinFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeData_For_projectSearchId.matchedProteinFilterableAnnotationTypes;
+        const modificationPositionFilterableAnnotationTypes : Map<number, AnnotationTypeItem> = annotationTypeData_For_projectSearchId.modificationPositionFilterableAnnotationTypes;
 
         const _TYPE_LABEL_INDENT = 30;
         const _TYPE_LABEL_PADDING_TOP = 5;
@@ -1117,6 +1197,28 @@ class Single_Search_Entry extends React.Component< Single_Search_Entry_Props, Si
             );
         }
 
+        const modificationPositionFilters = _getFilters_SingleFilterableType_Components({
+            projectSearchId,
+            filterableAnnotationTypesMap_KeyAnnotationTypeId : modificationPositionFilterableAnnotationTypes,
+            filterDataMap_KeyAnnTypeId : internal_Single_For_ProjectSearchId_Entry.modificationPositionFilterDataMap_KeyAnnTypeId,
+            searchProgramsPerSearch_Key_searchProgramsPerSearchId,
+            userClickedOn_ToOpenOverlay,
+            pass_top_of_SubElement_To_ScrollTo,
+            userUpdatedInputValue_Callback
+        });
+
+        let modificationPositionFiltersDisplay = undefined;
+        if ( modificationPositionFilters ) {
+            modificationPositionFiltersDisplay = (
+                <React.Fragment>
+                    <div  style={ { fontWeight : "bold", gridColumn: "1 / -1", marginLeft: _TYPE_LABEL_INDENT, paddingTop: _TYPE_LABEL_PADDING_TOP } }>
+                        Modificaition Position Filters
+                    </div>
+                    { modificationPositionFilters }
+                </React.Fragment>
+            );
+        }
+
         const searchNameDisplay = searchNamesMap_For_ProjectSearchId.name + " (" + searchNamesMap_For_ProjectSearchId.searchId + ") ";
 
         const result = (
@@ -1132,6 +1234,7 @@ class Single_Search_Entry extends React.Component< Single_Search_Entry_Props, Si
                 { psmFiltersDisplay }
                 { reportedPeptideFiltersDisplay }
                 { matchedProteinFiltersDisplay }
+                { modificationPositionFiltersDisplay }
             </React.Fragment>
         );
 

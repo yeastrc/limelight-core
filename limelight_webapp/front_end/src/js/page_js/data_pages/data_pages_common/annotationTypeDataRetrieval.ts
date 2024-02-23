@@ -210,7 +210,10 @@ export class AnnotationTypeDataRetrieval {
 			const matchedProteinFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
 				annotationTypeArray : perSearchItem.matchedProteinFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER 
 			});
-			
+			const modificationPositionFilterableAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
+				annotationTypeArray : perSearchItem.modificationPositionFilterableAnnotationTypes, sorttype : _SORT_TYPE_NUMBER
+			});
+
 			const psmDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
 				annotationTypeArray : perSearchItem.psmDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
 			});
@@ -220,6 +223,9 @@ export class AnnotationTypeDataRetrieval {
 			const matchedProteinDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
 				annotationTypeArray : perSearchItem.matchedProteinDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING 
 			});
+			const modificationPositionDescriptiveAnnotationTypes = this._convertAnnotationTypeArrayTo_V2_Map_KeyedAnnotationTypeId({
+				annotationTypeArray : perSearchItem.modificationPositionDescriptiveAnnotationTypes, sorttype : _SORT_TYPE_STRING
+			});
 
 			const  annotationTypes_PerProjectSearchId : AnnotationTypeItems_PerProjectSearchId = {
 				projectSearchId : perSearchItem.projectSearchId,
@@ -227,9 +233,11 @@ export class AnnotationTypeDataRetrieval {
 				psmFilterableAnnotationTypes,
 				reportedPeptideFilterableAnnotationTypes,
 				matchedProteinFilterableAnnotationTypes,
+				modificationPositionFilterableAnnotationTypes,
 				psmDescriptiveAnnotationTypes,
 				reportedPeptideDescriptiveAnnotationTypes,
-				matchedProteinDescriptiveAnnotationTypes
+				matchedProteinDescriptiveAnnotationTypes,
+				modificationPositionDescriptiveAnnotationTypes
 			};
 
 			//  Put in object, key projectSearchId

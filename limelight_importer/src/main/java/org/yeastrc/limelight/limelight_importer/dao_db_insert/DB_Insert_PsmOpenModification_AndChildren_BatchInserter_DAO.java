@@ -6,9 +6,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
-import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_Registry;
 import org.yeastrc.limelight.limelight_importer.dao_batch_insert_registry.DB_BatchInsert_ValidateCall_InsertLastBatch_ToDB_RegistryEntry_IF;
+import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModificationPosition_AndChildren_BatchInserter_DAO.DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren;
 import org.yeastrc.limelight.limelight_importer.dao_db_insert.DB_Insert_PsmOpenModification_InsertId_DAO.DB_Insert_PsmOpenModification__BatchIds_Start_End;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 
@@ -35,14 +35,15 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 		private PsmOpenModificationDTO psmOpenModificationDTO;
 
 		//  Children
-		private List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List;
+		private List<DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren> psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List;
 
 		public void setPsmOpenModificationDTO(PsmOpenModificationDTO psmOpenModificationDTO) {
 			this.psmOpenModificationDTO = psmOpenModificationDTO;
 		}
-		public void setPsmOpenModificationPositionDTO_List(
-				List<PsmOpenModificationPositionDTO> psmOpenModificationPositionDTO_List) {
-			this.psmOpenModificationPositionDTO_List = psmOpenModificationPositionDTO_List;
+
+		public void setPsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List(
+				List<DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren> psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List) {
+			this.psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List = psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List;
 		}
 	}
 	
@@ -99,7 +100,7 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 
 		//  Call to 'insert_LAST_Batch_ToDB()' is required to insert last batch into DB
 		
-		DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
+		DB_Insert_PsmOpenModificationPosition_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_LAST_Batch_ToDB();
 	}
 	
 	
@@ -184,13 +185,13 @@ public class DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO impleme
 
 			for ( DB_Insert_PsmOpenModification_AndChildren_BatchInserter_DAO__SaveHolder_AndChildren saveHolder_AndChildren : saveHolder_AndChildren_List ) {
 
-				if ( saveHolder_AndChildren.psmOpenModificationPositionDTO_List != null ) {
+				if ( saveHolder_AndChildren.psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List != null ) {
 
-					for ( PsmOpenModificationPositionDTO psmOpenModificationPositionDTO : saveHolder_AndChildren.psmOpenModificationPositionDTO_List ) {
+					for ( DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren : saveHolder_AndChildren.psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren_List ) {
 
-						psmOpenModificationPositionDTO.setPsmOpenModificationId( saveHolder_AndChildren.psmOpenModificationDTO.getId() );
-
-						DB_Insert_PsmOpenModificationPosition_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmOpenModificationPositionDTO );
+						psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren.getPsmOpenModificationPositionDTO().setPsmOpenModificationId( saveHolder_AndChildren.psmOpenModificationDTO.getId() );
+						
+						DB_Insert_PsmOpenModificationPosition_AndChildren_BatchInserter_DAO.getSingletonInstance().insert_Batching_Object( psmOpenModificationPosition_BatchInserter_DAO__SaveHolder_AndChildren );
 					}
 				}
 			}

@@ -28,12 +28,16 @@ import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPep
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveReportedPeptideAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveModificationPositionAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptiveModificationPositionAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.DescriptivePsmAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableReportedPeptideAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableMatchedProteinAnnotationTypes;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModificationPositionAnnotationType;
+import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterableModificationPositionAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationType;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.FilterablePsmAnnotationTypes;
 import org.yeastrc.limelight.limelight_import.api.xml_dto.SearchAnnotation;
@@ -113,6 +117,7 @@ public class ProcessSearchProgramEntries {
 		processFilterableReportedPeptideAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
 		processDescriptiveReportedPeptideAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
 		processMatchedProteinAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
+		processModificationPositionAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
 	}
 	
 	/**
@@ -609,7 +614,178 @@ public class ProcessSearchProgramEntries {
 			proteinAnnotationTypeDTOMap.put( item.getName(), item );
 		}
 	}
+	
+	/**
+	 * @param searchProgram
+	 * @param searchProgramEntry
+	 * @param searchProgramId
+	 * @throws Exception 
+	 */
+	private void processModificationPositionAnnotationTypes( SearchProgram searchProgram, SearchProgramEntry searchProgramEntry, int searchProgramId, int searchId, SearchProgramInfo searchProgramInfo ) throws Exception {
 
+		Map<String, AnnotationTypeDTO> proteinAnnotationTypeDTOMap = searchProgramEntry.getModificationPositionAnnotationTypeDTOMap();
+		if ( proteinAnnotationTypeDTOMap == null ) {
+			proteinAnnotationTypeDTOMap = new HashMap<>();
+			searchProgramEntry.setModificationPositionAnnotationTypeDTOMap( proteinAnnotationTypeDTOMap );
+		}
+		
+		SearchProgram.ModificationPositionAnnotationTypes annotationTypes =
+				searchProgram.getModificationPositionAnnotationTypes();
+
+		if ( annotationTypes == null ) {
+			
+			//  No Matched protein annotation types to process 
+			
+			return;  //  EARLY EXIT
+		}
+		
+		processFilterableModificationPositionAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
+		processDescriptiveModificationPositionAnnotationTypes( searchProgram, searchProgramEntry, searchProgramId, searchId, searchProgramInfo );
+	}
+	
+	/**
+	 * @param searchProgram
+	 * @param searchProgramEntry
+	 * @param searchProgramId
+	 * @param searchProgramInfo
+	 * @throws Exception 
+	 */
+	private void processFilterableModificationPositionAnnotationTypes( SearchProgram searchProgram, SearchProgramEntry searchProgramEntry, int searchProgramId, int searchId, SearchProgramInfo searchProgramInfo ) throws Exception {
+		
+		SearchProgram.ModificationPositionAnnotationTypes matchedProteinAnnotationTypes =
+				searchProgram.getModificationPositionAnnotationTypes();
+		if ( matchedProteinAnnotationTypes == null ) {
+			//  tested for in calling method so throw IllegalArgumentException
+			throw new IllegalArgumentException( "matchedProteinAnnotationTypes == null" );
+		}
+		
+		Map<String, AnnotationTypeDTO> proteinAnnotationTypeDTOMap = 
+				searchProgramEntry.getModificationPositionAnnotationTypeDTOMap();
+		if ( proteinAnnotationTypeDTOMap == null ) {
+			proteinAnnotationTypeDTOMap = new HashMap<>();
+			searchProgramEntry.setModificationPositionAnnotationTypeDTOMap( proteinAnnotationTypeDTOMap );
+		}
+		String searchProgramName = searchProgram.getName();
+		List<SearchAnnotation> proteinAnnotationSortOrderSearchAnnotationList = null;
+		List<SearchAnnotation> visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList = null;
+//		if ( searchProgramInfo != null 
+//				&& searchProgramInfo.getAnnotationSortOrder() != null 
+//				&& searchProgramInfo.getAnnotationSortOrder().getModificationPositionAnnotationSortOrder() != null 
+//				&& searchProgramInfo.getAnnotationSortOrder().getModificationPositionAnnotationSortOrder().getSearchAnnotation() != null ) {
+//			proteinAnnotationSortOrderSearchAnnotationList = 
+//					searchProgramInfo.getAnnotationSortOrder().getModificationPositionAnnotationSortOrder().getSearchAnnotation();
+//		}
+//		if ( searchProgramInfo != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations() != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations() != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations().getSearchAnnotation() != null ) {
+//			visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList = 
+//					searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations().getSearchAnnotation();
+//		}
+	
+		FilterableModificationPositionAnnotationTypes filterableModificationPositionAnnotationTypes =
+				matchedProteinAnnotationTypes.getFilterableModificationPositionAnnotationTypes();
+		List<FilterableModificationPositionAnnotationType> filterableModificationPositionAnnotationTypeList =
+				filterableModificationPositionAnnotationTypes.getFilterableModificationPositionAnnotationType();
+		
+		AnnotationTypeDAO srchPgmFilterableModificationPositionAnnotationTypeDAO = AnnotationTypeDAO.getInstance();
+		
+		for ( FilterableModificationPositionAnnotationType filterableModificationPositionAnnotationType : filterableModificationPositionAnnotationTypeList ) {
+			String annotationTypeName = filterableModificationPositionAnnotationType.getName();
+			Integer annotationTypeSortOrder = getAnnotationTypeSortOrder( annotationTypeName, searchProgramName, proteinAnnotationSortOrderSearchAnnotationList );
+			boolean annotationTypeDefaultVisible = getAnnotationTypeDefaultVisible( annotationTypeName, searchProgramName, visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList );
+			Integer annotationTypeDisplayOrder = getAnnotationTypeDisplayOrder( annotationTypeName, searchProgramName, visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList );
+			AnnotationTypeDTO item = new AnnotationTypeDTO();
+			AnnotationTypeFilterableDTO annotationTypeFilterableDTO = new AnnotationTypeFilterableDTO();
+			item.setAnnotationTypeFilterableDTO( annotationTypeFilterableDTO );
+			item.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION );
+			item.setFilterableDescriptiveAnnotationType( FilterableDescriptiveAnnotationType.FILTERABLE );
+			item.setSearchId( searchId );
+			item.setSearchProgramsPerSearchId( searchProgramId );
+			item.setName( filterableModificationPositionAnnotationType.getName() );
+			String filterDirectionString = filterableModificationPositionAnnotationType.getFilterDirection().value();
+			FilterDirectionTypeJavaCodeEnum filterDirectionTypeJavaCodeEnum = FilterDirectionTypeJavaCodeEnum.fromValue( filterDirectionString );
+			annotationTypeFilterableDTO.setFilterDirectionTypeJavaCodeEnum( filterDirectionTypeJavaCodeEnum );
+
+			BigDecimal defaultFilterValue = filterableModificationPositionAnnotationType.getDefaultFilterValue();
+			boolean isDefaultFilter = false;
+			if ( defaultFilterValue != null ) {
+				isDefaultFilter = true;
+			}
+			if ( isDefaultFilter ) {
+				annotationTypeFilterableDTO.setDefaultFilter( isDefaultFilter );
+				annotationTypeFilterableDTO.setDefaultFilterAtDatabaseLoad( isDefaultFilter );
+				annotationTypeFilterableDTO.setDefaultFilterValue( defaultFilterValue.doubleValue() );
+				annotationTypeFilterableDTO.setDefaultFilterValueString( defaultFilterValue.toString() );
+				annotationTypeFilterableDTO.setDefaultFilterValueAtDatabaseLoad( defaultFilterValue.doubleValue() );
+				annotationTypeFilterableDTO.setDefaultFilterValueStringAtDatabaseLoad( defaultFilterValue.toString() );
+			}
+			annotationTypeFilterableDTO.setSortOrder( annotationTypeSortOrder );
+			item.setDefaultVisible( annotationTypeDefaultVisible );
+			item.setDisplayOrder( annotationTypeDisplayOrder );
+			item.setDescription( filterableModificationPositionAnnotationType.getDescription() );
+			srchPgmFilterableModificationPositionAnnotationTypeDAO.saveToDatabase( item );
+			proteinAnnotationTypeDTOMap.put( item.getName(), item );
+		}
+	}
+	
+	/**
+	 * @param searchProgram
+	 * @param searchProgramEntry
+	 * @param searchProgramId
+	 * @param filterDirectionStringIdMap
+	 * @throws Exception 
+	 */
+	private void processDescriptiveModificationPositionAnnotationTypes( SearchProgram searchProgram, SearchProgramEntry searchProgramEntry, int searchProgramId, int searchId, SearchProgramInfo searchProgramInfo ) throws Exception {
+		
+		Map<String, AnnotationTypeDTO> proteinAnnotationTypeDTOMap = 
+				searchProgramEntry.getModificationPositionAnnotationTypeDTOMap();
+		if ( proteinAnnotationTypeDTOMap == null ) {
+			proteinAnnotationTypeDTOMap = new HashMap<>();
+			searchProgramEntry.setModificationPositionAnnotationTypeDTOMap( proteinAnnotationTypeDTOMap );
+		}
+		String searchProgramName = searchProgram.getName();
+		List<SearchAnnotation> visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList = null;
+//		if ( searchProgramInfo != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations() != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations() != null 
+//				&& searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations().getSearchAnnotation() != null ) {
+//			visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList = 
+//					searchProgramInfo.getDefaultVisibleAnnotations().getVisibleModificationPositionAnnotations().getSearchAnnotation();
+//		}
+		SearchProgram.ModificationPositionAnnotationTypes annotationTypes = searchProgram.getModificationPositionAnnotationTypes();
+		DescriptiveModificationPositionAnnotationTypes descriptiveModificationPositionAnnotationTypes = annotationTypes.getDescriptiveModificationPositionAnnotationTypes();
+		if ( descriptiveModificationPositionAnnotationTypes == null ) {
+			//  No descriptive annotation types so exit 
+			return;  //  EARLY EXIT
+		}
+
+		AnnotationTypeDAO srchPgmDescriptiveModificationPositionAnnotationTypeDAO = AnnotationTypeDAO.getInstance();
+
+		List<DescriptiveModificationPositionAnnotationType> descriptiveModificationPositionAnnotationTypeList = descriptiveModificationPositionAnnotationTypes.getDescriptiveModificationPositionAnnotationType();
+		for ( DescriptiveModificationPositionAnnotationType descriptiveModificationPositionAnnotationType : descriptiveModificationPositionAnnotationTypeList ) {
+			String annotationTypeName = descriptiveModificationPositionAnnotationType.getName();
+			boolean annotationTypeDefaultVisible = getAnnotationTypeDefaultVisible( annotationTypeName, searchProgramName, visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList );
+			Integer annotationTypeDisplayOrder = getAnnotationTypeDisplayOrder( annotationTypeName, searchProgramName, visibleModificationPositionDefaultVisibleAnnotationsSearchAnnotationList );
+			AnnotationTypeDTO item = new AnnotationTypeDTO();
+			item.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION );
+			item.setFilterableDescriptiveAnnotationType( FilterableDescriptiveAnnotationType.DESCRIPTIVE );
+			item.setSearchId( searchId );
+			item.setSearchProgramsPerSearchId( searchProgramId );
+			item.setName( descriptiveModificationPositionAnnotationType.getName() );
+			item.setDefaultVisible( annotationTypeDefaultVisible );
+			item.setDisplayOrder( annotationTypeDisplayOrder );
+			item.setDescription( descriptiveModificationPositionAnnotationType.getDescription() );
+			srchPgmDescriptiveModificationPositionAnnotationTypeDAO.saveToDatabase( item );
+			proteinAnnotationTypeDTOMap.put( item.getName(), item );
+		}
+	}
+
+	
+
+	/////////////////////////////////////
+	/////////////////////////////////////
+	
 	/**
 	 * Utility Lookup.  Get position in AnnotationTypeSortOrder or return null if not found
 	 * 

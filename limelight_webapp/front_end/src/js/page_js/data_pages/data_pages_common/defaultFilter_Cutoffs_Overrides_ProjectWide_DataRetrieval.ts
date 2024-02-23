@@ -20,6 +20,7 @@ export class DefaultFilter_Cutoffs_Overrides_ProjectWide_Root {
     defaultFilter_Cutoffs_Overrides_PSM: DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein
     defaultFilter_Cutoffs_Overrides_ReportedPeptide: DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein
     defaultFilter_Cutoffs_Overrides_MatchedProtein: DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein
+    defaultFilter_Cutoffs_Overrides_ModificationPosition: DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein
 
     private _onlyToForceUseContructor() {}
 }
@@ -153,6 +154,7 @@ const _processWebserviceResult = function ( response ) : DefaultFilter_Cutoffs_O
     const reportedPeptideEntriesList = cutoffValues.reportedPeptideEntriesList;
     const psmEntriesList = cutoffValues.psmEntriesList;
     const proteinEntriesList = cutoffValues.proteinEntriesList
+    const modificationPositionEntriesList = cutoffValues.modificationPositionEntriesList
 
     const result = new DefaultFilter_Cutoffs_Overrides_ProjectWide_Root();
     result.defaultFilter_Cutoffs_Overrides_ReportedPeptide =
@@ -161,7 +163,8 @@ const _processWebserviceResult = function ( response ) : DefaultFilter_Cutoffs_O
         _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : psmEntriesList });
     result.defaultFilter_Cutoffs_Overrides_MatchedProtein =
         _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : proteinEntriesList });
-
+    result.defaultFilter_Cutoffs_Overrides_ModificationPosition =
+        _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein({ webservice_Response_ForType_List : modificationPositionEntriesList });
     return result;
 }
 

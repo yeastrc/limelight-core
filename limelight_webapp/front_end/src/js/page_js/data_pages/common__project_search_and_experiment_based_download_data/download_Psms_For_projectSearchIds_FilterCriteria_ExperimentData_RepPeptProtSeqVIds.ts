@@ -32,7 +32,6 @@ class DownloadPSMs_PerProjectSearchId_Entry {
 class DownloadPSMs_PerReportedPeptideId {
     reportedPeptideId : number;
     psmIds_Include? : Array<number>; // Optional to filter using psmIds instead of using searchDataLookupParamsRoot
-    // psmIds_Exclude? : Array<number>; // NOT CURRENTLY USED: Optional to filter using psmIds instead of using searchDataLookupParamsRoot
 }
 
 /**

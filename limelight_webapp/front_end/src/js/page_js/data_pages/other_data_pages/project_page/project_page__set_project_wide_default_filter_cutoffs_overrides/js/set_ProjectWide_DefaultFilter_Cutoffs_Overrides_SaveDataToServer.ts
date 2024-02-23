@@ -92,7 +92,8 @@ const _create_saveObject = function (
     const cutoffValues = {
         reportedPeptideEntriesList: [],
         psmEntriesList: [],
-        proteinEntriesList: []
+        proteinEntriesList: [],
+        modificationPositionEntriesList: []
     }
 
     for (const data_For_SearchProgram of set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result.data_Per_SearchProgram_Array) {
@@ -118,6 +119,13 @@ const _create_saveObject = function (
                 searchProgram_name,
                 data_PerType_Input: data_For_SearchProgram.data_PerType_Protein,
                 entriesList_Output: cutoffValues.proteinEntriesList
+            });
+        }
+        { //  Process Modification Position
+            _create_saveObject_PerType_PSM_Peptide({
+                searchProgram_name,
+                data_PerType_Input: data_For_SearchProgram.data_PerType_ModificationPosition,
+                entriesList_Output: cutoffValues.modificationPositionEntriesList
             });
         }
     }

@@ -73,6 +73,8 @@ public class DefaultCutoffsExactlyMatchAnnTypeDataToSearchData implements Defaul
 				searcherCutoffValuesSearchLevel.getPeptidePerAnnotationCutoffsList();
 		List<SearcherCutoffValuesAnnotationLevel> psmCutoffValuesList = 
 				searcherCutoffValuesSearchLevel.getPsmPerAnnotationCutoffsList();
+		List<SearcherCutoffValuesAnnotationLevel> modificationPositionCutoffValuesList = 
+				searcherCutoffValuesSearchLevel.getModificationPositionPerAnnotationCutoffsList();
 		
 		//  Get Filterable Annotation Type records for Reported Peptides and PSMs
 		GetAnnotationTypeDataResult getAnnotationTypeDataResult = getAnnotationTypeData.getAnnotationTypeDataForSearchId( searchId );  
@@ -81,14 +83,26 @@ public class DefaultCutoffsExactlyMatchAnnTypeDataToSearchData implements Defaul
 		if ( ! processProteinOrPeptideOrPSM( proteinCutoffValuesList,  getAnnotationTypeDataResult.getMatchedProteinFilterableAnnotationTypeData() ) ) {
 			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
 		}
-		//  Test Peptide Cutoffs
-		if ( ! processProteinOrPeptideOrPSM( peptideCutoffValuesList,  getAnnotationTypeDataResult.getReportedPeptideFilterableAnnotationTypeData() ) ) {
-			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
+		if ( defaultCutoffsExactlyMatchAnnTypeDataToSearchData ) {
+			//  Test Peptide Cutoffs
+			if ( ! processProteinOrPeptideOrPSM( peptideCutoffValuesList,  getAnnotationTypeDataResult.getReportedPeptideFilterableAnnotationTypeData() ) ) {
+				defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
+			}
 		}
-		//  Test PSM Cutoffs
-		if ( ! processProteinOrPeptideOrPSM( psmCutoffValuesList,  getAnnotationTypeDataResult.getPsmFilterableAnnotationTypeData() ) ) {
-			defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
+		if ( defaultCutoffsExactlyMatchAnnTypeDataToSearchData ) {
+			//  Test PSM Cutoffs
+			if ( ! processProteinOrPeptideOrPSM( psmCutoffValuesList,  getAnnotationTypeDataResult.getPsmFilterableAnnotationTypeData() ) ) {
+				defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
+			}
 		}
+		if ( defaultCutoffsExactlyMatchAnnTypeDataToSearchData ) {
+			//  Test Modification Position Cutoffs
+			if ( ! processProteinOrPeptideOrPSM( modificationPositionCutoffValuesList,  getAnnotationTypeDataResult.getModificationPositionFilterableAnnotationTypeData() ) ) {
+				defaultCutoffsExactlyMatchAnnTypeDataToSearchData = false;
+			}
+		}
+		
+		
 		result.defaultCutoffsExactlyMatchAnnTypeDataToSearchData = defaultCutoffsExactlyMatchAnnTypeDataToSearchData;
 		return result;
 	}

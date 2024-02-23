@@ -46,9 +46,10 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher.SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher.SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -106,9 +107,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+	
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 
 	@Autowired
-	private SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_IF searchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher;
+	private SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_IF searchSubSearchGroupId_PsmId_For_PsmIds_Searcher;
 		
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -263,22 +267,26 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				.createSearcherCutoffValuesSearchLevel(
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
-    		
-			List<SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem> dbResults = 
-					searchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher
-					.getSearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffs(
-							webserviceRequest.reportedPeptideIds, searchId, searcherCutoffValuesSearchLevel );
 
-    		List<WebserviceResultItem> webserviceResults = new ArrayList<>( dbResults.size() );
+    		List<WebserviceResultItem> webserviceResults = new ArrayList<>();
 
-			for ( SearchSubSearchGroupId_PsmId_ReportedPeptideId_For_SearchIdReportedPeptideIdsCutoffsSearcher_ResultItem dbResult : dbResults ) {
+    		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
-				WebserviceResultItem webserviceResultItem = new WebserviceResultItem();
-				webserviceResultItem.rPId = dbResult.getReportedPeptideId();
-				webserviceResultItem.sSbGpId = dbResult.getSearchSubGroupId();
-				webserviceResultItem.psmId = dbResult.getPsmId();
-				webserviceResults.add( webserviceResultItem );
-			}
+    			List<Long> psmIds = psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+
+    			List<SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem> dbResults = 
+    					searchSubSearchGroupId_PsmId_For_PsmIds_Searcher
+    					.getSearchSubSearchGroupId_PsmId_For_PsmIds( psmIds );
+
+    			for ( SearchSubSearchGroupId_PsmId_For_PsmIds_Searcher_ResultItem dbResult : dbResults ) {
+
+    				WebserviceResultItem webserviceResultItem = new WebserviceResultItem();
+    				webserviceResultItem.rPId = reportedPeptideId;
+    				webserviceResultItem.sSbGpId = dbResult.getSearchSubGroupId();
+    				webserviceResultItem.psmId = dbResult.getPsmId();
+    				webserviceResults.add( webserviceResultItem );
+    			}
+    		}
     		
     		WebserviceResult result = new WebserviceResult();
     		result.results = webserviceResults;

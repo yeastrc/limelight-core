@@ -46,6 +46,11 @@ public class SearchProgramEntry {
 	 */
 	private Map<String, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMap;
 
+	/**
+	 * Key is name
+	 */
+	private Map<String, AnnotationTypeDTO> modificationPositionAnnotationTypeDTOMap;
+
 	
 	
 	
@@ -83,6 +88,15 @@ public class SearchProgramEntry {
 
 	public void setMatchedProteinAnnotationTypeDTOMap(Map<String, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMap) {
 		this.matchedProteinAnnotationTypeDTOMap = matchedProteinAnnotationTypeDTOMap;
+	}
+
+	public Map<String, AnnotationTypeDTO> getModificationPositionAnnotationTypeDTOMap() {
+		return modificationPositionAnnotationTypeDTOMap;
+	}
+
+	public void setModificationPositionAnnotationTypeDTOMap(
+			Map<String, AnnotationTypeDTO> modificationPositionAnnotationTypeDTOMap) {
+		this.modificationPositionAnnotationTypeDTOMap = modificationPositionAnnotationTypeDTOMap;
 	}
 		
 

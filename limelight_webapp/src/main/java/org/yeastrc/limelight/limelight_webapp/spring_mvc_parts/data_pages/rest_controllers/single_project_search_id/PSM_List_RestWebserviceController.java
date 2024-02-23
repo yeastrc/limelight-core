@@ -62,6 +62,7 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_PsmLevel_ForPsmIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
@@ -105,6 +106,9 @@ public class PSM_List_RestWebserviceController {
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 	
 	@Autowired
 	private PsmWebDisplaySearcherIF psmWebDisplaySearcher;
@@ -205,7 +209,6 @@ public class PSM_List_RestWebserviceController {
     		Integer searchSubGroupId = webserviceRequest.searchSubGroupId;  // Optional
     				
     		List<Long> psmIds_Include = webserviceRequest.getPsmIds_Include();
-    		List<Long> psmIds_Exclude = webserviceRequest.getPsmIds_Exclude();
 
     		if ( reportedPeptideId == null && ( psmIds_Include == null || psmIds_Include.isEmpty() ) ) {
     			String msg = "reported peptide id is null and ( psmIds_Include is null or empty ).";
@@ -264,8 +267,28 @@ public class PSM_List_RestWebserviceController {
 				annTypeIdsToRetrieve.addAll( psmAnnotationTypeIdsForSorting );
 			}
 			
+			List<Integer> searchSubGroup_Id_List = null;
+			
+			if ( searchSubGroupId != null ) {
+				searchSubGroup_Id_List = new ArrayList<>();
+				searchSubGroup_Id_List.add( searchSubGroupId );
+			}
+
+			List<Long> psmId_List_For_psmWebDisplayList = psmIds_Include;
+			
+			if ( psmId_List_For_psmWebDisplayList == null || psmId_List_For_psmWebDisplayList.isEmpty() ) {
+
+				//  No PSM IDs passed in to webservice so get PSM IDs from cutoffs and reportedPeptideId for searchId
+				
+				psmId_List_For_psmWebDisplayList =
+						psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
+						.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+			}
+			
     		List<PsmWebDisplayWebServiceResult> psmWebDisplayList = 
-    				psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, searchSubGroupId, psmIds_Include, psmIds_Exclude, searcherCutoffValuesSearchLevel );
+    				psmWebDisplaySearcher.getPsmsWebDisplay( 
+    						searchId, searchSubGroup_Id_List, 
+    						psmId_List_For_psmWebDisplayList );
 
     		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
 			
@@ -699,7 +722,6 @@ public class PSM_List_RestWebserviceController {
 	
 		private Integer projectSearchId;
 		private List<Long> psmIds_Include; // Optional
-		private List<Long> psmIds_Exclude; // Optional - Not Currently Used
 		private Integer reportedPeptideId; // Optional
 		private Integer searchSubGroupId;  // Optional
 		private SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId;
@@ -745,15 +767,6 @@ public class PSM_List_RestWebserviceController {
 		public void setPsmIds_Include(List<Long> psmIds_Include) {
 			this.psmIds_Include = psmIds_Include;
 		}
-
-		public List<Long> getPsmIds_Exclude() {
-			return psmIds_Exclude;
-		}
-
-		public void setPsmIds_Exclude(List<Long> psmIds_Exclude) {
-			this.psmIds_Exclude = psmIds_Exclude;
-		}
-
 		public Integer getSearchSubGroupId() {
 			return searchSubGroupId;
 		}

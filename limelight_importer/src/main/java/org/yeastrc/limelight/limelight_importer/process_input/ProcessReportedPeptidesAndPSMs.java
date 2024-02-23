@@ -116,6 +116,8 @@ public class ProcessReportedPeptidesAndPSMs {
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterableReportedPeptideAnnotationTypesOnId();
 		Map<Integer, AnnotationTypeDTO> filterablePsmAnnotationTypesOnId = 
 				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterablePsmAnnotationTypesOnId();
+		Map<Integer, AnnotationTypeDTO> filterable_ModificationPosition_AnnotationTypesOnId = 
+				reportedPeptideAndPsmAndMatchedProteinsFilterableAnnotationTypesOnId.getFilterable_ModificationPosition_AnnotationTypesOnId();
 
 		boolean anyReportedPeptideHasAnyPsmsHasDynamicModifications = false;
 		boolean anyReportedPeptideHasAnyPsmsHasReporterIons = false;
@@ -200,6 +202,7 @@ public class ProcessReportedPeptidesAndPSMs {
 								searchSubGroupDTOMap_Key_searchSubGroupLabel,
 								searchProgramEntryMap,
 								filterablePsmAnnotationTypesOnId,
+								filterable_ModificationPosition_AnnotationTypesOnId,
 								searchScanFileEntry_AllEntries,
 								uniqueReporterIonMassesForTheReportedPeptide
 								);

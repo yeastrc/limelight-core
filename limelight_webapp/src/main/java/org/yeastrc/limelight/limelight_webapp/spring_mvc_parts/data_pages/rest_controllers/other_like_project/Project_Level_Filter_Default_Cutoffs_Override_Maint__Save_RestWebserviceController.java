@@ -249,6 +249,27 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Save_RestWebse
 					entriesToSave.add( entry );
 				}
 			}
+
+			if ( cutoffValues.modificationPositionEntriesList != null ) {
+				for ( WebserviceRequestEntry webserviceRequestEntry : cutoffValues.modificationPositionEntriesList ) {
+					ProjectLevelDefaultFltrAnnCutoffs_DTO projectLevelDefaultFltrAnnCutoffs_DTO = new ProjectLevelDefaultFltrAnnCutoffs_DTO();
+					ProjectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO = new ProjectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO();
+					projectLevelDefaultFltrAnnCutoffs_DTO.setProjectId( projectId );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setPsmPeptideMatchedProteinAnnotationType( PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setSearchProgramName( webserviceRequestEntry.searchProgramName );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setAnnotationTypeName( webserviceRequestEntry.annotationTypeName );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setAnnotationCutoffValue( webserviceRequestEntry.annotationCutoffValue );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setCreatedUserId( userId );
+					projectLevelDefaultFltrAnnCutoffs_DTO.setLastUpdatedUserId( userId );
+					projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO.setAnnotationCutoffValueString( webserviceRequestEntry.annotationCutoffValueString );
+					
+					ProjectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService__Entry entry = new ProjectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService__Entry();
+					entry.projectLevelDefaultFltrAnnCutoffs_DTO = projectLevelDefaultFltrAnnCutoffs_DTO;
+					entry.projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO = projectLevelDefaultFltrAnnCutoffs_CutoffAsStringValue_DTO;
+					entriesToSave.add( entry );
+				}
+			}			
+			
 			
 			projectLevelDefaultCutoffs_SaveUpdate_UsingDBTransactionService.saveUpdate( projectId, entriesToSave );
 
@@ -298,6 +319,7 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Save_RestWebse
 		private List<WebserviceRequestEntry> reportedPeptideEntriesList;
 		private List<WebserviceRequestEntry> psmEntriesList;
 		private List<WebserviceRequestEntry> proteinEntriesList;
+		private List<WebserviceRequestEntry> modificationPositionEntriesList;
 		
 		public void setReportedPeptideEntriesList(List<WebserviceRequestEntry> reportedPeptideEntriesList) {
 			this.reportedPeptideEntriesList = reportedPeptideEntriesList;
@@ -307,6 +329,9 @@ public class Project_Level_Filter_Default_Cutoffs_Override_Maint__Save_RestWebse
 		}
 		public void setProteinEntriesList(List<WebserviceRequestEntry> proteinEntriesList) {
 			this.proteinEntriesList = proteinEntriesList;
+		}
+		public void setModificationPositionEntriesList(List<WebserviceRequestEntry> modificationPositionEntriesList) {
+			this.modificationPositionEntriesList = modificationPositionEntriesList;
 		}
 	}
 

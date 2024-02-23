@@ -124,6 +124,7 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__PSM = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
 		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Peptide = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
 		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Protein = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
+		List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__ModificationPosition = new ArrayList<>( projectLevelDefaultFltrAnnCutoffs_List.size() );
 		
 		for ( ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem item : projectLevelDefaultFltrAnnCutoffs_List ) {
 			if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.PSM ) {
@@ -132,6 +133,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 				projectLevelDefaultFltrAnnCutoffs_List__Peptide.add(item);
 			} else if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 				projectLevelDefaultFltrAnnCutoffs_List__Protein.add(item);
+			} else if ( item.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+				projectLevelDefaultFltrAnnCutoffs_List__ModificationPosition.add(item);
 			} else {
 				String msg = "item.getPsmPeptideMatchedProteinAnnotationType() is unknown value.  item.getPsmPeptideMatchedProteinAnnotationType(): " + item.getPsmPeptideMatchedProteinAnnotationType();
 				log.error(msg);
@@ -147,7 +150,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 							projectSearchIdsToSearchIds, 
 							projectLevelDefaultFltrAnnCutoffs_List__PSM,
 							projectLevelDefaultFltrAnnCutoffs_List__Peptide,
-							projectLevelDefaultFltrAnnCutoffs_List__Protein );
+							projectLevelDefaultFltrAnnCutoffs_List__Protein,
+							projectLevelDefaultFltrAnnCutoffs_List__ModificationPosition );
 			
 			paramsForProjectSearchIdsList.add( searchDataLookupParams_For_Single_ProjectSearchId );
 		}
@@ -166,7 +170,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 			Map<Integer, Integer> projectSearchIdsToSearchIds,
 			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__PSM,
 			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Peptide,
-			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Protein ) throws SQLException {
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__Protein,
+			List<ProjectLevelDefaultFltrAnnCutoffs_For_DisplayOnMgmtPage_Searcher__ResultItem> projectLevelDefaultFltrAnnCutoffs_List__ModificationPosition ) throws SQLException {
 
 		Integer searchId = null;
 		
@@ -199,8 +204,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 		Map<Integer, AnnotationTypeDTO> reportedPeptideDescriptiveAnnotationTypeData = getAnnotationTypeDataResult.getReportedPeptideDescriptiveAnnotationTypeData();
 		Map<Integer, AnnotationTypeDTO> matchedProteinFilterableAnnotationTypeData = getAnnotationTypeDataResult.getMatchedProteinFilterableAnnotationTypeData();
 		Map<Integer, AnnotationTypeDTO> matchedProteinDescriptiveAnnotationTypeData = getAnnotationTypeDataResult.getMatchedProteinDescriptiveAnnotationTypeData();
+		Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeData = getAnnotationTypeDataResult.getModificationPositionFilterableAnnotationTypeData();
 
-		
 		
 		SearchDataLookupParams_For_Single_ProjectSearchId searchDataLookupParams_For_Single_ProjectSearchId = new SearchDataLookupParams_For_Single_ProjectSearchId();
 		
@@ -213,6 +218,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 				createDefaultFilters( reportedPeptideFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__Peptide, searchProgramsPerSearchDTOList );
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> matchedProteinFilters_Default = 
 				createDefaultFilters( matchedProteinFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__Protein, searchProgramsPerSearchDTOList );
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> modificationPositionFilters_Default = 
+				createDefaultFilters( modificationPositionFilterableAnnotationTypeData, projectLevelDefaultFltrAnnCutoffs_List__ModificationPosition, searchProgramsPerSearchDTOList );
 
 		//  Annotation Type Ids to Display
 		List<Integer> psmAnnTypeDisplay_Default = createDefaultAnnTypesDisplay( psmFilterableAnnotationTypeData, psmDescriptiveAnnotationTypeData );
@@ -225,6 +232,8 @@ class SearchDataLookupParams_CreateObjectForDefaultCutoffsAnnTypeDisplay_FromPro
 		searchDataLookupParams_For_Single_ProjectSearchId.setReportedPeptideAnnTypeDisplay( reportedPeptideAnnTypeDisplay_Default );
 		searchDataLookupParams_For_Single_ProjectSearchId.setMatchedProteinFilters( matchedProteinFilters_Default );
 		searchDataLookupParams_For_Single_ProjectSearchId.setMatchedProteinAnnTypeDisplay( matchedProteinAnnTypeDisplay_Default );
+		searchDataLookupParams_For_Single_ProjectSearchId.setModificationPositionFilters( modificationPositionFilters_Default );
+		//  ModificationPositionAnnTypeDisplay NOT exist yet
 		
 		return searchDataLookupParams_For_Single_ProjectSearchId;
 	}

@@ -25,6 +25,7 @@ class Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData {
     private psmFilters : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
     private reportedPeptideFilters : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
     private matchedProteinFilters : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
+    private modificationPositionFilters : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> = undefined;
 
     //    Array of Integer of Annotation Type Id values
 
@@ -124,6 +125,30 @@ class Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData {
         }
 
         this.matchedProteinFilters = matchedProteinFilters;
+    }
+
+    /**
+     *
+     * @returns Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
+     */
+    get_modificationPositionFilters_PerProjectSearchId() : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> {
+
+        return this.modificationPositionFilters;
+    }
+    /**
+     *
+     * @param Array of ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data, or undefined or null
+     */
+    set_modificationPositionFilters_PerProjectSearchId( modificationPositionFilters : Array<Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data> ) {
+
+        if ( modificationPositionFilters ) {
+            if ( ! ( modificationPositionFilters instanceof Array ) ) {
+                throw Error("set_matchedProteinFilters_PerProjectSearchId, param is not Array");
+            }
+            this._sortFilters({ filters : modificationPositionFilters });
+        }
+
+        this.modificationPositionFilters = modificationPositionFilters;
     }
 
     /**

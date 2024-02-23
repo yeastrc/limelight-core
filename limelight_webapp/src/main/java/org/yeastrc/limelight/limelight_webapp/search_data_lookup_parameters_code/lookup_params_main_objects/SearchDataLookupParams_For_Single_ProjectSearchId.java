@@ -31,6 +31,7 @@ public class SearchDataLookupParams_For_Single_ProjectSearchId {
 	private List<SearchDataLookupParams_Filter_Per_AnnotationType> psmFilters;
 	private List<SearchDataLookupParams_Filter_Per_AnnotationType> reportedPeptideFilters;
 	private List<SearchDataLookupParams_Filter_Per_AnnotationType> matchedProteinFilters;
+	private List<SearchDataLookupParams_Filter_Per_AnnotationType> modificationPositionFilters;
 
 	//  Annotation Type Ids to Display
 	private List<Integer> psmAnnTypeDisplay;
@@ -79,5 +80,12 @@ public class SearchDataLookupParams_For_Single_ProjectSearchId {
 	}
 	public void setProjectSearchId(int projectSearchId) {
 		this.projectSearchId = projectSearchId;
+	}
+	public List<SearchDataLookupParams_Filter_Per_AnnotationType> getModificationPositionFilters() {
+		return modificationPositionFilters;
+	}
+	public void setModificationPositionFilters(
+			List<SearchDataLookupParams_Filter_Per_AnnotationType> modificationPositionFilters) {
+		this.modificationPositionFilters = modificationPositionFilters;
 	}
 }

@@ -54,7 +54,7 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 //import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 //import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 //import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
-//import org.yeastrc.limelight.limelight_webapp.searchers.PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF;
+//import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 //import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 //import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 //import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
@@ -123,7 +123,7 @@ public class PsmFilterableAnnotationData_PerReportedPeptide_For_SearchCriteria_S
 //	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 //
 //	@Autowired
-//	private PsmIdsForSearchIdReportedPeptideIdCutoffsSearcherIF psmIdsForSearchIdReportedPeptideIdCutoffsSearcher;
+//	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 //	
 //	@Autowired 
 //	private Psm_FilterableAnnotationData_SearcherIF psm_FilterableAnnotationData_Searcher;
@@ -305,7 +305,7 @@ public class PsmFilterableAnnotationData_PerReportedPeptide_For_SearchCriteria_S
 //    		for ( Integer reportedPeptideId : reportedPeptideIds ) {
 //    			
 //    			List<Long> psmIds_List = 
-//    					psmIdsForSearchIdReportedPeptideIdCutoffsSearcher
+//    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
 //    					.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
 //    			
 //    			List<WebserviceResult_PerPSM_Entry> psms = new ArrayList<>( psmIds_List.size() );

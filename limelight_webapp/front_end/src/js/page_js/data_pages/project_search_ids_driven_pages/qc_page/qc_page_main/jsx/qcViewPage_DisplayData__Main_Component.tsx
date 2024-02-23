@@ -381,7 +381,7 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
             for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
                 const searchDataLookupParams_For_Single_ProjectSearchId: SearchDataLookupParams_For_Single_ProjectSearchId = {
                     projectSearchId,
-                    psmFilters: undefined, reportedPeptideFilters: undefined, matchedProteinFilters: undefined,
+                    psmFilters: undefined, reportedPeptideFilters: undefined, matchedProteinFilters: undefined, modificationPositionFilters: undefined,
                     psmAnnTypeDisplay: undefined, reportedPeptideAnnTypeDisplay: undefined, matchedProteinAnnTypeDisplay: undefined
                 }
                 paramsForProjectSearchIdsList.push(searchDataLookupParams_For_Single_ProjectSearchId);

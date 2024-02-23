@@ -52,8 +52,9 @@ import org.yeastrc.limelight.limelight_webapp.parallelstream_java_processing_ena
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModificationMassesFor_PsmIds_Searcher.PsmDynamicModificationMassesFor_PsmIds_Searcher_ResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModificationMassesFor_PsmIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -112,9 +113,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+	
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 
 	@Autowired
-	private PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF psmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher;
+	private PsmDynamicModificationMassesFor_PsmIds_Searcher_IF psmDynamicModificationMassesFor_PsmIds_Searcher;
 	
 	@Autowired
 	private ParallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF parallelStream_Java_Processing_Enable__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
@@ -410,14 +414,16 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		
     		Integer reportedPeptideId,
     		InternalClass_Get_WebserviceResult_Entry_For_ONE_ReportedPeptideId__Params params ) throws Exception {
+    	
+    	List<Long> psmIds = psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, params.searchId, params.searcherCutoffValuesSearchLevel );
 
-		List<PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmModificationMassesList = 
-				psmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
-				.getPsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, params.searchId, params.searcherCutoffValuesSearchLevel );
+		List<PsmDynamicModificationMassesFor_PsmIds_Searcher_ResultEntry>  psmModificationMassesList = 
+				psmDynamicModificationMassesFor_PsmIds_Searcher
+				.getPsmDynamicModificationMassesFor_PsmIds( psmIds );
 		
 		List<WebserviceResult_Per_PsmId_ModMass_Entry>  psmId_ModMass_EntriesList = new ArrayList<>( psmModificationMassesList.size() );
 		
-		for ( PsmDynamicModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry dbResultEntry :  psmModificationMassesList ) {
+		for ( PsmDynamicModificationMassesFor_PsmIds_Searcher_ResultEntry dbResultEntry :  psmModificationMassesList ) {
 
 			WebserviceResult_Per_PsmId_ModMass_Entry webserviceResult_Per_PsmId_ModMass_Entry = new WebserviceResult_Per_PsmId_ModMass_Entry();
 			webserviceResult_Per_PsmId_ModMass_Entry.psmId = dbResultEntry.getPsmId();

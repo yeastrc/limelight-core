@@ -167,6 +167,7 @@ public class SearcherCutoffValues_Factory {
 		Map<Integer, AnnotationTypeDTO> psmFilterableAnnotationTypeDTO = new HashMap<>();
 		Map<Integer, AnnotationTypeDTO> reportedPeptideFilterableAnnotationTypeDTO = new HashMap<>();
 		Map<Integer, AnnotationTypeDTO> matchedProteinFilterableAnnotationTypeDTO = new HashMap<>();
+		Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeDTO = new HashMap<>();
 
 		List<AnnotationTypeDTO> allAnnotationTypeDTO_ForSearchId =
 				annotationTypeListForSearchIdSearcher.getAnnotationTypeListForSearchId( searchId );
@@ -180,8 +181,10 @@ public class SearcherCutoffValues_Factory {
 					reportedPeptideFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					matchedProteinFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+					modificationPositionFilterableAnnotationTypeDTO.put( annotationTypeDTO.getId(), annotationTypeDTO );
 				} else {
-					String msg = "Unknown value for annotationTypeDTO.getFilterableDescriptiveAnnotationType(): " + annotationTypeDTO.getFilterableDescriptiveAnnotationType();
+					String msg = "Unknown value for annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType(): " + annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType();
 					log.error( msg );
 					throw new LimelightInternalErrorException(msg);
 				}
@@ -200,7 +203,8 @@ public class SearcherCutoffValues_Factory {
 				inputItem, 
 				psmFilterableAnnotationTypeDTO, 
 				reportedPeptideFilterableAnnotationTypeDTO,
-				matchedProteinFilterableAnnotationTypeDTO );
+				matchedProteinFilterableAnnotationTypeDTO,
+				modificationPositionFilterableAnnotationTypeDTO );
 	}
 
 	/**
@@ -210,12 +214,10 @@ public class SearcherCutoffValues_Factory {
 	 */
 	public SearcherCutoffValuesSearchLevel createSearcherCutoffValuesSearchLevel_Internal( 
 			SearchDataLookupParams_For_Single_ProjectSearchId inputItem,
-			Map<Integer, AnnotationTypeDTO> srchPgmFilterablePsmAnnotationTypeDTOMap,
-			Map<Integer, AnnotationTypeDTO> srchPgmFilterableReportedPeptideAnnotationTypeDTOMap,
-			Map<Integer, AnnotationTypeDTO> srchPgmFilterableMatchedProteinAnnotationTypeDTOMap
-
-			//  TODO  Add Matched Protein
-
+			Map<Integer, AnnotationTypeDTO> psmAnnotationTypeDTOMap,
+			Map<Integer, AnnotationTypeDTO> reportedPeptideAnnotationTypeDTOMap,
+			Map<Integer, AnnotationTypeDTO> matchedProteinAnnotationTypeDTOMap,
+			Map<Integer, AnnotationTypeDTO> modificationPositionFilterableAnnotationTypeDTO
 			) {
 		
 		
@@ -224,6 +226,7 @@ public class SearcherCutoffValues_Factory {
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> psmCutoffValues = inputItem.getPsmFilters();
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> peptideCutoffValues = inputItem.getReportedPeptideFilters();
 		List<SearchDataLookupParams_Filter_Per_AnnotationType> proteinCutoffValues = inputItem.getMatchedProteinFilters();
+		List<SearchDataLookupParams_Filter_Per_AnnotationType> modificationPositionCutoffValues = inputItem.getModificationPositionFilters();
 
 		//  outputs
 		
@@ -242,7 +245,7 @@ public class SearcherCutoffValues_Factory {
 							createSearcherCutoffRequestPerAnnotationType( 
 									annotationTypeId, 
 									cutoffValuesAnnotationLevel, 
-									srchPgmFilterablePsmAnnotationTypeDTOMap );
+									psmAnnotationTypeDTOMap );
 					searcherCutoffValuesSearchLevel_Builder.addPsmPerAnnotationCutoffs( output );
 				}
 			}
@@ -256,7 +259,7 @@ public class SearcherCutoffValues_Factory {
 							createSearcherCutoffRequestPerAnnotationType( 
 									annotationTypeId, 
 									cutoffValuesAnnotationLevel, 
-									srchPgmFilterableReportedPeptideAnnotationTypeDTOMap );
+									reportedPeptideAnnotationTypeDTOMap );
 					searcherCutoffValuesSearchLevel_Builder.addPeptidePerAnnotationCutoffs( output );
 				}
 			}
@@ -270,11 +273,26 @@ public class SearcherCutoffValues_Factory {
 							createSearcherCutoffRequestPerAnnotationType( 
 									annotationTypeId, 
 									cutoffValuesAnnotationLevel, 
-									srchPgmFilterableMatchedProteinAnnotationTypeDTOMap );
+									matchedProteinAnnotationTypeDTOMap );
 					searcherCutoffValuesSearchLevel_Builder.addProteinPerAnnotationCutoffs( output );
 				}
 			}
 		}
+		if ( modificationPositionCutoffValues != null && ( ! modificationPositionCutoffValues.isEmpty() ) ) {
+			for ( SearchDataLookupParams_Filter_Per_AnnotationType cutoffValuesAnnotationLevel : modificationPositionCutoffValues ) {
+				Integer annotationTypeId = cutoffValuesAnnotationLevel.getAnnTypeId();
+				if ( cutoffValuesAnnotationLevel.getValue() != null ) {
+					//  Only add to the output data structure if the input cutoff value is not empty 
+					SearcherCutoffValuesAnnotationLevel output = 
+							createSearcherCutoffRequestPerAnnotationType( 
+									annotationTypeId, 
+									cutoffValuesAnnotationLevel, 
+									modificationPositionFilterableAnnotationTypeDTO );
+					searcherCutoffValuesSearchLevel_Builder.addModificationPositionPerAnnotationCutoffs( output );
+				}
+			}
+		}
+		
 
 		SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesSearchLevel_Builder.build();
 		

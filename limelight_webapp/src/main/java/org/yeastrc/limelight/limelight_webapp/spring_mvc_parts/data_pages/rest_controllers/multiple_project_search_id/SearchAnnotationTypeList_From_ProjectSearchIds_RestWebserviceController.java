@@ -212,10 +212,12 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	List<WebserviceResultAnnotationTypeItem> psmFilterableAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> reportedPeptideFilterableAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> matchedProteinFilterableAnnotationTypes = new ArrayList<>();
+    	List<WebserviceResultAnnotationTypeItem> modificationPositionFilterableAnnotationTypes = new ArrayList<>();
 
     	List<WebserviceResultAnnotationTypeItem> psmDescriptiveAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> reportedPeptideDescriptiveAnnotationTypes = new ArrayList<>();
     	List<WebserviceResultAnnotationTypeItem> matchedProteinDescriptiveAnnotationTypes = new ArrayList<>();
+    	List<WebserviceResultAnnotationTypeItem> modificationPositionDescriptiveAnnotationTypes = new ArrayList<>();
     	
     	// Process Annotation Types from DB
 		for ( AnnotationTypeDTO annotationTypeDTO : annotationTypeDTOList ) {
@@ -230,6 +232,8 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 					reportedPeptideFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					matchedProteinFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+					modificationPositionFilterableAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -245,6 +249,8 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 					reportedPeptideDescriptiveAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MATCHED_PROTEIN ) {
 					matchedProteinDescriptiveAnnotationTypes.add( webserviceResultAnnotationTypeItem );
+				} else if ( annotationTypeDTO.getPsmPeptideMatchedProteinAnnotationType() == PsmPeptideMatchedProteinAnnotationType.MODIFICATION_POSITION ) {
+					modificationPositionDescriptiveAnnotationTypes.add( webserviceResultAnnotationTypeItem );
 				} else {
 					String msg = "Unknow value for 'PsmPeptideMatchedProteinAnnotationType'.  Annotation type id: " 
 	    					+ annotationTypeDTO.getId()
@@ -264,11 +270,13 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	webserviceResultPerSearch.psmFilterableAnnotationTypes = psmFilterableAnnotationTypes;
     	webserviceResultPerSearch.reportedPeptideFilterableAnnotationTypes = reportedPeptideFilterableAnnotationTypes;
     	webserviceResultPerSearch.matchedProteinFilterableAnnotationTypes = matchedProteinFilterableAnnotationTypes;
+    	webserviceResultPerSearch.modificationPositionFilterableAnnotationTypes = modificationPositionFilterableAnnotationTypes;
 
     	webserviceResultPerSearch.psmDescriptiveAnnotationTypes = psmDescriptiveAnnotationTypes;
     	webserviceResultPerSearch.reportedPeptideDescriptiveAnnotationTypes = reportedPeptideDescriptiveAnnotationTypes;
     	webserviceResultPerSearch.matchedProteinDescriptiveAnnotationTypes = matchedProteinDescriptiveAnnotationTypes;
-    
+    	webserviceResultPerSearch.modificationPositionDescriptiveAnnotationTypes = modificationPositionDescriptiveAnnotationTypes;
+    	
     	return webserviceResultPerSearch;
     }
     
@@ -363,10 +371,12 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
     	private List<WebserviceResultAnnotationTypeItem> psmFilterableAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> reportedPeptideFilterableAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> matchedProteinFilterableAnnotationTypes;
+    	private List<WebserviceResultAnnotationTypeItem> modificationPositionFilterableAnnotationTypes;
 
     	private List<WebserviceResultAnnotationTypeItem> psmDescriptiveAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> reportedPeptideDescriptiveAnnotationTypes;
     	private List<WebserviceResultAnnotationTypeItem> matchedProteinDescriptiveAnnotationTypes;
+    	private List<WebserviceResultAnnotationTypeItem> modificationPositionDescriptiveAnnotationTypes;
     	
 		public int getProjectSearchId() {
 			return projectSearchId;
@@ -419,6 +429,12 @@ public class SearchAnnotationTypeList_From_ProjectSearchIds_RestWebserviceContro
 		public void setMatchedProteinDescriptiveAnnotationTypes(
 				List<WebserviceResultAnnotationTypeItem> matchedProteinDescriptiveAnnotationTypes) {
 			this.matchedProteinDescriptiveAnnotationTypes = matchedProteinDescriptiveAnnotationTypes;
+		}
+		public List<WebserviceResultAnnotationTypeItem> getModificationPositionDescriptiveAnnotationTypes() {
+			return modificationPositionDescriptiveAnnotationTypes;
+		}
+		public List<WebserviceResultAnnotationTypeItem> getModificationPositionFilterableAnnotationTypes() {
+			return modificationPositionFilterableAnnotationTypes;
 		}
     	
     }

@@ -8,6 +8,7 @@
 export const SearchDetailsAndFilterBlock_MainPage_INTERNAL_CONSTANTS = {
     USER_CLICKED_IN_TYPE_PSM : "PSM",
     USER_CLICKED_IN_TYPE_PEPTIDE : "Peptide",
-    USER_CLICKED_IN_TYPE_PROTEIN : "Protein"
+    USER_CLICKED_IN_TYPE_PROTEIN : "Protein",
+    USER_CLICKED_IN_TYPE_MODIFICATION_POSITION : "Modification Position"
 }
 

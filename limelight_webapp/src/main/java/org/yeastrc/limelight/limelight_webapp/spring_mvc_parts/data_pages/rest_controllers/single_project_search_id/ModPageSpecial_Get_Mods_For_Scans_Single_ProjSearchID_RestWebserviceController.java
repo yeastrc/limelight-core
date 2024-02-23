@@ -52,12 +52,13 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmIdList_Searcher_IF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesFor_PsmIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmOpenModificationMassesFor_PsmIds_Searcher.PsmOpenModificationMassesFor_PsmIds_Searcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
@@ -143,9 +144,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	@Autowired
 	private PsmDynamicModification_For_PsmIdList_Searcher_IF psmDynamicModification_For_PsmIdList_Searcher;
+
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 	
 	@Autowired
-	private PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_IF psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher;
+	private PsmOpenModificationMassesFor_PsmIds_Searcher_IF psmOpenModificationMassesFor_PsmIds_Searcher;
 
 	@Autowired
 	private DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcherIF modificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher;
@@ -364,8 +368,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
             	 */
         		Map<Integer, Map<Integer, WebserviceResultItem>> modMassesPerScan_KeyInner_ScanNumber_KeyOuter_SearchScanFileId = new HashMap<>();
 
+
+				//  Get PSM IDs from cutoffs and reportedPeptideId for searchId
+				
+				List<Long> psmId_List_For_SearchId_ReportedPeptideId_Cutoffs = 
+						psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
+						.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+				
     			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
+    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, null /* searchSubGroupId */, psmId_List_For_SearchId_ReportedPeptideId_Cutoffs );
     			
     			Map<Long, PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_Map_Key_PsmId = new HashMap<>( psmWebDisplayWebServiceResult_List.size() );
 
@@ -466,11 +477,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     			if ( searchFlags_anyPsmHas_OpenModifications ) {
 
-    				List<PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmOpenModificationMassesList = 
-    						psmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher
-    						.getPsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    				List<PsmOpenModificationMassesFor_PsmIds_Searcher_ResultEntry>  psmOpenModificationMassesList = 
+    						psmOpenModificationMassesFor_PsmIds_Searcher.getPsmOpenModificationMassesFor_PsmIds( psmId_List_For_SearchId_ReportedPeptideId_Cutoffs );
 
-					for ( PsmOpenModificationMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry entry : psmOpenModificationMassesList ) {
+					for ( PsmOpenModificationMassesFor_PsmIds_Searcher_ResultEntry entry : psmOpenModificationMassesList ) {
 
 						Long psmId = entry.getPsmId();
 						long openModMass_Long = Math.round( entry.getOpenModificationMass() );

@@ -48,6 +48,7 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
@@ -124,6 +125,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	@Autowired
 	private ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF reportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_Service;
 
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
+	
 	@Autowired
 	private PsmWebDisplaySearcherIF psmWebDisplaySearcher;
 	
@@ -281,9 +285,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     		for ( ReportedPeptide_MinimalData_List_FromSearcher_Entry reportedPeptide_MinimalData_List_FromSearcher_Entry : peptideMinimalObjectsList ) {
     			
     			Integer reportedPeptideId = reportedPeptide_MinimalData_List_FromSearcher_Entry.getReportedPeptideId();
-    			
+
+				//  Get PSM IDs from cutoffs and reportedPeptideId for searchId
+				
+				List<Long> psmId_List_For_SearchId_ReportedPeptideId_Cutoffs = 
+						psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher
+						.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+				
     			List<PsmWebDisplayWebServiceResult> psmWebDisplayWebServiceResult_List =
-    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, reportedPeptideId, null /* searchSubGroupId */, null /* psmIds_Include */, null /* psmIds_Exclude */, searcherCutoffValuesSearchLevel );
+    					psmWebDisplaySearcher.getPsmsWebDisplay( searchId, null /* searchSubGroupId */, psmId_List_For_SearchId_ReportedPeptideId_Cutoffs );
 
     			for ( PsmWebDisplayWebServiceResult psmWebDisplayWebServiceResult : psmWebDisplayWebServiceResult_List ) {
 

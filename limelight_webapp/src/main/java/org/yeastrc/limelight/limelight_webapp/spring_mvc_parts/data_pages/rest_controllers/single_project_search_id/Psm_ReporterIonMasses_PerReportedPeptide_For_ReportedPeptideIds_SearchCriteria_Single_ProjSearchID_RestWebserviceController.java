@@ -47,9 +47,10 @@ import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_excep
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.lookup_params_main_objects.SearchDataLookupParams_For_Single_ProjectSearchId;
 import org.yeastrc.limelight.limelight_webapp.searcher_psm_peptide_protein_cutoff_objects_utils.SearcherCutoffValues_Factory;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesFor_PsmIds_SearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher.PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmReporterIonMassesFor_PsmIds_Searcher.PsmReporterIonMassesFor_PsmIds_Searcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -106,9 +107,12 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+	
+	@Autowired
+	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 
 	@Autowired
-	private PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcherIF psmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher;
+	private PsmReporterIonMassesFor_PsmIds_SearcherIF psmReporterIonMassesFor_PsmIds_Searcher;
 	
 	@Autowired
 	private Unmarshal_RestRequest_JSON_ToObject unmarshal_RestRequest_JSON_ToObject;
@@ -259,13 +263,15 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
     		for ( Integer reportedPeptideId : webserviceRequest.reportedPeptideIds ) {
 
-    			List<PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry>  psmReporterIonMassesList = 
-    					psmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher
-    					.getPsmReporterIonMassesForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    			List<Long> psmIds = 
+    					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
+    			
+    			List<PsmReporterIonMassesFor_PsmIds_Searcher_ResultEntry>  psmReporterIonMassesList = 
+    					psmReporterIonMassesFor_PsmIds_Searcher.getPsmReporterIonMassesFor_PsmIds( psmIds );
     			
     			List<WebserviceResult_Per_PsmId_Entry> perPsmIdList = new ArrayList<>( psmReporterIonMassesList.size() );
     			
-    			for ( PsmReporterIonMassesForSearchIdReportedPeptideIdCutoffsSearcher_ResultEntry dbEntry : psmReporterIonMassesList ) {
+    			for ( PsmReporterIonMassesFor_PsmIds_Searcher_ResultEntry dbEntry : psmReporterIonMassesList ) {
     				WebserviceResult_Per_PsmId_Entry resultEntry = new WebserviceResult_Per_PsmId_Entry();
     				resultEntry.psmId = dbEntry.getPsmId();
     				resultEntry.reporterIonMass = dbEntry.getReporterIonMass();

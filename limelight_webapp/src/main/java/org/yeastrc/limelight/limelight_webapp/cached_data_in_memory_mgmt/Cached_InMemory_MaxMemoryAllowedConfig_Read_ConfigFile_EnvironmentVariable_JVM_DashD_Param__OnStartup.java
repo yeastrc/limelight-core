@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_webapp.constants_config_filenames.Cached_InMemory_ConfigFilename_Constants;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmCountForSearchIdReportedPeptideIdCutoffsSearcher;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
 
 /**
  * 
@@ -179,7 +179,7 @@ public class Cached_InMemory_MaxMemoryAllowedConfig_Read_ConfigFile_EnvironmentV
 			
 			//  Subtract size of PsmCountForSearchIdReportedPeptideIdCutoffsSearcher
 			
-			configSizeMB_Double = configSizeMB_Double - PsmCountForSearchIdReportedPeptideIdCutoffsSearcher.MAX_HEAP_MEMORY_USED_MB_APPROX;
+			configSizeMB_Double = configSizeMB_Double - PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.MAX_HEAP_MEMORY_USED_MB_APPROX;
 			
 			//  change to KB
 			

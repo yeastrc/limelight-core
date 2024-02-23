@@ -19,7 +19,6 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 
 import java.util.List;
 
-import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 
 /**
@@ -30,16 +29,14 @@ public interface PsmWebDisplaySearcherIF {
 
 	/**
 	 * @param searchId
-	 * @param reportedPeptideId
-	 * @param searchSubGroupId TODO
 	 * @param psmIds_Include - Optional.  If populated, overrides searcherCutoffValuesSearchLevel
-	 * @param psmIds_Exclude TODO
-	 * @param searcherCutoffValuesSearchLevel - PSM and Peptide cutoffs for a search id
+	 * @param searchSubGroupId  - Optional
 	 * @return
 	 * @throws Exception
 	 */
-	List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay(int searchId, Integer reportedPeptideId,
-			Integer searchSubGroupId, 
-			List<Long> psmIds_Include, List<Long> psmIds_Exclude, SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel) throws Exception;
+	List<PsmWebDisplayWebServiceResult> getPsmsWebDisplay(
+			int searchId, 
+			List<Integer> searchSubGroup_Id_List,
+			List<Long> psmIds_Include) throws Exception;
 
 }

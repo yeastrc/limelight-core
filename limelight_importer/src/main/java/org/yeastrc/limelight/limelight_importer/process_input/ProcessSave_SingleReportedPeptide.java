@@ -18,6 +18,8 @@
 package org.yeastrc.limelight.limelight_importer.process_input;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +112,7 @@ public class ProcessSave_SingleReportedPeptide {
 	 * @throws Exception
 	 */
 	public ProcessSave_SingleReportedPeptide_Results processSingleReportedPeptide(
-			Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object,
+			Input_LimelightXMLFile_InternalHolder_ReportedPeptide_Object internalHolder_ReportedPeptide_Object,  //  Updated in this code
 			
 			int searchId, 
 			boolean skip_SubGroup_Processing,
@@ -263,7 +265,26 @@ public class ProcessSave_SingleReportedPeptide {
 						dto.setSearchId( searchId );
 						dto.setReportedPeptideId( reportedPeptideId );
 						dao.save( dto );
-	
+						
+						//  WARNING: This only works while insert SrchRepPeptDynamicModDTO is NOT Batched.  The code will require restructuring when/if this is batch insert.
+						
+						
+						if ( peptideModification.getId() != null ) {
+							
+							Map<BigInteger, SrchRepPeptDynamicModDTO> srchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id =
+									internalHolder_ReportedPeptide_Object.getSrchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id();
+							if ( srchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id == null ) {
+								srchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id = new HashMap<>();
+								internalHolder_ReportedPeptide_Object.setSrchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id(srchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id);
+							}
+							
+							if ( srchRepPeptDynamicModDTO_Map_Key_InputXML_Element_PeptideModification_Attribute_Id.put( peptideModification.getId(), dto) != null ) {
+								String msg = "Processed duplicate peptideModification.getId() under same Reported Peptide. peptideModification.getId(): " + peptideModification.getId();
+								log.error(msg);
+								throw new LimelightImporterInternalException(msg);
+							}
+						}
+						
 						//  Accumulate mod mass values across the search 
 						uniqueDynamicModMassesForTheSearch.add( massDbl );
 					}

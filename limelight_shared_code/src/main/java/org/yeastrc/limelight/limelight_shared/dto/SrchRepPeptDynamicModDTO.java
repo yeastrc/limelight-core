@@ -22,8 +22,13 @@ package org.yeastrc.limelight.limelight_shared.dto;
  *
  */
 public class SrchRepPeptDynamicModDTO {
+	
+	public static final int ID_PROPERTY_VALUE_WHEN_NOT_SET = -1;
 
-	private int id;
+	private int id = ID_PROPERTY_VALUE_WHEN_NOT_SET;
+	
+	private boolean id_PropertyIsSet = false;
+	
 	private int searchId;
 	private int reportedPeptideId;
 	private int position;
@@ -41,12 +46,20 @@ public class SrchRepPeptDynamicModDTO {
 				+ ", is_C_Terminal=" + is_C_Terminal + ", peptideResidueLetter=" + peptideResidueLetter
 				+ ", proteinResidueLetterIfAllSame=" + proteinResidueLetterIfAllSame + "]";
 	}
+	
+	public boolean isIdPropertySet() {
+		return id_PropertyIsSet;
+	}
+	
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
+		this.id_PropertyIsSet = true; // Special Set
 	}
+	
+	
 	public int getSearchId() {
 		return searchId;
 	}
