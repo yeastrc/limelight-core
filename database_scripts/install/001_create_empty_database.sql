@@ -4469,6 +4469,26 @@ ENGINE = InnoDB
 COMMENT = 'Worst Modification Position Annotation Values at PSM Level.  PSM Mod Position and PSM Open Mod Position.';
 
 
+-- -----------------------------------------------------
+-- Table project_search_copy_from_to_ids_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_copy_from_to_ids_tbl (
+  project_search_id_old INT(10) UNSIGNED NOT NULL,
+  project_search_id_new INT(10) UNSIGNED NOT NULL,
+  project_id_old INT NULL,
+  project_id_new INT UNSIGNED NULL,
+  PRIMARY KEY (project_search_id_old, project_search_id_new),
+  CONSTRAINT project_search_copy_from_to_ids_from_id_fk
+    FOREIGN KEY (project_search_id_new)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'When Copy a search to new project, track the from and to project search ids';
+
+CREATE INDEX project_search_id_new ON project_search_copy_from_to_ids_tbl (project_search_id_new ASC) VISIBLE;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

@@ -302,6 +302,27 @@ SELECT If( Max(id), Max(id), 0) FROM psm_open_modification_position_dscrptv_annt
 
 
 
+-- -----------------------------------------------------
+-- Table project_search_copy_from_to_ids_tbl
+-- -----------------------------------------------------
+CREATE TABLE  project_search_copy_from_to_ids_tbl (
+  project_search_id_old INT(10) UNSIGNED NOT NULL,
+  project_search_id_new INT(10) UNSIGNED NOT NULL,
+  project_id_old INT NULL,
+  project_id_new INT UNSIGNED NULL,
+  PRIMARY KEY (project_search_id_old, project_search_id_new),
+  CONSTRAINT project_search_copy_from_to_ids_from_id_fk
+    FOREIGN KEY (project_search_id_new)
+    REFERENCES project_search_tbl (id)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'When Copy a search to new project, track the from and to project search ids';
+
+CREATE INDEX project_search_id_new ON project_search_copy_from_to_ids_tbl (project_search_id_new ASC) VISIBLE;
+
+
+
 --  !!!!!!!   UPGRADE SQL END    !!!!!!!!
     
 --  !!!!!!!!!!!!!!!!!!!!!!!!!
