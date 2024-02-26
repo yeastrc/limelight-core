@@ -1,6 +1,5 @@
 import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
 import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch';
-import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {
@@ -12,9 +11,25 @@ import {
     ModView_VizOptionsData_SubPart_data
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
+import ReactDOM from "react-dom";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import React from "react";
+import {
+    ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props_Prop
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_OptionsSection_UserInput_Display_MainContent_Component";
+import {
+    ModPage_OptionsSection_UserInput_Display_Root_Component,
+    ModPage_OptionsSection_UserInput_Display_Root_Component_Props
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_OptionsSection_UserInput_Display_Root_Component";
 
 export class ModViewDataVizRendererOptionsHandler {
 
+    /**
+     * @param dataPageStateManager_DataFrom_Server
+     * @param vizOptionsData
+     * @param modViewDataManager
+     * @param allProjectSearchIds
+     */
     static async showOptionsOnPage(
         {
             dataPageStateManager_DataFrom_Server,
@@ -34,10 +49,10 @@ export class ModViewDataVizRendererOptionsHandler {
         };
 
         // clear the div
-        ModViewDataVizRendererOptionsHandler.clearDiv();
+        ModViewDataVizRendererOptionsHandler.clearDiv_OuterContainer();
 
-        // add section to page
-        ModViewDataVizRendererOptionsHandler.addFormToPage();
+        // add section to page - wait for React render
+        await ModViewDataVizRendererOptionsHandler.addFormToPage();
 
         // add in any defaults that aren't explicitly set
         ModViewDataVizRendererOptionsHandler.populateDefaultOptions({ defaults, vizOptionsData });
@@ -62,7 +77,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static async showProteinPositionFilterForm(
+    private static async showProteinPositionFilterForm(
         {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
@@ -127,7 +142,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static proteinPositionAddClicked(
+    private static proteinPositionAddClicked(
         {
             vizOptionsData,
             modViewDataManager,
@@ -184,7 +199,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static async updateProteinPositionFilterProteinListing(
+    private static async updateProteinPositionFilterProteinListing(
         {
             vizOptionsData,
             modViewDataManager,
@@ -245,7 +260,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static async getStringForRangeListing(
+    private static async getStringForRangeListing(
         {
             modViewDataManager,
             allProjectSearchIds,
@@ -275,7 +290,7 @@ export class ModViewDataVizRendererOptionsHandler {
      * @param allProjectSearchIds
      * @param ranges
      */
-    static async sortRanges(
+    private static async sortRanges(
         {
             modViewDataManager,
             allProjectSearchIds,
@@ -309,7 +324,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
 
 
-    static async getNameForProteinId(
+    private static async getNameForProteinId(
         {
             modViewDataManager,
             allProjectSearchIds,
@@ -341,7 +356,7 @@ export class ModViewDataVizRendererOptionsHandler {
     }
 
 
-    static async updateEndPositionForProteinPositionProtein(
+    private static async updateEndPositionForProteinPositionProtein(
         {
             formDiv,
             projectSearchIds,
@@ -363,7 +378,7 @@ export class ModViewDataVizRendererOptionsHandler {
         formDiv.find("input#protein-position-filter-start-position").val(1);
     }
 
-    static proteinPositionCancelClicked({formDiv}:{formDiv:any}):void {
+    private static proteinPositionCancelClicked({formDiv}:{formDiv:any}):void {
 
         const $addButtonContainer = formDiv.find('div#add-protein-filter-button-container');
         const $addProteinForm = formDiv.find('div#add-protein-filter-form-container');
@@ -374,12 +389,12 @@ export class ModViewDataVizRendererOptionsHandler {
         $addProteinForm.empty();
     }
 
-    static getSelectedProteinPositionProtein({formDiv}:{formDiv:any}):number {
+    private static getSelectedProteinPositionProtein({formDiv}:{formDiv:any}):number {
         const proteinIdString = formDiv.find("select#add-protein-position-select").val();
         return parseInt(proteinIdString);
     }
 
-    static async getLengthOfSelectedProteinPositionProtein(
+    private static async getLengthOfSelectedProteinPositionProtein(
         {
             formDiv,
             projectSearchIds,
@@ -398,7 +413,7 @@ export class ModViewDataVizRendererOptionsHandler {
     }
 
 
-    static async getAddProteinFormHTML(
+    private static async getAddProteinFormHTML(
         {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
@@ -482,7 +497,7 @@ export class ModViewDataVizRendererOptionsHandler {
         return simplifiedProteinArray;
     }
 
-    static addChangeHandlerToFormElements(
+    private static addChangeHandlerToFormElements(
         {
             dataPageStateManager_DataFrom_Server,
             vizOptionsData,
@@ -616,7 +631,7 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static updateFormSelectionsToReflectState({ vizOptionsData } : {
+    private static updateFormSelectionsToReflectState({ vizOptionsData } : {
 
         vizOptionsData: ModView_VizOptionsData
     }) {
@@ -696,28 +711,54 @@ export class ModViewDataVizRendererOptionsHandler {
 
     }
 
-    static addFormToPage() {
+    private static addFormToPage() : Promise<void> {
 
-        const $mainContentDiv = $('#data_viz_options__outer_container');
+        //  ASSUME:   Only contents inside <div> with id 'data_viz_options__outer_container' is the contents added here
 
-        // blow away existing form if it exists
-        $mainContentDiv.find("div#data-viz-options-container").remove();
 
-        const template = _mod_table_template_bundle.dataVizOptionsForm;
-        const html = template( {  } );
-        $mainContentDiv.append(  $(html) );
+        const data_viz_options__outer_container_DOM = document.getElementById( "data_viz_options__outer_container" )
 
-        addToolTips($mainContentDiv.find('div#data-viz-options-container'));
+        if ( ! data_viz_options__outer_container_DOM ) {
+            throw Error("NO DOM element with id 'data_viz_options__outer_container'")
+        }
 
+        return new Promise<void>( (resolve, reject) => { try {
+
+
+            const props_Prop: ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props_Prop = {} // NO properties yet
+
+            const props: ModPage_OptionsSection_UserInput_Display_Root_Component_Props = {
+                propsValue: props_Prop
+            }
+
+            const component =
+                React.createElement(
+                    ModPage_OptionsSection_UserInput_Display_Root_Component,
+                    props,
+                    null
+                )
+
+            ReactDOM.render(
+                component,
+                data_viz_options__outer_container_DOM,
+                () => {  try {
+
+                    resolve()  //  render compete so resolve
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
 
-    static clearDiv() {
-        const $mainContentDiv = $('#data_viz_options__outer_container');
+    private static clearDiv_OuterContainer() {
 
-        const $children = $mainContentDiv.children()
-        const childrenLength = $children.length
+        const data_viz_options__outer_container_DOM = document.getElementById( "data_viz_options__outer_container" )
 
-        $mainContentDiv.empty();
+        if ( ! data_viz_options__outer_container_DOM ) {
+            throw Error("NO DOM element with id 'data_viz_options__outer_container'")
+        }
+
+        ReactDOM.unmountComponentAtNode( data_viz_options__outer_container_DOM )
     }
 
     /**
@@ -725,7 +766,7 @@ export class ModViewDataVizRendererOptionsHandler {
      * @param defaults
      * @param vizOptionsData
      */
-    static populateDefaultOptions({ defaults, vizOptionsData } : {
+    private static populateDefaultOptions({ defaults, vizOptionsData } : {
 
         defaults: ModView_VizOptionsData_SubPart_data
         vizOptionsData: ModView_VizOptionsData
