@@ -128,63 +128,72 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                             <div style={ { marginTop: 10 } }>
 
-                                <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios"/>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <span> 
-                                            View as ratio of # of PSMs or scans with mod mass / total number of PSMs or scans in search.
+                                <label>
+                                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" defaultChecked={ false }/>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                View as ratio of # of PSMs or scans with mod mass / total number of PSMs or scans in search.
+                                            </span>
+                                        }
+                                        { ...tooltip_Main_Props }
+                                    >
+                                        <span>
+                                            Ratios
                                         </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
-                                    <span>
-                                        Ratios
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </label>
                                 <br/>
-                                <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts" checked />
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <span> 
-                                            View as count of PSMs or scans with mod mass in search.
+                                <label>
+                                    <input type="radio" name="psm-quant" id="psm-quant-option-counts" value="counts"  defaultChecked={ true } />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                View as count of PSMs or scans with mod mass in search.
+                                            </span>
+                                        }
+                                        { ...tooltip_Main_Props }
+                                    >
+                                        <span>
+                                            Counts
                                         </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
-                                    <span>
-                                        Counts
-                                    </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </label>
                             </div>
 
                             <div style={ { marginTop: 10 } }>
-                                <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" checked/>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                        title={ 
-                                        <span> 
+                                <label>
+                                    <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms"
+                                           defaultChecked={ true }/>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
                                             Counts are based on # of distinct peptide-spectrum matches containing a mod mass. Each scan may result in multiple PSMs if multiple peptides are IDed by the same scan.
                                         </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
+                                        }
+                                        { ...tooltip_Main_Props }
+                                    >
                                     <span>
                                         PSMs
                                     </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </label>
                                 <br/>
-                                <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans"/>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                        title={ 
-                                        <span> 
+                                <label>
+                                    <input type="radio" name="quant-type" id="quant-type-option-scans" value="scans" defaultChecked={ false } />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
                                             Counts are based on the # of distinct scans that were IDed as a peptide containing a mod mass. A scan will only count once even if multiple peptides are IDed by the same scan.
                                         </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
+                                        }
+                                        { ...tooltip_Main_Props }
+                                    >
                                     <span>
                                         Scans
                                     </span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                </label>
                             </div>
 
                             <div style={ { marginTop: 10 } }>
@@ -311,20 +320,22 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                         <div className="viz-form-section" style={ { whiteSpace: "nowrap" } }>
                             <div>
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                        title={ 
-                                        <span> 
-                                            Exclude all PSMs that do not localize to any specific position(s) in a peptide.
-                                        </span>
-                                    }
-                                    { ...tooltip_Main_Props }
-                                >
-                                    <span>Exclude unlocalized mods:</span>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                <span> </span>
-                                <input
-                                    type="checkbox" name="exclude-unlocalized-mods" id="exclude-unlocalized-mods-checkbox"
-                                />
+                                <label>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                            <span>
+                                                Exclude all PSMs that do not localize to any specific position(s) in a peptide.
+                                            </span>
+                                        }
+                                        { ...tooltip_Main_Props }
+                                    >
+                                        <span>Exclude unlocalized mods:</span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                    <span> </span>
+                                    <input
+                                        type="checkbox" name="exclude-unlocalized-mods" id="exclude-unlocalized-mods-checkbox"
+                                    />
+                                </label>
                             </div>
 
                             <div style={ { marginTop: 10 } }>
