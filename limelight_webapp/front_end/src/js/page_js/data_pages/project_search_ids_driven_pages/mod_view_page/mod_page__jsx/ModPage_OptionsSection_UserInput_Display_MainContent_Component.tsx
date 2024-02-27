@@ -129,7 +129,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             <div style={ { marginTop: 10 } }>
 
                                 <label>
-                                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" defaultChecked={ false }/>
+                                    <input type="radio" name="psm-quant" id="psm-quant-option-ratios" value="ratios" defaultChecked={ false } />
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <span>
@@ -163,8 +163,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
 
                             <div style={ { marginTop: 10 } }>
                                 <label>
-                                    <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms"
-                                           defaultChecked={ true }/>
+                                    <input type="radio" name="quant-type" id="quant-type-option-psms" value="psms" defaultChecked={ true } />
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <span>
@@ -205,8 +204,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                                     }
                                     { ...tooltip_Main_Props }
                                 >
-                                    <input type="button" id="update-viz-button"
-                                           className="button selector_tool_tip_attached" value="Update Visualization"
+                                    <input
+                                        type="button" id="update-viz-button"
+                                        className="button" value="Update Visualization"
                                     />
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
@@ -229,42 +229,44 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
 
                             <table style={ { marginTop: 10 } }>
-                                <tr>
-                                    <td>
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={ 
-                                        <span> 
-                                            Override maximum value for ratio when scaling color in visualization. Only used when quant method is set to ratios.
-                                        </span>
-                                    }
-                                            { ...tooltip_Main_Props }
-                                        >
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
                                             <span>
-                                                Ratio:
+                                                Override maximum value for ratio when scaling color in visualization. Only used when quant method is set to ratios.
                                             </span>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    </td>
-                                    <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size={ 4 }/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={ 
-                                                    <span>
-                                                        Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant method is set to counts.
-                                                    </span>
-                                                }
-                                            { ...tooltip_Main_Props }
-                                        >
-                                            <span>
-                                                Count:
-                                            </span>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    </td>
-                                    <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size={ 4 }/>
-                                    </td>
-                                </tr>
+                                        }
+                                                { ...tooltip_Main_Props }
+                                            >
+                                                <span>
+                                                    Ratio:
+                                                </span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </td>
+                                        <td><input type="text" id="color-cutoff-ratio" name="color-cutoff-ratio" size={ 4 } defaultValue="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Override maximum value for PSM or scan count when scaling color in visualization. Only used when quant method is set to counts.
+                                                        </span>
+                                                    }
+                                                { ...tooltip_Main_Props }
+                                            >
+                                                <span>
+                                                    Count:
+                                                </span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </td>
+                                        <td><input type="text" id="color-cutoff-count" name="color-cutoff-count" size={ 4 } defaultValue="" />
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
 
@@ -283,38 +285,41 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             <span style={ { fontSize: 10 } }>(Leave blank to use defaults.)</span>
 
                             <table style={ { marginTop: 10 } }>
-                                <tr>
-                                    <td>
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={ 
-                                        <span> 
-                                            Override the minimum modification mass to be shown in the visualization and data table. Masses below this value are also excluded from Z-score and P-value calculations.
-                                        </span>
-                                    }
-                                            { ...tooltip_Main_Props }
-                                        >
-                                            <span>Minimum:</span>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    </td>
-                                    <td><input type="text" id="modmass-cutoff-min" name="modmass-cutoff-min" size={ 4 }/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                                title={ 
-                                        <span> 
-                                            Override the maximum modification mass to be shown in the visualization and data table. Masses greater than this value are also excluded from Z-score and P-value calculations.
-                                        </span>
-                                    }
-                                            { ...tooltip_Main_Props }
-                                        >
-                                            <span>Maximum:</span>
-                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                    </td>
-                                    <td><input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size={ 4 } />
-                                    </td>
-                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                            <span>
+                                                Override the minimum modification mass to be shown in the visualization and data table. Masses below this value are also excluded from Z-score and P-value calculations.
+                                            </span>
+                                        }
+                                                { ...tooltip_Main_Props }
+                                            >
+                                                <span>Minimum:</span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </td>
+                                        <td><input type="text" id="modmass-cutoff-min" name="modmass-cutoff-min" size={ 4 } defaultValue="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                            <span>
+                                                Override the maximum modification mass to be shown in the visualization and data table. Masses greater than this value are also excluded from Z-score and P-value calculations.
+                                            </span>
+                                        }
+                                                { ...tooltip_Main_Props }
+                                            >
+                                                <span>Maximum:</span>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="modmass-cutoff-max" name="modmass-cutoff-max" size={ 4 }  defaultValue="" />
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
 

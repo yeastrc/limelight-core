@@ -643,15 +643,6 @@ export class ModViewDataVizRendererOptionsHandler {
             return;
         }
 
-        // update ratios vs/ counts
-        {
-            if( vizOptionsData.data.psmQuant === 'ratios' ) {
-                $formToUpdate.find("input#psm-quant-option-ratios").attr('checked', 'checked');
-            } else {
-                $formToUpdate.find("input#psm-quant-option-counts").attr('checked', 'checked');
-            }
-        }
-
         // update data transformations
         {
             const option = vizOptionsData.data.dataTransformation;
@@ -691,11 +682,29 @@ export class ModViewDataVizRendererOptionsHandler {
             }
         }
 
+        // update ratios vs/ counts
+        {
+            if( vizOptionsData.data.psmQuant === 'ratios' ) {
+
+                const $elem = $formToUpdate.find("input#psm-quant-option-ratios")
+
+                console.warn( ' $formToUpdate.find("input#psm-quant-option-ratios") $elem: ', $elem )
+
+                $formToUpdate.find("input#psm-quant-option-ratios").prop('checked', true);
+            } else {
+                $formToUpdate.find("input#psm-quant-option-counts").prop('checked', true);
+            }
+        }
+
         // update whether we're counting psms or scans
         {
             if( vizOptionsData.data.quantType === undefined || vizOptionsData.data.quantType === 'psms' ) {
                 $formToUpdate.find("input#quant-type-option-psms").prop( "checked", true);
             } else {
+                const $elem = $formToUpdate.find("input#quant-type-option-scans")
+
+                console.warn( ' $formToUpdate.find("input#quant-type-option-scans") $elem: ', $elem )
+
                 $formToUpdate.find("input#quant-type-option-scans").prop( "checked", true);
             }
         }
