@@ -506,16 +506,22 @@ export class QcViewPage_MultipleSearches__PSM_ChargeState_StatisticsPlot
 
                     const charge_Count_Map_Key_Charge_Map = charge_Count_Map_Key_Charge_Map_Key_ProjectSearchId.get(projectSearchId);
                     if ( ! charge_Count_Map_Key_Charge_Map ) {
-                        const msg = "charge_Count_Map_Key_Charge_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
+
+                        continue; // EARLY CONTINUE
+
+                        // const msg = "charge_Count_Map_Key_Charge_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                        // console.warn(msg);
+                        // throw Error(msg);
                     }
 
                     const psm_Count_TotalForSearch = psm_Count_Map_Key_ProjectSearchId.get(projectSearchId);
-                    if ( ! charge_Count_Map_Key_Charge_Map ) {
-                        const msg = "psm_Count_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
+                    if ( psm_Count_TotalForSearch === undefined ) {
+
+                        continue; // EARLY CONTINUE
+
+                        // const msg = "psm_Count_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                        // console.warn(msg);
+                        // throw Error(msg);
                     }
 
                     const chart_X: Array<string> = []

@@ -495,16 +495,22 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_ChargeState_StatisticsPlo
 
                     const charge_Count_Map_Key_Charge_Map = charge_Count_Map_Key_Charge_Map_Key_SubSearchId.get(searchSubGroup.searchSubGroup_Id);
                     if ( ! charge_Count_Map_Key_Charge_Map ) {
-                        const msg = "charge_Count_Map_Key_Charge_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for searchSubGroup.searchSubGroup_Id: " + searchSubGroup.searchSubGroup_Id;
-                        console.warn(msg);
-                        throw Error(msg);
+
+                        continue; // EARLY CONTINUE
+
+                        // const msg = "charge_Count_Map_Key_Charge_Map_Key_ProjectSearchId.get(projectSearchId); returned NOTHING for searchSubGroup.searchSubGroup_Id: " + searchSubGroup.searchSubGroup_Id;
+                        // console.warn(msg);
+                        // throw Error(msg);
                     }
 
                     const psm_Count_TotalForSubSearch = psm_Count_Map_Key_SubSearchId.get(searchSubGroup.searchSubGroup_Id);
-                    if ( ! charge_Count_Map_Key_Charge_Map ) {
-                        const msg = "psm_Count_TotalForSubSearch = psm_Count_Map_Key_SubSearchId.get(searchSubGroup.searchSubGroup_Id); returned NOTHING for projectSearchId: " + searchSubGroup.searchSubGroup_Id;
-                        console.warn(msg);
-                        throw Error(msg);
+                    if ( psm_Count_TotalForSubSearch === undefined ) {
+
+                        continue; // EARLY CONTINUE
+
+                        // const msg = "psm_Count_TotalForSubSearch = psm_Count_Map_Key_SubSearchId.get(searchSubGroup.searchSubGroup_Id); returned NOTHING for projectSearchId: " + searchSubGroup.searchSubGroup_Id;
+                        // console.warn(msg);
+                        // throw Error(msg);
                     }
 
                     const chart_X: Array<string> = []
