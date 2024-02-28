@@ -478,16 +478,15 @@ export class QcViewPage_SingleSearch__SubSearches__SummaryCounts_Distinct_Scan_C
             const searchScanFileIds_For_SearchSubGroupId = new Set<number>();
 
             if ( scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId ) {
-                const scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get(searchSubGroup.searchSubGroup_Id);
-                if ( ! scanNumbers_Map_Key_searchScanFileId_Map) {
-                    //  no data so skip
-                    continue;  // EARLY CONTINUE
-                }
-                for ( const scanNumbers_Map_Key_searchScanFileId_MapEntry of scanNumbers_Map_Key_searchScanFileId_Map.entries() ) {
-                    const searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[0];
-                    const scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[1];
-                    scanCount_PSM_MeetsCutoff += scanNumbers_For_searchScanFileId.size;
-                    searchScanFileIds_For_SearchSubGroupId.add(searchScanFileId);
+
+                const scanNumbers_Map_Key_searchScanFileId_Map = scanNumbers_Map_Key_searchScanFileId_Map_Key_SearchSubGroupId.get( searchSubGroup.searchSubGroup_Id );
+                if ( scanNumbers_Map_Key_searchScanFileId_Map ) {
+                    for ( const scanNumbers_Map_Key_searchScanFileId_MapEntry of scanNumbers_Map_Key_searchScanFileId_Map.entries() ) {
+                        const searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[ 0 ];
+                        const scanNumbers_For_searchScanFileId = scanNumbers_Map_Key_searchScanFileId_MapEntry[ 1 ];
+                        scanCount_PSM_MeetsCutoff += scanNumbers_For_searchScanFileId.size;
+                        searchScanFileIds_For_SearchSubGroupId.add( searchScanFileId );
+                    }
                 }
             } else if ( scanNumbers_Map_Key_SearchSubGroupId ) {
                 //  When No searchScanFileId
