@@ -1853,7 +1853,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                     this._reporterIonMassesChange_UpdateURL();  //  Update URL
                     this._selectedPeptideUniqueChange_UpdateURL();  //  Update URL
                     this._selectedPeptideSequenceChange_UpdateURL();  //  Update URL
-                    this._selectedProteinPositionFilterChange_UpdateURL(); //  Update URL
 
                     window.setTimeout( () => {
                         try {
@@ -2328,8 +2327,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
         try {
             window.setTimeout( () => {
                 try {
-                    this._selectedProteinPositionFilterChange_UpdateURL();  //  Update URL
-
                     this._proteinPositionFilter_Update_proteinPositionFilter_UserSelections_Component_Force_ReRender_Object();
 
                     window.setTimeout( () => {
@@ -2567,15 +2564,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
 
 		const peptideSequenceSelectedEncodedStateData = this.props.propsValue.peptideSequence_UserSelections_StateObject.getEncodedStateData();
 		this.props.propsValue.peptidePageRoot_CentralStateManagerObjectClass.setPeptideSequenceFilterSelectedEncodedStateData({ peptideSequenceFilterSelectedEncodedStateData : peptideSequenceSelectedEncodedStateData });
-    }
-
-    /**
-     * Update State to URL for Protein Position Filter Selections change
-     */
-    _selectedProteinPositionFilterChange_UpdateURL() {
-
-        const encodedStateData = this.props.propsValue.proteinPositionFilter_UserSelections_StateObject.getEncodedStateData();
-        this.props.propsValue.peptidePageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData({ proteinPositionFilter_UserSelections_EncodedStateData : encodedStateData });
     }
 
     ////////////////////////////////////////

@@ -99,7 +99,7 @@ export class QcViewPage_RootClass_Common {
 	private _peptideUnique_UserSelection_StateObject = new PeptideUnique_UserSelection_StateObject();
 
 	private _peptideSequence_UserSelections_StateObject = new PeptideSequence_UserSelections_StateObject();
-	private _proteinPositionFilter_UserSelections_StateObject = new ProteinPositionFilter_UserSelections_StateObject();
+	private _proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
 
 	private _generatedPeptideContents_UserSelections_StateObject : GeneratedPeptideContents_UserSelections_StateObject;
 
@@ -269,12 +269,24 @@ export class QcViewPage_RootClass_Common {
 				this._peptideSequence_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
 			}
 		}
-		{
+
+		{  // this._proteinPositionFilter_UserSelections_StateObject
+
+			const valueChangedCallback = () => {
+
+				const proteinPositionFilter_UserSelections_EncodedStateData = this._proteinPositionFilter_UserSelections_StateObject.getEncodedStateData();
+				this._peptidePageRoot_CentralStateManagerObjectClass.set_proteinPositionFilter_UserSelections_EncodedStateData( { proteinPositionFilter_UserSelections_EncodedStateData } );
+			}
+			this._proteinPositionFilter_UserSelections_StateObject = new ProteinPositionFilter_UserSelections_StateObject({
+				valueChangedCallback
+			});
+
 			const encodedStateData = this._peptidePageRoot_CentralStateManagerObjectClass.get_proteinPositionFilter_UserSelections_EncodedStateData();
 			if ( encodedStateData ) {
 				this._proteinPositionFilter_UserSelections_StateObject.set_encodedStateData({ encodedStateData });
 			}
 		}
+
 		{
 			const encodedStateData = this._peptidePageRoot_CentralStateManagerObjectClass.getGeneratedPeptideContentsSelectedEncodedStateData();
 			if ( encodedStateData ) {

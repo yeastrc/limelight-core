@@ -37,6 +37,12 @@ const _ENCODED_DATA__POSITION_END_ENCODING_PROPERTY_NAME = 'b';
 export class ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root {
 
 	entriesMap_Key_proteinSequenceVersionId : Map<number, ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_For_ProteinSequenceVersionId> = new Map();
+
+	//  WARNING:
+	//
+	//  If add any other properties, may Need changes to 'remove_Selected_ProteinSequenceVersionId' below and all code that uses this class.
+	//
+	//  It is expected that the '_selections_Ranges' below is undefined/null if there are no filters rather than this property 'entriesMap_Key_proteinSequenceVersionId' is null/undefined or empty Map.
 }
 
 export class ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_For_ProteinSequenceVersionId {
@@ -65,11 +71,20 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 
 	private _selections_Ranges : ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root
 
+	private _valueChangedCallback: () => void;
+
+
 	/**
 	 *
 	 */
-	constructor() {
+	constructor(
+		{
+			valueChangedCallback
+		} : {
+			valueChangedCallback: () => void
+		}) {
 
+		this._valueChangedCallback = valueChangedCallback;
 	}
 
 	/**
@@ -102,13 +117,30 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 		} else {
 			this._selections_Ranges = null;
 		}
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("setSelections_Ranges::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
 	}
 
 	remove_Selected_ProteinSequenceVersionId({ proteinSequenceVersionId } : { proteinSequenceVersionId: number }) : void {
 
 		if ( this._selections_Ranges && this._selections_Ranges.entriesMap_Key_proteinSequenceVersionId ) {
 			this._selections_Ranges.entriesMap_Key_proteinSequenceVersionId.delete(proteinSequenceVersionId);
+			if ( this._selections_Ranges.entriesMap_Key_proteinSequenceVersionId.size === 0 ) {
+
+				//  NO remaining ranges so set to undefined since expected in code that it is undefined
+				this._selections_Ranges = undefined;
+			}
 		}
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("remove_Selected_ProteinSequenceVersionId::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
 	}
 
 	/**
@@ -118,6 +150,12 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 	clearSelections() {
 
 		this._selections_Ranges = undefined;
+
+		if ( ! this._valueChangedCallback ) {
+			throw Error("clearSelections::( ! this._valueChangedCallback )")
+		}
+
+		this._valueChangedCallback();
 	}
 
 
