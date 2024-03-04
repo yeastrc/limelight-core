@@ -220,6 +220,12 @@
 
             position: relative;
 
+            &:hover {
+              outline-color: $site-color-very-dark;
+              outline-style: solid;
+              outline-width: 4px;
+            }
+
             div.child-table-show-hide-icon-container {
                 text-align: center;
                 width: $child-table-show-hide-icon-container--width;
