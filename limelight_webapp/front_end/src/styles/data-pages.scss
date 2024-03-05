@@ -220,12 +220,6 @@
 
             position: relative;
 
-            &:hover {
-              outline-color: $site-color-very-dark;
-              outline-style: solid;
-              outline-width: 4px;
-            }
-
             div.child-table-show-hide-icon-container {
                 text-align: center;
                 width: $child-table-show-hide-icon-container--width;
@@ -252,7 +246,24 @@
                 padding-bottom: $data-table-data-row-top-bottom-outer-padding-when-have-inner-border;
             }
 
+            //  'div.data-table-data-rows-inner-containing-div-container-div    Contains  'div.data-table-data-rows-inner-containing-div'
+
+            div.data-table-data-rows-inner-containing-div-container-div {
+
+              &:hover {
+                outline-color: $site-color-very-dark;
+                outline-style: solid;
+                outline-width: 4px;
+              }
+            }
+
+            //  'div.data-table-data-rows-inner-containing-div' is INSIDE  'div.data-table-data-rows-inner-containing-div-container-div'
+
+            //   NOT put inside to avoid the massive GIT differences
+
             div.data-table-data-rows-inner-containing-div {
+
+              //  NOTE:  The <div> this is placed on will have an opacity: 0.5 when the 'grey-out-row' class is also applied
 
                 &.table-row-hovered-highlight:hover {
                   background-color:$site-color-medium;

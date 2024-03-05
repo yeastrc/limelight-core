@@ -749,23 +749,26 @@ export class DataTable_Table_DataRow extends React.Component< DataTable_Table_Da
 
                     { childTableShowHideIcon }
 
-                    <div className={ className_innerContainingDiv } style={ styleOverrides_innerContainingDiv }
-                         ref={ this._row_OfTable_Ref }
-                         onClick={ rowClickHandler }
-                    >
-                        <table className=" data-table-data-rows-table ">
-                            <tbody>
+                    <div className=" data-table-data-rows-inner-containing-div-container-div " >
 
-                                <tr 
-                                    style={ { position: "relative" } } 
-                                    className={ className_Row } 
-                                >
-                                    {/* Render columns */}
-                                    { columnComponents }
+                        <div className={ className_innerContainingDiv } style={ styleOverrides_innerContainingDiv }
+                             ref={ this._row_OfTable_Ref }
+                             onClick={ rowClickHandler }
+                        >
+                            <table className=" data-table-data-rows-table ">
+                                <tbody>
 
-                                </tr>
-                            </tbody>
-                        </table>
+                                    <tr
+                                        style={ { position: "relative" } }
+                                        className={ className_Row }
+                                    >
+                                        {/* Render columns */}
+                                        { columnComponents }
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     { childContentsAndContainer }
                 </div>
