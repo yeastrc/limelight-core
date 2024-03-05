@@ -20,6 +20,8 @@ import {
 } from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
 import {
     get_proteinSelection_Generic__UserInputOverlay_Component,
+    ProteinSelection_Generic__UserInputOverlay_Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_Type,
+    ProteinSelection_Generic__UserInputOverlay_GetProteinData_Root_UserSelectionData_Root__ReturnPromise_Callback_ResultObject,
     ProteinSelection_Generic__UserInputOverlay_Save_CallbackFunction_Params
 } from "page_js/data_pages/common_components__react/protein_selection_generic_component/proteinSelection_Generic__UserInputOverlay";
 import {
@@ -35,25 +37,39 @@ import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import {
+    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
+} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
-////  React Components
 
-export class ProteinPositionFilter_UserInputOverlay__MainOverlay_Save_CallbackFunction_Params {
+
+export type ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction =
+    () => Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>
+
+export class ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params {
     userSelections: ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
 }
 
-export type ProteinPositionFilter_UserInputOverlay__MainOverlay_Save_CallbackFunction =
-    ( params: ProteinPositionFilter_UserInputOverlay__MainOverlay_Save_CallbackFunction_Params ) => void;
+export type ProteinPositionFilter_UserInput__Component__Save_CallbackFunction =
+    ( params: ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params ) => void;
 
 /**
  *
  */
 export interface ProteinPositionFilter_UserInput__Component_Props {
 
-    proteinData: ProteinPositionFilter_UserInput__Component__ProteinData_Root
     userSelections: ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
-    callbackOn_Save_Clicked: ProteinPositionFilter_UserInputOverlay__MainOverlay_Save_CallbackFunction
+
+    // MUST populate at least one of following 2
+    proteinData_InitiallyProvided: ProteinPositionFilter_UserInput__Component__ProteinData_Root  //  Do NOT update from undefined/null to actual value since assume that actual value will be passed to callback
+    get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction: ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction
+
+    callbackOn_Save_Clicked: ProteinPositionFilter_UserInput__Component__Save_CallbackFunction
 }
 
 /**
@@ -61,12 +77,7 @@ export interface ProteinPositionFilter_UserInput__Component_Props {
  */
 interface ProteinPositionFilter_UserInput__Component_State {
 
-    userSelections_Map_Key_proteinSequenceVersionId?: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
-
     objectForceRerender?: object
-    disable_SaveButton?: boolean
-    prev_proteinData?: ProteinPositionFilter_UserInput__Component__ProteinData_Root
-    prev_userSelections?: ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
 }
 
 /**
@@ -74,16 +85,36 @@ interface ProteinPositionFilter_UserInput__Component_State {
  */
 export class ProteinPositionFilter_UserInput__Component extends React.Component< ProteinPositionFilter_UserInput__Component_Props, ProteinPositionFilter_UserInput__Component_State > {
 
+    private _get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_BindThis = this._get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback.bind(this)
     private _addRange_SaveCallback_BindThis = this._addRange_SaveCallback.bind(this);
 
     private _DO_NOT_CALL_BoundMethods_TypeTest() { // Function only to test that methods that are .bind(this) are correct function signature
 
+        const _get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback: ProteinSelection_Generic__UserInputOverlay_Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_Type = this._get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback
         const _addRange_SaveCallback_BindThis : ProteinPositionFilter_UserInputOverlay__AddRange_SaveCallback = this._addRange_SaveCallback
     }
+
+    //  From Props OR from callback in Props
+    private _proteinData_Local: ProteinPositionFilter_UserInput__Component__ProteinData_Root
+
+    /**
+     * Incoming data used to compute this
+     *
+     *  WARNING::  NOT Populated until this._proteinData_Local is populated
+     */
+    private _userSelections_Map_Key_proteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
+
+    private _userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
+
+    //  Loading Promise in progress for this._proteinData_Local and then populate this._userSelections_Map_Key_proteinSequenceVersionId
+    private _proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise: Promise<void>
 
     private _userSelections_Changed: boolean = false;
 
     private _addRange_ProteinSequenceVersionIds_Set: Set<number> = new Set<number>();
+
+    private _disable_SaveButton = false
+    private _show_LoadingMessage = false
 
     /**
      *
@@ -91,35 +122,137 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
     constructor(props: ProteinPositionFilter_UserInput__Component_Props) {
         super(props);
 
+        this._proteinData_Local = props.proteinData_InitiallyProvided
+
+        if ( this._proteinData_Local ) {
+
+            this._userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: props.userSelections, proteinData: this._proteinData_Local });
+        }
+
+        if ( ( ! ( ! props.userSelections ) || ( ! props.userSelections.proteins ) || ( ! ( props.userSelections.proteins.length > 0 ) ) )
+            && ( ! this._proteinData_Local ) ) {
+
+            //  Have User selections and NOT have Protein data so need to load Protein data to display existing User selections
+            this._show_LoadingMessage = true
+        }
+
         this.state = {
-            disable_SaveButton: true,
             objectForceRerender: {}
         };
     }
 
     /**
-     * Must be Static
-     * Called before
-     *   Initial render: 'render()'
-     *   Rerender : 'shouldComponentUpdate()'
      *
-     * Return new state (like return from setState(callback)) or null
      */
-    static getDerivedStateFromProps(props: ProteinPositionFilter_UserInput__Component_Props, state: ProteinPositionFilter_UserInput__Component_State): ProteinPositionFilter_UserInput__Component_State {
+    componentDidMount() {
+        try {
+            if ( ( ! ( ! this.props.userSelections ) || ( ! this.props.userSelections.proteins ) || ( ! ( this.props.userSelections.proteins.length > 0 ) ) )
+                && ( ! this._proteinData_Local ) ) {
 
-        if ( props.userSelections !== state.prev_userSelections
-            || props.proteinData !== state.prev_proteinData ) {
+                this._populate_Properties___proteinData_Local_AND__userSelections_Map_Key_proteinSequenceVersionId()
+                this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise.catch(reason => {})
+                this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise.then(value => { try {
 
-            const userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: props.userSelections, proteinData: props.proteinData });
+                    this._show_LoadingMessage = false
 
-            return {
-                userSelections_Map_Key_proteinSequenceVersionId,
-                prev_userSelections: props.userSelections,
-                prev_proteinData: props.proteinData
+                    this.setState({ objectForceRerender: {} })
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    componentDidUpdate( prevProps: Readonly<ProteinPositionFilter_UserInput__Component_Props>, prevState: Readonly<ProteinPositionFilter_UserInput__Component_State>, snapshot?: any ) {
+        try {
+            if ( this.props.userSelections !== prevProps.userSelections ) {
+
+                if ( this._proteinData_Local
+                    && this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate !== this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
+                    ) {
+
+                    this._userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: this.props.userSelections, proteinData: this._proteinData_Local });
+
+                    this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate = this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
+
+                    this.setState( { objectForceRerender: {} } )
+                }
+            }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback() : ProteinSelection_Generic__UserInputOverlay_GetProteinData_Root_UserSelectionData_Root__ReturnPromise_Callback_ResultObject {
+
+        if ( this._proteinData_Local && this._userSelections_Map_Key_proteinSequenceVersionId ) {
+
+            const for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result = this._for_OpenOverlay__Create_ProteinData_Existing_userSelections({ proteinData_Param: this._proteinData_Local })
+
+            return { promise:
+                    Promise.resolve({
+                        proteinData_Root: this._proteinData_Local,
+                        existing_userSelections: for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result.existing_userSelections
+                    }) } // EARLY RETURN
         }
 
-        return null;
+        if ( ! this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise ) {
+
+            this._populate_Properties___proteinData_Local_AND__userSelections_Map_Key_proteinSequenceVersionId()
+        }
+
+        return {
+            promise: new Promise<{
+                proteinData_Root: ProteinSelection_Generic__ProteinData_Root
+                existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
+            }>( (resolve, reject) => { try {
+
+                this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise.catch(reason => { reject(reason)})
+                this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise.then(novalue => { try {
+
+                    const for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result = this._for_OpenOverlay__Create_ProteinData_Existing_userSelections({ proteinData_Param: this._proteinData_Local })
+
+                    resolve({
+                        proteinData_Root: for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result.proteinData__ForOverlay,
+                        existing_userSelections: for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result.existing_userSelections
+                    })
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        }
+    }
+
+    /**
+     * Populates Promise Property this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise
+     */
+    private _populate_Properties___proteinData_Local_AND__userSelections_Map_Key_proteinSequenceVersionId() : void {
+
+        //  Have User selections and NOT have Protein data so need to load Protein data to display existing User selections
+
+        if ( ! this.props.get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction ) {
+            const msg = "_populate_Property___proteinData_Local__Return_VoidPromise():   if ( this.props.userSelections && this.props.userSelections.proteins && this.props.userSelections.proteins.length > 0 && ( ! this._proteinData_Local ) )  AND ( ! this.props.get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction )"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
+        this._proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise = new Promise<void>((resolve, reject) => { try {
+
+            const proteinData_GetData_Promise = this.props.get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction()
+            proteinData_GetData_Promise.catch(reason => { reject(reason) })
+            proteinData_GetData_Promise.then(value => { try {
+
+                this._proteinData_Local = value
+
+                this._userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: this.props.userSelections, proteinData: this._proteinData_Local });
+
+                resolve()
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
 
     /**
@@ -129,7 +262,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
 
         const result_proteins: Array<ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = [];
 
-        for ( const userSelections_MapEntry of this.state.userSelections_Map_Key_proteinSequenceVersionId.entries() ) {
+        for ( const userSelections_MapEntry of this._userSelections_Map_Key_proteinSequenceVersionId.entries() ) {
 
             const userSelection_SingleProtein_FromMap = userSelections_MapEntry[ 1 ];
 
@@ -141,7 +274,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
         const userSelections = new ProteinPositionFilter_UserInput__Component__UserSelectionData_Root();
         userSelections.proteins = result_proteins;
 
-        const saveParams: ProteinPositionFilter_UserInputOverlay__MainOverlay_Save_CallbackFunction_Params = {
+        const saveParams: ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params = {
             userSelections
         };
 
@@ -153,7 +286,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     private _removeProteinFromSelection_Button_Clicked({ proteinSequenceVersionId } : { proteinSequenceVersionId: number }) {
 
-        this.state.userSelections_Map_Key_proteinSequenceVersionId.delete( proteinSequenceVersionId );
+        this._userSelections_Map_Key_proteinSequenceVersionId.delete( proteinSequenceVersionId );
         this._userSelections_Changed = true;
 
         this.setState({ objectForceRerender: {} });
@@ -173,7 +306,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             end: number
         }) {
 
-        const userSelection_SingleProtein = this.state.userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId );
+        const userSelection_SingleProtein = this._userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId );
         if ( ! userSelection_SingleProtein ) {
             // already deleted
             return; // EARLY RETURN
@@ -217,16 +350,16 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
         const new_rangeStart = params.start;
         const new_rangeEnd = params.end;
 
-        const userSelection_For_proteinSequenceVersionId = this.state.userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId );
+        const userSelection_For_proteinSequenceVersionId = this._userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId );
         if ( ! userSelection_For_proteinSequenceVersionId ) {
-            const msg = "this.state.userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId ); returned nothing in _addRange_SaveCallback. proteinSequenceVersionId: " + proteinSequenceVersionId;
+            const msg = "this._userSelections_Map_Key_proteinSequenceVersionId.get( proteinSequenceVersionId ); returned nothing in _addRange_SaveCallback. proteinSequenceVersionId: " + proteinSequenceVersionId;
             console.warn(msg);
             throw Error(msg);
         }
 
         let proteinLength : number = null;
         {
-            for ( const protein of this.props.proteinData.proteins ) {
+            for ( const protein of this._proteinData_Local.proteins ) {
                 if ( protein.proteinSequenceVersionId === proteinSequenceVersionId ) {
                     proteinLength = protein.proteinLength;
                     break;
@@ -333,29 +466,16 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     private _open__ProteinSelection_Overlay() {
 
-        const proteinData = new ProteinSelection_Generic__ProteinData_Root();
-        const existing_userSelections = new ProteinSelection_Generic__UserSelectionData_Root();
+        let proteinData__ForOverlay: ProteinSelection_Generic__ProteinData_Root
 
-        {
-            const proteins: Array<ProteinSelection_Generic__ProteinData_SingleProtein> = [];
-            proteinData.proteins = proteins;
+        let existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
 
-            for ( const proteinParam of this.props.proteinData.proteins ) {
-                const protein = new ProteinSelection_Generic__ProteinData_SingleProtein();
-                protein.proteinSequenceVersionId = proteinParam.proteinSequenceVersionId;
-                protein.proteinName = proteinParam.proteinName;
-                protein.proteinDescription = proteinParam.proteinDescription;
+        if ( this._proteinData_Local && this._userSelections_Map_Key_proteinSequenceVersionId ) {
 
-                proteins.push( protein );
-            }
+            const for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result = this._for_OpenOverlay__Create_ProteinData_Existing_userSelections({ proteinData_Param: this._proteinData_Local })
 
-            const selected_proteinSequenceVersionId = new Set<number>()
-            existing_userSelections.selected_proteinSequenceVersionId = selected_proteinSequenceVersionId;
-
-            for ( const mapEntry of this.state.userSelections_Map_Key_proteinSequenceVersionId.entries() ) {
-                const mapValue = mapEntry[1];
-                selected_proteinSequenceVersionId.add( mapValue.proteinSequenceVersionId );
-            }
+            proteinData__ForOverlay = for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result.proteinData__ForOverlay
+            existing_userSelections = for_OpenOverlay__Create_ProteinData_Existing_userSelections_Result.existing_userSelections
         }
 
         let overlay_AddedTo_DocumentBody_Holder : Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF = undefined;
@@ -373,14 +493,57 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
         }
 
         const overlayComponent = get_proteinSelection_Generic__UserInputOverlay_Component({
-            proteinData, existing_userSelections,
+            proteinData: proteinData__ForOverlay,
+            callback_Get_ProteinData_Root_UserSelectionData_Root__ReturnPromise: this._get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_BindThis,
+            existing_userSelections,
             callback_GetProteinTooltipContents : undefined,
             callbackOn_Cancel_Close_Clicked,
             callbackOn_Save_Clicked
         });
 
         overlay_AddedTo_DocumentBody_Holder = limelight_add_ReactComponent_JSX_Element_To_DocumentBody({ componentToAdd : overlayComponent });
+    }
 
+    /**
+     *
+     */
+    private _for_OpenOverlay__Create_ProteinData_Existing_userSelections(
+        {
+            proteinData_Param
+        } : {
+            proteinData_Param: ProteinPositionFilter_UserInput__Component__ProteinData_Root
+        }
+    ) : {
+        proteinData__ForOverlay: ProteinSelection_Generic__ProteinData_Root
+        existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
+    } {
+
+        const proteinData__ForOverlay = new ProteinSelection_Generic__ProteinData_Root();
+
+        const proteins: Array<ProteinSelection_Generic__ProteinData_SingleProtein> = [];
+        proteinData__ForOverlay.proteins = proteins;
+
+        for ( const proteinParam of proteinData_Param.proteins ) {
+            const protein = new ProteinSelection_Generic__ProteinData_SingleProtein();
+            protein.proteinSequenceVersionId = proteinParam.proteinSequenceVersionId;
+            protein.proteinName = proteinParam.proteinName;
+            protein.proteinDescription = proteinParam.proteinDescription;
+
+            proteins.push( protein );
+        }
+
+        const existing_userSelections = new ProteinSelection_Generic__UserSelectionData_Root();
+        {
+            const selected_proteinSequenceVersionId = new Set<number>()
+            existing_userSelections.selected_proteinSequenceVersionId = selected_proteinSequenceVersionId;
+
+            for ( const mapEntry of this._userSelections_Map_Key_proteinSequenceVersionId.entries() ) {
+                const mapValue = mapEntry[1];
+                selected_proteinSequenceVersionId.add( mapValue.proteinSequenceVersionId );
+            }
+        }
+
+        return { proteinData__ForOverlay, existing_userSelections }
     }
 
     /**
@@ -392,22 +555,22 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
 
         //  Remove any existing selections that NOT in the passed in selections
         {
-            const existingSelected_proteinSequenceVersionId_Entries = new Set( this.state.userSelections_Map_Key_proteinSequenceVersionId.keys() );
+            const existingSelected_proteinSequenceVersionId_Entries = new Set( this._userSelections_Map_Key_proteinSequenceVersionId.keys() );
             for ( const existingSelected_proteinSequenceVersionId_Entry of existingSelected_proteinSequenceVersionId_Entries ) {
                 if ( ! new_selected_proteinSequenceVersionId_Entries.has( existingSelected_proteinSequenceVersionId_Entry ) ) {
                     //  NOT in new entries list so remove
-                    this.state.userSelections_Map_Key_proteinSequenceVersionId.delete( existingSelected_proteinSequenceVersionId_Entry );
+                    this._userSelections_Map_Key_proteinSequenceVersionId.delete( existingSelected_proteinSequenceVersionId_Entry );
                 }
             }
         }
         //  Add any new selected that is not in existing selections, whole protein selected
         {
             for ( const new_selected_proteinSequenceVersionId_Entry of new_selected_proteinSequenceVersionId_Entries ) {
-                if ( ! this.state.userSelections_Map_Key_proteinSequenceVersionId.has( new_selected_proteinSequenceVersionId_Entry ) ) {
+                if ( ! this._userSelections_Map_Key_proteinSequenceVersionId.has( new_selected_proteinSequenceVersionId_Entry ) ) {
                     //  new selected not in existing so add
                     const new_userSelection = new ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein();
                     new_userSelection.proteinSequenceVersionId = new_selected_proteinSequenceVersionId_Entry;
-                    this.state.userSelections_Map_Key_proteinSequenceVersionId.set( new_userSelection.proteinSequenceVersionId, new_userSelection );
+                    this._userSelections_Map_Key_proteinSequenceVersionId.set( new_userSelection.proteinSequenceVersionId, new_userSelection );
                 }
             }
         }
@@ -423,10 +586,33 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     render() {
 
+        if ( this._show_LoadingMessage ) {
+
+            return ( //  EARLY RETURN
+
+                <div style={ { marginBottom: 6 } }>
+                    Loading data...
+                </div>
+            )
+        }
+
         let noFiltersMsg : JSX.Element = null;
         let current_SelectedProteinsAndTheirRanges : JSX.Element = null;
 
-        if ( this.state.userSelections_Map_Key_proteinSequenceVersionId.size === 0 ) {
+        let noFilters = false
+
+        if ( this._userSelections_Map_Key_proteinSequenceVersionId ) {
+            if ( this._userSelections_Map_Key_proteinSequenceVersionId.size === 0 ) {
+
+                noFilters = true
+            }
+        } else {
+            if ( this.props.userSelections && this.props.userSelections.proteins && this.props.userSelections.proteins.length === 0 ) {
+                noFilters = true
+            }
+        }
+
+        if ( noFilters ) {
 
             noFiltersMsg = (
 
@@ -444,8 +630,11 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
         return (
 
             <React.Fragment>
+
                 {/* ONLY One of these will be populated */}
+
                 { noFiltersMsg }
+
                 <div style={ { marginBottom: 10 } }>
                     <button
                         onClick={ event => {
@@ -455,6 +644,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                         Add Protein
                     </button>
                 </div>
+
                 { current_SelectedProteinsAndTheirRanges }
 
             </React.Fragment>
@@ -466,26 +656,36 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     private _render_SelectedProteinsAndTheirRanges() : JSX.Element {
 
-        if ( this.state.userSelections_Map_Key_proteinSequenceVersionId.size === 0 ) {
+        if ( this._userSelections_Map_Key_proteinSequenceVersionId.size === 0 ) {
             //  NO Selected Proteins
             return null; // EARLY RETURN
         }
 
+
+        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
+
         const bottomMargin = 5; // Separate entries and also make room for buttons
+
+        const userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array: Set<number> = new Set()
+        for ( const userSelection of  this._userSelections_Map_Key_proteinSequenceVersionId.values() ) {
+            userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array.add( userSelection.proteinSequenceVersionId )
+        }
 
         const proteinDisplayEntries : Array<JSX.Element> = [];
 
-        for ( const protein of this.props.proteinData.proteins ) {
+        for ( const protein of this._proteinData_Local.proteins ) {
 
-            if ( ! this.state.userSelections_Map_Key_proteinSequenceVersionId.has( protein.proteinSequenceVersionId ) ) {
+            userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array.delete( protein.proteinSequenceVersionId ) //  Track which User Selections NOT in Protein Array
+
+            if ( ! this._userSelections_Map_Key_proteinSequenceVersionId.has( protein.proteinSequenceVersionId ) ) {
                 //  Skip protein if NOT selected
                 continue; // EARLY CONTINUE
             }
 
-            const userSelection_SingleProtein = this.state.userSelections_Map_Key_proteinSequenceVersionId.get( protein.proteinSequenceVersionId );
+            const userSelection_SingleProtein = this._userSelections_Map_Key_proteinSequenceVersionId.get( protein.proteinSequenceVersionId );
             if ( ! userSelection_SingleProtein ) {
                 //  SHOULD NOT ERROR since already ".filter"
-                const msg = "this.state.userSelections_Map_Key_proteinSequenceVersionId.get( protein.proteinSequenceVersionId ); returned nothing";
+                const msg = "this._userSelections_Map_Key_proteinSequenceVersionId.get( protein.proteinSequenceVersionId ); returned nothing";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -532,15 +732,24 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                 <React.Fragment key={ protein.proteinSequenceVersionId }>
 
                     <div style={ { marginBottom: bottomMargin } }>
-                        <img
-                            style={ { marginRight: 10 } }
-                            className="icon-small clickable "
-                            src="static/images/icon-circle-delete.png"
-                            onClick={ event => {
-                                event.stopPropagation();
-                                this._removeProteinFromSelection_Button_Clicked({ proteinSequenceVersionId: protein.proteinSequenceVersionId });
-                            }}
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete protein
+                                </span>
+                            }
+                            { ...tooltip_Main_Props }
+                        >
+                            <img
+                                style={ { marginRight: 10 } }
+                                className="icon-small clickable "
+                                src="static/images/icon-circle-delete.png"
+                                onClick={ event => {
+                                    event.stopPropagation();
+                                    this._removeProteinFromSelection_Button_Clicked({ proteinSequenceVersionId: protein.proteinSequenceVersionId });
+                                }}
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
 
                     {/*  Protein Name  */}
@@ -594,6 +803,106 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             proteinDisplayEntries.push( proteinDisplayEntry );
         }
 
+        const proteinSelection_UnknownProtein_ProteinSequenceVersionId_NotFound_Elements: Array<JSX.Element> = []
+
+        const userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array = Array.from( userSelections_proteinSequenceVersionIds_SET__NOT_FOUND_IN__Proteins_Array )
+        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array )
+        for ( const userSelection_proteinSequenceVersionId of  userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array ) {
+            const userSelection = this._userSelections_Map_Key_proteinSequenceVersionId.get( userSelection_proteinSequenceVersionId )
+            if ( ! userSelection ) {
+                const msg = "this._userSelections_Map_Key_proteinSequenceVersionId.get( userSelection_proteinSequenceVersionId ) returned NOTHING for userSelection_proteinSequenceVersionId of  userSelections_proteinSequenceVersionIds_Array__NOT_FOUND_IN__Proteins_Array. userSelection_proteinSequenceVersionId: " + userSelection_proteinSequenceVersionId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            const element = (
+                <React.Fragment key={ userSelection_proteinSequenceVersionId }>
+
+                    <div style={ { marginBottom: bottomMargin } }>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete protein
+                                </span>
+                            }
+                            { ...tooltip_Main_Props }
+                        >
+                            <img
+                                style={ { marginRight: 10 } }
+                                className="icon-small clickable "
+                                src="static/images/icon-circle-delete.png"
+                                onClick={ event => {
+                                    event.stopPropagation();
+                                    this._removeProteinFromSelection_Button_Clicked({ proteinSequenceVersionId: userSelection_proteinSequenceVersionId });
+                                }}
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    </div>
+
+                    {/*  Protein Name  */}
+                    <div style={ { marginBottom: bottomMargin, maxWidth: 350, marginRight: 20, wordBreak: "break-word" } }>
+
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Protein is not in proteins for current searches and filters.
+                                </span>
+                            }
+                            { ...tooltip_Main_Props }
+                        >
+                            <span
+                                style={ { overflowWrap: "break-word" } }
+                            >
+                                Unknown Protein Name
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                    </div>
+
+                    {/*   Protein Positions Label   */ }
+                    <div style={ { marginBottom: bottomMargin } }>
+                        <span style={ { marginRight: 5 } }>
+                            Positions:
+                        </span>
+                    </div>
+
+                    {/*   Protein Positions   : Not needed marginBottom: bottomMargin,    */}
+                    <div style={ { maxWidth: 250 } }>
+
+                        { userSelection.ranges && userSelection.ranges.length > 0 ? (
+
+                            userSelection.ranges.map( ( userSelection_Range, index, array) => {
+                                return (
+                                    <span
+                                        key={ userSelection_Range.start + "_" + userSelection_Range.end }
+                                        className="  filter-single-value-display-block  "
+                                        style={ { whiteSpace: "nowrap", marginRight: 6 } }
+                                    >
+                        <span style={ {
+                            marginRight: 2
+                        } }>
+                            { userSelection_Range.start }-{ userSelection_Range.end }
+                        </span>
+
+                        </span>
+                                )
+                            } )
+
+                        ) : (
+                            <span>
+                                Full protein
+                            </span>
+                        ) }
+
+                    </div>
+                </React.Fragment>
+            )
+
+            proteinSelection_UnknownProtein_ProteinSequenceVersionId_NotFound_Elements.push( element )
+        }
+
+        ////
+
         return (
 
             <div>
@@ -613,6 +922,9 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                     {/*  4 Column CSS Grid   <delete icon>  <Protein Name> <"Positions:" label>   <Protein Positions>     */}
 
                     { proteinDisplayEntries }
+
+                    { proteinSelection_UnknownProtein_ProteinSequenceVersionId_NotFound_Elements }
+
                 </div>
             </div>
         )
@@ -632,6 +944,8 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
 
         }) : Array<JSX.Element> {
 
+        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer();
+
         const rangeDisplayArray : Array<JSX.Element> = [];
 
         for ( const range of userSelection_SingleProtein.ranges ) {
@@ -639,7 +953,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             const rangeDisplay = (
                 <React.Fragment key={range.start + "-" + range.end}>
                     <span
-                        className="  filter-single-value-display-block  clickable  "
+                        className="  filter-single-value-display-block   "
                         style={{ whiteSpace: "nowrap", marginRight: 6 }}
                     >
                         <span style={{
@@ -647,18 +961,27 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                         }}>
                             {range.start}-{range.end}
                         </span>
-                        <img
-                            className="icon-small clickable "
-                            src="static/images/icon-circle-delete.png"
-                            onClick={event => {
-                                event.stopPropagation();
-                                this._removeProteinRangeFromSelection_Button_Clicked({
-                                    proteinSequenceVersionId: protein.proteinSequenceVersionId,
-                                    start: range.start,
-                                    end: range.end
-                                });
-                            }}
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete protein range
+                                </span>
+                            }
+                            { ...tooltip_Main_Props }
+                        >
+                            <img
+                                className="icon-small clickable "
+                                src="static/images/icon-circle-delete.png"
+                                onClick={event => {
+                                    event.stopPropagation();
+                                    this._removeProteinRangeFromSelection_Button_Clicked({
+                                        proteinSequenceVersionId: protein.proteinSequenceVersionId,
+                                        start: range.start,
+                                        end: range.end
+                                    });
+                                }}
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </span>
                 </React.Fragment>
             );
@@ -1341,19 +1664,35 @@ const _copy_UserSelectionsToLocal = function(
 
     }) : Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> {
 
+    const userSelections_Map_Key_proteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = new Map();
+
+    if ( ( ! userSelections ) || ( ! userSelections.proteins ) || ( userSelections.proteins.length === 0 ) ) {
+        //  NO User selections
+        return userSelections_Map_Key_proteinSequenceVersionId  // EARLY RETURN
+    }
+
+    if ( ! proteinData ) {
+        const msg = "_copy_UserSelectionsToLocal(...) else of ( ! userSelections.proteins )  AND ( ! proteinData )  "
+        console.warn( msg )
+        throw Error( msg )
+    }
+
     const proteins_proteinSequenceVersionId_All = new Set<number>();
     for ( const protein of proteinData.proteins ) {
         proteins_proteinSequenceVersionId_All.add( protein.proteinSequenceVersionId );
     }
 
-    const userSelections_Map_Key_proteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = new Map();
 
     if ( userSelections.proteins ) {
         for ( const protein_userSelection of userSelections.proteins ) {
-            if ( ! proteins_proteinSequenceVersionId_All.has( protein_userSelection.proteinSequenceVersionId ) ) {
-                // protein_userSelections.proteinSequenceVersionId not in All Proteins
-                continue; // EARLY CONTINUE
-            }
+
+            //  Remove if (...) { continue } since need to display something since is being used to filter data
+
+            // if ( ! proteins_proteinSequenceVersionId_All.has( protein_userSelection.proteinSequenceVersionId ) ) {
+            //     // protein_userSelections.proteinSequenceVersionId not in All Proteins
+            //     continue; // EARLY CONTINUE
+            // }
+
             userSelections_Map_Key_proteinSequenceVersionId.set( protein_userSelection.proteinSequenceVersionId, protein_userSelection );
         }
     }

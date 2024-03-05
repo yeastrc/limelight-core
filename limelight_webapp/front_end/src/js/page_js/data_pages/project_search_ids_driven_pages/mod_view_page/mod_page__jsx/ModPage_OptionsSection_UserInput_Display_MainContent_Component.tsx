@@ -9,7 +9,7 @@
  * DOM input elements are assigned and read using jQuery using the 'id' on the elements as well as jQuery .find(  )
  *
  *
- * DO NOT call jQuery.empty() on any DOM element EXCEPT for <div id="current-protein-position-filters" which is a leaf DOM element.
+ * DO NOT call jQuery.empty() on any DOM element
  *
  *
  * Over time this may be migrated to be fully React.
@@ -23,13 +23,43 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent";
+import {
+    CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {
+    ProteinPositionFilter_UserInput__Component,
+    ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction,
+    ProteinPositionFilter_UserInput__Component__Save_CallbackFunction,
+    ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params
+} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component";
+import {
+    ProteinPositionFilter_UserInput__Component__ProteinData_Root,
+    ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein
+} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import {
+    ModView_VizOptionsData
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {
+    ProteinPositionFilterDataManager
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
+import {
+    ProteinPositionFilter_UserInput__Component__UserSelectionData_Root,
+    ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein,
+    ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleRange
+} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__UserSelectionData";
 
 /**
  *
  */
 export class ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props_Prop {
 
-    placeHolder_UNUSED?: unknown  // Added so objects created cannot allow any other properties
+    vizOptionsData : ModView_VizOptionsData
+    projectSearchIds : Array<number>
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 }
 
 /**
@@ -45,7 +75,7 @@ export interface ModPage_OptionsSection_UserInput_Display_MainContent_Component_
  */
 interface ModPage_OptionsSection_UserInput_Display_MainContent_Component_State {
 
-    component_SubTree_Has_Error? : boolean
+    _placeHolder? : unknown
 }
 
 /**
@@ -60,6 +90,10 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      */
     constructor(props : ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props) {
         super(props);
+
+        //  TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State
+
+        console.warn( "TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State" )
 
         this.state = {
         };
@@ -76,12 +110,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
      *
      */
     componentWillUnmount() {
-
-        //  Empty <div id="add-protein-filter-form-container"
-
-        const $div = $("#add-protein-filter-form-container")
-
-        $div.empty()
     }
 
     ////////////////////////////////////////
@@ -99,7 +127,7 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
         //
         // NOT a normal React Component.  See message at TOP of file.
         //
-        // DO NOT call jQuery.empty() on any DOM element EXCEPT for <div id="current-protein-position-filters" which is a leaf DOM element.
+        // DO NOT call jQuery.empty() on any DOM element
 
 
         return (
@@ -109,9 +137,19 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                 </div>
                 <div id="data-viz-form" className="data-viz-form">
 
-                    <div style={ { whiteSpace: "nowrap" } }>
+                    <div
+                        style={ {
+                            marginLeft: 15,
+                            display: "flex",
+                            columnGap: 15,
+                            alignItems: "flex-start"  // Each item vertical is only as tall as the item, not stretched to the tallest item.  Default is "stretch".
+                        } } // Could add 'flexWrap: "wrap"' but would need to move the "Update Visualization" button.  If do that probably also add 'rowGap'.
+                    >
 
-                        <div className="viz-form-section" style={ { whiteSpace: "nowrap" } }>
+                        {/*  Columns in "flex".  Each column has in CSS: "  flex-grow: 0; flex-shrink: 0;" so that the width of each stays at 'max-content'  */}
+
+                        {/*  Column In "flex"  */}
+                        <div className="viz-form-section">
 
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={ 
@@ -212,7 +250,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             </div>
                         </div>
 
-                        <div className="viz-form-section" style={ { whiteSpace: "nowrap" } }>
+                        {/*  Column In "flex"  */}
+                        <div className="viz-form-section">
+
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={ 
                                         <span> 
@@ -270,7 +310,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             </table>
                         </div>
 
-                        <div className="viz-form-section" style={ { whiteSpace: "nowrap" } }>
+                        {/*  Column In "flex"  */}
+                        <div className="viz-form-section">
+
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                     title={ 
                                         <span> 
@@ -323,7 +365,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             </table>
                         </div>
 
-                        <div className="viz-form-section" style={ { whiteSpace: "nowrap" } }>
+                        {/*  Column In "flex"  */}
+                        <div className="viz-form-section">
+
                             <div>
                                 <label>
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -384,7 +428,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             </div>
                         </div>
 
+                        {/*  Column In "flex"  */}
                         <div className="viz-form-section">
+
                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 title={
                                     <span>
@@ -398,19 +444,17 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                             <br/>
 
                             <div style={ { marginTop: 5 } }>
-                                <div id="current-protein-position-filters" style={ { marginBottom: 5 } } >
-                                    Showing all proteins and positions.
-                                </div>
-                                <div id="add-protein-filter-button-container"><input type="button"
-                                                                                     value="Add Protein Position Filter"
-                                                                                     id="add-protein-filter-button"/>
-                                </div>
-                                <div id="add-protein-filter-form-container" style={ { display: "none" } }></div>
+
+                                <INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component
+                                    vizOptionsData={ this.props.propsValue.vizOptionsData }
+                                    projectSearchIds={ this.props.propsValue.projectSearchIds }
+                                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root={ this.props.propsValue.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root }
+                                />
                             </div>
                         </div>
 
                     </div>
-                    {/* <!-- end form sections --> */}
+                    {/* <!-- end form sections --> */ }
 
                 </div>
 
@@ -419,4 +463,327 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     }
 
 }
+
+///////////////////////
+
+
+/**
+ *
+ */
+export interface INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props {
+
+    vizOptionsData: ModView_VizOptionsData
+    projectSearchIds: Array<number>
+    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+}
+
+/**
+ *
+ */
+interface INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_State {
+
+    force_RerenderObject? : object
+}
+
+/**
+ *
+ */
+export class INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component extends React.Component< INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props, INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_State > {
+
+    //  bind to 'this' for passing as parameters
+
+    private _get_ProteinData_ReturnPromise_CallbackFunction_BindThis = this._get_ProteinData_ReturnPromise_CallbackFunction.bind(this)
+    private _update_PageState_FromChildComponent_SaveCall_BindThis = this._update_PageState_FromChildComponent_SaveCall.bind(this);
+
+    private _DONOTCALL() {  //  Test Funcion cast
+        const _get_ProteinData_ReturnPromise_CallbackFunction: ProteinPositionFilter_UserInput__Component__Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction = this._get_ProteinData_ReturnPromise_CallbackFunction
+        const _update_PageState_FromChildComponent_SaveCall_BindThis : ProteinPositionFilter_UserInput__Component__Save_CallbackFunction = this._update_PageState_FromChildComponent_SaveCall
+    }
+
+    private _proteinPositionFilter_UserInput__Component__ProteinData : ProteinPositionFilter_UserInput__Component__ProteinData_Root
+    private _promise__proteinPositionFilter_UserInput__Component__ProteinData : Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>
+
+    private _proteinPositionFilter_UserInput__Component__Existing_userSelections : ProteinPositionFilter_UserInput__Component__UserSelectionData_Root
+
+    private _load_ProteinData_For_Populating_ProteinRanges = false
+
+    private _show_LoadingData_Message = false
+
+    /**
+     *
+     */
+    constructor(props : INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_Component_Props) {
+        super(props);
+
+        try {
+            this._proteinPositionFilter_UserInput__Component__Existing_userSelections = new ProteinPositionFilter_UserInput__Component__UserSelectionData_Root()
+
+            if ( this.props.vizOptionsData.data.proteinPositionFilter ) {
+                const proteinRanges = this.props.vizOptionsData.data.proteinPositionFilter.getProteinRanges()
+                if ( proteinRanges && proteinRanges.length > 0 ) {
+
+                    //  Need to load protein first before display since need protein lengths
+
+                    this._load_ProteinData_For_Populating_ProteinRanges = true
+
+                    this._show_LoadingData_Message = true
+                }
+            }
+
+            //  TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State
+
+            console.warn( "TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State" )
+
+            this.state = {
+                force_RerenderObject: {}
+            };
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    componentDidMount() {
+        try {
+            if ( this._load_ProteinData_For_Populating_ProteinRanges ) {
+
+                this._load_ProteinData_For_Populating_ProteinRanges = false
+
+                if ( this._no_Input_ProteinRanges_In_VizOptionsData() ) {
+
+                    // NO longer protein ranges
+
+                    this._show_LoadingData_Message = false
+
+                    this.setState({ force_RerenderObject: {} })
+
+                    return // EARLY RETURN
+                }
+
+                const promise = this._get_ProteinData_ReturnPromise_CallbackFunction()
+                promise.catch(reason => {})
+                promise.then( proteinData => { try {
+
+                    if ( this._no_Input_ProteinRanges_In_VizOptionsData() ) {
+
+                        // NO longer protein ranges
+
+                        this._show_LoadingData_Message = false
+
+                        this.setState({ force_RerenderObject: {} })
+
+                        return // EARLY RETURN
+                    }
+
+                    const proteinData_Map_Key_ProteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein> = new Map()
+                    for ( const protein of proteinData.proteins ) {
+                        proteinData_Map_Key_ProteinSequenceVersionId.set( protein.proteinSequenceVersionId, protein )
+                    }
+
+                    const vizOptionsData = this.props.vizOptionsData
+
+                    const selectedProteins_Map_Key_ProteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = new Map()
+
+                    for ( const proteinRange of vizOptionsData.data.proteinPositionFilter.getProteinRanges() ) {
+
+                        const proteinData_For_ProteinSequenceVersionId = proteinData_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId )
+                        if ( ! proteinData_For_ProteinSequenceVersionId ) {
+
+                            //  Protein NOT in the Proteins for current PSM/Peptide/etc filters.
+
+                            //  One source of this error is when change searches and remove all searches that contain this protein
+                            //  One source of this error is when change PSM/Peptide/etc filters to remove this protein
+
+                            //  TODO  Would be best to remove this entry from State stored in the URL
+
+                            //  CANNOT skip this since previous code did NOT drop these.
+
+                            // const msg = "proteinData_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId ) returned NOTHING for proteinRange.proteinId: " + proteinRange.proteinId
+                            // console.warn(msg)
+                            // throw Error(msg)
+                        }
+
+                        let selectedProtein_result = selectedProteins_Map_Key_ProteinSequenceVersionId.get( proteinRange.proteinId )
+                        if ( ! selectedProtein_result ) {
+                            selectedProtein_result = new ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein()
+                            selectedProtein_result.proteinSequenceVersionId = proteinRange.proteinId
+                            selectedProteins_Map_Key_ProteinSequenceVersionId.set( proteinRange.proteinId, selectedProtein_result )
+                        }
+
+                        if ( ( ! proteinData_For_ProteinSequenceVersionId ) || ( proteinRange.start !== 1 || proteinRange.end !== proteinData_For_ProteinSequenceVersionId.proteinLength ) ) {
+
+                            if ( ! selectedProtein_result.ranges ) {
+                                selectedProtein_result.ranges = []
+                            }
+
+                            const selectedProteinRange_ForChildComponent = new ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleRange();
+                            selectedProtein_result.ranges.push( selectedProteinRange_ForChildComponent );
+
+                            selectedProteinRange_ForChildComponent.start = proteinRange.start
+                            selectedProteinRange_ForChildComponent.end = proteinRange.end
+                        }
+                    }
+
+                    const selectedProteins_ForChildComponent: Array<ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein> = Array.from( selectedProteins_Map_Key_ProteinSequenceVersionId.values() )
+
+                    this._proteinPositionFilter_UserInput__Component__Existing_userSelections.proteins = selectedProteins_ForChildComponent
+
+                    this._show_LoadingData_Message = false
+
+                    this.setState({ force_RerenderObject: {} })
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            }
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _no_Input_ProteinRanges_In_VizOptionsData() : boolean {
+
+        let noProteinRanges = false
+
+        if ( this.props.vizOptionsData.data.proteinPositionFilter ) {
+            const proteinRanges = this.props.vizOptionsData.data.proteinPositionFilter.getProteinRanges()
+            if ( ( ! proteinRanges ) || ( ! ( proteinRanges.length > 0 ) ) ) {
+
+                noProteinRanges = true
+            }
+        } else {
+            noProteinRanges = true
+        }
+        return noProteinRanges
+    }
+
+    /**
+     *
+     */
+    private _get_ProteinData_ReturnPromise_CallbackFunction() : Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root> {
+
+        if ( this._proteinPositionFilter_UserInput__Component__ProteinData ) {
+
+            return Promise.resolve( this._proteinPositionFilter_UserInput__Component__ProteinData )  // EARLY RETURN
+        }
+
+        if ( this._promise__proteinPositionFilter_UserInput__Component__ProteinData ) {
+            return this._promise__proteinPositionFilter_UserInput__Component__ProteinData
+        }
+
+
+        const promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data = proteinPositionFilter_UserSelections_Build_ProteinNamesLengths_Data_ForComponent({
+            projectSearchIds: this.props.projectSearchIds,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        })
+
+        this._promise__proteinPositionFilter_UserInput__Component__ProteinData = new Promise<ProteinPositionFilter_UserInput__Component__ProteinData_Root>((resolve, reject) => { try {
+
+            promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.catch(reason => reject(reason))
+            promise_proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data.then(value => { try {
+
+                this._proteinPositionFilter_UserInput__Component__ProteinData = value.proteinPositionFilter_UserInput__Component__ProteinData_Root
+
+                this._promise__proteinPositionFilter_UserInput__Component__ProteinData = undefined
+
+                resolve( this._proteinPositionFilter_UserInput__Component__ProteinData )
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        return this._promise__proteinPositionFilter_UserInput__Component__ProteinData
+    }
+
+    /**
+     *
+     */
+    private _update_PageState_FromChildComponent_SaveCall( params: ProteinPositionFilter_UserInput__Component__Save_CallbackFunction_Params ) {
+
+        const vizOptionsData = this.props.vizOptionsData
+
+        // data checks out if we got here, add it to the page
+
+        //  Reset filter in vizOptionsData
+        vizOptionsData.data.proteinPositionFilter = new ProteinPositionFilterDataManager();
+
+
+        const proteinPositionFilter: ProteinPositionFilterDataManager = vizOptionsData.data.proteinPositionFilter;
+
+
+        for ( const protein_FromChild of params.userSelections.proteins ) {
+
+            const proteinSequenceVersionId = protein_FromChild.proteinSequenceVersionId;
+
+            if ( protein_FromChild.ranges && protein_FromChild.ranges.length > 0 ) {
+
+                for ( const protein_FromChild_range of protein_FromChild.ranges ) {
+
+                    proteinPositionFilter.addProteinRange({ proteinId: proteinSequenceVersionId, start: protein_FromChild_range.start, end: protein_FromChild_range.end });
+                }
+            } else {
+
+                let protein_Found_For_proteinSequenceVersionId = false
+
+                for ( const protein of this._proteinPositionFilter_UserInput__Component__ProteinData.proteins ) {
+
+                    if ( protein.proteinSequenceVersionId === proteinSequenceVersionId ) {
+
+                        protein_Found_For_proteinSequenceVersionId = true
+
+                        proteinPositionFilter.addProteinRange({ proteinId: proteinSequenceVersionId, start: 1, end: protein.proteinLength });
+
+                        break
+                    }
+                }
+
+                if ( ! protein_Found_For_proteinSequenceVersionId ) {
+
+                    const msg = "proteinSequenceVersionId NOT FOUND in this._proteinPositionFilter_UserInput__Component__ProteinData.proteins.  proteinSequenceVersionId: " + proteinSequenceVersionId
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+            }
+        }
+    }
+
+    ////////////////////////////////////////
+
+    render() {
+
+        if ( this._show_LoadingData_Message ) {
+
+            return (
+                <div>
+                    Loading Data...
+                </div>
+            )
+        }
+
+
+        return (
+
+            <React.Fragment>
+                {/*   Consider using this component when add in other filter components from Peptide page */}
+                {/*<ProteinPositionFilter_UserSelections*/ }
+                {/*    proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ undefined }*/ }
+                {/*    proteinPositionFilter_UserSelections_StateObject={ this._proteinPositionFilter_UserSelections_StateObject }*/ }
+                {/*    proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ undefined }*/ }
+                {/*    proteinPositionFilter_UserSelections_Component_GetData_Callback={ this._getProteinData_Callback_BindThis }*/ }
+                {/*    updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this._updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback_BindThis }*/ }
+                {/*/>*/ }
+
+                <div>
+                    <ProteinPositionFilter_UserInput__Component
+                        proteinData_InitiallyProvided={ undefined } //  Never set in this component.  Always use the callback
+                        get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_CallbackFunction={ this._get_ProteinData_ReturnPromise_CallbackFunction_BindThis }
+                        userSelections={ this._proteinPositionFilter_UserInput__Component__Existing_userSelections }
+                        callbackOn_Save_Clicked={ this._update_PageState_FromChildComponent_SaveCall_BindThis }
+                    />
+                </div>
+
+            </React.Fragment>
+        )
+    }
+
+
+}
+
 

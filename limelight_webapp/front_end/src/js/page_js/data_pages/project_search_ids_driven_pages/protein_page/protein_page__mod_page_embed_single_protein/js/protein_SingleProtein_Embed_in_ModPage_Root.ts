@@ -85,7 +85,11 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             searchDataLookupParamsRoot,
             dataPages_LoggedInUser_CommonObjectsFactory,
 
-            centralPageStateManager
+            centralPageStateManager,
+
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
 
         }: {
             referrerFromURL_Set: boolean //  was /r on the URL when page loaded
@@ -100,7 +104,12 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
             searchDataLookupParamsRoot: SearchDataLookupParameters_Root
             dataPages_LoggedInUser_CommonObjectsFactory: DataPages_LoggedInUser_CommonObjectsFactory
 
-            centralPageStateManager: CentralPageStateManager
+            centralPageStateManager: CentralPageStateManager,
+
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+
 
         }) : Protein_SingleProtein_Embed_in_ModPage_Root_Class_InitializeResult {
 
@@ -121,15 +130,11 @@ class Protein_SingleProtein_Embed_in_ModPage_Root_Class {
 
         //  Main Data Loader object
 
-        this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()
+        this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = commonData_LoadedFromServer_From_ProjectScanFileId___ROOT
 
-        this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.getNewInstance()
+        this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
 
-        this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.getNewInstance({
-            projectSearchIds, searchDataLookupParameters_Root: searchDataLookupParamsRoot, dataPageStateManager: this._dataPageStateManager_DataFrom_Server,
-            commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
-            commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
-        });
+        this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
         {
             let allSearches_Have_ScanFilenames = true;

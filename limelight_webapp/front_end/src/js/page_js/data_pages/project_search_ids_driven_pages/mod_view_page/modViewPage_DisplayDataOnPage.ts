@@ -12,7 +12,6 @@ import {ModViewDataVizRenderer_MultiSearch} from 'page_js/data_pages/project_sea
 import {ModViewDataVizRendererOptionsHandler} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizOptionsManager';
 import {ModMultiSearch_DataVizPageStateManager} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMultiSearchDataViz_StateManager';
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
-//  Import for typing only
 import {DataPages_LoggedInUser_CommonObjectsFactory} from 'page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory';
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 import {SearchDetailsBlockDataMgmtProcessing} from 'page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing';
@@ -26,6 +25,10 @@ import {
 	SearchDataLookupParameters_Root,
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+	CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
 
 /**
  * 
@@ -40,6 +43,7 @@ export class ModViewPage_DisplayDataOnPage {
 	private _dataPageStateManager_DataFrom_Server : DataPageStateManager;
 	private _searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing;
 	private _centralPageStateManager : CentralPageStateManager;
+	private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 
 	private _modViewDataManager : ModViewDataManager;
 	private _vizOptionsData : ModView_VizOptionsData;
@@ -52,13 +56,15 @@ export class ModViewPage_DisplayDataOnPage {
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 		dataPageStateManager_DataFrom_Server,
 		searchDetailsBlockDataMgmtProcessing,
-		centralPageStateManager
+		centralPageStateManager,
+		commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 	 } : { 
 		dataPages_LoggedInUser_CommonObjectsFactory : DataPages_LoggedInUser_CommonObjectsFactory, 
 		dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : DataPageStateManager,
 		dataPageStateManager_DataFrom_Server : DataPageStateManager, 
 		searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing,
 		centralPageStateManager : CentralPageStateManager
+		commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 	 }) {
 
 		this._dataPages_LoggedInUser_CommonObjectsFactory = dataPages_LoggedInUser_CommonObjectsFactory;
@@ -66,6 +72,7 @@ export class ModViewPage_DisplayDataOnPage {
 		this._dataPageStateManager_DataFrom_Server = dataPageStateManager_DataFrom_Server;
 		this._searchDetailsBlockDataMgmtProcessing = searchDetailsBlockDataMgmtProcessing;
 		this._centralPageStateManager = centralPageStateManager;
+		this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 	}
 
 	/**
@@ -73,7 +80,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 *
 	 *  !!!!   DO NOT update (make changes that will be saved to the URL) Page State Variables in this method.  Do that in the method "initialUpdatesToPageState
 	 */
-	initialize() {
+	async initialize() : Promise<void> {
 
 		const searchDataLookupParamsRoot : SearchDataLookupParameters_Root =
 			this._searchDetailsBlockDataMgmtProcessing.
@@ -87,6 +94,110 @@ export class ModViewPage_DisplayDataOnPage {
 		this._vizOptionsData.stateManagementObject = stateManagementObject;
 
 		stateManagementObject.initialize();	// load in values from the URL
+
+		await this._purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded()
+	}
+
+	/**
+	 *
+	 */
+	private _purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded(): Promise<void> {
+
+		if ( ( ( ! this._vizOptionsData.data )
+			|| ( ! this._vizOptionsData.data.proteinPositionFilter )
+			|| ( ! ( this._vizOptionsData.data.proteinPositionFilter.getProteinRanges() ) )
+			|| ( ! ( this._vizOptionsData.data.proteinPositionFilter.getProteinRanges().length > 0 ) ) ) ) {
+
+			//  NO Protein Ranges Filters so exit
+
+			return Promise.resolve() // EARLY RETURN
+		}
+
+		const proteinSequenceVersionId_All_Set :  Set<number> = new Set();
+
+		// Load Data
+
+		const promises: Array<Promise<void>> = []
+
+		const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+
+		for ( const projectSearchId of projectSearchIds ) {
+
+			const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
+			if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+				throw Error( "_purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId );
+			}
+
+			const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result =
+				commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch();
+			if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data ) {
+
+				for ( const proteinSequenceVersionId of get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIdsUnique() ) {
+					proteinSequenceVersionId_All_Set.add( proteinSequenceVersionId );
+				}
+
+			} else if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise ) {
+
+				const promise = new Promise<void>((resolve, reject) => { try {
+					get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.catch(reason => { reject(reason) })
+					get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.then( promise_value => { try {
+
+						for ( const proteinSequenceVersionId of promise_value.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_proteinSequenceVersionIdsUnique() ) {
+							proteinSequenceVersionId_All_Set.add( proteinSequenceVersionId );
+						}
+						resolve()
+
+					} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+				} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+				promises.push( promise )
+
+			} else {
+				throw Error("")
+			}
+		}
+
+		if ( promises.length === 0 ) {
+
+			this._purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded__AfterLoadData({ proteinSequenceVersionId_All_Set })
+			return Promise.resolve() // EARLY RETURN
+		}
+
+		const promisesAll = Promise.all( promises )
+
+		return new Promise<void>((resolve, reject) => { try {
+			promisesAll.catch( reason => { reject(reason) })
+			promisesAll.then(value => { try {
+				this._purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded__AfterLoadData({ proteinSequenceVersionId_All_Set })
+				resolve()
+			} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+	}
+
+	/**
+	 *
+	 */
+	private _purge_FiltersOptions_InURL_Example_ProteinPositionEntries_AsNeeded__AfterLoadData(
+		{
+			proteinSequenceVersionId_All_Set
+		} : {
+			proteinSequenceVersionId_All_Set :  Set<number>
+		}
+	): void {
+
+		const existingFilterEntries = Array.from( this._vizOptionsData.data.proteinPositionFilter.getProteinRanges() )
+
+		for ( const existingFilterEntry of existingFilterEntries ) {
+
+			if ( ! proteinSequenceVersionId_All_Set.has( existingFilterEntry.proteinId ) ) {
+				this._vizOptionsData.data.proteinPositionFilter.deleteProteinRange({ proteinId: existingFilterEntry.proteinId, start: existingFilterEntry.start, end: existingFilterEntry.end })
+			}
+		}
+
+		// update hash in URL to reflect user customization state
+		this._vizOptionsData.stateManagementObject.updateState();
+
 	}
 
 	/**
@@ -94,7 +205,7 @@ export class ModViewPage_DisplayDataOnPage {
 	 */
 	initialUpdates_To_PageStateVariables() {
 
-		let projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
+		const projectSearchIds = this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds();
 
 		if(this._vizOptionsData.data.projectSearchIds === undefined) {
 			this._vizOptionsData.data.projectSearchIds = [...projectSearchIds];	// ordered list of project ids to show is considered a viz option
@@ -212,7 +323,8 @@ export class ModViewPage_DisplayDataOnPage {
 			vizOptionsData : this._vizOptionsData,
 			dataPageStateManager_DataFrom_Server: this._dataPageStateManager_DataFrom_Server,
 			modViewDataManager: this._modViewDataManager,
-			allProjectSearchIds: projectSearchIds
+			allProjectSearchIds: projectSearchIds,
+			commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 		});
 
 		// add the viz to the page using these viz options

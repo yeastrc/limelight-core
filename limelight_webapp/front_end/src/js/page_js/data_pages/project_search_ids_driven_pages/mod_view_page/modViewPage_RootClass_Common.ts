@@ -44,6 +44,21 @@ import {get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root} from
 import {page_Update_From_search_data_lookup_parameters_lookup_code__computed} from "page_js/data_pages/data_pages_common/page_Update_From_search_data_lookup_parameters_lookup_code__computed";
 import {Navigation_dataPages_Maint__NavigationType_Enum} from "page_js/data_pages/data_pages_common/navigation_data_pages_maint/navigation_dataPages_Maint_Component";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+	CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
+import {
+	CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+} from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+import {
+	CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
+import {
+	ModView_VizOptionsData
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
+import {
+	ProteinRange
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 
 //  From data_pages_common
 
@@ -69,6 +84,12 @@ export class ModViewPage_RootClass_Common {
 	_getSearchDataLookupParametersFromPage : GetSearchDataLookupParametersFromPage;
 
 	_loadCoreData_ProjectSearchIds_Based : LoadCoreData_ProjectSearchIds_Based;
+
+	//  Main Data Loader object
+	private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+	private _commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT
+	private _commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+
 
 	/**
 	 * 
@@ -157,7 +178,8 @@ export class ModViewPage_RootClass_Common {
 		} ); 
 		
 		const projectSearchIds : Array<number> = searchDataLookupParametersFromPage.projectSearchIds;
-		
+
+		this._dataPageStateManager_DataFrom_Server.set_projectSearchIds( projectSearchIds );
 		this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.set_projectSearchIds( projectSearchIds );
 
 		let navigationType = Navigation_dataPages_Maint__NavigationType_Enum.SINGLE_SEARCH
@@ -195,87 +217,108 @@ export class ModViewPage_RootClass_Common {
 	 *   
 	 * This is handling when the page is initially loaded and the data needs to be loaded from the URL
 	 */
-	private _createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : void {
+	private async _createFilterData_In_dataPageStateManager_ForInitialLoad({ referrerFromURL_Set } : { referrerFromURL_Set: boolean }) : Promise<void> { // Returned Promise is ignored
+		try {
+			//  pageState excludes project search id (or other similar things) filters and ann type display
 
-		//  pageState excludes project search id (or other similar things) filters and ann type display 
-		
-//		let pageStateIdentifier = params.pageStateIdentifier;
-//		let pageState = params.pageState;
+// 			let pageStateIdentifier = params.pageStateIdentifier;
+// 			let pageState = params.pageState;
 //
-//		if ( pageState ) {
+// 			if ( pageState ) {
 //
-//			// TODO Not handling yet;
-//			//  Before using filters, first check for default URL and use if present
-//			//  Process URL linking from another page separately, and replace URL on browser after map to URL for current page
-////			alert("Not handling _filterDataFromURL_OnPageLoad.filters has value yet");
-////			throw Error( "Not handling _filterDataFromURL_OnPageLoad.filters has value yet" );
+// 				// TODO Not handling yet;
+// 				//  Before using filters, first check for default URL and use if present
+// 				//  Process URL linking from another page separately, and replace URL on browser after map to URL for current page
+// //			alert("Not handling _filterDataFromURL_OnPageLoad.filters has value yet");
+// //			throw Error( "Not handling _filterDataFromURL_OnPageLoad.filters has value yet" );
 //
-//		} else {
+// 			} else {
 //
-//			//  No Filters so initialize page using defaults (Check for user defaults for page)
+// 				//  No Filters so initialize page using defaults (Check for user defaults for page)
 //
-////			this.initializeFilterCriteriaDataDisplayFromDefaults(); 
-//		}
+// //			this.initializeFilterCriteriaDataDisplayFromDefaults();
+// 			}
 //
-//		if ( pageState ) {
-//			this._userSelection_q_OnURL_Update.replaceUserSelectionFromURL( pageState );
-//		}
+// 			if ( pageState ) {
+// 				this._userSelection_q_OnURL_Update.replaceUserSelectionFromURL( pageState );
+// 			}
 
-		this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
+			const projectSearchIds = this._dataPageStateManager_DataFrom_Server.get_projectSearchIds()
 
-			dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
-			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
-			searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
-			centralPageStateManager : this._centralPageStateManager
-		});
+			//  Main Data Loader object
 
-		this._modViewPage_DisplayDataOnPage.initialize();
+			this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT = CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT.getNewInstance()
+
+			this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT = CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.getNewInstance()
+
+			this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root = CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.getNewInstance({
+				projectSearchIds,
+				searchDataLookupParameters_Root: this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
+				dataPageStateManager: this._dataPageStateManager_DataFrom_Server,
+				commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+				commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+			});
 
 
-		//  Have all data in page variables to render the page
 
-		const singleProteinCloseCallback = () : void =>  {
-
-			if ( ! this._called__populateModDataBlock ) {
-
-				this._modViewPage_DisplayDataOnPage.populateModDataBlock();
-
-				this._called__populateModDataBlock = true;
-			}
-		}
-
-		const singleProtein_InitializeResult =
-			get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().initialize({
-
-				referrerFromURL_Set,
-
-				singleProteinCloseCallback,
+			this._modViewPage_DisplayDataOnPage = new ModViewPage_DisplayDataOnPage( {
 
 				dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
 				dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
 				dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
 				searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
 				centralPageStateManager : this._centralPageStateManager,
-
-				projectSearchIds: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds(),
-				searchDataLookupParamsRoot : this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
+				commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
 			});
 
+			await this._modViewPage_DisplayDataOnPage.initialize();
+
+			//  Have all data in page variables to render the page
+
+			const singleProteinCloseCallback = () : void =>  {
+
+				if ( ! this._called__populateModDataBlock ) {
+
+					this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+
+					this._called__populateModDataBlock = true;
+				}
+			}
+
+			const singleProtein_InitializeResult =
+				get_SingletonInstance__Protein_SingleProtein_Embed_in_ModPage_Root().initialize({
+
+					referrerFromURL_Set,
+
+					singleProteinCloseCallback,
+
+					dataPages_LoggedInUser_CommonObjectsFactory : this._dataPages_LoggedInUser_CommonObjectsFactory,
+					dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay : this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
+					dataPageStateManager_DataFrom_Server : this._dataPageStateManager_DataFrom_Server,
+					searchDetailsBlockDataMgmtProcessing : this._searchDetailsBlockDataMgmtProcessing,
+					centralPageStateManager : this._centralPageStateManager,
+
+					projectSearchIds: this._dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds(),
+					searchDataLookupParamsRoot : this._searchDetailsBlockDataMgmtProcessing.getSearchDetails_Filters_AnnTypeDisplay_ForWebserviceCalls_AllProjectSearchIds({dataPageStateManager: undefined}),
+
+					commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+					commonData_LoadedFromServer_From_ProjectScanFileId___ROOT: this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT,
+					commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT
+				});
 
 
-		this._modViewPage_DisplayDataOnPage.initialUpdates_To_PageStateVariables();
 
-		this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFilters_And_Save_Set_Buttons_Underneath_Block();
+			this._modViewPage_DisplayDataOnPage.initialUpdates_To_PageStateVariables();
 
-		if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
+			this._modViewPage_DisplayDataOnPage.populateSearchDetailsAndOtherFilters_And_Save_Set_Buttons_Underneath_Block();
 
-			this._called__populateModDataBlock = true;
+			if ( ! singleProtein_InitializeResult.directlyShowing_SingleProteinOverlay ) {
 
-			this._modViewPage_DisplayDataOnPage.populateModDataBlock();
-		}
+				this._called__populateModDataBlock = true;
+
+				this._modViewPage_DisplayDataOnPage.populateModDataBlock();
+			}
+		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 	}
-	
-
-
 }
+

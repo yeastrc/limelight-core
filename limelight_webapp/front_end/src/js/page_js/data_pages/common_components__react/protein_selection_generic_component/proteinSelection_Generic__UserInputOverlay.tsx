@@ -60,6 +60,19 @@ export const get_proteinSelection_Generic__UserInputOverlay_Component = function
 
 ////  Callback definitions
 
+//  Get Protein Data via callback, returns Promise
+
+export class ProteinSelection_Generic__UserInputOverlay_GetProteinData_Root_UserSelectionData_Root__ReturnPromise_Callback_ResultObject {
+    promise: Promise<{
+        proteinData_Root: ProteinSelection_Generic__ProteinData_Root
+        existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
+    }>
+}
+
+export type ProteinSelection_Generic__UserInputOverlay_Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_Type =
+    () => ProteinSelection_Generic__UserInputOverlay_GetProteinData_Root_UserSelectionData_Root__ReturnPromise_Callback_ResultObject
+
+
 //   "Save" Clicked Callback
 
 export class ProteinSelection_Generic__UserInputOverlay_Save_CallbackFunction_Params {
@@ -86,6 +99,8 @@ export type ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents
 export interface ProteinSelection_Generic__UserInputOverlay_Component_Props {
 
     proteinData: ProteinSelection_Generic__ProteinData_Root
+    callback_Get_ProteinData_Root_UserSelectionData_Root__ReturnPromise: ProteinSelection_Generic__UserInputOverlay_Get_ProteinData_Root_UserSelectionData_Root_ReturnPromise_Callback_Type
+
     existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
 
     callback_GetProteinTooltipContents: ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents_CallbackFunction
@@ -100,8 +115,6 @@ export interface ProteinSelection_Generic__UserInputOverlay_Component_Props {
 interface ProteinSelection_Generic__UserInputOverlay_Component_State {
 
     objectForceRerender?: object
-
-    proteinListDisplay_DataTable_RootTableObject? : DataTable_RootTableObject
 }
 
 /**
@@ -111,6 +124,10 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
 
     private _save_Button_Clicked_BindThis = this._save_Button_Clicked.bind(this);
     private _proteinRow_Clicked_BindThis = this._proteinRow_Clicked.bind(this);
+
+    private _proteinData_Root: ProteinSelection_Generic__ProteinData_Root
+
+    private _proteinListDisplay_DataTable_RootTableObject : DataTable_RootTableObject
 
     private _existingSelections__selected_proteinSequenceVersionId: Set<number>;
     private _newSelections__selected_proteinSequenceVersionId: Set<number> = new Set();
@@ -125,9 +142,67 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
     constructor(props: ProteinSelection_Generic__UserInputOverlay_Component_Props) {
         super(props);
 
-        if ( props.existing_userSelections && props.existing_userSelections.selected_proteinSequenceVersionId && props.existing_userSelections.selected_proteinSequenceVersionId.size > 0 ) {
+        if ( props.proteinData ) {
 
-            this._existingSelections__selected_proteinSequenceVersionId = new Set( props.existing_userSelections.selected_proteinSequenceVersionId );
+            this._populate__Properties_From_Props_Or_LoadedData({
+                proteinData_Root: props.proteinData,
+                existing_userSelections: props.existing_userSelections,
+                callback_GetProteinTooltipContents: this.props.callback_GetProteinTooltipContents
+            })
+        }
+
+        try {
+            this.state = {
+                objectForceRerender: {}
+            };
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    componentDidMount() {
+        try {
+            if ( ! this._proteinListDisplay_DataTable_RootTableObject ) {
+
+                const result = this.props.callback_Get_ProteinData_Root_UserSelectionData_Root__ReturnPromise()
+                result.promise.catch(reason => {})
+                result.promise.then(value => { try {
+
+                    this._populate__Properties_From_Props_Or_LoadedData({
+                        proteinData_Root: value.proteinData_Root,
+                        existing_userSelections: value.existing_userSelections,
+                        callback_GetProteinTooltipContents: this.props.callback_GetProteinTooltipContents
+                    })
+
+                    this.setState({ objectForceRerender: {} })
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            }
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     */
+    private _populate__Properties_From_Props_Or_LoadedData(
+        {
+            proteinData_Root, existing_userSelections, callback_GetProteinTooltipContents
+        } : {
+            proteinData_Root: ProteinSelection_Generic__ProteinData_Root
+            existing_userSelections: ProteinSelection_Generic__UserSelectionData_Root
+            callback_GetProteinTooltipContents: ProteinSelection_Generic__UserInputOverlay_GetProteinTooltipContents_CallbackFunction
+        }
+    ) {
+
+
+        this._proteinData_Root = proteinData_Root
+
+
+        if ( existing_userSelections && existing_userSelections.selected_proteinSequenceVersionId && existing_userSelections.selected_proteinSequenceVersionId.size > 0 ) {
+
+            this._existingSelections__selected_proteinSequenceVersionId = new Set( existing_userSelections.selected_proteinSequenceVersionId );
 
             {
                 let alreadySelectedProtein_TooltipText = null;
@@ -148,19 +223,14 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
             this._newSelections__selected_proteinSequenceVersionId.add( selection );
         }
 
-        const proteinListDisplay_DataTable_RootTableObject = _create_ProteinList_DataTableObjects({
-            proteinData: props.proteinData,
+        this._proteinListDisplay_DataTable_RootTableObject = _create_ProteinList_DataTableObjects({
+            proteinData: proteinData_Root,
             existingSelections__selected_proteinSequenceVersionId: this._existingSelections__selected_proteinSequenceVersionId,
             newSelections__selected_proteinSequenceVersionId: this._newSelections__selected_proteinSequenceVersionId,
             alreadySelectedProtein_TooltipText: this._alreadySelectedProtein_TooltipText,
-            callback_GetProteinTooltipContents: props.callback_GetProteinTooltipContents,
+            callback_GetProteinTooltipContents: callback_GetProteinTooltipContents,
             proteinRowClicked_Callback: this._proteinRow_Clicked_BindThis
         });
-
-        this.state = {
-            proteinListDisplay_DataTable_RootTableObject,
-            objectForceRerender: {}
-        };
     }
 
     /**
@@ -210,8 +280,8 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
         }
         this._userSelections_Changed = true;
 
-        const proteinListDisplay_DataTable_RootTableObject = _create_ProteinList_DataTableObjects({
-            proteinData: this.props.proteinData,
+        this._proteinListDisplay_DataTable_RootTableObject = _create_ProteinList_DataTableObjects({
+            proteinData: this._proteinData_Root,
             existingSelections__selected_proteinSequenceVersionId: this._existingSelections__selected_proteinSequenceVersionId,
             newSelections__selected_proteinSequenceVersionId: this._newSelections__selected_proteinSequenceVersionId,
             alreadySelectedProtein_TooltipText: this._alreadySelectedProtein_TooltipText,
@@ -219,7 +289,7 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
             proteinRowClicked_Callback: this._proteinRow_Clicked_BindThis
         });
 
-        this.setState({ proteinListDisplay_DataTable_RootTableObject, objectForceRerender: {} });
+        this.setState({ objectForceRerender: {} });
     }
 
     /**
@@ -237,53 +307,62 @@ class ProteinSelection_Generic__UserInputOverlay_Component extends React.Compone
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false } >
 
-                <React.Fragment>
-
+                { ! this._proteinListDisplay_DataTable_RootTableObject ? (
                     <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
                          style={ { marginBottom: 12 } }
                         // style={ { padding : 6 } }
                     >
-                        <div style={ { marginBottom: 10 } }>
-                            <button
-                                onClick={ this._save_Button_Clicked_BindThis }
-                            >
-                                Save Changes
-                            </button>
-                            <span> </span>
-                            <button
-                                onClick={ this.props.callbackOn_Cancel_Close_Clicked }
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                        <div>
-                            No changes are saved until "Save Changes" is clicked.
-                        </div>
+                        Loading Data...
+                    </div>
+                ) : (
+                    <React.Fragment>
 
-                        <div className="standard-border-color-dark"
-                             style={ { marginTop: 7, marginBottom: 8, width: "100%", borderBottomStyle: "solid", borderBottomWidth: 1 } }
-                        ></div>
-
-                        { ( this._alreadySelectedProtein_TooltipText ) ? (
-                            <div >
-                                { this._alreadySelectedProtein_TooltipText }
+                        <div className=" top-level fixed-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                             style={ { marginBottom: 12 } }
+                            // style={ { padding : 6 } }
+                        >
+                            <div style={ { marginBottom: 10 } }>
+                                <button
+                                    onClick={ this._save_Button_Clicked_BindThis }
+                                >
+                                    Save Changes
+                                </button>
+                                <span> </span>
+                                <button
+                                    onClick={ this.props.callbackOn_Cancel_Close_Clicked }
+                                >
+                                    Cancel
+                                </button>
                             </div>
-                        ) : null }
+                            <div>
+                                No changes are saved until "Save Changes" is clicked.
+                            </div>
 
-                    </div>
+                            <div className="standard-border-color-dark"
+                                 style={ { marginTop: 7, marginBottom: 8, width: "100%", borderBottomStyle: "solid", borderBottomWidth: 1 } }
+                            ></div>
 
-                    <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
-                         style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
-                    >
-                        {/*  Main Body:  Scrollable Div  */}
+                            { ( this._alreadySelectedProtein_TooltipText ) ? (
+                                <div >
+                                    { this._alreadySelectedProtein_TooltipText }
+                                </div>
+                            ) : null }
 
-                        <DataTable_TableRoot
-                            tableObject={ this.state.proteinListDisplay_DataTable_RootTableObject }
-                            resortTableOnUpdate={ true }
-                        />
-                    </div>
+                        </div>
 
-                </React.Fragment>
+                        <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right standard-border-color-medium"
+                             style={ { overflowY: "auto", overflowX: "hidden", borderStyle: "solid", borderWidth: 1 } }
+                        >
+                            {/*  Main Body:  Scrollable Div  */}
+
+                            <DataTable_TableRoot
+                                tableObject={ this._proteinListDisplay_DataTable_RootTableObject }
+                                resortTableOnUpdate={ true }
+                            />
+                        </div>
+
+                    </React.Fragment>
+                )}
 
             </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );

@@ -12,9 +12,6 @@ import {
     ProteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data,
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data";
 import {
-    ProteinPositionFilter_UserInput__Component__ProteinData_Root
-} from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
-import {
     ProteinPositionFilter_UserSelections_StateObject,
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root";
@@ -71,12 +68,18 @@ export class ProteinPositionFilter_UserSelections__GetsProteinData extends React
         }
     }
 
+    /**
+     *
+     */
     componentDidMount() { try {
 
         this._loadDataOnMount();
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
+    /**
+     *
+     */
     private _loadDataOnMount() {
 
         //  Load data on mount
@@ -108,6 +111,9 @@ export class ProteinPositionFilter_UserSelections__GetsProteinData extends React
 
     render() {
 
+        if ( ! this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data ) {
+            return null;
+        }
 
         return (
 
@@ -115,8 +121,7 @@ export class ProteinPositionFilter_UserSelections__GetsProteinData extends React
                 proteinPositionFilter_UserSelections_Component_Force_ReRender_Object={ this.props.proteinPositionFilter_UserSelections_Component_Force_ReRender_Object }
                 proteinPositionFilter_UserSelections_StateObject={ this.props.proteinPositionFilter_UserSelections_StateObject }
                 proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ this.state.proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data }
-                // proteinPositionFilter_UserSelections_Proteins_Names_Lengths_Data={ undefined }
-                // proteinPositionFilter_UserSelections_Component_GetData_Callback={ this._getProteinData_Callback_BindThis }
+                proteinPositionFilter_UserSelections_Component_GetData_Callback={ undefined }
                 updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback={ this.props.updateMadeTo_proteinPositionFilter_UserSelections_StateObject_Callback }
             />
         )

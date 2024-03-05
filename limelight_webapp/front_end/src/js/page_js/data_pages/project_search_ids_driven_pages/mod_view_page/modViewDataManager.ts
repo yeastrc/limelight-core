@@ -262,36 +262,6 @@ export class ModViewDataManager {
     }
 
     /**
-     * Get a set of all unique protein ids found in the given searches
-     *
-     * @param projectSearchIds
-     */
-    async getAllProteinIdsInSearches(
-        {
-            projectSearchIds
-        } : {
-            projectSearchIds:Array<number>
-        }
-    ) : Promise<Set<number>> {
-
-        const proteinIds = new Set<number>();
-
-        for(const projectSearchId of projectSearchIds) {
-
-            // have to go get the data
-            if(!(this._proteinData.has(projectSearchId))) {
-                await this.loadProteinDataForProjectSearchId({projectSearchId});
-            }
-
-            for(const proteinId of this._proteinData.get(projectSearchId).keys()) {
-                proteinIds.add(proteinId);
-            }
-        }
-
-        return proteinIds;
-    }
-
-    /**
      * Get all the names for the given protein in the given array of searches
      *
      * @param projectSearchIds
