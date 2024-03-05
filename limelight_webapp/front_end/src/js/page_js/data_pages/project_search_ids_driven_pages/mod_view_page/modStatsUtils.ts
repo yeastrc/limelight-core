@@ -2,9 +2,14 @@ import jStat from 'jstat'
 import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 import {ModViewDataVizRenderer_MultiSearch} from "./modViewMainDataVizRender_MultiSearch";
 import {ModViewDataManager} from "./modViewDataManager";
-import {ModalOverlay} from 'page_js/data_pages/display_utilities/modalOverlay';
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    ModPage_View_Replicate_ZScore_Report_Overlay_Params_TableRow, open_ModPage_View_Replicate_ZScore_Report_Overlay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_View_Replicate_ZScore_Report_Overlay";
+import {
+    ModPage_View_ZScore_Report_Overlay_Params_TableRow, open_ModPage_View_ZScore_Report_Overlay
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_View_ZScore_Report_Overlay";
 
 export class ModStatsUtils {
 
@@ -108,20 +113,6 @@ export class ModStatsUtils {
         const quantTypeString = psmQuantType ? 'PSM' : 'Scan';
 
         const resultsArray = new Array<any>();
-
-        let output = "<div><table><tr>";
-        output += "<th style='text-align: left;'>rep1 (searches)</th>";
-        output += "<th style='text-align: left;'>rep2 (searches)</th>";
-        output += "<th style='text-align: left;'>mod mass</th>";
-        output += "<th style='text-align: left;'>" + quantTypeString + "count 1</th>";
-        output += "<th style='text-align: left;'>" + quantTypeString + "count 2</th>";
-        output += "<th style='text-align: left;'>z-score</th>";
-        output += "<th style='text-align: left;'>p-value</th>";
-        output += "<th style='text-align: left;'>filtered z-score</th>";
-        output += "<th style='text-align: left;'>filtered p-value</th>";
-        output += "<th style='text-align: left;'>rank</th>";
-        output += "</tr>";
-
 
         const modMap_PreCombine:Map<number,Map<number,any>> = await ModViewDataVizRenderer_MultiSearch.buildModMap({
             projectSearchIds,
@@ -256,43 +247,34 @@ export class ModStatsUtils {
             return a.pvalue - b.pvalue;
         });
 
-        // assemble the table rows
-        let rank = 1;
-        for(const ob of resultsArray) {
-            output += "<tr>";
-            output += "<td>" + ob.group0 + "</td>";
-            output += "<td>" + ob.group1 + "</td>";
-            output += "<td>" + ob.modMass + "</td>";
-            output += "<td>" + ob.count1 + "</td>";
-            output += "<td>" + ob.count2 + "</td>";
-            output += "<td>" + ob.zscore + "</td>";
-            output += "<td>" + ob.pvalue + "</td>";
-            output += "<td>" + ob.filteredZscore + "</td>";
-            output += "<td>" + ob.filteredPvalue + "</td>";
-            output += "<td>" + rank + "</td>";
-            output += "</tr>";
+        //  Create Table and open overlay
 
-            rank++;
-        }
+        const tableRows: Array<ModPage_View_Replicate_ZScore_Report_Overlay_Params_TableRow> = []
 
-        // close table and div
-        output += "</table></div>";
+        {
+            // assemble the table rows
+            let rank = 1;
+            for(const ob of resultsArray) { // resultsArray is type 'Array<any>'
+                const tableRow: ModPage_View_Replicate_ZScore_Report_Overlay_Params_TableRow = {
+                    group0: ob.group0,
+                    group1: ob.group1,
+                    modMass: ob.modMass,
+                    count1: ob.count1,
+                    count2: ob.count2,
+                    zscore: ob.zscore,
+                    pvalue: ob.pvalue,
+                    filteredZscore: ob.filteredZscore,
+                    filteredPvalue: ob.filteredPvalue,
+                    rank
+                }
 
-        // create and show the overlay
-        const overlay = new ModalOverlay(
-            {
-                $containerDiv: $('body'),
-                $contentDiv: $(output),
-                width:750,
-                height:500,
-                title:'Significant Mods Table',
-                hideBackgroundClick:true,
-                callbackOnClickedHide:null
+                tableRows.push( tableRow )
+
+                rank++;
             }
-        );
 
-        overlay.show();
-
+            open_ModPage_View_Replicate_ZScore_Report_Overlay({ tableRows, quantTypeString })
+        }
     }
 
 
@@ -457,43 +439,35 @@ export class ModStatsUtils {
             return a.pvalue - b.pvalue;
         });
 
-        // assemble the table rows
-        let rank = 1;
-        for(const ob of resultsArray) {
-            output += "<tr>";
-            output += "<td>" + ob.search1 + "</td>";
-            output += "<td>" + ob.search2 + "</td>";
-            output += "<td>" + ob.modMass + "</td>";
-            output += "<td>" + ob.count1 + "</td>";
-            output += "<td>" + ob.count2 + "</td>";
-            output += "<td>" + ob.zscore + "</td>";
-            output += "<td>" + ob.pvalue + "</td>";
-            output += "<td>" + ob.filteredZscore + "</td>";
-            output += "<td>" + ob.filteredPvalue + "</td>";
-            output += "<td>" + rank + "</td>";
-            output += "</tr>";
 
-            rank++;
-        }
+        //  Create Table and open overlay
 
-        // close table and div
-        output += "</table></div>";
+        const tableRows: Array<ModPage_View_ZScore_Report_Overlay_Params_TableRow> = []
 
-        // create and show the overlay
-        const overlay = new ModalOverlay(
-            {
-                $containerDiv: $('body'),
-                $contentDiv: $(output),
-                width:750,
-                height:500,
-                title:'Significant Mods Table',
-                hideBackgroundClick:true,
-                callbackOnClickedHide:null
+        {
+            // assemble the table rows
+            let rank = 1;
+            for(const ob of resultsArray) { // resultsArray is type 'Array<any>'
+                const tableRow: ModPage_View_ZScore_Report_Overlay_Params_TableRow = {
+                    search1: ob.search1,
+                    search2: ob.search2,
+                    modMass: ob.modMass,
+                    count1: ob.count1,
+                    count2: ob.count2,
+                    zscore: ob.zscore,
+                    pvalue: ob.pvalue,
+                    filteredZscore: ob.filteredZscore,
+                    filteredPvalue: ob.filteredPvalue,
+                    rank
+                }
+
+                tableRows.push( tableRow )
+
+                rank++;
             }
-        );
 
-        overlay.show();
-
+            open_ModPage_View_ZScore_Report_Overlay({ tableRows, quantTypeString })
+        }
     }
 
 
