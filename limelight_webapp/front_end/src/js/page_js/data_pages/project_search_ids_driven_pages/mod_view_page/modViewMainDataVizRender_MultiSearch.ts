@@ -1,7 +1,5 @@
 "use strict";
 
-import { Handlebars, _mod_table_template_bundle } from './mod_ViewPage_Import_Handlebars_AndTemplates_Generic'
-
 import * as d3 from "d3";
 import * as Drag from 'd3-drag';
 import {ModViewDataTableRenderer_MultiSearch} from 'page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataTableRenderer_MultiSearch';
@@ -87,8 +85,14 @@ export class ModViewDataVizRenderer_MultiSearch {
             }
         }
 
-        // add a div for the data table to the page
-        const $dataTableContainer = ModViewDataVizRenderer_MultiSearch.addDataTableContainerToPage();
+        // The div for the data table to the page
+        const dataTableContainer_DOM_Element = document.getElementById( "data-table-container" );
+        if ( ! dataTableContainer_DOM_Element ) {
+            const msg = "NO DOM element for id 'data-table-container'"
+            console.warn(msg)
+            throw Error(msg)
+        }
+
         $('div#data-table-container-container').show();
 
         // some defaults for the viz
@@ -209,7 +213,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData,
             modViewDataManager,
-            $tableContainer:$dataTableContainer,
+            dataTableContainer_DOM_Element:dataTableContainer_DOM_Element,
             colorScale,
         });
 
@@ -239,7 +243,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData,
             modViewDataManager,
-            $tableContainer:$dataTableContainer,
+            dataTableContainer_DOM_Element:dataTableContainer_DOM_Element,
             colorScale
         });
 
@@ -258,7 +262,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             sortedModMasses,
             modViewDataManager,
-            $tableContainer:$dataTableContainer,
+            dataTableContainer_DOM_Element:dataTableContainer_DOM_Element,
             vizOptionsData,
             colorScale
         });
@@ -414,58 +418,29 @@ export class ModViewDataVizRenderer_MultiSearch {
      * Remove existing and add new data viz container to page. Assumes jquery is loaded.
      */
     static addDataVizContainerToPage() {
-        const $mainContentDiv = $('#data_viz__outer_container');
 
-
-        // if an existing viz is here, blow it away
-
-        const $vizDiv = $mainContentDiv.find("div#data-viz-container");
-        if($vizDiv.length !== 0) {
-            $vizDiv.empty();
-        } else {
-            const template = _mod_table_template_bundle.dataVizContainer;
-            const html = template( {  } );
-            const $dataVizContainer = $( html );
-            $mainContentDiv.append( $dataVizContainer );
+        // blow existing viz away
+        const $vizDiv = $("div#data-viz-container");
+        if ( $vizDiv.length === 0 ) {
+            const msg = "NO DOM element for selector 'div#data-viz-container'"
+            console.warn(msg)
+            throw Error(msg)
         }
+        $vizDiv.empty();
     }
 
     static addEmptyDataVizContainerToPage() {
-        const $mainContentDiv = $('#data_viz__outer_container');
 
-        // if an existing viz is here, blow it away
-        let $vizDiv = $mainContentDiv.find("div#data-viz-container");
-        if($vizDiv.length !== 0) {
-            $vizDiv.empty();
-        } else {
-            const template = _mod_table_template_bundle.dataVizContainer;
-            const html = template( {  } );
-            const $dataVizContainer = $( html );
-            $mainContentDiv.append( $dataVizContainer );
+        // blow existing viz away
+        const $vizDiv = $("div#data-viz-container");
+        if ( $vizDiv.length === 0 ) {
+            const msg = "NO DOM element for selector 'div#data-viz-container'"
+            console.warn(msg)
+            throw Error(msg)
         }
+        $vizDiv.empty();
 
-        $vizDiv = $mainContentDiv.find("div#data-viz-container");
         $vizDiv.html('<span style=\"font-size:12pt;\">No modification data found for filters.</span>')
-    }
-
-    static addDataTableContainerToPage() {
-
-        // return the existing div it exists already
-        {
-            const $tmp_table_container = $("div#data-table-container");
-            if ( $tmp_table_container.length !== 0 ) {
-                return $tmp_table_container[0];
-            }
-        }
-
-        const $mainContentDiv = $('#data_table_container_container__outer_container');
-
-        const template = _mod_table_template_bundle.dataTableContainer;
-        const html = template( {  } );
-        const $dataTableContainer = $( html );
-        $mainContentDiv.append( $dataTableContainer );
-
-        return $dataTableContainer.children('div#data-table-container')[0];
     }
 
     static addColorScaleLegend(
@@ -584,7 +559,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData,
             modViewDataManager,
-            $tableContainer,
+            dataTableContainer_DOM_Element,
             colorScale
         } : {
             svg,
@@ -597,7 +572,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
-            $tableContainer,
+            dataTableContainer_DOM_Element,
             colorScale
         }) {
 
@@ -699,7 +674,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         modMap,
                         sortedModMasses,
                         modViewDataManager,
-                        $tableContainer,
+                        dataTableContainer_DOM_Element,
                         vizOptionsData,
                         colorScale
                     });
@@ -728,7 +703,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                         modMap,
                         sortedModMasses,
                         modViewDataManager,
-                        $tableContainer,
+                        dataTableContainer_DOM_Element,
                         vizOptionsData,
                         colorScale
                     } );
@@ -881,7 +856,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData,
             modViewDataManager,
-            $tableContainer,
+            dataTableContainer_DOM_Element,
             colorScale
         } : {
             svg,
@@ -895,7 +870,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             modMap,
             vizOptionsData: ModView_VizOptionsData,
             modViewDataManager : ModViewDataManager
-            $tableContainer,
+            dataTableContainer_DOM_Element,
             colorScale
         }) {
 
@@ -945,7 +920,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                     modMap,
                     sortedModMasses,
                     modViewDataManager,
-                    $tableContainer,
+                    dataTableContainer_DOM_Element,
                     vizOptionsData,
                     colorScale
                 });

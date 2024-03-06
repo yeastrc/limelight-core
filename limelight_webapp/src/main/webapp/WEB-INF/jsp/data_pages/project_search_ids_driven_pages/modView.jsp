@@ -61,14 +61,24 @@
     <div>
     	<%--  Main Data displayed --%>
     
-    	<%-- The Options form above the visualization --%>
+    	<%-- The Options form above the visualization.    NEVER call .empty() on it --%>
        <div id="data_viz_options__outer_container"></div>
        
        <%--  The visualization graphic --%>
-       <div id="data_viz__outer_container"></div>
-       
-       <%--  The table below the visualization graphic.  A React Root is attached to a child of this element --%>
-       <div id="data_table_container_container__outer_container"></div>
+	   <div id="data-viz-container"></div>
+
+		<%--Data Table below the graphic --%>
+       <div >
+	       <div id="data-table-container-container" style="display: none;"> <%--  id for show/hide.  NEVER call .empty() on it --%>
+	       
+			    <div style="margin-top:15px;margin-bottom:5px;">
+			        <span style="font-size:16pt;">Modification List</span>
+			        <span style="font-size:12pt;">(click row to view proteins)</span>
+			    </div>
+			    <%--  A React Root is attached to a child of this element.    NEVER call .empty() on it --%>
+			    <div id="data-table-container"></div>
+			</div>
+       </div>
   
     </div>
   

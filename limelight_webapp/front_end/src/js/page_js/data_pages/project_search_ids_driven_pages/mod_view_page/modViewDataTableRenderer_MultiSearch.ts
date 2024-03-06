@@ -52,7 +52,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			projectSearchIds,
 			modViewDataManager,
 			vizOptionsData,
-			$tableContainer,
+			dataTableContainer_DOM_Element,
 			colorScale
 		} : {
 			vizSelectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
@@ -62,7 +62,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 			projectSearchIds: Array<number>,
 			modViewDataManager : ModViewDataManager
 			vizOptionsData: ModView_VizOptionsData,
-			$tableContainer,
+			dataTableContainer_DOM_Element,
 			colorScale
 		}) {
 
@@ -114,7 +114,7 @@ export class ModViewDataTableRenderer_MultiSearch {
 
 		create_dataTable_Root_React({
 			tableObject : dataTable_RootTableObject,
-			containerDOMElement : $tableContainer,
+			containerDOMElement : dataTableContainer_DOM_Element,
 			renderCompleteCallbackFcn
 		});
 
