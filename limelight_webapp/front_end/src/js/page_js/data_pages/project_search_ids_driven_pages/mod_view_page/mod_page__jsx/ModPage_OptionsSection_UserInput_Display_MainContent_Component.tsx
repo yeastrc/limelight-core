@@ -91,10 +91,6 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
     constructor(props : ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props) {
         super(props);
 
-        //  TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State
-
-        console.warn( "TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State" )
-
         this.state = {
         };
     }
@@ -529,10 +525,6 @@ export class INTERNAL__ModPage_OptionsSection_UserInput_Display_ProteinPosition_
                     this._show_LoadingData_Message = true
                 }
             }
-
-            //  TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State
-
-            console.warn( "TODO  Need to populate this._proteinPositionFilter_UserSelections_StateObject from Page State" )
 
             this.state = {
                 force_RerenderObject: {}
