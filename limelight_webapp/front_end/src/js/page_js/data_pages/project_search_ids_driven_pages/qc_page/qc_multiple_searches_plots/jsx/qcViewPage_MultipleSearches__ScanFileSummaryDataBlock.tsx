@@ -235,22 +235,6 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
             for ( const projectSearchId of projectSearchIds ) {
 
-                let search__PSMS_precursor_retention_time__NotNull = false;
-                {
-                    const qcPage_Searches_Info_SingleSearch = this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId);
-                    if (!qcPage_Searches_Info_SingleSearch) {
-                        const msg = "this.props.qcViewPage_CommonData_To_All_MultipleSearches_Components_From_MainMultipleSearchesComponent.qcPage_Searches_Info_MultipleSearches.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if (qcPage_Searches_Info_SingleSearch.precursor_retention_time__NotNull) {
-                        //  PSM Retention Time data for search IS SET
-                        search__PSMS_precursor_retention_time__NotNull = true;
-                    }
-                }
-
-                if ( ! search__PSMS_precursor_retention_time__NotNull ) {
-
                     let scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId )
                     if ( ! scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId ) { // Will always be null.  Easy way to get correct type without setting type here
                         scanData_Single_SearchScanFileId_NO_Peaks_Data_Holder_Map_Key_SearchScanFileId = new Map()
@@ -314,7 +298,6 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
                     promises.push(promise)
-                }
             }
         }
 
