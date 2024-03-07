@@ -1,0 +1,18 @@
+
+
+Plotly_ChartingLibrary_Notes.txt
+
+
+HTML:
+
+    Plotly accepts what looks like HTML in a number of places for labels.
+    That text is converted to SVG by Plotly and only a small subset of HTML tags
+    are recognized and converted to equivalent SVG tags, like <b> <br>.
+    The tags '<script>' and '<style>' are NOT recognized so these strings passed to Plotly
+    are NOT a source of script injection for XSS attacks.
+
+    If the text is HTML escaped, the resulting SVG properly renders in the browser as the %lt; and &gt; are rendered as their characters.
+    The escaped HTML has also been tested in Inkscape, a vector based program.
+    The escaped HTML may not work properly in other programs but it is probably pretty easy to search and replace the offending characters.
+
+    The Javascript function 'limelight__Encode_TextString_Escaping_HTML' is mostly used to do the escaping of HTML.  It uses the library Handlebars.

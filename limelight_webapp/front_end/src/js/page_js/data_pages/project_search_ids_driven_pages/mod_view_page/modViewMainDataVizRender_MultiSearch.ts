@@ -16,7 +16,6 @@ import {
 import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_pages/limelight__Input_NumberOrString_ReturnNumber";
 import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
 
 export class ModViewDataVizRenderer_MultiSearch {
@@ -1284,6 +1283,10 @@ export class ModViewDataVizRenderer_MultiSearch {
         const tooltip_Left = mousePointer_pageX + tooltip_horizontal_Offset;
         const tooltip_Top = mousePointer_pageY + 20;
 
+        const searchDisplayString_NOT_SET = undefined
+
+        let searchDisplayString = searchDisplayString_NOT_SET
+
         tooltip
             .style("left", tooltip_Left + "px")
             .style("top", tooltip_Top + "px")
@@ -1319,8 +1322,9 @@ export class ModViewDataVizRenderer_MultiSearch {
                     }
                     displayString += " (" + searchId + ")";
 
-                    const searchName_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( displayString );
-                    txt += "<p>Search: " + searchName_HTMLEncoded + "</p>";
+                    searchDisplayString = displayString
+
+                    txt += "<p>Search: <span id='mod_viz_tooltip__search_display_string'></span></p>";
                 }
 
                 if(psmCount !== undefined) {
@@ -1334,6 +1338,18 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 return txt;
             });
+
+        if ( searchDisplayString !== searchDisplayString_NOT_SET ) {
+
+            const mod_viz_tooltip__search_display_string_DOM = document.getElementById( "mod_viz_tooltip__search_display_string" )
+            if ( ! mod_viz_tooltip__search_display_string_DOM ) {
+                const msg = "NO DOM element with id 'mod_viz_tooltip__search_display_string'"
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            mod_viz_tooltip__search_display_string_DOM.textContent = searchDisplayString  //  Assign this way so not interpret HTML tags in the search name
+        }
 
         //  If tooltip extends past right edge of viewport, position to left of mouse position
 
