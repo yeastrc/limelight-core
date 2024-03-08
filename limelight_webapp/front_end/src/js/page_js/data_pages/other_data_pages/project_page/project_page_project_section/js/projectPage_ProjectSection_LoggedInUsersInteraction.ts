@@ -17,7 +17,6 @@
 
 //  Import Handlebars templates
 
-// @ts-ignore
 import { _project_page__project_info_section_logged_in_users_interaction,_project_page__project_info_section_all_users_interaction_template  } from '../../projectPage__Common__ImportHandlebarsTemplates'
 
 

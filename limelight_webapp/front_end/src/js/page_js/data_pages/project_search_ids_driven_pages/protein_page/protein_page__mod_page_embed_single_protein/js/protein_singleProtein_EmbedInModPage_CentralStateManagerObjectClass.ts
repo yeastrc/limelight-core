@@ -101,13 +101,11 @@ export class Protein_singleProtein_EmbedInModPage_CentralStateManagerObjectClass
      */
     getDataForEncoding() {
         const dataForEncoding = {}
-        // @ts-ignore
         dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
         let have_a_ValueToStore = false
 
         if ( this._value.generatedPeptideContentsSelectedEncodedStateData !== undefined ) {
-            // @ts-ignore
             dataForEncoding[ _GENERATED_PEPTIDE_CONTENTS_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.generatedPeptideContentsSelectedEncodedStateData;
             have_a_ValueToStore = true;
         }

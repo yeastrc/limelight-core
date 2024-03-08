@@ -112,21 +112,16 @@ export class ProteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_Us
     getEncodedStateData() : any {
 
         const result = {}
-        // @ts-ignore
         result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
         if (  this._variableModifications_Selected ) {
-            // @ts-ignore
             result[ _ENCODED_DATA__VARIABLE_MODIFICATIONS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_TRUE;
         } else {
-            // @ts-ignore
             result[ _ENCODED_DATA__VARIABLE_MODIFICATIONS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
         }
         if (  this._openModifications_WithLocalization_Selected ) {
-            // @ts-ignore
             result[ _ENCODED_DATA__OPEN_MODIFICATIONS_WITH_LOCALIZATIONS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_TRUE;
         } else {
-            // @ts-ignore
             result[ _ENCODED_DATA__OPEN_MODIFICATIONS_WITH_LOCALIZATIONS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
         }
 

@@ -216,9 +216,7 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralSt
 
         const dataForEncoding = {}
 
-        // @ts-ignore
         dataForEncoding[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
-        // @ts-ignore
         dataForEncoding[ _ENCODED_DATA__PEPTIDE_UNIQUE_ENCODING_PROPERTY_NAME ] = this._optionSelected;
 
         return dataForEncoding;

@@ -200,7 +200,6 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           }
           if ( style_override_ReactKey !== 'display') { // NOT ALLOW: change to 'display' property
               //  Copy object property with string in style_override_ReactKey from style_override_React to styleContainer_TD
-              // @ts-ignore
               styleContainerDiv[style_override_ReactKey] = style_override_React[style_override_ReactKey];
           }
         }

@@ -116,13 +116,11 @@ export class Protein_singleProtein_EmbedInModPage_NewWindowContents_CentralState
      */
     getDataForEncoding() {
         const dataForEncoding = {}
-        // @ts-ignore
         dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
         let have_a_ValueToStore = false
 
         if ( this._value.for_Open_New_Window__modMass_Rounded_From_ModPage_ForInitialSelection !== undefined ) {
-            // @ts-ignore
             dataForEncoding[ FOR_OPEN_NEW_WINDOW__MODMASS_ROUNDED_FROM_MODPAGE_FOR_INITIAL_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] =
                 this._value.for_Open_New_Window__modMass_Rounded_From_ModPage_ForInitialSelection;
             have_a_ValueToStore = true;

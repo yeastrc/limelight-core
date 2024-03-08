@@ -114,12 +114,10 @@ class Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder implement
 
             //  Not in all browsers: window.requestIdleCallback
             //  window.requestIdleCallback not in Typescript declaration since is experimental
-            // @ts-ignore comment suppresses all errors in following line.
             if ( window.requestIdleCallback ) {
                 try {
                     //  Not in all browsers: window.requestIdleCallback
                     //  window.requestIdleCallback not in Typescript declaration since is experimental
-                    // @ts-ignore comment suppresses all errors in following line.
                     window.requestIdleCallback( cleanupCallback );
 
                 } catch ( e ) {

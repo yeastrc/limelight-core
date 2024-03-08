@@ -735,16 +735,14 @@ export class ScanPeaks_Like_GenericViewer_Root_Component extends React.Component
 
                     } else  {
                         let tickMark_Count_Main = 4;
-                        //  Copy here since 'ts-ignore'
+
                         const tickMarks_Start = y_Value_Min
                         const tickMarks_End = y_Value_Max
 
-                        // @ts-ignore
                         tickMark_Points_WithNumbers_from_d3_Array = d3.ticks(tickMarks_Start, tickMarks_End, tickMark_Count_Main)
                         if ( tickMark_Points_WithNumbers_from_d3_Array.length > tickMark_Count_Main + 1 ) {
                             //  Too many tick marks
                             tickMark_Count_Main = 3
-                            // @ts-ignore
                             tickMark_Points_WithNumbers_from_d3_Array = d3.ticks(tickMarks_Start, tickMarks_End, tickMark_Count_Main)
                         }
                     }
@@ -913,12 +911,10 @@ export class ScanPeaks_Like_GenericViewer_Root_Component extends React.Component
                         const tickMarks_Start = x_Value_Min
                         const tickMarks_End = x_Value_Max
 
-                        // @ts-ignore
                         tickMark_Points_WithNumbers_from_d3_Array = d3.ticks(tickMarks_Start, tickMarks_End, tickMark_Count_Main)
                         if ( tickMark_Points_WithNumbers_from_d3_Array.length > tickMark_Count_Main + 2 ) {
                             //  Too many tick marks
                             tickMark_Count_Main = 11
-                            // @ts-ignore
                             tickMark_Points_WithNumbers_from_d3_Array = d3.ticks(tickMarks_Start, tickMarks_End, tickMark_Count_Main)
                         }
                     }

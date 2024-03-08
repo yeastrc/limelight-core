@@ -204,7 +204,6 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
         const style_override_ReactKeys = Object.keys( style_override_React );
         for ( const style_override_ReactKey of style_override_ReactKeys ) {
           //  Copy object property with string in style_override_ReactKey from style_override_React to styleDisplayNameDiv
-          // @ts-ignore
           styleDisplayNameDiv[ style_override_ReactKey ] =  style_override_React[ style_override_ReactKey ];
         }
       }

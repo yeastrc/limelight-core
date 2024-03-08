@@ -112,12 +112,12 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         // set up our scales
         let xScale = d3.scaleBand()
-            // @ts-ignore
+            // @ts-ignore  -- Typescript types for '.domain(...)' is Array<string>
             .domain(sortedModMasses)
             .range([0,width]);
 
         let yScale = d3.scaleBand()
-            // @ts-ignore
+            // @ts-ignore  -- Typescript types for '.domain(...)' is Array<string>
             .domain(vizOptionsData.data.projectSearchIds)
             .range([0, height]);
 

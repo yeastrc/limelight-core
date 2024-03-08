@@ -333,18 +333,14 @@ export class ReporterIonMass_UserSelections_StateObject {
 	getEncodedStateData(): any {
 
 		const result = {}
-		// @ts-ignore
 		result[_ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		if (this._reporterIonsSelected && this._reporterIonsSelected.size !== 0) {
 
 			const {reporterIonsSelected_ANY, reporterIonsSelected_ALL, reporterIonsSelected_NOT} = this._getEncoded_SplitAnyAllNot();
 
-			// @ts-ignore
 			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ANY__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_ANY);
-			// @ts-ignore
 			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__ALL__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_ALL);
-			// @ts-ignore
 			result[_ENCODED_DATA__REPORTER_IONS_MASS_SELECTED__NOT__OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME] = this._getEncoded_SetToArrayAndSort(reporterIonsSelected_NOT);
 		}
 

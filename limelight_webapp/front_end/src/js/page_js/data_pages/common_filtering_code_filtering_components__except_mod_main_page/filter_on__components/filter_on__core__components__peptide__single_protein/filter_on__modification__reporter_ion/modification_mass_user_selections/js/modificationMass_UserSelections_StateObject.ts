@@ -522,14 +522,12 @@ export class ModificationMass_UserSelections_StateObject {
         //     This results in the array modificationsNonInteger probably not being sorted properly, which isn't a big deal
 
 		const result = {}
-		// @ts-ignore
-        result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
+		result[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODING_DATA__VERSION_NUMBER__CURRENT_VERSION;
 
 		{
 			const variableModificationsSelected_Encoded = this._variableModificationsSelected.getEncodedStateData();
 
 			if ( variableModificationsSelected_Encoded ) {
-                // @ts-ignore
 				result[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_OBJECT_PROPERTY_NAME ] = variableModificationsSelected_Encoded;
 			}
 		}
@@ -582,19 +580,15 @@ export class ModificationMass_UserSelections_StateObject {
                     const selectEntryEncoded = _encodeStaticModSelection( selectEntry )
 
                     const resultEntry = {}
-                    // @ts-ignore
                     resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_MASS_PROPERTY_NAME ] = massKey;
-                    // @ts-ignore
                     resultEntry[ _SUBPART__ENCODED_DATA__STATIC_MODIFICATION_SELECTION_TYPE_PROPERTY_NAME ] = selectEntryEncoded;
 
                     resultArray.push( resultEntry )
                 }
 
-                // @ts-ignore
                 staticModificationsSelectedForEncoding[ mapKey ] = resultArray;
             }
 
-            // @ts-ignore
             result[ _ENCODED_DATA__STATIC_MODIFICATION_MASS_SELECTED_OBJECT_AND_ARRAY_ENCODING_PROPERTY_NAME ] = staticModificationsSelectedForEncoding;
 
         }
@@ -628,11 +622,8 @@ export class ModificationMass_UserSelections_StateObject {
 				encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] ) {
 
 				const encodedStateData_For_VariableModificationsSelections = {}
-				// @ts-ignore
                 encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VERSION_NUMBER_ENCODING_PROPERTY_NAME ];
-                // @ts-ignore
 				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_INTEGERS_ENCODED_ENCODING_PROPERTY_NAME ];
-                // @ts-ignore
 				encodedStateData_For_VariableModificationsSelections[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ] = encodedStateData[ _ENCODED_DATA__VARIABLE_MODIFICATION_MASS_SELECTED_NON_INTEGERS_ARRAY_ENCODING_PROPERTY_NAME ];
 
 				this._variableModificationsSelected.set_encodedStateData({ encodedStateData : encodedStateData_For_VariableModificationsSelections })
