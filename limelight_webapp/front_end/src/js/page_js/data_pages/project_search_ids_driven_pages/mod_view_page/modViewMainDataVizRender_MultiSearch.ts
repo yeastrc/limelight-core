@@ -576,17 +576,15 @@ export class ModViewDataVizRenderer_MultiSearch {
         }) {
 
         svg.select('#rect-group')
-            .on( "mousedown", function() {
+            .on( "mousedown", function( event_Param ) {
 
                 // reset selected state object unless control is being held down
-                // @ts-ignore
-                if(!d3.event.ctrlKey && !d3.event.metaKey) {
+                if( ! event_Param.ctrlKey && ! event_Param.metaKey ) {
                     svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
                     selectedStateObject.data = {};
                 }
 
-                // @ts-ignore
-                const p = d3.mouse(this);
+                const p = d3.pointer( event_Param );
 
                 svg.select('#rect-group')
                     .append( "rect")
@@ -597,14 +595,13 @@ export class ModViewDataVizRenderer_MultiSearch {
                     .attr('height', '0')
 
             })
-            .on( "mousemove", function() {
+            .on( "mousemove", function( event_Param ) {
 
                 let s = svg.select('#rect-group').select( "rect.selection");
 
                 if( !s.empty()) {
 
-                    // @ts-ignore
-                    const p = d3.mouse(this)
+                    const p = d3.pointer( event_Param );
 
                     let rectParams = {
                             x       : s.attr( "x"),
@@ -638,7 +635,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
                 }
             })
-            .on( "mouseup", function() {
+            .on( "mouseup", function( event_Param ) {
 
                 let s = svg.select('#rect-group').select( "rect.selection");
 
@@ -651,8 +648,14 @@ export class ModViewDataVizRenderer_MultiSearch {
                         height  : s.attr( "height")
                     };
 
+                    const event_Param__CtrlKey = event_Param.ctrlKey
+                    const event_Param__MetaKey = event_Param.metaKey
+
                     // update final opacity for viz
-                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({ svg,
+                    ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({
+                        event_Param__CtrlKey,
+                        event_Param__MetaKey,
+                        svg,
                         sortedModMasses,
                         projectSearchIds,
                         xScale,
@@ -682,11 +685,11 @@ export class ModViewDataVizRenderer_MultiSearch {
             });
 
         d3.select("body")
-            .on("keydown", function() {
+            .on("keydown", function( event_Param ) {
 
                 // capture escape key press, reset viz
-                // @ts-ignore
-                if(d3.event.keyCode === 27) {
+                if( event_Param.keyCode === 27 ) {
+
                     selectedStateObject.data = {};
 
                     // update hash in URL to reflect user customization state
@@ -734,8 +737,11 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static updateSelectedRectIndicators(
         {
+            event_Param__CtrlKey, event_Param__MetaKey,
             svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject
         } : {
+            event_Param__CtrlKey: any
+            event_Param__MetaKey: any
             svg, sortedModMasses,
             projectSearchIds : Array<number>,
             xScale, yScale, rectParams,
@@ -743,8 +749,7 @@ export class ModViewDataVizRenderer_MultiSearch {
         }) {
 
         // reset selected state object unless control is being held down
-        // @ts-ignore
-        if(!d3.event || (!d3.event.ctrlKey && !d3.event.metaKey)) {
+        if( ( ! event_Param__CtrlKey ) && ( ! event_Param__MetaKey ) ) {
             svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
         }
 
@@ -886,24 +891,23 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('font-size', labelFontSize + 'px')
             .attr('font-family', 'sans-serif')
             .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], dataPageStateManager_DataFrom_Server, maxSearchLabelLength})))
-            .on("mousemove", function (d, i) {
-                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( d );
+            .on("mousemove", function ( event_Param, dataElement_Param ) {
+                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
                 ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId, tooltip, vizOptionsData, modMass : undefined, psmCount : undefined, dataPageStateManager_DataFrom_Server })
             })
-            .on("mouseout", function (d, i) {
+            .on("mouseout", function ( event_Param, dataElement_Param ) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             })
-            .on("click", function(d,i) {
+            .on("click", function( event_Param, dataElement_Param ) {
 
                 // reset selected state object unless control is being held down
-                // @ts-ignore
-                if(!d3.event.ctrlKey && !d3.event.metaKey) {
+                if( ! event_Param.ctrlKey && ! event_Param.metaKey ) {
                     svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
                     selectedStateObject.data = {};
                 }
 
-                selectedStateObject.data[d] = [...sortedModMasses];
+                selectedStateObject.data[ dataElement_Param ] = [...sortedModMasses];
 
                 // update hash in URL to reflect user customization state
                 vizOptionsData.stateManagementObject.updateState();
@@ -925,16 +929,23 @@ export class ModViewDataVizRenderer_MultiSearch {
                 });
             })
             .call(Drag.drag()
-                .on("drag", function(d, i) {
-                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDrag({ draggedObject: this });
+                .on("drag", function( event_Param, dataElement_Param ) {
+
+                    const event_Y_Value = event_Param.y
+
+                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDrag({ event_Y_Value, draggedObject: this });
                 })
-                .on("end", function(d, i ) {
+                .on("end", function( event_Param, dataElement_Param ) {
+
+                    const event_Y_Value = event_Param.y
+
                     ModViewDataVizRenderer_MultiSearch.handleSearchLabelDragEnd({
+                        event_Y_Value,
                         yScale,
                         dataPageStateManager_DataFrom_Server,
                         labelFontSize,
                         vizOptionsData,
-                        draggedProjectSearchId:d,
+                        draggedProjectSearchId: dataElement_Param,
                         draggedObject: this,
                         modViewDataManager
                     });
@@ -942,15 +953,20 @@ export class ModViewDataVizRenderer_MultiSearch {
     }
 
 
-    static handleSearchLabelDrag({ draggedObject }) {
+    static handleSearchLabelDrag(
+        {
+            event_Y_Value,  draggedObject
+        } : {
+            event_Y_Value: any
+            draggedObject: Element
+        }) {
 
-        d3.select(draggedObject)
-            // @ts-ignore
-            .attr("y", d3.event.y)
+        d3.select(draggedObject).attr("y", event_Y_Value )
     }
 
     static handleSearchLabelDragEnd(
         {
+            event_Y_Value,
             yScale,
             dataPageStateManager_DataFrom_Server,
             labelFontSize,
@@ -959,6 +975,7 @@ export class ModViewDataVizRenderer_MultiSearch {
             draggedObject,
             modViewDataManager
         } : {
+            event_Y_Value: any
             yScale,
             dataPageStateManager_DataFrom_Server : DataPageStateManager
             labelFontSize,
@@ -970,8 +987,7 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         const projectSearchIds = vizOptionsData.data.projectSearchIds;
 
-        // @ts-ignore
-        const newTextYStart = d3.event.y;
+        const newTextYStart = event_Y_Value;
 
         const insertionData = ModViewDataVizRenderer_MultiSearch.getInsertionPointForProjectSearchId({
             yScale,
@@ -1203,20 +1219,20 @@ export class ModViewDataVizRenderer_MultiSearch {
             .attr('height', yScale.bandwidth())
             .attr('stroke', 'none')
             .attr('fill', (d) => (colorScale(d.psmCount)))
-            .on("mousemove", function (d, i) {
+            .on("mousemove", function ( event_Param, dataElement_Param ) {
 
-                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( d.projectSearchId );
+                const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId );
 
                 ModViewDataVizRenderer_MultiSearch.showToolTip({
                     projectSearchId,
-                    modMass: d.modMass,
-                    psmCount: d.psmCount,
+                    modMass: dataElement_Param.modMass,
+                    psmCount: dataElement_Param.psmCount,
                     tooltip,
                     vizOptionsData,
                     dataPageStateManager_DataFrom_Server
                 })
             })
-            .on("mouseleave", function (d, i) {
+            .on("mouseleave", function ( event_Param, dataElement_Param ) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
                 ModViewDataVizRenderer_MultiSearch.hideToolTip({tooltip});
             });
