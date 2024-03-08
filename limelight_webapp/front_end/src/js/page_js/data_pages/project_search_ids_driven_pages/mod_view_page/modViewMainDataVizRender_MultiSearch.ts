@@ -928,28 +928,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                     colorScale
                 });
             })
-            .call(Drag.drag()
-                .on("drag", function( event_Param, dataElement_Param ) {
-
-                    const event_Y_Value = event_Param.y
-
-                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDrag({ event_Y_Value, draggedObject: this });
-                })
-                .on("end", function( event_Param, dataElement_Param ) {
-
-                    const event_Y_Value = event_Param.y
-
-                    ModViewDataVizRenderer_MultiSearch.handleSearchLabelDragEnd({
-                        event_Y_Value,
-                        yScale,
-                        dataPageStateManager_DataFrom_Server,
-                        labelFontSize,
-                        vizOptionsData,
-                        draggedProjectSearchId: dataElement_Param,
-                        draggedObject: this,
-                        modViewDataManager
-                    });
-                }));
     }
 
 

@@ -84,6 +84,8 @@ export class ModMultiSearch_DataVizPageStateManager {
     private _centralPageStateManager : CentralPageStateManager
     private _vizOptionsData: ModView_VizOptionsData
 
+    private _projectSearchIds_WereLoadedFromStateInURL = false
+
     constructor({centralPageStateManager, vizOptionsData} : {
 
         centralPageStateManager : CentralPageStateManager
@@ -114,6 +116,8 @@ export class ModMultiSearch_DataVizPageStateManager {
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.PROJECT_SEARCH_IDS)) {
                 this._vizOptionsData.data[_LOAD_STATE_KEYS.PROJECT_SEARCH_IDS] = encodedStateData[_SAVE_STATE_KEYS.PROJECT_SEARCH_IDS];
+
+                this._projectSearchIds_WereLoadedFromStateInURL = true
             }
 
             if(encodedDataKeys.includes(_SAVE_STATE_KEYS.PSM_QUANT_METHOD)) {
@@ -269,7 +273,8 @@ export class ModMultiSearch_DataVizPageStateManager {
         const dataForEncoding = {};
         dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
-        if(this._vizOptionsData.data[_LOAD_STATE_KEYS.PROJECT_SEARCH_IDS] !== undefined) {
+        //  ONLY store to URL IF were in URL when Page loaded, to preserve existing order stored in URL
+        if ( this._projectSearchIds_WereLoadedFromStateInURL && this._vizOptionsData.data[_LOAD_STATE_KEYS.PROJECT_SEARCH_IDS] !== undefined ) {
             dataForEncoding[_SAVE_STATE_KEYS.PROJECT_SEARCH_IDS] = this._vizOptionsData.data[_LOAD_STATE_KEYS.PROJECT_SEARCH_IDS];
         }
 
