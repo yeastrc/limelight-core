@@ -40,7 +40,6 @@ import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
-import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
 import {add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 
 
@@ -54,8 +53,6 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 	private _projectIdentifierFromURL : string
 
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
-
-	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
 
 	/**
 	 * 
@@ -91,17 +88,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 			new ProjectPage_ProjectSection_AllUsersInteraction( { 
 				projectIdentifierFromURL : this._projectIdentifierFromURL } );
 
-		this._projectPage_ProjectUserAccessAdminSection =
-			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
-
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
-
-		
-		window.setTimeout(() => {
-			//  Run in setTimeout to catch Errors
-			this._projectPage_ProjectUserAccessAdminSection.initialize();
-		}, 10 );
 
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({

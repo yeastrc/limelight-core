@@ -10,6 +10,9 @@
 
 import React from "react";
 import { ProjectPage_PublicAccessSection_ResearcherInteraction_ROOT_Component } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/researcher_aka_assistant_project_owner/projectPage_ShareDataSection_ResearcherInteraction_Root_Component";
+import {
+    ProjectPage__ResearchersSection__Researcher_Interaction_ROOT_Component
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/researchers__section/researcher_aka_assistant_project_owner/projectPage__ResearchersSection__Researcher_Interaction_Root_Component";
 
 /**
  *
@@ -67,6 +70,11 @@ class ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component extend
     render() {
         return (
             <>
+                <ProjectPage__ResearchersSection__Researcher_Interaction_ROOT_Component
+                    projectIdentifier={ this.props.projectIdentifier }
+                    projectIsLocked={ this.props.projectIsLocked }
+                />
+
                 <ProjectPage_PublicAccessSection_ResearcherInteraction_ROOT_Component
                     projectIdentifier={ this.props.projectIdentifier }
                     projectIsLocked={ this.props.projectIsLocked }

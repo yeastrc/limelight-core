@@ -44,7 +44,6 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './proje
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
-import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './project_page_project_section/js/projectPage_ProjectSection_ProjectOwnerInteraction';
 import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
@@ -74,8 +73,6 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	private _projectPage_ProjectSection_ProjectOwnerInteraction : ProjectPage_ProjectSection_ProjectOwnerInteraction
-
-	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
 
 	/**
 	 * 
@@ -128,10 +125,6 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 			projectPage_ProjectSection_ProjectOwnerInteraction : this._projectPage_ProjectSection_ProjectOwnerInteraction
 		} );
 
-		this._projectPage_ProjectUserAccessAdminSection =
-			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
-
 		this._projectPage_SearchesAdmin.initialize();
 
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize();
@@ -140,11 +133,6 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 
 		this._projectPage_ProjectSection_ProjectOwnerInteraction.initialize();
 		this._projectPage_ProjectSection_LoggedInUsersInteraction.initialize({ projectPage_ProjectSection_AllUsersInteraction : this._projectPage_ProjectSection_AllUsersInteraction });
-		
-		window.setTimeout(() => {
-			//  Run in setTimeout to catch Errors
-			this._projectPage_ProjectUserAccessAdminSection.initialize();
-		}, 10 );
 
 		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
 

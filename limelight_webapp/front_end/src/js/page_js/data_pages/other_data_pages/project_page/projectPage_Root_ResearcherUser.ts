@@ -44,7 +44,6 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './proje
 
 import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
 
-import { ProjectPage_ProjectUserAccessAdminSection } from './project_page_project_section/js/projectPage_ProjectUserAccessAdminSection';
 import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {
@@ -71,8 +70,6 @@ class ProjectViewPage_Root_ResearcherUser {
 	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
 
 	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
-
-	private _projectPage_ProjectUserAccessAdminSection : ProjectPage_ProjectUserAccessAdminSection
 
 	/**
 	 * 
@@ -124,10 +121,6 @@ class ProjectViewPage_Root_ResearcherUser {
 		this._projectPage_ProjectSection_AllUsersInteraction = 
 			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction : this._projectPage_ProjectSection_LoggedInUsersInteraction } );
 
-		this._projectPage_ProjectUserAccessAdminSection =
-			new ProjectPage_ProjectUserAccessAdminSection( { 
-				projectIdentifierFromURL : this._projectIdentifierFromURL, userIsProjectOwner, projectLocked } );
-
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize();
 
 		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
@@ -143,13 +136,6 @@ class ProjectViewPage_Root_ResearcherUser {
 				force_Rerender_EmptyObjectReference: params.force_Rerender_EmptyObjectReference
 			})
 		}
-
-
-		
-		window.setTimeout(() => {
-			//  Run in setTimeout to catch Errors
-			this._projectPage_ProjectUserAccessAdminSection.initialize();
-		}, 10 );
 
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
