@@ -107,6 +107,7 @@ interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_Props {
 interface ProjectPage_SearchEntry_UsedInMultipleSections_Component_State {
 
     showSearchDetails? : boolean
+    searchDetails_EverShown?: boolean
 
     show_UpdatingSearchName_Message?: boolean
 
@@ -145,8 +146,6 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
     private _checkboxChanged_BindThis = this._checkboxChanged.bind(this);
 
-    private _searchDetails_EverShown : boolean = false;
-
 
     /**
      *
@@ -163,12 +162,15 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             }
         }
 
+        let searchDetails_EverShown = false
+
         if ( showSearchDetails ) {
-            this._searchDetails_EverShown = true
+            searchDetails_EverShown = true
         }
 
         this.state = {
             showSearchDetails,
+            searchDetails_EverShown,
             expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props: props.expand_All_Folders__ShowSearchDetailsTo_Global_Force
         };
     }
@@ -193,6 +195,9 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                 newState.expand_All_Folders__ShowSearchDetailsTo_Global_Force__Prev_From_Props = props.expand_All_Folders__ShowSearchDetailsTo_Global_Force
                 newState.showSearchDetails = props.expand_All_Folders__ShowSearchDetailsTo_Global_Force.expand_All_Folders__ShowSearchDetails_Global_ForceToValue
+                if ( newState.showSearchDetails ) {
+                    newState.searchDetails_EverShown = true
+                }
             }
         }
 
@@ -215,8 +220,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
             /// If update and projectSearchId changed, remove Search Details from DOM and set showSearchDetails to false
 
-            this._searchDetails_EverShown = false
-            this.setState({ showSearchDetails: false })
+            this.setState({ showSearchDetails: false, searchDetails_EverShown: false })
         }
 
         if ( ( prevProps.searchDisplayListItem !== this.props.searchDisplayListItem )
@@ -237,9 +241,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
      */
     private _showSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
-        this._searchDetails_EverShown = true
-
-        this.setState({ showSearchDetails: true })
+        this.setState({ showSearchDetails: true, searchDetails_EverShown: true })
     }
 
     /**
@@ -269,7 +271,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
             const znothing = 0;
         }
 
-        this._searchDetails_EverShown = true
+        this.setState({ searchDetails_EverShown : true })
 
         this.setState( (state, props) : ProjectPage_SearchEntry_UsedInMultipleSections_Component_State => {
 
@@ -677,7 +679,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                         {/* Search Detail Container */}
 
-                        { this._searchDetails_EverShown ? (
+                        { this.state.searchDetails_EverShown ? (
                             <div style={ searchDetailsContainer_div_Style }>
                                 <SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component
                                     key={ this.props.searchDisplayListItem.projectSearchId }  // NOT re-use for different projectSearchId
