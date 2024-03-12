@@ -124,12 +124,6 @@ task createHandlebarsOutputDirs {
       dirToCreate = rootDir + "common"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
-  	  dirToCreate = rootDir + "project_page__project_info_section_all_users_interaction"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "project_page__project_info_section_logged_in_users_interaction"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-
   	  dirToCreate = rootDir + "project_list"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -174,53 +168,6 @@ task handlebarsPrecompile_common(type: NodeTask) {
    ]
 }
 
-//  Handlebars Precompile for input handlebars_templates/project_page__project_info_section_all_users_interaction
-
-task handlebarsPrecompile_project_page__project_info_section_all_users_interaction(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/project_page__project_info_section_all_users_interaction"
-  def precompile_Output_File = "handlebars_templates_precompiled/project_page__project_info_section_all_users_interaction/project_page__project_info_section_all_users_interaction_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-//  Handlebars Precompile for input handlebars_templates/project_page__project_info_section_logged_in_users_interaction
-
-task handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/project_page__project_info_section_logged_in_users_interaction"
-  def precompile_Output_File = "handlebars_templates_precompiled/project_page__project_info_section_logged_in_users_interaction/project_page__project_info_section_logged_in_users_interaction_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
 
 //  Handlebars Precompile for input handlebars_templates/project_list
 
@@ -446,8 +393,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      'createHandlebarsOutputDirs', 
      
      'handlebarsPrecompile_common',
-     'handlebarsPrecompile_project_page__project_info_section_all_users_interaction',
-     'handlebarsPrecompile_project_page__project_info_section_logged_in_users_interaction',
      'handlebarsPrecompile_project_list',
      'handlebarsPrecompile_user_account_create_account',
      'handlebarsPrecompile_user_account_login_forgot_password',

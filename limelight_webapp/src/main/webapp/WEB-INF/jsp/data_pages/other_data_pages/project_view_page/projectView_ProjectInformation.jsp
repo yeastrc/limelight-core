@@ -82,16 +82,6 @@
 		     <%--  Change to Title text always bolded --%>
 		  <c:set var="title_style_addition" value="font-weight: bold;"></c:set>
 		  
-		  <%--
-		  <c:choose>
-			<c:when test="${ webSessionAuthAccessLevel.publicAccessCodeReadAccessLevel }">
-			  <c:set var="title_style_addition" value="font-weight: bold;"></c:set>
-			</c:when>
-			<c:otherwise>
-			  <c:set var="title_style_addition" value=""></c:set>
-			</c:otherwise>
-		  </c:choose>
-		  --%>
 		  
 		  <span id="project_title_display" style="<c:out value="${title_style_addition}" ></c:out>"><c:out value="${ project.title }" ></c:out></span>
 	      <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
@@ -99,75 +89,34 @@
 					 class=" icon-small " title="Edit project title" >	    
 		  </c:if>
 		</div>
-		<%--  Moved to JS
-		  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }">
-
-			  <div id="change_project_title_container" style="display: none;  position: relative;" 
-			   class="second-level-text project-info-text" 
-			  >
-
-		  		<div class="error-message-container error_message_container_jq" id="error_message_project_title_required">
-		  			<div class="error-message-inner-container" style="width: 300px;">
-		  				<div class="error-message-close-x error_message_close_x_jq">X</div>
-			  			<div class="error-message-text" >Project Title cannot be empty</div>
-		  			</div>
-			  	</div>
-
-			  	<input style="width: 600px;" id="change_project_title_input" >
-			  	<input type="button" value="Save" id="change_project_title_save" >
-			  	<input type="button" value="Cancel" id="change_project_title_cancel" >
-			  </div>
-			  
-		  </c:if>
-		--%>
+		
 	  </div> <%-- End for Project Title: <div class="project-info-single-block" >  --%>
+
+
 	  
 	  <%--  Project Abstract --%>
-	  
-			
-	  <c:if test="${ not empty project.abstractText or webSessionAuthAccessLevel.projectOwnerAllowed }" >	
+
+		
+	  <c:if test="${ not empty project.abstractText }" >	
+		      
+		      <%--  Abstract contents from server to display and not make webservice call --%>
 		      
 		<script type="text/text" id="project_abstract_contents_from_server"
 		><html><body><c:out value="${ project.abstractText }"/></body><html></script>
 			  
+	  </c:if>
+
+
+			<%--  Put in DOM to indicate that user can edit abstract --%>
 		<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
-			<script type="text/text" id="project_abstract_can_edit">true</script>
+			<script type="text/text" id="project_abstract_user_can_edit"></script>
 		</c:if>
-		
-		    <div id="abstract_display_outer_container" class="project-info-single-block" style="display: none;">
-			  <div class="second-level-label project-info-label">Abstract:</div>
 
-			  <div id="abstract_display_container"  class="second-level-text project-info-text" >
-				<span id="project_abstract_display" >Loading Data...</span>
-				
-				<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
-				<%-- 
-				--%>
-					<input id="change_project_abstract_button" type="image" src="static/images/icon-edit.png"  value="Update"
-						 class=" icon-small " title="Edit project abstract" >
-				</c:if>
-			  </div>
-				<%--  Edit Abstract block --%>
-				<%--  Moved to JS
-			  <c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >
-				<div  id="change_project_abstract_container" class="second-level-text project-info-text" style="display: none; position: relative;">
-				  <div >
-					<textarea id="change_project_abstract_input" rows="10" cols="100" maxlength="5000"></textarea>
-				  </div>
-				  <div >
-					<input id="change_project_abstract_save" class="submit-button" type="button" value="Save">
-					<input id="change_project_abstract_cancel" class="submit-button" type="button" value="Cancel">
-				  </div>
-				</div>
-			  </c:if>
-			  --%>
-			</div>
-			
-	  </c:if> <%-- END: Project Abstract --%>
-
-	  <%--  Project Notes - Root div for Javascript to place notes in --%>
+	  <%--  Project Root div For React Implementation of Notes --%>
 	  
-	  <div id="project_notes_root_block"></div>
+	  <div id="project_information_root_block_react_implementation"></div>
+	  
+	  
 	  
 	  <div style="clear: both;"></div> <%-- Reset after float left in 'project_notes_root_block' --%>
 			  

@@ -108,36 +108,6 @@ export class ProjectPage__ResearchersSection__CommonInteraction_InvitedPeople_Li
     /**
      *
      */
-    private _hideBody_Clicked( event: React.MouseEvent<HTMLElement, MouseEvent> ) {
-        try {
-            event.stopPropagation()
-
-            this.setState( { force_ReRender_Object: {} } )
-
-            window.setTimeout( () => {
-                try {
-
-
-                    this.setState( { force_ReRender_Object: {} } )
-
-                } catch (e) {
-                    reportWebErrorToServer.reportErrorObjectToServer({
-                        errorException : e
-                    });
-                    throw e;
-                }
-            }, 50 );
-        } catch (e) {
-            reportWebErrorToServer.reportErrorObjectToServer({
-                errorException : e
-            });
-            throw e;
-        }
-    }
-
-    /**
-     *
-     */
     render() {
 
         if ( ! this._invitedPerson_ViaEmail_InProject_Array ) {

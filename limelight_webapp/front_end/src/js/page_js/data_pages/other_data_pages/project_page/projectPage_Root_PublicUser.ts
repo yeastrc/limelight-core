@@ -37,9 +37,10 @@ import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collap
 
 import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
-import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
-
 import {add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
+import {
+	add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage
+} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_AllUser_Root_Component";
 
 /**
  * 
@@ -49,8 +50,6 @@ class ProjectViewPage_Root_PublicUser {
 	private _initializeCalled = false;
 
 	private _projectIdentifierFromURL : string
-
-	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	/**
 	 * 
@@ -76,17 +75,12 @@ class ProjectViewPage_Root_PublicUser {
 		collapsableSection_StandardProcessing.initialize();
 
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
-		
-		this._projectPage_ProjectSection_AllUsersInteraction = 
-			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL } );
-
-		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
 
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();
 
-		this._projectPage_ProjectSection_AllUsersInteraction.getProjectData();
+		add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage({ propsValue: { projectIdentifier: this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot: undefined }})
 
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({

@@ -42,15 +42,18 @@ import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './proje
 
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from './projectPage_SavedViews_Section_LoggedInUsersInteraction';
 
-import { ProjectPage_ProjectSection_AllUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_AllUsersInteraction';
-
-import { ProjectPage_ProjectSection_LoggedInUsersInteraction } from './project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {
 	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
 	ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import { getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component } from "page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component";
+import {
+	add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage
+} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_AllUser_Root_Component";
+import {
+	ProjectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot
+} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot";
 
 
 
@@ -63,13 +66,9 @@ class ProjectViewPage_Root_ResearcherUser {
 
 	private _projectIdentifierFromURL : string
 
-	private _projectPage_ProjectSection_LoggedInUsersInteraction : ProjectPage_ProjectSection_LoggedInUsersInteraction
-
 	private _projectPage_ExperimentsSection_LoggedInUsersInteraction : ProjectPage_ExperimentsSection_LoggedInUsersInteraction
 
 	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
-
-	private _projectPage_ProjectSection_AllUsersInteraction : ProjectPage_ProjectSection_AllUsersInteraction
 
 	/**
 	 * 
@@ -103,8 +102,6 @@ class ProjectViewPage_Root_ResearcherUser {
 		
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
 
-		this._projectPage_ProjectSection_LoggedInUsersInteraction = new ProjectPage_ProjectSection_LoggedInUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectLocked : projectLocked });
-
 		{
 			const isResearcherUser = document.getElementById("project_page_user_level_researcher_found__just_above_bundle");
 
@@ -118,14 +115,7 @@ class ProjectViewPage_Root_ResearcherUser {
 
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction = new ProjectPage_SavedViews_Section_LoggedInUsersInteraction({ projectIdentifierFromURL : this._projectIdentifierFromURL });
 
-		this._projectPage_ProjectSection_AllUsersInteraction = 
-			new ProjectPage_ProjectSection_AllUsersInteraction( { projectIdentifierFromURL : this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction : this._projectPage_ProjectSection_LoggedInUsersInteraction } );
-
 		this._projectPage_SavedViews_Section_LoggedInUsersInteraction.initialize();
-
-		this._projectPage_ProjectSection_AllUsersInteraction.initialize();
-
-		this._projectPage_ProjectSection_LoggedInUsersInteraction.initialize({ projectPage_ProjectSection_AllUsersInteraction : this._projectPage_ProjectSection_AllUsersInteraction });
 
 		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
 
@@ -158,7 +148,9 @@ class ProjectViewPage_Root_ResearcherUser {
 		
 		mainPagesPopulateHeader.initialize();
 
-		this._projectPage_ProjectSection_AllUsersInteraction.getProjectData();
+		const projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot = new ProjectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot()
+
+		add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage({ propsValue: { projectIdentifier: this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot }})
 
 		this._initializeCalled = true;
 	};
