@@ -14,8 +14,6 @@
 
 ///////////////////////////////////////////
 
-//  Import Handlebars templates
-
 //  module import 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';

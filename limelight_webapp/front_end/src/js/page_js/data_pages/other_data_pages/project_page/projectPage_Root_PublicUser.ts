@@ -10,18 +10,6 @@
 
 
 /**
- * Always do in Root Javascript for page:
- */
-
-//  Required Import for Handlebars Support on this page
-import { Handlebars, _dummy_template_template_bundle } from './projectPage_Root_Handlebars_Include'
-
-const Handlebars_Local = Handlebars
-const _dummy_template_template_bundle_Local = _dummy_template_template_bundle
-
-
-
-/**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
  */
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';

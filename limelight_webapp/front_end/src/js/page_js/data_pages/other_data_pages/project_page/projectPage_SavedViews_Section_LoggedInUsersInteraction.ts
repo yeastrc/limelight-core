@@ -12,8 +12,6 @@
 
 //  module import 
 
-//  Import Handlebars templates
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
