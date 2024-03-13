@@ -192,17 +192,17 @@ public class Experiment_List_RestWebservice {
     				experiment.canClone = true;  // Any ProjectOwner, AssistantProjectOwner, or Admin can clone any Experiment in the Project
     			}
     			
-    			//  Comment out since only Project Owner can edit or delete published Experiments
+    			//   Uncommented  3/13/2024:   Comment out since only Project Owner can edit or delete published Experiments
     			
-//    			if ( userIdRestriction_EditDelete != null ) {
-//    				if ( dbResult.getCreatedByUserId().intValue() == userIdRestriction_EditDelete ) {
-//
-//    	    			//  If the user requests to change an experiment, we will provide a way to copy the experiment
-//    					
-//    					experiment.canEdit = true;
-//    					experiment.canDelete = true;
-//    				}
-//    			} else {
+    			if ( userIdRestriction_EditDelete != null ) {
+    				if ( dbResult.getCreatedByUserId().intValue() == userIdRestriction_EditDelete ) {
+
+    	    			//  If the user requests to change an experiment, we will provide a way to copy the experiment
+    					
+    					experiment.canEdit = true;
+    					experiment.canDelete = true;
+    				}
+    			} else {
     				
     				if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 	    				// Project owner so can delete any experiment
@@ -212,7 +212,7 @@ public class Experiment_List_RestWebservice {
 						experiment.canEdit = true;  // Changing Published Experiment is not supported
 						experiment.canDelete = true;
     				}
-//    			}
+    			}
     				
     			experiments.add( experiment );
     		}
