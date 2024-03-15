@@ -660,8 +660,6 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
 
     private _autoComplete__OnOpen( event: React.SyntheticEvent<Element, Event> ) {
         try {
-            console.warn( "_autoComplete__OnOpen called: event: ", event )
-
             this._open_Autocomplete_Prop = true
             this._loading_Autocomplete_Prop = true
 
@@ -703,9 +701,6 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
 
     private _autoComplete__OnClose( event: React.SyntheticEvent<Element, Event>, reason: AutocompleteCloseReason ) {
         try {
-            console.warn( "_autoComplete__OnClose called: event: ", event )
-            console.warn( "_autoComplete__OnClose called: reason: ", reason )
-
             this._open_Autocomplete_Prop = false
 
             this.setState( { force_ReRender_Object: {} } )
@@ -725,12 +720,9 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
         changeReason: AutocompleteChangeReason,
         changeDetails: AutocompleteChangeDetails<{ label: string, id: number }> ) {
 
-        try {
-            console.warn( "onChange called: event: ", event )
-            console.warn( "onChange called: selected_Value_Param (value): ", selected_Value_Param )
-            console.warn( "onChange called: changeReason: ", changeReason )
-            console.warn( "onChange called: changeDetails: ", changeDetails )
+        // 'selected_Value_Param' will be the selected entry even if there are multiple entries with the same 'label' value
 
+        try {
             if ( ! this._user_NotInProject_Entry_Array ) {
                 const msg = "in _changed_AutoComplete(...):  ( ! this._user_NotInProject_Entry_Array )"
                 console.warn( msg )
@@ -750,10 +742,6 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
                 const msg = "in _changed_AutoComplete(...):  ( ! selectedUser ). value.id NOT FOUND.  selected_Value_Param.id: " + selected_Value_Param.id
                 console.warn( msg )
                 throw Error( msg )
-            }
-            {
-                const msg = "in _changed_AutoComplete(...):  value.id FOUND.  selectedUser: "
-                console.warn( msg, selectedUser )
             }
 
             this.props.selected_ExistingUserId_Callback( { selectedUser } )
@@ -794,14 +782,11 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
                         this._changed_AutoComplete( event, value, changeReason, changeDetails )
                     } }
                 disableClearable={ true }
-
                 // disablePortal
-                // id="combo-box-demo"
                 loading={ this._loading_Autocomplete_Prop } // Display loading message
                 options={ this._options_AutoComplete_Prop }
                 sx={ { width: 500 } }
-                renderInput={ ( params ) => <TextField { ...params }
-                                                       label="Last Name"/> }
+                renderInput={ ( params ) => <TextField { ...params } label="Last Name"/> }
             />
         );
     }
