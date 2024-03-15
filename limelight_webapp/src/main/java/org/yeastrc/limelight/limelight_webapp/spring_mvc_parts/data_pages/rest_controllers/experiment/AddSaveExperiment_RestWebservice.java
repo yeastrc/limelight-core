@@ -244,14 +244,14 @@ public class AddSaveExperiment_RestWebservice {
     				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     			}
     			
-    			//  If current user is Researcher (), they can only change their own DRAFT experiments.
+    			//  If current user is Researcher (), they can only change their own experiments.
     			
 
         		if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 
         		} else if ( webSessionAuthAccessLevel.isAssistantProjectOwnerAllowed() ) {
         			
-            		//  If Researcher, can only delete experiments this user has created
+            		//  If Researcher, can only update experiments this user has created
     				
         			if ( userSession.getUserId() == null ) {
         				throw new LimelightInternalErrorException( "Should not occur here: userSession.getUserId() == null" );
@@ -271,20 +271,22 @@ public class AddSaveExperiment_RestWebservice {
     	    					+ ", userId_InSession: " + userId_InSession );
     	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     	    		}
-
-    	    		Boolean isDraft = experimentDAO.getIsDraftForId( experimentId );
-
-    	    		if ( isDraft == null ) {
-    	    			log.warn( "id not in database: " + experimentId );
-    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    	    		}
     	    		
-    	    		if ( ! isDraft.booleanValue() ) {
-    	    			log.warn( "User is researcher (assistant project owner) and this experiment is not a draft experiment. Experiment to update: " 
-    	    					+ experimentId
-    	    					+ ", userId_InSession: " + userId_InSession );
-    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-    	    		}
+    	    		//  Remove requirement that experiment be draft experiment
+
+//    	    		Boolean isDraft = experimentDAO.getIsDraftForId( experimentId );
+//
+//    	    		if ( isDraft == null ) {
+//    	    			log.warn( "id not in database: " + experimentId );
+//    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//    	    		}
+//    	    		
+//    	    		if ( ! isDraft.booleanValue() ) {
+//    	    			log.warn( "User is researcher (assistant project owner) and this experiment is not a draft experiment. Experiment to update: " 
+//    	    					+ experimentId
+//    	    					+ ", userId_InSession: " + userId_InSession );
+//    	    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//    	    		}
     			}
         		
     		}
