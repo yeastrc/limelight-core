@@ -90,21 +90,11 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
 
     private _searchDetails_ForProjectSearchId__Show__converterProgram_Pgm_Arguments = false
 
-
-    //  force_Rerender_EmptyObjectReference_EmptyObjectReference:  Bypass all shouldComponentUpdate and render current value
-    private _force_Rerender_EmptyObjectReference__LOCAL_COPY: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
-
-    //  force_ReloadFromServer_EmptyObjectReference:  Reload all data from server and display that data.  Display "Loading" message.
-    private _force_ReloadFromServer_EmptyObjectReference__LOCAL_COPY: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
-
     /**
      *
      */
     constructor( props: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component_Props ) {
         super( props );
-
-        this._force_Rerender_EmptyObjectReference__LOCAL_COPY = props.force_Rerender_EmptyObjectReference
-        this._force_ReloadFromServer_EmptyObjectReference__LOCAL_COPY = props.force_ReloadFromServer_EmptyObjectReference
 
         if ( props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject ) {
 
@@ -148,7 +138,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
     componentDidUpdate( prevProps: Readonly<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component_Props>, prevState: Readonly<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Component_State>, snapshot?: any ) {
         try {
             if ( prevProps.projectSearchId !== this.props.projectSearchId
-                || this._force_ReloadFromServer_EmptyObjectReference__LOCAL_COPY !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
+                || prevProps.force_ReloadFromServer_EmptyObjectReference !== this.props.force_ReloadFromServer_EmptyObjectReference ) {
 
                 this._load_Data_FromServer_For_ProjectSearchId( this.props.projectSearchId )
 
