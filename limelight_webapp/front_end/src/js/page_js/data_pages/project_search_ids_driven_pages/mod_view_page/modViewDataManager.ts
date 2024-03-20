@@ -316,6 +316,42 @@ export class ModViewDataManager {
         return names;
     }
 
+    /**
+     * Get all descriptions for the given protein in the given search
+     *
+     * @param proteinId
+     * @param projectSearchId
+     *
+     * @returns empty Set if no Descriptions found
+     */
+    async getDescriptionsForProtein(
+        {
+            proteinId,
+            projectSearchId
+        } : {
+            proteinId:number,
+            projectSearchId:number
+        }): Promise<Set<string>> {
+
+        // have to go get the data
+        if(!(this._proteinData.has(projectSearchId))) {
+            await this.loadProteinDataForProjectSearchId({projectSearchId});
+        }
+
+        const descriptions_Result = new Set<string>();
+
+        for(const descriptions_Entry of this._proteinData.get(projectSearchId).get(proteinId).annotations.values()) {
+            if (descriptions_Entry === undefined || descriptions_Entry === null || descriptions_Entry.size < 1) {
+                continue
+            }
+            for (const description of descriptions_Entry) {
+                descriptions_Result.add( description );
+            }
+        }
+
+        return descriptions_Result;
+    }
+
     async getProteinNamesAndDescriptions(
         {
             proteinId,

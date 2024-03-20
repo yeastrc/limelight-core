@@ -71,7 +71,7 @@ export class ModProteinList_SubTableGenerator {
             dataTable_DataRowEntries: dataTableRows
         });
 
-        const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: false});
+        const tableOptions = new DataTable_TableOptions({ enable_Pagination_Download_Search: false, enable_Download: true });
 
         const dataTable_RootTableObject = new DataTable_RootTableObject({
             dataTableId : dataTableId_ThisTable,
@@ -108,7 +108,18 @@ export class ModProteinList_SubTableGenerator {
             });
             dataTableColumns.push( dataTableColumn );
 
-            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            const displayName_Download = "Protein Name";
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName_Download });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
+        {
+            //  Download ONLY  --  Protein Description
+
+            const displayName_Download = "Protein Description";
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName_Download });
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
@@ -238,6 +249,15 @@ export class ModProteinList_SubTableGenerator {
 
                 const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
                 dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+
+            {  //  Download ONLY  --   Protein Description
+
+                const valueDisplay = proteinData.proteinDescription;
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+
             }
 
             // add modded positions
@@ -441,6 +461,7 @@ export class ModProteinList_SubTableGenerator {
         const unlocalizedRangesByProteinId:Map<number, Map<string, UnlocalizedStartEnd>> = new Map();
 
         const namesForProtein:Map<number, Set<string>> = new Map();
+        const descriptionsForProtein:Map<number, Set<string>> = new Map();
 
         // populate the data structures above
         await ModProteinList_SubTableGenerator.rollupProteinDataForAllProjectSearchIds({
@@ -452,6 +473,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchIds,
             modMass,
             namesForProtein,
+            descriptionsForProtein,
             vizOptionsData
         });
 
@@ -462,6 +484,7 @@ export class ModProteinList_SubTableGenerator {
             const proteinData = new ProteinDataForModMass({
                 proteinId:proteinId,
                 proteinName:Array.from(namesForProtein.get(proteinId)).sort().join(', '),
+                proteinDescription: Array.from(descriptionsForProtein.get(proteinId)).sort().join(', '),
                 modifiedResidues:proteinResidueMap.get(proteinId),
                 modifiedPositions:proteinPositionMap.get(proteinId),
                 psmCounts:proteinPSMCountsByProjectSearchId.get(proteinId),
@@ -484,6 +507,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchIds,
             modMass,
             namesForProtein,
+            descriptionsForProtein,
             vizOptionsData
         } : {
             proteinPositionMap:Map<number, Set<number>>,
@@ -494,6 +518,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchIds : Array<number>,
             modMass:number,
             namesForProtein:Map<number, Set<string>>,
+            descriptionsForProtein:Map<number, Set<string>>,
             vizOptionsData : ModView_VizOptionsData
         }
     ) : Promise<void> {
@@ -570,6 +595,7 @@ export class ModProteinList_SubTableGenerator {
                 projectSearchId,
                 reportedPeptidePSMMap,
                 namesForProtein,
+                descriptionsForProtein,
                 modViewDataManager
             });
 
@@ -587,6 +613,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchId,
             reportedPeptidePSMMap,
             namesForProtein,
+            descriptionsForProtein,
             modViewDataManager,
         } : {
             proteinPositionMap:Map<number, Set<number>>,
@@ -597,6 +624,7 @@ export class ModProteinList_SubTableGenerator {
             projectSearchId:number,
             reportedPeptidePSMMap:Map<number, Set<any>>,
             namesForProtein:Map<number, Set<string>>,
+            descriptionsForProtein:Map<number, Set<string>>,
             modViewDataManager:ModViewDataManager,
         }
     ) : Promise<void> {
@@ -635,6 +663,18 @@ export class ModProteinList_SubTableGenerator {
             }
             for(const name of foundNamesForProtein) {
                 namesForProtein.get(proteinId).add(name);
+            }
+
+            // add in the descriptions for this protein
+            const foundDescriptionsForProtein:Set<string> = await modViewDataManager.getDescriptionsForProtein({
+                proteinId,
+                projectSearchId
+            });
+            if(!(descriptionsForProtein.has(proteinId))) {
+                descriptionsForProtein.set(proteinId, new Set());
+            }
+            for(const description of foundDescriptionsForProtein) {
+                descriptionsForProtein.get(proteinId).add(description);
             }
 
             // add the # of psms for the found for each reported peptide to the psm count for this protein for this mod
@@ -759,6 +799,7 @@ class ProteinDataForModMass {
 
     private readonly _proteinId:number;
     private readonly _proteinName:string;
+    private readonly _proteinDescription:string;
     private readonly _modifiedResidues:Set<string>;
     private readonly _modifiedPositions:Set<number>;
     private readonly _psmCounts:Map<number, number>;
@@ -769,6 +810,7 @@ class ProteinDataForModMass {
         {
             proteinId,
             proteinName,
+            proteinDescription,
             modifiedResidues,
             modifiedPositions,
             psmCounts,
@@ -776,6 +818,7 @@ class ProteinDataForModMass {
         } : {
             proteinId:number,
             proteinName:string,
+            proteinDescription:string,
             modifiedResidues:Set<string>,
             modifiedPositions:Set<number>,
             psmCounts:Map<number,number>,
@@ -784,6 +827,7 @@ class ProteinDataForModMass {
     ) {
         this._proteinId = proteinId;
         this._proteinName = proteinName;
+        this._proteinDescription = proteinDescription;
         this._modifiedResidues = modifiedResidues;
         this._modifiedPositions = modifiedPositions;
         this._psmCounts = psmCounts;
@@ -800,6 +844,10 @@ class ProteinDataForModMass {
 
     get proteinName(): string {
         return this._proteinName;
+    }
+
+    get proteinDescription(): string {
+        return this._proteinDescription;
     }
 
     get modifiedResidues(): Set<string> {

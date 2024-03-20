@@ -79,6 +79,7 @@ class DataTable_RootTableObject {
 class DataTable_TableOptions {
 
     enable_Pagination_Download_Search : boolean
+    enable_Download : boolean
     dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow: boolean // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 
     private _DO_NOT_CALL__ForceUse_ClassConstructor() {} // added to prevent construct object without calling constructor
@@ -90,6 +91,7 @@ class DataTable_TableOptions {
     constructor( params : DataTable_TableOptions_ContructorParams) {
         if ( params ) {
             this.enable_Pagination_Download_Search = params.enable_Pagination_Download_Search;
+            this.enable_Download = params.enable_Download
             this.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow = params.dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow
         }
     }
@@ -100,6 +102,7 @@ class DataTable_TableOptions {
  */
 interface DataTable_TableOptions_ContructorParams {
     enable_Pagination_Download_Search : boolean
+    enable_Download?: boolean
     dataRow_Get_RowChildContent_At_RowMountTime_SKIP_When_SingleRow?: boolean // SKIP The Default when Single Row: Get the Child Row Mount Data at Row Mount Time
 }
 

@@ -1043,43 +1043,47 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
             <React.Fragment>
                 <div className={ divCssClass }  style={ { position: "relative" }} data-react-component="DataTable_TableRoot">
 
-                    { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ? (
+                    { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search || this.props.tableObject.tableOptions.enable_Download ) ? (
 
                         // Only Display when Pagination, Download, Search enabled
 
                         <div>
                             <div style={ { marginBottom: 5 } }>
 
-                                <span style={ { fontWeight: "bold" } }>Currently Showing:&nbsp;</span>
-
-                                {(showingStart) ? (
-                                    (showingEnd === 1) ? (
-                                        <span>1</span>
-                                    ) : (
-                                        <span>{showingStart.toLocaleString()}-{showingEnd.toLocaleString()}</span>
-                                    )
-                                ) : (
-                                    <span>0</span>
-                                )}
-                                <span>&nbsp;of&nbsp;</span>
-                                <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing().toLocaleString() }</span>
-
-                                { ( this.state.searchInputValue_CurrentValue ) ? (
-                                    <span >
-                                        &nbsp;(filtered)
-                                    </span>
-                                ) : null }
-
-                                { ( this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== undefined
-                                &&  this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== null ) ? (
+                                { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ? (
                                     <>
-                                        <span >
-                                            &nbsp;{ this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y }
-                                        </span>
-                                    </>
-                                ) : null }
+                                        <span style={ { fontWeight: "bold" } }>Currently Showing:&nbsp;</span>
 
-                                <span className=" fake-link " style={ { marginLeft: 15 } }
+                                        {(showingStart) ? (
+                                            (showingEnd === 1) ? (
+                                                <span>1</span>
+                                            ) : (
+                                                <span>{showingStart.toLocaleString()}-{showingEnd.toLocaleString()}</span>
+                                            )
+                                        ) : (
+                                            <span>0</span>
+                                        )}
+                                        <span>&nbsp;of&nbsp;</span>
+                                        <span>{ this.state.tableDataObject_INTERNAL.getTotalCount_ForCurrentlyShowing().toLocaleString() }</span>
+
+                                        { ( this.state.searchInputValue_CurrentValue ) ? (
+                                            <span >
+                                            &nbsp;(filtered)
+                                        </span>
+                                        ) : null }
+
+                                        { ( this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== undefined
+                                            &&  this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y !== null ) ? (
+                                            <>
+                                            <span >
+                                                &nbsp;{ this.props.tableObject.tableDataObject.text_Optional_After_CurrentlyShowing_X_Of_Y }
+                                            </span>
+                                            </>
+                                        ) : null }
+                                    </>
+                                ): null }
+
+                                <span className=" fake-link " style={ { marginLeft: ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ?  15 : 0 } }
                                       onClick={ this._downloadTableContents_All_Clicked_BindThis }
                                 >
                                     Download All Table Data
@@ -1094,40 +1098,46 @@ export class DataTable_TableRoot extends React.Component< DataTable_TableRoot_Pr
                                 ) : null }
                             </div>
 
-                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value && this.state.tableDataObject_INTERNAL.getPageCount() > 0 ) ? (
+                            { ( this.props.tableObject.tableOptions.enable_Pagination_Download_Search ) ? (
 
-                                // Show this line if:  Have more items than for 1 page.  Page Count is > 0 (Page Count is Zero if user search finds NO rows)
+                                <>
+                                    { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() >= _showItemsPerPage_SelectValue_Minimum_Value && this.state.tableDataObject_INTERNAL.getPageCount() > 0 ) ? (
 
-                                <div style={ { marginBottom: 5 } }>
+                                        // Show this line if:  Have more items than for 1 page.  Page Count is > 0 (Page Count is Zero if user search finds NO rows)
 
-                                    {/*  Select Page to Display  */}
-                                    <DataTable_TableRoot_React_Table_PageNavigation_Component
-                                        pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
-                                        pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
-                                        tableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
-                                        pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
-                                    />
+                                        <div style={ { marginBottom: 5 } }>
 
-                                    {/*  Select number of rows per page */}
-                                    <DataTable_TableRoot__ShowItemsPerPage_Select_Component
-                                        showItemsPerPage_SelectValue_Prop={ this.state.showItemsPerPage_SelectValue }
-                                        showItemsPerPage_SelectValue_Options={ _showItemsPerPage_SelectValue_OPTIONS }
-                                        showItemsPerPage_NewValueEntered_Callback={ this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis }
-                                    />
+                                            {/*  Select Page to Display  */}
+                                            <DataTable_TableRoot_React_Table_PageNavigation_Component
+                                                pageNavigation_SelectValue_Prop={ this.state.currentPage_CurrentValue }
+                                                pageNavigation_TotalPagesCount={ this.state.tableDataObject_INTERNAL.getPageCount() }
+                                                tableDataObject_INTERNAL={ this.state.tableDataObject_INTERNAL }
+                                                pageNavigation_NewValueEntered_Callback={ this._currentPage_CurrentValue_Update_Callback_BindThis }
+                                            />
 
-                                </div>
+                                            {/*  Select number of rows per page */}
+                                            <DataTable_TableRoot__ShowItemsPerPage_Select_Component
+                                                showItemsPerPage_SelectValue_Prop={ this.state.showItemsPerPage_SelectValue }
+                                                showItemsPerPage_SelectValue_Options={ _showItemsPerPage_SelectValue_OPTIONS }
+                                                showItemsPerPage_NewValueEntered_Callback={ this._showItemsPerPage_Select_Component__InputField_NewValueEntered_Callback_BindThis }
+                                            />
+
+                                        </div>
+                                    ) : null }
+
+                                    { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() > 1 || this.state.searchInputValue_CurrentValue ) ? (
+
+                                        <div style={ { marginBottom: 5 } }>
+                                            <DataTable_TableRoot__FindAllRows_SearchInput_Component
+                                                searchInputValue_Prop={ this.state.searchInputValue_CurrentValue }
+                                                searchInputField_NewValueEntered_Callback={ this._searchInputField_NewValueEntered_Callback_BindThis }
+                                            />
+                                        </div>
+                                    ) : null }
+
+                                </>
                             ) : null }
-
-                            { ( this.state.tableDataObject_INTERNAL.getTotalCount_ForAll() > 1 || this.state.searchInputValue_CurrentValue ) ? (
-
-                                <div style={ { marginBottom: 5 } }>
-                                    <DataTable_TableRoot__FindAllRows_SearchInput_Component
-                                        searchInputValue_Prop={ this.state.searchInputValue_CurrentValue }
-                                        searchInputField_NewValueEntered_Callback={ this._searchInputField_NewValueEntered_Callback_BindThis }
-                                    />
-                                </div>
-                            ) : null }
-
+                            
                         </div>
 
                     ) : null }
