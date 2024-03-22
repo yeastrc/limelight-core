@@ -87,9 +87,6 @@
 
     div.data-table-container-react {
 
-        display: inline-block;  //  Added so background color and border of Group rows does not extend to right past width of table.
-                                //     Added here since adding to individual rows was causing more than one data row to be on the same visual row
-
         //  These are used when add icon to left of row for show/hide child table
 
         $data-table-container--div-padding-for-room-for-child-table-show-hide-icon : 31px;
@@ -249,6 +246,9 @@
             //  'div.data-table-data-rows-inner-containing-div-container-div    Contains  'div.data-table-data-rows-inner-containing-div'
 
             div.data-table-data-rows-inner-containing-div-container-div {
+
+              display: inline-block;  //  Added so background color and border of Group rows does not extend to right past width of table.
+                                      //    Ok to add here since in containing <div> for each row
 
               &:hover {
                 outline-color: $site-color-very-dark;
