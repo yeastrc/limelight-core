@@ -971,18 +971,21 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 scanNumbersCount_For_FilteredPSMs_Percentage_JSX.push( entryJSX );
             }
 
-            const gridTemplateColumns_String = "max-content ".repeat( dataPerSearchArray.length + 1 );
+            const gridTemplateColumns_String = " repeat( " + ( dataPerSearchArray.length + 1 ) + ", max-content ) ";
 
             dataDisplay = (
-                <div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>
-                    {/* Two column Grid */}
-                    { perSearch_HeaderRow }
-                    { perLevel_TotalIonCurrent_DisplayEntries }
-                    { perLevel_Count_DisplayEntries }
-                    <div  style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
-                        Scans with a <br/>PSM meeting filters
+                <div style={ { display: "inline-block", paddingRight: 30 } }>  {/*  Style to add some padding to right of grid  */}
+
+                    <div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>
+                        {/* Two column Grid */}
+                        { perSearch_HeaderRow }
+                        { perLevel_TotalIonCurrent_DisplayEntries }
+                        { perLevel_Count_DisplayEntries }
+                        <div  style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
+                            Scans with a <br/>PSM meeting filters
+                        </div>
+                        { scanNumbersCount_For_FilteredPSMs_Percentage_JSX }
                     </div>
-                    { scanNumbersCount_For_FilteredPSMs_Percentage_JSX }
                 </div>
             );
 
