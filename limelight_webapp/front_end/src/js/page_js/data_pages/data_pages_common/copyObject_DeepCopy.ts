@@ -22,13 +22,22 @@ export const copyObject_DeepCopy_Limelight = function( objectToCopy: any ) {
 		throw Error("copyObject_DeepCopy_Limelight: invalid parameter, is undefined or null");
 	}
 
-	//  OLD CODE:  'jQuery.extend'  Copies the sub objects putting them in the same classes as the original objects
 
-	// const cloneUsingJQuery =  jQuery.extend( true /* [deep ] */, {}, objectToCopy )
+	try {
+		//  NEW Option for Deep Clone.  Added 2022:   'window.structuredClone'  Copies the sub objects putting them in generic  Object
 
-	//  NEW Option for Deep Clone.  Added 2022:   'window.structuredClone'  Copies the sub objects putting them in generic  Object
+		const cloneUsing_StructuredClone = window.structuredClone( objectToCopy )
 
-	const cloneUsing_StructuredClone = window.structuredClone( objectToCopy )
+		return cloneUsing_StructuredClone
 
-	return cloneUsing_StructuredClone
+	} catch ( e ) {
+
+		//  Remove when time to remove jQuery from main data pages
+
+		//  OLD CODE:  'jQuery.extend'  Copies the sub objects putting them in the same classes as the original objects
+
+		const cloneUsingJQuery =  jQuery.extend( true /* [deep ] */, {}, objectToCopy )
+
+		return cloneUsingJQuery
+	}
 };
