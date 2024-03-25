@@ -163,7 +163,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_Plo
 
             window.setTimeout( () => {
                 try {
-                    this._populateChart();
+                    this._loadData_Before_PopulateChart();
 
                     if ( this.props.isInSingleChartOverlay ) {
                         this._resizeWindow_Handler_Attach();
@@ -257,7 +257,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_Plo
                         return; // EARLY RETURN
                     }
 
-                    this._populateChart();
+                    this._loadData_Before_PopulateChart();
 
                 } catch( e ) {
                     console.warn("Exception caught in componentDidMount inside setTimeout");
@@ -299,7 +299,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_Plo
      */
     private _resizeWindow_Handler() : void {
         try {
-            this._populateChart()
+            this._loadData_Before_PopulateChart()
 
         } catch( e ) {
             console.log("Exception caught in _resizeWindow_Handler()");
@@ -312,7 +312,7 @@ export class QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_Plo
     /**
      *
      */
-    private async _populateChart() {
+    private _loadData_Before_PopulateChart() {
 
         if ( ! this._componentMounted ) {
             //  Component no longer mounted so exit
@@ -325,26 +325,67 @@ export class QcViewPage_MultipleSearches__SummaryCounts_Distinct_Scan_Counts_Plo
 
 
         //  Get Data
-        const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId: Map<number,CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
+        const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder> = new Map()
 
-        for (const projectSearchId of projectSearchIds) {
+        const promises: Array<Promise<void>> = []
+
+        for ( const projectSearchId of projectSearchIds ) {
 
             const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
+                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
             if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-                throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId)
+                throw Error( "commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned nothing for projectSearchId:" + projectSearchId )
             }
             {
-                const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result =
-                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().
-                    get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
+                const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch();
 
-                const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder;
-
-                psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.set( projectSearchId, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder );
+                if ( get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
+                    psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.set( projectSearchId, get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.data.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder );
+                } else if ( get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise ) {
+                    const promise = new Promise<void>( (resolve, reject) => { try {
+                        get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch(reason => reject(reason))
+                        get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then(value => { try {
+                            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId.set( projectSearchId, value.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder );
+                            resolve()
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise)
+                } else {
+                    throw Error("get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result no data or promise" )
+                }
             }
         }
+
+        if ( promises.length === 0 ) {
+
+            this._populateChart({ psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId })
+
+            return;
+        }
+
+        const promisesAll = Promise.all( promises )
+        promisesAll.catch(reason => {})
+        promisesAll.then(novalue => { try {
+
+            this._populateChart({ psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId })
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+    }
+
+    /**
+     *
+     */
+    private _populateChart(
+        {
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId
+        } : {
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Map_Key_ProjectSearchId: Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder>
+        }
+    ) {
+
+        const projectSearchIds = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
 
         //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct_Scan Includes:"
 
