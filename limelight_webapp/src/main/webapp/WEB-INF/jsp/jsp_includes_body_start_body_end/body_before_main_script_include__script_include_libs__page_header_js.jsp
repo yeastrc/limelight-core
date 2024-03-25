@@ -17,8 +17,6 @@
 
 	<script type="text/javascript" src="static/js/libs/jquery-migrate-3.1.0.min.js"></script>
 	
-	<script type="text/javascript" src="static/js/libs/jquery-ui.min.js"></script>
-
 <%-- 
 --%>
 	<script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>

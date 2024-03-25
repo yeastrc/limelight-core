@@ -145,11 +145,6 @@ head_section_include_every_page.jsp
 
 <script id="webservice_sync_tracking_code" type="text/text" >${ webserviceSyncTracking }</script>
 
-
-   <link rel="stylesheet" href="static/css/jquery-ui.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
-   <link rel="stylesheet" href="static/css/jquery-ui.structure.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
-   <link rel="stylesheet" href="static/css/jquery-ui.theme.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
-
 <%-- 
 --%>
    <link rel="stylesheet" href="static/css/jquery.qtip.min.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />

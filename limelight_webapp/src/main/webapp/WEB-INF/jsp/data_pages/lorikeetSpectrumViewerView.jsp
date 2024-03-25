@@ -24,6 +24,11 @@
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
 
+
+   <link rel="stylesheet" href="static/css/jquery-ui.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
+   <link rel="stylesheet" href="static/css/jquery-ui.structure.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
+   <link rel="stylesheet" href="static/css/jquery-ui.theme.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
+
 	<%--  CSS for Lorikeet --%>
    <link rel="stylesheet" href="static/css/lorikeet.css?x=${ cacheBustValue }" type="text/css" media="print, projection, screen" />
 
@@ -76,6 +81,8 @@
 --%>
 
   <%@ include file="/WEB-INF/jsp/jsp_includes_body_start_body_end/body_before_main_script_include__script_include_libs__page_header_js.jsp" %>
+  
+  	<script type="text/javascript" src="static/js/libs/jquery-ui.min.js"></script>
   
   <script type="text/javascript" src="static/js_generated_bundles/data_pages/lorikeetSpectrumViewPage_Root-bundle.js?x=${ cacheBustValue }"></script>
 
