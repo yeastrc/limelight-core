@@ -16,12 +16,19 @@
 /**
  * Make deep copy of object parameter
  */
-var copyObject_DeepCopy_Limelight = function( objectToCopy: any ) {
+export const copyObject_DeepCopy_Limelight = function( objectToCopy: any ) {
 	
 	if ( objectToCopy === undefined || objectToCopy === null ) {
 		throw Error("copyObject_DeepCopy_Limelight: invalid parameter, is undefined or null");
 	}
-	return jQuery.extend( true /* [deep ] */, {}, objectToCopy );
-};
 
-export { copyObject_DeepCopy_Limelight }
+	//  OLD CODE:  'jQuery.extend'  Copies the sub objects putting them in the same classes as the original objects
+
+	// const cloneUsingJQuery =  jQuery.extend( true /* [deep ] */, {}, objectToCopy )
+
+	//  NEW Option for Deep Clone.  Added 2022:   'window.structuredClone'  Copies the sub objects putting them in generic  Object
+
+	const cloneUsing_StructuredClone = window.structuredClone( objectToCopy )
+
+	return cloneUsing_StructuredClone
+};
