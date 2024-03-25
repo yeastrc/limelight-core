@@ -136,7 +136,7 @@
 		  
 		<a href="d/pg/project/<c:out value="${ headerProjectInfo.projectId }" ></c:out>"  
 				class=" no-underline header-project-title  selector_tool_tip_attached "  id="header_project_title_link"
-				data-tooltip="<c:out value="${ headerProjectInfo.projectTitle }"></c:out>"
+				title="<c:out value="${ headerProjectInfo.projectTitle }"></c:out>"
 				>
 								
 				<%--  Show only for locked projects and not for public access --%>

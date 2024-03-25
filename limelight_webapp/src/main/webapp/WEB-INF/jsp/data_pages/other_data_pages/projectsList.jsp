@@ -51,7 +51,7 @@
 				<div class="new-project-text" >
 					<span class="fake-link new_project_expand_jq selector_tool_tip_attached" 
 						style="font-size: 20px;"
-						data-tooltip="Add new project"
+						title="Add new project"
 						>New Project</span>
 				</div>
 			</div>

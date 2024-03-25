@@ -28,6 +28,9 @@
 						<%--  Project Owner and Project NOT Locked.  Display in JS when add tooltip. --%>
 						<img id="project_unlocked_icon" src="static/images/icon-unlocked.png" 
 							class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+							title="Project is unlocked, click to lock. 
+
+While locked, no data may be changed, added to, or deleted from the project."
 							data-tooltip="Project is unlocked, click to lock. <br>While locked, no data may be changed, added to, or deleted from the project.">
 			  	</c:when>
 		
@@ -36,6 +39,9 @@
 						<%--  Project Owner and Project Locked.  Display in JS when add tooltip. --%>
 						<img  id="project_locked_icon" src="static/images/icon-locked.png" 
 							class=" icon-large fake-link-image selector_tool_tip_attached " style="display: none;"
+							title="Project is locked, click to unlock. 
+
+While locked, no data may be changed, added to, or deleted from the project." 
 							data-tooltip="Project is locked, click to unlock. <br>While locked, no data may be changed, added to, or deleted from the project." >
 			  	</c:when>	  	
 		

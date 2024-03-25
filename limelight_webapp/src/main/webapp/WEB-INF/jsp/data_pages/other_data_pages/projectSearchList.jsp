@@ -47,7 +47,7 @@
 	 <tr class="project_root_container_jq">	
 		<td colspan="3" >			
 			<a style="font-weight: bold; font-size: 18px;"
-				class="project-text-link  project_title_jq selector_tool_tip_attached" data-tooltip="View project" 
+				class="project-text-link  project_title_jq selector_tool_tip_attached" title="View project" 
 				href="<%= AA_PageControllerPaths_Constants.PROJECT_VIEW_PAGE_CONTROLLER %>/${ project.projectMain.id }" 
 				><c:out value="${ project.projectMain.title }"></c:out></a>
 		</td>
