@@ -501,6 +501,26 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             };
         }
 
+        //  Optimization for All Checkboxes deselected for Scan Filename, PSM Charge, Search Sub Group.  Return Empty
+
+        if ( ( main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+                && main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected()
+                && main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected().size == 0 )
+            || ( main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject
+                && main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject.get__chargeValues_OnPSMs_Selected()
+                && main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject.get__chargeValues_OnPSMs_Selected().size === 0 )
+            || ( main_FunctionParams.searchSubGroup_Ids_Selected && main_FunctionParams.searchSubGroup_Ids_Selected.size === 0 ) ) {
+            //  Empty Selection for Scan Filenames, PSM Charge, or Search Sub Groups so return EMPTY
+            return {    // EARLY RETURN
+                data: {
+                    reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
+                        projectSearchId: this._projectSearchId, entriesMap_KeyReportedPeptideId: undefined
+                    })
+                },
+                promise: undefined
+            }
+        }
+
         //   Use passed in reported peptide ids override if provided
 
         if ( reportedPeptideIds_Override__FromFirstFilteringRun ) {
