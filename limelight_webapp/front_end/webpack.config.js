@@ -143,8 +143,8 @@ const mainConfig = (env, argv) => {
 
 		//  Data Pages
 		//  
-		
-		'data_pages/projectsListPage' : './src/js/page_js/data_pages/other_data_pages/projectsListPage.ts',
+
+		'data_pages/projectsListPage' : './src/js/page_js/data_pages/other_data_pages/project_list_page/projectsListPage.ts',
 		
 		//  Project Page:
 		//   Project page for each type of user and whether or not the project is locked

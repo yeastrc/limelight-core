@@ -123,10 +123,7 @@ task createHandlebarsOutputDirs {
   	  
       dirToCreate = rootDir + "common"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "project_list"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
+
   	  dirToCreate = rootDir + "user_account_create_account"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
   	  
@@ -150,31 +147,6 @@ task handlebarsPrecompile_common(type: NodeTask) {
 
   def precompile_Input_Directory = "handlebars_templates/common"
   def precompile_Output_File = "handlebars_templates_precompiled/common/common_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-
-//  Handlebars Precompile for input handlebars_templates/project_list
-
-task handlebarsPrecompile_project_list(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/project_list"
-  def precompile_Output_File = "handlebars_templates_precompiled/project_list/project_list_template-bundle.js"
   
   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
   inputs.dir( precompile_Input_Directory )
@@ -393,7 +365,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      'createHandlebarsOutputDirs', 
      
      'handlebarsPrecompile_common',
-     'handlebarsPrecompile_project_list',
      'handlebarsPrecompile_user_account_create_account',
      'handlebarsPrecompile_user_account_login_forgot_password',
      'handlebarsPrecompile_user_invite_processing',

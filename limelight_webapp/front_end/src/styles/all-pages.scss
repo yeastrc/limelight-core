@@ -298,14 +298,7 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
   font-size: $default-font-size;
 }
 
-/* css for styling the autocomplete */
 
-.autocomplete { background-color: #E8EAFF; border-color:#000000; border-width: 1px; border-style:solid; padding:10px; overflow-y: scroll; overflow-x: hidden; }
-
-.autocomplete .selected { 	color: white;	background-color:#000000; }
-
-.autocomplete div { padding:2px 5px; white-space:nowrap; overflow:hidden; }
-	
 
 .table-no-border-no-cell-spacing-no-cell-padding { border-width:0px; padding: 0px; border-spacing : 0px; }
 
