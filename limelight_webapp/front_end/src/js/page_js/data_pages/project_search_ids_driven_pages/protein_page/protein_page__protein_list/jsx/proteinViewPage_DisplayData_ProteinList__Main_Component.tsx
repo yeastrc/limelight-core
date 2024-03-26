@@ -166,6 +166,12 @@ import {
     Get_SetDefaultView_Component_React_Type,
     SetDefaultView_Component_React_Params
 } from "page_js/data_pages/setDefaultView_React/setDefaultView_Create_Component_React_FunctionTemplate";
+import {
+    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS__ReturnPromise
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS";
+import {
+    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS";
 
 /**
  *
@@ -2053,6 +2059,31 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                     projectSearchIds,
                     proteinDisplayData
                 });
+            }
+
+
+            if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ||
+                this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+                //  Adjusted_Spectral_Count_ABACUS computed on FINAL Protein List
+
+                await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS__ReturnPromise({
+                    searchSubGroup_Ids_Selected, // Set<number>  undefined/null if not set
+                    projectSearchIds,
+                    proteinDisplayData,
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                });
+            }
+
+            if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+                // NSAF Using Adjusted_Spectral_Count_ABACUS computed on FINAL Protein List
+
+                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS({
+                    searchSubGroup_Ids_Selected, // Set<number>  undefined/null if not set
+                    projectSearchIds,
+                    proteinDisplayData
+                })
             }
 
             this._proteinDisplayData_Final_ForDisplayTable = proteinDisplayData

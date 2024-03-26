@@ -156,6 +156,12 @@ import {
     Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component__Callback_update_OrderOf_ConditionGroups_Params,
     open_experiment_DataPage_Re_Order_ConditionGroups_Overlay
 } from "page_js/data_pages/experiment_data_pages_common/experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component_WithOpenFunction";
+import {
+    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId__ReturnPromise
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId";
+import {
+    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId
+} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId";
 
 
 ////
@@ -2058,6 +2064,30 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
 
                 //  Compute NSAF per Per Experiment Condition Id of the first Condition Group
                 proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF_Per_ExperimentConditionId({
+                    proteinDisplayData,
+                    conditions_with_their_project_search_ids_for_First_condition_group
+                });
+            }
+
+            if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ||
+                this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+                //  Adjusted_Spectral_Count_ABACUS computed on FINAL Protein List
+
+                //  Compute Adjusted_Spectral_Count_ABACUS per Per Experiment Condition Id of the first Condition Group
+                await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute__Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId__ReturnPromise({
+                    proteinDisplayData,
+                    conditions_with_their_project_search_ids_for_First_condition_group,
+                    projectSearchIds,
+                    commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.state.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+                })
+            }
+
+            if ( this.props.propsValue.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+                //  NSAF Using Adjusted_Spectral_Count_ABACUS computed on FINAL Protein List
+
+                proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId({
                     proteinDisplayData,
                     conditions_with_their_project_search_ids_for_First_condition_group
                 });

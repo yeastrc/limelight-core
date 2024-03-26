@@ -26,6 +26,8 @@ const _ENCODED_DATA__DISTINCT_PEPTIDE_COUNT_SELECTED_SELECTED__ENCODING_PROPERTY
 const _ENCODED_DATA__UNIQUE_PEPTIDE_COUNT_SELECTED_SELECTED__ENCODING_PROPERTY_NAME = 'd';
 const _ENCODED_DATA__PROTEIN_COVERAGE_SELECTED__ENCODING_PROPERTY_NAME = 'e';
 const _ENCODED_DATA__NSAF_SELECTED__ENCODING_PROPERTY_NAME = 'f';
+const _ENCODED_DATA__ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME = 'g';
+const _ENCODED_DATA__NSAF_USING_ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME = 'h';
 
 const _ENCODED_DATA_VALUE_FOR_TRUE = 1;
 const _ENCODED_DATA_VALUE_FOR_FALSE = 0;
@@ -41,6 +43,8 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
 
     private _sequenceCoverage_Selected : boolean  //  Currently Ignored when Sub Groups, Multiple Search, or Experiment
     private _nsaf_Selected : boolean
+    private _adjusted_Spectral_Count_ABACUS_Selected : boolean
+    private _nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected : boolean
     private _psmCount_Selected : boolean
     private _distinctPeptideCount_Selected : boolean
     private _uniquePeptideCount_Selected : boolean
@@ -60,16 +64,22 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
             forExperiment: boolean
         }) {
 
+        //  Set Defaults.  Overlaid if existing URL being loaded with values
+
         if ( forSingleSearchHasSubGroups || forExperiment || ( searchCount_IfNotExperiment && searchCount_IfNotExperiment > 1 ) ) {
             //  For Single Search with Sub Groups OR Experiment OR search count > 1
 
             this._nsaf_Selected = true;
+            this._adjusted_Spectral_Count_ABACUS_Selected = false
+            this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected = false
             this._psmCount_Selected = true;
 
         } else {
 
             this._sequenceCoverage_Selected = true;
             this._nsaf_Selected = true;
+            this._adjusted_Spectral_Count_ABACUS_Selected = false
+            this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected = false
             this._psmCount_Selected = true;
             this._distinctPeptideCount_Selected = true;
             this._uniquePeptideCount_Selected = true;
@@ -121,6 +131,54 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
 
         if ( ! this._valueChangedCallback ) {
             throw Error("set_NSAF_Selected::( ! this._valueChangedCallback )")
+        }
+
+        this._valueChangedCallback();
+    }
+
+    /**
+     * @returns false if not set
+     *
+     */
+    get_Adjusted_Spectral_Count_ABACUS_Selected() : boolean {
+
+        if ( this._adjusted_Spectral_Count_ABACUS_Selected ) {
+            return  true;
+        }
+        return  false;
+    }
+    /**
+     */
+    set_Adjusted_Spectral_Count_ABACUS_Selected( selected : boolean ) : void {
+
+        this._adjusted_Spectral_Count_ABACUS_Selected = selected;
+
+        if ( ! this._valueChangedCallback ) {
+            throw Error("set_Adjusted_Spectral_Count_ABACUS_Selected_Selected::( ! this._valueChangedCallback )")
+        }
+
+        this._valueChangedCallback();
+    }
+
+    /**
+     * @returns false if not set
+     *
+     */
+    get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() : boolean {
+
+        if ( this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected ) {
+            return  true;
+        }
+        return  false;
+    }
+    /**
+     */
+    set_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected( selected : boolean ) : void {
+
+        this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected = selected;
+
+        if ( ! this._valueChangedCallback ) {
+            throw Error("set_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();
@@ -237,6 +295,16 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
         } else {
             result[ _ENCODED_DATA__NSAF_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
         }
+        if (  this._adjusted_Spectral_Count_ABACUS_Selected ) {
+            result[ _ENCODED_DATA__ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_TRUE;
+        } else {
+            result[ _ENCODED_DATA__ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
+        }
+        if (  this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected ) {
+            result[ _ENCODED_DATA__NSAF_USING_ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_TRUE;
+        } else {
+            result[ _ENCODED_DATA__NSAF_USING_ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VALUE_FOR_FALSE;
+        }
 
         return result;
     }
@@ -289,7 +357,16 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
         } else {
             this._nsaf_Selected = false;
         }
-
+        if ( encodedStateData[ _ENCODED_DATA__ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] === _ENCODED_DATA_VALUE_FOR_TRUE ) {
+            this._adjusted_Spectral_Count_ABACUS_Selected = true;
+        } else {
+            this._adjusted_Spectral_Count_ABACUS_Selected = false;
+        }
+        if ( encodedStateData[ _ENCODED_DATA__NSAF_USING_ADJUSTED_SPECTRAL_COUNT_ABACUS_SELECTED__ENCODING_PROPERTY_NAME ] === _ENCODED_DATA_VALUE_FOR_TRUE ) {
+            this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected = true;
+        } else {
+            this._nsaf_Using__adjusted_Spectral_Count_ABACUS_Selected = false;
+        }
     }
 }
 

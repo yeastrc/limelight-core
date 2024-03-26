@@ -59,7 +59,7 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Text_Da
 }
 
 /**
- * React Component for PSM Count Header Tooltip for Data Table
+ * React Component for NSAF Header Tooltip for Data Table
  */
 export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip_DataTable_Component = function ({ searchSubGroup } : {
 
@@ -82,6 +82,81 @@ export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip
     )
 }
 
+/**
+ * Function to format Header Text
+ */
+export const get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component = function ({ searchSubGroup } : {
+
+    searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+
+}  ) : string {
+
+    return 'Adjusted Spectral Count (ABACUS) (' + searchSubGroup.subgroupName_Display + ")"
+}
+
+/**
+ * React Component for Adjusted_Spectral_Count_ABACUS Header Tooltip for Data Table
+ */
+export const get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component = function ({ searchSubGroup } : {
+
+    searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+
+}  ) : JSX.Element {
+
+    return (
+        <div >
+            <div >
+                Adjusted_Spectral_Count_ABACUS:
+            </div>
+            <div >
+                { searchSubGroup.subgroupName_Display }
+            </div>
+            <div >
+                { searchSubGroup.searchSubgroupName_fromImportFile }
+            </div>
+        </div>
+    )
+}
+
+
+/**
+ * Function to format Header Text
+ */
+export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component = function ({ searchSubGroup } : {
+
+    searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+
+}  ) : string {
+
+    return 'NSAF: Adjusted Spectral Count (ABACUS) (' + searchSubGroup.subgroupName_Display + ")"
+}
+
+/**
+ * React Component for _NSAF__Using_ Adjusted_Spectral_Count_ABACUS Header Tooltip for Data Table
+ */
+export const get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using__Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component = function ({ searchSubGroup } : {
+
+    searchSubGroup: SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
+
+}  ) : JSX.Element {
+
+    return (
+        <div >
+            <div >
+                NSAF: Adjusted_Spectral_Count_ABACUS:
+            </div>
+            <div >
+                { searchSubGroup.subgroupName_Display }
+            </div>
+            <div >
+                { searchSubGroup.searchSubgroupName_fromImportFile }
+            </div>
+        </div>
+    )
+}
+
+
+/**
 /**
  * Function to format Header Text
  */
