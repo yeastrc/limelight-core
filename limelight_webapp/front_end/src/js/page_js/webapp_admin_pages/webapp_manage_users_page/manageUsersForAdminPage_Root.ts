@@ -5,20 +5,9 @@
  * 
  */
 
-/**
- * Always do in Root Javascript for page:
- */
+import React from "react";
+import ReactDOM from "react-dom";
 
-/**
- * Require Handlebars and dummy_template_template-bundle.js so that Handlebars is properly initialized for other uses of it
- */
-
-/**
- * Require Handlebars and dummy_template_template-bundle.js so that Handlebars is properly initialized for other uses of it
- */
-import Handlebars = require('handlebars/runtime');
-import _dummy_template_template_bundle =
-    require("../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
@@ -26,18 +15,72 @@ import _dummy_template_template_bundle =
 import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
 
 
-import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
-
-import { initAdmin } from './manageUsersForAdminPage_Main';
+import { MainPagesPopulateHeader } from "page_js/main_pages/mainPagesPopulateHeader";
+import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import {
+    ManageUsersForAdminPage_Root_Component, ManageUsersForAdminPage_Root_Component_Props
+} from "page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root_Component";
+import {
+    manageUsersForAdminPage_Main__Init
+} from "page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Main";
 
 
 ///////////////
 
-$(document).ready(function() {
+const _render_RootComponent = function () {
 
-    initShowHideErrorMessage();
-    catchAndReportGlobalOnError.init();
+    const props: ManageUsersForAdminPage_Root_Component_Props = { propsValue: { force_ReloadData_Object: {} } }
 
-    initAdmin();
+    const root_Component = (
+        React.createElement(
+            ManageUsersForAdminPage_Root_Component,
+            props,
+            null
+        )
+    );
 
-});
+
+    //  Render to page:
+
+    const containerDOMElement = document.getElementById("limelight_page__main_react_root");
+
+    if ( ! containerDOMElement ) {
+        throw Error("No DOM element with id 'limelight_page__main_react_root'");
+    }
+
+    //  Called on render complete
+    const renderCompleteCallbackFcn = () => {
+
+    };
+
+    const renderedReactComponent = ReactDOM.render(
+        root_Component,
+        containerDOMElement,
+        renderCompleteCallbackFcn
+    );
+}
+
+
+{
+    try {
+
+        catchAndReportGlobalOnError.init();
+
+        ////Instance of class
+        const mainPagesPopulateHeader = new MainPagesPopulateHeader();
+        mainPagesPopulateHeader.initialize();
+
+        const refresh_UserList_Callback = function () {
+
+            _render_RootComponent()
+        }
+
+        manageUsersForAdminPage_Main__Init( { refresh_UserList_Callback } )
+
+        _render_RootComponent()
+
+    } catch ( e ) {
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+        throw e;
+    }
+}

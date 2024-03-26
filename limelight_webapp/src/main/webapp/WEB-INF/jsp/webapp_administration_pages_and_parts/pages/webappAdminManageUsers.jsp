@@ -45,76 +45,6 @@
 	
 	<div class="top-level-label-bottom-border" ></div>
 
-<%-- 
-	<div id="invite_user_block" >
-
-		<div  id="invite_user_collapsed" >
-
-			<div style="float: left; padding-left: 3px; padding-right: 10px;">
-			  <a href="javascript:" class="invite_user_expand_link_jq">
-				<img src="static/images/icon-add-user.png" class=" icon-small ">
-			  </a>
-			</div>
-			<div style="padding-top: 2px; ">
-			  <a href="javascript:" class="invite-user-text-link invite_user_expand_link_jq">
-				Invite User
-			  </a>
-			</div>
-
-		</div>		
-	
-	
-		<div  id="invite_user_expanded" style="display: none;"  > 
-	
-		  <div style="position: relative; width: 500px;" >
-		  		
-	  		<div class="error-message-container error_message_container_jq" id="error_message_field_empty">
-	  			<div class="error-message-inner-container" >
-		  			<span class="error-message-text" >A value is required
-			  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
-			  	</div>
-		  	</div>
-		  	
-	  		<div class="error-message-container error_message_container_jq" id="error_message_email_already_exists">
-	  			<div class="error-message-inner-container" >
-		  			<span class="error-message-text" >A user with that email already exists.
-			  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
-			  	</div>
-		  	</div>		  	
-		  	
-	
-	  		<div class="error-message-container error_message_container_jq" id="error_message_system_error">
-	  			<div class="error-message-inner-container" >
-		  			<span class="error-message-text" >System Error
-			  			<span class="error-message-close-x error_message_close_x_jq">X</span></span>
-			  	</div>
-		  	</div>
-	
-		  </div>
-	
-			<div style="float: left; padding-left: 3px; padding-right: 10px;">
-		  	  	<a href="javascript:"  class="invite_user_cancel_button_jq">
-					<img src="static/images/icon-circle-delete.png" title="Cancel User Invite">
-			  	</a>
-		  	</div>
-
-			<div style="padding-top: 0px; ">
-				<input placeholder="Email Address" id="invite_user_email"  title="Email Address" >
-	
-				<select id="invite_person_access_level_entry_field">
-							<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN %>" >Administrator</option>
-							<option value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_CREATE_NEW_PROJECT_AKA_USER %>" >User</option>
-				</select>
-	
-				<input type="button" value="Invite User" id="invite_user_button">
-				<input type="button" value="Cancel" class="invite_user_cancel_button_jq">
-			</div>
-									   	
-		</div>
-	
-		<div class="top-level-label-bottom-border" style="width: 100%" ></div>
-	</div>
---%>   
 
 	<div id="create_user_block" >
 
@@ -329,13 +259,11 @@
 					</div>
 					
 						
-	<%--  The table the invited and current users will be put in by the Javascript --%>
 	
-	 <table border="0" padding="0" margin="0" id="invited_people_current_users" width="100%">
+	<%--  Main React Root --%>					
 		
-	 
-	 </table>
-
+	<div  id="limelight_page__main_react_root"></div>
+			
 					
 	<%-- For the javascript to read --%>
 	<input type="hidden" id="access_level_id_administrator" value="<%= AuthAccessLevelConstants.ACCESS_LEVEL_ADMIN %>">

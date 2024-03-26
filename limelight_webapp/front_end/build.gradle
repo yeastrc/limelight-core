@@ -132,9 +132,6 @@ task createHandlebarsOutputDirs {
   	  
   	  dirToCreate = rootDir + "user_invite_processing"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-  	  dirToCreate = rootDir + "admin_user_management"
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
 
   	  dirToCreate = rootDir + "dummy_template"
   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
@@ -219,30 +216,6 @@ task handlebarsPrecompile_user_invite_processing(type: NodeTask) {
 
   def precompile_Input_Directory = "handlebars_templates/user_invite_processing"
   def precompile_Output_File = "handlebars_templates_precompiled/user_invite_processing/user_invite_processing_template-bundle.js"
-  
-  // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-  inputs.dir( precompile_Input_Directory )
-  outputs.file( precompile_Output_File )
-
-  def osName = System.getProperty("os.name").toLowerCase();
-  if (osName.contains("windows")) {
-    script = project.file('node_modules/handlebars/bin/handlebars')
-  } else {
-    script = project.file('node_modules/.bin/handlebars')
-  }
-  args = [ '--amd' , // parameters must be before file list
-  '--min',
-  '-f', precompile_Output_File,
-   precompile_Input_Directory
-   ]
-}
-
-//  Handlebars Precompile for input handlebars_templates/admin_user_management
-
-task handlebarsPrecompile_admin_user_management(type: NodeTask) {
-
-  def precompile_Input_Directory = "handlebars_templates/admin_user_management"
-  def precompile_Output_File = "handlebars_templates_precompiled/admin_user_management/admin_user_management_template-bundle.js"
   
   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
   inputs.dir( precompile_Input_Directory )
@@ -368,7 +341,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
      'handlebarsPrecompile_user_account_create_account',
      'handlebarsPrecompile_user_account_login_forgot_password',
      'handlebarsPrecompile_user_invite_processing',
-     'handlebarsPrecompile_admin_user_management',
      'handlebarsPrecompile_dummy_template',
    ]
    
