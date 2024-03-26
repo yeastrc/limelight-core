@@ -29,6 +29,10 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/jsx/proteinViewPage_DisplayData_ProteinList__ProteinName_ProteinDescription_DataTable_Component";
 import {ProteinNameDescriptionCacheEntry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/protein_view_page__display_data__protein_list__create_protein_display_data__before__not_grouped__grouped";
 import {
+    get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using__Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component,
+    get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Text_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_NSAF_Header_Tooltip_DataTable_Component,
     get_proteinViewPage_DisplayData__SearchSubGroup_PSM_Count_Header_Text_DataTable_Component,
@@ -52,6 +56,9 @@ import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
+import {
+    proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable";
 
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__Proteins = "Proteins";
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__ProteinGroups = "Protein Groups";
@@ -352,6 +359,46 @@ const _getProteinDataTableColumns = function(
             dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
         }
 
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            // Adjusted_Spectral_Count_ABACUS overall
+
+            const displayName = 'Adjusted Spectral Count (ABACUS)';
+
+            const column = new DataTable_Column({
+                id :           'Adjusted_Spectral_Count_ABACUS',
+                displayName,
+                width :        80,
+                sortable : true,
+                onlyShow_ValueDisplay_FirstRowOfGroup: true
+            });
+
+            columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            // NSAF Using Adjusted_Spectral_Count_ABACUS overall
+
+            const displayName = 'NSAF: Adjusted Spectral Count (ABACUS)';
+
+            const column = new DataTable_Column({
+                id :           'NSAF_Adjusted_Spectral_Count_ABACUS',
+                displayName,
+                width :        80,
+                sortable : true,
+                onlyShow_ValueDisplay_FirstRowOfGroup: false
+            });
+
+            columns.push( column );
+
+            const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+            dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+        }
+
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
 
             //  Generated Reported Peptides count overall
@@ -478,6 +525,72 @@ const _getProteinDataTableColumns = function(
             }
         }
 
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            for ( const searchSubGroupId of searchSubGroupIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                if ( ! searchSubGroup ) {
+                    throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                        + ", projectSearchId: " + projectSearchId );
+                }
+
+                const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component({ searchSubGroup });
+
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+
+                    return get_proteinViewPage_DisplayData__SearchSubGroup_Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component({ searchSubGroup });
+                }
+
+                const column = new DataTable_Column({
+                    id :           'Adjusted_Spectral_Count_ABACUS_' + searchSubGroupId,
+                    displayName,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+                    width :        80,
+                    sortable : true,
+                    onlyShow_ValueDisplay_FirstRowOfGroup: true
+                });
+
+                columns.push( column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            for ( const searchSubGroupId of searchSubGroupIds ) {
+
+                const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
+                if ( ! searchSubGroup ) {
+                    throw Error("getProteinDataTableColumns_SingleSearch__SearchSubGroup: searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId ); return nothing for searchSubGroupId: " + searchSubGroupId
+                        + ", projectSearchId: " + projectSearchId );
+                }
+
+                const displayName = get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using_Adjusted_Spectral_Count_ABACUS_Header_Text_DataTable_Component({ searchSubGroup });
+
+                const columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element = () : JSX.Element => {
+
+                    return get_proteinViewPage_DisplayData__SearchSubGroup_NSAF__Using__Adjusted_Spectral_Count_ABACUS_Header_Tooltip_DataTable_Component({ searchSubGroup });
+                }
+
+                const column = new DataTable_Column({
+                    id :           'NSAF_Adjusted_Spectral_Count_ABACUS_' + searchSubGroupId,
+                    displayName,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element,
+                    width :        80,
+                    sortable : true,
+                    onlyShow_ValueDisplay_FirstRowOfGroup: false
+                });
+
+                columns.push( column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+        }
+
         for ( const searchSubGroupId of searchSubGroupIds ) {
 
             const searchSubGroup = searchSubGroups_ForProjectSearchId.get_searchSubGroup_For_SearchSubGroup_Id( searchSubGroupId );
@@ -588,6 +701,62 @@ const _getProteinDataTableColumns = function(
 
                 const column = new DataTable_Column({
                     id :           'nsaf_' + projectSearchId,
+                    displayName,
+                    width :        80,
+                    sortable : true,
+                    onlyShow_ValueDisplay_FirstRowOfGroup: false
+                });
+
+                columns.push( column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  Adjusted_Spectral_Count_ABACUS_
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObject ) {
+                    throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                }
+
+                const displayName = 'Adjusted Spectral Count (ABACUS) (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
+
+                const column = new DataTable_Column({
+                    id :           'Adjusted_Spectral_Count_ABACUS__' + projectSearchId,
+                    displayName,
+                    width :        80,
+                    sortable : true,
+                    onlyShow_ValueDisplay_FirstRowOfGroup: true
+                });
+
+                columns.push( column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  NSAF Using Adjusted_Spectral_Count_ABACUS_
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const searchNameObject = searchData_SearchName_Etc_Root.get_SearchData_For_ProjectSearchId( projectSearchId );
+                if ( ! searchNameObject ) {
+                    throw Error("No searchNameObject from searchData_SearchName_Etc_Root for projectSearchId: " + projectSearchId );
+                }
+
+                const displayName = 'NSAF: Adjusted Spectral Count (ABACUS) (' + searchNameObject.searchLabel__SearchShortName_OR_SearchId + ")";
+
+                const column = new DataTable_Column({
+                    id :           'NSAF_Adjusted_Spectral_Count_ABACUS__' + projectSearchId,
                     displayName,
                     width :        80,
                     sortable : true,
@@ -1183,6 +1352,58 @@ const _createProteinItem_DataTableEntry = function(
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  Adjusted_Spectral_Count_ABACUS
+
+            let valueNumer = 0;
+
+            if ( protein_SubItem_Record__For__projectSearchId ) {
+                valueNumer = protein_SubItem_Record__For__projectSearchId.adjusted_Spectral_Count_ABACUS;
+            }
+
+            const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
+
+            const valueDisplay = valueString;
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : valueNumer
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  NSAF Adjusted_Spectral_Count_ABACUS
+
+            let valueNumer = 0;
+
+            if ( protein_SubItem_Record__For__projectSearchId ) {
+                valueNumer = protein_SubItem_Record__For__projectSearchId.nsaf__Using_Adjusted_Spectral_Count_ABACUS;
+            }
+
+            const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
+
+            const valueDisplay = valueString;
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort : valueNumer
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_DistinctPeptideCount_Selected() ) {
 
             // Num Reported Peptides
@@ -1298,6 +1519,66 @@ const _createProteinItem_DataTableEntry = function(
             }
         }
 
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  Adjusted_Spectral_Count_ABACUS per search sub group
+
+            for ( const searchSubGroupId of searchSubGroupIds ) {
+
+                let valueNumer = 0;
+
+                const protein_SubItem_Record = proteinListItem.protein_SubItem_Records_Map_Key_SubGroup_Id.get( searchSubGroupId )
+                if ( protein_SubItem_Record ) {
+                    valueNumer = protein_SubItem_Record.adjusted_Spectral_Count_ABACUS;
+                }
+
+                const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
+
+                const valueDisplay = valueString;
+                const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                const columnEntry = new DataTable_DataRow_ColumnEntry( {
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: valueNumer
+                } )
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+        }
+
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_USING__Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  NSAF Adjusted_Spectral_Count_ABACUS per search sub group
+
+            for ( const searchSubGroupId of searchSubGroupIds ) {
+
+                let valueNumer = 0;
+
+                const protein_SubItem_Record = proteinListItem.protein_SubItem_Records_Map_Key_SubGroup_Id.get( searchSubGroupId )
+                if ( protein_SubItem_Record ) {
+                    valueNumer = protein_SubItem_Record.nsaf__Using_Adjusted_Spectral_Count_ABACUS;
+                }
+
+                const valueString = proteinView_nsaf_formatNumber_ForDisplayInTable( valueNumer );
+
+                const valueDisplay = valueString;
+                const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                const columnEntry = new DataTable_DataRow_ColumnEntry( {
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: valueNumer
+                } )
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+        }
+
         // Num Reported Peptides and Num Reported Peptides Unique per search sub group
 
         for (const searchSubGroupId of searchSubGroupIds) {
@@ -1389,7 +1670,7 @@ const _createProteinItem_DataTableEntry = function(
 
         if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_NSAF_Selected() ) {
 
-            //  NSAF per search sub group
+            //  NSAF per search
 
             for ( const projectSearchId of projectSearchIds ) {
 
@@ -1417,6 +1698,35 @@ const _createProteinItem_DataTableEntry = function(
             }
         }
 
+        if ( proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_Adjusted_Spectral_Count_ABACUS_Selected() ) {
+
+            //  Adjusted_Spectral_Count_ABACUS per search
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                let valueNumer = 0;
+
+                const proteinItemRecord = proteinListItem.protein_SubItem_Records_Map_Key_projectSearchId.get( projectSearchId );
+                if ( proteinItemRecord ) {
+                    valueNumer = proteinItemRecord.adjusted_Spectral_Count_ABACUS;
+                }
+
+                const valueString = proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable( valueNumer );
+
+                const valueDisplay = valueString;
+                const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                const columnEntry = new DataTable_DataRow_ColumnEntry( {
+                    searchTableData,
+                    valueDisplay,
+                    valueSort: valueNumer
+                } )
+                columnEntries.push( columnEntry );
+
+                const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+            }
+        }
          //  Per Search: Num Distinct Peptides and Distinct Peptides Unique
 
         for ( const projectSearchId of projectSearchIds ) {

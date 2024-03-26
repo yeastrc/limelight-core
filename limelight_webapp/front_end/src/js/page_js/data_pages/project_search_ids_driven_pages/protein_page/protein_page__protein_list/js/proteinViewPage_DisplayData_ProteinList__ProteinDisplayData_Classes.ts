@@ -263,6 +263,14 @@ export class ProteinDataDisplay_ProteinList_Experiment_SubData {
 export class ProteinDataDisplay_ProteinList_Experiment_SubData_PerCondition {
 
     nsaf: number = 0;
+
+    /**
+     * WARNING::  For Proteins in a Protein Group, this represents the count for ALL the proteins in the group
+     */
+    adjusted_Spectral_Count_ABACUS : number = -9995
+
+    nsaf__Using_Adjusted_Spectral_Count_ABACUS: number = -9998
+
     numPsms: number = 0;
     reportedPeptide_CommonValue_EncodedString_ForProtein_Set: Set<string>
 
@@ -350,6 +358,13 @@ export class ProteinDataDisplay_ProteinList_Sub_Item {
     numPsms : number
 
     nsaf : number = -9998;
+
+    /**
+     * WARNING::  For Proteins in a Protein Group, this represents the count for ALL the proteins in the group
+     */
+    adjusted_Spectral_Count_ABACUS : number = -9995
+
+    nsaf__Using_Adjusted_Spectral_Count_ABACUS : number = -9995
 
     dataPerReportedPeptideId_Entries_Array: Array<ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result_PeptideList_PerReportedPeptideId_Entry> = []
 

@@ -8,6 +8,8 @@ export class NSAFAnnotationCalculator {
      * NSAF is calculated as the number of spectral counts (SpC) identifying a protein, divided by the protein's
      * length (L), divided by the sum of SpC/L for all proteins.
      *
+     * param proteinPsmCountMap is also used to pass in other counts like 'adjusted_Spectral_Count_ABACUS'
+     *
      * Returns a Map of protein id to calculated NSAF. This Map is guaranteed to have an entry for every protein
      * in the PSMCountMap.
      *
