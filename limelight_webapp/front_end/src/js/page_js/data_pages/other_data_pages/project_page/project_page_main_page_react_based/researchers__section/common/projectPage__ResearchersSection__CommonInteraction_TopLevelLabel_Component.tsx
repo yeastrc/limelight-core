@@ -11,6 +11,9 @@
 
 import React from "react";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export const ProjectPage__ResearchersSection__CommonInteraction_TopLevelLabel_Component_Expanded_Default = false
 
@@ -131,25 +134,20 @@ export class ProjectPage__ResearchersSection__CommonInteraction_TopLevelLabel_Co
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                    <div style={ { whiteSpace: "nowrap" } } >
 
-                        {/*   2 column grid   */}
+                        {/*  Top Level Label  */}
+                        <span>
+                            Researchers
+                        </span>
 
-                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
-
-                            {/*  Top Level Label  */}
-                            <span>
-                                Researchers
-                            </span>
-                        </div>
-
-                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                                Invite, remove, and view users that have access to this project and its data.
-                            </p>
-                        </div>
-
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                        Invite, remove, and view users that have access to this project and its data.
+                                    </span>
+                            }
+                        />
                     </div>
                 </div>
                 

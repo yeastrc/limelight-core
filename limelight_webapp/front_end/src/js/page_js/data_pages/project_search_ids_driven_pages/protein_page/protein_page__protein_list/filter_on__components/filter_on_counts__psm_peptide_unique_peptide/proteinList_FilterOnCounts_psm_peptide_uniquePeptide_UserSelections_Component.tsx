@@ -13,6 +13,9 @@
 import React from 'react'
 import {ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/filter_on__components/filter_on_counts__psm_peptide_unique_peptide/proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 //  Delay after input change before call callback, to wait for additional keyboard input
 const CALL_CALLBACK_DELAY = 200;  // in milliseconds
@@ -282,15 +285,13 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                 <div className=" filter-common-filter-label ">
                     Minimum Protein PSM Count:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    All proteins will have at least this many PSMs in at least one search or condition.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                All proteins will have at least this many PSMs in at least one search or condition.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -309,18 +310,16 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                 <div className=" filter-common-filter-label ">
                     Minimum Distinct Peptide Count:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    All proteins will have at least this many distinct peptides in at least one search or condition.
-                                    <br/>
-                                    A distinct peptide is the unique combination of amino acid sequence and, optionally, variable and open modifications.
-                                    See the option under "Options."
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                All proteins will have at least this many distinct peptides in at least one search or condition.
+                                <br/>
+                                A distinct peptide is the unique combination of amino acid sequence and, optionally, variable and open modifications.
+                                See the option under "Options."
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -339,16 +338,14 @@ export class ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections
                 <div className=" filter-common-filter-label ">
                     Minimum Unique Peptide Count:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    All proteins will have at least this many unique peptides in at least one search or condition.
-                                    A unique peptide is a distinct peptide only found for a single protein or protein group.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                All proteins will have at least this many unique peptides in at least one search or condition.
+                                A unique peptide is a distinct peptide only found for a single protein or protein group.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >

@@ -14,6 +14,9 @@
 import React from "react";
 import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_protein_list_common/proteinGrouping_CentralStateManagerObjectClass";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export type ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback =
     ( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) => void
@@ -233,17 +236,14 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                 <div className=" filter-common-filter-label " style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                     Protein Grouping:
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Proteins will be grouped into indistinguishable protein groups—groups of peptides identified by the same set of peptides.
-                                    The grouping option will optionally grey out groups that do not conform to the selected option.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Proteins will be grouped into indistinguishable protein groups—groups of peptides identified by the same set of peptides.
+                                The grouping option will optionally grey out groups that do not conform to the selected option.
+                            </span>
+                        }
+                    />
                 </div>
                 <div className=" filter-common-selection-block " style={ { paddingBottom: 4, paddingTop: paddingTop_BothTopLevelDiv } }>
                     <div className=" filter-common-selection-inner-block ">
@@ -254,20 +254,17 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                            checked={ proteinGroup_GroupProteins_Parsimonious } onChange={ this._proteinGroup_GroupProteins_Parsimonious_RadioButton_OnChange_Handler_BindThis }
                                     />
                                     Parsimonious
-
-                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    Proteins are grouped by indistinguishable protein groups.
-                                                    That is, all proteins in the same protein group have the same list of identified peptides.
-                                                    Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides. Non-parsimonious groups are greyed out.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </label>
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Proteins are grouped by indistinguishable protein groups.
+                                            That is, all proteins in the same protein group have the same list of identified peptides.
+                                            Then a greedy set cover algorithm is used to estimate fewest number of protein groups necessary to explain the found peptides. Non-parsimonious groups are greyed out.
+                                        </span>
+                                    }
+                                />
                             </span>
 
                             <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
@@ -276,20 +273,17 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                            checked={ proteinGroup_GroupProteins_NonSubset } onChange={ this._proteinGroup_GroupProteins_NonSubset_RadioButton_OnChange_Handler_BindThis }
                                     />
                                     No Subgroups
-
-                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    Proteins are grouped by indistinguishable protein groups.
-                                                    That is, all proteins in the same protein group have the same list of identified peptides.
-                                                    All protein groups whose peptide list is a subset of another group’s peptide list will be greyed out.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </label>
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Proteins are grouped by indistinguishable protein groups.
+                                            That is, all proteins in the same protein group have the same list of identified peptides.
+                                            All protein groups whose peptide list is a subset of another group’s peptide list will be greyed out.
+                                        </span>
+                                    }
+                                />
                             </span>
 
                             <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
@@ -298,18 +292,15 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                        checked={ proteinGroup_GroupProteins } onChange={ this._proteinGroup_GroupProteins_RadioButton_OnChange_Handler_BindThis }
                                     />
                                     Simple
-
-                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    Proteins are grouped by indistinguishable protein groups. That is, all proteins in the same protein group have the same list of identified peptides.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </label>
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Proteins are grouped by indistinguishable protein groups. That is, all proteins in the same protein group have the same list of identified peptides.
+                                        </span>
+                                    }
+                                />
                             </span>
 
                             <span style={ { paddingRight: 8, whiteSpace: "nowrap" } }>
@@ -318,18 +309,15 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                            checked={ proteinGroupNone } onChange={ this._proteinGroupNone_RadioButton_OnChange_Handler_BindThis }
                                     />
                                     No Groups
-
-                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    Each row contains the name(s), description(s), and statistics for a single protein sequence. Proteins are not grouped.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </label>
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Each row contains the name(s), description(s), and statistics for a single protein sequence. Proteins are not grouped.
+                                        </span>
+                                    }
+                                />
                             </span>
                         </div>
                         {/*{ ( proteinGroup_GroupProteins_NonSubset || proteinGroup_GroupProteins_Parsimonious ) ? (*/}
@@ -341,18 +329,15 @@ export class ProteinPage_ProteinGroupingFilterSelection_Component_Root extends R
                                         onChange={ this._showHiddenProteins_CheckBox_OnChange_Handler_BindThis }
                                     />
                                     Show removed proteins
-
-                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    Protein groups that would be removed by the option above will instead be shown as greyed-out entries in the table below.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </label>
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Protein groups that would be removed by the option above will instead be shown as greyed-out entries in the table below.
+                                        </span>
+                                    }
+                                />
                             </div>
                         {/*) : null}*/}
                     </div>

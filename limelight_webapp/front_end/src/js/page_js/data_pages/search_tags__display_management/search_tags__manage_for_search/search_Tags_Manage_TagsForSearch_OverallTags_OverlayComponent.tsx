@@ -577,11 +577,10 @@
 //                                     <span>es</span>
 //                                 ) : null}
 //
-//                                 <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-//                                     <div className=" inner-absolute-pos ">
-//                                         <div className=" main-div ">
-//                                             <p className="help-tip-actual">
-//                                                 <span>Click on a tag to assign or unassign the tag to the select search</span>
+//                                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+//                                             title={
+//                                                 <span>
+//                                                         <span>Click on a tag to assign or unassign the tag to the select search</span>
 //                                                 { this.props.mainParams.searches.length > 1 ? (
 //                                                     <span>es</span>
 //                                                 ) : null}
@@ -598,9 +597,11 @@
 //                                                         Clicking again will unassign it from all selected searches.
 //                                                     </span>
 //                                                 ) : null}
-//                                             </p>
-//                                         </div>
-//                                     </div>
+//                                                 </span>
+//                                             }
+//                                         />
+//
+//
 //                                 </div>
 //                             </div>
 //                             { this._searchTags_DistinctInProject_AndAddedTags.map((value, index) => {
@@ -668,20 +669,18 @@
 //
 //                             <div style={ { marginTop: 16, marginBottom: 5, fontWeight: "bold" } }>
 //                                 Add new tag
-//
-//                                 <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-//                                     <div className=" inner-absolute-pos ">
-//                                         <div className=" main-div ">
-//                                             <p className="help-tip-actual">
-//                                                 <span>Use the form below to add new tags by entering a name and choosing a color.</span>
+
+//                                  <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+//                                         title={
+//                                             <span>
+//                                                     <span>Use the form below to add new tags by entering a name and choosing a color.</span>
 //                                                 <span>The tag will be assigned to the selected search</span>
 //                                                 { this.props.mainParams.searches.length > 1 ? (
 //                                                     <span>es</span>
 //                                                 ) : null}.
-//                                             </p>
-//                                         </div>
-//                                     </div>
-//                                 </div>
+//                                             </span>
+//                                         }
+//                                     />
 //                             </div>
 //
 //                             <div style={ { position: "relative" } }>

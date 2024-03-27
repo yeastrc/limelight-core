@@ -11,6 +11,9 @@
 
 import React from "react";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export const ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_Component_Expanded_Default = false
 
@@ -134,44 +137,39 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                    <div style={ { whiteSpace: "nowrap" } } >
 
-                        {/*   2 column grid   */}
+                        {/*  Top Level Label  */}
+                        <span>
+                            Share Data
+                        </span>
 
-                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
+                        {/*  Tags to right of Label
 
-                            {/*  Top Level Label  */}
-                            <span>
-                                Share Data
+                            only show Public if both are true
+                         */}
+
+                        { (this.props.show_Public_Tag ) ? (
+                            <span className=" share-data-tag-container ">
+                                <span className=" share-data-tag share-data-tag-common ">
+                                    Public
+                                </span>
                             </span>
-
-                            {/*  Tags to right of Label
-
-                                only show Public if both are true
-                             */}
-
-                            { (this.props.show_Public_Tag ) ? (
-                                <span className=" share-data-tag-container ">
-                                    <span className=" share-data-tag share-data-tag-common ">
-                                        Public
-                                    </span>
+                        ) : (this.props.show_ReviewerMode_Tag ) ? (
+                            <span className=" share-data-tag-container ">
+                                <span className=" share-data-tag share-data-tag-common ">
+                                    Reviewer Mode
                                 </span>
-                            ) : (this.props.show_ReviewerMode_Tag ) ? (
-                                <span className=" share-data-tag-container ">
-                                    <span className=" share-data-tag share-data-tag-common ">
-                                        Reviewer Mode
-                                    </span>
+                            </span>
+                        ) : null }
+
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Enable or disable reviewer mode and public sharing for this project.
                                 </span>
-                            ) : null }
-                        </div>
-
-                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                                Enable or disable reviewer mode and public sharing for this project.
-                            </p>
-                        </div>
-
+                            }
+                        />
                     </div>
                 </div>
                 

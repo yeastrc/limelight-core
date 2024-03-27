@@ -87,6 +87,9 @@ import {
     FeatureDetection_ViewPage__SingularFeature_GetData_ForDataTable_Results
 } from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root_and_main_page_components/featureDetection_ViewPage__SingularFeature_GetData_ForDataTable";
 import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _CHART_WIDTH = 800
@@ -4028,17 +4031,15 @@ class Internal__PeakSelection_Component extends React.Component< Internal__PeakS
             <div>
                 <span>Peak Selection:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                A m/z is calculated for the selected ion based on the peptide sequence, any modifications, and the charge state.
-                                This m/z serves as the center of a m/z window of a specified width (see below).
-                                This option determines which peak in the MS1 spectrum is used to build the chromatogram.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            A m/z is calculated for the selected ion based on the peptide sequence, any modifications, and the charge state.
+                            This m/z serves as the center of a m/z window of a specified width (see below).
+                            This option determines which peak in the MS1 spectrum is used to build the chromatogram.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4129,15 +4130,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
             <div>
                 <span>Smoothing:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                Apply a smoothing algorithm to reduce noise in the generated chromatogram while retaining overall patterns.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            Apply a smoothing algorithm to reduce noise in the generated chromatogram while retaining overall patterns.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4161,16 +4160,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> None</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply no smoothing
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply no smoothing
+                            </span>
+                        }
+                    />
                 </label>
                 <span> </span>
                 <label>
@@ -4193,16 +4189,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> LOWESS</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
+                            </span>
+                        }
+                    />
                 </label>
                 <span> </span>
                 <label>
@@ -4225,16 +4218,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> Savitzky-Golay</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
+                            </span>
+                        }
+                    />
                 </label>
             </div>
         );
@@ -4283,17 +4273,15 @@ class Internal__MS1_Window_Size_Selection_Component extends React.Component< Int
             <div>
                 <span>MS1 Window Size:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                This is the size of the window to use when picking a peak from the MS1 scan to use to build the chromatogram.
-                                The window will be centered on the m/z calculated for this ion and
-                                will extend this distance both in the positive and negative direction.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            This is the size of the window to use when picking a peak from the MS1 scan to use to build the chromatogram.
+                            The window will be centered on the m/z calculated for this ion and
+                            will extend this distance both in the positive and negative direction.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4587,19 +4575,17 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                         >
                             <span>Retention time range (minutes):</span>
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            A chromatogram will be built for this range of retention times.
-                                            By default the range will be the retention time of the earliest SingularFeature (minus 30 seconds) to the retention time of the latest SingularFeature (plus 30 seconds).
-                                            When making the retention time range smaller,
-                                            the smoothing algorithm will be reapplied to the resulting chromatogram,
-                                            which does not occur when zooming in using the chromatogram graphical interface.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        A chromatogram will be built for this range of retention times.
+                                        By default the range will be the retention time of the earliest SingularFeature (minus 30 seconds) to the retention time of the latest SingularFeature (plus 30 seconds).
+                                        When making the retention time range smaller,
+                                        the smoothing algorithm will be reapplied to the resulting chromatogram,
+                                        which does not occur when zooming in using the chromatogram graphical interface.
+                                    </span>
+                                }
+                            />
 
                             <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
                             <input

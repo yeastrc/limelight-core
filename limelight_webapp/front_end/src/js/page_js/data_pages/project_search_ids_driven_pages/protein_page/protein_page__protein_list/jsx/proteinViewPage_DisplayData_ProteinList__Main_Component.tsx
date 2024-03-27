@@ -172,6 +172,9 @@ import {
 import {
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /**
  *
@@ -3097,17 +3100,13 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         >
                             Options
 
-                            <div style={ { display: "inline-block" } }>
-                                <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                    <div className=" inner-absolute-pos ">
-                                        <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                                General options for the protein list below.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        General options for the protein list below.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         <ProteinPage_ProteinGroupingFilterSelection_Component_Root
@@ -3150,15 +3149,13 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         >
                             Peptide Filters
 
-                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            These options will filter the peptides used to build the protein list.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        These options will filter the peptides used to build the protein list.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         { ( this.state.modificationMass_UserSelections_ComponentData ) ? (
@@ -3266,15 +3263,13 @@ export class ProteinViewPage_DisplayData_ProteinList__Main_Component extends Rea
                         >
                             Protein Filters
 
-                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            Filter the list of proteins below.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        Filter the list of proteins below.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         <ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component

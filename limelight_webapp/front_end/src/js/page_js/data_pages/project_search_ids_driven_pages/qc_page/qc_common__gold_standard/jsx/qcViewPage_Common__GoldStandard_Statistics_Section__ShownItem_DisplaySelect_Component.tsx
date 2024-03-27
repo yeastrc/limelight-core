@@ -10,6 +10,9 @@
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -108,17 +111,15 @@ export class QcViewPage_Common__GoldStandard_Statistics_Section__ShownItem_Displ
                                 >
                                     <span>Select Gold Standard Run:</span>
 
-                                    <div className=" help-tip-symbol--next-to-font-size-18px-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    The current gold standard entry and associated scan file are listed in the box to the right.
-                                                    If data on the page were derived from multiple scan files or if there are multiple gold standard entries,
-                                                    click the box to the right to open a select menu to select the desired gold standard data.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                        title={
+                                            <span>
+                                                The current gold standard entry and associated scan file are listed in the box to the right.
+                                                If data on the page were derived from multiple scan files or if there are multiple gold standard entries,
+                                                click the box to the right to open a select menu to select the desired gold standard data.
+                                            </span>
+                                        }
+                                    />
                                 </div>
                                 {/*  Column 2  */}
                                 <div>

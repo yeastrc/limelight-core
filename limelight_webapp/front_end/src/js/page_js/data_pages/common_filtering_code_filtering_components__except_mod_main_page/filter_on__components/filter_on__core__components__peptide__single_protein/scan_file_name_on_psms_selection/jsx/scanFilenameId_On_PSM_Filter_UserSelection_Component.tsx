@@ -17,6 +17,9 @@ import {
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_SingleSearch_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /**
  *
@@ -180,16 +183,13 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                     <div className=" filter-common-filter-label ">
                         Filter On Scan Filename:
 
-                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                            <div className=" inner-absolute-pos ">
-                                <div className=" main-div ">
-                                    <p className="help-tip-actual">
-                                        Only data from the selected scan file(s) will be used.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Only data from the selected scan file(s) will be used.
+                                </span>
+                            }
+                        />
                     </div>
 
                     <div className=" filter-common-selection-block " >

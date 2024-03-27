@@ -24,6 +24,9 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component} from
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _MAX_MODS_DISPLAY_NON_SELECTED__VARIABLE_MODS = 20;
@@ -371,17 +374,15 @@ export class ModificationMass_UserSelections_Variable_or_Open_Modifications exte
                 <div className=" filter-common-filter-label ">
                     Filter On { variable_Open_Label__CapitalFirstLetter } Modifications:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Filter peptides based on { variable_Open_Label__AllLowerCase } modifications. All peptides will contain all modifications selected with the “AND” option.
-                                    All peptides will contain at least one of the modifications selected with the “OR” option.
-                                    And no peptides will contain any modification selected with the “EXCLUDE” option.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Filter peptides based on { variable_Open_Label__AllLowerCase } modifications. All peptides will contain all modifications selected with the “AND” option.
+                                All peptides will contain at least one of the modifications selected with the “OR” option.
+                                And no peptides will contain any modification selected with the “EXCLUDE” option.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className="filter-common-selection-block" >

@@ -34,6 +34,9 @@ import {
 import {
 	add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_AllUser_Root_Component";
+import {
+	addToPage_INTERNAL__ProjectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help__Root_Component
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help_Component";
 
 /**
  * 
@@ -86,6 +89,8 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 		let mainPagesPopulateHeader = new MainPagesPopulateHeader();
 		
 		mainPagesPopulateHeader.initialize();
+
+		addToPage_INTERNAL__ProjectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help__Root_Component()
 
 		add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage({ propsValue: { projectIdentifier: this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot: undefined }})
 

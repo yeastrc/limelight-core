@@ -13,6 +13,9 @@
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {PeptideSequence_MissedCleavageCount_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_sequence_missed_cleavage_count/js/peptideSequence_MissedCleavageCount_UserSelections_StateObject";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 //  Delay after input change before call callback, to wait for additional keyboard input
 const CALL_CALLBACK_DELAY = 200;  // in milliseconds
@@ -288,16 +291,13 @@ export class PeptideSequence_MissedCleavageCount_UserSelections_Component extend
                 <div className=" filter-common-filter-label ">
                     Missed Cleavage Count:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Only Peptides with a missed cleavage count in the supplied range will be used.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Only Peptides with a missed cleavage count in the supplied range will be used.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >

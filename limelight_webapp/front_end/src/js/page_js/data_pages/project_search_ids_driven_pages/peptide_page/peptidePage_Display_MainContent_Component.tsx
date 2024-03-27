@@ -2952,20 +2952,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                                 {/*  Section Label  */}
 
                                 <div className=" section-label " style={ { gridColumn: "1/-1" } }>Search Filters
-
-                                    {/*
-                                    <div style={ { display: "inline-block" } }>
-                                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                Tooltip Text Here
-                                                    </p>
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    */}
                                 </div>
 
                                 { (
@@ -3003,20 +2989,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             {/*  Section Label  */}
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Modification Filters
-
-                                {/*
-                                <div style={ { display: "inline-block" } }>
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                            Tooltip Text Here
-                                                </p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                */}
                             </div>
 
                             <ModificationMass_UserSelections_Root
@@ -3040,20 +3012,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             {/*  Section Label  */}
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>PSM Filters
-
-                                {/*
-                                <div style={ { display: "inline-block" } }>
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                            Tooltip Text Here
-                                                </p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                */}
                             </div>
 
                             <ReporterIonMass_UserSelections
@@ -3104,20 +3062,6 @@ export class PeptidePage_Display_MainContent_Component extends React.Component< 
                             {/*  Section Label  */}
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
-
-                                {/*
-                                <div style={ { display: "inline-block" } }>
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                            Tooltip Text Here
-                                                </p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                */}
                             </div>
 
                             <PeptideUnique_UserSelection

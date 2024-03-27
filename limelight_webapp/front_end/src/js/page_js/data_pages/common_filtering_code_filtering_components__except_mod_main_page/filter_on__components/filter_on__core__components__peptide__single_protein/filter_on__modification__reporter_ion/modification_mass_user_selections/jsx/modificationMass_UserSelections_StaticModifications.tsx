@@ -18,6 +18,9 @@ import {
     ModificationMass_UserSelections_ComponentData_StaticModificationsData_Entry
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_UserSelections_ComponentData";
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -187,18 +190,16 @@ export class ModificationMass_UserSelections_StaticModifications extends React.C
                 <div className=" filter-common-filter-label ">
                     Filter On Static Modifications:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Filter peptides based on static modifications.
-                                    All peptides will contain all modifications selected with the “AND” option.
-                                    All peptides will contain at least one of the modifications selected with the “OR” option.
-                                    And no peptides will contain any modification selected with the “EXCLUDE” option.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Filter peptides based on static modifications.
+                                All peptides will contain all modifications selected with the “AND” option.
+                                All peptides will contain at least one of the modifications selected with the “OR” option.
+                                And no peptides will contain any modification selected with the “EXCLUDE” option.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >

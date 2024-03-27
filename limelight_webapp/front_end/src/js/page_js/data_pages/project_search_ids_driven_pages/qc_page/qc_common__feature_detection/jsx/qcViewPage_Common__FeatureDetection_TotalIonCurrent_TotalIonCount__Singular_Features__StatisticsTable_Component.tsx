@@ -36,6 +36,9 @@ import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder,
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -1077,15 +1080,13 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                                     <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
                                         All MS1
 
-                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                    <p className="help-tip-actual">
-                                                        Total MS1 ion current in scan file.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={
+                                                <span>
+                                                    Total MS1 ion current in scan file.
+                                                </span>
+                                            }
+                                        />
                                     </div>
                                     <div style={ { whiteSpace: "nowrap" } }>
                                         { this.state.displayTableContents.totalIonCurrent__All_MS_1_Scans.toExponential( _NumberToExponential ) }
@@ -1099,15 +1100,13 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                                     <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
                                         Predicted Features
 
-                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                    <p className="help-tip-actual">
-                                                        Total MS1 ion current for predicted features.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={
+                                                <span>
+                                                    Total MS1 ion current for predicted features.
+                                                </span>
+                                            }
+                                        />
                                     </div>
                                     <div style={ { whiteSpace: "nowrap" } }>
                                         { this.state.displayTableContents.totalIonCurrent__Singular_Predicted_Features.toExponential( _NumberToExponential ) }
@@ -1124,15 +1123,13 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                                             <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
                                                 Features w/ PSMs
 
-                                                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                                    <div className=" inner-absolute-pos ">
-                                                        <div className=" main-div ">
-                                                            <p className="help-tip-actual">
-                                                                Total MS1 ion current for predicted features with at least 1 PSM.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                    title={
+                                                        <span>
+                                                            Total MS1 ion current for predicted features with at least 1 PSM.
+                                                        </span>
+                                                    }
+                                                />
                                             </div>
                                             <div style={ { whiteSpace: "nowrap" } }>
                                                 { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs.toExponential( _NumberToExponential ) }
@@ -1146,15 +1143,13 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
                                             <div style={ { whiteSpace: "nowrap", marginRight: rowLabel_MarginRight, marginBottom: row_MarginBottom } }>
                                                 % MS1 w/ PSMs
 
-                                                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                                    <div className=" inner-absolute-pos ">
-                                                        <div className=" main-div ">
-                                                            <p className="help-tip-actual">
-                                                                Fraction of total MS1 ion current represented by a feature with at least 1 PSM.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                    title={
+                                                        <span>
+                                                            Fraction of total MS1 ion current represented by a feature with at least 1 PSM.
+                                                        </span>
+                                                    }
+                                                />
                                             </div>
                                             <div style={ { whiteSpace: "nowrap" } }>
                                                 { this.state.displayTableContents.totalIonCurrent__Features_With_PSMs_Percentage_Of_MS1_TotalIonCurrent.toFixed( _NumberToFixed ) }%

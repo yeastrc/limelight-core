@@ -86,7 +86,7 @@ export const limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Pr
     //  Return a new object on every call since it may be altered
     const tooltipProps__Remove_title_children: Limelight_Tooltip_React_Extend_Material_UI_Library__Main__TooltipProps__Remove_title_children = {
         disableInteractive: true,
-        followCursor: true,
+        followCursor: false,
         enterDelay: 0,
         leaveDelay: 0
     }

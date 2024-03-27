@@ -17,6 +17,9 @@ import {
     PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
     PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 //  Delay after input change before call callback, to wait for additional keyboard input
 const CALL_CALLBACK_DELAY = 200;  // in milliseconds
@@ -174,16 +177,13 @@ export class PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Compone
                 <div className=" filter-common-filter-label ">
                     Digestion filter:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Filter peptides based on protease digestion motif.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Filter peptides based on protease digestion motif.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >

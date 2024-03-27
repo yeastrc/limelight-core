@@ -13,6 +13,9 @@ import {
     CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries";
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -146,17 +149,15 @@ export class QcViewPage_Common__FeatureDetection_Statistics_Section__ShownItem_D
                                 >
                                     <span>Select Feature Detection Run:</span>
 
-                                    <div className=" help-tip-symbol--next-to-font-size-18px-text ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    The current feature detection run and associated scan file are listed in the box to the right.
-                                                    If data on the page were derived from multiple scan files or if there are multiple feature detection runs,
-                                                    click the box to the right to open a select menu to select the desired feature detection data.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                        title={
+                                            <span>
+                                                The current feature detection run and associated scan file are listed in the box to the right.
+                                                If data on the page were derived from multiple scan files or if there are multiple feature detection runs,
+                                                click the box to the right to open a select menu to select the desired feature detection data.
+                                            </span>
+                                        }
+                                    />
                                 </div>
                                 {/*  Column 2  */}
                                 <div>

@@ -13,6 +13,9 @@ import {
     searchSubGroup_Manage_GroupNames_UpdateServer,
     SearchSubGroup_Manage_GroupNames_UpdateServer_Entry
 } from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/searchSubGroup_Manage_GroupNames_UpdateServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH = 8;
@@ -628,15 +631,13 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                                     <div style={ { fontWeight: "bold", display: "inline-block", width : displayGroupName_ColumnHeaderWidth } }>
                                         Display<br/>Sub Search Name
 
-                                        <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                    <p className="help-tip-actual">
-                                                        Label that will be displayed on the website
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                            title={
+                                                <span>
+                                                    Label that will be displayed on the website
+                                                </span>
+                                            }
+                                        />
                                     </div>
                                     <div style={ { fontWeight: "bold", display: "inline-block" } }>
                                         Sub Search Name

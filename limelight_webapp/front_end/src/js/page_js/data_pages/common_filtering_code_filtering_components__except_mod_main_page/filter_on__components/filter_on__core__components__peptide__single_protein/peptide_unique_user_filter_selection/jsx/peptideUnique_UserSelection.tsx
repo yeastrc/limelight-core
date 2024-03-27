@@ -11,6 +11,9 @@ import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {PeptideUnique_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_ComponentData";
 import {PeptideUnique_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/peptide_unique_user_filter_selection/js/peptideUnique_UserSelection_StateObject";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /**
  *
@@ -161,16 +164,15 @@ export class PeptideUnique_UserSelection extends React.Component< PeptideUnique_
                 <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
                     Show only Unique Peptides:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Only peptides that map to a single protein will be shown.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Only peptides that map to a single protein will be shown.
+                            </span>
+                        }
+                    />
                 </div>
+
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}

@@ -29,6 +29,9 @@ import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsT
 import {SearchTag_ColorOptions_Constants} from "page_js/constants_across_webapp/search_tag_constants/SearchTag_ColorOptions_Constants";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /////
 
@@ -2320,17 +2323,15 @@ class Internal__New_SearchTag_Component extends React.Component< Internal__New_S
                         </>
                     ) : null }
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    <span>Use the form below to add new tags by entering a name and choosing a color.</span>
-                                    <span> </span>
-                                    <span>The tag will be added to the project and available to add to searches</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                <span>Use the form below to add new tags by entering a name and choosing a color.</span>
+                                <span> </span>
+                                <span>The tag will be added to the project and available to add to searches</span>
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div

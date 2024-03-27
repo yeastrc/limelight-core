@@ -14,6 +14,9 @@ import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass";
 import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_open_mod_mass_zero_not_open_mod_user_selection/js/modificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /**
  *
@@ -177,15 +180,15 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component 
                 <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
                     Treat Mass 0 As Unmodified:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    { "Any open modification mass that rounds to zero (>= -0.5 Da and < 0.5 Da) will not be treated as a modified peptide for purposes of defining distinct peptides, building modified peptide sequence strings, or any other purpose." }
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                <span>Any open modification mass that rounds to zero </span>
+                                <span style={ { whiteSpace: "nowrap" } }>{ "(>= -0.5 Da and < 0.5 Da)" }</span>
+                                <span>  will not be treated as a modified peptide for purposes of defining distinct peptides, building modified peptide sequence strings, or any other purpose.</span>
+                            </span>
+                        }
+                    />
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">

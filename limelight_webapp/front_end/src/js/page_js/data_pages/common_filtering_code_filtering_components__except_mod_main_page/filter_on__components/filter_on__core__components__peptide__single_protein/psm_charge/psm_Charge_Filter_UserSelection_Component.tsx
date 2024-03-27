@@ -14,6 +14,9 @@ import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Psm_Charge_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -231,16 +234,13 @@ export class Psm_Charge_Filter_UserSelection_Component extends React.Component< 
                     <div className=" filter-common-filter-label ">
                         Filter On Precursor Charge:
 
-                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                            <div className=" inner-absolute-pos ">
-                                <div className=" main-div ">
-                                    <p className="help-tip-actual">
-                                        Only PSMs with one of the checked precursor charges will be used.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Only PSMs with one of the checked precursor charges will be used.
+                                </span>
+                            }
+                        />
                     </div>
 
                     <div className=" filter-common-selection-block " >

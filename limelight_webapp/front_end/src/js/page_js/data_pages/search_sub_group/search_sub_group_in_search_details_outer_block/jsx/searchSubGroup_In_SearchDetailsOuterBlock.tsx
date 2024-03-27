@@ -22,6 +22,9 @@ import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 
@@ -418,16 +421,14 @@ export class SearchSubGroup_In_SingleProtein_FilterOn_Block_Root_Component exten
                     <div >
                         Filter On Sub Search:
 
-                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                            <div className=" inner-absolute-pos ">
-                                <div className=" main-div ">
-                                    <p className="help-tip-actual">
-                                        Only peptides from the selected sub searches will be used to build the protein list.
-                                        A sub search is typically a set of search results for a single run if multiple runs were combined for post processing.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Only peptides from the selected sub searches will be used to build the protein list.
+                                    A sub search is typically a set of search results for a single run if multiple runs were combined for post processing.
+                                </span>
+                            }
+                        />
                     </div>
                     { ( this.props.displayData.searchSubGroupEntryArray.length > 5 ) ? (
                         <div

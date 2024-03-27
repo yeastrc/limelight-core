@@ -14,11 +14,8 @@
 
 	<div class="top-level-label">
 
-		<div style=" display: grid; grid-template-columns: min-content min-content; ">
-		
-			<%--  2 column grid --%>
 
-		  <div style=" white-space: nowrap ">  <%--  column 1 --%>
+		  <div style=" white-space: nowrap ">
 		  
 		  	Project Information 
 		  	
@@ -51,16 +48,14 @@ While locked, no data may be changed, added to, or deleted from the project."
 						<img  src="static/images/icon-locked.png" class="icon-large ">
 			  	</c:when>	 
 		  	</c:choose>
+		  	
+		  	
+		  	<%--  Container for React Root for '?' with circle for help on hover --%>
+		  	
+		  	<span id="project_page_project_information_block___question_mark_with_circle__react_root_container"></span>
+		  	
 		  </div>
 		  
-  		  <div class="project-page--top-level-label-help-tip-symbol">  <%--  column 2  --%>
-		  		
-		  		<p class="top-level-label-help-tip-actual "> <%--  Displayed on hover of ? --%>
-		  			General information about this project.
-		  		</p>
-		  </div>
-		  
-   	  	</div>
 		  
 	  	<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed or webSessionAuthAccessLevel.projectOwnerIfProjectNotLockedAllowed }">
 		  <div id="project_just_locked_message" style="display: none; color: green;" >

@@ -58,6 +58,9 @@ import {
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 import { CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Scan_Summary_Data";
 import { commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _CHART_WIDTH = 800
@@ -1953,15 +1956,13 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                 <div style={ { marginBottom: 5 } }>
                                                     <span>Scan Filename:</span>
 
-                                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                                        <div className=" inner-absolute-pos ">
-                                                            <div className=" main-div ">
-                                                                <p className="help-tip-actual">
-                                                                    Select the scan file from which to pull MS1 data to build the chromatogram.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            <span>
+                                                                Select the scan file from which to pull MS1 data to build the chromatogram.
+                                                            </span>
+                                                        }
+                                                    />
 
                                                     <span>&nbsp;&nbsp;</span>
 
@@ -2027,15 +2028,13 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                         <div style={ { marginBottom: 5 } }>
                                             <span>Select ion:</span>
 
-                                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                                <div className=" inner-absolute-pos ">
-                                                    <div className=" main-div ">
-                                                        <p className="help-tip-actual">
-                                                            Select the combination of peptide (plus any modifications) and charge state for which to build a chromatogram.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                title={
+                                                    <span>
+                                                        Select the combination of peptide (plus any modifications) and charge state for which to build a chromatogram.
+                                                    </span>
+                                                }
+                                            />
 
                                             <span>&nbsp;&nbsp;</span>
 
@@ -2123,21 +2122,19 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                         Open Mod Rounding:
                                                     </span>
 
-                                                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                                        <div className=" inner-absolute-pos ">
-                                                            <div className=" main-div ">
-                                                                <p className="help-tip-actual">
-                                                                    Open modification masses are typically the difference between the observed mass for a peptide ion and the calculated mass for the peptide ion.
-                                                                    Since this value inherently includes error the exact values for the open modification associated with PSMs can vary slightly.
-                                                                    The chromatogram viewer rounds the open modification mass using the scale selected here,
-                                                                    and bins which PSMs are included in the chromatogram based on which PSMs have observed m/z values in that bin.
-                                                                    The calculated m/z that is the center of the window for peak finding the MS1 scan (see below) will be the mean observed m/z of the PSMs in this bin.
-                                                                    Very specific rounding (i.e., more decimal places) risks including only a subset of the PSMs that have a true underlying open modification.
-                                                                    Very general rounding (fewer decimal places) risks including PSMs with different underlying true open modifications.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                                        title={
+                                                            <span>
+                                                                Open modification masses are typically the difference between the observed mass for a peptide ion and the calculated mass for the peptide ion.
+                                                                Since this value inherently includes error the exact values for the open modification associated with PSMs can vary slightly.
+                                                                The chromatogram viewer rounds the open modification mass using the scale selected here,
+                                                                and bins which PSMs are included in the chromatogram based on which PSMs have observed m/z values in that bin.
+                                                                The calculated m/z that is the center of the window for peak finding the MS1 scan (see below) will be the mean observed m/z of the PSMs in this bin.
+                                                                Very specific rounding (i.e., more decimal places) risks including only a subset of the PSMs that have a true underlying open modification.
+                                                                Very general rounding (fewer decimal places) risks including PSMs with different underlying true open modifications.
+                                                            </span>
+                                                        }
+                                                    />
 
                                                     <span>&nbsp;</span>
 
@@ -3946,17 +3943,15 @@ class Internal__PeakSelection_Component extends React.Component< Internal__PeakS
             <div>
                 <span>Peak Selection:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                A m/z is calculated for the selected ion based on the peptide sequence, any modifications, and the charge state.
-                                This m/z serves as the center of a m/z window of a specified width (see below).
-                                This option determines which peak in the MS1 spectrum is used to build the chromatogram.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            A m/z is calculated for the selected ion based on the peptide sequence, any modifications, and the charge state.
+                            This m/z serves as the center of a m/z window of a specified width (see below).
+                            This option determines which peak in the MS1 spectrum is used to build the chromatogram.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4047,15 +4042,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
             <div>
                 <span>Smoothing:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                Apply a smoothing algorithm to reduce noise in the generated chromatogram while retaining overall patterns.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            Apply a smoothing algorithm to reduce noise in the generated chromatogram while retaining overall patterns.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4079,15 +4072,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> None</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply no smoothing
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply no smoothing
+                            </span>
+                        }
+                    />
 
                 </label>
                 <span> </span>
@@ -4111,15 +4102,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> LOWESS</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
+                            </span>
+                        }
+                    />
 
                 </label>
                 <span> </span>
@@ -4143,15 +4132,13 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                     />
                     <span> Savitzky-Golay</span>
 
-                    <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
+                            </span>
+                        }
+                    />
 
                 </label>
             </div>
@@ -4201,17 +4188,15 @@ class Internal__MS1_Window_Size_Selection_Component extends React.Component< Int
             <div>
                 <span>MS1 Window Size:</span>
 
-                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                    <div className=" inner-absolute-pos ">
-                        <div className=" main-div ">
-                            <p className="help-tip-actual">
-                                This is the size of the window to use when picking a peak from the MS1 scan to use to build the chromatogram.
-                                The window will be centered on the m/z calculated for this ion and
-                                will extend this distance both in the positive and negative direction.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            This is the size of the window to use when picking a peak from the MS1 scan to use to build the chromatogram.
+                            The window will be centered on the m/z calculated for this ion and
+                            will extend this distance both in the positive and negative direction.
+                        </span>
+                    }
+                />
 
                 <span>&nbsp;</span>
 
@@ -4505,19 +4490,17 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                         >
                             <span>Retention time range (minutes):</span>
 
-                            <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            A chromatogram will be built for this range of retention times.
-                                            By default the range will be the retention time of the earliest PSM (minus 30 seconds) to the retention time of the latest PSM (plus 30 seconds).
-                                            When making the retention time range smaller,
-                                            the smoothing algorithm will be reapplied to the resulting chromatogram,
-                                            which does not occur when zooming in using the chromatogram graphical interface.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        A chromatogram will be built for this range of retention times.
+                                        By default the range will be the retention time of the earliest PSM (minus 30 seconds) to the retention time of the latest PSM (plus 30 seconds).
+                                        When making the retention time range smaller,
+                                        the smoothing algorithm will be reapplied to the resulting chromatogram,
+                                        which does not occur when zooming in using the chromatogram graphical interface.
+                                    </span>
+                                }
+                            />
 
                             <span style={ { marginLeft: _MARGIN_LEFT_AFTER_HELP_SYMBOL } }> Start: </span>
                             <input

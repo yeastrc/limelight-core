@@ -99,6 +99,9 @@ import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/co
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_Component";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -2360,17 +2363,15 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                 <div className=" show-as-single-search-label " >
                                     View as Single Search?
 
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                    This search contains sub-searches--multiple individual searches analyzed by a single post-processing step (e.g. running percolator once on multiple comet searches).
-                                                    When not checked, the results of each sub-search will be displayed separately where appropriate.
-                                                    When checked, all sub-searches are collated together and treated as a single search.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                        title={
+                                            <span>
+                                                This search contains sub-searches--multiple individual searches analyzed by a single post-processing step (e.g. running percolator once on multiple comet searches).
+                                                When not checked, the results of each sub-search will be displayed separately where appropriate.
+                                                When checked, all sub-searches are collated together and treated as a single search.
+                                            </span>
+                                        }
+                                    />
                                 </div>
                                 <div className="  filter-common-selection-block   ">
                                     <input
@@ -2396,20 +2397,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                 {/*  Section Label  */}
 
                                 <div className=" section-label " style={ { gridColumn: "1/-1" } }>Search Filters
-
-                                    {/*
-                                    <div style={ { display: "inline-block" } }>
-                                        <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                            <div className=" inner-absolute-pos ">
-                                                <div className=" main-div ">
-                                                <p className="help-tip-actual">
-                                                Tooltip Text Here
-                                                    </p>
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    */}
                                 </div>
 
                                 { (
@@ -2447,20 +2434,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             {/*  Section Label  */}
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Modification Filters
-
-                                {/*
-                                <div style={ { display: "inline-block" } }>
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                            Tooltip Text Here
-                                                </p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                */}
                             </div>
 
                             <ModificationMass_UserSelections_Root
@@ -2489,20 +2462,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                                     {/*  Section Label  */}
 
                                     <div className=" section-label " style={ { gridColumn: "1/-1" } }>PSM Filters
-
-                                        {/*
-                                            <div style={ { display: "inline-block" } }>
-                                                <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                                    <div className=" inner-absolute-pos ">
-                                                        <div className=" main-div ">
-                                                        <p className="help-tip-actual">
-                                                        Tooltip Text Here
-                                                            </p>
-                                                            </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            */}
                                     </div>
 
                                     <ReporterIonMass_UserSelections
@@ -2548,20 +2507,6 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                             {/*  Section Label  */}
 
                             <div className=" section-label " style={ { gridColumn: "1/-1" } }>Peptide and Protein Filters
-
-                                {/*
-                                <div style={ { display: "inline-block" } }>
-                                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                        <div className=" inner-absolute-pos ">
-                                            <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                            Tooltip Text Here
-                                                </p>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                */}
                             </div>
 
                             <PeptideUnique_UserSelection

@@ -11,6 +11,9 @@
 
 import React from "react";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export const ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interaction_Common_TopLevelLabel_Component_Expanded_Default = false
 
@@ -131,25 +134,19 @@ export class ProjectPage_ScanFiles_View_Section_AllUsers_InclPublicUser_Interact
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                    <div style={ { whiteSpace: "nowrap" } } >
 
-                        {/*   2 column grid   */}
-
-                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
-
-                            {/*  Top Level Label  */}
-                            <span>
-                                View Scan Files
-                            </span>
-
-                        </div>
-
-                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                                View scan files for the search results in this project.
-                            </p>
-                        </div>
+                        {/*  Top Level Label  */}
+                        <span>
+                            View Scan Files
+                        </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    View scan files for the search results in this project.
+                                </span>
+                            }
+                        />
 
                     </div>
                 </div>

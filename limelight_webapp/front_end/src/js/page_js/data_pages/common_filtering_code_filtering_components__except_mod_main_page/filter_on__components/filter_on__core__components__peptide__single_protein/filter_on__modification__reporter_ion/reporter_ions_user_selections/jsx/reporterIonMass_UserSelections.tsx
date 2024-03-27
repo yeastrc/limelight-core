@@ -16,6 +16,9 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import { Filter_selectionItem_Any_All_SelectionItem_Container } from '../../filter_selectionItem_Any_All_SelectionItem/jsx/filter_selection_item__any__all__selection_item__container';
 import {ModificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_reporter_ion__user_selections__coordinator/js/modificationMass_ReporterIon__UserSelections__Coordinated_ReactStateData_Class";
 import {SearchSubGroup_In_SearchDetailsAndFilter_Component_DisplayData} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/jsx/searchSubGroup_In_SearchDetailsOuterBlock";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 /**
@@ -134,18 +137,16 @@ export class ReporterIonMass_UserSelections extends React.Component< ReporterIon
                 <div className=" filter-common-filter-label ">
                     Filter On Reporter Ions:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Filter peptides based on reporter ions.
-                                    All peptides will contain all reporter ions selected with the “AND” option.
-                                    All peptides will contain at least one of the reporter ions selected with the “OR” option.
-                                    And no peptides will contain any reporter ion selected with the “EXCLUDE” option.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Filter peptides based on reporter ions.
+                                All peptides will contain all reporter ions selected with the “AND” option.
+                                All peptides will contain at least one of the reporter ions selected with the “OR” option.
+                                And no peptides will contain any reporter ion selected with the “EXCLUDE” option.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className="filter-common-selection-block" >

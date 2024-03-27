@@ -9,6 +9,9 @@
 
 import React from "react";
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export const ProjectPage_SavedViewsSection_Common_TopLevelLabel_Component_Expanded_Default = true
 
@@ -129,27 +132,23 @@ export class ProjectPage_SavedViewsSection_Common_TopLevelLabel_Component extend
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                    <div style={ { whiteSpace: "nowrap" } } >
 
-                        {/*   2 column grid   */}
+                        {/*  Top Level Label  */}
+                        <span>
+                            Highlighted Results
+                        </span>
 
-                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
-
-                            {/*  Top Level Label  */}
-                            <span>
-                                Highlighted Results
-                            </span>
-
-                        </div>
-
-                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                                Links to views of data in Limelight that the project owner wishes to highlight.
-                            </p>
-                        </div>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Links to views of data in Limelight that the project owner wishes to highlight.
+                                </span>
+                            }
+                        />
 
                     </div>
+
                 </div>
 
                 <div className="top-level-label-bottom-border"></div>

@@ -13,6 +13,9 @@
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {Scan_RetentionTime_MZ_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_retention_time_precursor_m_z_selection/js/scan_RetentionTime_MZ_UserSelections_StateObject";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 //  Delay after input change before call callback, to wait for additional keyboard input
 const CALL_CALLBACK_DELAY = 200;  // in milliseconds
@@ -386,16 +389,13 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
                 <div className=" filter-common-filter-label ">
                     Filter on Retention Time (Minutes):
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Only PSMs with a retention time in the supplied range will be used.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Only PSMs with a retention time in the supplied range will be used.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >
@@ -436,16 +436,13 @@ export class Scan_RetentionTime_MZ_UserSelections_Component extends React.Compon
                 <div className=" filter-common-filter-label ">
                     Filter on Precursor m/z:
 
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    Only PSMs with a MS1 precursor ion with an observed m/z in the supplied range will be used.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                        title={
+                            <span>
+                                Only PSMs with a MS1 precursor ion with an observed m/z in the supplied range will be used.
+                            </span>
+                        }
+                    />
                 </div>
 
                 <div className=" filter-common-selection-block " >

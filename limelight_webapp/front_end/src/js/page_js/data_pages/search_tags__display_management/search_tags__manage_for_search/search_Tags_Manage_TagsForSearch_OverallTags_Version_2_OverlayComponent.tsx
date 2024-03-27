@@ -29,6 +29,9 @@ import {
 } from "page_js/data_pages/search_tags__display_management/search_tags__manage_for_project/search_tag_categories___get__for__project_id__or__project_id_from_project_search_ids";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 /////
 
@@ -573,7 +576,7 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
                         <div
                             style={ { position: "relative", marginTop: 5 } }
                         >
-                            <div style={ { marginBottom: 5, fontWeight: "bold" } }>
+                            <div style={ { marginBottom: 10, fontWeight: "bold", fontSize: 18 } }>
 
                                 <span>Click to add/remove tags from search</span>
                                 { this.props.mainParams.searches.length > 1 ? (
@@ -581,32 +584,31 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
                                 ) : null}
                                 <span>:</span>
 
-                                <div className=" help-tip-symbol--next-to-standard-font-size-text ">
-                                    <div className=" inner-absolute-pos ">
-                                        <div className=" main-div ">
-                                            <p className="help-tip-actual">
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
 
-                                                <span>Click on a tag to assign or unassign the tag to the select search</span>
-                                                { this.props.mainParams.searches.length > 1 ? (
-                                                    <span>es</span>
-                                                ) : null}
-                                                <span>.</span>
-                                                <br/>
+                                            <span>Click on a tag to assign or unassign the tag to the select search</span>
+                                            { this.props.mainParams.searches.length > 1 ? (
+                                                <span>es</span>
+                                            ) : null}
+                                            <span>.</span>
+                                            <br/>
 
-                                                <span>Assigned tags have a solid border.</span>
-                                                <br/>
+                                            <span>Assigned tags have a solid border.</span>
+                                            <br/>
 
-                                                { this.props.mainParams.searches.length > 1 ? (
-                                                    <span>
-                                                        A dashed border indicates a tag is assigned to only some of the searches.<br/>
-                                                        Clicking it will assign it to all selected searches.
-                                                        Clicking again will unassign it from all selected searches.
-                                                    </span>
-                                                ) : null}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                                            { this.props.mainParams.searches.length > 1 ? (
+                                                <span>
+                                                    A dashed border indicates a tag is assigned to only some of the searches.<br/>
+                                                    Clicking it will assign it to all selected searches.
+                                                    Clicking again will unassign it from all selected searches.
+                                                </span>
+                                            ) : null}
+                                        </span>
+                                    }
+                                />
+
                             </div>
 
                             <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr" } }>

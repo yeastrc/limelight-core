@@ -162,6 +162,9 @@ import {
 import {
     proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId
 } from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_root/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData_Compute_NSAF__Using_Adjusted_Spectral_Count_ABACUS__Per_ExperimentConditionId";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 ////
@@ -2596,15 +2599,13 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         >
                             Options
 
-                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            General options for the protein list below.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        General options for the protein list below.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         <ProteinPage_ProteinGroupingFilterSelection_Component_Root
@@ -2637,15 +2638,13 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         >
                             Peptide Filters
 
-                            <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                <div className=" inner-absolute-pos ">
-                                    <div className=" main-div ">
-                                        <p className="help-tip-actual">
-                                            These options will filter the peptides used to build the protein list.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        These options will filter the peptides used to build the protein list.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         <ModificationMass_UserSelections_Root
@@ -2735,17 +2734,13 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                         >
                             Protein Filters
 
-                            <div style={ { display: "inline-block" } }>
-                                <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                                    <div className=" inner-absolute-pos ">
-                                        <div className=" main-div ">
-                                            <p className="help-tip-actual">
-                                                Filter the list of proteins below.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        Filter the list of proteins below.
+                                    </span>
+                                }
+                            />
                         </div>
 
                         <ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_Component

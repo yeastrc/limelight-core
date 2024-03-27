@@ -122,17 +122,6 @@ export class Psm_Exclude_IndependentDecoy_PSMs_UserSelection extends React.Compo
 
                 <div className=" filter-common-filter-label " style={ { marginBottom : marginBottomSize } }>
                     Exclude Independent Decoys:
-                    {/*
-                    <div className=" filter-common-block-selection--section-label--help-tip-symbol ">
-                        <div className=" inner-absolute-pos ">
-                            <div className=" main-div ">
-                                <p className="help-tip-actual">
-                                    .
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    */}
                 </div>
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">

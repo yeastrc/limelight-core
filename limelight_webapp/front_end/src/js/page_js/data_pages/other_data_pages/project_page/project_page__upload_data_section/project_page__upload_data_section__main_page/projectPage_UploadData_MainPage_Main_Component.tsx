@@ -14,6 +14,9 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
 import {ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const ProjectPage_UploadData_MainPage__TopLevelLabel_Component_Expanded_Default = false;
@@ -372,38 +375,33 @@ export class ProjectPage_UploadData_MainPage__TopLevelLabel_Component extends Re
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { display: "grid", gridTemplateColumns: "min-content min-content" } }>
+                    <div style={ { whiteSpace: "nowrap" } } >
 
-                        {/*   2 column grid   */}
+                        {/*  Top Level Label  */}
+                        <span>
+                            Upload Data
+                        </span>
 
-                        <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
+                        {/*  Text to right of Label
 
-                            {/*  Top Level Label  */}
-                            <span>
-                                Upload Data
+                            only show pending count if has value
+                         */}
+
+                        { ( this.props.pendingCount !== undefined && this.props.pendingCount !== null ) ? (
+                            <span style={ { whiteSpace: "nowrap" } } className="  ">
+                                <span> (Pending </span>
+                                <span>{ this.props.pendingCount }</span>
+                                <span>)</span>
                             </span>
+                        ) : null }
 
-                            {/*  Text to right of Label
-
-                                only show pending count if has value
-                             */}
-
-                            { ( this.props.pendingCount !== undefined && this.props.pendingCount !== null ) ? (
-                                <span style={ { whiteSpace: "nowrap" } } className="  ">
-                                    <span> (Pending </span>
-                                    <span>{ this.props.pendingCount }</span>
-                                    <span>)</span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Upload search results to this project and view upload history.
                                 </span>
-                            ) : null }
-                        </div>
-
-                        <div className=" project-page--top-level-label-help-tip-symbol">   {/*  column 2  */}
-
-                            <p className="top-level-label-help-tip-actual ">  {/*   Displayed on hover of ?  */}
-                                Upload search results to this project and view upload history.
-                            </p>
-                        </div>
-
+                            }
+                        />
                     </div>
                 </div>
 
