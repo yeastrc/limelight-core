@@ -231,22 +231,31 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                     </span>
                 </div>
 
-                <div style={ { paddingTop: paddingTop_BothTopLevelDiv } }>
+                <div style={ { display: "flex", flexWrap: "wrap", rowGap: 2, columnGap: 10,  paddingTop: paddingTop_BothTopLevelDiv } }>
+
+                    {/*  Flexbox with wrap  */}
 
                     { ( this.props.showSequenceCoverageOption ) ? (
-                        <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={ this.props.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() }
-                                onChange={ this._sequenceCoverage_Selected_Changed_BindThis }
+                        <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={ this.props.proteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayContents_UserSelections_StateObject.get_SequenceCoverage_Selected() }
+                                    onChange={ this._sequenceCoverage_Selected_Changed_BindThis }
+                                />
+                                <span>Sequence Coverage</span>
+                            </label>
+                            <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                title={
+                                    <span>
+                                        Fraction of the protein sequence that is covered by a detected peptide.
+                                    </span>
+                                }
                             />
-                            <span>Sequence Coverage</span>
-                        </label>
-                    </span>
+                        </div>
                     ) : null }
 
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -255,8 +264,15 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>PSM Count</span>
                         </label>
-                    </span>
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    The number of Peptide Spectrum Matches for the protein. This is calculated as the sum of all scans that identified each peptide for this protein.
+                                </span>
+                            }
+                        />
+                    </div>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -265,9 +281,16 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>NSAF</span>
                         </label>
-                    </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Normalized Spectral Abundance Factor for a protein. This is calculated as: SAF = PSM count / length of protein. Then, NSAF = SAF / sum(SAF for all proteins in the sample).
+                                </span>
+                            }
+                        />
+                    </div>
 
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -276,9 +299,18 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>Adjusted Spectral Count (ABACUS)</span>
                         </label>
-                    </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    The adjusted spectral count for a protein as calculated by ABACUS (<a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/21360675/">https://pubmed.ncbi.nlm.nih.gov/21360675/</a> ).
+                                    At a high level, this is calculated as the number of distinct scans unique to a protein plus the sum of the adjusted scan weight for scans not unique to a protein,
+                                    which is calculated using how many other proteins a scan identified and how many scans are unique to those proteins.
+                                </span>
+                            }
+                        />
+                    </div>
 
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -287,9 +319,16 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>NSAF Using Adjusted Spectral Count (ABACUS)</span>
                         </label>
-                    </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    This is calculated as: SAF = adjusted spectral count / length of protein. Then, NSAF = SAF / sum(SAF for all proteins in the sample).
+                                </span>
+                            }
+                        />
+                    </div>
 
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -298,8 +337,15 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>Distinct Peptide Count</span>
                         </label>
-                    </span>
-                    <span style={ { paddingRight: 10, whiteSpace: "nowrap" } }>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    The number of distinct peptides found for a protein. A distinct peptide typically includes protein sequence and modifications, but may be customized by the “Distinct Peptide Includes” option.
+                                </span>
+                            }
+                        />
+                    </div>
+                    <div style={ { flexShrink: 0, whiteSpace: "nowrap" } }>
                         <label>
                             <input
                                 type="checkbox"
@@ -308,7 +354,14 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             />
                             <span>Unique Peptide Count</span> {/* For distinctPeptideCountSelected but labeled 'Open Modifications' */ }
                         </label>
-                    </span>
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    The number of distinct peptides that are uniquely found in the protein (not found in any other protein).
+                                </span>
+                            }
+                        />
+                    </div>
                 </div>
             </React.Fragment>
         );
