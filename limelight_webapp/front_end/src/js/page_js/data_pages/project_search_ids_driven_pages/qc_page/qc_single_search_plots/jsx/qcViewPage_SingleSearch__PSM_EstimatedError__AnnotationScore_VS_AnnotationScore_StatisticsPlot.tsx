@@ -19,7 +19,6 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {
     CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder,
@@ -658,12 +657,9 @@ export class QcViewPage_SingleSearch__PSM_EstimatedError__AnnotationScore_VS_Ann
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
                 const annotationType_Name_Score_Y : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_Y );
 
-                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
-                const annotationType_Name_Score_Y_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_Y );
-
                 const chartTitle = "Annotation Score Error Quantile Plot" + "<br><sup>Note: Data in plot are not filtered.</sup>";
-                const chart_X_Axis_Label = "Error Quantiles: " + annotationType_Name_Score_X_HTMLEncoded;
-                let chart_Y_Axis_Label = "Error Quantiles: " + annotationType_Name_Score_Y_HTMLEncoded;
+                const chart_X_Axis_Label = "Error Quantiles: " + annotationType_Name_Score_X;
+                let chart_Y_Axis_Label = "Error Quantiles: " + annotationType_Name_Score_Y;
 
                 const chart_Layout = qcPage_StandardChartLayout({
                     chartTitle,

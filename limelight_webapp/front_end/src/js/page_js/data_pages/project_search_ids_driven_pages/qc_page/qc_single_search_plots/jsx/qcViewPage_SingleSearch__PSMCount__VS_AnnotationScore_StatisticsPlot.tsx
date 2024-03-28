@@ -23,7 +23,6 @@ import {
     QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {QcPage_CreatingPlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_CreatingPlot_BlockCover";
 import {QcPage_ClickPlot_ForInteractivePlot_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
@@ -779,12 +778,9 @@ export class QcViewPage_SingleSearch__PSMCount__VS_AnnotationScore_StatisticsPlo
 
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
-                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
-
-
-                const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X_HTMLEncoded + "<br><sup>Note: Data in plot are not filtered.</sup>";
-                let chart_X_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
-                let chart_Y_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
+                const chartTitle = "Cumulative PSM Count vs " + annotationType_Name_Score_X + "<br><sup>Note: Data in plot are not filtered.</sup>";
+                let chart_X_Axis_Label = annotationType_Name_Score_X;
+                let chart_Y_Axis_Label = annotationType_Name_Score_X;
 
                 if ( this.props.transform_Score === QcViewPage_SingleSearch__PSMCount_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
 

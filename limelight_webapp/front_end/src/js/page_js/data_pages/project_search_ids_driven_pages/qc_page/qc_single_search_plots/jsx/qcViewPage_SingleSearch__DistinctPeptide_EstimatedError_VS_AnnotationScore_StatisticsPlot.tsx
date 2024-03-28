@@ -17,7 +17,6 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {open_DistinctPeptide_EstimatedError_VS_AnnotationScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__DistinctPeptide_EstimatedError_VS_AnnotationScore_OverlayContainer";
 import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
@@ -961,8 +960,6 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError_VS_Annotati
 
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
-                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
-
                 //  Colors for Bars
                 const qcViewPage__ComputeColorsForCategories = new QcViewPage__ComputeColorsForCategories({ categoryCount: 1 });
 
@@ -993,7 +990,7 @@ export class QcViewPage_SingleSearch__DistinctPeptide_EstimatedError_VS_Annotati
                 ];
 
                 const chartTitle = "PSM Estimated Error vs Best PSM Annotation Score" + "<br><sup>Note: Data in plot are not filtered.</sup>";
-                const chart_X_Axis_Label = "Best PSM Score: " + annotationType_Name_Score_X_HTMLEncoded;
+                const chart_X_Axis_Label = "Best PSM Score: " + annotationType_Name_Score_X;
                 let chart_Y_Axis_Label = "estimated error";
 
                 const chart_Layout = qcPage_StandardChartLayout({

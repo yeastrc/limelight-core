@@ -19,7 +19,6 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_sections/jsx/qc_SingleSearch_AA__Root_DisplayBlock";
 import {AnnotationTypeItem} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 import {open_PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErrorByAnnScore_OverlayContainer";
 import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
@@ -821,12 +820,10 @@ export class QcViewPage_SingleSearch__PSM_CumulativeCorrectCount_VS_EstimatedErr
 
                     const annotationType_Name_Score : string = this._get_AnnotationTypeName_SearchProgramName( annotationTypeId );
 
-                    const annotationType_Name_Score_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score );
-
                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( annotationTypeId_Array_Index );
 
                     const chart_Entry =    {
-                        name: annotationType_Name_Score_HTMLEncoded,
+                        name: annotationType_Name_Score,
                         x: chart_X,
                         y: chart_Y,
                         type: 'scattergl',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'

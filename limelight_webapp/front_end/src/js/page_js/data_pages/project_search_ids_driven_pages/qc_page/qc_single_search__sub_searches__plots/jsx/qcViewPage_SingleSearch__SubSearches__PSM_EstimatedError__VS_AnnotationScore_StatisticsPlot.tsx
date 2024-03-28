@@ -22,7 +22,6 @@ import {
     SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {qcViewPage_SingleSearch__SubSearches__Open_PSM_EstimatedError_VS_AnnotationScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_VS_AnnotationScore_OverlayContainer";
@@ -719,9 +718,6 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
 
                 const annotationType_Name_Score_X : string = this._get_AnnotationTypeName_SearchProgramName( this.props.annotationTypeId_Score_X );
 
-                const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
-
-
                 //  Final Array of Chart Traces
                 const chartData_MainTraces_Array = [];
 
@@ -909,7 +905,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
                             const tooltipContent =
                                 "<b>Sub Search</b>: " + chart_Data_ForSearch__TraceName +
                                 '<br><b>PSM Estimated Error</b>: ' + chartDataValue.toFixed( 3 ) +
-                                '<br>' + annotationType_Name_Score_X_HTMLEncoded + ' ' + comparisonDirectionString + ' ' + bucketStartOrEndForDisplayNumber.toFixed( 4 );
+                                '<br>' + annotationType_Name_Score_X + ' ' + comparisonDirectionString + ' ' + bucketStartOrEndForDisplayNumber.toFixed( 4 );
 
                             chart_Bars_Tooltips.push( tooltipContent );
                         }
@@ -948,7 +944,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError__VS_Annota
                 }
 
                 const chartTitle = "Error Estimation from Independent Decoys" + "<br><sup>Note: Data in plot are not filtered.</sup>";
-                const chart_X_Axis_Label = "PSM Score: " + annotationType_Name_Score_X_HTMLEncoded;
+                const chart_X_Axis_Label = "PSM Score: " + annotationType_Name_Score_X;
                 let chart_Y_Axis_Label = "estimated error";
 
                 const chart_Layout = qcPage_StandardChartLayout({

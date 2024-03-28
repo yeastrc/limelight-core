@@ -26,7 +26,6 @@
 //     qcViewPage_SingleSearch__Add_ClickListener_OnFirstSVG_InPlotlyInsertedDOM_CallbackFcn,
 //     qcViewPage_SingleSearch__Remove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM
 // } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/js/qcViewPage_SingleSearch__AddRemove_ClickListener_OnFirstSVG_InPlotlyInsertedDOM";
-// import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 // import {QcViewPage__ComputeColorsForCategories} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
 // import {open_PSM_CumulativeErrorCount_VS_PSM_RankByAnnScore_OverlayContainer} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__PSM_CumulativeErrorCount_VS_PSM_RankByAnnScore_OverlayContainer";
 // import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
@@ -729,12 +728,10 @@
 //
 //                     const annotationType_Name_Score : string = this._get_AnnotationTypeName_SearchProgramName( annotationTypeId );
 //
-//                     const annotationType_Name_Score_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score );
-//
 //                     const chart_Color = "#" + qcViewPage__ComputeColorsForCategories.get_Color_AsHexString_By_Index( annotationTypeId_Array_Index );
 //
 //                     const chart_Entry =    {
-//                         name: annotationType_Name_Score_HTMLEncoded,
+//                         name: annotationType_Name_Score,
 //                         x: chart_X,
 //                         y: chart_Y,
 //                         type: 'scatter',  //  NO 'chart_X_Axis_IsTypeCategory: true' in Layout when 'scatter'

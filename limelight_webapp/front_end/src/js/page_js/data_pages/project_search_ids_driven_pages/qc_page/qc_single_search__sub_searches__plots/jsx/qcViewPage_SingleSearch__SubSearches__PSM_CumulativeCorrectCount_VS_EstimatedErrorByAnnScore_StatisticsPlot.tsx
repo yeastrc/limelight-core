@@ -21,7 +21,6 @@ import {
     SearchSubGroups_EntryFor_SearchSubGroup__DataPageStateManagerEntry
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
-import {limelight__Encode_TextString_Escaping_HTML} from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import {CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__FastaFileStatistics";
 import {QcViewPage_CommonAll_Constants} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import {Estimated_Error__From_IndependentDecoy__CommonCode} from "page_js/data_pages/data_pages_common/estimated_Error__From_IndependentDecoy__CommonCode";
@@ -859,7 +858,7 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_CumulativeCorrectCount_VS
 
                         const chart_Trace_Color = "#" + qcViewPage_SingleSearch__SubSearches__ComputeColorsFor_SubSearches.get_Color_AsHexString_By_SearchSubGroupId(searchSubGroup.searchSubGroup_Id)
 
-                        const chart_Data_TraceName = limelight__Encode_TextString_Escaping_HTML( searchSubGroup.subgroupName_Display ) + ": " + limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score );;
+                        const chart_Data_TraceName = searchSubGroup.subgroupName_Display + ": " + annotationType_Name_Score
 
                         // https://plotly.com/javascript/reference/scattergl/#scattergl-line-dash
                         let chart_LineType_dash_property = undefined; // Type: enumerated , one of ( "dash" | "dashdot" | "dot" | "longdash" | "longdashdot" | "solid" )

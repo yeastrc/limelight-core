@@ -20,7 +20,6 @@ import {
 import { QcViewPage_CommonAll_Constants } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage_CommonAll_Constants";
 import { qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_data_filter/qcPage_DataFromServer_SingleSearch_PsmTblData_Filter_PeptideDistinct_Array";
 import { QcViewPage__ComputeColorsForCategories } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_all/qcViewPage__ComputeColorsForCategories";
-import { limelight__Encode_TextString_Escaping_HTML } from "page_js/common_all_pages/limelight__Encode_TextString_Escaping_HTML";
 import { QcPage_ClickPlot_ForInteractivePlot_BlockCover } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ClickPlot_ForInteractivePlot_BlockCover";
 import {
     QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
@@ -584,12 +583,6 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             console.log( "PSMCount__AnnotationScore_VS_AnnotationScore: min_Score_X: " + min_Score_X + ", max_Score_X: " + max_Score_X + ", min_Score_Y: " + min_Score_Y + ", max_Score_Y: " + max_Score_Y );
         }
 
-
-        const annotationType_Name_Score_X_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_X );
-
-        const annotationType_Name_Score_Y_HTMLEncoded = limelight__Encode_TextString_Escaping_HTML( annotationType_Name_Score_Y );
-
-
         let chart_Data = undefined;
 
         if ( this.props.propsValue.chartType === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__ChartType.CHART_TYPE_2D_DENSITY_PLOT ) {
@@ -600,8 +593,8 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
                     x: chart_X_2D_DensityPlot,
                     y: chart_Y_2D_DensityPlot,
                     hovertemplate:  //  Added '<extra></extra>' to remove secondary box with trace name
-                        '<b>' + annotationType_Name_Score_Y_HTMLEncoded + '</b>: %{y}' +
-                        '<br><b>' + annotationType_Name_Score_X_HTMLEncoded + '</b>: %{x}' +
+                        '<b>' + annotationType_Name_Score_Y + '</b>: %{y}' +
+                        '<br><b>' + annotationType_Name_Score_X + '</b>: %{x}' +
                         '<br><b>PSM Count</b>: %{z}<extra></extra>',
                     ncontours: 20,
                     colorscale: 'Hot',
@@ -673,8 +666,8 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
             showlegend_Chart = true;
         }
 
-        let chart_X_Axis_Label = annotationType_Name_Score_X_HTMLEncoded;
-        let chart_Y_Axis_Label = annotationType_Name_Score_Y_HTMLEncoded
+        let chart_X_Axis_Label = annotationType_Name_Score_X;
+        let chart_Y_Axis_Label = annotationType_Name_Score_Y
 
         if ( this.props.propsValue.transform_Score_X === QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationScore_OverlayContainer__TransformScoreChoice.LOG_10 ) {
             chart_X_Axis_Label = "Log10(" + chart_X_Axis_Label + ")";
@@ -693,7 +686,7 @@ export class QcViewPage_SingleSearch__PSMCount__AnnotationScore_VS_AnnotationSco
         chart_X_Axis_Label = "PSM Score: " + chart_X_Axis_Label;
         chart_Y_Axis_Label = "PSM Score: " + chart_Y_Axis_Label;
 
-        const chartTitle = "PSM " + annotationType_Name_Score_Y_HTMLEncoded + " vs " + annotationType_Name_Score_X_HTMLEncoded;
+        const chartTitle = "PSM " + annotationType_Name_Score_Y + " vs " + annotationType_Name_Score_X;
 
         const chart_Layout = qcPage_StandardChartLayout({
             chartTitle,

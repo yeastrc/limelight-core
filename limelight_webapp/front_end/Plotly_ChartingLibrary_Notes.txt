@@ -15,4 +15,4 @@ HTML:
     The escaped HTML has also been tested in Inkscape, a vector based program.
     The escaped HTML may not work properly in other programs but it is probably pretty easy to search and replace the offending characters.
 
-    The Javascript function 'limelight__Encode_TextString_Escaping_HTML' is mostly used to do the escaping of HTML.  It uses the library Handlebars.
+    Limelight does NOT HTML escape strings passed to Plotly
