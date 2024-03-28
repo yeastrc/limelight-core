@@ -57,8 +57,6 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
         this.state = { force_Rerender_Object: {} }
     }
 
-    private _
-
     /**
      *
      */
