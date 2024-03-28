@@ -15,7 +15,7 @@ import {
 } from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/js/searchSubGroup_Manage_GroupNames_UpdateServer";
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 const _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH = 8;

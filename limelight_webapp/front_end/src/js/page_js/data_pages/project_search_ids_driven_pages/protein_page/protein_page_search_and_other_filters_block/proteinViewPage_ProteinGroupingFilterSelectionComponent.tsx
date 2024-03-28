@@ -16,7 +16,7 @@ import {ProteinGrouping_CentralStateManagerObjectClass} from "page_js/data_pages
 import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export type ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback =
     ( params: ProteinPage_ProteinGroupingFilterSelection_FilterValuesChanged_Callback_Param ) => void

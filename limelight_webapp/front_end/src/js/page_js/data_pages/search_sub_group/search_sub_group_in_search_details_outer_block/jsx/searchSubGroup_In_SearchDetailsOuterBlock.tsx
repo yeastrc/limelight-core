@@ -24,7 +24,7 @@ import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPag
 import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-} from "page_js/common_all_pages/tooltip__green_i_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 
 
