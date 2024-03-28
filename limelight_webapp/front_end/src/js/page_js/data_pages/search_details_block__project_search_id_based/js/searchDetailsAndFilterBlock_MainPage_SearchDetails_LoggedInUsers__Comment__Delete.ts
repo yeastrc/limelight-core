@@ -26,7 +26,7 @@ export const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__C
 
             const url = "d/rws/for-page/delete-comment";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

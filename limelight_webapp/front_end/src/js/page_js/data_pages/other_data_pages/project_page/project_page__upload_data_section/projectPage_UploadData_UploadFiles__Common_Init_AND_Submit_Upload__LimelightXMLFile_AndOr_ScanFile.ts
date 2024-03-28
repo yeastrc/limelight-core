@@ -68,7 +68,7 @@ export const projectPage_UploadData_UploadFiles__Common__Init_Upload__LimelightX
 
     return new Promise<ProjectPage_UploadData_UploadFiles__Common_Init_Upload__LimelightXMLFile_AndOr_ScanFile_Response>((resolve, reject) => { try {
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -187,7 +187,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initial
 
         console.log( "START: AJAX Call to: posting data to URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -324,7 +324,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Submit_
 
         console.log( "START: AJAX Call to: posting data to URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -428,7 +428,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Cancel_
 
         console.log( "START: AJAX Call to: posting data to URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -529,7 +529,7 @@ export const projectPage_UploadData_UploadFiles__Common_Submit_Upload__Limelight
 
         console.log( "START: AJAX Call to: posting data to URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

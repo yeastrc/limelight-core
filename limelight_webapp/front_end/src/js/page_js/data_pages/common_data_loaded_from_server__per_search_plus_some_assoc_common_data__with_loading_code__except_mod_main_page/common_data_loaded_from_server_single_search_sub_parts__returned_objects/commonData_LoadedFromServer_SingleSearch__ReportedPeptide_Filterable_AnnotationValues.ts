@@ -471,7 +471,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptide_Filterabl
 
                     const url = "d/rws/for-page/psb/reported-peptide-filtrbl-ann-data-list-rep-pept-ids-ann-type-ids-single-project-search-id";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url , dataRetrieval_CanRetry: true}) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

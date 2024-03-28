@@ -766,7 +766,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -836,7 +836,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -896,7 +896,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

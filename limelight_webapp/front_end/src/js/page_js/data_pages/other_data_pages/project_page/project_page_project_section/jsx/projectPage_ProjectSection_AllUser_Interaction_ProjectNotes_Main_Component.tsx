@@ -440,7 +440,7 @@ const _get_Notes_In_Project = function (
 
     const url = "d/rws/for-page/project-notes-list";
 
-    const webserviceCallStandardPostResponse = webserviceCallStandardPost( { dataToSend: requestObj, url } );
+    const webserviceCallStandardPostResponse = webserviceCallStandardPost( { dataToSend: requestObj, url, dataRetrieval_CanRetry: true } );
 
     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

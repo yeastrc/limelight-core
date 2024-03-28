@@ -832,7 +832,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                     const url = "d/rws/for-page/psb/get-search-data-lookup-params-code";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

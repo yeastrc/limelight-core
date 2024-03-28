@@ -86,7 +86,7 @@ export class User_reset_password_form_main_display_Component extends React.Compo
 
         const url = "user/rws/for-page/reset-password-gen-email";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, doNotHandleErrorResponse : true, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

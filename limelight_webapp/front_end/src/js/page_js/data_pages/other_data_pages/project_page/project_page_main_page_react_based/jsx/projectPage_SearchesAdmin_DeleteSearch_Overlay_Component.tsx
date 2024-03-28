@@ -412,7 +412,7 @@ const _deleteSearch_CallWebservice = function (
 
         const url = "d/rws/for-page/delete-project-search";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

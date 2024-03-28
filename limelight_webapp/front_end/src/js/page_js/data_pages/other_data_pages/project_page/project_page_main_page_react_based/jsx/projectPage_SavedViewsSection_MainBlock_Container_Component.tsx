@@ -119,7 +119,7 @@ export class ProjectPage_SavedViewsSection_MainBlock_Component extends React.Com
 
         const url = "d/rws/for-page/project-view-page-saved-views-list";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -45,7 +45,7 @@ export const set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer = 
 
             const url = "d/rws/for-page/project-level-filter-default-cutoffs-override_MAINT--save";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

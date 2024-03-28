@@ -266,7 +266,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPepti
 
                     const url = "d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

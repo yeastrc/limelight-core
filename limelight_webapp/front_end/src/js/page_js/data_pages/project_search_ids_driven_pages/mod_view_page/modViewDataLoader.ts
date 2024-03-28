@@ -70,7 +70,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/psm-info-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -139,7 +139,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/psm-count-searchcriteria-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -184,7 +184,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-protein-positions-var-mods-per-reported-peptide-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -269,7 +269,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/scan-count-searchcriteria-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -312,7 +312,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/protein-info-searchcriteria-list-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -351,7 +351,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-psms-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
@@ -397,7 +397,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/protein-sequences-for-prot-seq-ver-ids";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
@@ -437,7 +437,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mods-per-scans-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
@@ -497,7 +497,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
@@ -537,7 +537,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-mod-info-per-rounded-mod-masses-cutoffs-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );
@@ -577,7 +577,7 @@ export class ModViewPage_DataLoader {
 
                 const url = "d/rws/for-page/psb/mod-page-special-get-open-mod-info-for-cutoffs-single-project-search-id-version-0001";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
                 promise_webserviceCallStandardPost.catch( () => { reject() }  );

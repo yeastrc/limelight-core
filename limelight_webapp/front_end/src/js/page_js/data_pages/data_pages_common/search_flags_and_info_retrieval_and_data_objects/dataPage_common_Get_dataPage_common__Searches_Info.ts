@@ -54,7 +54,7 @@ export const dataPage_common_Get_Searches_Info = function (
 
             const requestData = { projectSearchIds };
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

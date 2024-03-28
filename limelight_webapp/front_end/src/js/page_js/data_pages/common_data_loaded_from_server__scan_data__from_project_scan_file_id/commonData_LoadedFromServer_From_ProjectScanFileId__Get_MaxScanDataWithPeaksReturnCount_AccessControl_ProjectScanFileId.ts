@@ -38,7 +38,7 @@ export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanData
 
         console.log("AJAX Call START: URL: " + url + new Date() );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
         // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;

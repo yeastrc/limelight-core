@@ -67,7 +67,7 @@ const _get_SearchDetails_FromServer = function (
 
             const url = "d/rws/for-page/psb/get-search-details-all";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost( { dataToSend: requestObj, url } );
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost( { dataToSend: requestObj, url, dataRetrieval_CanRetry: true } );
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -430,7 +430,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
 
                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

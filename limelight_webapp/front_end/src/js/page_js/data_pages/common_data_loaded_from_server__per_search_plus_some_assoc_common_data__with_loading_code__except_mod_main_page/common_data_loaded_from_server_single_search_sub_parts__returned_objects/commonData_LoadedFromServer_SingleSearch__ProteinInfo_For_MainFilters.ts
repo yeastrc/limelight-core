@@ -248,7 +248,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
 
                     const url = "d/rws/for-page/psb/protein-info-prot-seq-v-ids-list";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

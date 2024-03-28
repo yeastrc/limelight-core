@@ -211,7 +211,7 @@ export class ProjectPage_SearchesAdmin {
 
 		const url = "d/rws/for-page/project-organize-searches-folder-delete";
 
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

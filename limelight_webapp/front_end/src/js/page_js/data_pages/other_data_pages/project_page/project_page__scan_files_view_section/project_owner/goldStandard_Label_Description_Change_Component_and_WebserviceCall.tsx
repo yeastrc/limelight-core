@@ -255,7 +255,7 @@ class GoldStandard_Label_Description_Change_Component extends React.Component< G
 
             const url = "d/rws/for-page/gold-standard-display-label-description-change";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

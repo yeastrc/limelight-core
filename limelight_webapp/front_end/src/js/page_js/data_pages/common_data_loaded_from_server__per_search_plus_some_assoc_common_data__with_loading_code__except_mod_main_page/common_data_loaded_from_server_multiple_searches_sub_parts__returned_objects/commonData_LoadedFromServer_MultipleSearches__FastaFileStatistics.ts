@@ -184,7 +184,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
 
                     const url = "d/rws/for-page/psb/fasta-file-statistics-project-search-id-list";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

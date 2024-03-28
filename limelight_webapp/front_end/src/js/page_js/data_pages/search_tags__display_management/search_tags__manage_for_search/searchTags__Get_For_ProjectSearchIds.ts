@@ -65,7 +65,7 @@ export const searchTags__Get_For_ProjectSearchIds = function(
 
             const url = "d/rws/for-page/search-tags-get-for-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -2990,7 +2990,7 @@ const _saveExperimentToServer = ({ experiment }: { experiment: any }) => {
 
             const url = "d/rws/for-page/experiment/add-save-experiment";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

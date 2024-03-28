@@ -109,7 +109,7 @@ const _retrieveSearchNamesAndSubGroupsFromAJAX = function ({ projectSearchIds } 
 
             const url = "d/rws/for-page/psb/search-name-list-from-psi";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

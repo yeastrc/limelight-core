@@ -276,7 +276,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
 
             const url = "d/rws/for-page/project-organize-searches-add-folder";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -952,7 +952,7 @@ const _changeFolder_UpdateTo_NEW_SearchesInDB = function(
 
         return new Promise<void>((resolve, reject) => { try {
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

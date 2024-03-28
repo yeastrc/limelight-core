@@ -291,7 +291,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
             const url = "d/rws/for-page/project-upload-data-upload-get-supported-scan-filename-suffixes";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -355,7 +355,7 @@ class UploadData_UploadFiles_Overlay_Component extends React.Component< UploadDa
 
             const url = "d/rws/for-page/project-scan-files--project-contain-any-scan-files";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

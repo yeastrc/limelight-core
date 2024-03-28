@@ -1427,7 +1427,7 @@ const _get_SectionData_And_PendingCount_FromServer = function(projectIdentifierF
 
         const url = "d/rws/for-page/project-upload-data-list-submitted-items";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -1712,7 +1712,7 @@ const _remove_FileImportItem_Remove_Import_LimelightXML_AndOr_ScanFiles_Import =
 
     const url = "d/rws/for-page/project-upload-data-remove-file-import-item-remove-import-limelightxml-andor-scan-files";
 
-    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -1745,7 +1745,7 @@ const _remove_FileImportAndPipelineRunItem_Remove_Import_AndOr_PipelineRun = fun
 
         const url = "d/rws/for-page/project-upload-data-remove-import-and-pipeline-run-item-remove-import-import-andor-pipeline-run";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

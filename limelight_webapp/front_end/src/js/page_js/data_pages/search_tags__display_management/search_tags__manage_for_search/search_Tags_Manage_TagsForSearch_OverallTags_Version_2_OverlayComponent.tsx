@@ -866,7 +866,7 @@ const _searchTags__Update_For_ProjectSearchIds = function(
 
             const url = "d/rws/for-page/search-tags-update-for-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -915,7 +915,7 @@ const _add_SearchTag_ProjectSearchIds_Mapping = function(
 
             const url = "d/rws/for-page/search-tags-add-tag-to-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -963,7 +963,7 @@ const _remove_SearchTag_ProjectSearchIds_Mapping = function(
 
             const url = "d/rws/for-page/search-tags-remove-tag-from-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

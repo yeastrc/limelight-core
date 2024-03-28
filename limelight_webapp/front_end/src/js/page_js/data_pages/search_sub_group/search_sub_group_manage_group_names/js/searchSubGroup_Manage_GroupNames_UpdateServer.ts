@@ -45,7 +45,7 @@ export const searchSubGroup_Manage_GroupNames_UpdateServer = function (
 
         const url = "d/rws/for-page/psb/sub-groups-update-user-updatable-data-single-project-search-id";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

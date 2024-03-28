@@ -238,7 +238,7 @@ class ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_
 
             const url = "d/rws/for-page/project-update-abstract";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

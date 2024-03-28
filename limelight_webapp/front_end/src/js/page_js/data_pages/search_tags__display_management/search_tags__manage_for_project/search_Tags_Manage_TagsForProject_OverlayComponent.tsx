@@ -2586,7 +2586,7 @@ const _searchTagCategories__Add_New_For_ProjectId = function(
 
             const url = "d/rws/for-page/search-tags-add-single-search-tag-category-for-project-id-or-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -2638,7 +2638,7 @@ const _searchTagCategories__Delete_For_TagCategoryId = function (
 
             const url = "d/rws/for-page/search-tag-categories-delete-single-search-tag-category-for-tag-category-id";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -2694,7 +2694,7 @@ const _searchTagCategories_TagCategoryChange_UpdateServer = function(searchTagCa
 
             const url = "d/rws/for-page/search-tag-categories-update-single-search-tag-category-for-tag-category-id";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -2778,7 +2778,7 @@ const _searchTags__Add_New_For_ProjectId = function(
 
             const url = "d/rws/for-page/search-tags-add-single-search-tag-for-project-id-or-project-search-id-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -2830,7 +2830,7 @@ const _searchTag__Delete_For_TagId = function (
 
             const url = "d/rws/for-page/search-tags-delete-single-search-tag-for-tag-id";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -2887,7 +2887,7 @@ const _searchTags_TagChange_UpdateServer = function(searchTagToSave: Internal_Se
 
             const url = "d/rws/for-page/search-tags-update-single-search-tag-for-tag-id";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -179,7 +179,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_Root_Entries
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

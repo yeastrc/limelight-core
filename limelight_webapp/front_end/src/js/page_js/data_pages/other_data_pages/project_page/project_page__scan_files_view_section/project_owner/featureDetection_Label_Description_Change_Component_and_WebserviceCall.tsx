@@ -256,7 +256,7 @@ class FeatureDetection_Label_Description_Change_Component extends React.Componen
 
             const url = "d/rws/for-page/feature-detection-display-label-description-change";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

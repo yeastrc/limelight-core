@@ -471,7 +471,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Protein_Filterable_Annota
 
                     console.log("AJAX Call to get " + url + " START, Now: " + new Date() );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

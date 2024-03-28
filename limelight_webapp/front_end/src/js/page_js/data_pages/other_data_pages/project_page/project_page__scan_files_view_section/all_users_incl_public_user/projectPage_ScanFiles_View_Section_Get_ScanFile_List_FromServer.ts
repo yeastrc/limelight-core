@@ -59,7 +59,7 @@ export const projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer = f
 
         console.log( "START: AJAX Call to: getting data from URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

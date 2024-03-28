@@ -309,7 +309,7 @@ export class CommonData_LoadedFromServer_CommonAcrossSearches__ReportedPeptideSe
 
                     const url = "d/rws/for-page/psb/reported-peptide-strings-for-reported-peptide-ids";
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -391,7 +391,7 @@ const _getUserSubmitImportProgramKey = function () {
 
     const url = "user/rws/for-page/user-submit-import-key-get";
 
-    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -416,7 +416,7 @@ const _addSubmitImportProgramKey = function () : Promise<void> {
 
             const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -454,7 +454,7 @@ const _changeSubmitImportProgramKey = function ( existingKey: string ) : Promise
 
             const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -492,7 +492,7 @@ const _removeSubmitImportProgramKey = function ( existingKey: string ) : Promise
 
             const url = USER_SUBMIT_IMPORT_KEY_MANAGE_WEBSERVICE_URL;
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

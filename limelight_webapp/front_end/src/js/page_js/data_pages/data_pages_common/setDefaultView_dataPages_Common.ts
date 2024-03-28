@@ -85,7 +85,7 @@ const _setDefaultViewToServer = function (
 
             const url = "d/rws/for-page/psb/save-default-view-project-search-based-page";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

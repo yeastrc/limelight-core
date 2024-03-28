@@ -1111,7 +1111,7 @@ const _getFromServer_ProjectContainsAtLeastOneActiveSearch_MakeAJAXCall = ({ pro
             
             const url = "d/rws/for-page/project-has-at-least-one-active-search";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -1151,7 +1151,7 @@ const _loadExperimentDrafts = ({ projectIdentifierFromURL }: { projectIdentifier
             
             const url = "d/rws/for-page/experiment/experiment-list-drafts";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -1189,7 +1189,7 @@ const _loadExperiments_NonDrafts = ({ projectIdentifierFromURL }: { projectIdent
             
             const url = "d/rws/for-page/experiment/experiment-list";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -1228,7 +1228,7 @@ const _deleteExperiment = ({ id }:{ id: any }) => {
             
             const url = "d/rws/for-page/experiment/experiment-delete";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

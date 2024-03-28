@@ -41,7 +41,7 @@ export const get_CommonData_LoadedFromServerFor_Project_DoSections_HaveAnyData_R
 
             const url = "d/rws/for-page/project-view-page-has-data-for-each-section-of-project-page";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

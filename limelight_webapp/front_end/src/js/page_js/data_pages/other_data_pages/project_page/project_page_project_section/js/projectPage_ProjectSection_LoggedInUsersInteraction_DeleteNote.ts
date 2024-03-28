@@ -18,7 +18,7 @@ export const projectPage_ProjectSection_LoggedInUsersInteraction_DeleteNote = fu
 
             const url = "d/rws/for-page/project-note-delete";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

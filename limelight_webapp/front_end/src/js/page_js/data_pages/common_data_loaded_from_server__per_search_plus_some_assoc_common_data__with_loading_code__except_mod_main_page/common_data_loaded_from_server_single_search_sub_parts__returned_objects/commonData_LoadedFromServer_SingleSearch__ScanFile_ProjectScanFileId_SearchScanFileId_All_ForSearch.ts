@@ -193,7 +193,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileI
 
                 console.log("START: getting data from URL: " + url);
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObject, url});
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObject, url, dataRetrieval_CanRetry: true });
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

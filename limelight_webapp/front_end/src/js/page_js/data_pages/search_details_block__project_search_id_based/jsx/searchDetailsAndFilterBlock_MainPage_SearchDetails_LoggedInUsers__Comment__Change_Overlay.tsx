@@ -224,7 +224,7 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
 
             const url = "d/rws/for-page/update-comment"
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

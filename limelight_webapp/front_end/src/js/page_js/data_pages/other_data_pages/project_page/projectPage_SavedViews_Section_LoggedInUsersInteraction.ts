@@ -74,7 +74,7 @@ export class ProjectPage_SavedViews_Section_LoggedInUsersInteraction {
 
 			const url = "d/rws/for-page/delete-saved-view";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

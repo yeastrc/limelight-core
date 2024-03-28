@@ -107,7 +107,7 @@ const _defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval_Get_Data_FromSe
 
             const url = "d/rws/for-page/project-level-filter-default-cutoffs-override-maint--get";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

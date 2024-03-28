@@ -32,7 +32,7 @@ export const getExperimentDataFromServer = function({ experimentId }:{ experimen
 
 			const url = "d/rws/for-page/experiment/experiment-get";
 
-			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

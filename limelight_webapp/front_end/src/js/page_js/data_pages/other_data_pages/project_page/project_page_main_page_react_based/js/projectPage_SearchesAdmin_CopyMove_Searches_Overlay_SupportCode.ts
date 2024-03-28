@@ -62,7 +62,7 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
 
             const url = "d/rws/for-page/list-other-projects-excluding-project-search-ids";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -168,7 +168,7 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
 
         const url = "d/rws/for-page/list-project-search-ids-where-assoc-search-ids-already-in-project";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -295,7 +295,7 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ex
 
     return new Promise<ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__ExecuteCopyOrMoveSearches_Results>(function(resolve, reject) {
         try {
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url, dataRetrieval_CanRetry: false });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

@@ -39,7 +39,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-label-get";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -75,7 +75,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-label-add-change";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -107,7 +107,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-enable-public-access";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -140,7 +140,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-disable-public-access";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -173,7 +173,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-enable-public-access-code";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -212,7 +212,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-generate-new-public-access-code";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -251,7 +251,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction {
 
 				const url = "d/rws/for-page/project-disable-public-access-code";
 
-				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+				const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 				const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

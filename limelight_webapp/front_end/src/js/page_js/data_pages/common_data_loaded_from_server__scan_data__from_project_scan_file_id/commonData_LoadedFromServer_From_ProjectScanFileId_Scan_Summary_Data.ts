@@ -173,7 +173,7 @@ export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_Proje
 
             console.log("START: getting data from URL: " + url);
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObject, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObject, url, dataRetrieval_CanRetry: true});
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

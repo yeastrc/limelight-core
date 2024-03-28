@@ -50,7 +50,7 @@ export const searchTagCategories__Get_For_ProjectId_Or_ProjectIdFromProjectSearc
 
             const url = "d/rws/for-page/search-tag-categories-get-for-project-id-or-project-id-from-project-search-ids";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

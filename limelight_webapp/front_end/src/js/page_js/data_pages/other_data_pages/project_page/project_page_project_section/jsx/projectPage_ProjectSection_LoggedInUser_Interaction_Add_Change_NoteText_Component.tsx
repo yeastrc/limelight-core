@@ -278,7 +278,7 @@ class ProjectPage_ProjectSection_LoggedInUser_Interaction_Add_Change_NoteText_Co
                 url = "d/rws/for-page/project-note-update-text";
             }
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

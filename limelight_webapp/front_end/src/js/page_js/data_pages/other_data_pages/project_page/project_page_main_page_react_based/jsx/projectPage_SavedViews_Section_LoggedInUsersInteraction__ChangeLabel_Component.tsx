@@ -242,7 +242,7 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
 
             const url = "d/rws/for-page/saved-view-change-label";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: false }) ;
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

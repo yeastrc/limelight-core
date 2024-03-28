@@ -91,7 +91,7 @@ export class SearchProgramsPerSearchDataRetrieval {
 
 			const url = "d/rws/for-page/psb/search-programs-per-search-list-from-psi";
 
-			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+			const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
 			const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

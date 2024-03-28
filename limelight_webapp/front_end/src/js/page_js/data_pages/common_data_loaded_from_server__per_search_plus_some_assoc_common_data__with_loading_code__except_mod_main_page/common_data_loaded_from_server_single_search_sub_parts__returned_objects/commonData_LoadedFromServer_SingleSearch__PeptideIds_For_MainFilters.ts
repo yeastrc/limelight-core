@@ -262,7 +262,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilter
 
                         const url = "d/rws/for-page/psb/peptide-ids-for-reported-peptide-ids";
 
-                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

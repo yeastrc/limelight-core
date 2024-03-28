@@ -53,7 +53,7 @@ export const projectPage_ScanFiles_View_Section_ScanFile_FeatureDetectionMapping
 
         console.log( "START: AJAX Call to: URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

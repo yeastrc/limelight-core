@@ -66,7 +66,7 @@ export const projectPage_ListExperimentsContainingProjectSearchIds = function (
 
         const url = "d/rws/for-page/list-experiments-containing-project-search-ids";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

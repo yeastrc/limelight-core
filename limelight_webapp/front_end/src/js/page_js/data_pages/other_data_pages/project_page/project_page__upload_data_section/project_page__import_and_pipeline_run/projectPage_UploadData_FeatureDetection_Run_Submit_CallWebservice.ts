@@ -63,7 +63,7 @@ export const projectPage_UploadData_FeatureDetection_Run_Submit_CallWebservice =
 
         console.log( "START: AJAX Call to: getting data from URL: " + url );
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

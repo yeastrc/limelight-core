@@ -84,7 +84,7 @@ export class User_login_form_public_access_code_Component extends React.Componen
 
         const url = "user/rws/for-page/process_public_access_code_value";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

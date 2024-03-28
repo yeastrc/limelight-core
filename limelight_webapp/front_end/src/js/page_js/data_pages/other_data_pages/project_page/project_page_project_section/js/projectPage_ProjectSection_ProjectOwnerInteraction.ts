@@ -194,7 +194,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		const url = "d/rws/for-page/project-lock-project";
 
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -234,7 +234,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 
 		const url = "d/rws/for-page/project-unlock-project";
 
-		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+		const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
 		const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

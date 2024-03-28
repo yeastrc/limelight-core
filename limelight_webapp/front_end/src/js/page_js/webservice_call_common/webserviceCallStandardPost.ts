@@ -170,8 +170,21 @@ const run_NextRequest_IfAnyExist = function () {
  */
 class WebserviceCallStandardPost_RequestParams {
 
+    /**
+     * Object to encode to JSON and send to server
+     */
     dataToSend: any
     url : string
+
+    /**
+     * ONLY Pass True if for Sure there are NO changes on the server due to calling this web service.
+     *
+     * If true, then the WebserviceCall Internal code may perform a retry of the webservice call if it fails with invalid HTTP status code.
+     *
+     * Set to undefined if unsure.  Will be treated as false but will know in future may want to investigate.
+     */
+    dataRetrieval_CanRetry?: boolean
+
     doNotHandleErrorResponse? : boolean
     webserviceCallStandardPost_ApiObject_Holder_Class? : WebserviceCallStandardPost_ApiObject_Holder_Class
 }

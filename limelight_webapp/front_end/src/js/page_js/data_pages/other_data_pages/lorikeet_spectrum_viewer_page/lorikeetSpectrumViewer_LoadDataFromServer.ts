@@ -113,7 +113,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                         const url = "d/rws/for-page/psb/spectrum-for-psm-id";
 
-                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
         
                         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
         
@@ -316,7 +316,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                         const url = "d/rws/for-page/psb/psm-peptide-list-display-with-spectrum-viewer";
 
-                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -730,7 +730,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                 const url = "d/rws/for-page/psb/search-name-list-from-psi";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -773,7 +773,7 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                 const url = " d/rws/for-page/project-get-title";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: true }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

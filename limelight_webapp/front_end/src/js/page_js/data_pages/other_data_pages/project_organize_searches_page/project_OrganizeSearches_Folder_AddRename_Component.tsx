@@ -235,7 +235,7 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
 
                 const url = "d/rws/for-page/project-organize-searches-add-folder";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
@@ -265,7 +265,7 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
 
                 const url = "d/rws/for-page/project-organize-searches-folder-rename";
 
-                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url }) ;
+                const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObj, url, dataRetrieval_CanRetry: false }) ;
 
                 const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

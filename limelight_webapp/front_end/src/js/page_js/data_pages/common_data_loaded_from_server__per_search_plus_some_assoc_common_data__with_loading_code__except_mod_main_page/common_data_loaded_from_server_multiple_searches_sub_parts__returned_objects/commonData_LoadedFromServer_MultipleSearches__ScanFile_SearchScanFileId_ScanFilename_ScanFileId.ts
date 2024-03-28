@@ -276,7 +276,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFi
 
                     console.log("AJAX Call START, Now: " + new Date() + " URL: " + url );
 
-                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url }) ;
+                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

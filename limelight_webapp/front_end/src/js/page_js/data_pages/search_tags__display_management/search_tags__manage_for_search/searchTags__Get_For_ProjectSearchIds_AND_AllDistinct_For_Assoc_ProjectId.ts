@@ -56,7 +56,7 @@ export const searchTags__Get_For_ProjectSearchIds_AND_AllDistinct_For_Assoc_Proj
 
             const url = "d/rws/for-page/search-tags-get-for-project-search-id-list-and-all-distinct-for-assoc-project-id";
 
-            const webserviceCallStandardPostResponse = webserviceCallStandardPost({dataToSend: requestObj, url});
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend: requestObj, url, dataRetrieval_CanRetry: true });
 
             const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 

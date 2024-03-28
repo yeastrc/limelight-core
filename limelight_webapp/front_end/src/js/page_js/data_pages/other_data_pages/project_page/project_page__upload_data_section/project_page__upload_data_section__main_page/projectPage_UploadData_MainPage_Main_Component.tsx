@@ -435,7 +435,7 @@ const _getPendingCount_FromServer = function(projectIdentifierFromURL: string) {
 
         const url = "d/rws/for-page/project-upload-data-pending-count";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url }) ;
+        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestData, url, dataRetrieval_CanRetry: true }) ;
 
         const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
