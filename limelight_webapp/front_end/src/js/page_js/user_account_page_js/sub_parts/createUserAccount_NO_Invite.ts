@@ -11,23 +11,20 @@
 
 //  module import 
 
-//  Import Handlebars Templates
-
-import _user_account_create_account_template_bundle =
-	require("../../../../../handlebars_templates_precompiled/user_account_create_account/user_account_create_account_template-bundle.js" );
-
 ///////////////////////////////////////////
 
-/**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
- */
+import React from "react";
+import ReactDOM from "react-dom";
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {loadGoogleRecaptcha} from "page_js/data_pages/data_pages_common/googleRecaptchaLoaderForThisWebapp";
-
+import {
+	CreateUserAccount_Main_Common_Component,
+	CreateUserAccount_Main_Common_Component_Props
+} from "page_js/user_account_page_js/sub_parts/createUserAccount_Main_Common_Component";
 
 /**
  * 
@@ -35,7 +32,6 @@ import {loadGoogleRecaptcha} from "page_js/data_pages/data_pages_common/googleRe
 export class UserCreateAccount_NO_Invite_Subpart {
 
 	private _initialized = false;
-	private _user_invite_create_account_main_display_template = _user_account_create_account_template_bundle.user_invite_create_account_main_display_template;
 
 	private _google_RecaptchaSiteKey;
 
@@ -49,10 +45,6 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	 * 
 	 */
 	constructor() {
-
-		if ( ! _user_account_create_account_template_bundle.user_invite_create_account_main_display_template ) {
-			throw Error("Nothing in _user_account_create_account_template_bundle.user_invite_create_account_main_display_template");
-		}
 
 		this._initialized = true;
 	}
@@ -200,7 +192,6 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	 */
 	private showOnPage_Internal( { containerHTMLElement } ) {
 
-		let objectThis = this;
 		try {
 			const google_RecaptchaSiteKey = this._google_RecaptchaSiteKey;
 
@@ -208,14 +199,39 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 			$containerHTMLElement.empty();
 
-			let formTemplateContext = { showInvitedMessage: false, google_RecaptchaSiteKey };
+			const props: CreateUserAccount_Main_Common_Component_Props = { showInvitedMessage: false, google_RecaptchaSiteKey };
 
-			let user_invite_create_account_main_display_html = this._user_invite_create_account_main_display_template( formTemplateContext );
+			const root_Component = (
+				React.createElement(
+					CreateUserAccount_Main_Common_Component,
+					props,
+					null
+				)
+			);
 
-			let $user_invite_create_account_main_display_html = $( user_invite_create_account_main_display_html );
+			//  Called on render complete
+			const renderCompleteCallbackFcn = () => {
 
-			$user_invite_create_account_main_display_html.appendTo( $containerHTMLElement );
+				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement })
+			};
 
+			const renderedReactComponent = ReactDOM.render(
+				root_Component,
+				containerHTMLElement,
+				renderCompleteCallbackFcn
+			);
+
+		} catch ( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+			throw e;
+		}
+
+	}
+
+	private showOnPage_Internal_After_ReactRender({ containerHTMLElement }) {
+
+		let objectThis = this;
+		try {
 			var $create_account_form = $("#create_account_form");
 			
 			$create_account_form.submit(function(event) {

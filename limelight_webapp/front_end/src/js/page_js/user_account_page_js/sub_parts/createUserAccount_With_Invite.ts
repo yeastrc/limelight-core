@@ -11,26 +11,21 @@
 
 //  module import 
 
-//  Import Handlebars Templates
-
-import _user_account_create_account_template_bundle =
-	require("../../../../../handlebars_templates_precompiled/user_account_create_account/user_account_create_account_template-bundle.js" );
-
-//  Invite Validation Error from user_invite_processing
-
-import _user_invite_processing_bundle =
-	require("../../../../../handlebars_templates_precompiled/user_invite_processing/user_invite_processing_template-bundle.js" );
-
-///////////////////////////////////////////
-
-/**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
- */
+import React from "react";
+import ReactDOM from "react-dom";
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
+import {
+	CreateUserAccount_Main_Common_Component,
+	CreateUserAccount_Main_Common_Component_Props
+} from "page_js/user_account_page_js/sub_parts/createUserAccount_Main_Common_Component";
+import {
+	User_invite__invite_validation_error_Component,
+	User_invite__invite_validation_error_Component_Props
+} from "page_js/user_account_page_js/sub_parts/user_invite__invite_validation_error_Component";
 
 
 /**
@@ -39,8 +34,6 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 export class UserCreateAccount_With_Invite_Subpart {
 
 	private _initialized = false;
-	private _user_invite_create_account_main_display_template = _user_account_create_account_template_bundle.user_invite_create_account_main_display_template;
-	private _user_invite__invite_validation_error_template = _user_invite_processing_bundle.user_invite__invite_validation_error_template;
 
 	private inviteTrackingCode;
 	private containerHTMLElement;
@@ -52,13 +45,6 @@ export class UserCreateAccount_With_Invite_Subpart {
 	 */
 	constructor() {
 
-		if ( ! _user_account_create_account_template_bundle.user_invite_create_account_main_display_template ) {
-			throw Error("Nothing in _user_account_create_account_template_bundle.user_invite_create_account_main_display_template");
-		}
-		if ( ! _user_invite_processing_bundle.user_invite__invite_validation_error_template ) {
-			throw Error("Nothing in _user_invite_processing_bundle.user_invite__invite_validation_error_template");
-		}
-
 		this._initialized = true;
 	}
 
@@ -66,8 +52,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 	 * show the login part on the page (Add the Handlebars template and then add element listeners like onClick, ...)
 	 */
 	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
-		
-		let objectThis = this;
+
 		try {
 
 			this._termsOfServiceKey = this._get_TermsOfServiceKey();
@@ -78,17 +63,53 @@ export class UserCreateAccount_With_Invite_Subpart {
 			// 	promiseArray.push(promise);
 			// }
 
+			try {
+
+				//  React Unmount
+
+				ReactDOM.unmountComponentAtNode( containerHTMLElement )
+
+			} catch ( e ) {
+				//  Ignore Exception
+			}
+
 			let $containerHTMLElement = $( containerHTMLElement );
 
 			$containerHTMLElement.empty();
 
-			let formTemplateContext = { showInvitedMessage: true };
+			const props: CreateUserAccount_Main_Common_Component_Props = { showInvitedMessage: true, google_RecaptchaSiteKey: undefined };
 
-			let user_invite_create_account_main_display_html = this._user_invite_create_account_main_display_template( formTemplateContext );
+			const root_Component = (
+				React.createElement(
+					CreateUserAccount_Main_Common_Component,
+					props,
+					null
+				)
+			);
 
-			let $user_invite_create_account_main_display_html = $( user_invite_create_account_main_display_html );
+			//  Called on render complete
+			const renderCompleteCallbackFcn = () => {
 
-			$user_invite_create_account_main_display_html.appendTo( $containerHTMLElement );
+				this.showOnPage_Internal_After_ReactRender({ containerHTMLElement, inviteTrackingCode })
+			};
+
+			const renderedReactComponent = ReactDOM.render(
+				root_Component,
+				containerHTMLElement,
+				renderCompleteCallbackFcn
+			);
+
+		} catch ( e ) {
+			reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+			throw e;
+		}
+
+	}
+
+	private showOnPage_Internal_After_ReactRender({ containerHTMLElement, inviteTrackingCode }) {
+
+		let objectThis = this;
+		try {
 
 			var $create_account_form = $("#create_account_form");
 			
@@ -331,6 +352,10 @@ export class UserCreateAccount_With_Invite_Subpart {
 //		$("#terms_of_service_overlay_div").hide();
 
 		if ( ! responseData.status ) {
+
+			$("#terms_of_service_modal_dialog_overlay_background").hide();
+			$("#terms_of_service_overlay_div").hide();
+
 			if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
 				var $element = $("#error_message_username_email_taken");
 				showErrorMsg( $element );
@@ -370,20 +395,42 @@ export class UserCreateAccount_With_Invite_Subpart {
 	 * 
 	 */
 	_displayInviteTrackingNotValidMsg( { inviteTrackingCodeNotValidReason } ) {
-		
+
+
+		try {
+
+			//  React Unmount
+
+			ReactDOM.unmountComponentAtNode( this.containerHTMLElement )
+
+		} catch ( e ) {
+			//  Ignore Exception
+		}
+
 		let $containerHTMLElement = $( this.containerHTMLElement );
 
 		$containerHTMLElement.empty();
 
-		let templateContext = inviteTrackingCodeNotValidReason;
+		const props: User_invite__invite_validation_error_Component_Props = { inviteTrackingCodeNotValidReason };
 
-		let user_invite__invite_validation_error_main_display_html = this._user_invite__invite_validation_error_template( templateContext );
+		const root_Component = (
+			React.createElement(
+				User_invite__invite_validation_error_Component,
+				props,
+				null
+			)
+		);
 
-		let $user_invite__invite_validation_error_main_display_html = $( user_invite__invite_validation_error_main_display_html );
+		//  Called on render complete
+		const renderCompleteCallbackFcn = () => {
 
-		$user_invite__invite_validation_error_main_display_html.appendTo( $containerHTMLElement );
+		};
 
-	
+		const renderedReactComponent = ReactDOM.render(
+			root_Component,
+			this.containerHTMLElement,
+			renderCompleteCallbackFcn
+		);
 	}
 
 };

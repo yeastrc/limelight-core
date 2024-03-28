@@ -11,10 +11,8 @@
 
 //module import 
 
-import _user_account_login_forgot_password_template_bundle =
-	require("../../../../../handlebars_templates_precompiled/user_account_login_forgot_password/user_account_login_forgot_password_template-bundle.js" );
-
-///////////////////////////////////////////
+import ReactDOM from "react-dom";
+import React from "react";
 
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
@@ -24,6 +22,9 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { createSpinner, destroySpinner } from 'page_js/common_all_pages/spinner';
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+	User_login_form_main_display_Component
+} from "page_js/user_account_page_js/sub_parts/user_login_form_main_display_Component";
 
 		
 /**
@@ -32,7 +33,6 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 export class UserLogin_Subpart {
 
 	private _initialized = false;
-	private _user_login_form_main_display_template = _user_account_login_forgot_password_template_bundle.user_login_form_main_display_template;
 
 	private inviteTrackingCode
 	private _termsOfServiceKey: string
@@ -42,12 +42,6 @@ export class UserLogin_Subpart {
 	 */
 	constructor() {
 		this._initialized = false;
-		
-		if ( ! _user_account_login_forgot_password_template_bundle.user_login_form_main_display_template ) {
-			throw Error("Nothing in _user_account_login_forgot_password_template_bundle.user_login_form_main_display_template");
-		}
-		
-		this._user_login_form_main_display_template = _user_account_login_forgot_password_template_bundle.user_login_form_main_display_template;
 
 		this._initialized = true;
 	}
@@ -57,19 +51,40 @@ export class UserLogin_Subpart {
 	 */
 	showOnPage( { containerHTMLElement, inviteTrackingCode } ) {
 
-		var objectThis = this;
+		//  React Unmount
+
+		ReactDOM.unmountComponentAtNode( containerHTMLElement )
 
 		let $containerHTMLElement = $( containerHTMLElement );
-		
-		$containerHTMLElement.empty();
-		
-		let formTemplateContext = { };
-		
-		let user_login_form_main_display_html = this._user_login_form_main_display_template( formTemplateContext );
 
-		let $user_login_form_main_display_html = $( user_login_form_main_display_html );
-		
-		$user_login_form_main_display_html.appendTo( $containerHTMLElement );
+		$containerHTMLElement.empty();
+
+
+		const root_Component = (
+			React.createElement(
+				User_login_form_main_display_Component,
+				null,
+				null
+			)
+		);
+
+		//  Called on render complete
+		const renderCompleteCallbackFcn = () => {
+
+			this._showOnPage_AfterRender({ inviteTrackingCode })
+		};
+
+		const renderedReactComponent = ReactDOM.render(
+			root_Component,
+			containerHTMLElement,
+			renderCompleteCallbackFcn
+		);
+
+	}
+
+	private _showOnPage_AfterRender({ inviteTrackingCode }) {
+
+		var objectThis = this;
 
 		$("#login_username").focus();
 		

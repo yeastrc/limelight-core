@@ -753,7 +753,15 @@ public class Project_InviteUser_NewOrExistingUser_RestWebserviceController {
 		}
 		catch (Exception e) {
 			log.error( "UserInviteService: Exception: invitedPersonEmail: " + invitedPersonEmail, e );
-			removeInvite( userInviteTrackingDTO );
+			
+			
+			//  TODO   TEMP COMMENTED OUT
+			
+			
+			
+			//  removeInvite( userInviteTrackingDTO );
+			
+			
 			webserviceResult.setUnableToSendEmailError(true);
 		}
 	}

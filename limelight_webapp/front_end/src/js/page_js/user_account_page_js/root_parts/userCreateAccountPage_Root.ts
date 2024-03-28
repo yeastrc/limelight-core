@@ -9,13 +9,8 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-//module import 
+//  module import
 
-///////////////////////////////////////////
-
-import Handlebars = require('handlebars/runtime');
-import _dummy_template_template_bundle =
-	require("../../../../../handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js" );
 
 /**
  * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
