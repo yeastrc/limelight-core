@@ -23,7 +23,7 @@ import {
 } from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 const _Overlay_Title = "Set Custom Filters for Project"

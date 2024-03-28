@@ -9,7 +9,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { ProteinPage_Display__SingleProtein_MainContent_Component, ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display__SingleProtein_MainContent_Component'
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";

@@ -12,7 +12,7 @@
 
 
 import React from "react";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 const _urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;

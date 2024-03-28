@@ -10,7 +10,7 @@ import {
     DataTable_DataRowEntry__Get_RowChildContent_CallParams,
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 import {
     psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects,

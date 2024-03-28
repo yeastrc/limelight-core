@@ -8,10 +8,10 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -329,7 +329,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
                 console.warn( msg + "entry: " + entry + ", entry_FromServer: " + entry_FromServer + ", responseData.singleEntry_List: ", responseData.singleEntry_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.scanNumber ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.scanNumber ) ) {
                 const msg = "entry.scanNumber in responseData.singleEntry_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", responseData.singleEntry_List: ", responseData.singleEntry_List )
                 throw Error(msg);
@@ -404,7 +404,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
                             console.warn( msg + "entry: " + position + ", positionNumber_FromServer: " + positionNumber_FromServer + ", entry_Variable_OR_OpenMod_FromServer: " + entry_Variable_OR_OpenMod_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                             throw Error(msg);
                         }
-                        if ( ! variable_is_type_number_Check( position.position ) ) {
+                        if ( ! limelight__variable_is_type_number_Check( position.position ) ) {
                             const msg = "position.position in variable_OR_OpenMod_FromServer.e is not a number. ";
                             console.warn( msg + "position: " + position + ", positionNumber_FromServer: " + positionNumber_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                             throw Error(msg);
@@ -431,12 +431,12 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
                                 position_Is_c: undefined
                             }
 
-                            if ( ! variable_is_type_number_Check( position.position_Range_Start ) ) {
+                            if ( ! limelight__variable_is_type_number_Check( position.position_Range_Start ) ) {
                                 const msg = "position.position_Range_Start in position_FromServer is not a number. ";
                                 console.warn( msg + "position: " + position + ", position_FromServer: " + position_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                                 throw Error(msg);
                             }
-                            if ( ! variable_is_type_number_Check( position.position_Range_End ) ) {
+                            if ( ! limelight__variable_is_type_number_Check( position.position_Range_End ) ) {
                                 const msg = "position.position_Range_End in position_FromServer is not a number. ";
                                 console.warn( msg + "position: " + position + ", position_FromServer: " + position_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                                 throw Error(msg);
@@ -460,7 +460,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
                                 console.warn( msg + "entry: " + position + ", position_FromServer: " + position_FromServer + ", entry_Variable_OR_OpenMod_FromServer: " + entry_Variable_OR_OpenMod_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                                 throw Error(msg);
                             }
-                            if ( ! variable_is_type_number_Check( position.position ) ) {
+                            if ( ! limelight__variable_is_type_number_Check( position.position ) ) {
                                 const msg = "position.position in position_FromServer is not a number. ";
                                 console.warn( msg + "position: " + position + ", position_FromServer: " + position_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                                 throw Error(msg);
@@ -486,7 +486,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents
                     console.warn( msg + "entry: " + entry + ", entry_Variable_OR_OpenMod_FromServer: " + entry_Variable_OR_OpenMod_FromServer + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.modificationMass ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.modificationMass ) ) {
                     const msg = "entry.modificationMass in variable_OR_OpenMod_FromServer.e is not a number. ";
                     console.warn( msg + "entry: " + entry + ", variable_OR_OpenMod_FromServer.e: ", variable_OR_OpenMod_FromServer.e )
                     throw Error(msg);

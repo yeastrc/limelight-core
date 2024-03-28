@@ -35,7 +35,7 @@ import {
     Search_Tags_DisplaySearchTags_UnderSearchName_Component,
     Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root
 } from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import {

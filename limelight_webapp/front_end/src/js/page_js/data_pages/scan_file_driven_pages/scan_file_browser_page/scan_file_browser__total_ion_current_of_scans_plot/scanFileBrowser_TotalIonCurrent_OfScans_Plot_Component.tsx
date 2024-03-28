@@ -8,7 +8,7 @@
 
 import * as d3 from "d3";
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber

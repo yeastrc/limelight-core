@@ -18,11 +18,11 @@
 //  module imports
 
 //  For AJAX call (non jQuery)
-import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from 'page_js/EveryPageCommon';
+import { getWebserviceSyncTrackingCode, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM } from 'page_js/common_all_pages/EveryPageCommon';
 
-import { handleRawAJAXError } from 'page_js/handleServicesAJAXErrors'
+import { handleRawAJAXError } from 'page_js/common_all_pages/handleServicesAJAXErrors'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 //  The Send Data block size will adjust after each send data AJAX call to aim for for the Preferred Max Duration
 

@@ -21,11 +21,11 @@ import React from "react";
 import ReactDOM from 'react-dom';
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 //   From data_pages_common
 import { DataPageStateManager }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
@@ -190,7 +190,7 @@ export class QcViewPage_RootClass_Common {
 	 */
 	initialize() {
 
-		catchAndReportGlobalOnError.init();
+		limelight__catchAndReportGlobalOnError.init();
 
 		window.onpopstate = function(event) {
 			//  User clicked the back button so reload so page reflects that URL

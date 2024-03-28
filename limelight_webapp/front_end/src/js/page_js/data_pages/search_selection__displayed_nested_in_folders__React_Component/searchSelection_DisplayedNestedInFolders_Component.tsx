@@ -21,7 +21,7 @@ import {
     Search_Tags_SelectSearchTags_Component_SingleSearchTag_Entry,
     Search_Tags_SelectSearchTags_Component_SingleSearchTagCategory_Entry
 } from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_Component";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 
 import {

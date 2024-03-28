@@ -16,7 +16,7 @@
 
 //  module import 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 

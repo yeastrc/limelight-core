@@ -11,7 +11,7 @@
  */
 
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ScanFilenameId_On_PSM_Filter_UserSelection_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
 import {
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,

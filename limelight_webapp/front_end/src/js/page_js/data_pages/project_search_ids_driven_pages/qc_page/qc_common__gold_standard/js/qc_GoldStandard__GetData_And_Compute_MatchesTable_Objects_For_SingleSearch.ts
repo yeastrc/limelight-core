@@ -11,7 +11,7 @@
  */
 
 
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters";

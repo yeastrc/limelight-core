@@ -15,7 +15,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import {UserLoginPage_Root} from "page_js/user_account_page_js/root_parts/userLoginPage_Root";
 import {
 	User_login_form_public_access_code_Component, User_login_form_public_access_code_Component_Props

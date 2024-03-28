@@ -8,10 +8,10 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -243,7 +243,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_Root_Entries
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) ) {
                 const msg = "entry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -254,7 +254,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_Root_Entries
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.project_scan_file_id ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.project_scan_file_id ) ) {
                 const msg = "entry.project_scan_file_id in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -299,7 +299,7 @@ export class CommonData_LoadedFromServer_SingleSearch__GoldStandard_Root_Entries
                     console.warn( msg + "searchScanFileEntry: " + searchScanFileEntry + ", result_List: ", result_List )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( searchScanFileEntry.searchScanFileId ) ) {
+                if ( ! limelight__variable_is_type_number_Check( searchScanFileEntry.searchScanFileId ) ) {
                     const msg = "searchScanFileEntry.searchScanFileId in entry.searchScanFileEntries is not a number. ";
                     console.warn( msg + "searchScanFileEntry: " + searchScanFileEntry + ", result_List: ", result_List )
                     throw Error(msg);

@@ -6,7 +6,7 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
 

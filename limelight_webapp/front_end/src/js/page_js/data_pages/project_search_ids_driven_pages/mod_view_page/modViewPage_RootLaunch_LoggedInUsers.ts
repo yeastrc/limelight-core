@@ -11,7 +11,7 @@
 
 //  This is required in this 'RootLaunch' file to add Handlebars before anything else is added to the bundle
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 //  From local dir
 import { ModViewPage_RootClass_LoggedInUsers }  

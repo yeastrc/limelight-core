@@ -14,8 +14,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
+import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {

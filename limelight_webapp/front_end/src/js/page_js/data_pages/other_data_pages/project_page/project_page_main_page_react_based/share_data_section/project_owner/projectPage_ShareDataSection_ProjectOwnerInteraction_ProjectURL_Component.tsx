@@ -15,7 +15,7 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ProjectPage_ShareDataSection_ProjectOwnerInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction";
 
 //  Loaded in initialize at bottom of page, called when main component mounts

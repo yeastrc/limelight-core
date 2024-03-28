@@ -10,9 +10,9 @@
 
 import React from 'react'
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check'
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { create_experimentConditions_GraphicRepresentation_PropsData, ExperimentConditions_GraphicRepresentation_PropsData } from 'page_js/data_pages/experiment_data_pages_common/create_experimentConditions_GraphicRepresentation_PropsData';
 
@@ -112,7 +112,7 @@ export class ProjectPage_ExperimentsList_SingleExperimentDetails extends React.C
 	 */
     componentDidMount() {
 
-        if ( ! variable_is_type_number_Check( this.props.experimentItemFromExperimentList.id ) ) {
+        if ( ! limelight__variable_is_type_number_Check( this.props.experimentItemFromExperimentList.id ) ) {
             throw Error("ProjectPage_ExperimentsList_SingleExperimentDetails:  Not a number 'this.props.experimentItemFromExperimentList.id'. value: " + this.props.experimentItemFromExperimentList.id );
         }
 

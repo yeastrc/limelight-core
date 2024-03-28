@@ -7,9 +7,9 @@
  *
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { limelight__IsVariableAString } from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
@@ -307,8 +307,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.binnedSummedIntensityCount ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.binnedSummedIntensityCount ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.binnedSummedIntensityCount ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.binnedSummedIntensityCount ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -317,8 +317,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.rtBinSizeInSeconds ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.rtBinSizeInSeconds ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.rtBinSizeInSeconds ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.rtBinSizeInSeconds ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -327,8 +327,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.rtBinMinInSeconds ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.rtBinMinInSeconds ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.rtBinMinInSeconds ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.rtBinMinInSeconds ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -337,8 +337,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.rtBinMaxInSeconds ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.rtBinMaxInSeconds ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.rtBinMaxInSeconds ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.rtBinMaxInSeconds ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -347,8 +347,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.rtMaxPossibleValueInSeconds ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.rtMaxPossibleValueInSeconds ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.rtMaxPossibleValueInSeconds ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.rtMaxPossibleValueInSeconds ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -357,8 +357,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.mzBinSizeInMZ ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.mzBinSizeInMZ ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.mzBinSizeInMZ ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.mzBinSizeInMZ ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -367,8 +367,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.mzBinMinInMZ ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.mzBinMinInMZ ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.mzBinMinInMZ ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.mzBinMinInMZ ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -377,8 +377,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.mzBinMaxInMZ ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.mzBinMaxInMZ ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.mzBinMaxInMZ ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.mzBinMaxInMZ ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -387,8 +387,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.mzMaxPossibleValueInMZ ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.mzMaxPossibleValueInMZ ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.mzMaxPossibleValueInMZ ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.mzMaxPossibleValueInMZ ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -397,8 +397,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.intensityBinnedMin ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.intensityBinnedMin ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.intensityBinnedMin ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.intensityBinnedMin ) )";
         console.warn(msg);
         throw Error(msg);
     }
@@ -407,8 +407,8 @@ const _populate_DataPage_common_Data_Holder__ScanData_MS1_PeakIntensityBinnedOn_
         console.warn(msg);
         throw Error(msg);
     }
-    if ( ! variable_is_type_number_Check( summaryData.intensityBinnedMax ) ) {
-        const msg = "( ! variable_is_type_number_Check( summaryData.intensityBinnedMax ) )";
+    if ( ! limelight__variable_is_type_number_Check( summaryData.intensityBinnedMax ) ) {
+        const msg = "( ! limelight__variable_is_type_number_Check( summaryData.intensityBinnedMax ) )";
         console.warn(msg);
         throw Error(msg);
     }

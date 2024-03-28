@@ -14,7 +14,7 @@ import {
     projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer,
     ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFileEntry
 } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/all_users_incl_public_user/projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     projectPage_ScanFiles_View_Section_Get_ScanFile_Details_FromServer,
     ProjectPage_ScanFiles_View_Section_ScanFile_Details_FromServer_FeatureDetectionEntry,

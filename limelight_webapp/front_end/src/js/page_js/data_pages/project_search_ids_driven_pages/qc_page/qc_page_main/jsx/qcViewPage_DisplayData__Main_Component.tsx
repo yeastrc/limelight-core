@@ -44,7 +44,7 @@ import {
     SaveView_Create_Component_React_Result,
     SaveView_Create_Component_React_Type
 } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {PeptidePage_Display_MainContent_Component_nonClass_Functions} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component_nonClass_Functions";
 import {PeptidePage_Display_MainContent_Component_Props_Prop} from "page_js/data_pages/project_search_ids_driven_pages/peptide_page/peptidePage_Display_MainContent_Component";
 

@@ -9,8 +9,8 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { showErrorMsg, hideAllErrorMessages } from 'page_js/showHideErrorMessage';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
+import { showErrorMsg, hideAllErrorMessages } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 

@@ -6,7 +6,7 @@
  *
  */
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {DataTable_TableRoot_showItemsPerPage_SelectValue_SHOW_ALL} from "page_js/data_pages/data_table_react/dataTable_TableRoot_React";
 
 

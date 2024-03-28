@@ -7,9 +7,9 @@
  *
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -225,8 +225,8 @@ export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_Proje
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( scanLevelEntry.scanLevel ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanLevelEntry.scanLevel ) )";
+                if ( ! limelight__variable_is_type_number_Check( scanLevelEntry.scanLevel ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( scanLevelEntry.scanLevel ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -235,8 +235,8 @@ export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_Proje
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( scanLevelEntry.numberOfScans ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.numberOfScans ) )";
+                if ( ! limelight__variable_is_type_number_Check( scanLevelEntry.numberOfScans ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( scanFilenameEntry.numberOfScans ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -245,8 +245,8 @@ export class CommonData_LoadedFromServer__ScanData_Summary_Data_For_Single_Proje
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( scanLevelEntry.totalIonCurrent ) ) {
-                    const msg = "( ! variable_is_type_number_Check( scanFilenameEntry.totalIonCurrent ) )";
+                if ( ! limelight__variable_is_type_number_Check( scanLevelEntry.totalIonCurrent ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( scanFilenameEntry.totalIonCurrent ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }

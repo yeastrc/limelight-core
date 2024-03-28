@@ -6,8 +6,8 @@
  */
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -120,13 +120,13 @@ const _populateResult = function(
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( searchFlagsEntry.projectSearchId ) ) {
-            const msg = "( ! variable_is_type_number_Check( searchFlagsEntry.projectSearchId ) )";
+        if ( ! limelight__variable_is_type_number_Check( searchFlagsEntry.projectSearchId ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( searchFlagsEntry.projectSearchId ) )";
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( searchFlagsEntry.searchId ) ) {
-            const msg = "( ! variable_is_type_number_Check( searchFlagsEntry.searchId ) )";
+        if ( ! limelight__variable_is_type_number_Check( searchFlagsEntry.searchId ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( searchFlagsEntry.searchId ) )";
             console.warn(msg);
             throw Error(msg);
         }

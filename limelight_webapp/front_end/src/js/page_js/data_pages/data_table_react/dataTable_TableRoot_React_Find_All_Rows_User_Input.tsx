@@ -6,7 +6,7 @@
  *
  */
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 //  Delay after input change before call callback, to wait for additional keyboard input

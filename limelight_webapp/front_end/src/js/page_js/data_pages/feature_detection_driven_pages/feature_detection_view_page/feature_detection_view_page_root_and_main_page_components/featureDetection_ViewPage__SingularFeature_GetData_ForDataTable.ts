@@ -5,7 +5,7 @@
  *
  */
 
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
 import {
     CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry

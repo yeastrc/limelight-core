@@ -13,7 +13,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 ///////
 

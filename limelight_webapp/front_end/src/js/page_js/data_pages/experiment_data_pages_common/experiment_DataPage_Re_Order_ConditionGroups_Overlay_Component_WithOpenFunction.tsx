@@ -24,7 +24,7 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     Experiment_SingleExperiment_ConditionsGraphicRepresentation,
     ExperimentConditions_GraphicRepresentation_MainCell_getHoverContents

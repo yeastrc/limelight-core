@@ -16,7 +16,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { ProteinExperimentPage_SingleProtein_MainContent_Component, ProteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop } from './proteinExperimentPage_SingleProtein_MainContent_Component'
 import {ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_ProteinNameDescription_Component";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";

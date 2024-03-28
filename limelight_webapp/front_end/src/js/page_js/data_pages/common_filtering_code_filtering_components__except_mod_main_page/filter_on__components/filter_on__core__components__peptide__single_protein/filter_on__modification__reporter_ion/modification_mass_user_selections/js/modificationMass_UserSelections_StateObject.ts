@@ -11,7 +11,7 @@
  *      modificationMass_UserSelections_Root.tsx
  */
 
-import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
+import {limelight__variable_is_type_number_Check} from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
@@ -665,7 +665,7 @@ export class ModificationMass_UserSelections_StateObject {
                     }
                     const staticModificationsSelectedMassesMap : Map<number,SingleProtein_Filter_PerUniqueIdentifier_Entry> = new Map();
                     for ( const entry of staticModificationsSelectedMassesArray ) {
-                        if ( variable_is_type_number_Check( entry ) ) {
+                        if ( limelight__variable_is_type_number_Check( entry ) ) {
                             //  Old version with just the mass as a number
                             const selectionEntry = new SingleProtein_Filter_PerUniqueIdentifier_Entry({ selectionType : SingleProtein_Filter_SelectionType.ANY });
                             staticModificationsSelectedMassesMap.set( entry, selectionEntry )

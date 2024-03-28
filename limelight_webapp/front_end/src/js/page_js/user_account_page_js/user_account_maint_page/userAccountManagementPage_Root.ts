@@ -15,13 +15,13 @@
 ///////////////////////////////////////////
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
+import { showErrorMsg, hideAllErrorMessages, initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import ReactDOM from "react-dom";
@@ -51,7 +51,7 @@ class UserAccountManagementPage {
 	initialize(  ) {
 
 		initShowHideErrorMessage();
-		catchAndReportGlobalOnError.init();
+		limelight__catchAndReportGlobalOnError.init();
 
 		{  // remove "LOADING"
 

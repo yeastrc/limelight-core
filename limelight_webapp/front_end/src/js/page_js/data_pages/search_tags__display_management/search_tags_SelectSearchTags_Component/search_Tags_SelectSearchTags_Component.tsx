@@ -10,7 +10,7 @@ import React from 'react'
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import ReactDOM from "react-dom";
 import {
     tooltip_Limelight_Create_Tooltip,

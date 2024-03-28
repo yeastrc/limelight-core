@@ -11,7 +11,7 @@ import React from 'react'
 import {modificationMass_CommonRounding_ReturnNumber_Function} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 
 import {ModificationMass_UserSelections_DisplayMassSelectionOverlay} from '../js/modificationMass_UserSelections_DisplayMassSelectionOverlay';
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData,
     ModificationMass_UserSelections_ComponentData_Variable_or_Open_ModificationsData_Entry

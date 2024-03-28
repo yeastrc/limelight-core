@@ -18,7 +18,7 @@
 
 //  module import
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
+import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import {addFlotToJquery} from 'libs/Lorikeet/jquery.flot';
 import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection';

@@ -18,8 +18,8 @@ import {
     TextField
 } from "@mui/material";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
-import { showErrorMsg } from "page_js/showHideErrorMessage";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import { showErrorMsg } from "page_js/common_all_pages/showHideErrorMessage";
 import {
     projectPage__ResearchersSection__CommonCode_Get_UserLevels_FromDOM
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/researchers__section/common/projectPage__ResearchersSection__CommonCode_Get_UserLevels_FromDOM";

@@ -15,11 +15,11 @@
 
 //module import 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import { DataPageStateManager, SearchProgramsPerSearchData_Root, SearchProgramsPerSearchItems_PerProjectSearchId, SearchProgramsPerSearchItem } from './dataPageStateManager';
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 /**
  * 
@@ -159,12 +159,12 @@ export class SearchProgramsPerSearchDataRetrieval {
 			
 			//  Convert SearchProgramsPerSearch list to ...
 
-			if ( ! variable_is_type_number_Check( perSearchListArrayItem.projectSearchId ) ) {
+			if ( ! limelight__variable_is_type_number_Check( perSearchListArrayItem.projectSearchId ) ) {
 				const msg = "perSearchListArrayItem.projectSearchId is not a number: " + perSearchListArrayItem.projectSearchId;
 				console.warn( msg );
 				throw Error( msg )
 			}
-			if ( ! variable_is_type_number_Check( perSearchListArrayItem.searchId ) ) {
+			if ( ! limelight__variable_is_type_number_Check( perSearchListArrayItem.searchId ) ) {
 				const msg = "perSearchListArrayItem.searchId is not a number: " + perSearchListArrayItem.searchId;
 				console.warn( msg );
 				throw Error( msg )
@@ -176,12 +176,12 @@ export class SearchProgramsPerSearchDataRetrieval {
 
 			perSearchListArrayItem.searchProgramsPerSearchs.forEach(function( searchProgramsPerSearchsArrayItem: any, index: any, array: any ) {
 
-				if ( ! variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId ) ) {
+				if ( ! limelight__variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId ) ) {
 					const msg = "searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId is not a number: " + searchProgramsPerSearchsArrayItem.searchProgramsPerSearchId;
 					console.warn( msg );
 					throw Error( msg )
 				}
-				if ( ! variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchId ) ) {
+				if ( ! limelight__variable_is_type_number_Check( searchProgramsPerSearchsArrayItem.searchId ) ) {
 					const msg = "searchProgramsPerSearchsArrayItem.searchId is not a number: " + searchProgramsPerSearchsArrayItem.searchId;
 					console.warn( msg );
 					throw Error( msg )

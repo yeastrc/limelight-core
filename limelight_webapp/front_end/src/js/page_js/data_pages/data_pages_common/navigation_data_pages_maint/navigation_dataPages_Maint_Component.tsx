@@ -8,7 +8,7 @@
 import React from 'react'
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 import {_REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR} from "page_js/data_pages/data_pages_common/a_dataPagesCommonConstants";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 export enum Navigation_dataPages_Maint__NavigationType_Enum {
     SINGLE_SEARCH = "SINGLE_SEARCH",

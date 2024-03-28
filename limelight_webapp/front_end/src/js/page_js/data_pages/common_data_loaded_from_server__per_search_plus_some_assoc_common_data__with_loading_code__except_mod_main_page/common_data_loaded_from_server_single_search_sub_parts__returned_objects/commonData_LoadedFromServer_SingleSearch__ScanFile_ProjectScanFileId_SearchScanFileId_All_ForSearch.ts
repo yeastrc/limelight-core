@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -242,8 +242,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileI
                 console.warn(msg);
                 throw Error(msg);
             }
-            if (!variable_is_type_number_Check(entry.searchScanFileId)) {
-                const msg = "( ! variable_is_type_number_Check( entry.searchScanFileId ) )";
+            if (!limelight__variable_is_type_number_Check(entry.searchScanFileId)) {
+                const msg = "( ! limelight__variable_is_type_number_Check( entry.searchScanFileId ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -252,8 +252,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileI
                 console.warn(msg);
                 throw Error(msg);
             }
-            if (!variable_is_type_number_Check(entry.projectScanFileId)) {
-                const msg = "( ! variable_is_type_number_Check( entry.projectScanFileId ) )";
+            if (!limelight__variable_is_type_number_Check(entry.projectScanFileId)) {
+                const msg = "( ! limelight__variable_is_type_number_Check( entry.projectScanFileId ) )";
                 console.warn(msg);
                 throw Error(msg);
             }

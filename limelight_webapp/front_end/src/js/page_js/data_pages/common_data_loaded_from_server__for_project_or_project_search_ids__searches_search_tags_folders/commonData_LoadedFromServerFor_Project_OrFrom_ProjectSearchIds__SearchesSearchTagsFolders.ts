@@ -8,8 +8,8 @@
  */
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 
@@ -344,8 +344,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( tagCategory.category_id === undefined || tagCategory.category_id === null ) {
                 throw Error("( tagCategory.category_id === undefined || tagCategory.category_id === null )")
             }
-            if ( ! variable_is_type_number_Check( tagCategory.category_id ) ) {
-                throw Error("( ! variable_is_type_number_Check( tagCategory.category_id ) )")
+            if ( ! limelight__variable_is_type_number_Check( tagCategory.category_id ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( tagCategory.category_id ) )")
             }
 
             if ( tagCategory.category_label === undefined || tagCategory.category_label === null ) {
@@ -388,11 +388,11 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( projectSearchTag.tagId === undefined || projectSearchTag.tagId === null ) {
                 throw Error("( projectSearchTag.tagId === undefined || projectSearchTag.tagId === null )")
             }
-            if ( ! variable_is_type_number_Check( projectSearchTag.tagId ) ) {
-                throw Error("( ! variable_is_type_number_Check( projectSearchTag.tagId ) )")
+            if ( ! limelight__variable_is_type_number_Check( projectSearchTag.tagId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( projectSearchTag.tagId ) )")
             }
-            if ( projectSearchTag.tagCategoryId !== null && ( ! variable_is_type_number_Check( projectSearchTag.tagCategoryId ) ) ) {
-                throw Error("( projectSearchTag.tagCategoryId !== null && ( ! variable_is_type_number_Check( projectSearchTag.tagCategoryId ) ) )")
+            if ( projectSearchTag.tagCategoryId !== null && ( ! limelight__variable_is_type_number_Check( projectSearchTag.tagCategoryId ) ) ) {
+                throw Error("( projectSearchTag.tagCategoryId !== null && ( ! limelight__variable_is_type_number_Check( projectSearchTag.tagCategoryId ) ) )")
             }
             if ( projectSearchTag.tagString === undefined || projectSearchTag.tagString === null ) {
                 throw Error("( projectSearchTag.tagString === undefined || projectSearchTag.tagString === null )")
@@ -488,14 +488,14 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId === undefined || projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId === null ) {
                 throw Error("( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId === undefined || projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId === null )")
             }
-            if ( ! variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId ) ) {
-                throw Error("( ! variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId ) )")
+            if ( ! limelight__variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.projectSearchId ) )")
             }
             if ( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId === undefined || projectSearchTag_ProjectSearchId_Mapping___Entry.tagId === null ) {
                 throw Error("( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId === undefined || projectSearchTag_ProjectSearchId_Mapping___Entry.tagId === null )")
             }
-            if ( ! variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId ) ) {
-                throw Error("( ! variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId ) )")
+            if ( ! limelight__variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId ) )")
             }
 
             if ( ! all_SearchTags_InProject_Map_Key_TagId.has( projectSearchTag_ProjectSearchId_Mapping___Entry.tagId ) ) {
@@ -526,8 +526,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
         if ( searchItem.projectSearchId === undefined || searchItem.projectSearchId === null ) {
             throw Error("( searchItem.projectSearchId === undefined || searchItem.projectSearchId === null )")
         }
-        if ( ! variable_is_type_number_Check( searchItem.projectSearchId ) ) {
-            const msg = "( ! variable_is_type_number_Check( searchItem.projectSearchId ) ). searchItem.projectSearchId: " + searchItem.projectSearchId
+        if ( ! limelight__variable_is_type_number_Check( searchItem.projectSearchId ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( searchItem.projectSearchId ) ). searchItem.projectSearchId: " + searchItem.projectSearchId
             console.warn( msg )
             throw  Error( msg )
         }
@@ -535,8 +535,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
         if ( searchItem.projectSearchId === undefined || searchItem.projectSearchId === null ) {
             throw Error("( searchItem.projectSearchId === undefined || searchItem.projectSearchId === null )")
         }
-        if ( ! variable_is_type_number_Check( searchItem.searchId ) ) {
-            const msg = "( ! variable_is_type_number_Check( searchItem.searchId ) ). searchItem.searchId: " + searchItem.searchId
+        if ( ! limelight__variable_is_type_number_Check( searchItem.searchId ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( searchItem.searchId ) ). searchItem.searchId: " + searchItem.searchId
             console.warn( msg )
             throw  Error( msg )
         }
@@ -554,8 +554,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
         if ( searchItem.displayOrder === undefined || searchItem.displayOrder === null ) {
             throw Error("( searchItem.displayOrder === undefined || searchItem.displayOrder === null )")
         }
-        if ( ! variable_is_type_number_Check( searchItem.displayOrder ) ) {
-            const msg = "( ! variable_is_type_number_Check( searchItem.displayOrder ) ). searchItem.displayOrder: " + searchItem.displayOrder
+        if ( ! limelight__variable_is_type_number_Check( searchItem.displayOrder ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( searchItem.displayOrder ) ). searchItem.displayOrder: " + searchItem.displayOrder
             console.warn( msg )
             throw  Error( msg )
         }
@@ -608,20 +608,20 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( folderProjectSearchMapping_Entry.folderId === undefined || folderProjectSearchMapping_Entry.folderId === null ) {
                 throw Error("( folderProjectSearchMapping_Entry.folderId === undefined || folderProjectSearchMapping_Entry.folderId === null )")
             }
-            if ( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.folderId ) ) {
-                throw Error("( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.folderId ) )")
+            if ( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.folderId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.folderId ) )")
             }
             if ( folderProjectSearchMapping_Entry.projectSearchId === undefined || folderProjectSearchMapping_Entry.projectSearchId === null ) {
                 throw Error("( folderProjectSearchMapping_Entry.projectSearchId === undefined || folderProjectSearchMapping_Entry.projectSearchId === null )")
             }
-            if ( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.projectSearchId ) ) {
-                throw Error("( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.projectSearchId ) )")
+            if ( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.projectSearchId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.projectSearchId ) )")
             }
             if ( folderProjectSearchMapping_Entry.searchDisplayOrder === undefined || folderProjectSearchMapping_Entry.searchDisplayOrder === null ) {
                 throw Error("( folderProjectSearchMapping_Entry.searchDisplayOrder === undefined || folderProjectSearchMapping_Entry.searchDisplayOrder === null )")
             }
-            if ( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.searchDisplayOrder ) ) {
-                throw Error("( ! variable_is_type_number_Check( folderProjectSearchMapping_Entry.searchDisplayOrder ) )")
+            if ( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.searchDisplayOrder ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( folderProjectSearchMapping_Entry.searchDisplayOrder ) )")
             }
 
             let folder_SearchData = folder_SearchData__Map_Key_folderId__LOCAL.get( folderProjectSearchMapping_Entry.folderId );
@@ -648,8 +648,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( folderItem_FromWebService.id === undefined || folderItem_FromWebService.id === null ) {
                 throw Error("( folderItem_FromWebService.id === undefined || folderItem_FromWebService.id === null )")
             }
-            if ( ! variable_is_type_number_Check( folderItem_FromWebService.id ) ) {
-                const msg = "( ! variable_is_type_number_Check( folderItem_FromWebService.id ) ). folderItem_FromWebService.id: " + folderItem_FromWebService.id
+            if ( ! limelight__variable_is_type_number_Check( folderItem_FromWebService.id ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( folderItem_FromWebService.id ) ). folderItem_FromWebService.id: " + folderItem_FromWebService.id
                 console.warn( msg )
                 throw  Error( msg )
             }
@@ -664,8 +664,8 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             if ( folderItem_FromWebService.displayOrder === undefined || folderItem_FromWebService.displayOrder === null ) {
                 throw Error("( folderItem_FromWebService.displayOrder === undefined || folderItem_FromWebService.displayOrder === null )")
             }
-            if ( ! variable_is_type_number_Check( folderItem_FromWebService.displayOrder ) ) {
-                const msg = "( ! variable_is_type_number_Check( folderItem_FromWebService.displayOrder ) ). folderItem_FromWebService.displayOrder: " + folderItem_FromWebService.displayOrder
+            if ( ! limelight__variable_is_type_number_Check( folderItem_FromWebService.displayOrder ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( folderItem_FromWebService.displayOrder ) ). folderItem_FromWebService.displayOrder: " + folderItem_FromWebService.displayOrder
                 console.warn( msg )
                 throw  Error( msg )
             }

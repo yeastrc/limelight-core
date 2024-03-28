@@ -12,7 +12,7 @@ import {
     ManageCachedDataForAdminPage_Root_Component,
     ManageCachedDataForAdminPage_Root_Component_Props
 } from "page_js/webapp_admin_pages/webapp_manage_cached_data_page/jsx/manageCachedDataForAdminPage_Root_Component";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 
 /**

@@ -11,8 +11,8 @@ import React from 'react'
 
 
 import { ProjectPage_Experiments_SingleExperimentMaintRoot } from './projPg_Expermnts_Single_MaintRoot';
-import {keep_UserSession_AliveIfExists_OnServer_WebserviceCall} from "page_js/keep_UserSession_AliveIfExists_OnServer_WebserviceCall";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {keep_UserSession_AliveIfExists_OnServer_WebserviceCall} from "page_js/common_all_pages/keep_UserSession_AliveIfExists_OnServer_WebserviceCall";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     AnnotationTypeData_Root,
     SearchProgramsPerSearchData_Root

@@ -7,9 +7,9 @@
  *
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -298,8 +298,8 @@ const _populate_DataPage_CommonData_LoadedFromServer_From_ProjectScanFileId_Rete
 
     for ( const scanNumber of scanNumber_List ) {
 
-        if ( ! variable_is_type_number_Check( scanNumber ) ) {
-            const msg = "( ! variable_is_type_number_Check( scanNumber ) )";
+        if ( ! limelight__variable_is_type_number_Check( scanNumber ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( scanNumber ) )";
             console.warn(msg);
             throw Error(msg);
         }

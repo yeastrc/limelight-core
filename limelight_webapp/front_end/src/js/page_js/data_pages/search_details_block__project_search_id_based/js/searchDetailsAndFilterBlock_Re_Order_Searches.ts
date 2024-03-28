@@ -15,7 +15,7 @@ import {
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {SearchDetailsBlockDataMgmtProcessing} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {ParseURL_Into_PageStateParts} from "page_js/data_pages/data_pages_common/parseURL_Into_PageStateParts";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
@@ -33,7 +33,7 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {currentProjectId_ProjectSearchId_Based_DataPages_FromDOM} from "page_js/data_pages/data_pages_common/currentProjectId_ProjectSearchId_Based_DataPages_FromDOM";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {get_SearchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_ChangeSearches_UpdateInProgress_OverlayLayout";
 import {get_SearchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout_Layout} from "page_js/data_pages/search_details_block__project_search_id_based/jsx/searchDetailsAndFilterBlock_Re_Order_Searches_UpdateInProgress_OverlayLayout";
 

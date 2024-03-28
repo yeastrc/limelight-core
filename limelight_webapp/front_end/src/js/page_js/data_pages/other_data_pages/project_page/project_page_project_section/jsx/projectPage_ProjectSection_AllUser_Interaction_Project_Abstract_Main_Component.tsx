@@ -17,7 +17,7 @@ import {
 import {
     Render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Component
 } from "page_js/data_pages/common_components__react/render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Component";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_Component_Change_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_Component";

@@ -19,7 +19,7 @@
 
 import React from 'react'
 import {SearchSubGroup_CentralStateManagerObjectClass} from "page_js/data_pages/search_sub_group/search_sub_group_in_search_details_outer_block/js/searchSubGroup_CentralStateManagerObjectClass";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages/color_manager/limelight_Colors_For_SingleSearch__SubSearches";
 import {

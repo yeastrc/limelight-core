@@ -11,7 +11,7 @@ import {QcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSear
 import {
     QcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search_plots/jsx/qcViewPage_SingleSearch__MS1_Ion_Current_VS_M_Z_StatisticsPlot";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {QcPage_UpdatingData_BlockCover} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_UpdatingData_BlockCover";
 import {
     qcPage_StandardChartLayout_StandardHeight,

@@ -10,13 +10,13 @@ import ReactDOM from "react-dom";
 
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
 
 import { MainPagesPopulateHeader } from "page_js/main_pages/mainPagesPopulateHeader";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ManageUsersForAdminPage_Root_Component, ManageUsersForAdminPage_Root_Component_Props
 } from "page_js/webapp_admin_pages/webapp_manage_users_page/manageUsersForAdminPage_Root_Component";
@@ -64,7 +64,7 @@ const _render_RootComponent = function () {
 {
     try {
 
-        catchAndReportGlobalOnError.init();
+        limelight__catchAndReportGlobalOnError.init();
 
         ////Instance of class
         const mainPagesPopulateHeader = new MainPagesPopulateHeader();

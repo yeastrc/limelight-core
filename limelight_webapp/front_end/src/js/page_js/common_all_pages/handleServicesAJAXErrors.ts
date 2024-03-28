@@ -15,7 +15,7 @@
  */
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 const WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT = "webservice_sync_tracking_code_mismatch_text";

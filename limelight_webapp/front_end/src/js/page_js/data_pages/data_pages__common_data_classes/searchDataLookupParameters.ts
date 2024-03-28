@@ -12,7 +12,7 @@
 
 ///////////////////////////////////////////
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 
 //  !!!!!!!   This Full Object Graph needs to be able to serialize to JSON and Deserialize and match the Java code   !!!!!!!
@@ -92,7 +92,7 @@ const copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root = function
         console.warn( msg );
         throw Error( msg );
     }
-    if ( ! variable_is_type_number_Check( inputParsedJSON.versionNumber ) ) {
+    if ( ! limelight__variable_is_type_number_Check( inputParsedJSON.versionNumber ) ) {
         const msg = "copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root: No value in inputParsedJSON.versionNumber: " + inputParsedJSON.versionNumber;
         console.warn( msg );
         throw Error( msg );
@@ -125,7 +125,7 @@ const copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root = function
                     console.warn( msg );
                     throw Error( msg );
                 }
-                if ( ! variable_is_type_number_Check( paramsForProjectSearchIdsList_Entry_Input.projectSearchId ) ) {
+                if ( ! limelight__variable_is_type_number_Check( paramsForProjectSearchIdsList_Entry_Input.projectSearchId ) ) {
                     const msg = "copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root: No value in paramsForProjectSearchIdsList_Entry_Input.projectSearchId: " 
                     + paramsForProjectSearchIdsList_Entry_Input.projectSearchId;
                     console.warn( msg );
@@ -174,7 +174,7 @@ const _copyFilters = function( filters_Input : any, typeLabel : string ) : Array
             console.warn( msg );
             throw Error( msg );
         }
-        if ( ! variable_is_type_number_Check( filterEntry_Input.annTypeId ) ) {
+        if ( ! limelight__variable_is_type_number_Check( filterEntry_Input.annTypeId ) ) {
             const msg = "copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root: Not a Number: filterEntry_Input.annTypeId: " 
             + filterEntry_Input.annTypeId
             + ", typeLabel: " + typeLabel;
@@ -188,7 +188,7 @@ const _copyFilters = function( filters_Input : any, typeLabel : string ) : Array
             console.warn( msg );
             throw Error( msg );
         }
-        if ( ! variable_is_type_number_Check( filterEntry_Input.value ) ) {
+        if ( ! limelight__variable_is_type_number_Check( filterEntry_Input.value ) ) {
             const msg = "copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root: Not a Number: filterEntry_Input.value: " 
             + filterEntry_Input.value
             + ", typeLabel: " + typeLabel;
@@ -232,7 +232,7 @@ const _copyAnnTypeDisplay = function( annTypeDisplays_Input : any, typeLabel : s
             console.warn( msg );
             throw Error( msg );
         }
-        if ( ! variable_is_type_number_Check( annTypeDisplayEntry_Input ) ) {
+        if ( ! limelight__variable_is_type_number_Check( annTypeDisplayEntry_Input ) ) {
             const msg = "copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root: Not a Number: annTypeDisplayEntry_Input: " 
             + annTypeDisplayEntry_Input
             + ", typeLabel: " + typeLabel;

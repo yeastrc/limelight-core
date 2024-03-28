@@ -8,7 +8,7 @@
 
 
 import ReactDOM from "react-dom";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
  * Creates the tooltip and returns object of class tooltip_Limelight_Create_Tooltip

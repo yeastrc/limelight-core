@@ -16,8 +16,8 @@ import {
 	DataTable_RootTableDataObject, DataTable_RootTableDataObject_Both_ColumnArrays
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
 import {AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId, DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_PageMaintOnceDataIsLoaded";
 import {annotationTypes_SortOn_DisplayOrderAnnTypeName} from "page_js/data_pages/data_pages_common/single_project_its_searches_and_folders/annotationTypes_SortOn_DisplayOrderAnnTypeName";
 import {LorikeetSpectrumViewer_DataFromServer_Root_Data} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_DataFromServer_Root_Data";
@@ -750,12 +750,12 @@ const _create_Single_DataTable_Row = function (
 	const charge : number = psmObject.charge;
 	const psmAnnotationMap_Key_AnnotationTypeId = psmObject.psmAnnotationMap_Key_AnnotationTypeId;
 	{
-		if ( ! variable_is_type_number_Check( psmId ) ) {
+		if ( ! limelight__variable_is_type_number_Check( psmId ) ) {
 			const msg = "psmId is not a number: " + psmId;
 			console.warn( msg )
 			throw Error( msg )
 		}
-		if ( ! variable_is_type_number_Check( charge ) ) {
+		if ( ! limelight__variable_is_type_number_Check( charge ) ) {
 			const msg = "charge is not a number: " + psmId;
 			console.warn( msg )
 			throw Error( msg )
@@ -1308,7 +1308,7 @@ const _getAnnotationTypeRecords_DisplayOrder = function(
 		let psmAnnotationMap_Key_AnnotationTypeId = psmListItem.psmAnnotationMap_Key_AnnotationTypeId;
 		if ( psmAnnotationMap_Key_AnnotationTypeId ) {
 			for ( const psmAnnotationDTOItem of psmAnnotationMap_Key_AnnotationTypeId.values() ) {
-				if ( ! variable_is_type_number_Check( psmAnnotationDTOItem.annotationTypeId ) ) {
+				if ( ! limelight__variable_is_type_number_Check( psmAnnotationDTOItem.annotationTypeId ) ) {
 					const msg = "Entry in psmAnnotationMap_Key_AnnotationTypeId: psmAnnotationDTOItem.annotationTypeId is not a number. psmAnnotationDTOItem.annotationTypeId: " + psmAnnotationDTOItem.annotationTypeId;
 					console.warn( msg );
 					throw Error( msg );

@@ -1,5 +1,5 @@
 import {UnlocalizedStartEnd} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modProteinSearchPeptideList_SubTableGenerator";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 export class ModDataUtils {
@@ -15,7 +15,7 @@ export class ModDataUtils {
 
         let projectSearchIdInt = projectSearchId;
 
-        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+        if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
             const projectSearchIdString = projectSearchId as unknown as string;
             const projectSearchIdInt = Number.parseInt( projectSearchIdString ); // projectSearchId is string
 
@@ -52,7 +52,7 @@ export class ModDataUtils {
 
         let projectSearchIdInt = projectSearchId;
 
-        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+        if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
             const projectSearchIdString = projectSearchId as unknown as string;
             const projectSearchIdInt = Number.parseInt( projectSearchIdString ); // projectSearchId is string
 
@@ -89,7 +89,7 @@ export class ModDataUtils {
 
         let projectSearchIdInt = projectSearchId;
 
-        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+        if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
             const projectSearchIdString = projectSearchId as unknown as string;
             const projectSearchIdInt = Number.parseInt( projectSearchIdString ); // projectSearchId is string
 

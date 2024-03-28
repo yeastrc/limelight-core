@@ -10,9 +10,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch__NO_PSM_Peptide_Protein_Filtering";
 
 /**
@@ -393,12 +393,12 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
 
         for ( const result_Entry of results ) {
 
-            if ( ! variable_is_type_number_Check( result_Entry.sSbGpId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( result_Entry.sSbGpId ) ) {
                 const msg = "result_Entry.rPId not numeric: " + result_Entry.sSbGpId;
                 console.warn( msg );
                 throw Error( msg )
             }
-            if ( ! variable_is_type_number_Check( result_Entry.psmId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( result_Entry.psmId ) ) {
                 const msg = "result_Entry.psmId not numeric: " + result_Entry.psmId;
                 console.warn( msg );
                 throw Error( msg )

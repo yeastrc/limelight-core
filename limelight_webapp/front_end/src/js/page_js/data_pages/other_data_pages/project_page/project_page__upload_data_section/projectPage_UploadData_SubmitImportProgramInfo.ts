@@ -15,7 +15,7 @@
 
 //  module imports
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import {projectPage_UploadData_SubmitImportProgramInfo__OpenOverlay} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_SubmitImportProgramInfo_Overlay";
 

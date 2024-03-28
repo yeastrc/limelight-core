@@ -9,9 +9,9 @@
  *
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
@@ -116,8 +116,8 @@ const _process_WebserviceResponse = function (
         }
 
         for ( const projectSearchId of projectSearchIds_ForScanFile_List ) {
-            if ( ! variable_is_type_number_Check( projectSearchId ) ) {
-                throw Error("( ! variable_is_type_number_Check( projectSearchId ) ) from for ( const projectSearchId of projectSearchIds_ForScanFile_List )")
+            if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( projectSearchId ) ) from for ( const projectSearchId of projectSearchIds_ForScanFile_List )")
             }
         }
     }
@@ -135,8 +135,8 @@ const _process_WebserviceResponse = function (
         if ( ! featureDetection_Entry.id_MappingTbl ) {
             throw Error("( ! featureDetection_Entry.id_MappingTbl )")
         }
-        if ( ! variable_is_type_number_Check( featureDetection_Entry.id_MappingTbl ) ) {
-            throw Error("( ! variable_is_type_number_Check( featureDetection_Entry.id_MappingTbl ) )")
+        if ( ! limelight__variable_is_type_number_Check( featureDetection_Entry.id_MappingTbl ) ) {
+            throw Error("( ! limelight__variable_is_type_number_Check( featureDetection_Entry.id_MappingTbl ) )")
         }
 
         if ( ! featureDetection_Entry.displayLabel ) {
@@ -169,8 +169,8 @@ const _process_WebserviceResponse = function (
         if ( ! goldStandard_Entry.id_MappingTbl ) {
             throw Error("( ! goldStandard_Entry.id_MappingTbl )")
         }
-        if ( ! variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) ) {
-            throw Error("( ! variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) )")
+        if ( ! limelight__variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) ) {
+            throw Error("( ! limelight__variable_is_type_number_Check( goldStandard_Entry.id_MappingTbl ) )")
         }
 
         if ( ! goldStandard_Entry.displayLabel ) {

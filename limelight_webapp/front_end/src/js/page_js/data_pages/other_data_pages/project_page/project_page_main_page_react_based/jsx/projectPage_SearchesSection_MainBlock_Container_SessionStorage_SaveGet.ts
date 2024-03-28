@@ -9,7 +9,7 @@
  */
 
 
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
 
@@ -90,7 +90,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
                     if ( storageValue.folderIds_ExpandedFolders && ( storageValue.folderIds_ExpandedFolders instanceof Array )) {
 
                         for ( const entry of storageValue.folderIds_ExpandedFolders ) {
-                            if ( variable_is_type_number_Check(entry) ) {
+                            if ( limelight__variable_is_type_number_Check(entry) ) {
                                 this._current__folderIds_ExpandedFolders.add(entry)
                             }
                         }
@@ -129,7 +129,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
                         if ( storageValue.searchTagIds_Selected_V2.filter_OR && ( storageValue.searchTagIds_Selected_V2.filter_OR instanceof Array )) {
 
                             for ( const entry of storageValue.searchTagIds_Selected_V2.filter_OR ) {
-                                if ( variable_is_type_number_Check(entry) ) {
+                                if ( limelight__variable_is_type_number_Check(entry) ) {
                                     searchTagIdsSelected_Boolean__OR.add(entry)
                                 }
                             }
@@ -137,7 +137,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
                         if ( storageValue.searchTagIds_Selected_V2.filter_AND && ( storageValue.searchTagIds_Selected_V2.filter_AND instanceof Array )) {
 
                             for ( const entry of storageValue.searchTagIds_Selected_V2.filter_AND ) {
-                                if ( variable_is_type_number_Check(entry) ) {
+                                if ( limelight__variable_is_type_number_Check(entry) ) {
                                     searchTagIdsSelected_Boolean__AND.add(entry)
                                 }
                             }
@@ -145,7 +145,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
                         if ( storageValue.searchTagIds_Selected_V2.filter_NOT && ( storageValue.searchTagIds_Selected_V2.filter_NOT instanceof Array )) {
 
                             for ( const entry of storageValue.searchTagIds_Selected_V2.filter_NOT ) {
-                                if ( variable_is_type_number_Check(entry) ) {
+                                if ( limelight__variable_is_type_number_Check(entry) ) {
                                     searchTagIdsSelected_Boolean__NOT.add(entry)
                                 }
                             }
@@ -156,7 +156,7 @@ export class ProjectPage_SearchesSection_MainBlock_Container_SessionStorage_Save
                         //  Secondary is original filtering
 
                         for ( const entry of storageValue.searchTagIds_Selected ) {
-                            if ( variable_is_type_number_Check(entry) ) {
+                            if ( limelight__variable_is_type_number_Check(entry) ) {
                                 searchTagIdsSelected_Boolean__AND.add(entry)
                             }
                         }

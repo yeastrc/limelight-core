@@ -9,7 +9,7 @@
 
 import * as d3 from "d3";
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ScanFileBrowserPage_SingleScan_UserSelections_StateObject,
     ScanFileBrowserPage_SingleScan_UserSelections_StateObject__FeatureDetection_IndividualFeature_OR_PSM_Root,

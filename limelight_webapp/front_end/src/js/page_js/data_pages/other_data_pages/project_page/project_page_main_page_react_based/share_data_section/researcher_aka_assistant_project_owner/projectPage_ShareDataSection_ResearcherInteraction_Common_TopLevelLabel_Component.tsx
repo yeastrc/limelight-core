@@ -10,7 +10,7 @@
  */
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 export const ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Expanded_Default = false
 

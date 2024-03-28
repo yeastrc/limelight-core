@@ -32,7 +32,7 @@ import {
 } from "page_js/user_account_page_js/user_account_maint_page/userAccountManagementPage_Change_Organization_Component";
 import {userAccountManagementPage_Change_Password_Component__openOverlay} from "page_js/user_account_page_js/user_account_maint_page/userAccountManagementPage_Change_Password_Component";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {UserAccountManagementPage_Change_SubmitImportProgramKey_Component} from "page_js/user_account_page_js/user_account_maint_page/userAccountManagementPage_Change_SubmitImportProgramKey_Component";
 
 

@@ -13,7 +13,7 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {SearchTag_Max_FieldLengths_Constants} from "page_js/constants_across_webapp/search_tag_constants/SearchTag_Max_FieldLengths_Constants";
 import {
     searchTags__Get_For_ProjectId,

@@ -12,7 +12,7 @@ import {
     SearchDataLookupParameters_Root,
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 export class ModViewDataManager {
 

@@ -11,7 +11,7 @@ import React from 'react'
 import {
     DataPages_LoggedInUser_CommonObjectsFactory
 } from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import {
     SearchSubGroup_Manage_GroupNames_OpenOverlay_Pass_ProjectSearchId_UpdateCallback,

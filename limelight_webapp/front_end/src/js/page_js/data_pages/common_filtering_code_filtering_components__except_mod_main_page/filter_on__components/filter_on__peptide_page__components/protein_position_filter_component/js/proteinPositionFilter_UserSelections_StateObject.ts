@@ -6,7 +6,7 @@
  * State Object used in:
  *      proteinPositionFilter_UserSelections_....tsx
  */
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 ////////////////////
 
@@ -251,7 +251,7 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 						console.warn(msg);
 						throw Error(msg);
 					}
-					if (!variable_is_type_number_Check(proteinSequenceVersionId)) {
+					if (!limelight__variable_is_type_number_Check(proteinSequenceVersionId)) {
 						const msg = "set_encodedStateData(...): proteinSequenceVersionId is not a number. proteinSequenceVersionId: ";
 						console.warn(msg, proteinSequenceVersionId);
 						throw Error(msg + proteinSequenceVersionId);
@@ -296,12 +296,12 @@ export class ProteinPositionFilter_UserSelections_StateObject {
 									throw Error(msg);
 								}
 
-								if (!variable_is_type_number_Check(proteinPosition_Start)) {
+								if (!limelight__variable_is_type_number_Check(proteinPosition_Start)) {
 									const msg = "set_encodedStateData(...): proteinPosition_Start is not a number. proteinPosition_Start: ";
 									console.warn(msg, proteinPosition_Start);
 									throw Error(msg + proteinPosition_Start);
 								}
-								if (!variable_is_type_number_Check(proteinPosition_End)) {
+								if (!limelight__variable_is_type_number_Check(proteinPosition_End)) {
 									const msg = "set_encodedStateData(...): proteinPosition_End is not a number. proteinPosition_End: ";
 									console.warn(msg, proteinPosition_End);
 									throw Error(msg + proteinPosition_End);

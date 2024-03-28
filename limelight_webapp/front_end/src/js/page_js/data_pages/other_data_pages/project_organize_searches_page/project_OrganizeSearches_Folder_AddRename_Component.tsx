@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF

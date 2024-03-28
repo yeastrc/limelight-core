@@ -7,7 +7,7 @@
 
 
 import React from 'react'
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Current_Status_ID_Enum,
     Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Current_Status_TriggerType_Enum,

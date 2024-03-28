@@ -7,7 +7,7 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import ReactDOM from "react-dom";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import React from "react";
 import {
     ModPage_OptionsSection_UserInput_Display_MainContent_Component_Props_Prop

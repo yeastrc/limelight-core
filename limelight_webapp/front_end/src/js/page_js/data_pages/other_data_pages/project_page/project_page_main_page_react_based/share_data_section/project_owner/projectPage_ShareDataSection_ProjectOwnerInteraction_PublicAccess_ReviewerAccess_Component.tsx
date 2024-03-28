@@ -11,7 +11,7 @@
  */
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ProjectPage_ShareDataSection_ProjectOwnerInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction";
 import {
     tooltip_Limelight_Create_Tooltip,

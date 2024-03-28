@@ -12,9 +12,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch__NO_PSM_Peptide_Protein_Filtering";
 
 
@@ -583,8 +583,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) )";
+                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -593,8 +593,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) )";
+                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -603,8 +603,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) )";
+                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }

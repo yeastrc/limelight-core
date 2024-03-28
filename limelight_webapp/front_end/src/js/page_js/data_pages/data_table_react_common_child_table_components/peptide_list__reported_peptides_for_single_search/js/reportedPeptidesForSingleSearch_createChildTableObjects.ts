@@ -6,7 +6,7 @@
  * Create     DataTable_RootTableObject for child table
  */
 
-import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
+import {limelight__variable_is_type_number_Check} from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 //   From data_pages_common
 import {DataPageStateManager} from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts
 import {
@@ -37,7 +37,7 @@ import {
 import {reportedPeptidesForSingleSearch_ChildReactComponents_Other} from "page_js/data_pages/data_table_react_common_child_table_components/peptide_list__reported_peptides_for_single_search/jsx/reportedPeptidesForSingleSearch_ChildReactComponents_Other";
 import {CreateReportedPeptideDisplayData__SingleProtein_Result_PeptideList_PerReportedPeptideId_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__single_protein/js/proteinPage_Display__SingleProtein_Create_GeneratedReportedPeptideListData";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/js/psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects";
@@ -166,7 +166,7 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
             }
             //  Validate all are numbers
             for ( const reportedPeptideAnnTypeId of reportedPeptideAnnTypeIdsDisplay_For_Single_projectSearchId ) {
-                if ( ! variable_is_type_number_Check( reportedPeptideAnnTypeId) ) {
+                if ( ! limelight__variable_is_type_number_Check( reportedPeptideAnnTypeId) ) {
                     const msg = "reportedPeptidesForSingleSearch_createChildTableObjects(...): searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList[X].reportedPeptideAnnTypeDisplay contains a non-number: |" + reportedPeptideAnnTypeId + "|, projectSearchId: " + projectSearchId;
                     console.warn( msg );
                     throw Error( msg );

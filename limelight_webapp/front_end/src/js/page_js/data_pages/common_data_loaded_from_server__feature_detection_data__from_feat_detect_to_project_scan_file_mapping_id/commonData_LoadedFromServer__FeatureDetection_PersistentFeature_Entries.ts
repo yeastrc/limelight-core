@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
@@ -303,7 +303,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.id_PersistentFeature_Entry ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.id_PersistentFeature_Entry ) ) {
                 const msg = "entry.id_PersistentFeature_Entry in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -314,7 +314,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.featureDetectionPersistentFeatureUploadedFileStatsId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.featureDetectionPersistentFeatureUploadedFileStatsId ) ) {
                 const msg = "entry.featureDetectionPersistentFeatureUploadedFileStatsId in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -325,7 +325,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.charge ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.charge ) ) {
                 const msg = "entry.charge in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -336,7 +336,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.monoisotopicMass ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.monoisotopicMass ) ) {
                 const msg = "entry.monoisotopicMass in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -347,7 +347,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.retentionTimeRange_Start ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.retentionTimeRange_Start ) ) {
                 const msg = "entry.retentionTimeRange_Start in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -358,7 +358,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.retentionTimeRange_End ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.retentionTimeRange_End ) ) {
                 const msg = "entry.retentionTimeRange_End in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -369,7 +369,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.retentionTimeRange_Apex ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.retentionTimeRange_Apex ) ) {
                 const msg = "entry.retentionTimeRange_Apex in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -380,7 +380,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.abundance_RetentionTimeRange_Apex ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.abundance_RetentionTimeRange_Apex ) ) {
                 const msg = "entry.abundance_RetentionTimeRange_Apex in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -391,7 +391,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.abundance_Total ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.abundance_Total ) ) {
                 const msg = "entry.abundance_Total in result_List is not a number. ";
                 console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                 throw Error(msg);
@@ -411,7 +411,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                     throw Error(msg);
                 }
                 for ( const ms_2_scanNumber in entry.ms_2_scanNumbers_Array ) {
-                    if ( ! variable_is_type_number_Check( ms_2_scanNumber ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( ms_2_scanNumber ) ) {
                         const msg = "ms_2_scanNumber in entry.ms_2_scanNumbers_Array in result_List is not a number. ";
                         console.warn( msg + "entry: " + entry + ", result_List: ", result_List )
                         throw Error(msg);

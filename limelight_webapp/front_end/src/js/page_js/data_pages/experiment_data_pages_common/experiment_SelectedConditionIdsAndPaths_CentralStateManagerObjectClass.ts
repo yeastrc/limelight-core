@@ -33,7 +33,7 @@
 "use strict";
 
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check'
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check'
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 
@@ -173,8 +173,8 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 						throw Error( msg )
 					}
 					for ( const selectedConditionIds_FirstConditionGroup of selectedConditionIds_FirstConditionGroup_Encoded ) {
-						if ( ! variable_is_type_number_Check( selectedConditionIds_FirstConditionGroup ) ) {
-							const msg = "Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass::initialize(): if ( ! variable_is_type_number_Check( selectedConditionIds_FirstConditionGroup ) )";
+						if ( ! limelight__variable_is_type_number_Check( selectedConditionIds_FirstConditionGroup ) ) {
+							const msg = "Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass::initialize(): if ( ! limelight__variable_is_type_number_Check( selectedConditionIds_FirstConditionGroup ) )";
 							console.warn( msg )
 							throw Error( msg )
 						}
@@ -194,8 +194,8 @@ export class Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectCl
 					}
 					for ( const selectedConditionIdPaths_OtherThan_First_ConditionGroup_OuterEntry of selectedConditionIdPaths_OtherThan_First_ConditionGroup ) {
 						for (const selectedConditionIdPaths_OtherThan_First_ConditionGroup_InnerEntry of selectedConditionIdPaths_OtherThan_First_ConditionGroup_OuterEntry) {
-							if (!variable_is_type_number_Check(selectedConditionIdPaths_OtherThan_First_ConditionGroup_InnerEntry)) {
-								const msg = "Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass::initialize(): if ( ! variable_is_type_number_Check( selectedConditionIdPaths_OtherThan_First_ConditionGroup_InnerEntry ) )";
+							if (!limelight__variable_is_type_number_Check(selectedConditionIdPaths_OtherThan_First_ConditionGroup_InnerEntry)) {
+								const msg = "Experiment_SelectedConditionIdsAndPaths_CentralStateManagerObjectClass::initialize(): if ( ! limelight__variable_is_type_number_Check( selectedConditionIdPaths_OtherThan_First_ConditionGroup_InnerEntry ) )";
 								console.warn(msg)
 								throw Error(msg)
 							}

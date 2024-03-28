@@ -27,10 +27,10 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { _AJAX_POST_JSON_CONTENT_TYPE, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, getWebserviceSyncTrackingCode } from 'page_js/EveryPageCommon';
+import { _AJAX_POST_JSON_CONTENT_TYPE, LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM, getWebserviceSyncTrackingCode } from 'page_js/common_all_pages/EveryPageCommon';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
-import { handleAJAXError, handleAJAXFailure } from 'page_js/handleServicesAJAXErrors';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
+import { handleAJAXError, handleAJAXFailure } from 'page_js/common_all_pages/handleServicesAJAXErrors';
 
 import { WebserviceCallStandardPost_RejectObject_Class } from './webserviceCallStandardPost_RejectObject_Class';
 import {WebserviceCallStandardPost_ApiObject_Holder_Class} from "page_js/webservice_call_common/webserviceCallStandardPost_ApiObject_Class";

@@ -13,9 +13,9 @@
  */
 
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId__NO_PSM_Peptide_Protein_Filtering} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch__NO_PSM_Peptide_Protein_Filtering";
 
 
@@ -401,8 +401,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psm.psmId ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psm.psmId ) )";
+                if ( ! limelight__variable_is_type_number_Check( psm.psmId ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psm.psmId ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -411,8 +411,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psm.reportedPeptideId ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psm.reportedPeptideId ) )";
+                if ( ! limelight__variable_is_type_number_Check( psm.reportedPeptideId ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psm.reportedPeptideId ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -421,8 +421,8 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psm.charge ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psm.charge ) )";
+                if ( ! limelight__variable_is_type_number_Check( psm.charge ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psm.charge ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -431,29 +431,29 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                     console.warn(msg);
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( psm.scanNumber ) ) {
-                    const msg = "( ! variable_is_type_number_Check( psm.scanNumber ) )";
+                if ( ! limelight__variable_is_type_number_Check( psm.scanNumber ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psm.scanNumber ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
                 //  Optional values
                 if ( psm.searchScanFileId !== undefined && psm.searchScanFileId !== null ) {
-                    if ( ! variable_is_type_number_Check( psm.searchScanFileId ) ) {
-                        const msg = "( ! variable_is_type_number_Check( psm.searchScanFileId ) )";
+                    if ( ! limelight__variable_is_type_number_Check( psm.searchScanFileId ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm.searchScanFileId ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
                 }
                 if ( psm.retentionTimeSeconds !== undefined && psm.retentionTimeSeconds !== null ) {
-                    if ( ! variable_is_type_number_Check( psm.retentionTimeSeconds ) ) {
-                        const msg = "( ! variable_is_type_number_Check( psm.retentionTimeSeconds ) )";
+                    if ( ! limelight__variable_is_type_number_Check( psm.retentionTimeSeconds ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm.retentionTimeSeconds ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
                 }
                 if ( psm.precursor_M_Over_Z !== undefined && psm.precursor_M_Over_Z !== null ) {
-                    if ( ! variable_is_type_number_Check( psm.precursor_M_Over_Z ) ) {
-                        const msg = "( ! variable_is_type_number_Check( psm.precursor_M_Over_Z ) )";
+                    if ( ! limelight__variable_is_type_number_Check( psm.precursor_M_Over_Z ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm.precursor_M_Over_Z ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }

@@ -6,8 +6,8 @@
  */
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {showErrorMsg} from "page_js/showHideErrorMessage";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {showErrorMsg} from "page_js/common_all_pages/showHideErrorMessage";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**

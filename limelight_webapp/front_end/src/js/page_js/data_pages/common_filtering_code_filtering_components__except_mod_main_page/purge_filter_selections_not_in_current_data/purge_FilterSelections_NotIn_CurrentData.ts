@@ -21,7 +21,7 @@ import {
 import {Psm_Charge_Filter_UserSelection_StateObject} from "../filter_on__components/filter_on__core__components__peptide__single_protein/psm_charge/psm_Charge_Filter_UserSelection_StateObject";
 import {modificationMass_CommonRounding_ReturnNumber} from "../../modification_mass_common/modification_mass_rounding";
 import {reporterIonMass_CommonRounding_ReturnNumber} from "../../reporter_ion_mass_common/reporter_ion_mass_rounding";
-import {reportWebErrorToServer} from "../../../reportWebErrorToServer";
+import {reportWebErrorToServer} from "../../../common_all_pages/reportWebErrorToServer";
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "../filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
 
 

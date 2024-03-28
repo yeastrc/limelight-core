@@ -7,12 +7,12 @@
 
 
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Request_Status_ID_Enum,
     Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Request_Type_ID_Enum
 } from "page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage_ImporterPipelineExecution_ForAdminPage_Constants_Enums";
-import { variable_is_type_number_Check } from "page_js/variable_is_type_number_Check";
+import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -102,8 +102,8 @@ const _processWebserviceResult = function( responseData: any ) : Manage_Importer
         throw Error("( responseData.scheduleJSON !== null && responseData.scheduleJSON_PrevLastUpdated_Milliseconds === undefined )")
     }
 
-    if ( responseData.scheduleJSON_PrevLastUpdated_Milliseconds !== null && ( ! variable_is_type_number_Check( responseData.scheduleJSON_PrevLastUpdated_Milliseconds ) ) ) {
-        throw Error("( responseData.scheduleJSON_PrevLastUpdated_Milliseconds !== null && ( ! variable_is_type_number_Check( responseData.scheduleJSON_PrevLastUpdated_Milliseconds ) ) )")
+    if ( responseData.scheduleJSON_PrevLastUpdated_Milliseconds !== null && ( ! limelight__variable_is_type_number_Check( responseData.scheduleJSON_PrevLastUpdated_Milliseconds ) ) ) {
+        throw Error("( responseData.scheduleJSON_PrevLastUpdated_Milliseconds !== null && ( ! limelight__variable_is_type_number_Check( responseData.scheduleJSON_PrevLastUpdated_Milliseconds ) ) )")
     }
 
     let scheduleJSON_Object: Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Schedule_Get_Response_JSON_Root
@@ -136,21 +136,21 @@ const _processWebserviceResult = function( responseData: any ) : Manage_Importer
                 if ( dayListItem === null || dayListItem === undefined ) {
                     throw Error("( dayListItem === null || dayListItem === undefined )")
                 }
-                if ( ! variable_is_type_number_Check( dayListItem ) ) {
-                    throw Error("( ! variable_is_type_number_Check( dayListItem ) )")
+                if ( ! limelight__variable_is_type_number_Check( dayListItem ) ) {
+                    throw Error("( ! limelight__variable_is_type_number_Check( dayListItem ) )")
                 }
             }
             if ( item.startTime_24HourClock === null || item.startTime_24HourClock === undefined ) {
                 throw Error("( item.startTime_24HourClock === null || item.startTime_24HourClock === undefined )")
             }
-            if ( ! variable_is_type_number_Check( item.startTime_24HourClock ) ) {
-                throw Error("( ! variable_is_type_number_Check( item.startTime_24HourClock ) )")
+            if ( ! limelight__variable_is_type_number_Check( item.startTime_24HourClock ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( item.startTime_24HourClock ) )")
             }
             if ( item.durationInHours === null || item.durationInHours === undefined ) {
                 throw Error("( item.durationInHours === null || item.durationInHours === undefined )")
             }
-            if ( ! variable_is_type_number_Check( item.durationInHours ) ) {
-                throw Error("( ! variable_is_type_number_Check( item.durationInHours ) )")
+            if ( ! limelight__variable_is_type_number_Check( item.durationInHours ) ) {
+                throw Error("( ! limelight__variable_is_type_number_Check( item.durationInHours ) )")
             }
         }
     }

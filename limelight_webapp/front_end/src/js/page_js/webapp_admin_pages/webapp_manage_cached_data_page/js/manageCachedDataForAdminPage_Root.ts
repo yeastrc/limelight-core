@@ -5,8 +5,8 @@
  *
  */
 
-import {initShowHideErrorMessage} from "page_js/showHideErrorMessage";
-import {catchAndReportGlobalOnError} from "page_js/catchAndReportGlobalOnError";
+import {initShowHideErrorMessage} from "page_js/common_all_pages/showHideErrorMessage";
+import {limelight__catchAndReportGlobalOnError} from "page_js/common_all_pages/limelight__catchAndReportGlobalOnError";
 import {manageCachedDataForAdminPage_Main_Init} from "page_js/webapp_admin_pages/webapp_manage_cached_data_page/js/manageCachedDataForAdminPage_Main";
 
 /**
@@ -14,6 +14,6 @@ import {manageCachedDataForAdminPage_Main_Init} from "page_js/webapp_admin_pages
  */
 
 initShowHideErrorMessage();
-catchAndReportGlobalOnError.init();
+limelight__catchAndReportGlobalOnError.init();
 
 manageCachedDataForAdminPage_Main_Init();

@@ -10,9 +10,9 @@
  */
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component";
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
@@ -443,8 +443,8 @@ const _getPendingCount_FromServer = function(projectIdentifierFromURL: string) {
 
         promise_webserviceCallStandardPost.then( ({ responseData }) => {
             try {
-                if ( ! variable_is_type_number_Check( responseData.pendingCount ) ) {
-                    const msg = "( ! variable_is_type_number_Check( responseData.pendingCount ) )"
+                if ( ! limelight__variable_is_type_number_Check( responseData.pendingCount ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( responseData.pendingCount ) )"
                     console.warn(msg)
                     throw Error(msg)
                 }

@@ -9,7 +9,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import {
     SearchDetailsAndOtherFiltersOuterBlock_Layout,
     SearchDetailsAndOtherFiltersOuterBlock_Layout_Props

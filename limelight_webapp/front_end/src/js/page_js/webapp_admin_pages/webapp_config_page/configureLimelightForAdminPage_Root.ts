@@ -6,12 +6,12 @@
  */
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
 
-import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
+import { initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { initPage } from './configureLimelightForAdminPage_Main';
 
@@ -20,7 +20,7 @@ import { initPage } from './configureLimelightForAdminPage_Main';
 $(document).ready(function() {
 
     initShowHideErrorMessage();
-    catchAndReportGlobalOnError.init();
+    limelight__catchAndReportGlobalOnError.init();
 
     initPage();
 

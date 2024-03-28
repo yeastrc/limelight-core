@@ -5,8 +5,8 @@
 
 
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
-import { variable_is_type_number_Check } from "page_js/variable_is_type_number_Check";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -66,8 +66,8 @@ export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanData
                 if ( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null ) {
                     throw Error("( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null )")
                 }
-                if ( ! variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ) {
-                    throw Error("( ! variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ): response.maxScanDataWithPeaksReturnCount: " + response.maxScanDataWithPeaksReturnCount )
+                if ( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ) {
+                    throw Error("( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ): response.maxScanDataWithPeaksReturnCount: " + response.maxScanDataWithPeaksReturnCount )
                 }
 
                 resolve( response );

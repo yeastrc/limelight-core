@@ -9,7 +9,7 @@
  * Create     DataTable_RootTableObject for child table
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 //   From data_pages_common
 import { DataPageStateManager, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeData_Root, AnnotationTypeItem }  from 'page_js/data_pages/data_pages_common/dataPageStateManager'; // dataPageStateManager.ts

@@ -13,7 +13,7 @@
 
 ////////////////////
 
-import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
+import {limelight__variable_is_type_number_Check} from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {
@@ -451,7 +451,7 @@ export class ReporterIonMass_UserSelections_StateObject {
 			if (reporterIons_Array && reporterIons_Array.length !== 0) {
 
 				for (const reporterIon of reporterIons_Array) {
-					if (!variable_is_type_number_Check(reporterIon)) {
+					if (!limelight__variable_is_type_number_Check(reporterIon)) {
 						const msg = "value in reporterIons_Array is not a number: " + reporterIon;
 						console.warn(msg);
 						throw Error(msg);

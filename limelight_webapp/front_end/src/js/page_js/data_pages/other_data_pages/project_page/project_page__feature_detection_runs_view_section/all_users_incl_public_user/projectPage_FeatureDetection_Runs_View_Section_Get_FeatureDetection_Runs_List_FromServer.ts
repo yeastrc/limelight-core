@@ -9,10 +9,10 @@
  *
  */
 
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 
@@ -191,21 +191,21 @@ const _process_WebserviceResponse = function (
         if ( ! featureDetection_Entry.featureDetection_Run_Mapping_Id ) {
             throw Error("( ! featureDetection_Entry.featureDetection_Run_Mapping_Id )")
         }
-        if ( ! variable_is_type_number_Check( featureDetection_Entry.featureDetection_Run_Mapping_Id ) ) {
-            throw Error("( ! variable_is_type_number_Check( featureDetection_Entry.featureDetection_Run_Mapping_Id ) )")
+        if ( ! limelight__variable_is_type_number_Check( featureDetection_Entry.featureDetection_Run_Mapping_Id ) ) {
+            throw Error("( ! limelight__variable_is_type_number_Check( featureDetection_Entry.featureDetection_Run_Mapping_Id ) )")
         }
 
         if ( ! featureDetection_Entry.projectScanFileId ) {
             throw Error("( ! featureDetection_Entry.projectScanFileId )")
         }
-        if ( ! variable_is_type_number_Check( featureDetection_Entry.projectScanFileId ) ) {
-            throw Error("( ! variable_is_type_number_Check( featureDetection_Entry.projectScanFileId ) )")
+        if ( ! limelight__variable_is_type_number_Check( featureDetection_Entry.projectScanFileId ) ) {
+            throw Error("( ! limelight__variable_is_type_number_Check( featureDetection_Entry.projectScanFileId ) )")
         }
         if ( ! featureDetection_Entry.scanFileId ) {
             throw Error("( ! featureDetection_Entry.scanFileId )")
         }
-        if ( ! variable_is_type_number_Check( featureDetection_Entry.scanFileId ) ) {
-            throw Error("( ! variable_is_type_number_Check( featureDetection_Entry.scanFileId ) )")
+        if ( ! limelight__variable_is_type_number_Check( featureDetection_Entry.scanFileId ) ) {
+            throw Error("( ! limelight__variable_is_type_number_Check( featureDetection_Entry.scanFileId ) )")
         }
 
         if ( ! featureDetection_Entry.displayLabel ) {

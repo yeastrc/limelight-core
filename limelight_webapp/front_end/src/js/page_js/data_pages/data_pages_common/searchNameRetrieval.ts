@@ -15,10 +15,10 @@
 
 //module import 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { limelight__IsVariableAString } from 'page_js/common_all_pages/limelight__IsVariableAString';
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
@@ -144,12 +144,12 @@ const _retrieveSearchNamesResponse = function(
 				}
 			}
 
-			if (!variable_is_type_number_Check(searchListItem.projectSearchId)) {
+			if (!limelight__variable_is_type_number_Check(searchListItem.projectSearchId)) {
 				const msg = "SearchNameRetrieval: searchListItem.projectSearchId is not a number. searchListItem.projectSearchId: " + searchListItem.projectSearchId;
 				console.warn(msg);
 				throw Error(msg);
 			}
-			if (!variable_is_type_number_Check(searchListItem.searchId)) {
+			if (!limelight__variable_is_type_number_Check(searchListItem.searchId)) {
 				const msg = "SearchNameRetrieval: searchListItem.searchId is not a number. searchListItem.searchId: " + searchListItem.searchId;
 				console.warn(msg);
 				throw Error(msg);
@@ -162,12 +162,12 @@ const _retrieveSearchNamesResponse = function(
 			for (const searchSubGroupsPerSearchEntry of retrieveSearchNamesFromServer_Result.searchSubGroupsPerSearchList) {
 
 				//  Validate searchSubGroupsPerSearchEntry
-				if (!variable_is_type_number_Check(searchSubGroupsPerSearchEntry.projectSearchId)) {
+				if (!limelight__variable_is_type_number_Check(searchSubGroupsPerSearchEntry.projectSearchId)) {
 					const msg = "SearchNameRetrieval: searchSubGroupsPerSearchEntry.projectSearchId is not a number. searchSubGroupsPerSearchEntry.projectSearchId: " + searchSubGroupsPerSearchEntry.projectSearchId;
 					console.warn(msg);
 					throw Error(msg);
 				}
-				if (!variable_is_type_number_Check(searchSubGroupsPerSearchEntry.searchId)) {
+				if (!limelight__variable_is_type_number_Check(searchSubGroupsPerSearchEntry.searchId)) {
 					const msg = "SearchNameRetrieval: searchSubGroupsPerSearchEntry.searchId is not a number. searchSubGroupsPerSearchEntry.searchId: " + searchSubGroupsPerSearchEntry.searchId;
 					console.warn(msg);
 					throw Error(msg);
@@ -203,13 +203,13 @@ const _retrieveSearchNamesResponse = function(
 						}
 					}
 					if ( searchSubGroupEntry.displayOrder ) {
-						if (!variable_is_type_number_Check(searchSubGroupEntry.displayOrder)) {
+						if (!limelight__variable_is_type_number_Check(searchSubGroupEntry.displayOrder)) {
 							const msg = "SearchNameRetrieval: searchSubGroupEntry.displayOrder is not a number. searchListItem.displayOrder: " + searchSubGroupEntry.displayOrder;
 							console.warn(msg);
 							throw Error(msg);
 						}
 					}
-					if (!variable_is_type_number_Check(searchSubGroupEntry.searchSubGroupId)) {
+					if (!limelight__variable_is_type_number_Check(searchSubGroupEntry.searchSubGroupId)) {
 						const msg = "SearchNameRetrieval: searchSubGroupEntry.searchSubGroupId is not a number. searchListItem.searchSubGroupId: " + searchSubGroupEntry.searchSubGroupId;
 						console.warn(msg);
 						throw Error(msg);

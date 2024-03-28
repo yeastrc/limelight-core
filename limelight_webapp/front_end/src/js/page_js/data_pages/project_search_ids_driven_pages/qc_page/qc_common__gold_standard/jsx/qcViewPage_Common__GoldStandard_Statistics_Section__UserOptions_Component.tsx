@@ -8,7 +8,7 @@
  */
 
 import React from "react";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 const _MODIFICATION_MASS__MAX_DIFFERENCE_FOR_CONSIDERED_EQUAL_DEFAULT = 3  //    DEFAULT VALUE

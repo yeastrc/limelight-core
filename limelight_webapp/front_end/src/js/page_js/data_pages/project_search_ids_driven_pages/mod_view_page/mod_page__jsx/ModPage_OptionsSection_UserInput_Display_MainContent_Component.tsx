@@ -39,7 +39,7 @@ import {
     ProteinPositionFilter_UserInput__Component__ProteinData_Root,
     ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein
 } from "page_js/data_pages/common_components__react/protein_position_filter_component__not_single_protein/protein_position_filter__user_input_component/proteinPositionFilter_UserInput__Component__ProteinData";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ModView_VizOptionsData
 } from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";

@@ -5,7 +5,7 @@
  *
  */
 
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {quantile} from "d3";
 
 //  ASCII  Use for any downloads
@@ -124,8 +124,8 @@ export const qcViewPage_SingleSearch__MS1_Ion_Current_RetentionTime_VS_M_Z_Stati
 
             const binnedIonCurrent = innerObjectAsMap_Per_M_Z[ innerObjectAsMap_Per_M_Z__Key ];
 
-            if ( ! variable_is_type_number_Check( binnedIonCurrent ) ) {
-                const msg = "( ! variable_is_type_number_Check( binnedIonCurrent ) ) . binnedIonCurrent: " + binnedIonCurrent;
+            if ( ! limelight__variable_is_type_number_Check( binnedIonCurrent ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( binnedIonCurrent ) ) . binnedIonCurrent: " + binnedIonCurrent;
                 console.warn(msg);
                 throw Error(msg);
             }

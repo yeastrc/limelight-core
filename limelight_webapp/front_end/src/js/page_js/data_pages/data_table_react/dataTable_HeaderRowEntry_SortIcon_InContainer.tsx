@@ -9,7 +9,7 @@ import {
   tooltip_Limelight_Create_Tooltip,
   Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 const sortIconWidth  = 12;  // in px

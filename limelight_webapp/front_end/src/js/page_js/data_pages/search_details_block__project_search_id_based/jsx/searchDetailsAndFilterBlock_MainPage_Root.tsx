@@ -13,7 +13,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import {DataPages_LoggedInUser_CommonObjectsFactory} from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
 import {
     AnnotationTypeData_Root, AnnotationTypeItem, AnnotationTypeItems_PerProjectSearchId,

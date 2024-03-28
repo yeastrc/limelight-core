@@ -11,9 +11,9 @@
  */
 
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 import {limelight__Sort_ArrayOfNumbers_SortArrayInPlace} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
@@ -303,7 +303,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( proteinSequenceVersionId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( proteinSequenceVersionId ) ) {
                 const msg = "proteinSequenceVersionId is not a number.  proteinSequenceVersionId: " + proteinSequenceVersionId;
                 console.warn(msg);
                 throw Error(msg);
@@ -313,7 +313,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( proteinLength ) ) {
+            if ( ! limelight__variable_is_type_number_Check( proteinLength ) ) {
                 const msg = "proteinLength is not a number.  proteinLength: " + proteinLength;
                 console.warn(msg);
                 throw Error(msg);
@@ -336,7 +336,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( proteinSequenceVersionId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( proteinSequenceVersionId ) ) {
                 const msg = "proteinSequenceVersionId is not a number.  proteinSequenceVersionId: " + proteinSequenceVersionId;
                 console.warn(msg);
                 throw Error(msg);
@@ -363,7 +363,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilte
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( taxonomy ) ) {
+            if ( ! limelight__variable_is_type_number_Check( taxonomy ) ) {
                 const msg = "taxonomy is not a number.  taxonomy: " + taxonomy;
                 console.warn(msg);
                 throw Error(msg);

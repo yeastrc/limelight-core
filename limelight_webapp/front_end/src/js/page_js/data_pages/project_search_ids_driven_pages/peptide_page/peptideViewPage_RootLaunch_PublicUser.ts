@@ -9,7 +9,7 @@
  *
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 //  From local dir
 import { PeptideViewPage_RootClass_Common }  

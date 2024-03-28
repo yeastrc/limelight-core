@@ -25,7 +25,7 @@
 // JavaScript directive:   all variables have to be declared with "var", maybe other things
 "use strict";
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from './webserviceCallStandardPost_ApiObject_Class';
 

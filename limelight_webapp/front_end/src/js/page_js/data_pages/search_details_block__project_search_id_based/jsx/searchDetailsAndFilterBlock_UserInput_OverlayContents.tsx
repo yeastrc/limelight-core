@@ -23,7 +23,7 @@ import {
     SearchDataLookupParams_For_Single_ProjectSearchId
 } from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {AnnotationTypeData_Root, AnnotationTypeItem, SearchNames_AsMap, SearchProgramsPerSearchData_Root} from "page_js/data_pages/data_pages_common/dataPageStateManager";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {copyObject_DeepCopy_Limelight} from "page_js/data_pages/data_pages_common/copyObject_DeepCopy";
 import {UpdatePageState_URL_With_NewFilterCutoffs_FromUser} from "page_js/data_pages/data_pages_common/updatePageState_URL_With_NewFilterCutoffs_FromUser";
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";

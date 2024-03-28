@@ -9,7 +9,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
+import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 //   Modification Mass Rounding to provide some level of commonality between searches
 import {modificationMass_CommonRounding_ReturnNumber,} from 'page_js/data_pages/modification_mass_common/modification_mass_rounding';
 

@@ -10,7 +10,7 @@
 
 
 import React from "react";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ProjectPage_UploadData_UploadFiles__Params} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles_Overlay";
 import {FeatureDetection_Max_FieldLengths_Constants} from "page_js/constants_across_webapp/feature_detection_constants/featureDetection_Max_FieldLengths_Constants";
 import {projectPage_UploadData_FeatureDetection_Run_Initialize_CallWebservice} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Run_Initialize_CallWebservice";

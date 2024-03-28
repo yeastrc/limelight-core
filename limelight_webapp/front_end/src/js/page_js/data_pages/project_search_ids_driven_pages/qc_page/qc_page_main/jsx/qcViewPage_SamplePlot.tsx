@@ -8,7 +8,7 @@
 import React from "react";
 
 import Plotly from 'plotly.js-dist/plotly'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 /////////////////////////////////

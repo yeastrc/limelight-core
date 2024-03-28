@@ -10,13 +10,13 @@
 
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
-import { initShowHideErrorMessage } from 'page_js/showHideErrorMessage';
+import { initShowHideErrorMessage } from 'page_js/common_all_pages/showHideErrorMessage';
 
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
@@ -63,7 +63,7 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 	 */
 	initialize() {
 
-		catchAndReportGlobalOnError.init();
+		limelight__catchAndReportGlobalOnError.init();
 		
 		initShowHideErrorMessage();
 

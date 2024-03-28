@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 
 export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics_SingleSearch_Entry {
@@ -245,7 +245,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.searchId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.searchId ) ) {
                 const msg = "entry.searchId in fastaFileStatistics_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
@@ -255,7 +255,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.projectSearchId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.projectSearchId ) ) {
                 const msg = "entry.projectSearchId in fastaFileStatistics_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
@@ -266,7 +266,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.numTargets ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.numTargets ) ) {
                 const msg = "entry.numTargets in fastaFileStatistics_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
@@ -277,7 +277,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.numDecoys ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.numDecoys ) ) {
                 const msg = "entry.numDecoys in fastaFileStatistics_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
@@ -288,7 +288,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__FastaFileStatistics {
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.numIndependentDecoys ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.numIndependentDecoys ) ) {
                 const msg = "entry.numIndependentDecoys in fastaFileStatistics_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", fastaFileStatistics_List_FromWebservice: ", fastaFileStatistics_List_FromWebservice )
                 throw Error(msg);

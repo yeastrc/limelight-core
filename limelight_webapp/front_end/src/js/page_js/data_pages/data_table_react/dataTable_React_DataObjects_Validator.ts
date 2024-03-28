@@ -16,7 +16,7 @@ import {
     DataTable_RootTableObject,
     DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 
 /**
@@ -241,7 +241,7 @@ const validate_dataTable_DataRowEntries = function({ dataTable_DataRowEntries, d
             }
 
             if ( dataTable_ColumnEntry.showHorizontalGraph ) {
-                if ( ! variable_is_type_number_Check( dataTable_DataRow_ColumnEntry.valueSort ) ) {
+                if ( ! limelight__variable_is_type_number_Check( dataTable_DataRow_ColumnEntry.valueSort ) ) {
                     const msg = "Validator: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is not a number.  dataTable_DataRow_ColumnEntry.valueSort: " +
                         dataTable_DataRow_ColumnEntry.valueSort + ", dataTableId: " + dataTableId;
                     console.warn( msg );

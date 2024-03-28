@@ -3,7 +3,7 @@
  * 
  */
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 import { Experiment_ConditionGroupsDataContainer_PerProjectSearchIdData, Experiment_ConditionGroupsDataContainer_PerProjectSearchId_PerType_Data } from './experiment_conditionGroupsDataContainer_PerProjectSearchIdData_AndChildren_Classes';
 import { Experiment_ConditionGroup, Experiment_ConditionGroupsContainer } from './experiment_ConditionGroupsContainer_AndChildren_Classes';
@@ -1025,7 +1025,7 @@ const _construct_from_experimentConditionData_Serialized_Internal_Create_subCond
                         throw Error( msg )
                     }
                     for ( const projectSearchId of projectSearchIds ) {
-                        if ( ! variable_is_type_number_Check( projectSearchId ) ) {
+                        if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
                             const msg = "subData.projectSearchIds entry is not number."
                             console.warn( msg + "  Entry: " + projectSearchId )
                             throw Error( msg )

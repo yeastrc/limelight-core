@@ -8,8 +8,8 @@
 
 
 import {webserviceCallStandardPost} from "../../../../../webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "../../../../../reportWebErrorToServer";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {reportWebErrorToServer} from "../../../../../common_all_pages/reportWebErrorToServer";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
@@ -116,8 +116,8 @@ const _projectPage_ListExperimentsContainingProjectSearchIds_convertResponse = f
 
     for ( const experiment_FromServer of responseData.experiments ) {
 
-        if ( ! variable_is_type_number_Check( experiment_FromServer.experimentId ) ) {
-            const msg = "_projectPage_ListExperimentsContainingProjectSearchIds_convertResponse: ( ! variable_is_type_number_Check( experiment_FromServer.experimentId ) ) ";
+        if ( ! limelight__variable_is_type_number_Check( experiment_FromServer.experimentId ) ) {
+            const msg = "_projectPage_ListExperimentsContainingProjectSearchIds_convertResponse: ( ! limelight__variable_is_type_number_Check( experiment_FromServer.experimentId ) ) ";
             console.warn( msg );
             throw Error(msg);
         }
@@ -138,8 +138,8 @@ const _projectPage_ListExperimentsContainingProjectSearchIds_convertResponse = f
             throw Error(msg);
         }
         for ( const projectSearchId of experiment_FromServer.projectSearchIds ) {
-            if ( ! variable_is_type_number_Check( projectSearchId ) ) {
-                const msg = "_projectPage_ListExperimentsContainingProjectSearchIds_convertResponse: ( ! variable_is_type_number_Check( projectSearchId ) ) ";
+            if ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) {
+                const msg = "_projectPage_ListExperimentsContainingProjectSearchIds_convertResponse: ( ! limelight__variable_is_type_number_Check( projectSearchId ) ) ";
                 console.warn( msg );
                 throw Error(msg);
             }

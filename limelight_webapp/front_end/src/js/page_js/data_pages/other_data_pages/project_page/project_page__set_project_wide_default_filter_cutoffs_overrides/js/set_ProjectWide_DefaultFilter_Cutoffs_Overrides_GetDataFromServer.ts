@@ -19,7 +19,7 @@ import {
 } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {AnnotationTypeDataRetrieval} from "page_js/data_pages/data_pages_common/annotationTypeDataRetrieval";
 import {SearchProgramsPerSearchDataRetrieval} from "page_js/data_pages/data_pages_common/searchProgramsPerSearchDataRetrieval";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     defaultFilter_Cutoffs_Overrides_ProjectWide_DataRetrieval,
     DefaultFilter_Cutoffs_Overrides_ProjectWide_PerType_PSM_ReportedPeptide_MatchedProtein,

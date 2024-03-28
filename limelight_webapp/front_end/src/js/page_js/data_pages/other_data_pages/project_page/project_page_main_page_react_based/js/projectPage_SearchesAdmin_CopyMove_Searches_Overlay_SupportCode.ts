@@ -15,10 +15,10 @@
 
 ///////////////////////////////////////////
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
@@ -97,8 +97,8 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
                             console.warn( msg );
                             throw Error( msg );
                         }
-                        if ( ! variable_is_type_number_Check( otherProject.projectId ) ) {
-                            const msg = "( ! variable_is_type_number_Check( otherProject.projectId ) ): URL: " + url;
+                        if ( ! limelight__variable_is_type_number_Check( otherProject.projectId ) ) {
+                            const msg = "( ! limelight__variable_is_type_number_Check( otherProject.projectId ) ): URL: " + url;
                             console.warn( msg );
                             throw Error( msg );
                         }
@@ -210,13 +210,13 @@ export const projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__Ge
                         console.warn( msg );
                         throw Error( msg );
                     }
-                    if ( ! variable_is_type_number_Check( projectSearchDataEntry.projectSearchId ) ) {
-                        const msg = "( ! variable_is_type_number_Check( projectSearchDataEntry.projectSearchId ) ): URL: " + url;
+                    if ( ! limelight__variable_is_type_number_Check( projectSearchDataEntry.projectSearchId ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( projectSearchDataEntry.projectSearchId ) ): URL: " + url;
                         console.warn( msg );
                         throw Error( msg );
                     }
-                    if ( ! variable_is_type_number_Check( projectSearchDataEntry.searchId ) ) {
-                        const msg = "( ! variable_is_type_number_Check( projectSearchDataEntry.searchId ) ): URL: " + url;
+                    if ( ! limelight__variable_is_type_number_Check( projectSearchDataEntry.searchId ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( projectSearchDataEntry.searchId ) ): URL: " + url;
                         console.warn( msg );
                         throw Error( msg );
                     }

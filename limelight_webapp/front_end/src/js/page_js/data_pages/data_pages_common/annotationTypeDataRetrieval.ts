@@ -15,13 +15,13 @@
 ///////////////////////////////////////////
 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 
 import { _SORT_TYPE_NUMBER, _SORT_TYPE_STRING } from 'page_js/data_pages/data_pages_common/a_annotationTypesConstants';
 import { AnnotationTypeItems_PerProjectSearchId, AnnotationTypeData_Root, AnnotationTypeItem, DataPageStateManager } from './dataPageStateManager';
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 /**
  * 
@@ -266,33 +266,33 @@ export class AnnotationTypeDataRetrieval {
 
 			//  Validate that the expected numbers are numbers
 			
-			if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ) {
-				const msg = "if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ): annotationTypeItem_ServerItem.annotationTypeId: " + annotationTypeItem_ServerItem.annotationTypeId;
+			if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ) {
+				const msg = "if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.annotationTypeId ) ): annotationTypeItem_ServerItem.annotationTypeId: " + annotationTypeItem_ServerItem.annotationTypeId;
 				console.warn( msg );
 				throw Error( msg );
 			}
-			if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.searchProgramsPerSearchId ) ) {
-				const msg = "if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.searchProgramsPerSearchId ) ): annotationTypeItem_ServerItem.searchProgramsPerSearchId: " + annotationTypeItem_ServerItem.searchProgramsPerSearchId;
+			if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.searchProgramsPerSearchId ) ) {
+				const msg = "if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.searchProgramsPerSearchId ) ): annotationTypeItem_ServerItem.searchProgramsPerSearchId: " + annotationTypeItem_ServerItem.searchProgramsPerSearchId;
 				console.warn( msg );
 				throw Error( msg );
 			}
 			if ( annotationTypeItem_ServerItem.displayOrder !== undefined && annotationTypeItem_ServerItem.displayOrder !== null ) {
-				if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.displayOrder ) ) {
-					const msg = "if ( annotationTypeItem_ServerItem.displayOrder !== undefined && annotationTypeItem_ServerItem.displayOrder !== null ): if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.displayOrder ) ): annotationTypeItem_ServerItem.displayOrder: " + annotationTypeItem_ServerItem.displayOrder;
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.displayOrder ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.displayOrder !== undefined && annotationTypeItem_ServerItem.displayOrder !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.displayOrder ) ): annotationTypeItem_ServerItem.displayOrder: " + annotationTypeItem_ServerItem.displayOrder;
 					console.warn( msg );
 					throw Error( msg );
 				}
 			}
 			if ( annotationTypeItem_ServerItem.defaultFilterValue !== undefined && annotationTypeItem_ServerItem.defaultFilterValue !== null ) {
-				if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.defaultFilterValue ) ) {
-					const msg = "if ( annotationTypeItem_ServerItem.defaultFilterValue !== undefined && annotationTypeItem_ServerItem.defaultFilterValue !== null ): if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.defaultFilterValue ) ): annotationTypeItem_ServerItem.defaultFilterValue: " + annotationTypeItem_ServerItem.defaultFilterValue;
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.defaultFilterValue ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.defaultFilterValue !== undefined && annotationTypeItem_ServerItem.defaultFilterValue !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.defaultFilterValue ) ): annotationTypeItem_ServerItem.defaultFilterValue: " + annotationTypeItem_ServerItem.defaultFilterValue;
 					console.warn( msg );
 					throw Error( msg );
 				}
 			}
 			if ( annotationTypeItem_ServerItem.sortOrder !== undefined && annotationTypeItem_ServerItem.sortOrder !== null ) {
-				if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.sortOrder ) ) {
-					const msg = "if ( annotationTypeItem_ServerItem.sortOrder !== undefined && annotationTypeItem_ServerItem.sortOrder !== null ): if ( ! variable_is_type_number_Check( annotationTypeItem_ServerItem.sortOrder ) ): annotationTypeItem_ServerItem.sortOrder: " + annotationTypeItem_ServerItem.sortOrder;
+				if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.sortOrder ) ) {
+					const msg = "if ( annotationTypeItem_ServerItem.sortOrder !== undefined && annotationTypeItem_ServerItem.sortOrder !== null ): if ( ! limelight__variable_is_type_number_Check( annotationTypeItem_ServerItem.sortOrder ) ): annotationTypeItem_ServerItem.sortOrder: " + annotationTypeItem_ServerItem.sortOrder;
 					console.warn( msg );
 					throw Error( msg );
 				}

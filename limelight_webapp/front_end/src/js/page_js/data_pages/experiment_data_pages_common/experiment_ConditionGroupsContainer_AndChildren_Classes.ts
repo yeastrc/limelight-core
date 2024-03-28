@@ -8,7 +8,7 @@
 */
 
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 
 const _VERSION = 1;  // default
@@ -145,7 +145,7 @@ class Experiment_Condition {
  */
 const create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSideParsedJSON = function( serverSideParsedJSON : any ) : Experiment_ConditionGroupsContainer {
 
-	if ( ! variable_is_type_number_Check( serverSideParsedJSON.version ) ) {
+	if ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON.version ) ) {
 		const msg = "serverSideParsedJSON.version is not a number: " + serverSideParsedJSON.version;
 		console.warn( msg );
 		throw Error( msg );
@@ -153,7 +153,7 @@ const create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSidePars
 	if ( 
 		serverSideParsedJSON.conditionGroupId_MaxAssignedValue !== undefined 
 		&& serverSideParsedJSON.conditionGroupId_MaxAssignedValue !== null 
-		&& ( ! variable_is_type_number_Check( serverSideParsedJSON.conditionGroupId_MaxAssignedValue ) ) 
+		&& ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON.conditionGroupId_MaxAssignedValue ) )
 	) {
 		const msg = "serverSideParsedJSON.conditionGroupId_MaxAssignedValue is not a number: " + serverSideParsedJSON.conditionGroupId_MaxAssignedValue;
 		console.warn( msg );
@@ -162,7 +162,7 @@ const create_Experiment_ConditionGroupsContainer_AndChildren_From_ServerSidePars
 	if ( 
 		serverSideParsedJSON.conditionId_MaxAssignedValue !== undefined 
 		&& serverSideParsedJSON.conditionId_MaxAssignedValue !== null 
-		&& ( ! variable_is_type_number_Check( serverSideParsedJSON.conditionId_MaxAssignedValue ) ) 
+		&& ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON.conditionId_MaxAssignedValue ) )
 	) {
 		const msg = "serverSideParsedJSON.conditionId_MaxAssignedValue is not a number: " + serverSideParsedJSON.conditionId_MaxAssignedValue;
 		console.warn( msg );
@@ -200,7 +200,7 @@ const create_Experiment_ConditionGroup_AndChildren_From_ServerSideParsedJSON = f
 		console.warn( msg );
 		throw Error( msg );
 	}
-	if ( ! variable_is_type_number_Check( serverSideParsedJSON_conditionGroup.id ) ) {
+	if ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON_conditionGroup.id ) ) {
 		const msg = "serverSideParsedJSON_conditionGroup.id is not a number: " + serverSideParsedJSON_conditionGroup.id;
 		console.warn( msg );
 		throw Error( msg );
@@ -251,12 +251,12 @@ const create_Experiment_Condition_From_ServerSideParsedJSON = function( serverSi
 		console.warn( msg );
 		throw Error( msg );
 	}
-	if ( ! variable_is_type_number_Check( serverSideParsedJSON_condition.id ) ) {
+	if ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON_condition.id ) ) {
 		const msg = "serverSideParsedJSON_condition.id is not a number: " + serverSideParsedJSON_condition.id;
 		console.warn( msg );
 		throw Error( msg );
 	}
-	if ( ! variable_is_type_number_Check( serverSideParsedJSON_condition.labelSuffixInitiallyAssigned ) ) {
+	if ( ! limelight__variable_is_type_number_Check( serverSideParsedJSON_condition.labelSuffixInitiallyAssigned ) ) {
 		const msg = "serverSideParsedJSON_condition.labelSuffixInitiallyAssigned is not a number: " + serverSideParsedJSON_condition.labelSuffixInitiallyAssigned;
 		console.warn( msg );
 		throw Error( msg );

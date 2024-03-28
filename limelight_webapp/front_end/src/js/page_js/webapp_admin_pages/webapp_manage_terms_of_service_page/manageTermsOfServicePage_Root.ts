@@ -9,15 +9,15 @@ import {manageTermsOfService_Maint__initPage} from "page_js/webapp_admin_pages/w
 
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
 ///////////////
 
 $(document).ready(function() {
 
-    catchAndReportGlobalOnError.init();
+    limelight__catchAndReportGlobalOnError.init();
 
     manageTermsOfService_Maint__initPage();
 

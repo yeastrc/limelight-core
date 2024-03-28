@@ -17,7 +17,7 @@ import {
     Set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer_Result_Per_Type_PSM_Peptide_Protein
 } from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_GetDataFromServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 /**

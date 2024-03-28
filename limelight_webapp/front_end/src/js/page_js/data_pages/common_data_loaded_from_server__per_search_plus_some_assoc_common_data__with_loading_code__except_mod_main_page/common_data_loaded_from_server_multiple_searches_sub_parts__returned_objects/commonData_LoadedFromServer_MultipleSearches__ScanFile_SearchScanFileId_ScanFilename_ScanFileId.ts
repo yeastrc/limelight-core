@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { limelight__IsVariableAString } from "page_js/common_all_pages/limelight__IsVariableAString";
 
 /**
@@ -337,7 +337,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFi
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.searchId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.searchId ) ) {
                 const msg = "entry.searchId in scanFileData_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
@@ -347,7 +347,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFi
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.projectSearchId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.projectSearchId ) ) {
                 const msg = "entry.projectSearchId in scanFileData_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
@@ -358,7 +358,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFi
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( entry.searchScanFileId ) ) {
+            if ( ! limelight__variable_is_type_number_Check( entry.searchScanFileId ) ) {
                 const msg = "entry.searchScanFileId in scanFileData_List_FromWebservice is not a number. ";
                 console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                 throw Error(msg);
@@ -376,7 +376,7 @@ export class CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFi
             }
 
             if ( entry.scanFileId !== undefined && entry.scanFileId !== null ) {
-                if ( ! variable_is_type_number_Check( entry.scanFileId ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.scanFileId ) ) {
                     const msg = "entry.scanFileId in scanFileData_List_FromWebservice is not undefined or null and is not a number. ";
                     console.warn( msg + "entry: " + entry + ", scanFileData_List_FromWebservice: ", scanFileData_List_FromWebservice )
                     throw Error( msg );

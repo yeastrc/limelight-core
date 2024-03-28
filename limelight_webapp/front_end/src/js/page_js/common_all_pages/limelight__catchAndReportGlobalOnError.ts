@@ -1,5 +1,5 @@
 /**
- * catchAndReportGlobalOnError.ts
+ * limelight__catchAndReportGlobalOnError.ts
  * 
  * Add Listener for global on error
  * 
@@ -8,7 +8,7 @@
  * 
  * Exported Javascript variable
  * 
- * export { catchAndReportGlobalOnError }
+ * export { limelight__catchAndReportGlobalOnError }
  * 
  */
 
@@ -17,12 +17,12 @@
  */
 "use strict";
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 /**
  * 
  */
-var catchAndReportGlobalOnError = {
+var limelight__catchAndReportGlobalOnError = {
 
 		/**
 		 * 
@@ -41,20 +41,20 @@ var catchAndReportGlobalOnError = {
 //					'Stack: ' + (e.error && e.error.stack || '(no stack trace)')
 //					].join('\n');
 
-					console.log("global error caught in catchAndReportGlobalOnError.  error event: ", e );
+					console.log("global error caught in limelight__catchAndReportGlobalOnError.  error event: ", e );
 
 					let errorException = e.error;
 					try {
 						reportWebErrorToServer.reportErrorObjectToServer ( { errorException : errorException } );
 					} catch ( e ) {
-						console.log("In catchAndReportGlobalOnError: exception calling reportWebErrorToServer.reportErrorObjectToServer(...). exception: ", e );
+						console.log("In limelight__catchAndReportGlobalOnError: exception calling reportWebErrorToServer.reportErrorObjectToServer(...). exception: ", e );
 					}
 
 				});
 			} catch( e ) {
-				console.log("In catchAndReportGlobalOnError: exception adding window error event listener. exception: ", e );
+				console.log("In limelight__catchAndReportGlobalOnError: exception adding window error event listener. exception: ", e );
 			}
 		}
 }
 
-export { catchAndReportGlobalOnError }
+export { limelight__catchAndReportGlobalOnError }

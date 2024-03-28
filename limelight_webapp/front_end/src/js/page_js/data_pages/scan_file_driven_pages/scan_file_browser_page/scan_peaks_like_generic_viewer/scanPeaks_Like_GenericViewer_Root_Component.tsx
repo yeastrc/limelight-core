@@ -9,7 +9,7 @@
 
 import * as d3 from "d3";
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ScanPeaks_Like__Combine_SingleEntry_ForPlot_Entries_Callback,
     ScanPeaks_Like__LineInPlot_Clicked_Callback

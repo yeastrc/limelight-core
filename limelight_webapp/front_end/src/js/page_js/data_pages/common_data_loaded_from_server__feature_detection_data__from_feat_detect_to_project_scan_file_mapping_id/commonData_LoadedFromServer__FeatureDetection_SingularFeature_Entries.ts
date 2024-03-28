@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { limelight__Compare_2_Sets_OfNumbers_For_Equality } from "page_js/common_all_pages/limelight__Compare_2_Sets_OfNumbers_For_Equality";
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
@@ -1146,7 +1146,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
                     console.warn( msg + "entry: " + entry + ", index: ", index )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.id ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.id ) ) {
                     const msg = "entry.id at index is not a number. ";
                     console.warn( msg + "entry: " + entry + ", index: ", index )
                     throw Error(msg);
@@ -1156,55 +1156,55 @@ export class CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entri
                     console.warn( msg + "entry: " + entry + ", index: ", index )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.ms_1_scan_number ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.ms_1_scan_number ) ) {
                     const msg = "entry.ms_1_scan_number at index is not a number. ";
                     console.warn( msg + "entry: " + entry + ", index: ", index )
                     throw Error(msg);
                 }
                 if ( entry.monoisotopic_mass !== undefined && entry.monoisotopic_mass !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.monoisotopic_mass ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.monoisotopic_mass ) ) {
                         const msg = "entry.monoisotopic_mass at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.intensity !== undefined && entry.intensity !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.intensity ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.intensity ) ) {
                         const msg = "entry.intensity at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.charge !== undefined && entry.charge !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.charge ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.charge ) ) {
                         const msg = "entry.charge at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.base_isotope_peak !== undefined && entry.base_isotope_peak !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.base_isotope_peak ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.base_isotope_peak ) ) {
                         const msg = "entry.base_isotope_peak at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.analysis_window_start_m_z !== undefined && entry.analysis_window_start_m_z !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.analysis_window_start_m_z ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.analysis_window_start_m_z ) ) {
                         const msg = "entry.analysis_window_start_m_z at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.analysis_window_end_m_z !== undefined && entry.analysis_window_end_m_z !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.analysis_window_end_m_z ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.analysis_window_end_m_z ) ) {
                         const msg = "entry.analysis_window_end_m_z at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);
                     }
                 }
                 if ( entry.correlation_score !== undefined && entry.correlation_score !== null ) {
-                    if ( ! variable_is_type_number_Check( entry.correlation_score ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( entry.correlation_score ) ) {
                         const msg = "entry.correlation_score at index is not a number. ";
                         console.warn( msg + "entry: " + entry + ", index: ", index )
                         throw Error(msg);

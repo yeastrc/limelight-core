@@ -26,7 +26,7 @@ import {
     ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchEntry_UsedInMultipleSections_Component";
 import {Search_Tags_DisplaySearchTags_UnderSearchName_Component_SearchTagData_Root} from "page_js/data_pages/search_tags__display_management/search_tags__display_under_search_name/search_Tags_DisplaySearchTags_UnderSearchName_Component";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class

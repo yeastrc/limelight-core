@@ -7,7 +7,7 @@
 
 import React from "react";
 import { QcViewPage_CommonData_To_AllComponents_From_MainComponent } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import {
     CommonData_LoadedFromServer_SingleSearch__FeatureDetection_Root_Entries_Holder,

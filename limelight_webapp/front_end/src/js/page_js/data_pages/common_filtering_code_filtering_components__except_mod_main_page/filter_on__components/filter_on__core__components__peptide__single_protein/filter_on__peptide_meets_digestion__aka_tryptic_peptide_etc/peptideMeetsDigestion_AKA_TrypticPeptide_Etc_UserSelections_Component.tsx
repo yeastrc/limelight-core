@@ -12,7 +12,7 @@
  */
 
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
     PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum

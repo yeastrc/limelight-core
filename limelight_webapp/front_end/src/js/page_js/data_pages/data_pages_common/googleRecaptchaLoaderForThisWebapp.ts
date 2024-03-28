@@ -18,9 +18,9 @@
  * module imports
  */
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
-import { handleRawAJAXError } from 'page_js/handleServicesAJAXErrors';
+import { handleRawAJAXError } from 'page_js/common_all_pages/handleServicesAJAXErrors';
 
 
 /**

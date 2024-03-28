@@ -31,7 +31,7 @@ import {
     SaveView_Create_Component_React_Result,
     SaveView_Create_Component_React_Type
 } from "page_js/data_pages/saveView_React/saveView_Create_Component_React_FunctionTemplate";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     DataTable_RootTableDataObject,
     DataTable_RootTableObject,

@@ -20,7 +20,7 @@ import {
     DataTable_RootTableObject,
     DataTable_TableOptions
 } from "page_js/data_pages/data_table_react/dataTable_React_DataObjects";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     CommonData_LoadedFromServer__FeatureDetection_SingularFeature_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_SingularFeature_Entries";

@@ -19,7 +19,7 @@
 
 //  module import 
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { DataPageStateManager, AnnotationTypeData_Root, AnnotationTypeItems_PerProjectSearchId, AnnotationTypeItem } from 'page_js/data_pages/data_pages_common/dataPageStateManager';
 
@@ -40,7 +40,7 @@ import {
     LorikeetSpectrumViewer_DataFromServer_Spectrum_ServiceResult,
     LorikeetSpectrumViewer_DataFromServer_StaticModificationDataItem_Data
 } from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_DataFromServer_Spectrum_Data";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 
 
@@ -172,14 +172,14 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ ) ) {
-            const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ ) )";
+        if ( ! limelight__variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ ) ) {
+            const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_precursorMZ ) )";
             console.warn(msg);
             throw Error(msg);
         }
         if ( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds !== undefined && serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds !== null ) {
-            if ( ! variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds ) ) {
-                const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds ) )";
+            if ( ! limelight__variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds ) ) {
+                const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( serverResponse.lorikeet_ScanData_RetentionTime_PrecursorMZ.scan_retentionTimeSeconds ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -210,8 +210,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( data.scanNum ) ) {
-                const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( data.scanNum ) )";
+            if ( ! limelight__variable_is_type_number_Check( data.scanNum ) ) {
+                const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( data.scanNum ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -237,8 +237,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    if ( ! variable_is_type_number_Check( staticModItem.modMass ) ) {
-                        const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( staticModItem.modMass ) )";
+                    if ( ! limelight__variable_is_type_number_Check( staticModItem.modMass ) ) {
+                        const msg = "_loadSpectrumData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( staticModItem.modMass ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -382,8 +382,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.psmId ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.psmId ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.psmId ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.psmId ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -393,23 +393,23 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.charge ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.charge ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.charge ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.charge ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
 
             if ( resultItem.psm_precursor_RetentionTime !== undefined && resultItem.psm_precursor_RetentionTime !== null ) {
-               if ( ! variable_is_type_number_Check( resultItem.psm_precursor_RetentionTime ) ) {
-                   const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.psm_precursor_RetentionTime ) )";
+               if ( ! limelight__variable_is_type_number_Check( resultItem.psm_precursor_RetentionTime ) ) {
+                   const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.psm_precursor_RetentionTime ) )";
                    console.warn(msg);
                    throw Error(msg);
                }
             }
 
             if ( resultItem.psm_precursor_MZ && resultItem.psm_precursor_MZ !== null ) {
-                if ( ! variable_is_type_number_Check( resultItem.psm_precursor_MZ ) ) {
-                    const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.psm_precursor_MZ ) )";
+                if ( ! limelight__variable_is_type_number_Check( resultItem.psm_precursor_MZ ) ) {
+                    const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.psm_precursor_MZ ) )";
                     console.warn(msg);
                     throw Error(msg);
                 }
@@ -420,8 +420,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.scanNumber ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.scanNumber ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.scanNumber ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.scanNumber ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -445,15 +445,15 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    if ( ! variable_is_type_number_Check( psmAnnotationItem.annotationTypeId ) ) {
-                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( psmAnnotationItem.annotationTypeId ) )";
+                    if ( ! limelight__variable_is_type_number_Check( psmAnnotationItem.annotationTypeId ) ) {
+                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( psmAnnotationItem.annotationTypeId ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
 
                     if ( psmAnnotationItem.valueDouble !== undefined && psmAnnotationItem.valueDouble !== null ) {
-                        if ( ! variable_is_type_number_Check( psmAnnotationItem.valueDouble ) ) {
-                            const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( psmAnnotationItem.valueDouble ) )";
+                        if ( ! limelight__variable_is_type_number_Check( psmAnnotationItem.valueDouble ) ) {
+                            const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( psmAnnotationItem.valueDouble ) )";
                             console.warn(msg);
                             throw Error(msg);
                         }
@@ -477,8 +477,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.reportedPeptideId ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.reportedPeptideId ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.reportedPeptideId ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.reportedPeptideId ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -515,8 +515,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
 
                 for ( const reporterIonMass of resultItem.reporterIonMassList ) {
 
-                    if ( ! variable_is_type_number_Check( reporterIonMass ) ) {
-                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( reporterIonMass ) )";
+                    if ( ! limelight__variable_is_type_number_Check( reporterIonMass ) ) {
+                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( reporterIonMass ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -545,8 +545,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    if ( ! variable_is_type_number_Check( openModificationMassAndPositionsItem.openModMass ) ) {
-                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( openModificationMassAndPositionsItem.openModMass ) )";
+                    if ( ! limelight__variable_is_type_number_Check( openModificationMassAndPositionsItem.openModMass ) ) {
+                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( openModificationMassAndPositionsItem.openModMass ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -566,8 +566,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                                 console.warn(msg);
                                 throw Error(msg);
                             }
-                            if ( ! variable_is_type_number_Check( positionEntries_Optional_Item.position ) ) {
-                                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( positionEntries_Optional_Item.position ) )";
+                            if ( ! limelight__variable_is_type_number_Check( positionEntries_Optional_Item.position ) ) {
+                                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( positionEntries_Optional_Item.position ) )";
                                 console.warn(msg);
                                 throw Error(msg);
                             }
@@ -610,8 +610,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    if ( ! variable_is_type_number_Check( variableModsItem.index ) ) {
-                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( variableModsItem.index ) )";
+                    if ( ! limelight__variable_is_type_number_Check( variableModsItem.index ) ) {
+                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( variableModsItem.index ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -621,8 +621,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                         console.warn(msg);
                         throw Error(msg);
                     }
-                    if ( ! variable_is_type_number_Check( variableModsItem.modMass ) ) {
-                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( variableModsItem.modMass ) )";
+                    if ( ! limelight__variable_is_type_number_Check( variableModsItem.modMass ) ) {
+                        const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( variableModsItem.modMass ) )";
                         console.warn(msg);
                         throw Error(msg);
                     }
@@ -645,8 +645,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.ntermMod ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.ntermMod ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.ntermMod ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.ntermMod ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -655,8 +655,8 @@ export class LorikeetSpectrumViewer_LoadDataFromServer {
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( resultItem.ctermMod ) ) {
-                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! variable_is_type_number_Check( resultItem.ctermMod ) )";
+            if ( ! limelight__variable_is_type_number_Check( resultItem.ctermMod ) ) {
+                const msg = "_loadPSMPeptideData_Process_Validate_ServerResponse: ( ! limelight__variable_is_type_number_Check( resultItem.ctermMod ) )";
                 console.warn(msg);
                 throw Error(msg);
             }

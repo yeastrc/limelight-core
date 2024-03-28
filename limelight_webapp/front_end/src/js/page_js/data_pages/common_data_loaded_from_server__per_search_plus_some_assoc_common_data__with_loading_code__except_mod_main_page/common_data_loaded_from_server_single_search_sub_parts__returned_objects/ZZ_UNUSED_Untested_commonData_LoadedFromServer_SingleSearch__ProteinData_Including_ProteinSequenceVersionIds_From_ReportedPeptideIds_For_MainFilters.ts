@@ -1,4 +1,4 @@
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
  * ZZ_UNUSED_Untested_commonData_LoadedFromServer_SingleSearch__ProteinData_Including_ProteinSequenceVersionIds_From_ReportedPeptideIds_For_MainFilters.ts
@@ -18,7 +18,7 @@ import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 // import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
 // import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 // import {CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters__get_reportedPeptideIds_ResultDataType} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_Data_For_MainFilters";
-// import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+// import {limelight__variable_is_type_number_Check} from "page_js/limelight__variable_is_type_number_Check";
 //
 // /**
 //  *

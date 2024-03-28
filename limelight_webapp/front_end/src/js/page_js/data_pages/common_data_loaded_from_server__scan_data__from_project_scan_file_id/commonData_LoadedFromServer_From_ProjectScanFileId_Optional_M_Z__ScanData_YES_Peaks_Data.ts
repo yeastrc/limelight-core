@@ -7,9 +7,9 @@
  *
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -238,8 +238,8 @@ const _validate_ScanData = function(
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( scanEntry.scanNumber ) ) {
-            const msg = "( ! variable_is_type_number_Check( scanEntry.scanNumber ) )";
+        if ( ! limelight__variable_is_type_number_Check( scanEntry.scanNumber ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.scanNumber ) )";
             console.warn(msg);
             throw Error(msg);
         }
@@ -248,8 +248,8 @@ const _validate_ScanData = function(
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( scanEntry.level ) ) {
-            const msg = "( ! variable_is_type_number_Check( scanEntry.level ) )";
+        if ( ! limelight__variable_is_type_number_Check( scanEntry.level ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.level ) )";
             console.warn(msg);
             throw Error(msg);
         }
@@ -258,43 +258,43 @@ const _validate_ScanData = function(
             console.warn(msg);
             throw Error(msg);
         }
-        if ( ! variable_is_type_number_Check( scanEntry.retentionTime ) ) {
-            const msg = "( ! variable_is_type_number_Check( scanEntry.retentionTime_InSeconds ) )";
+        if ( ! limelight__variable_is_type_number_Check( scanEntry.retentionTime ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.retentionTime_InSeconds ) )";
             console.warn(msg);
             throw Error(msg);
         }
         //  Optional values
         if ( scanEntry.totalIonCurrent_ForScan !== undefined && scanEntry.totalIonCurrent_ForScan !== null ) {
-            if ( ! variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) )";
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.totalIonCurrent_ForScan ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
         }
         if ( scanEntry.ionInjectionTime !== undefined && scanEntry.ionInjectionTime !== null ) {
-            if ( ! variable_is_type_number_Check( scanEntry.ionInjectionTime ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanEntry.ionInjectionTime ) )";
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.ionInjectionTime ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.ionInjectionTime ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
         }
         if ( scanEntry.parentScanNumber !== undefined && scanEntry.parentScanNumber !== null ) {
-            if ( ! variable_is_type_number_Check( scanEntry.parentScanNumber ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanEntry.parentScanNumber ) )";
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.parentScanNumber ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.parentScanNumber ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
         }
         if ( scanEntry.precursorCharge !== undefined && scanEntry.precursorCharge !== null ) {
-            if ( ! variable_is_type_number_Check( scanEntry.precursorCharge ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanEntry.precursorCharge ) )";
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.precursorCharge ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.precursorCharge ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
         }
         if ( scanEntry.precursor_M_Over_Z !== undefined && scanEntry.precursor_M_Over_Z !== null ) {
-            if ( ! variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) ) {
-                const msg = "( ! variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) )";
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.precursor_M_Over_Z ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -312,8 +312,8 @@ const _validate_ScanData = function(
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( peak.intensity ) ) {
-                const msg = "( ! variable_is_type_number_Check( peak.intensity ) )";
+            if ( ! limelight__variable_is_type_number_Check( peak.intensity ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( peak.intensity ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
@@ -322,8 +322,8 @@ const _validate_ScanData = function(
                 console.warn(msg);
                 throw Error(msg);
             }
-            if ( ! variable_is_type_number_Check( peak.mz ) ) {
-                const msg = "( ! variable_is_type_number_Check( peak.mz ) )";
+            if ( ! limelight__variable_is_type_number_Check( peak.mz ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( peak.mz ) )";
                 console.warn(msg);
                 throw Error(msg);
             }

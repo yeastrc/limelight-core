@@ -15,7 +15,7 @@ import {
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback,
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback_Params
 } from "page_js/data_pages/search_selection__displayed_nested_in_folders__React_Component/searchSelection_DisplayedNestedInFolders_Component";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { Spinner_Limelight_Component } from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId___ROOT";
 import {

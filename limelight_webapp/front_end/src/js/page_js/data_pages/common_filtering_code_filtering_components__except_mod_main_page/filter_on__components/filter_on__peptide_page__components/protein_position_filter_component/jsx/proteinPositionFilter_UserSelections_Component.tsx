@@ -32,7 +32,7 @@ import {
     ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_Root,
     ProteinPositionFilter_UserSelections_StateObject_Get_RangeEntries_SingleRange
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__peptide_page__components/protein_position_filter_component/js/proteinPositionFilter_UserSelections_StateObject";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";

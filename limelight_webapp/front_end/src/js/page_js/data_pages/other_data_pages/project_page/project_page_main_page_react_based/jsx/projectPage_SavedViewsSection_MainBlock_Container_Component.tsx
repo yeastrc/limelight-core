@@ -8,7 +8,7 @@
 
 import React from "react";
 import { DataPages_LoggedInUser_CommonObjectsFactory } from "page_js/data_pages/data_pages_common/dataPages_LoggedInUser_CommonObjectsFactory";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js/data_pages/other_data_pages/project_page/projectPage_SavedViews_Section_LoggedInUsersInteraction";
 import {

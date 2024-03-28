@@ -33,7 +33,7 @@
 "use strict";
 
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check'
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check'
 
 import { CentralPageStateManager } from 'page_js/data_pages/central_page_state_manager/centralPageStateManager';
 

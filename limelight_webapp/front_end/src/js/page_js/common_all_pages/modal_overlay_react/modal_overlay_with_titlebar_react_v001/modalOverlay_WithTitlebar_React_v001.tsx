@@ -11,7 +11,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 /**
  * ModalOverlay - Local to Limelight (Not use a Library) - React Based

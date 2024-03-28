@@ -21,9 +21,9 @@ import React from "react";
 import ReactDOM from 'react-dom';
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
 import {
 	_PATH_SEPARATOR,
@@ -81,7 +81,7 @@ export class ScanFileBrowserViewPage_RootClass_Common {
 	 */
 	initialize() {
 
-		catchAndReportGlobalOnError.init();
+		limelight__catchAndReportGlobalOnError.init();
 
 		window.onpopstate = function(event) {
 			//  User clicked the back button so reload so page reflects that URL

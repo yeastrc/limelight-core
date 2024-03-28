@@ -9,9 +9,9 @@
  */
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 
@@ -204,7 +204,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initial
                 if ( responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== undefined
                     && responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified !== null ) {
 
-                    if ( ! variable_is_type_number_Check( responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified ) ) {
+                    if ( ! limelight__variable_is_type_number_Check( responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified ) ) {
                         const msg = "responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified is not a number.  value: " +
                             responseData.requiredChunkSize_ExceptLastChunk__NullWhenNotSpecified;
                         console.warn(msg)
@@ -217,7 +217,7 @@ export const projectPage_UploadData_UploadFiles__Common_SingleFileUpload_Initial
                     console.warn(msg)
                     throw Error(msg)
                 }
-                if ( ! variable_is_type_number_Check( responseData.maxFileUploadChunkSize ) ) {
+                if ( ! limelight__variable_is_type_number_Check( responseData.maxFileUploadChunkSize ) ) {
                     const msg = "responseData.maxFileUploadChunkSize is not a number.  value: " +
                         responseData.maxFileUploadChunkSize;
                     console.warn(msg)

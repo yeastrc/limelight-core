@@ -4,9 +4,9 @@
  */
 // limelight__Input_NumberOrString_ReturnNumber.ts
 
-//  Also have page_js/variable_is_type_number_Check.ts
+//  Also have page_js/limelight__variable_is_type_number_Check.ts
 
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  * If input is string, uses Number.parseFloat(...)
@@ -14,7 +14,7 @@ import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Che
 export function limelight__Input_NumberOrString_ReturnNumber( inputValue_UnknownType : unknown ) : number {
 
     let resultValue = inputValue_UnknownType as number
-    if ( ! variable_is_type_number_Check( inputValue_UnknownType ) ) {
+    if ( ! limelight__variable_is_type_number_Check( inputValue_UnknownType ) ) {
         if (typeof inputValue_UnknownType === "string") {
             resultValue = Number.parseFloat(inputValue_UnknownType);
             if ( Number.isNaN( resultValue ) ) {

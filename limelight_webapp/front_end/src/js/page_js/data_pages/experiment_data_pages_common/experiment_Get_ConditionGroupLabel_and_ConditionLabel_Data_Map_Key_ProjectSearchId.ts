@@ -8,7 +8,7 @@ import {
     Experiment_ConditionGroupsDataContainer,
     Experiment_ConditionGroupsDataContainer__ProcessAllDataEntries_callback_Param
 } from "page_js/data_pages/experiment_data_pages_common/experiment_conditionGroupsDataContainer_Class";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {Experiment_ConditionGroupsContainer} from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes";
 
 

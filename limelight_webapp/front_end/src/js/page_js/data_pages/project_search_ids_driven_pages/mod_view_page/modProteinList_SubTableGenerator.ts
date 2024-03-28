@@ -30,7 +30,7 @@ import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/m
 import {ProteinPositionFilterDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ProteinPositionFilterDataManager";
 import {ModViewDataUtilities} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataUtilities";
 import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modView_VizOptionsData";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {
     modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents,
     modProteinList_SubTableGenerator_Subcomponents__Cell_Protein_Name_Contents_Click_Callback_Params
@@ -382,12 +382,12 @@ export class ModProteinList_SubTableGenerator {
             // sort by psm count if there is one project search id
             dataTableRows.sort((function(a, b) {
 
-                if ( ! variable_is_type_number_Check( b.columnEntries[3].valueSort ) ) {
+                if ( ! limelight__variable_is_type_number_Check( b.columnEntries[3].valueSort ) ) {
                     const msg = "static async getDataTableRows: b.columnEntries[3].valueSort is not a number.  b.columnEntries[3].valueSort: " + b.columnEntries[3].valueSort;
                     console.warn( msg );
                     throw Error( msg );
                 }
-                if ( ! variable_is_type_number_Check( a.columnEntries[3].valueSort ) ) {
+                if ( ! limelight__variable_is_type_number_Check( a.columnEntries[3].valueSort ) ) {
                     const msg = "static async getDataTableRows: a.columnEntries[3].valueSort is not a number.  a.columnEntries[3].valueSort: " + a.columnEntries[3].valueSort;
                     console.warn( msg );
                     throw Error( msg );

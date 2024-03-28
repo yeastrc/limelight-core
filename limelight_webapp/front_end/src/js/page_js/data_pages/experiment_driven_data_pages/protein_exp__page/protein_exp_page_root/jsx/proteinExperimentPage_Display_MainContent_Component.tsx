@@ -10,7 +10,7 @@
 
 import React from 'react'
 
-import {reportWebErrorToServer} from 'page_js/reportWebErrorToServer';
+import {reportWebErrorToServer} from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import {StringDownloadUtils} from 'page_js/data_pages/data_pages_common/downloadStringAsFile';
 //   From data_pages_common

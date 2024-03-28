@@ -8,9 +8,9 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -802,7 +802,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.featureDetection_PersistentFeatureEntry_Id ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.featureDetection_PersistentFeatureEntry_Id ) ) {
                     const msg = "entry.featureDetection_PersistentFeatureEntry_Id in result_List is not a number. ";
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);
@@ -813,7 +813,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.featureDetection_SingularFeatureEntry_Id ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.featureDetection_SingularFeatureEntry_Id ) ) {
                     const msg = "entry.featureDetection_SingularFeatureEntry_Id in result_List is not a number. ";
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);
@@ -824,7 +824,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);
                 }
-                if ( ! variable_is_type_number_Check( entry.featureDetection_Root_Id ) ) {
+                if ( ! limelight__variable_is_type_number_Check( entry.featureDetection_Root_Id ) ) {
                     const msg = "entry.featureDetection_Root_Id in result_List is not a number. ";
                     console.warn( msg + "entry: " + entry )
                     throw Error(msg);

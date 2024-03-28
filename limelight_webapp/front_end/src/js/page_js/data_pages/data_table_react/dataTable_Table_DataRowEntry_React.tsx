@@ -5,7 +5,7 @@
  */
 import React from 'react'
 
-import { variable_is_type_number_Check } from 'page_js/variable_is_type_number_Check';
+import { limelight__variable_is_type_number_Check } from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 
 import {
     DataTable_Column,
@@ -17,7 +17,7 @@ import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 
 /**
  * 
@@ -238,7 +238,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
           throw Error( msg );
         }
 
-        if ( ! variable_is_type_number_Check( dataObject_columnEntry.valueSort ) ) {
+        if ( ! limelight__variable_is_type_number_Check( dataObject_columnEntry.valueSort ) ) {
           const msg = "DataTable_Table_DataRowEntry: column.showHorizontalGraph is true and dataObject_columnEntry.valueSort is not a number.  dataObject_columnEntry.valueSort: " + dataObject_columnEntry.valueSort;
           console.warn( msg );
           throw Error( msg );

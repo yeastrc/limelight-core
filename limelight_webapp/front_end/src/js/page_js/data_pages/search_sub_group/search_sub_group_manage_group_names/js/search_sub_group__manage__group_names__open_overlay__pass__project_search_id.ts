@@ -17,7 +17,7 @@ import {
     SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_UpdateCallback_Params
 } from "page_js/data_pages/search_sub_group/search_sub_group_manage_group_names/jsx/searchSubGroup_Manage_GroupNames_OverlayComponent";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 
 

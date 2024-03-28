@@ -17,11 +17,11 @@
 //  module import 
 
 /**
- * Import on every page the 'root' file and call catchAndReportGlobalOnError.init()
+ * Import on every page the 'root' file and call limelight__catchAndReportGlobalOnError.init()
  */
-import { catchAndReportGlobalOnError } from 'page_js/catchAndReportGlobalOnError';
+import { limelight__catchAndReportGlobalOnError } from 'page_js/common_all_pages/limelight__catchAndReportGlobalOnError';
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webserviceCallStandardPost';
 import {limelight__header_main_pages__LoggedInUser_PopulateProjects_After_Delay} from "page_js/header_main_pages/header_main_pages__logged_in_user/limelight__header_main_pages__logged_in_user_PopulateProjects";
@@ -60,7 +60,7 @@ export class ProjectPage_ProjectSection_ProjectOwnerInteraction {
 	 */
 	initialize() {
 
-		catchAndReportGlobalOnError.init();
+		limelight__catchAndReportGlobalOnError.init();
 		
 		if ( this._projectLocked ) {
 			

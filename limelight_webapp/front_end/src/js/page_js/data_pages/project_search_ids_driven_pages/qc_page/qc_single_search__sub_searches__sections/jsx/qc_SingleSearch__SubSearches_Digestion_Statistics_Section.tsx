@@ -7,7 +7,7 @@
 
 import React from "react";
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data,
     Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root

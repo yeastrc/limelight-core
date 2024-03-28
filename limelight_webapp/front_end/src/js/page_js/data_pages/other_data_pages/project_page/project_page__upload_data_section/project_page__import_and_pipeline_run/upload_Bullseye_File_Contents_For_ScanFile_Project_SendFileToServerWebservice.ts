@@ -8,12 +8,12 @@
  * Send File To Server Webservice
  *
  */
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {handleRawAJAXError} from "page_js/handleServicesAJAXErrors";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {handleRawAJAXError} from "page_js/common_all_pages/handleServicesAJAXErrors";
 import {
     getWebserviceSyncTrackingCode,
     LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM
-} from "page_js/EveryPageCommon";
+} from "page_js/common_all_pages/EveryPageCommon";
 
 
 const BULLSEYE_FILE_UPLOAD_SERVICE_URL = "d/rws/for-page/project-upload-feature-detection-upload-bullseye-data-file";

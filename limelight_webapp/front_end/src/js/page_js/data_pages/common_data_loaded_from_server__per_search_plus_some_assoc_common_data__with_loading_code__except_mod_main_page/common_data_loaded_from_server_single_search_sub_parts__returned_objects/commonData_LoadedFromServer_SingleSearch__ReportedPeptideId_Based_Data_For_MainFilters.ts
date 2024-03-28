@@ -12,8 +12,8 @@
 
 import {SearchDataLookupParams_For_Single_ProjectSearchId} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -508,8 +508,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
             const anyPsmHas_OpenModifications = reportedPeptideCoreDataEntry.anyPsmHas_OpenModifications ? true: false;
             const anyPsmHas_ReporterIons = reportedPeptideCoreDataEntry.anyPsmHas_ReporterIons ? true: false;
 
-            if ( ! variable_is_type_number_Check( reportedPeptideId )  ) {
-                const msg = "_processReportedPeptideId_AndData_ListFromServer_Populate_loadedData: ( ! variable_is_type_number_Check( reportedPeptideId ).  reportedPeptideId: " + reportedPeptideId;
+            if ( ! limelight__variable_is_type_number_Check( reportedPeptideId )  ) {
+                const msg = "_processReportedPeptideId_AndData_ListFromServer_Populate_loadedData: ( ! limelight__variable_is_type_number_Check( reportedPeptideId ).  reportedPeptideId: " + reportedPeptideId;
                 console.warn(msg);
                 throw Error(msg)
             }
@@ -518,8 +518,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
 
             if ( numPsms_IfComputedOrInDB !== undefined && numPsms_IfComputedOrInDB !== null ) {
 
-                if ( ! variable_is_type_number_Check( numPsms_IfComputedOrInDB )  ) {
-                    const msg = "_processReportedPeptideId_AndData_ListFromServer_Populate_loadedData: ( ! variable_is_type_number_Check( numPsms_IfComputedOrInDB ).  numPsms_IfComputedOrInDB: " + numPsms_IfComputedOrInDB;
+                if ( ! limelight__variable_is_type_number_Check( numPsms_IfComputedOrInDB )  ) {
+                    const msg = "_processReportedPeptideId_AndData_ListFromServer_Populate_loadedData: ( ! limelight__variable_is_type_number_Check( numPsms_IfComputedOrInDB ).  numPsms_IfComputedOrInDB: " + numPsms_IfComputedOrInDB;
                     console.warn(msg);
                     throw Error(msg)
                 }

@@ -26,7 +26,7 @@ import {
     projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetProjectSearchIdsWhereAssocSearchIdsAlreadyInProject,
     ProjectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode__GetProjectSearchIdsWhereAssocSearchIdsAlreadyInProject_ResultEntry
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesAdmin_CopyMove_Searches_Overlay_SupportCode";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 import { ProjectPage_SearchesAdmin_DeleteSearch_Overlay_Component__SingleSearchEntry } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SearchesAdmin_DeleteSearch_Overlay_Component";
 

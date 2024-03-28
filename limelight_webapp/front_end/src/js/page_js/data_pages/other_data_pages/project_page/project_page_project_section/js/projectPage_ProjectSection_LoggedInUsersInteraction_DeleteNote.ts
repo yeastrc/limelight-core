@@ -2,7 +2,7 @@
  * projectPage_ProjectSection_LoggedInUsersInteraction_DeleteNote.ts
  */
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
-import { reportWebErrorToServer } from "page_js/reportWebErrorToServer";
+import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 
 
 export const projectPage_ProjectSection_LoggedInUsersInteraction_DeleteNote = function (

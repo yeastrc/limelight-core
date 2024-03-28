@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
+import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
 
 export const get_WholeModTable_ShowCount_ExternalReactComponent = function (

@@ -7,7 +7,7 @@
 
 import React from 'react'
 import {SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages__common_data_classes/searchDataLookupParameters";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
 import {
     AnnotationTypesToDisplay__SelectionOverlayComponent__Component_Params,

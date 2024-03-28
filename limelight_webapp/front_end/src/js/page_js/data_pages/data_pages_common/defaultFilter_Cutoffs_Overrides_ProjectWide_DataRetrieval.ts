@@ -8,9 +8,9 @@
 
 
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
 /**
  *
@@ -222,8 +222,8 @@ const _processWebserviceResult_Type_PSM_ReportedPeptide_MatchedProtein = functio
                     throw Error(msg)
                 }
 
-                if ( ! variable_is_type_number_Check( annotationCutoffValue ) ) {
-                    const msg = "webservice_Response_ForType_Entry:  ( ! variable_is_type_number_Check( annotationCutoffValue ) )"
+                if ( ! limelight__variable_is_type_number_Check( annotationCutoffValue ) ) {
+                    const msg = "webservice_Response_ForType_Entry:  ( ! limelight__variable_is_type_number_Check( annotationCutoffValue ) )"
                     console.warn(msg + "  webservice_Response_ForType_Entry: ", webservice_Response_ForType_Entry)
                     throw Error(msg)
                 }

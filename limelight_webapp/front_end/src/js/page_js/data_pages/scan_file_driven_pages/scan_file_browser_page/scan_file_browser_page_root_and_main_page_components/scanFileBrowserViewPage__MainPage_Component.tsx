@@ -7,7 +7,7 @@
 
 
 import React from 'react'
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component,
     ScanFileBrowser_TotalIonCurrent_OfScans_Plot_Component_ScanNumber_Clicked_Callback,

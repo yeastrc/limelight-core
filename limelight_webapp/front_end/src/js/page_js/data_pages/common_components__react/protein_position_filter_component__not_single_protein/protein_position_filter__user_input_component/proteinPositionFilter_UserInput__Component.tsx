@@ -13,7 +13,7 @@ import {
     ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein,
     ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleRange
 } from "./proteinPositionFilter_UserInput__Component__UserSelectionData";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     ProteinPositionFilter_UserInput__Component__ProteinData_Root,
     ProteinPositionFilter_UserInput__Component__ProteinData_SingleProtein

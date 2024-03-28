@@ -11,7 +11,7 @@
  *      modificationMass_UserSelections_Root.tsx
  */
 
-import {variable_is_type_number_Check} from 'page_js/variable_is_type_number_Check';
+import {limelight__variable_is_type_number_Check} from 'page_js/common_all_pages/limelight__variable_is_type_number_Check';
 import {SingleProtein_Filter_SelectionType} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_Enums";
 import {SingleProtein_Filter_PerUniqueIdentifier_Entry} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_SingleProtein_Filter_CommonObjects";
 import {
@@ -539,7 +539,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
 
             for ( const modificationSelected of modificationsSelected_ANY_ALL ) {
 
-                if ( ! variable_is_type_number_Check( modificationSelected ) ) {
+                if ( ! limelight__variable_is_type_number_Check( modificationSelected ) ) {
                     const msg = "entry in this._modificationsSelected is not is not number: " + modificationSelected;
                     console.warn( msg );
                     throw Error( msg );
@@ -722,7 +722,7 @@ export class ModificationMass_Subpart_Variable_Open_Modifications_UserSelections
                     } else {
                         //  Validate that array element is number
 
-                        if ( ! variable_is_type_number_Check( modificationNonInteger ) ) {
+                        if ( ! limelight__variable_is_type_number_Check( modificationNonInteger ) ) {
                             const msg = "modificationNonInteger is not number (see 'for ( const modificationNonInteger of modificationsNonInteger ) {'): " + modificationNonInteger;
                             console.warn( msg );
                             throw Error( msg );

@@ -15,10 +15,10 @@
  * !!!!!  EXCLUDES  Mod Main Page (Other than Single Protein Overlay)
  */
 
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__CommonAcrossSearches} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__CommonAcrossSearches";
-import {variable_is_type_number_Check} from "page_js/variable_is_type_number_Check";
+import {limelight__variable_is_type_number_Check} from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters";
 import {Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds";
@@ -749,8 +749,8 @@ export class CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_
             const peptideId = peptideSequencePeptideIdMappingEntry.peptideId
             const peptideSequence = peptideSequencePeptideIdMappingEntry.peptideSequence
 
-            if ( ! variable_is_type_number_Check(peptideId) ) {
-                throw Error("In _process_WebserviceResponse: ( ! variable_is_type_number_Check(peptideId) )");
+            if ( ! limelight__variable_is_type_number_Check(peptideId) ) {
+                throw Error("In _process_WebserviceResponse: ( ! limelight__variable_is_type_number_Check(peptideId) )");
             }
             if ( ! limelight__IsVariableAString( peptideSequence ) ) {
                 throw Error("In _process_WebserviceResponse: ( ! limelight__IsVariableAString( peptideSequence) )");

@@ -1,7 +1,7 @@
 
 // limelight__IsTextSelected.ts
 
-//  Also have page_js/variable_is_type_number_Check.ts
+//  Also have page_js/limelight__variable_is_type_number_Check.ts
 
 /**
  * Is any text on the page currently selected

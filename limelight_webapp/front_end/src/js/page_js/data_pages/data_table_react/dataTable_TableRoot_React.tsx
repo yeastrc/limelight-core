@@ -31,7 +31,7 @@ import { DataTable_Table_DataRow_Group } from './dataTable_Table_DataRow_Group_R
 
 import { dataTable_SortDataRows__sort_dataRows_on_sortColumnsInfo } from './dataTable_SortDataRows';
 import {dataTable_React_DataObjects_Validator} from "page_js/data_pages/data_table_react/dataTable_React_DataObjects_Validator";
-import {reportWebErrorToServer} from "page_js/reportWebErrorToServer";
+import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
     DataTable_INTERNAL_DataGroupRowEntry,
     DataTable_INTERNAL_DataRowEntry,
