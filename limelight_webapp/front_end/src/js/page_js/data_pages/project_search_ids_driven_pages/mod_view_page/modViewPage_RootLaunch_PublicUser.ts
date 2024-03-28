@@ -6,17 +6,9 @@
  * Root Launch Javascript for Public User, or Project Is Locked
  * 
  * Create and initialize object of class ModViewPage_RootClass_Common
- * 
- * 
- * This is required in ...RootLaunch... files: const Handlebars = require('handlebars/runtime');
- * 
+ *
  * 
  */
-
-
-//  This is required in this 'RootLaunch' file to add Handlebars before anything else is added to the bundle
-
-import { Handlebars, _dummy_template_template_bundle } from './modViewPage_RootLaunch_ImportHandlebars'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 

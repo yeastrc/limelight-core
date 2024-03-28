@@ -6,13 +6,8 @@
  * Root Launch Javascript for Public User, or Project Is Locked
  * 
  * Create and initialize object of class PeptideExperimentPage_RootClass_Common
- * 
- * 
- * !!!  This will stay Javascript (".js") and not Typescript since uses "require" for import of Handlebars and Handlebars Precompiled Templates
- * 
+ *
  */
-
-import { Handlebars, _dummy_template_template_bundle } from './peptideExperimentPage_RootLaunch_ImportHandlebars'
 
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 

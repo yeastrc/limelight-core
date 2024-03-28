@@ -10,9 +10,6 @@
  */
 
 
-import { Handlebars, _dummy_template_template_bundle } from './modExperimentPage_RootLaunch_ImportHandlebars'
-
-
 import { reportWebErrorToServer } from 'page_js/reportWebErrorToServer';
 
 
