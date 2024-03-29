@@ -2513,8 +2513,14 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
         }
 
 
+        let chartTitle_Start = "Ion Current"
 
-        const chartTitle = "Feature Chromatogram - m/z " + m_over_z_PersistentFeature.toFixed( 4 )
+        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+            chartTitle_Start = "Ion Count "
+        }
+
+
+        const chartTitle = chartTitle_Start + " Chromatogram - m/z " + m_over_z_PersistentFeature.toFixed( 4 )
         const chart_X_Axis_Label ="Time (min)"
 
         let chart_Y_Axis_Label = "Intensity"

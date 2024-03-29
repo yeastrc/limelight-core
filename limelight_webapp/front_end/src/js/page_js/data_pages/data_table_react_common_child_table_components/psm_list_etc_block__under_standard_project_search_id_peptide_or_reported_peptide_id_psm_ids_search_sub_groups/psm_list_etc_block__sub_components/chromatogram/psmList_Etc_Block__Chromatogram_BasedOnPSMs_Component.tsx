@@ -3185,7 +3185,14 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             }
         }
 
-        const chartTitle = "Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
+        let chartTitle_Start = "Ion Current"
+
+        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+            chartTitle_Start = "Ion Count "
+        }
+
+
+        const chartTitle = chartTitle_Start + " Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
         const chart_X_Axis_Label = "Time (min)"
 
         let chart_Y_Axis_Label = "Intensity"
