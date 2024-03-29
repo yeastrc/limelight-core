@@ -626,19 +626,19 @@ export class QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Sing
 
                 // ions per second = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
 
-                let ionsPerSecond = dataForSingleScanNumberEntry.totalIonCurrent_ForScan * dataForSingleScanNumberEntry.ionInjectionTime_InMilliseconds / 1000
+                let ionCountForScan = dataForSingleScanNumberEntry.totalIonCurrent_ForScan * dataForSingleScanNumberEntry.ionInjectionTime_InMilliseconds / 1000
 
                 if ( this.props.transform_Score === QcViewPage_Common__FeatureDetection_IonCount_VS_RetentionTime__Singular_Features__LineChart__Plot_Zero_Entries__StatisticsPlot_OverlayContainer__TransformScoreChoice.LOG_10 ) {
 
-                    if ( ionsPerSecond < 1 ) {
-                        ionsPerSecond = 0;
+                    if ( ionCountForScan < 1 ) {
+                        ionCountForScan = 0;
                     } else {
-                        ionsPerSecond = Math.log10( ionsPerSecond );
+                        ionCountForScan = Math.log10( ionCountForScan );
                     }
                 }
 
                 chart_X.push( retentionTime_Minutes );
-                chart_Y.push( ionsPerSecond );
+                chart_Y.push( ionCountForScan );
             }
 
             //  Add to Chart Data

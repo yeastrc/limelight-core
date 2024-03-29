@@ -548,9 +548,9 @@ export class QcViewPage_Common__FeatureDetection_TotalIonCurrent_TotalIonCount__
 
                     // ions per second = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
 
-                    let ionsPerSecond = dataForSingleScanNumberEntry.totalIonCurrent_ForScan * dataForSingleScanNumberEntry.ionInjectionTime_InMilliseconds / 1000
+                    let ionCountForScan = dataForSingleScanNumberEntry.totalIonCurrent_ForScan * dataForSingleScanNumberEntry.ionInjectionTime_InMilliseconds / 1000
 
-                    ionCount__All_MS_1_Scans += ionsPerSecond;
+                    ionCount__All_MS_1_Scans += ionCountForScan;
                 }
             }
 
