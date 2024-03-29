@@ -174,6 +174,23 @@ enum SmoothingOption_Enum {
 
 const _smoothingOption_Selection_DEFAULT = SmoothingOption_Enum.SAVITZKY_GOLAY;
 
+
+
+
+enum ChartCreate__IonCurrent__IonCount__Enum {
+    ION_CURRENT = "ION_CURRENT",
+    ION_COUNT = "ION_COUNT"
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////    !!!   MAIN COMPONENT
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  *
  */
@@ -2624,7 +2641,11 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
     private _DO_NOT_CALL() { //  Test Cast of method
     }
 
-    private plot_Ref :  React.RefObject<HTMLDivElement>
+    private plot_Ion_Current_Ref :  React.RefObject<HTMLDivElement>
+    private plot_Ion_Count_Ref :  React.RefObject<HTMLDivElement>
+
+    private _show__Plot_Ion_Count_Div = false
+
 
     private _showCreatingMessage = true
     private _showUpdatingMessage = false
@@ -2641,14 +2662,22 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
     constructor( props: Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Props ) {
         super( props );
 
-        this.plot_Ref = React.createRef();
+        this.plot_Ion_Current_Ref = React.createRef();
+        this.plot_Ion_Count_Ref = React.createRef();
+
+        this._set__ClassField___show__Plot_Ion_Count_Div( props )
 
     }
 
     componentWillUnmount() {
         try {
             try {
-                Plotly.purge(this.plot_Ref.current)
+                Plotly.purge(this.plot_Ion_Current_Ref.current)
+            } catch (e) {
+                //  Eat Exception
+            }
+            try {
+                Plotly.purge(this.plot_Ion_Count_Ref.current)
             } catch (e) {
                 //  Eat Exception
             }
@@ -2660,6 +2689,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             if (
                 prevProps.triggerPlotUpdate_Object !== this.props.triggerPlotUpdate_Object
             ) {
+
+                this._set__ClassField___show__Plot_Ion_Count_Div( this.props )
 
                 this._showUpdatingMessage = true
                 this._show_NO_DATA_ForSelection_Message = false;
@@ -2690,6 +2721,44 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     *
+     * @param props
+     */
+    private _set__ClassField___show__Plot_Ion_Count_Div( props: Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Props ) {
+
+        let allScans_Have__ionInjectionTime = true
+
+        for ( const scanNumber of props.dataFromServer_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.data.data_BasedOnPSMs_Get_MS1_ScanNumbers_Etc_For_Single_SearchScanFileId.scanNumberArray ) {
+
+            let found_ScanWithPeaks = false
+            {
+                {
+                    const scanItem_YES_Peaks = props.dataFromServer_ScansWithPeaks_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
+                    if ( scanItem_YES_Peaks ) {
+                        if ( scanItem_YES_Peaks.ionInjectionTime === undefined || scanItem_YES_Peaks.ionInjectionTime === null ) {
+
+                            allScans_Have__ionInjectionTime = false
+                            break
+                        }
+                    }
+                }
+                if ( ! found_ScanWithPeaks ) {
+                    const scanItem_NO_Peaks = props.dataFromServer_Scans_NO_For_Single_SearchScanFileId_For_Selected_SearchScanFileId.scanData_Map_Key_ScanNumber.get( scanNumber )
+                    if ( scanItem_NO_Peaks ) {
+                        if ( scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === undefined || scanItem_NO_Peaks.ionInjectionTime_InMilliseconds === null ) {
+
+                            allScans_Have__ionInjectionTime = false
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        this._show__Plot_Ion_Count_Div = allScans_Have__ionInjectionTime
     }
 
     /**
@@ -2795,6 +2864,62 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             return 0;
         })
 
+        this._createOnMount_And_OnUpdate__SpecificChart({
+
+            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_CURRENT,
+
+            retentionTimeSeconds_Range_ForChart_Min,
+            retentionTimeSeconds_Range_ForChart_Max,
+            psmList_LOCAL_PossiblyFiltered,
+            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+        })
+
+        {
+            if ( this._show__Plot_Ion_Count_Div ) {
+                this._createOnMount_And_OnUpdate__SpecificChart( {
+
+                    chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT,
+
+                    retentionTimeSeconds_Range_ForChart_Min,
+                    retentionTimeSeconds_Range_ForChart_Max,
+                    psmList_LOCAL_PossiblyFiltered,
+                    scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+                } )
+            }
+        }
+    }
+
+    /**
+     *
+     * @param retentionTimeSeconds_Range_ForChart_Min
+     * @param retentionTimeSeconds_Range_ForChart_Max
+     * @param psmList_LOCAL_PossiblyFiltered
+     * @param scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+     */
+    private _createOnMount_And_OnUpdate__SpecificChart(
+        {
+            chartCreate__IonCurrent__IonCount__Enum,
+
+            retentionTimeSeconds_Range_ForChart_Min,
+            retentionTimeSeconds_Range_ForChart_Max,
+            psmList_LOCAL_PossiblyFiltered,
+            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+        } : {
+            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
+
+            retentionTimeSeconds_Range_ForChart_Min: number
+            retentionTimeSeconds_Range_ForChart_Max: number
+
+            psmList_LOCAL_PossiblyFiltered: Array<PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_getPSMDataFromServer_Result_PSM_Item>
+            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime: Array<{
+                scan_WithPeaks: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
+                scan_NO_Peaks: CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
+                scan_RetentionTime: number
+                scanNumber: number
+                scanLevel: number
+            }>
+        }
+    ) {
 
         const psmList_DataTable_DataRowEntry_Map_Key_PsmId: Map<number, DataTable_DataRowEntry> = this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results.dataTable_Data.dataTable_DataRowEntries_Map_Key_Psm_Id
 
@@ -2922,6 +3047,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                     const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
 
+                        chartCreate__IonCurrent__IonCount__Enum,
+
                         plotlyTrace_Label,
                         plotlyTrace_Color: "rgb(31, 119, 180)",
 
@@ -2978,6 +3105,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     // )
 
                     const plotlyTrace = this._create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope({
+
+                        chartCreate__IonCurrent__IonCount__Enum,
 
                         plotlyTrace_Label,
                         plotlyTrace_Color: _ISOTOPE_PLOT_TRACE_COLORS[ isotope_Number ],
@@ -3057,8 +3186,14 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
         }
 
         const chartTitle = "Chromatogram - " + reportedPeptideSequence + "<sup>" + this.props.selection_ReportedPeptide_OpenModMass_Charge.charge + "+</sup>" + openModMass_Display_For_ChartTitle
-        const chart_X_Axis_Label ="Time (min)"
-        const chart_Y_Axis_Label = "Intensity"
+        const chart_X_Axis_Label = "Time (min)"
+
+        let chart_Y_Axis_Label = "Intensity"
+
+        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+            chart_Y_Axis_Label = " Ion Count"
+        }
+
         const showlegend_Local = true
 
         const chart_Layout = {
@@ -3085,10 +3220,22 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             showlegend: showlegend_Local
         }
 
-        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: this.plot_Ref.current });
+        let plotly_DOM_Element: HTMLDivElement
+
+        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+
+            plotly_DOM_Element = this.plot_Ion_Count_Ref.current
+
+        } else {
+
+            plotly_DOM_Element = this.plot_Ion_Current_Ref.current
+
+        }
+
+        const chart_config = qcPage_StandardChartConfig({ chartContainer_DOM_Element: plotly_DOM_Element });
 
         const newPlotResulting_Promise = Plotly.newPlot(
-            this.plot_Ref.current,
+            plotly_DOM_Element,
             chart_Data,
             chart_Layout,
             chart_config
@@ -3100,7 +3247,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             const projectSearchId = this.props.projectSearchId
 
             // @ts-ignore
-            this.plot_Ref.current.on('plotly_click', function(data) {
+            plotly_DOM_Element.on('plotly_click', function(data) {
                 try {
                     // console.log( "In 'plotly_click': data: ", data )
                     if ( ! data.points ) {
@@ -3176,7 +3323,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             psmItem_ToPlot: psmEntry,
                             scanData_NO_Peaks_Entry_MS_1: scanData_NO_Peaks_Entry_MS_1,
                             scanItem: undefined,
-                            peakToUse: undefined,  //  May NOT be populated
+                            peakToUse_DisplayDataForPSM_Tooltip: undefined,  //  May NOT be populated
                             plot_Y_Value: 0,  // hard code to zero for these PSMs
 
                             psmList_DataTable_DataRowEntry_Map_Key_PsmId,
@@ -3241,6 +3388,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
      */
     private _create_Single_PlotlyTrace_For_MZ_OR_MZ_Plus_X_Isotope(
         {
+            chartCreate__IonCurrent__IonCount__Enum,
+
             plotlyTrace_Label,
             plotlyTrace_Color,
 
@@ -3260,6 +3409,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             trace_Psm_Points_Y,
             trace_Psm_Points_Tooltips
         } : {
+            chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
 
             plotlyTrace_Label: string
             plotlyTrace_Color: string
@@ -3345,7 +3495,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 scan_RetentionTime: number
                 scanNumber: number
             }
-            peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+            peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
             y_Trace_Index: number
         }> = []
 
@@ -3422,14 +3572,37 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                     } else {
 
+                        let tooltip_Peak_Value_Label = "Peak Intensity"
+
+                        let lineY_Value = peakToUse.intensity
+
+                        if ( chartCreate__IonCurrent__IonCount__Enum === ChartCreate__IonCurrent__IonCount__Enum.ION_COUNT ) {
+
+                            //  Ion Count
+
+                            tooltip_Peak_Value_Label = "Peak Ion Count"
+
+                            // Ion Count = total ion current (or intensity of a specific feature) * ion injection time / 1000 (because total ion current is in ions/second and ion injection time is in milliseconds).
+
+                            lineY_Value = peakToUse.intensity /  scanItem_WithPeaks.ionInjectionTime / 1000
+                        }
+
+
+                        const peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip = {
+                            peak_MZ: peakToUse.mz,
+                            peak_Intensity_Or_IonCount__Label: tooltip_Peak_Value_Label,
+                            peak_Intensity_Or_IonCount__Value: lineY_Value
+                        }
+
+
                         trace_rt_Intensity_Line_X.push( scan_retentionTime_Minutes )
-                        trace_rt_Intensity_Line_Y.push( peakToUse.intensity )
+                        trace_rt_Intensity_Line_Y.push( lineY_Value )
                         trace_rt_Intensity_Tooltips.push(
                             "MS 1" +
                             "<br><b>Scan Number</b>: " + scanItem.scanNumber +
                             "<br><b>Scan Level</b>: " + scanItem.scanLevel +
                             "<br><b>Peak mz</b>: " + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
-                            "<br><b>Peak Intensity</b>: " + peakToUse.intensity.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
+                            "<br><b>" + tooltip_Peak_Value_Label + "</b>: " + lineY_Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY ) +
                             "<br><b>Retention Time (Min)</b>: " + scan_retentionTime_Minutes.toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) )
 
                         const trace_rt_Intensity_Line_Y_LastIndexAdded = trace_rt_Intensity_Line_Y.length - 1;
@@ -3443,7 +3616,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
 
                                 psm_And_Its_ScanData.push({
                                     psmItem: psmItem_For_Associated_MS_1_ScanNumber,
-                                    scanItem, peakToUse,
+                                    scanItem, peakToUse_DisplayDataForPSM_Tooltip,
                                     y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
                                 })
                             }
@@ -3474,7 +3647,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             psm_And_Its_ScanData.push({
                                 psmItem: psmItem_For_Associated_MS_1_ScanNumber,
                                 scanItem,
-                                peakToUse: undefined,  //  May NOT be populated
+                                peakToUse_DisplayDataForPSM_Tooltip: undefined,  //  May NOT be populated
                                 y_Trace_Index: trace_rt_Intensity_Line_Y_LastIndexAdded
                             })
                         }
@@ -3589,7 +3762,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                             psmItem_ToPlot: psm_And_Its_ScanData_Entry.psmItem,
                             scanItem: psm_And_Its_ScanData_Entry.scanItem,
                             scanData_NO_Peaks_Entry_MS_1: undefined,
-                            peakToUse: psm_And_Its_ScanData_Entry.peakToUse,  //  May NOT be populated
+                            peakToUse_DisplayDataForPSM_Tooltip: psm_And_Its_ScanData_Entry.peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
 
                             plot_Y_Value,
 
@@ -3638,7 +3811,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             psmItem_ToPlot,
             scanData_NO_Peaks_Entry_MS_1,
             scanItem,
-            peakToUse,  //  May NOT be populated
+            peakToUse_DisplayDataForPSM_Tooltip,  //  May NOT be populated
 
             plot_Y_Value,   //  The 'Y' value for plotting.  Added to support smoothing
 
@@ -3659,7 +3832,7 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 scanNumber: number
             }
 
-            peakToUse: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+            peakToUse_DisplayDataForPSM_Tooltip: Internal__PeakToUse_DisplayDataForPSM_Tooltip
 
             plot_Y_Value: number
 
@@ -3720,7 +3893,14 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     throw Error("psmList_DataTable_DataRowEntry.columnEntries[ columnIndex ] returned nothing for columnIndex: " + columnIndex )
                 }
 
-                const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + tableRowData_ForColumn.valueDisplay;
+                let value_ForDisplay_ForColumn = ""
+                if ( tableRowData_ForColumn.valueDisplay ) {
+                    value_ForDisplay_ForColumn = tableRowData_ForColumn.valueDisplay
+                } else if ( tableRowData_ForColumn.valueSort ) {
+                    value_ForDisplay_ForColumn = tableRowData_ForColumn.valueSort.toString()
+                }
+
+                const psmTooltipLine = "<b>" + tableColumnData.displayName + "</b>: " + value_ForDisplay_ForColumn;
                 psmTooltipLines.push( psmTooltipLine )
             }
 
@@ -3756,12 +3936,13 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         '<b>MS 1 Scan RT(Min)</b>: ' + ( scanRetentionTime_Seconds / 60 ).toFixed( _RETENTION_TIME_MINUTES_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
                         "<br>" +
                         (
-                            peakToUse ? (
+                            peakToUse_DisplayDataForPSM_Tooltip ? (
                                 _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse.mz.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
+                                '<b>MS 1 Scan Peak M/Z</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_MZ.toFixed( _M_OVER_Z_DECIMAL_PLACE_ROUNDING__FOR_TOOLTIP_DISPLAY ) +
                                 '<br>' +
                                 _TOOLTIP_LINE_INDENT +
-                                '<b>MS 1 Scan Peak Intensity</b>: ' + peakToUse.intensity.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
+                                '<b>MS 1 Scan ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Label +
+                                '</b>: ' + peakToUse_DisplayDataForPSM_Tooltip.peak_Intensity_Or_IonCount__Value.toPrecision( _PEAK_INTENSITY_TO_PRECISION_FOR_TOOLTIP_DISPLAY )
                             ) : ""
                         )
                     )
@@ -3798,12 +3979,29 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
      */
     render() {
         return (
-            <div style={ { position: "relative", borderStyle: "solid", borderWidth: 1, borderColor: "black", width: _CHART_WIDTH, height: _CHART_HEIGHT } }>
+            <div style={ { position: "relative" } }>
 
-                <div
-                    ref={this.plot_Ref}
-                    style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
-                ></div>
+                <div style={ { display: "flex", flexWrap: "wrap", gap: 10 } }>
+                    <div
+                        style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black" } }
+                    >
+                        <div
+                            ref={this.plot_Ion_Current_Ref}
+                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
+                        ></div>
+                    </div>
+                    <div
+                        style={ {
+                            display: ( ! this._show__Plot_Ion_Count_Div ) ? "none" : undefined,
+                            width: _CHART_WIDTH, height: _CHART_HEIGHT, borderStyle: "solid", borderWidth: 1, borderColor: "black"
+                    } }
+                    >
+                        <div
+                            ref={this.plot_Ion_Count_Ref}
+                            style={ { width: _CHART_WIDTH, height: _CHART_HEIGHT } }
+                        ></div>
+                    </div>
+                </div>
 
                 {/*  Overlay for Creating or Updating  */}
                 { this._showCreatingMessage || this._showUpdatingMessage || this._show_NO_DATA_ForSelection_Message || this._psms_NOT_PutOnChart_ShowMessage || this._psms_Contain_PSM_Level_VariableModifications_ShowMessage ? (
@@ -4721,6 +4919,14 @@ class Internal_DataFromServer_Scans_NO_Peaks_For_Single_SearchScanFileId {
 
     readonly searchScanFileId: number
     readonly scanData_Map_Key_ScanNumber: Map<number, CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber> = new Map()
+}
+
+
+
+class Internal__PeakToUse_DisplayDataForPSM_Tooltip {
+    peak_MZ: number
+    peak_Intensity_Or_IonCount__Label: string
+    peak_Intensity_Or_IonCount__Value: number
 }
 
 enum INTERNAL__MATH_FLOOR_CEIL {
