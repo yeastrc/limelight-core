@@ -17,6 +17,7 @@
 
 
 import {errorDisplay_WhenHave_Javascript_Typescript_Error} from "page_js/common_all_pages/errorDisplay_WhenHave_Javascript_Typescript_Error";
+import { _AJAX_POST_JSON_CONTENT_TYPE } from "page_js/common_all_pages/EveryPageCommon";
 
 let _pageHide_Event_Triggered = false; //  true when 'pagehide' event called on page unload
 
@@ -140,35 +141,40 @@ var reportWebErrorToServer = {
 						browserURL : browserURL,
 						webserviceURL };
 
-				var requestData = JSON.stringify( requestObj );
+				var requestData_JSON_String = JSON.stringify( requestObj );
 
-				var _URL = "d/rws/for-page/log-browser-javascript-error";
+				const _URL = "d/rws/for-page/log-browser-javascript-error";
 
 				//   Not calling webserviceCallStandardPost since webservice does not support URL in format "/" + webserviceSyncTrackingCode
 
-//				var request =
-				// @ts-ignore
-				$.ajax({
-					type : "POST",
-					url : _URL,
-					data : requestData,
-					contentType: "application/json; charset=utf-8",
-					dataType : "json",
-					success : function(data) {
 
-						var z = 0;
-					},
-					failure: function(errMsg) {
+				const httpHeaders: any = {
+					"Content-Type": _AJAX_POST_JSON_CONTENT_TYPE
+				}
 
-						console.log("AJAX failure in reportWebErrorToServer.reportErrorObjectToServer(), errMsg: " + errMsg );
-					},
-					error : function(jqXHR, textStatus, errorThrown) {
+				//  https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-						console.log("AJAX error in reportWebErrorToServer.reportErrorObjectToServer(), textStatus: " + textStatus );
+				const promise_fetch = window.fetch( _URL, {
+					method: "POST", // *GET, POST, PUT, DELETE, etc.
+					headers: httpHeaders,
+					// redirect: "follow", // manual, *follow, error
+					// referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+					body: requestData_JSON_String // body data type must match "Content-Type" header
+				})
+
+
+				promise_fetch.catch( reason => {
+					console.log("AJAX failure in reportWebErrorToServer.reportErrorObjectToServer(), reject reason: " + reason );
+				})
+				promise_fetch.then( response => {
+					console.log( "fetch response.ok: ", response.ok )
+					console.log( "fetch response.status: ", response.status )
+
+					if ( ! response.ok ) {
+
+						console.log("AJAX error in reportWebErrorToServer.reportErrorObjectToServer(), response.status: " + response.status  + ", response.statusText: " + response.statusText );
 					}
-				});
-
-
+				})
 
 			} catch( e ) {
 

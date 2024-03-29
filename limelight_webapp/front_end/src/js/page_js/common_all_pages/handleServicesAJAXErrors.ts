@@ -132,9 +132,15 @@ function handleRawAJAXError( xhr ) {
 
 function handleAJAXError(
 	{
-		jqXHR, textStatus, errorThrown, url, requestData
+		fetch_Results, url, requestData
 	} : {
-		jqXHR, textStatus, errorThrown, url, requestData
+		fetch_Results: {
+			fetch_Results_statusCode
+			fetch_Results_statusText
+			fetch_Results_ResponseText
+		}
+		url
+		requestData
 	}) {
 
 	if ( beforeUnloadEvent_Triggered ) {
@@ -144,15 +150,28 @@ function handleAJAXError(
 		return;  // EARLY RETURN
 	}
 
-	var jqXHR_responseText = "Unknown Error";
-	
-	var jqXHR_statusCode = jqXHR.status;
-	var jqXHR_responseText_JSON_String = jqXHR.responseText; //  Actually JSON 
+	//  JQUERY
 
-	var jqXHR_responseText_JSON = undefined;
+	// let textStatus__LOCAL = jquery_Results.textStatus
+	//
+	// var ajaxResponse_StatusCode = jquery_Results.jqXHR.status;
+	// var ajaxResponse_ResponseText_JSON_String = jquery_Results.jqXHR.responseText; //  Actually JSON
+
+	//   FETCH
+
+	let textStatus__LOCAL = fetch_Results.fetch_Results_statusText
+
+	var ajaxResponse_StatusCode = fetch_Results.fetch_Results_statusCode
+	var ajaxResponse_ResponseText_JSON_String = fetch_Results.fetch_Results_ResponseText; //  Actually JSON
+
+
+
+	var ajaxResponse_ResponseText__From_ResponseBody_JSON = "Unknown Error";
+
+	var ajaxResponse_ResponseText_JSON = undefined;
 	
 	try {
-		jqXHR_responseText_JSON = window.JSON.parse( jqXHR_responseText_JSON_String );
+		ajaxResponse_ResponseText_JSON = window.JSON.parse( ajaxResponse_ResponseText_JSON_String );
 	} catch( e ) {
 //		reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 		
@@ -162,13 +181,13 @@ function handleAJAXError(
 		// throw e;
 	}
 	
-	if ( jqXHR_responseText_JSON ) {
-		jqXHR_responseText = jqXHR_responseText_JSON.message;
+	if ( ajaxResponse_ResponseText_JSON ) {
+		ajaxResponse_ResponseText__From_ResponseBody_JSON = ajaxResponse_ResponseText_JSON.message;
 	}
 
 	
-	if ( jqXHR_statusCode === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE &&
-		jqXHR_responseText === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT ) { 
+	if ( ajaxResponse_StatusCode === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT_STATUS_CODE &&
+		ajaxResponse_ResponseText__From_ResponseBody_JSON === WEBSERVICE_SYNC_TRACKING_CODE_MISMATCH_TEXT ) {
 
 		//  reload current URL, pick up new tacking code and new Javascript code
 
@@ -176,8 +195,8 @@ function handleAJAXError(
 
 		return true;
 
-	} else if ( jqXHR_statusCode === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
-			jqXHR_responseText === AJAX_RESPONSE_NO_SESSION_TEXT ) { 
+	} else if ( ajaxResponse_StatusCode === AJAX_RESPONSE_NO_SESSION_STATUS_CODE &&
+			ajaxResponse_ResponseText__From_ResponseBody_JSON === AJAX_RESPONSE_NO_SESSION_TEXT ) {
 		
 
 		//  reload current URL
@@ -187,8 +206,8 @@ function handleAJAXError(
 		return;
 		
 		
-	} else if ( jqXHR_statusCode === AJAX_RESPONSE_FORBIDDEN_STATUS_CODE &&
-				jqXHR_responseText === AJAX_RESPONSE_FORBIDDEN_TEXT ) { 
+	} else if ( ajaxResponse_StatusCode === AJAX_RESPONSE_FORBIDDEN_STATUS_CODE &&
+				ajaxResponse_ResponseText__From_ResponseBody_JSON === AJAX_RESPONSE_FORBIDDEN_TEXT ) {
 
 
 		//  reload current URL
@@ -198,57 +217,57 @@ function handleAJAXError(
 		return;
 		
 		
-	} else if ( jqXHR_statusCode === AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_STATUS_CODE &&
-				jqXHR_responseText === AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_TEXT ) { 
+	} else if ( ajaxResponse_StatusCode === AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_STATUS_CODE &&
+				ajaxResponse_ResponseText__From_ResponseBody_JSON === AJAX_RESPONSE_INVALID_SEARCH_LIST_ACROSS_PROJECTS_TEXT ) {
 		 
 		showAjaxErrorMsg( { 
 			 errorPageElementId : "ajax_error_invalid_search_list_across_projects_text_msg",
 			 errorMsg : "Invalid Search list, it crosses projects" } );
 		 
 
-	} else if ( jqXHR_statusCode === INVALID_SEARCH_LIST_NOT_IN_DB_STATUS_CODE &&
-				jqXHR_responseText === INVALID_SEARCH_LIST_NOT_IN_DB_TEXT ) { 
+	} else if ( ajaxResponse_StatusCode === INVALID_SEARCH_LIST_NOT_IN_DB_STATUS_CODE &&
+				ajaxResponse_ResponseText__From_ResponseBody_JSON === INVALID_SEARCH_LIST_NOT_IN_DB_TEXT ) {
 		
 		 showAjaxErrorMsg( { 
 			 errorPageElementId : "ajax_error_invalid_search_list_not_in_db_text_msg",
 			 errorMsg : "Invalid Search list, at least one search not found in database.  Please start over at the project or the project list." } );
 		 
-	} else if ( jqXHR_statusCode === AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE &&
-			jqXHR_responseText === AJAX_RESPONSE_INVALID_PARAMETER_TEXT ) { 
+	} else if ( ajaxResponse_StatusCode === AJAX_RESPONSE_INVALID_PARAMETER_STATUS_CODE &&
+			ajaxResponse_ResponseText__From_ResponseBody_JSON === AJAX_RESPONSE_INVALID_PARAMETER_TEXT ) {
 
 		showAjaxErrorMsg( { errorMsg : "Invalid parameter passed to server" } );
 
 		
 		//  jqXHR_responseText is '' or '' to provide a cause
 
-	} else if ( jqXHR_statusCode === 401 ) {
+	} else if ( ajaxResponse_StatusCode === 401 ) {
 		
-		showAjaxErrorMsg( { errorMsg : "401 received, responseText: " + jqXHR_responseText  } );
+		showAjaxErrorMsg( { errorMsg : "401 received, responseText: " + ajaxResponse_ResponseText__From_ResponseBody_JSON  } );
 							
-	} else if ( jqXHR_statusCode === 403 ) {
+	} else if ( ajaxResponse_StatusCode === 403 ) {
 		
-		showAjaxErrorMsg( { errorMsg : "403 received, responseText: " + jqXHR_responseText } );
+		showAjaxErrorMsg( { errorMsg : "403 received, responseText: " + ajaxResponse_ResponseText__From_ResponseBody_JSON } );
 			
-	} else if ( jqXHR_statusCode === 404 ) {
+	} else if ( ajaxResponse_StatusCode === 404 ) {
 		
-		showAjaxErrorMsg( { errorMsg : "404 received, service not found on server, textStatus: " + textStatus  } );
+		showAjaxErrorMsg( { errorMsg : "404 received, service not found on server, textStatus: " + textStatus__LOCAL  } );
 			
 
-	} else if ( jqXHR_statusCode === 500 ) {
+	} else if ( ajaxResponse_StatusCode === 500 ) {
 		
-		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 500, textStatus: " + textStatus  } );
+		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 500, textStatus: " + textStatus__LOCAL  } );
 
-	} else if ( jqXHR_statusCode === 0 ) {
+	} else if ( ajaxResponse_StatusCode === 0 ) {
 
-		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 0, textStatus: " + textStatus  } );
+		showAjaxErrorMsg( { errorMsg : "Internal Server error, status code 0, textStatus: " + textStatus__LOCAL  } );
 
 	} else {
 		
 		try {
 			const msg = (
-				 "Response HTTP Status Code from server not an expected status. HTTP Status Code: " + jqXHR_statusCode 
-				+ ", textStatus: " + textStatus 
-				+ ", jqXHR.responseText: " + jqXHR.responseText
+				 "Response HTTP Status Code from server not an expected status. HTTP Status Code: " + ajaxResponse_StatusCode
+				+ ", textStatus: " + textStatus__LOCAL
+				+ ", text response from, server: " + ajaxResponse_ResponseText_JSON_String
 			);
 
 			console.log( msg );
@@ -265,7 +284,7 @@ function handleAJAXError(
 			}
 		}
 
-		showAjaxErrorMsg( { errorMsg : "exception: " + errorThrown + ", jqXHR: " + jqXHR + ", HTTP Status Code: " + jqXHR_statusCode + ", textStatus: " + textStatus } );
+		showAjaxErrorMsg( { errorMsg : "HTTP Status Code: " + ajaxResponse_StatusCode + ", textStatus: " + textStatus__LOCAL } );
 	}
 	
 	
@@ -273,7 +292,11 @@ function handleAJAXError(
 }
 
 
-function showAjaxErrorMsg( params ) {
+function showAjaxErrorMsg( params: {
+							   errorPageElementId?: string
+							   errorMsg: string
+						   }
+	) {
 
 	if ( beforeUnloadEvent_Triggered ) {
 

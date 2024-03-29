@@ -4,6 +4,11 @@
  * Javascript for Loading the Google Recaptcha API Library
  * 
  * Uses jQuery $.ajax to load Javascript
+ *
+ *
+ * Changing this to use Javascript window.fetch(...) does NOT seem to work.  Seems to be a CORS issue.
+ *
+ * When jQuery is removed from most all of Limelight, it can be loaded in the page where this is used and anywhere else like Lorikeet where it will still be needed.
  * 
  */
 

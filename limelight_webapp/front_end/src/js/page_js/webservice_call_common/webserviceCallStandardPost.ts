@@ -15,10 +15,10 @@
  * createUserAccount_With_Invite.ts
  * userResetPassword_Subpart.ts
  * 
- * The following use $.ajax still:
- * reportWebErrorToServer.ts - Since calling a webservice that does not accept the "/" + webserviceSyncTrackingCode
- * 
+ * The following use jquery jQuery $.ajax still:
+ *
  * googleChartLoaderForThisWebapp.ts - Since loads Javacript
+ * googleRecaptchaLoaderForThisWebapp.ts - Since loads Javacript
  */
 
 //////////////////////////////////
@@ -29,10 +29,21 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 
 import { WebserviceCallStandardPost_ApiObject_Class, WebserviceCallStandardPost_ApiObject_Holder_Class } from './webserviceCallStandardPost_ApiObject_Class';
 
-import { webserviceCallStandardPost_INTERNALONLY } from './webserviceCallStandardPost__InternalJS.js';
+import {
+    _AJAX_POST_JSON_CONTENT_TYPE,
+    getWebserviceSyncTrackingCode,
+    LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM
+} from "page_js/common_all_pages/EveryPageCommon";
+import {
+    WebserviceCallStandardPost_RejectObject_Class
+} from "page_js/webservice_call_common/webserviceCallStandardPost_RejectObject_Class";
+import { handleAJAXError } from "page_js/common_all_pages/handleServicesAJAXErrors";
 
 
 const MAX_CONCURRENT_REQUESTS = 10;
+
+
+///   !!!!!!!!!!!!     Function to do  Actual SINGLE Webservice call is at bottom of this file.  Named '__for_Next_WebserviceCallStandardPost'
 
 
 /**
@@ -47,33 +58,33 @@ const MAX_CONCURRENT_REQUESTS = 10;
  * content type of post is assumed _AJAX_POST_JSON_CONTENT_TYPE
  * 
  */
-const webserviceCallStandardPost = function ( requestParams: WebserviceCallStandardPost_RequestParams ) {
+export const webserviceCallStandardPost = function ( requestParams: WebserviceCallStandardPost_RequestParams ) {
 
     // console.log("webserviceCallStandardPost")
 
     const api = new WebserviceCallStandardPost_ApiObject_Class();
 
-    const request_Holder = new Request_Holder(requestParams, api );
+    const request_Holder = new INTERNAL__Request_Holder(requestParams, api );
 
-    if ( inProgressEntries.size < MAX_CONCURRENT_REQUESTS ) {
+    if ( _INTERNAL__inProgressEntries.size < MAX_CONCURRENT_REQUESTS ) {
 
-        inProgressEntries.set(request_Holder, request_Holder);
+        _INTERNAL__inProgressEntries.set(request_Holder, request_Holder);
 
         const requestComplete_Callback = () => {
 
-            inProgressEntries.delete(request_Holder);
+            _INTERNAL__inProgressEntries.delete(request_Holder);
 
             try {
-                run_NextRequest_IfAnyExist();
+                _run_NextRequest_IfAnyExist();
 
             } catch( e ) {
-                console.warn("call to run_NextRequest_IfAnyExist() threw: ", e )
+                console.warn("call to _run_NextRequest_IfAnyExist() threw: ", e )
                 reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
                 throw e;
             }
         }
 
-        webserviceCallStandardPost_INTERNALONLY({
+        __for_Next_WebserviceCallStandardPost({
             requestParams,
             api,
             request_Holder,
@@ -82,75 +93,76 @@ const webserviceCallStandardPost = function ( requestParams: WebserviceCallStand
 
     } else {
 
-        requestQueue.push( request_Holder ); // queue for submit later
+        _INTERNAL__requestQueue.push( request_Holder ); // queue for submit later
     }
 
     return { promise: request_Holder.containedPromise(), api };
 };
 
+
 ////////
 
-const inProgressEntries : Map<Request_Holder,Request_Holder> = new Map();
+const _INTERNAL__inProgressEntries : Map<INTERNAL__Request_Holder,INTERNAL__Request_Holder> = new Map();
 
-const requestQueue : Array<Request_Holder> = []
+const _INTERNAL__requestQueue : Array<INTERNAL__Request_Holder> = []
 
 
 /**
  *
  */
-const run_NextRequest_IfAnyExist = function () {
+const _run_NextRequest_IfAnyExist = function () {
 
     //  Submit next queued request
 
 
-    if ( inProgressEntries.size >= MAX_CONCURRENT_REQUESTS ) {
+    if ( _INTERNAL__inProgressEntries.size >= MAX_CONCURRENT_REQUESTS ) {
         //  Already max running
         // SHOULD NOT OCCUR
-        const msg = "run_NextRequest_IfAnyExist() called and ( inProgressEntries.size >= MAX_CONCURRENT_REQUESTS )";
+        const msg = "_run_NextRequest_IfAnyExist() called and ( _INTERNAL__inProgressEntries.size >= MAX_CONCURRENT_REQUESTS )";
         console.warn(msg);
         throw Error(msg);
     }
 
-    while ( requestQueue.length !== 0 ) {
+    while ( _INTERNAL__requestQueue.length !== 0 ) {
 
         //  Exit loop when process next_request_Holder with api that is NOT aborted ( _is_abortCalled() returns false )
 
-        const next_request_Holder = requestQueue.shift();  // Remove first entry and return it
+        const next_request_Holder = _INTERNAL__requestQueue.shift();  // Remove first entry and return it
 
         if (!next_request_Holder) {
             //  Already max running
             // SHOULD NOT OCCUR
-            const msg = "run_NextRequest_IfAnyExist() called and requestQueue.shift() returned nothing after checked ( requestQueue.length === 0 ) ";
+            const msg = "_run_NextRequest_IfAnyExist() called and _INTERNAL__requestQueue.shift() returned nothing after checked ( _INTERNAL__requestQueue.length === 0 ) ";
             console.warn(msg);
             throw Error(msg);
         }
 
-        if (next_request_Holder.api._is_abortCalled()) {
-
-            // request has been aborted so skip
-
-            console.log( "skipping AJAX request that has been aborted" );
-
-            continue;   //  EARLY LOOP CONTINUE
-        }
+        // if (next_request_Holder.api._is_abortCalled()) {
+        //
+        //     // request has been aborted so skip
+        //
+        //     console.log( "skipping AJAX request that has been aborted" );
+        //
+        //     continue;   //  EARLY LOOP CONTINUE
+        // }
 
         // console.log("Submitting AJAX request that was in queue.  URL: ", next_request_Holder.requestParams.url )
 
         //  at end of loop use 'break;' to exit loop
 
-        inProgressEntries.set(next_request_Holder, next_request_Holder);
+        _INTERNAL__inProgressEntries.set(next_request_Holder, next_request_Holder);
 
         const requestComplete_Callback = () => {
 
-            inProgressEntries.delete(next_request_Holder);
+            _INTERNAL__inProgressEntries.delete(next_request_Holder);
 
-            run_NextRequest_IfAnyExist();
+            _run_NextRequest_IfAnyExist();
         }
 
         const requestParams = next_request_Holder.requestParams;
         const api = next_request_Holder.api;
 
-        webserviceCallStandardPost_INTERNALONLY({
+        __for_Next_WebserviceCallStandardPost({
             requestParams,
             api,
             request_Holder: next_request_Holder,
@@ -193,7 +205,7 @@ class WebserviceCallStandardPost_RequestParams {
 /**
  * Local Class - Kind of a Hack but it works
  */
-class Request_Holder {
+class INTERNAL__Request_Holder {
 
     private promise: Promise<any>
     private resolve: any
@@ -235,5 +247,180 @@ class Request_Holder {
 
 
 
-export { webserviceCallStandardPost }
+
+////////
+
+const __for_Next_WebserviceCallStandardPost = function(
+    {
+        requestParams, api, request_Holder, requestComplete_Callback
+    } : {
+        requestParams: WebserviceCallStandardPost_RequestParams
+        api: WebserviceCallStandardPost_ApiObject_Class
+        request_Holder: INTERNAL__Request_Holder
+        requestComplete_Callback: () => void
+    }
+
+) {
+
+    const dataToSend = requestParams.dataToSend;
+    const url = requestParams.url;
+    const doNotHandleErrorResponse = requestParams.doNotHandleErrorResponse;
+    const webserviceCallStandardPost_ApiObject_Holder_Class = requestParams.webserviceCallStandardPost_ApiObject_Holder_Class
+
+    if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+        webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = api;
+    }
+
+    try {
+        const webserviceSyncTrackingCodeHeaderParam = LIMELIGHT_WEBSERVICE_SYNC_TRACKING_CODE__HEADER_PARAM;
+        const webserviceSyncTrackingCode = getWebserviceSyncTrackingCode();
+
+        const httpHeaders: any = {
+            "Content-Type": _AJAX_POST_JSON_CONTENT_TYPE
+        }
+        httpHeaders[ webserviceSyncTrackingCodeHeaderParam ] = webserviceSyncTrackingCode
+
+        const requestData_JSON_String = JSON.stringify( dataToSend );
+
+        //  https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+
+        const promise_fetch = window.fetch( url, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            headers: httpHeaders,
+            // redirect: "follow", // manual, *follow, error
+            // referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: requestData_JSON_String // body data type must match "Content-Type" header
+        })
+
+        //  Fetch response
+
+        promise_fetch.catch( reason => { try {
+
+            console.warn("fetch reject. reason: ", reason)
+
+            try {
+                requestComplete_Callback()
+            } catch (e) {
+                // eat/swallow exception
+            }
+
+            // api._clear_request();
+            if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+            }
+
+            // reportWebErrorToServer.reportErrorObjectToServer( { errorException : undefined, webserviceURL: url } );
+
+            const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+            //  Need to set properties on object rejectReasonObject
+
+            request_Holder.rejectPromise({ rejectReasonObject });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        promise_fetch.then( response => { try {
+
+            try {
+                requestComplete_Callback()
+            } catch (e) {
+                // eat/swallow exception
+            }
+
+            // api._clear_request();
+            if ( webserviceCallStandardPost_ApiObject_Holder_Class ) {
+                webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
+            }
+
+            if ( ! response.ok ) {
+
+                const response_text_Promise = response.text()
+                response_text_Promise.catch(reason => {
+                    if ( ! doNotHandleErrorResponse ) {
+                        handleAJAXError({
+                            fetch_Results: {
+                                fetch_Results_statusCode: response.status,
+                                fetch_Results_statusText: response.statusText,
+                                fetch_Results_ResponseText: ""
+                            },
+                            url,
+                            requestData: dataToSend
+                        });  //  Sometimes throws exception so rest of processing won't always happen
+                    }
+                })
+                response_text_Promise.then( fetch_Results_ResponseText => {
+                    if ( ! doNotHandleErrorResponse ) {
+                        handleAJAXError( {
+                            fetch_Results: {
+                                fetch_Results_statusCode: response.status,
+                                fetch_Results_statusText: response.statusText,
+                                fetch_Results_ResponseText
+                            },
+                            url,
+                            requestData: dataToSend
+                        } );  //  Sometimes throws exception so rest of processing won't always happen
+                    }
+                })
+
+                console.warn("fetch response.ok is not true. response.ok : ", response.ok)
+
+                const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                //  Need to set properties on object rejectReasonObject
+
+                request_Holder.rejectPromise({ rejectReasonObject });
+
+                return; // EARLY RETURN
+            }
+
+            const response_text_Promise = response.text()
+
+            if ( ! response_text_Promise ) {
+                console.warn("response.text() returned nothing")
+            }
+
+            response_text_Promise.catch( reason => { try {
+
+                console.warn("response.text() reject: ", reason)
+
+                // reportWebErrorToServer.reportErrorObjectToServer( { errorException : e, webserviceURL: url } );
+
+                const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                //  Need to set properties on object rejectReasonObject
+
+                request_Holder.rejectPromise({ rejectReasonObject });
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+            response_text_Promise.then( response_text => { try {
+
+                let responseData;
+                try {
+                    responseData = JSON.parse( response_text );
+                } catch( e_JSON_parse ) {
+                    try {
+
+                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e_JSON_parse, webserviceURL: url } );
+
+                        const rejectReasonObject = new WebserviceCallStandardPost_RejectObject_Class();
+
+                        //  Need to set properties on object rejectReasonObject
+
+                        request_Holder.rejectPromise({ rejectReasonObject });
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                }
+
+                request_Holder.resolvePromise({ responseData });
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+    } catch( e ) {
+        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        throw e;
+    }
+
+}
 
