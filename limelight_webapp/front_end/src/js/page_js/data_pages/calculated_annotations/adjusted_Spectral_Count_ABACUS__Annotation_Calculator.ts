@@ -174,16 +174,6 @@ export const adjusted_Spectral_Count_ABACUS__Annotation_Calculator = function (
                 perScan_Array.push( { searchScanFileId, scanNumber, proteinSequenceVersionIds } )
             }
         }
-
-        const log_Output = { id_For_DebugLogging_Only__ProjectSearchId_OR_SubGroupId_OR_ConditionId, perScan_Array }
-
-        const log_Output_JSON = JSON.stringify( log_Output )
-
-        //  logoutputJSON ( searchScanFileId is -1 if not populated in DB) : { id_For_DebugLogging_Only__ProjectSearchId_OR_SubGroupId_OR_ConditionId: #, perScan_Array: [ { searchScanFileId: #, scanNumber: #, proteinSequenceVersionIds: [ #, # ] } ] }
-
-        console.warn( "DEBUG INFO::  per scan data format (searchScanFileId is -1 if not populated in DB) : { id_For_DebugLogging_Only__ProjectSearchId_OR_SubGroupId_OR_ConditionId: #, perScan_Array: [ { searchScanFileId: #, scanNumber: #, proteinSequenceVersionIds: [ #, # ] } ] }" )
-
-        console.warn( "DEBUG INFO::  per scan data: " + log_Output_JSON )
     }
 
     //  NEXT:  Compute Unique Scan Count ( Scan Number / Search Scan File Id Pair ) for each ProteinSequenceVersionId
