@@ -14,6 +14,11 @@ import {
   tooltip_Limelight_Create_Tooltip,
   Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import {
+  limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+  limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition,
+  Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 export interface DataTable_Table_HeaderRowEntry__headerColumnClicked_Callback_Params {
@@ -265,43 +270,83 @@ export class DataTable_Table_HeaderRowEntry extends React.Component< DataTable_T
           className_InnermostDiv_Column_DisplayName = " display-name-container " + classesAdditions
       }
 
-      let spanTitle : string = null;
+      // let spanTitle : string = null;
+      //
+      // if ( column.columnHeader_Tooltip_HTML_TitleAttribute ) {
+      //
+      //     spanTitle = column.columnHeader_Tooltip_HTML_TitleAttribute;
+      // }
+
+      // let displayNameValueDOMElement_onMouseEnter = null;
+      // let displayNameValueDOMElement_onMouseLeave = null;
+      //
+      // if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
+      //
+      //   displayNameValueDOMElement_onMouseEnter = this._displayNameValueDOMElement_onMouseEnter_BindThis;
+      //   displayNameValueDOMElement_onMouseLeave = this._displayNameValueDOMElement_onMouseLeave_BindThis;
+      // }
+
+      let column_Title_Element: JSX.Element = (
+
+          <div
+              // title={ spanTitle }
+              ref={ this._displayNameValueDiv_Ref }
+              // onMouseEnter={ displayNameValueDOMElement_onMouseEnter }
+              // onMouseLeave={ displayNameValueDOMElement_onMouseLeave }
+
+              style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName }>
+
+                  <span className=" display-name-value "
+                  >{ column.displayName }</span>
+          </div>
+
+      )
 
       if ( column.columnHeader_Tooltip_HTML_TitleAttribute ) {
 
-          spanTitle = column.columnHeader_Tooltip_HTML_TitleAttribute;
-      }
+        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
 
-      let displayNameValueDOMElement_onMouseEnter = null;
-      let displayNameValueDOMElement_onMouseLeave = null;
+        column_Title_Element = (
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                { ...tooltip_Main_Props }
+                disableInteractive={ false }
+              title={
+                <span>{ column.columnHeader_Tooltip_HTML_TitleAttribute }</span>
+              }
+            >
+              { column_Title_Element }
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+        )
 
-      if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
+      } else if ( column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element ) {
 
-        displayNameValueDOMElement_onMouseEnter = this._displayNameValueDOMElement_onMouseEnter_BindThis;
-        displayNameValueDOMElement_onMouseLeave = this._displayNameValueDOMElement_onMouseLeave_BindThis;
+        const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
+
+        column_Title_Element = (
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                { ...tooltip_Main_Props }
+                disableInteractive={ false }
+                title={
+                  <span>{ column.columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element() }</span>
+                }
+            >
+              { column_Title_Element }
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+        )
       }
 
 
       headerItem = (
-        <th 
-            className={ className }
-            onClick={ clickHandler }
-            data-columnid={ column.id }>
-          <div style={ cellOuterContainerDivStyle }>
-            <div style={ cellInnerContainerDivStyle }>
-              <div
-                  title={ spanTitle }
-                  ref={ this._displayNameValueDiv_Ref }
-                  onMouseEnter={ displayNameValueDOMElement_onMouseEnter }
-                  onMouseLeave={ displayNameValueDOMElement_onMouseLeave }
+          <th
+              className={ className }
+              onClick={ clickHandler }
+              data-columnid={ column.id }>
+            <div style={ cellOuterContainerDivStyle }>
+              <div style={ cellInnerContainerDivStyle }>
 
-                  style={ styleDisplayNameDiv } className={ className_InnermostDiv_Column_DisplayName } >
+                { column_Title_Element }
 
-                  <span className=" display-name-value "
-                  >{ column.displayName }</span>
-              </div>
-
-              { sortIconContainer }
+                { sortIconContainer }
 
               { columnSeparator /* Place here so aligned to base line of column name  */ }
             </div>
