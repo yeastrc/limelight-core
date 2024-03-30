@@ -68,17 +68,17 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		// Updates this._google_RecaptchaSiteKey
 		this._get_Google_RecaptchaSiteKey_StoreInObject__CALL_ONLY_ONCE();
 
-		{
-
-			if ( this._google_RecaptchaSiteKey ) {
-				const response_loadGoogleRecaptcha = loadGoogleRecaptcha();
-				if (response_loadGoogleRecaptcha.isLoaded) {
-					this._google_Recaptcha = response_loadGoogleRecaptcha.grecaptcha
-				} else {
-					promiseArray.push(response_loadGoogleRecaptcha.loadingPromise);
-				}
-			}
-		}
+		// {
+		//
+		// 	if ( this._google_RecaptchaSiteKey ) {
+		// 		const response_loadGoogleRecaptcha = loadGoogleRecaptcha();
+		// 		if (response_loadGoogleRecaptcha.isLoaded) {
+		// 			this._google_Recaptcha = response_loadGoogleRecaptcha.grecaptcha
+		// 		} else {
+		// 			promiseArray.push(response_loadGoogleRecaptcha.loadingPromise);
+		// 		}
+		// 	}
+		// }
 
 		if ( promiseArray.length > 0 ) {
 
@@ -195,6 +195,8 @@ export class UserCreateAccount_NO_Invite_Subpart {
 		try {
 			const google_RecaptchaSiteKey = this._google_RecaptchaSiteKey;
 
+			ReactDOM.unmountComponentAtNode( containerHTMLElement )
+
 			let $containerHTMLElement = $( containerHTMLElement );
 
 			$containerHTMLElement.empty();
@@ -275,10 +277,87 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 			// this.inviteTrackingCode = inviteTrackingCode;
 			this.containerHTMLElement = containerHTMLElement;
-			
+
+
+			const promiseArray: Array<Promise<any>> = []
+
+			{
+
+				if ( this._google_RecaptchaSiteKey ) {
+					const response_loadGoogleRecaptcha = loadGoogleRecaptcha();
+					if (response_loadGoogleRecaptcha.isLoaded) {
+						this._google_Recaptcha = response_loadGoogleRecaptcha.grecaptcha
+					} else {
+						promiseArray.push(response_loadGoogleRecaptcha.loadingPromise);
+					}
+				}
+			}
+
+			if ( promiseArray.length > 0 ) {
+
+				const promisesAll = Promise.all( promiseArray );
+
+				promisesAll.catch( reason => {
+					try {
+
+						console.warn("Error loading data and/or recaptcha. reason: ", reason );
+						throw Error("Error loading data and/or recaptcha. reason: " + reason );
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+
+				promisesAll.then( values => {
+					try {
+						for ( const value of values ) {
+							if ( value.grecaptcha ) {
+								this._google_Recaptcha = value.grecaptcha
+							}
+						}
+
+						this._after_PageInitiallyReady__HideLoadingMessage__Display_MainData()
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} else {
+
+				this._after_PageInitiallyReady__HideLoadingMessage__Display_MainData()
+			}
+
 		} catch( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
+		}
+	}
+
+	private _after_PageInitiallyReady__HideLoadingMessage__Display_MainData() {
+
+		//  Display all of contents since now have Recaptcha loaded or Recaptcha NOT loaded
+		{
+			const divDOM = document.getElementById( "create_account_outermost_container_div" )
+			if ( ! divDOM ) {
+				const msg = "NO DOM element with id 'create_account_outermost_container_div'"
+				console.warn( msg )
+				throw Error( msg )
+			}
+
+			divDOM.style.display = ""
+		}
+
+		//  Hide Loading message since now have Recaptcha loaded or Recaptcha NOT loaded
+		{
+			const divDOM = document.getElementById( "create_account_loading_message_div" )
+			if ( ! divDOM ) {
+				const msg = "NO DOM element with id 'create_account_loading_message_div'"
+				console.warn( msg )
+				throw Error( msg )
+			}
+
+			divDOM.style.display = "none"
 		}
 	}
 
@@ -442,10 +521,14 @@ export class UserCreateAccount_NO_Invite_Subpart {
 	 */
 	createAccountComplete( { responseData } ) {
 
-//		$("#terms_of_service_modal_dialog_overlay_background").hide();
-//		$("#terms_of_service_overlay_div").hide();
+		// $("#terms_of_service_modal_dialog_overlay_background").hide();
+		// $("#terms_of_service_overlay_div").hide();
 
 		if ( ! responseData.status ) {
+
+			$("#terms_of_service_modal_dialog_overlay_background").hide();
+			$("#terms_of_service_overlay_div").hide();
+
 			if ( responseData.duplicateUsername && responseData.duplicateEmail ) {
 				var $element = $("#error_message_username_email_taken");
 				showErrorMsg( $element );

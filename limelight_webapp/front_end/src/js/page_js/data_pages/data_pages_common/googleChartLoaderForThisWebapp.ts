@@ -10,6 +10,9 @@
  * the function in google.charts.setOnLoadCallback(...) is called. 
  * 
  * Uses jQuery $.ajax to load Javascript
+ *
+ *
+ * See  googleRecaptchaLoaderForThisWebapp.ts  for how to replace jQuery $.ajax
  * 
  */
 

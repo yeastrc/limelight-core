@@ -2,14 +2,7 @@
  * googleRecaptchaLoaderForThisWebapp.ts
  * 
  * Javascript for Loading the Google Recaptcha API Library
- * 
- * Uses jQuery $.ajax to load Javascript
  *
- *
- * Changing this to use Javascript window.fetch(...) does NOT seem to work.  Seems to be a CORS issue.
- *
- * When jQuery is removed from most all of Limelight, it can be loaded in the page where this is used and anywhere else like Lorikeet where it will still be needed.
- * 
  */
 
 
@@ -19,13 +12,82 @@
 
 ///////////////////////////////////////////
 
-/**
- * module imports
- */
-
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 
-import { handleRawAJAXError } from 'page_js/common_all_pages/handleServicesAJAXErrors';
+const _TOTAL_WAIT_TIME__MILLISECONDS = 3000
+
+const _EACH_WAIT_TIME__MILLISECONDS = 500
+
+
+/**
+ *
+ */
+export const loadGoogleRecaptcha = function() : { isLoaded: boolean, grecaptcha: any, loadingPromise: Promise<{ grecaptcha: any }> } {
+
+	if ( googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADED_YES ) {
+
+		// @ts-ignore
+		const grecaptcha = window.grecaptcha
+
+		if ( ! grecaptcha ) {
+			const msg = "loadGoogleRecaptcha: googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADED_YES but window.grecaptcha not populated";
+			console.warn( msg );
+			throw Error( msg );
+		}
+		return { isLoaded: true, grecaptcha, loadingPromise: null };
+	}
+
+	if ( googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADING_IN_PROGRESS ) {
+
+		let deferred = new Deferred_Local_GoogleRecaptchaLoader();
+		googleRecaptcha_DeferredToResolveOnLoad.push( deferred );
+//		console.log("Adding to googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad");
+		return { loadingPromise: deferred.containedPromise(), grecaptcha: null, isLoaded: false };
+	}
+
+	googleRecaptcha_Loaded = GOOGLE_RECAPTCHA_LOADING_IN_PROGRESS;
+
+	return { loadingPromise : new Promise( function( resolve, reject ) {
+			try {
+				let loadGoogleRecaptcha_Loader_Promise : any = _Loader()
+
+				loadGoogleRecaptcha_Loader_Promise.catch( reason => {
+
+					reject( reason );
+				});
+
+				loadGoogleRecaptcha_Loader_Promise.then(function(value: any) { // On Fulfilled
+					try {
+						googleRecaptcha_Loaded = GOOGLE_RECAPTCHA_LOADED_YES;
+
+						let googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local = googleRecaptcha_DeferredToResolveOnLoad;
+
+						googleRecaptcha_DeferredToResolveOnLoad = []; // reset
+
+						if ( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.length > 0 ) {
+							googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.forEach(function( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem, i, array) {
+								//						console.log("Processsing entry in googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local, index: " + i );
+								googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem.resolvePromise();
+							}, this)
+						}
+
+						// @ts-ignore
+						const grecaptcha = window.grecaptcha
+
+						resolve({ grecaptcha });
+
+					} catch( e ) {
+						reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+						throw e;
+					}
+				});
+			} catch( e ) {
+				reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+				throw e;
+			}
+		} ), isLoaded: false, grecaptcha: null };
+
+};
 
 
 /**
@@ -92,38 +154,21 @@ class Deferred_Local_GoogleRecaptchaLoader {
 /**
  * 
  */
-let _loadGoogleRecaptchaLoader = function() : Promise<any> {	
+const _Loader = function() : Promise<any> {
 
 	return new Promise<void>( function( resolve, reject ) {
 		try {
-			jQuery.ajax({
-				url: GOOGLE_RECAPTCHA_URL,
-				dataType: "script",
-				cache: true
-			}).done( function( data, textStatus, jqXHR ) {
-				try {
-					googleRecaptcha_Loaded = GOOGLE_RECAPTCHA_LOADED_YES;
+			const scriptElement = document.createElement("script");
+			scriptElement.src = GOOGLE_RECAPTCHA_URL;
+			document.body.appendChild(scriptElement);
 
-					let googleRecaptcha_DeferredToResolveOnLoad_Local = googleRecaptcha_DeferredToResolveOnLoad;
-					
-					googleRecaptcha_DeferredToResolveOnLoad = []; // reset
-					
-					if ( googleRecaptcha_DeferredToResolveOnLoad_Local.length > 0 ) {
-						googleRecaptcha_DeferredToResolveOnLoad_Local.forEach(function( googleRecaptcha_DeferredToResolveOnLoadItem, i, array) {
-	//						console.log("Processsing entry in googleRecaptcha_DeferredToResolveOnLoad_Local, index: " + i );
-							googleRecaptcha_DeferredToResolveOnLoadItem.resolvePromise();
-						}, this)
-					}
-					
-					resolve();
-					
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			}).fail( function( jqXHR, textStatus, errorThrown ) {
-				handleRawAJAXError( jqXHR );
-			});
+			const promise = _check_LoadedOnPage_Overall__ResolvesReturnedPromiseWhenOnPage()
+			promise.catch(reason => { reject() })
+			promise.then(novalue => { try {
+
+				resolve()
+
+			} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 		} catch( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
@@ -132,78 +177,58 @@ let _loadGoogleRecaptchaLoader = function() : Promise<any> {
 };
 
 /**
- * Public functions
+ *
  */
+const _check_LoadedOnPage_Overall__ResolvesReturnedPromiseWhenOnPage = async function (  ){ try {
+
+	let elapsedWaitTime = 0
+
+	while ( true ) {
+
+		try {
+			await _check_LoadedOnPage_SingleCheck__ResolvesReturnedPromiseWhenOnPage( _EACH_WAIT_TIME__MILLISECONDS )
+
+			//  No Reject so found on window so return
+
+			return // EARLY RETURN
+
+		} catch ( e ) {
+
+			//  Yes Reject so NOT found on window
+
+			elapsedWaitTime += _EACH_WAIT_TIME__MILLISECONDS
+
+			if ( elapsedWaitTime > _TOTAL_WAIT_TIME__MILLISECONDS ) {
+
+				//  Total wait time exceeded so reject by throwing exception
+
+				throw e
+			}
+
+			elapsedWaitTime += _EACH_WAIT_TIME__MILLISECONDS
+		}
+	}
+
+} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}
 
 /**
- * 
+ *
  */
-let loadGoogleRecaptcha = function() : { isLoaded: boolean, grecaptcha: any, loadingPromise: Promise<{ grecaptcha: any }> } {
+const _check_LoadedOnPage_SingleCheck__ResolvesReturnedPromiseWhenOnPage = function ( waitTime: number ) {
 
-	if ( googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADED_YES ) {
+	return new Promise<void>( function( resolve, reject ) { try {
+		window.setTimeout( ()=> { 	try {
 
-		// @ts-ignore
-		const grecaptcha = window.grecaptcha
+			// @ts-ignore
+			const grecaptcha = window.grecaptcha
 
-		if ( ! grecaptcha ) {
-			const msg = "loadGoogleRecaptcha: googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADED_YES but window.grecaptcha not populated";
-			console.warn( msg );
-			throw Error( msg );
-		}
-		return { isLoaded: true, grecaptcha, loadingPromise: null };
-	}
-	
-	if ( googleRecaptcha_Loaded === GOOGLE_RECAPTCHA_LOADING_IN_PROGRESS ) {
-				
-		let deferred = new Deferred_Local_GoogleRecaptchaLoader();
-		googleRecaptcha_DeferredToResolveOnLoad.push( deferred );
-//		console.log("Adding to googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad");
-		return { loadingPromise: deferred.containedPromise(), grecaptcha: null, isLoaded: false };
-	}
+			if ( grecaptcha ) {
+				resolve()
+			} else {
+				reject()
+			}
+		} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+		}, waitTime )
 
-	googleRecaptcha_Loaded = GOOGLE_RECAPTCHA_LOADING_IN_PROGRESS;
-
-	return { loadingPromise : new Promise( function( resolve, reject ) {
-	  	try {
-			let loadGoogleRecaptcha_Loader_Promise : any = _loadGoogleRecaptchaLoader()
-
-			loadGoogleRecaptcha_Loader_Promise.catch( reason => {
-
-				reject( reason );
-			});
-
-			loadGoogleRecaptcha_Loader_Promise.then(function(value: any) { // On Fulfilled
-				try {
-					googleRecaptcha_Loaded = GOOGLE_RECAPTCHA_LOADED_YES;
-
-					let googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local = googleRecaptcha_DeferredToResolveOnLoad;
-
-					googleRecaptcha_DeferredToResolveOnLoad = []; // reset
-
-					if ( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.length > 0 ) {
-						googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local.forEach(function( googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem, i, array) {
-							//						console.log("Processsing entry in googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoad_Local, index: " + i );
-							googleRecaptchaCoreRecaptchas_DeferredToResolveOnLoadItem.resolvePromise();
-						}, this)
-					}
-
-					// @ts-ignore
-					const grecaptcha = window.grecaptcha
-
-					resolve({ grecaptcha });
-
-				} catch( e ) {
-					reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-					throw e;
-				}
-			});
-		} catch( e ) {
-			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-			throw e;
-		}
-	} ), isLoaded: false, grecaptcha: null };
-	
-};
-
-
-export { loadGoogleRecaptcha }
+	} catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+}
