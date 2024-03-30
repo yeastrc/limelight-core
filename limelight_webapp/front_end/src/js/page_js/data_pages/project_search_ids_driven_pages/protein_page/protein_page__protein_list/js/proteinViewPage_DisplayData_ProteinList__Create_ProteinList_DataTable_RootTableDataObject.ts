@@ -59,6 +59,9 @@ import {
 import {
     proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/proteinView_Adjusted_Spectral_Count_ABACUS_formatNumber_ForDisplayInTable";
+import {
+    proteinView__ProteinList_ColumnHeader__Tooltip_Text
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/jsx/proteinView__ProteinList_ColumnHeader__Tooltip_Text";
 
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__Proteins = "Proteins";
 const _TEXT_text_Optional_After_CurrentlyShowing_X_Of_Y__ProteinGroups = "Protein Groups";
@@ -246,6 +249,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        150,
                     sortable : true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Sequence_Coverage,
 
                     showHorizontalGraph: true,
                     graphMaxValue: 1,
@@ -330,6 +334,7 @@ const _getProteinDataTableColumns = function(
                 displayName,
                 width :        80,
                 sortable : true,
+                columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.PSM_Count,
                 onlyShow_ValueDisplay_FirstRowOfGroup: true
             });
 
@@ -350,6 +355,7 @@ const _getProteinDataTableColumns = function(
                 displayName,
                 width :        80,
                 sortable : true,
+                columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF,
                 onlyShow_ValueDisplay_FirstRowOfGroup: false
             });
 
@@ -370,6 +376,7 @@ const _getProteinDataTableColumns = function(
                 displayName,
                 width :        80,
                 sortable : true,
+                columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Adjusted_Spectral_Count__ABACUS__ReturnComponent,
                 onlyShow_ValueDisplay_FirstRowOfGroup: true
             });
 
@@ -390,6 +397,7 @@ const _getProteinDataTableColumns = function(
                 displayName,
                 width :        80,
                 sortable : true,
+                columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF_Using_Adjusted_Spectral_Count__ABACUS,
                 onlyShow_ValueDisplay_FirstRowOfGroup: false
             });
 
@@ -410,6 +418,7 @@ const _getProteinDataTableColumns = function(
                 displayName,
                 width: 80,
                 sortable: true,
+                columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Distinct_Peptide_Count,
                 onlyShow_ValueDisplay_FirstRowOfGroup: true
             });
 
@@ -429,8 +438,9 @@ const _getProteinDataTableColumns = function(
                 id: 'peptidesUnique',
                 displayName,
                 width: 80,
-                columnHeader_Tooltip_HTML_TitleAttribute: "distinct unique peptides",
+                // columnHeader_Tooltip_HTML_TitleAttribute: "distinct unique peptides",
                 sortable: true,
+                columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count,
                 onlyShow_ValueDisplay_FirstRowOfGroup: true
             });
 
@@ -676,6 +686,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        80,
                     sortable : true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.PSM_Count,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -704,6 +715,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        80,
                     sortable : true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF,
                     onlyShow_ValueDisplay_FirstRowOfGroup: false
                 });
 
@@ -732,6 +744,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        80,
                     sortable : true,
+                    columnHeader_Tooltip_Fcn_NoInputParam_Return_JSX_Element: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Adjusted_Spectral_Count__ABACUS__ReturnComponent,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -760,6 +773,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width :        80,
                     sortable : true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF_Using_Adjusted_Spectral_Count__ABACUS,
                     onlyShow_ValueDisplay_FirstRowOfGroup: false
                 });
 
@@ -790,6 +804,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width: 80,
                     sortable: true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Distinct_Peptide_Count,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 
@@ -810,6 +825,7 @@ const _getProteinDataTableColumns = function(
                     displayName,
                     width: 80,
                     sortable: true,
+                    columnHeader_Tooltip_HTML_TitleAttribute: proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count,
                     onlyShow_ValueDisplay_FirstRowOfGroup: true
                 });
 

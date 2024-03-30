@@ -14,6 +14,9 @@ import {ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayConten
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    proteinView__ProteinList_ColumnHeader__Tooltip_Text
+} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_common/jsx/proteinView__ProteinList_ColumnHeader__Tooltip_Text";
 
 
 /**
@@ -248,7 +251,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                             <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                                 title={
                                     <span>
-                                        Fraction of the protein sequence that is covered by a detected peptide.
+                                        { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Sequence_Coverage }
                                     </span>
                                 }
                             />
@@ -267,7 +270,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    The number of Peptide Spectrum Matches for the protein. This is calculated as the sum of all scans that identified each peptide for this protein.
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.PSM_Count }
                                 </span>
                             }
                         />
@@ -284,7 +287,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    Normalized Spectral Abundance Factor for a protein. This is calculated as: SAF = PSM count / length of protein. Then, NSAF = SAF / sum(SAF for all proteins in the sample).
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF }
                                 </span>
                             }
                         />
@@ -302,9 +305,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    The adjusted spectral count for a protein as calculated by ABACUS (<a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/21360675/">https://pubmed.ncbi.nlm.nih.gov/21360675/</a> ).
-                                    At a high level, this is calculated as the number of distinct scans unique to a protein plus the sum of the adjusted scan weight for scans not unique to a protein,
-                                    which is calculated using how many other proteins a scan identified and how many scans are unique to those proteins.
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Adjusted_Spectral_Count__ABACUS__ReturnComponent() }
                                 </span>
                             }
                         />
@@ -322,7 +323,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    This is calculated as: SAF = adjusted spectral count / length of protein. Then, NSAF = SAF / sum(SAF for all proteins in the sample).
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.NSAF_Using_Adjusted_Spectral_Count__ABACUS }
                                 </span>
                             }
                         />
@@ -340,7 +341,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    The number of distinct peptides found for a protein. A distinct peptide typically includes protein sequence and modifications, but may be customized by the “Distinct Peptide Includes” option.
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Distinct_Peptide_Count }
                                 </span>
                             }
                         />
@@ -357,7 +358,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    The number of distinct peptides that are uniquely found in the protein (not found in any other protein).
+                                    { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count }
                                 </span>
                             }
                         />
