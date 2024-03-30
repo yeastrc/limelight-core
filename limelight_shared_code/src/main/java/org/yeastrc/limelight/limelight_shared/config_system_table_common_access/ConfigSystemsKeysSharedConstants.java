@@ -112,6 +112,7 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY );
 		textConfigKeys.add( FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY );
 		textConfigKeys.add( SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY );
+		textConfigKeys.add( GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY );
 		
 		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY );
 		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
