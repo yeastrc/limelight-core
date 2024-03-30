@@ -4366,15 +4366,17 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
                     />
                     <span> None</span>
-
-                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                        title={
-                            <span>
-                                Apply no smoothing
-                            </span>
-                        }
-                    />
                 </label>
+
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            Apply no smoothing
+                        </span>
+                    }
+                    no_Margin_Left={ true }
+                />
+
                 <span> </span>
                 <label>
                     <input
@@ -4395,15 +4397,17 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
                     />
                     <span> LOWESS</span>
-
-                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                        title={
-                            <span>
-                                Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
-                            </span>
-                        }
-                    />
                 </label>
+
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            Apply the LOWESS (locally weighted least squares) smoother. Performs better with wider peaks.
+                        </span>
+                    }
+                    no_Margin_Left={ true }
+                />
+
                 <span> </span>
                 <label>
                     <input
@@ -4424,15 +4428,17 @@ class Internal__SmoothingSelection_Component extends React.Component< Internal__
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
                     />
                     <span> Savitzky-Golay</span>
-
-                    <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
-                        title={
-                            <span>
-                                Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
-                            </span>
-                        }
-                    />
                 </label>
+
+                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                    title={
+                        <span>
+                            Apply the Savitzky–Golay filter to smooth the data, a popular method for signal smoothing in analytical chemistry.
+                        </span>
+                    }
+                    no_Margin_Left={ true }
+                />
+
             </div>
         );
     }

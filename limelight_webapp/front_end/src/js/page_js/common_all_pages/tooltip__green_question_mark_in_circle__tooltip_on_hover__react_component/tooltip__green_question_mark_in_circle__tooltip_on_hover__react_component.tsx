@@ -21,8 +21,12 @@ const _FONT_SIZE_CUTOFF_FOR_NOT_MAKE___QUESTION_MARK_IN_CIRCLE__THAN_SURROUNDING
  */
 interface Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component_Props {
 
-    _placeHolder?: unknown
     title: React.ReactNode;
+
+    /**
+     * NOT add Margin Left.  Needed after <label> since that has padding-right
+     */
+    no_Margin_Left?: boolean
 }
 
 /**
@@ -97,13 +101,19 @@ export class Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
             width_ReserveSpace = "1.1em"
 
             size_Font_DivWithBorder = "0.8em"
+        }
 
+        let outer_MarginLeft = null
+
+        if ( ! this.props.no_Margin_Left ) {
+
+            outer_MarginLeft = "0.3em"
         }
 
         const tooltip_Main_Props = limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_NOT_FollowMousePointer_DefaultPosition();
 
         return (
-            <span ref={ this._container_Ref } style={ { marginLeft: "0.3em", paddingRight: width_ReserveSpace } } // marginRight: ( ! this._fontSize_ContainingBlock ) ? width_ReserveSpace : 0
+            <span ref={ this._container_Ref } style={ { marginLeft: outer_MarginLeft, paddingRight: width_ReserveSpace } } // marginRight: ( ! this._fontSize_ContainingBlock ) ? width_ReserveSpace : 0
             >
 
                 { this._fontSize_ContainingBlock ? (

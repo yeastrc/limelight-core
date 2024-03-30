@@ -361,6 +361,7 @@ export class ProteinViewPage_DisplayData_ProteinList__ProteinListColumnsDisplayC
                                     { proteinView__ProteinList_ColumnHeader__Tooltip_Text.Unique_Peptide_Count }
                                 </span>
                             }
+                            no_Margin_Left={ true }  // Move icon closer to text
                         />
                     </div>
                 </div>
