@@ -17,13 +17,6 @@
 
 	<script type="text/javascript" src="static/js/libs/jquery-migrate-3.1.0.min.js"></script>
 	
-<%--
-	COMMENTED OUT JS using this
-	 
-	<script type="text/javascript" src="static/js/libs/jquery.qtip.min.js"></script>
---%>
-
-
  	<script type="text/javascript" src="static/js_generated_bundles/header_main_pages/limelight__header_main_pages__all_users_Setup-bundle.js?x=${ cacheBustValue }"></script>
 	 
 	 <c:if test="${ not empty headerUserInfo }">

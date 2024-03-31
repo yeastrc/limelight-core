@@ -14,9 +14,6 @@
 
 ///////////////////////////////////////////
 
-import { addToolTips } from 'page_js/common_all_pages/genericToolTip';
-
-
 /**
  * 
  */
@@ -32,14 +29,9 @@ export class MainPagesPopulateHeader {
 	};
 		
 	/**
-	 * initialize the page (Add element listeners like onClick, ...)
+	 * initialize the page - does NOTHING
 	 */
 	initialize(  ) {
-
-		//  Add tooltips
-        const $header_outer_container_div = $("#header_outer_container_div");
-        
-		addToolTips( $header_outer_container_div );  // External Function
 
 		this._initializeCalled = true;
 	};

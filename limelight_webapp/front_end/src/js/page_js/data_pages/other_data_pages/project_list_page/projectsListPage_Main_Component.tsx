@@ -288,7 +288,7 @@ class INTERNAL__Add_Project_Component extends React.Component< INTERNAL__Add_Pro
                         ) : (
                             <img
                                 src="static/images/icon-circle-delete.png"
-                                className=" selector_tool_tip_attached fake-link-image icon-large "
+                                className=" fake-link-image icon-large "
                                 title="Cancel adding new project"
                                 onClick={ event => { try {
                                     event.stopPropagation()
@@ -475,9 +475,8 @@ class INTERNAL__SingleProject_Component extends React.Component< INTERNAL__Singl
                                 this.props.projectData.canDelete ? (
                                     <img
                                         src="static/images/icon-circle-delete.png"
-                                        className=" delete_project_link_jq selector_tool_tip_attached  fake-link-image icon-small "
+                                        className=" delete_project_link_jq  fake-link-image icon-small "
                                         title="Delete Project"
-                                        data-tooltip="Delete project"
                                         onClick={ event => {
                                             event.stopPropagation()
                                             this._markProjectForDeletion()

@@ -284,23 +284,6 @@ img.icon-large-svg, input[type="image"].icon-large-svg  {
 }
 
 
-/*  CSS styling for qtip2 tool tips  */
-
-/*  Values in the qtip2 css file:
-.qtip-default{border-width:1px;border-style:solid;border-color:#F1D031;background-color:#FFFFA3;color:#555}
-*/
-
-.qtip-default{
-  border-width: 2px;
-  border-style: solid;
-  border-color: $site-color-very-dark;
-  background-color: white;
-  //color:#000000;
-  line-height: 1.4em;
-  font-size: $default-font-size;
-}
-
-
 
 .table-no-border-no-cell-spacing-no-cell-padding { border-width:0px; padding: 0px; border-spacing : 0px; }
 
