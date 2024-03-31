@@ -13,12 +13,6 @@ var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 //  !!!!!!!  'extensions:' Needs to be updated for any new file extensions used
 
 
-//  No longer used
-// const HandlebarsPrecompiler = require('webpack-handlebars-precompiler');
-		
-     //  Also removed from package.json      "webpack-handlebars-precompiler": "^1.1.0"
-
-
 const devtool = 'source-map'
 const optimization = {
 	minimize: false
@@ -80,7 +74,6 @@ const module_MAIN = {
 
 const resolve = {
 	alias: {
-		'handlebars.runtime': 'handlebars/dist/handlebars.runtime.min.js'
 	},
 	modules: [
 		path.resolve('./src/js'),
@@ -91,21 +84,6 @@ const resolve = {
 
 const plugins = [
 	new CaseSensitivePathsPlugin()
-//  Removed (both) since doesn't precompile the Handlebars in an output format that can be imported
-//        new HandlebarsPrecompiler({
-//            precompileOpts: {preventIndent: true},  //  Passed to Handlebars.precompile(..., precompileOpts ); https://handlebarsjs.com/reference.html
-//            templatesPath: path.join(__dirname, 'handlebars_templates'),
-//            templatesExt: '.hbs',
-////            helpersPath: path.join(__dirname, 'helpers'), // optional
-//            outputFile: path.join(__dirname, 'handlebars_templates_precompiled/bundle.js'),
-//        }),
-//        new HandlebarsPrecompiler( {
-//        	precompileOpts: { preventIndent: true }, //  Passed to Handlebars.precompile(..., precompileOpts ); https://handlebarsjs.com/reference.html
-//        	templatesPath: path.join( __dirname, 'handlebars_templates','peptide_table' ),
-//        	templatesExt: '.handlebars',
-////      	helpersPath: path.join(__dirname, 'helpers'), // optional
-//        	outputFile: path.join( __dirname, 'handlebars_templates_precompiled', 'peptide_page', 'peptide_table_template-bundle.js' )
-//        } )
 ]
 
 

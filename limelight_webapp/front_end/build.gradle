@@ -78,9 +78,9 @@ defaultTasks 'frontEndBuild_ForDevelopment'  ///  Task run when no task specifie
  */
 task clean(type: Delete) {
   doFirst {	
-  	println("clean::doFirst called.  Deleting build output directories, including 'handlebars_templates_precompiled'")
-  	  
-	   delete 'handlebars_templates_precompiled'
+  	println("clean::doFirst called.  Deleting build output directories")
+
+	   delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
 	   delete '../src/main/webapp/static/js_generated_bundles'
 	   delete '../src/main/webapp/static/css_generated'
@@ -92,66 +92,15 @@ task clean(type: Delete) {
  * working directory: The directory this build.gradle file is in
  */
 task delete_outputDirs(type: Delete) {
-  doFirst {	
-  	println("delete_outputDirs::doFirst called.  Deleting most build output directories, except 'handlebars_templates_precompiled'")
-  	  
-     //  No longer delete since added build avoidance input dir and output file
-	   // delete 'handlebars_templates_precompiled'
+  doFirst {
+  println("delete_outputDirs::doFirst called.  Deleting build output directories")
 
+       delete 'handlebars_templates_precompiled'  //  Delete since used to have and delete to ensure cleanup
 	   delete 'webpack_build_output'
 	   delete '../src/main/webapp/static/js_generated_bundles'
 	   delete '../src/main/webapp/static/css_generated'
    }
 }
-
-//  Create all createHandlebarsOutputDirs
-
-task createHandlebarsOutputDirs { 
-  doFirst {	
-  	  println("createHandlebarsOutputDirs::doFirst called.  Creating dir 'handlebars_templates_precompiled' and it's subdirs")
-  	  
-  	  String rootDir = "handlebars_templates_precompiled/"
-  	  
-  	  String dirToCreate = ""
-  	  boolean mkdirSuccess = false;
-  	  
-  	  dirToCreate = rootDir
-  	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-
-//   	  dirToCreate = rootDir + "dummy_template"
-//   	  mkdirSuccess = project.file( dirToCreate ).mkdirs()
-  	  
-	}
-}
-
-
-// !!!!!!!!!!  'handlebarsPrecompile_dummy_template' is NOT USED.  Only kept as a template in case Handlebars needs to be used in the future  !!!!!!!!!!!!!!
-
-
-
-//  Handlebars Precompile for input handlebars_templates/dummy_template
-
-// task handlebarsPrecompile_dummy_template(type: NodeTask) {
-//
-//   def precompile_Input_Directory = "handlebars_templates/dummy_template"
-//   def precompile_Output_File = "handlebars_templates_precompiled/dummy_template/dummy_template_template-bundle.js"
-//
-//   // Gradle Build Avoidance information.  Must specify correct inputs and outputs.
-//   inputs.dir( precompile_Input_Directory )
-//   outputs.file( precompile_Output_File )
-//
-//   def osName = System.getProperty("os.name").toLowerCase();
-//   if (osName.contains("windows")) {
-//     script = project.file('node_modules/handlebars/bin/handlebars')
-//   } else {
-//     script = project.file('node_modules/.bin/handlebars')
-//   }
-//   args = [ '--amd' , // parameters must be before file list
-//   '--min',
-//   '-f', precompile_Output_File,
-//    precompile_Input_Directory
-//    ]
-// }
 
 
 /*
@@ -229,10 +178,6 @@ ext.frontEndBuild_Main_Before_WebPack_Fcn = { fakeParam ->
 
    def tasks = [ 
      'delete_outputDirs', 
-     
-     'createHandlebarsOutputDirs', 
-
-//      'handlebarsPrecompile_dummy_template',
    ]
    
    return tasks;
