@@ -33,7 +33,7 @@ head_section_include_every_page.jsp
     	content="script-src
     		'self' 
     		'sha256-LtIWLBFFzfYXdIGWJ2t/yMJVIYyKlWYs6JwRq0ESN9U=' <%-- inline script in this file for IE testing. --%>
-    		'sha256-zFC+///Xk4FAbxdUL7/FfF4qw3h5uHyU1+/S3dKmzLg=' <%-- inline script in this file for Page Error reporting. --%>
+    		'sha256-319wADTDxjEQJFL1G+2TSXPRFK4SR/WciC6jFGqf3j8=' <%-- inline script in this file for Page Error reporting. --%>
     		https://www.gstatic.com/  <%-- Google Charts Loader and Google Recaptcha data loaded from here --%>
     		'unsafe-eval'             <%-- Required for Plotly WebGL detection and Google Charts (Google Charts currently NOT used) --%> 
     		https://www.googletagmanager.com/gtag/js  <%-- Google Analytics --%>
@@ -87,6 +87,10 @@ head_section_include_every_page.jsp
 	
 </c:if>
 
+<%--  This error message comes from React when build using esbuild '--define:process.env.NODE_ENV="production"' and not --minify.  The page seems to work fine so ignore.  --%>
+<script type="text/text" id="header_section_onerror_error_message_to_ignore" >React is running in production mode, but dead code elimination has not been applied. Read how to correctly configure React for production</script>
+
+	
 
  <%--  !!!!!  WARNING  !!!!!!:   Any changes to this script requires changing the hash code in "Content-Security-Policy"
  
@@ -99,7 +103,16 @@ head_section_include_every_page.jsp
 		'inline script in this file for Page Error reporting'
  --%>
      <script type="text/javascript" >
+     
+     	let header_section_onerror_error_message_to_ignore_String = ""
 
+     	const header_section_onerror_error_message_to_ignoreDOM = document.getElementById("header_section_onerror_error_message_to_ignore")
+     	if ( header_section_onerror_error_message_to_ignoreDOM ) {
+     		header_section_onerror_error_message_to_ignore_String = header_section_onerror_error_message_to_ignoreDOM.innerText
+
+            console.log( " value from DOM ID 'header_section_onerror_error_message_to_ignore': " + header_section_onerror_error_message_to_ignore_String )
+        }
+     
          window.onerror = function(message, source, lineno, colno, error) {
 
              console.warn("In window.onerror function:")
@@ -108,6 +121,13 @@ head_section_include_every_page.jsp
              console.warn("window.onerror lineno:", lineno)
              console.warn("window.onerror colno:", colno)
              console.warn("window.onerror error:", error)
+             
+             if ( message.includes( header_section_onerror_error_message_to_ignore_String ) ) {
+            	 
+            	 //  
+            	 
+            	 return // EARLY RETURN
+             }
 
              window.setTimeout( function () {
 

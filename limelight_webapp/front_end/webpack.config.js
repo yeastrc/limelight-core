@@ -28,7 +28,7 @@ const module_MAIN = {
 	rules:[
 		{
 			test: /\.(ts|tsx)$/,
-			exclude: /(node_modules|bower_components)/,
+			exclude: /(node_modules|bower_components|typescript_compile_output|webpack_build_output)/,
 			use: [
 				{
 					loader: 'ts-loader',
@@ -41,7 +41,7 @@ const module_MAIN = {
 		},
 		{
 			test: /\.(js|jsx)$/,
-			exclude: /(node_modules|bower_components)/,
+			exclude: /(node_modules|bower_components|typescript_compile_output|webpack_build_output)/,
 			loader: "babel-loader",
 			options: {  } // Do not put this inside options: { } :  { presets: ["@babel/env"] }
 		},
@@ -311,6 +311,18 @@ const mainConfig = (env, argv) => {
 			console.log()
 		}
 	}
+
+	// {  //  Code change if build bundles using different program to also run webpack to run Typescript to validate files
+	//
+	// 	const entry_New = {
+	// 		'styles': './src/styles/global.scss',
+	// 		'A_Fake_JS_Trigger_TypescriptValidation.ts': './A_Fake_JS_Trigger_TypescriptValidation.ts'
+	// 	}
+	//
+	// 	entry = entry_New;
+
+	// 	console.warn( "NOT building JS Bundles using Webpack. ONLY Doing Typscript Validation" )
+	// }
 
 
 	return {
