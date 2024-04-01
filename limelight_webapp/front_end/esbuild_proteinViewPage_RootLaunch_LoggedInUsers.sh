@@ -26,9 +26,10 @@
 #       try:
 ##  '--define:process.env.NODE_ENV="production"'
 
-#     This builds and results in production mode but fails in the browser with
+#     This builds and results in production mode but throws an Exception in the browser with
 #       "installHook.js:1 Uncaught Error: React is running in production mode, but dead code elimination has not been applied. Read how to correctly configure React for production"
-#     The app appears to run fine but since an error is detected the Limelight code shows the overlay "Error in Page Code"
+#     The app appears to run fine.
+#     The window.onerror code in the JSP that catches this error has been modified to ignore this error message.
 
 #       Google search of error leads to https://github.com/evanw/esbuild/issues/2353
 
