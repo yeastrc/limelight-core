@@ -17,6 +17,10 @@ import {limelight__Input_NumberOrString_ReturnNumber} from "page_js/common_all_p
 import {PSMLocalizationReportDownloadGenerator} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/psmLocalizationReportDownloadGenerator";
 import {StringDownloadUtils} from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 import {ModDataUtils} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modDataUtils";
+import {
+    removeFrom_DOM__ModPage_DataViz_Selections__Text_ClearLink__Root_Component,
+    render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component
+} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/mod_page__jsx/ModPage_DataViz_Selections__Text_ClearLink__Root_Component";
 
 export class ModViewDataVizRenderer_MultiSearch {
 
@@ -46,6 +50,8 @@ export class ModViewDataVizRenderer_MultiSearch {
 
         $('div#data-viz-container').empty();
         $('div#data-viz-container').html('<h2>Loading data, please standby...</h2>');
+
+        removeFrom_DOM__ModPage_DataViz_Selections__Text_ClearLink__Root_Component()
 
         $('div#data-table-container-container').hide();
 
@@ -177,8 +183,8 @@ export class ModViewDataVizRenderer_MultiSearch {
             .style("border-width", "1px")
             .style("visibility", "hidden")
             .style("padding", "10px")
-            .style("min-width", "250px")   //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
-            .style("max-width", "250px");  //  max-width
+            .style("min-width", "450px")   //  set min-width so when display when scrolled to right past what would be right edge of view port when no scroll right.
+            .style("max-width", "450px");  //  max-width
 
         // keep track of what the user has selected to see
         let selectedStateObject : ModView_VizOptionsData_SubPart_selectedStateObject = vizOptionsData.data.selectedStateObject;
@@ -265,6 +271,33 @@ export class ModViewDataVizRenderer_MultiSearch {
             vizOptionsData,
             colorScale
         });
+
+
+        const clear_Clicked_Callback = () => {
+
+            ModViewDataVizRenderer_MultiSearch._clear_Selection_Update_Graphic_AND_DataTable({
+                svg,
+                sortedModMasses,
+                projectSearchIds:vizOptionsData.data.projectSearchIds,
+                selectedStateObject,
+                dataPageStateManager_DataFrom_Server,
+                modMap,
+                vizOptionsData,
+                modViewDataManager,
+                dataTableContainer_DOM_Element,
+                colorScale
+            })
+        }
+
+        render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component({
+            propsValue: {
+                selectedStateObject,
+                modMap,
+                projectSearchIds:vizOptionsData.data.projectSearchIds,
+                dataPageStateManager_DataFrom_Server,
+                clear_Clicked_Callback
+            }
+        })
     }
 
     static addDataDownloadLinks(
@@ -578,11 +611,9 @@ export class ModViewDataVizRenderer_MultiSearch {
         svg.select('#rect-group')
             .on( "mousedown", function( event_Param ) {
 
-                // reset selected state object unless control is being held down
-                if( ! event_Param.ctrlKey && ! event_Param.metaKey ) {
-                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
-                    selectedStateObject.data = {};
-                }
+                // reset selected state object
+                svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
+                selectedStateObject.data = {};
 
                 const p = d3.pointer( event_Param );
 
@@ -593,7 +624,6 @@ export class ModViewDataVizRenderer_MultiSearch {
                     .attr('y', p[1])
                     .attr('width', '0')
                     .attr('height', '0')
-
             })
             .on( "mousemove", function( event_Param ) {
 
@@ -648,20 +678,21 @@ export class ModViewDataVizRenderer_MultiSearch {
                         height  : s.attr( "height")
                     };
 
-                    const event_Param__CtrlKey = event_Param.ctrlKey
-                    const event_Param__MetaKey = event_Param.metaKey
+                    // const event_Param__CtrlKey = event_Param.ctrlKey
+                    // const event_Param__MetaKey = event_Param.metaKey
 
                     // update final opacity for viz
                     ModViewDataVizRenderer_MultiSearch.updateSelectedRectIndicators({
-                        event_Param__CtrlKey,
-                        event_Param__MetaKey,
+                        // event_Param__CtrlKey,
+                        // event_Param__MetaKey,
                         svg,
                         sortedModMasses,
                         projectSearchIds,
                         xScale,
                         yScale,
                         rectParams,
-                        selectedStateObject });
+                        selectedStateObject,
+                    });
 
                     // remove selection frame
                     s.remove();
@@ -680,6 +711,32 @@ export class ModViewDataVizRenderer_MultiSearch {
                         vizOptionsData,
                         colorScale
                     });
+
+                    const clear_Clicked_Callback = () => {
+
+                        ModViewDataVizRenderer_MultiSearch._clear_Selection_Update_Graphic_AND_DataTable({
+                            svg,
+                            sortedModMasses,
+                            projectSearchIds,
+                            selectedStateObject,
+                            dataPageStateManager_DataFrom_Server,
+                            modMap,
+                            vizOptionsData,
+                            modViewDataManager,
+                            dataTableContainer_DOM_Element,
+                            colorScale
+                        })
+                    }
+
+                    render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component({
+                        propsValue: {
+                            selectedStateObject,
+                            modMap,
+                            projectSearchIds,
+                            dataPageStateManager_DataFrom_Server,
+                            clear_Clicked_Callback
+                        }
+                    })
                 }
 
             });
@@ -690,29 +747,98 @@ export class ModViewDataVizRenderer_MultiSearch {
                 // capture escape key press, reset viz
                 if( event_Param.keyCode === 27 ) {
 
-                    selectedStateObject.data = {};
-
-                    // update hash in URL to reflect user customization state
-                    vizOptionsData.stateManagementObject.updateState();
-
-                    ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject });
-
-                    // redraw the data table
-                    ModViewDataTableRenderer_MultiSearch.renderDataTable( {
+                    ModViewDataVizRenderer_MultiSearch._clear_Selection_Update_Graphic_AND_DataTable({
+                        svg,
+                        sortedModMasses,
                         projectSearchIds,
-                        vizSelectedStateObject:selectedStateObject,
+                        selectedStateObject,
                         dataPageStateManager_DataFrom_Server,
                         modMap,
-                        sortedModMasses,
+                        vizOptionsData,
                         modViewDataManager,
                         dataTableContainer_DOM_Element,
-                        vizOptionsData,
                         colorScale
-                    } );
-
+                    })
                 }
             });
     }
+
+
+    private static _clear_Selection_Update_Graphic_AND_DataTable(
+
+        {
+            svg,
+            sortedModMasses,
+            projectSearchIds,
+            selectedStateObject,
+            dataPageStateManager_DataFrom_Server,
+            modMap,
+            vizOptionsData,
+            modViewDataManager,
+            dataTableContainer_DOM_Element,
+            colorScale
+        } : {
+            svg,
+            sortedModMasses,
+            projectSearchIds : Array<number>
+            selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject,
+            dataPageStateManager_DataFrom_Server : DataPageStateManager
+            modMap,
+            vizOptionsData: ModView_VizOptionsData,
+            modViewDataManager : ModViewDataManager
+            dataTableContainer_DOM_Element,
+            colorScale
+        }
+    ) {
+
+        selectedStateObject.data = {};
+
+        // update hash in URL to reflect user customization state
+        vizOptionsData.stateManagementObject.updateState();
+
+        ModViewDataVizRenderer_MultiSearch.updateShownRectOpacities({ svg, selectedStateObject });
+
+        // redraw the data table
+        ModViewDataTableRenderer_MultiSearch.renderDataTable( {
+            projectSearchIds,
+            vizSelectedStateObject:selectedStateObject,
+            dataPageStateManager_DataFrom_Server,
+            modMap,
+            sortedModMasses,
+            modViewDataManager,
+            dataTableContainer_DOM_Element,
+            vizOptionsData,
+            colorScale
+        } );
+
+
+        const clear_Clicked_Callback = () => {
+
+            ModViewDataVizRenderer_MultiSearch._clear_Selection_Update_Graphic_AND_DataTable({
+                svg,
+                sortedModMasses,
+                projectSearchIds,
+                selectedStateObject,
+                dataPageStateManager_DataFrom_Server,
+                modMap,
+                vizOptionsData,
+                modViewDataManager,
+                dataTableContainer_DOM_Element,
+                colorScale
+            })
+        }
+
+        render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component({
+            propsValue: {
+                selectedStateObject,
+                modMap,
+                projectSearchIds,
+                dataPageStateManager_DataFrom_Server,
+                clear_Clicked_Callback
+            }
+        })
+    }
+
 
     static updateShownRectOpacities({ svg, selectedStateObject } : {
 
@@ -737,21 +863,19 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static updateSelectedRectIndicators(
         {
-            event_Param__CtrlKey, event_Param__MetaKey,
+            // event_Param__CtrlKey, event_Param__MetaKey,
             svg, sortedModMasses, projectSearchIds, xScale, yScale, rectParams, selectedStateObject
         } : {
-            event_Param__CtrlKey: any
-            event_Param__MetaKey: any
+            // event_Param__CtrlKey: any
+            // event_Param__MetaKey: any
             svg, sortedModMasses,
             projectSearchIds : Array<number>,
             xScale, yScale, rectParams,
             selectedStateObject: ModView_VizOptionsData_SubPart_selectedStateObject
         }) {
 
-        // reset selected state object unless control is being held down
-        if( ( ! event_Param__CtrlKey ) && ( ! event_Param__MetaKey ) ) {
-            svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
-        }
+        // reset selected state object
+        svg.select('#rect-group').selectAll('rect').style('opacity', '0.35');
 
         // add opacity adjustment for selected items
         for( const modMass of sortedModMasses ) {
@@ -893,7 +1017,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             .text((d,i) => (ModViewDataVizRenderer_MultiSearch.getTruncatedSearchNameForProjectSearchId({ projectSearchId:projectSearchIds[i], dataPageStateManager_DataFrom_Server, maxSearchLabelLength})))
             .on("mousemove", function ( event_Param, dataElement_Param ) {
                 const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param );
-                ModViewDataVizRenderer_MultiSearch.showToolTip({ projectSearchId, tooltip, vizOptionsData, modMass : undefined, psmCount : undefined, dataPageStateManager_DataFrom_Server })
+                ModViewDataVizRenderer_MultiSearch.showToolTip({
+                    onSearchLabel_OnLeft: true, projectSearchId, tooltip, vizOptionsData, modMass : undefined, psmCount : undefined, dataPageStateManager_DataFrom_Server
+                })
             })
             .on("mouseout", function ( event_Param, dataElement_Param ) {
                 //d3.select(this).attr('fill', (d) => (colorScale(d.psmCount)))
@@ -901,11 +1027,9 @@ export class ModViewDataVizRenderer_MultiSearch {
             })
             .on("click", function( event_Param, dataElement_Param ) {
 
-                // reset selected state object unless control is being held down
-                if( ! event_Param.ctrlKey && ! event_Param.metaKey ) {
-                    svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
-                    selectedStateObject.data = {};
-                }
+                //  Reset reset selected state object and then select
+                svg.select('#rect-group').selectAll('rect').style('opacity', '1.0');
+                selectedStateObject.data = {};
 
                 selectedStateObject.data[ dataElement_Param ] = [...sortedModMasses];
 
@@ -927,122 +1051,149 @@ export class ModViewDataVizRenderer_MultiSearch {
                     vizOptionsData,
                     colorScale
                 });
+
+
+                const clear_Clicked_Callback = () => {
+
+                    ModViewDataVizRenderer_MultiSearch._clear_Selection_Update_Graphic_AND_DataTable({
+                        svg,
+                        sortedModMasses,
+                        projectSearchIds:vizOptionsData.data.projectSearchIds,
+                        selectedStateObject,
+                        dataPageStateManager_DataFrom_Server,
+                        modMap,
+                        vizOptionsData,
+                        modViewDataManager,
+                        dataTableContainer_DOM_Element,
+                        colorScale
+                    })
+                }
+
+                render_ModPage_DataViz_Selections__Text_ClearLink__Root_Component({
+                    propsValue: {
+                        selectedStateObject,
+                        modMap,
+                        projectSearchIds:vizOptionsData.data.projectSearchIds,
+                        dataPageStateManager_DataFrom_Server,
+                        clear_Clicked_Callback
+                    }
+                })
             })
     }
 
 
-    static handleSearchLabelDrag(
-        {
-            event_Y_Value,  draggedObject
-        } : {
-            event_Y_Value: any
-            draggedObject: Element
-        }) {
-
-        d3.select(draggedObject).attr("y", event_Y_Value )
-    }
-
-    static handleSearchLabelDragEnd(
-        {
-            event_Y_Value,
-            yScale,
-            dataPageStateManager_DataFrom_Server,
-            labelFontSize,
-            vizOptionsData,
-            draggedProjectSearchId,
-            draggedObject,
-            modViewDataManager
-        } : {
-            event_Y_Value: any
-            yScale,
-            dataPageStateManager_DataFrom_Server : DataPageStateManager
-            labelFontSize,
-            vizOptionsData: ModView_VizOptionsData,
-            draggedProjectSearchId,
-            draggedObject,
-            modViewDataManager : ModViewDataManager
-        }) {
-
-        const projectSearchIds = vizOptionsData.data.projectSearchIds;
-
-        const newTextYStart = event_Y_Value;
-
-        const insertionData = ModViewDataVizRenderer_MultiSearch.getInsertionPointForProjectSearchId({
-            yScale,
-            projectSearchIds,
-            newTextYStart,
-            labelFontSize,
-            draggedProjectSearchId
-        });
-
-        if( insertionData.insertIndex === projectSearchIds.indexOf(draggedProjectSearchId) ) {
-
-            // do nothing, put label back in place
-            d3.select(draggedObject)
-                .attr("y", yScale(draggedProjectSearchId) + yScale.bandwidth() / 2 + labelFontSize / 2);
-
-
-        } else {
-
-            let newProjectSearchIds =  [...projectSearchIds];
-            newProjectSearchIds.splice(newProjectSearchIds.indexOf(draggedProjectSearchId), 1);
-            newProjectSearchIds.splice(insertionData.insertIndex, 0, draggedProjectSearchId);
-
-            vizOptionsData.data.projectSearchIds = newProjectSearchIds;
-
-            // update hash in URL to reflect user customization state
-            vizOptionsData.stateManagementObject.updateState();
-
-            ModViewDataVizRenderer_MultiSearch.renderDataViz({
-                dataPageStateManager_DataFrom_Server,
-                vizOptionsData,
-                modViewDataManager
-            });
-        }
-    }
-
-    static getInsertionPointForProjectSearchId({ yScale, projectSearchIds, newTextYStart, labelFontSize, draggedProjectSearchId }) {
-
-        let i = 0;
-        let returnedObject : any = { };
-
-        const startOfDraggedElement =  yScale(draggedProjectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
-
-        /*
-         * Project search IDs are already in order from top to bottom. So, we can just find the first one that the
-         * dragged project search id is above and that is the point at which the dragged project search id should
-         * be inserted
-         */
-        for( const projectSearchId of projectSearchIds ) {
-
-            const start = yScale(projectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
-
-            if( newTextYStart < start ) {
-
-                if( newTextYStart < startOfDraggedElement ) {   // we dragged up
-
-                    returnedObject.insertIndex = i;
-                    returnedObject.insertBefore = projectSearchId;
-
-                } else {    // we dragged down
-
-                    returnedObject.insertIndex = i - 1;
-                    returnedObject.insertBefore = projectSearchId;
-
-                }
-
-                return returnedObject;
-            }
-
-            i++;
-        }
-
-        // if we got here, then it should be inserted at the end
-        returnedObject.insertIndex = projectSearchIds.length - 1;
-        returnedObject.insertBefore = null;
-
-        return returnedObject;
-    }
+    // static handleSearchLabelDrag(
+    //     {
+    //         event_Y_Value,  draggedObject
+    //     } : {
+    //         event_Y_Value: any
+    //         draggedObject: Element
+    //     }) {
+    //
+    //     d3.select(draggedObject).attr("y", event_Y_Value )
+    // }
+    //
+    // static handleSearchLabelDragEnd(
+    //     {
+    //         event_Y_Value,
+    //         yScale,
+    //         dataPageStateManager_DataFrom_Server,
+    //         labelFontSize,
+    //         vizOptionsData,
+    //         draggedProjectSearchId,
+    //         draggedObject,
+    //         modViewDataManager
+    //     } : {
+    //         event_Y_Value: any
+    //         yScale,
+    //         dataPageStateManager_DataFrom_Server : DataPageStateManager
+    //         labelFontSize,
+    //         vizOptionsData: ModView_VizOptionsData,
+    //         draggedProjectSearchId,
+    //         draggedObject,
+    //         modViewDataManager : ModViewDataManager
+    //     }) {
+    //
+    //     const projectSearchIds = vizOptionsData.data.projectSearchIds;
+    //
+    //     const newTextYStart = event_Y_Value;
+    //
+    //     const insertionData = ModViewDataVizRenderer_MultiSearch.getInsertionPointForProjectSearchId({
+    //         yScale,
+    //         projectSearchIds,
+    //         newTextYStart,
+    //         labelFontSize,
+    //         draggedProjectSearchId
+    //     });
+    //
+    //     if( insertionData.insertIndex === projectSearchIds.indexOf(draggedProjectSearchId) ) {
+    //
+    //         // do nothing, put label back in place
+    //         d3.select(draggedObject)
+    //             .attr("y", yScale(draggedProjectSearchId) + yScale.bandwidth() / 2 + labelFontSize / 2);
+    //
+    //
+    //     } else {
+    //
+    //         let newProjectSearchIds =  [...projectSearchIds];
+    //         newProjectSearchIds.splice(newProjectSearchIds.indexOf(draggedProjectSearchId), 1);
+    //         newProjectSearchIds.splice(insertionData.insertIndex, 0, draggedProjectSearchId);
+    //
+    //         vizOptionsData.data.projectSearchIds = newProjectSearchIds;
+    //
+    //         // update hash in URL to reflect user customization state
+    //         vizOptionsData.stateManagementObject.updateState();
+    //
+    //         ModViewDataVizRenderer_MultiSearch.renderDataViz({
+    //             dataPageStateManager_DataFrom_Server,
+    //             vizOptionsData,
+    //             modViewDataManager
+    //         });
+    //     }
+    // }
+    //
+    // static getInsertionPointForProjectSearchId({ yScale, projectSearchIds, newTextYStart, labelFontSize, draggedProjectSearchId }) {
+    //
+    //     let i = 0;
+    //     let returnedObject : any = { };
+    //
+    //     const startOfDraggedElement =  yScale(draggedProjectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
+    //
+    //     /*
+    //      * Project search IDs are already in order from top to bottom. So, we can just find the first one that the
+    //      * dragged project search id is above and that is the point at which the dragged project search id should
+    //      * be inserted
+    //      */
+    //     for( const projectSearchId of projectSearchIds ) {
+    //
+    //         const start = yScale(projectSearchId) + (yScale.bandwidth() / 2) + (labelFontSize / 2);
+    //
+    //         if( newTextYStart < start ) {
+    //
+    //             if( newTextYStart < startOfDraggedElement ) {   // we dragged up
+    //
+    //                 returnedObject.insertIndex = i;
+    //                 returnedObject.insertBefore = projectSearchId;
+    //
+    //             } else {    // we dragged down
+    //
+    //                 returnedObject.insertIndex = i - 1;
+    //                 returnedObject.insertBefore = projectSearchId;
+    //
+    //             }
+    //
+    //             return returnedObject;
+    //         }
+    //
+    //         i++;
+    //     }
+    //
+    //     // if we got here, then it should be inserted at the end
+    //     returnedObject.insertIndex = projectSearchIds.length - 1;
+    //     returnedObject.insertBefore = null;
+    //
+    //     return returnedObject;
+    // }
 
 
 
@@ -1202,6 +1353,7 @@ export class ModViewDataVizRenderer_MultiSearch {
                 const projectSearchId = limelight__Input_NumberOrString_ReturnNumber( dataElement_Param.projectSearchId );
 
                 ModViewDataVizRenderer_MultiSearch.showToolTip({
+                    onSearchLabel_OnLeft: false,
                     projectSearchId,
                     modMass: dataElement_Param.modMass,
                     psmCount: dataElement_Param.psmCount,
@@ -1231,8 +1383,9 @@ export class ModViewDataVizRenderer_MultiSearch {
 
     static showToolTip(
         {
-            projectSearchId, modMass, psmCount, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
+            onSearchLabel_OnLeft, projectSearchId, modMass, psmCount, tooltip, vizOptionsData, dataPageStateManager_DataFrom_Server
         } : {
+            onSearchLabel_OnLeft: boolean
             projectSearchId : number,
             modMass,
             psmCount,

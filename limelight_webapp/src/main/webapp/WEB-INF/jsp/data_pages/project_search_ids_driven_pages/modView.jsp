@@ -37,18 +37,8 @@
 		Modifications View
 	</h1>
 	
-	<!--  Search Details and Filters (PSM, Peptide, and Protein) -->
+	<%--  Search Details and Filters (PSM, Peptide, and Protein).  Also Buttons underneath for Save Default, Save View, Share Page --%>
 	<div id="search_details_and_other_filters_outer_block_react_root_container"></div>
-
-	<!-- Outer Container for Save View Button and other buttons  -->
-	<div >
-		<!--  Save As Default Button -->
-		<div class=" selector_set_default_view_root_container set-default-view-container " style="dislay: none;" ></div>
-		<!--  Save View Button -->
-		<div class=" selector_save_view_root_container save-view-root-container " ></div>
-		<!--  Share Page Button -->
-		<div class=" selector_share_page_root_container share-page-root-container " ></div>
-	</div>
 
 
 	<%-- Initial Loading message.  Removed from DOM during initial Javascript processing --%>
@@ -63,6 +53,12 @@
     
     	<%-- The Options form above the visualization.    NEVER call .empty() on it --%>
        <div id="data_viz_options__outer_container"></div>
+       
+       <%-- 
+       			The visualization graphic "Selection Text" AND "Clear Selection" link.  This is for selections IN the visualization graphic.
+       			NEVER call .empty() on it 
+	   --%>
+       <div id="data_viz_selections__text_and_clear_link__outer_container"></div>
        
        <%--  The visualization graphic --%>
        
