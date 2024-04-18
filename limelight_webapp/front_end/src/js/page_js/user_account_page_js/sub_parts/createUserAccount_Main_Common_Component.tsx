@@ -10,6 +10,8 @@ import React from "react";
  */
 export interface CreateUserAccount_Main_Common_Component_Props {
 
+    createFor_YES_Invite: boolean  //  True YES Invite.  False NO invite
+
     showInvitedMessage: boolean
     google_RecaptchaSiteKey: string
 
@@ -63,13 +65,15 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
     render() {
         return (
             <div>
-                <div
-                    id="create_account_loading_message_div"
-                    style={ { fontSize: 22, marginTop: 40, marginBottom: 40 } }
-                >
-                    Loading Data for Form...
-                </div>
-                <div id="create_account_outermost_container_div" style={ { display: "none" } }>
+                { ! this.props.createFor_YES_Invite ? (
+                    <div
+                        id="create_account_loading_message_div"
+                        style={ { fontSize: 22, marginTop: 40, marginBottom: 40 } }
+                    >
+                        Loading Data for Form...
+                    </div>
+                ) : null }
+                <div id="create_account_outermost_container_div" style={ { display: this.props.createFor_YES_Invite ? "" : "none" } }>
                     <div  style={ { position: "relative" } } className="page-label">
                         <div className="error-message-container error_message_container_jq" id="error_message_recaptcha_required">
                             <div className="error-message-inner-container" >

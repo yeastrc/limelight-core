@@ -201,7 +201,7 @@ export class UserCreateAccount_NO_Invite_Subpart {
 
 			$containerHTMLElement.empty();
 
-			const props: CreateUserAccount_Main_Common_Component_Props = { showInvitedMessage: false, google_RecaptchaSiteKey };
+			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: false, showInvitedMessage: false, google_RecaptchaSiteKey };
 
 			const root_Component = (
 				React.createElement(

@@ -77,7 +77,7 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 			$containerHTMLElement.empty();
 
-			const props: CreateUserAccount_Main_Common_Component_Props = { showInvitedMessage: true, google_RecaptchaSiteKey: undefined };
+			const props: CreateUserAccount_Main_Common_Component_Props = { createFor_YES_Invite: true, showInvitedMessage: true, google_RecaptchaSiteKey: undefined };
 
 			const root_Component = (
 				React.createElement(
@@ -157,7 +157,8 @@ export class UserCreateAccount_With_Invite_Subpart {
 
 			this.inviteTrackingCode = inviteTrackingCode;
 			this.containerHTMLElement = containerHTMLElement;
-			
+
+
 		} catch( e ) {
 			reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
 			throw e;
