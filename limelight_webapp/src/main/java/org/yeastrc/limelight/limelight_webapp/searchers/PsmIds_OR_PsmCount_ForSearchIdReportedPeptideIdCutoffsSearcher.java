@@ -239,27 +239,28 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 		if ( psmCutoffValuesList_Reversed.isEmpty() && psm_ModificationPosition_WORST_CutoffValuesList_Reversed.isEmpty() ) {
 			
-
 			sqlSB.append( "SELECT " );
 			
 			if ( get_PsmCount_PsmIds == Get_PsmCount_PsmIds.PSM_COUNT ) {
-				sqlSB.append( " COUNT( " );	
+				
+				sqlSB.append( " COUNT( id ) AS count " );
+				
+			} else {
+				
+				sqlSB.append(  " id AS psm_id " );	
 			}
-			sqlSB.append(  "id AS psm_id " );
-			if ( get_PsmCount_PsmIds == Get_PsmCount_PsmIds.PSM_COUNT ) {
-				sqlSB.append( " ) AS count " );	
-			}
-			sqlSB.append(  "FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ?" ); 
+			
+			sqlSB.append(  " FROM psm_tbl WHERE search_id = ? AND reported_peptide_id = ? " ); 
 
 			// Include  records where is_independent_decoy = 'true'
 			if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
 				// Exclude  records where is_decoy = 'true'
-				sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE );
+				sqlSB.append( " AND is_decoy != " + Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE + " " );
 			}
 
 		} else {
 			
-			sqlSB.append( "SELECT " );
+			sqlSB.append( " SELECT " );
 			
 			if ( get_PsmCount_PsmIds == Get_PsmCount_PsmIds.PSM_COUNT ) {
 				sqlSB.append( " COUNT( " );	
