@@ -119,9 +119,6 @@ interface Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_C
  */
 interface Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Component__ShowDetails_Overlay_Component_State {
 
-    show_LoadingData_Message?: boolean
-    show_NoData_Message?: boolean
-
     forceRerenderObject: object      //  Force Rerender object
 }
 
@@ -164,6 +161,13 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
     private _componentMounted: boolean = false
 
 
+    private _show_LoadingData_Message: boolean = true
+
+    private _showUpdatingMessage: boolean
+
+    private _current_Initial_OR_User_Request_TrackingObject: object
+
+
     /**
      *
      */
@@ -179,7 +183,6 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
         this._goldStandard_Root_SelectionEntry = props.params.goldStandard_Root_SelectionEntry
 
         this.state = {
-            show_LoadingData_Message: true,
             forceRerenderObject: {}
         };
     }
@@ -199,7 +202,9 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
         try {
             this._componentMounted = true
 
-            this._call__GetGoldStandardData({ goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry })
+            this._current_Initial_OR_User_Request_TrackingObject = {}
+
+            this._call__GetGoldStandardData({ goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry, current_Initial_OR_User_Request_TrackingObject_Parameter: this._current_Initial_OR_User_Request_TrackingObject })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -250,10 +255,17 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
 
         this._selected_GoldStandardEntry__For_DisplayAndSelectComponentOnly = selected_GoldStandardEntry
 
+        this._current_Initial_OR_User_Request_TrackingObject = {}
+
+        const current_Initial_OR_User_Request_TrackingObject_Parameter = this._current_Initial_OR_User_Request_TrackingObject
+
+        this._showUpdatingMessage = true
+        this.setState({ forceRerenderObject: {} })
+
         window.setTimeout( ()=> { try {
 
             this._call__GetGoldStandardData({
-                goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry
+                goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry, current_Initial_OR_User_Request_TrackingObject_Parameter
             })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -267,16 +279,19 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
      */
     private _userOptions_Changed_Callback( params: QcViewPage_Common__GoldStandard_Statistics_Section__UserOptions_Component_OptionsSelections_Callback_Params ) {
 
-        // this.setState({ showUpdatingMessage: true })
-
         this._userOptions_Component_OptionsSelections = params.userOptions;
 
+        this._current_Initial_OR_User_Request_TrackingObject = {}
+
+        const current_Initial_OR_User_Request_TrackingObject_Parameter = this._current_Initial_OR_User_Request_TrackingObject
+
+        this._showUpdatingMessage = true
         this.setState({ forceRerenderObject: {} })
 
         window.setTimeout( ()=> { try {
 
             this._call__GetGoldStandardData({
-                goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry
+                goldStandard_Root_Selection: this._goldStandard_Root_SelectionEntry, current_Initial_OR_User_Request_TrackingObject_Parameter
             })
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
@@ -288,19 +303,208 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
      */
     private _call__GetGoldStandardData(
         {
-            goldStandard_Root_Selection
+            goldStandard_Root_Selection, current_Initial_OR_User_Request_TrackingObject_Parameter
         } : {
             goldStandard_Root_Selection: QcViewPage_Common__GoldStandard_Statistics_Section__SelectGoldStandard_Component_SelectionEntry
+
+            current_Initial_OR_User_Request_TrackingObject_Parameter: object
         }
     ) {
+
         const projectSearchId = this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId
 
         const gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id = goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
 
         window.setTimeout( ()=> { try {
 
+            this._call__GetGoldStandardData__After__setTimeout({
+                goldStandard_Root_Selection,
+
+                projectSearchId, gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id,
+                current_Initial_OR_User_Request_TrackingObject_Parameter
+            })
+
+        } catch( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+            throw e;
+        }}, 10 )
+    }
+
+    /**
+     *
+     * @param selected_GoldStandardEntry
+     */
+    private _call__GetGoldStandardData__After__setTimeout(
+        {
+            goldStandard_Root_Selection,
+
+            projectSearchId, gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id,
+            current_Initial_OR_User_Request_TrackingObject_Parameter
+        } : {
+            goldStandard_Root_Selection: QcViewPage_Common__GoldStandard_Statistics_Section__SelectGoldStandard_Component_SelectionEntry
+
+            projectSearchId: number
+            gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id: number
+
+            current_Initial_OR_User_Request_TrackingObject_Parameter: object
+        }
+    ) {
+
+        if (
+            gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id !== goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
+            || projectSearchId !== this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId
+        ) {
+
+            //  Data retrieved gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id is NO Longer the gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id requested to be displayed
+
+            return;  // EARLY RETURN
+        }
+
+        let goldStandard_FileContents_Entry: CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entry
+        let getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: Qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
+
+        const promises: Array<Promise<void>> = []
+
+        const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
+            this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(this.props.params.projectSearchId);
+
+        if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
+            throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId : " + this.props.params.projectSearchId )
+        }
+
+        { //  goldStandard_FileContents_Entry
+
+            const get_GoldStandard_FileContents_EntriesHolder_Result =
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entries().
+                get_GoldStandard_FileContents_EntriesHolder({ gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id })
+
+            if ( get_GoldStandard_FileContents_EntriesHolder_Result.data ) {
+
+                const goldStandard_FileContents_Entries_Holder = get_GoldStandard_FileContents_EntriesHolder_Result.data.goldStandard_FileContents_Entries_Holder
+
+                goldStandard_FileContents_Entry =
+                    goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id )
+
+                if ( ! goldStandard_FileContents_Entry ) {
+                    const msg = "goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) returned NOTHING for gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id: " + gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+
+            } else if ( get_GoldStandard_FileContents_EntriesHolder_Result.promise ) {
+
+                const promise = new Promise<void>( (resolve, reject) => { try {
+
+                    get_GoldStandard_FileContents_EntriesHolder_Result.promise.catch(reason => { reject(reason)})
+                    get_GoldStandard_FileContents_EntriesHolder_Result.promise.then(value_get_GoldStandard_FileContents_EntriesHolder_Result => { try {
+
+                        goldStandard_FileContents_Entry =
+                            value_get_GoldStandard_FileContents_EntriesHolder_Result.goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id )
+
+                        if ( ! goldStandard_FileContents_Entry ) {
+                            const msg = "_goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) returned NOTHING for gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id: " + gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
+                            console.warn(msg)
+                            throw Error(msg)
+                        }
+
+                        resolve()
+
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                promises.push( promise )
+
+            } else {
+                const msg = "get_GoldStandard_FileContents_EntriesHolder_Result no data or promise"
+                console.warn(msg)
+                throw Error(msg)
+            }
+        }
+
+
+
+        {
+            const peptideDistinct_Array =
+                this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+            const qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result =
+                qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch({
+                    goldStandard_Root_Selection,
+                    userOptions_Component_OptionsSelections: this._userOptions_Component_OptionsSelections,
+                    projectSearchId,
+                    peptideDistinct_Array,
+                    qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent
+                })
+
+            if ( qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.data ) {
+
+                getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.data
+
+            } else if ( qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise ) {
+
+                const promise = new Promise<void>( (resolve, reject) => { try {
+
+                    qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise.catch( reason => {
+                        try {
+                            if ( ! this._componentMounted ) {
+                                //  Component no longer mounted so exit
+                                return; // EARLY RETURN
+                            }
+
+                            this._show_LoadingData_Message = false
+                            this._showUpdatingMessage = false
+
+                            this.setState({ forceRerenderObject: {} });
+
+                            console.warn( "promise.catch(...): reason: ", reason );
+
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                    });
+
+                    qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise.then( value_GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result => { try {
+
+                        getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = value_GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
+
+                        resolve()
+
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }});
+
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }});
+
+                promises.push( promise )
+
+            } else {
+                throw Error("qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: no data or promise")
+            }
+        }
+
+        if ( promises.length === 0 ) {
+
+            this._get__qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result({
+                goldStandard_FileContents_Entry,
+                getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
+                goldStandard_Root_Selection, projectSearchId,
+                current_Initial_OR_User_Request_TrackingObject_Parameter
+            })
+
+            return; // EARLY RETURN
+        }
+
+        const promisesAll = Promise.all( promises )
+
+        promisesAll.catch(reason => {  })
+        promisesAll.then(value => { try {
+
+            if ( ! this._componentMounted ) {
+                //  Component no longer mounted so exit
+                return; // EARLY RETURN
+            }
+
             if (
-                gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id !== goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
+                gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id !== this._goldStandard_Root_SelectionEntry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
                 || projectSearchId !== projectSearchId
             ) {
 
@@ -309,170 +513,14 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
                 return;  // EARLY RETURN
             }
 
-            let goldStandard_FileContents_Entry: CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entry
-            let getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: Qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
+            this._get__qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result({
+                goldStandard_FileContents_Entry,
+                getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
+                goldStandard_Root_Selection, projectSearchId,
+                current_Initial_OR_User_Request_TrackingObject_Parameter
+            })
 
-            const promises: Array<Promise<void>> = []
-
-            const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =
-                this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
-                get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(this.props.params.projectSearchId);
-
-            if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
-                throw Error("commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId); returned NOTHING for projectSearchId : " + this.props.params.projectSearchId )
-            }
-
-            { //  goldStandard_FileContents_Entry
-
-                const get_GoldStandard_FileContents_EntriesHolder_Result =
-                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entries().
-                    get_GoldStandard_FileContents_EntriesHolder({ gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id })
-
-                if ( get_GoldStandard_FileContents_EntriesHolder_Result.data ) {
-
-                    const goldStandard_FileContents_Entries_Holder = get_GoldStandard_FileContents_EntriesHolder_Result.data.goldStandard_FileContents_Entries_Holder
-
-                    goldStandard_FileContents_Entry =
-                        goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id )
-
-                    if ( ! goldStandard_FileContents_Entry ) {
-                        const msg = "goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) returned NOTHING for gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id: " + gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
-                        console.warn(msg)
-                        throw Error(msg)
-                    }
-
-                } else if ( get_GoldStandard_FileContents_EntriesHolder_Result.promise ) {
-
-                    const promise = new Promise<void>( (resolve, reject) => { try {
-
-                        get_GoldStandard_FileContents_EntriesHolder_Result.promise.catch(reason => { reject(reason)})
-                        get_GoldStandard_FileContents_EntriesHolder_Result.promise.then(value_get_GoldStandard_FileContents_EntriesHolder_Result => { try {
-
-                            goldStandard_FileContents_Entry =
-                                value_get_GoldStandard_FileContents_EntriesHolder_Result.goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id )
-
-                            if ( ! goldStandard_FileContents_Entry ) {
-                                const msg = "_goldStandard_FileContents_Entries_Holder.get_GoldStandard_FileContents_Entry_For_gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id( goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id ) returned NOTHING for gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id: " + gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
-                                console.warn(msg)
-                                throw Error(msg)
-                            }
-
-                            resolve()
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-                    promises.push( promise )
-
-                } else {
-                    const msg = "get_GoldStandard_FileContents_EntriesHolder_Result no data or promise"
-                    console.warn(msg)
-                    throw Error(msg)
-                }
-            }
-
-
-
-            {
-                const peptideDistinct_Array =
-                    this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
-                        proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
-
-                const qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result =
-                    qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch({
-                        goldStandard_Root_Selection,
-                        userOptions_Component_OptionsSelections: this._userOptions_Component_OptionsSelections,
-                        projectSearchId,
-                        peptideDistinct_Array,
-                        qcViewPage_CommonData_To_AllComponents_From_MainComponent: this.props.params.qcViewPage_CommonData_To_AllComponents_From_MainComponent
-                    })
-
-                if ( qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.data ) {
-
-                    getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.data
-
-                } else if ( qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise ) {
-
-                    const promise = new Promise<void>( (resolve, reject) => { try {
-
-                        qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise.catch( reason => {
-                            try {
-                                // if ( ! _componentMounted ) {
-                                //     //  Component no longer mounted so exit
-                                //     return; // EARLY RETURN
-                                // }
-
-                                this.setState({
-                                    show_LoadingData_Message: false,
-                                    // showUpdatingMessage: false
-                                });
-
-                                console.warn( "promise.catch(...): reason: ", reason );
-
-                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-                        });
-
-                        qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result.promise.then( value_GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result => { try {
-
-                            getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = value_GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
-
-                            resolve()
-
-                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }});
-
-                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }});
-
-                    promises.push( promise )
-
-                } else {
-                    throw Error("qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: no data or promise")
-                }
-            }
-
-            if ( promises.length === 0 ) {
-
-                this._get__qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result({
-                    goldStandard_FileContents_Entry,
-                    getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
-                    goldStandard_Root_Selection, projectSearchId
-                })
-
-                return; // EARLY RETURN
-            }
-
-            const promisesAll = Promise.all( promises )
-
-            promisesAll.catch(reason => {  })
-            promisesAll.then(value => { try {
-
-                if ( ! this._componentMounted ) {
-                    //  Component no longer mounted so exit
-                    return; // EARLY RETURN
-                }
-
-                if (
-                    gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id !== this._goldStandard_Root_SelectionEntry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
-                    || projectSearchId !== projectSearchId
-                ) {
-
-                    //  Data retrieved gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id is NO Longer the gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id requested to be displayed
-
-                    return;  // EARLY RETURN
-                }
-
-                this._get__qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result({
-                    goldStandard_FileContents_Entry,
-                    getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
-                    goldStandard_Root_Selection, projectSearchId
-                })
-
-            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }}, 10 )
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
 
     /**
@@ -483,12 +531,14 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
      */
     private _get__qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result(
         {
-            goldStandard_FileContents_Entry, getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result, goldStandard_Root_Selection, projectSearchId
+            goldStandard_FileContents_Entry, getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result, goldStandard_Root_Selection, projectSearchId, current_Initial_OR_User_Request_TrackingObject_Parameter
         } : {
             goldStandard_FileContents_Entry: CommonData_LoadedFromServer_SingleSearch__GoldStandard_FileContents_Entry
             getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: Qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
             goldStandard_Root_Selection: QcViewPage_Common__GoldStandard_Statistics_Section__SelectGoldStandard_Component_SelectionEntry
             projectSearchId: number
+
+            current_Initial_OR_User_Request_TrackingObject_Parameter: object
         }
     ) {
 
@@ -499,7 +549,7 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
 
         if (
             goldStandard_Root_Selection.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id !== this._goldStandard_Root_SelectionEntry.gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id
-            || projectSearchId !== projectSearchId
+            || projectSearchId !== this.props.params.qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent.projectSearchId
         ) {
 
             //  Data retrieved gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id is NO Longer the gold_standard_for_scan_file_root__project_scnfl_mapping_tbl__id requested to be displayed
@@ -514,7 +564,7 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
 
         const qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result =
             qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch({
-                qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
+                qc_GoldStandard__GetData_And_Compute_Precision_And_Recall_For_SingleSearch_Result: getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result,
                 goldStandard_Root_Selection,
                 userOptions_Component_OptionsSelections: this._userOptions_Component_OptionsSelections,
                 projectSearchId,
@@ -527,30 +577,38 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
 
         if ( qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result.data ) {
 
+            if ( current_Initial_OR_User_Request_TrackingObject_Parameter !== this._current_Initial_OR_User_Request_TrackingObject ) {
+
+                //  User changed parameters so stop processing this request to wait for following request for latest User parameters
+
+                return;
+            }
+
             this._goldStandard_FileContents_Entry = goldStandard_FileContents_Entry
 
             this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
 
             this._getData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result = qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result.data
 
-            this.setState({
-                show_LoadingData_Message: false,
-                // showUpdatingMessage: false
-            });
+
+            this._show_LoadingData_Message = false
+            this._showUpdatingMessage = false
+
+            this.setState({ forceRerenderObject: {} });
 
         } else if ( qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result.promise ) {
 
             qc_GoldStandard__GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result.promise.catch( reason => {
                 try {
-                    // if ( ! _componentMounted ) {
-                    //     //  Component no longer mounted so exit
-                    //     return; // EARLY RETURN
-                    // }
+                    if ( ! this._componentMounted ) {
+                        //  Component no longer mounted so exit
+                        return; // EARLY RETURN
+                    }
 
-                    this.setState({
-                        show_LoadingData_Message: false,
-                        // showUpdatingMessage: false
-                    });
+                    this._show_LoadingData_Message = false
+                    this._showUpdatingMessage = false
+
+                    this.setState({ forceRerenderObject: {} });
 
                     console.warn( "promise.catch(...): reason: ", reason );
 
@@ -574,16 +632,23 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
                     return;  // EARLY RETURN
                 }
 
+                if ( current_Initial_OR_User_Request_TrackingObject_Parameter !== this._current_Initial_OR_User_Request_TrackingObject ) {
+
+                    //  User changed parameters so stop processing this request to wait for following request for latest User parameters
+
+                    return;
+                }
+
                 this._goldStandard_FileContents_Entry = goldStandard_FileContents_Entry
 
                 this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result = getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result
 
                 this._getData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result = value_GetData_And_Compute_MatchesTable_Objects_For_SingleSearch_Result
 
-                this.setState({
-                    show_LoadingData_Message: false,
-                    // showUpdatingMessage: false
-                });
+                this._show_LoadingData_Message = false
+                this._showUpdatingMessage = false
+
+                this.setState({ forceRerenderObject: {} });
 
             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
             });
@@ -605,7 +670,7 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
 
             let matchedTableContents: JSX.Element
 
-            if ( ( ! this.state.show_LoadingData_Message ) && this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result ) {
+            if ( ( ! this._show_LoadingData_Message ) && ( ! this._showUpdatingMessage ) && this._getData_And_Compute_Precision_And_Recall_For_SingleSearch_Result ) {
 
                 const projectSearchId = this.props.params.projectSearchId
 
@@ -725,7 +790,7 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
                                 callback__UserOptionsChanged={ this._userOptions_Changed_Callback_BindThis }
                             />
 
-                            { this.state.show_LoadingData_Message ? (
+                            { this._show_LoadingData_Message ? (
 
                                 <div>
                                     LOADING DATA
@@ -738,27 +803,47 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
                                         Gold Standard Statistics
                                     </h3>
 
-                                    <div>
-                                        <span>Recall: </span>
-                                        <span>{ recall_ResultDisplay }</span>
-                                    </div>
-                                    <div>
-                                        <span>Precision: </span>
-                                        <span>{ precision_ResultDisplay }</span>
+                                    <div style={ { position: "relative" } }>
+                                        <div>
+                                            <span>Recall: </span>
+                                            <span>{ recall_ResultDisplay }</span>
+                                        </div>
+                                        <div>
+                                            <span>Precision: </span>
+                                            <span>{ precision_ResultDisplay }</span>
+                                        </div>
+
+                                        { this._showUpdatingMessage ? (
+                                            <div
+                                                className=" standard-background-color "
+                                                style={ { position: "absolute", inset: 0 } }
+                                            >
+                                                Updating...
+                                            </div>
+                                        ) : null }
                                     </div>
                                 </div>
                             )}
                         </div>
 
 
-                        { ! this.state.show_LoadingData_Message ? (
+                        { ! this._show_LoadingData_Message ? (
 
-                            <div className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom standard-border-color-medium"
-                                 style={ { overflowY: "auto", overflowX: "auto", borderStyle: "solid", borderWidth: 1 } }
+                            <div
+                                className=" top-level single-entry-variable-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom standard-border-color-medium"
+                                style={ { overflowY: "auto", overflowX: "auto", borderStyle: "solid", borderWidth: 1 } }
                             >
                                 {/*  Main Body:  Scrollable Div  */}
 
-                                { matchedTableContents }
+                                <div style={ { position: "relative" } }>
+                                    { matchedTableContents }
+
+                                    { this._showUpdatingMessage ? (
+                                        <div className=" block-updating-overlay-container ">
+                                            Updating...
+                                        </div>
+                                    ) : null }
+                                </div>
                             </div>
                             ) : null }
 
@@ -788,3 +873,4 @@ class Qc_SingleSearch_GoldStandard_Statistics_Section__ShowDetails_Overlay_Compo
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
 }
+

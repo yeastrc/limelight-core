@@ -263,6 +263,14 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
                     if ( scanNumbers_InGoldStandard_WhichHave_AtLeastOne_PSM__MapEntry ) {
 
                         for ( const psmId of scanNumbers_InGoldStandard_WhichHave_AtLeastOne_PSM__MapEntry.PSMs_AllForScanNumber_Map_Key_PsmId.keys() ) {
+
+                            if ( ! matchesTable_Objects_For_SingleSearch_For_ScanNumber.peptides_For_All_PSM_IDs_for_Scan_Number__Map_Key_PSM_Id ) {
+                                const msg = " matchesTable_Objects_For_SingleSearch_For_ScanNumber.peptides_For_All_PSM_IDs_for_Scan_Number__Map_Key_PSM_Id contains NOTHING for goldStandard_File_Entry.scanNumber: " + goldStandard_File_Entry.scanNumber
+                                console.warn(msg)
+
+                                throw Error(msg)
+                            }
+
                             const peptides_For_PSM_ID = matchesTable_Objects_For_SingleSearch_For_ScanNumber.peptides_For_All_PSM_IDs_for_Scan_Number__Map_Key_PSM_Id.get( psmId )
 
                             let peptideIndex = 0;
@@ -278,8 +286,8 @@ export const qc_GoldStandard_MatchedData_Table_Create = function (
 
                                 const psm_All_GeneratedPeptideStrings_Element = (
                                     <span key={ psmId + "_" + peptideIndex }>
-                                            { peptide }
-                                        </span>
+                                        { peptide }
+                                    </span>
                                 )
                                 psm_All_GeneratedPeptideStrings_ElementsArray.push( psm_All_GeneratedPeptideStrings_Element )
 
