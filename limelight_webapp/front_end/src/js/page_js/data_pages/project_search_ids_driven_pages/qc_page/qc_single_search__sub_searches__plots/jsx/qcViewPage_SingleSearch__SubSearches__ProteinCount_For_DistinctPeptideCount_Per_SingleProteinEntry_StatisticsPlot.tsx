@@ -463,9 +463,9 @@ export class QcViewPage_SingleSearch__SubSearches__ProteinCount_For_DistinctPept
                     }
 
                     const peptideDistinct_Count_Map_Key_ProteinSequenceVersionId = peptideDistinct_Count_Map_Key_ProteinSequenceVersionId_Map_Key_SearchSubGroup_Id.get(searchSubGroup.searchSubGroup_Id)
-                    if ( ! peptideDistinct_Count_Map_Key_ProteinSequenceVersionId ) {
+                    if ( ( ! peptideDistinct_Count_Map_Key_ProteinSequenceVersionId ) || peptideDistinct_Count_Map_Key_ProteinSequenceVersionId.size === 0 ) {
 
-                        //  No data for projectSearchId
+                        //  No data for searchSubGroup_Id
 
                         continue; // EARLY CONTINUE
                     }
