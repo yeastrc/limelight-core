@@ -639,6 +639,9 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         }
 
         const deleteComplete_Callback = () => {
+
+            //  In Parent component of Search List so after delete searches is complete just reload the page
+
             limelight__ReloadPage_Function()
         }
 

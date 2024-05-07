@@ -347,6 +347,17 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
 
         if ( this.props.callback_SearchDeleted ) {
 
+            this._search_Selected_InProgress.delete_Entry_For_ProjectSearchId( params.projectSearchId )
+
+            //  Pass new selection up to parent via callback
+
+            const selected_Searches_Data_Object = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object({
+                search_Selected_InProgress: this._search_Selected_InProgress,
+                searchesSearchTagsFolders_Result_Root: this.props.searchesSearchTagsFolders_Result_Root
+            })
+
+            this.props.callback_updateSelected_Searches({ selected_Searches_Data_Object });
+
             this.setState( { show_UpdatingMessage: true } )
 
             window.setTimeout( () => {
