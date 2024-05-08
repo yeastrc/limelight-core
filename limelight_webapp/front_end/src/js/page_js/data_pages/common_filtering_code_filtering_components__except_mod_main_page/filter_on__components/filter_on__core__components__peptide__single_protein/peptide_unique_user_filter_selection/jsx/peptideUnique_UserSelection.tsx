@@ -176,9 +176,9 @@ export class PeptideUnique_UserSelection extends React.Component< PeptideUnique_
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
-                            <input type="checkbox" checked={ peptideUnique_UserSelection }
-                                   title="Check to only show peptides only found in this protein."
-                                   onChange={ this._inputFieldChanged_BindThis }
+                            <input
+                                type="checkbox" checked={ peptideUnique_UserSelection }
+                                onChange={ this._inputFieldChanged_BindThis }
                             />
                         </div>
                     </div>
