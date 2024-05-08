@@ -104,7 +104,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
      */
     private _userSelections_Map_Key_proteinSequenceVersionId: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
 
-    private _userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
+    // private _userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate: Map<number, ProteinPositionFilter_UserInput__Component__UserSelectionData_SingleProtein>
 
     //  Loading Promise in progress for this._proteinData_Local and then populate this._userSelections_Map_Key_proteinSequenceVersionId
     private _proteinData_GetData_Populate__userSelections_Map_Key_proteinSequenceVersionId_Promise: Promise<void>
@@ -170,12 +170,19 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
             if ( this.props.userSelections !== prevProps.userSelections ) {
 
                 if ( this._proteinData_Local
-                    && this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate !== this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
+
+                    //  Remove this part of 'if' since breaks updating the display when the "clear all" in "Current filters:" is clicked.  No problem observed with infinite loop of setState(...)
+
+                    // && this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate !== this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
                     ) {
 
                     this._userSelections_Map_Key_proteinSequenceVersionId = _copy_UserSelectionsToLocal({ userSelections: this.props.userSelections, proteinData: this._proteinData_Local });
 
-                    this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate = this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
+                    // this._userSelections_Map_Key_proteinSequenceVersionId_UpdatedIn_ComponentDidUpdate = this._userSelections_Map_Key_proteinSequenceVersionId //  Add to stop infinite loop of setState(...)
+
+                    //  Uncomment this log for tracking looping calls to this.setState
+
+                    // console.warn( "ProteinPositionFilter_UserInput__Component: componentDidUpdate(...) calling 'this.setState( { objectForceRerender: {} } )' ")
 
                     this.setState( { objectForceRerender: {} } )
                 }
