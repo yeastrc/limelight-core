@@ -192,7 +192,9 @@ export class ModPage_OptionsSection_UserInput_Display_MainContent_Component exte
                         {/*  Columns in "flex".  Each column has in CSS: "  flex-grow: 0; flex-shrink: 0;" so that the width of each stays at 'max-content'  */}
 
                         {/*  <div> Holding inner flexbox and "Update Visualization" button below it  */}
-                        <div>
+
+                        {/*  Column In "flex"  */}
+                        <div className="viz-form-section">
 
                             {/*  Inner FlexBox -- First 4 blocks as separate items  */}
                             <div
