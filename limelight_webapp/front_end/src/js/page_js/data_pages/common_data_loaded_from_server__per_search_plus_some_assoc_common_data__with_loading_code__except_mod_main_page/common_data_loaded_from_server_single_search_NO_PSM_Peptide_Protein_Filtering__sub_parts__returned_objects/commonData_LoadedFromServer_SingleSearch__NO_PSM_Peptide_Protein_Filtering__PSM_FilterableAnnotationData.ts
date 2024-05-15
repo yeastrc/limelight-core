@@ -426,7 +426,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                         include_DecoyPSM
                     };
 
-                    const url = "d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0002";
+                    const url = "d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0003";
 
                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 

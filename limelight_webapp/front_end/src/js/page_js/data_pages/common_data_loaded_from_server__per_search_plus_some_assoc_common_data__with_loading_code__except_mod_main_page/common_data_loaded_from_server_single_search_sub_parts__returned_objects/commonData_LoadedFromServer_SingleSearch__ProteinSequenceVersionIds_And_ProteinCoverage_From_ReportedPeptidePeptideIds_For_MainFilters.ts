@@ -410,7 +410,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds
 
                     console.log("AJAX Call to get protein-coverage-per-reported-peptide-id START, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0003";
+                    const url = "d/rws/for-page/psb/protein-coverage-per-reported-peptide-id-for-rep-pept-ids-single-project-search-id-version-0004";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 

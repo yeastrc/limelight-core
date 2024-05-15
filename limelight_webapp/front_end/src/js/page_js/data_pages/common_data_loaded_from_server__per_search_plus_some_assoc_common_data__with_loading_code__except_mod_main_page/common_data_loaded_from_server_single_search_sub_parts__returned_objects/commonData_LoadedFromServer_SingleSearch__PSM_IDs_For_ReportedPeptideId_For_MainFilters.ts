@@ -264,7 +264,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPepti
 
                     console.log("START: AJAX Call to get psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
+                    const url = "d/rws/for-page/psb/psm-ids-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 

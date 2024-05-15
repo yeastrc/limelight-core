@@ -334,7 +334,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                         projectSearchId : this._projectSearchId, include_DecoyPSM
                     };
 
-                    const url = "d/rws/for-page/psb/psm-table-data-unfiltered-for-single-project-search-id-version-0002";
+                    const url = "d/rws/for-page/psb/psm-table-data-unfiltered-for-single-project-search-id-version-0003";
 
                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 

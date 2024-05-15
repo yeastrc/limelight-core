@@ -304,7 +304,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Variable_Dynamic_Modifica
 
                     console.log("AJAX Call to get psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001 START, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
+                    const url = "d/rws/for-page/psb/psm-variable-dynamic-modification-masses-per-reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 

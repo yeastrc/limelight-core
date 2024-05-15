@@ -80,7 +80,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0001;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_INFO_SEARCHCRITERIA_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )

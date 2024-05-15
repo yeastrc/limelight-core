@@ -606,7 +606,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                         feature_detection_root__project_scnfl_mapping_tbl__id, optional__feature_detection_persistent_feature_entry_id
                     };
 
-                    const url =  "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url =  "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-count--single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 
@@ -676,7 +676,7 @@ export class CommonData_LoadedFromServer_FeatureDetection__MappingOf_PersistentT
                         limit_Count
                     };
 
-                    const url = "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url = "d/rws/for-page/fdb/feature-detection-map-persistent-to-singular-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 

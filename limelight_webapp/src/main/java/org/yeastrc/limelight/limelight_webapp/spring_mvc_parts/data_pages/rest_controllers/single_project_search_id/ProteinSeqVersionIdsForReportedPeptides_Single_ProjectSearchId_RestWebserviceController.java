@@ -98,7 +98,7 @@ public class ProteinSeqVersionIdsForReportedPeptides_Single_ProjectSearchId_Rest
 //	/**
 //	 * Path for this Controller
 //	 */
-//	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+//	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PROTEIN_SEQ_V_ID_LIST_PER_REPORTED_PEPTIDE_ID_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 //	
 //	/**
 //	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )

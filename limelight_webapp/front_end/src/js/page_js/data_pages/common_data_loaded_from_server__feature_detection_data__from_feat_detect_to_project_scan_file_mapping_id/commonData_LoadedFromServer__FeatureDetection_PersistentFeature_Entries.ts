@@ -228,7 +228,7 @@ export class CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Ent
                         feature_detection_root__project_scnfl_mapping_tbl__id
                     };
 
-                    const url = "d/rws/for-page/fdb/feature-detection-persistent-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0001";
+                    const url = "d/rws/for-page/fdb/feature-detection-persistent-feature-entries-single-project-search-id-feature-detection-root-prj-scnfl-mapping-tbl-id-version-0002";
 
                     console.log("START:  AJAX Call to get " + url + ", Now: " + new Date() );
 

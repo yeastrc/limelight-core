@@ -274,7 +274,7 @@ export class CommonData_LoadedFromServer_SingleSearch__Num_PSMs_By_SearchSubGrou
 
                         console.log("AJAX Call to get psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
 
-                        const url = "d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
+                        const url = "d/rws/for-page/psb/psm-count-per-reported-peptide-id-sub-search-group-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
                         const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 

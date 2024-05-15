@@ -266,7 +266,7 @@
 //
 //             this._promiseInProgress = new Promise<void>( (resolve, reject) => {
 //                 try {
-//                     const url = "d/rws/for-page/psb/psm-filterable-annotation-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0001";
+//                     const url = "d/rws/for-page/psb/psm-filterable-annotation-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0002";
 //
 //                     const requestData = { projectSearchId, psmFilterableAnnotationTypeIds, reportedPeptideIds, searchDataLookupParams_For_Single_ProjectSearchId };
 //

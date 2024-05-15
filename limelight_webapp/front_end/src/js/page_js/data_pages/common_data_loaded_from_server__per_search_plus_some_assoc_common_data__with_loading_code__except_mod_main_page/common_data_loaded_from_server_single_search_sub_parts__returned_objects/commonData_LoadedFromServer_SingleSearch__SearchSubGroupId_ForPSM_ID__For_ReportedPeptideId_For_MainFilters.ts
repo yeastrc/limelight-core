@@ -286,7 +286,7 @@ export class CommonData_LoadedFromServer_SingleSearch__SearchSubGroupId_ForPSM_I
 
                     console.log("AJAX Call to get d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id START, Now: " + new Date() );
 
-                    const url = "d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0001";
+                    const url = "d/rws/for-page/psb/search-sub-search-group-id_psm-id_reported-peptide-id-for-rep-pept-ids-searchcriteria-single-project-search-id-version-0002";
 
                     const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
