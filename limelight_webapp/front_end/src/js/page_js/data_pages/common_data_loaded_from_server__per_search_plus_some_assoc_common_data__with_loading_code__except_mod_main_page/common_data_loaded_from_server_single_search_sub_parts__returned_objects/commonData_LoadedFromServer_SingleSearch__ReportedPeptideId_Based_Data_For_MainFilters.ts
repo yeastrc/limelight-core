@@ -694,7 +694,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ReportedPeptideId_Based_D
 
             //  Return already in progress Promise
 
-            this._load_Num_PSM_Data_From_Num_PSMs_Webservice__InProgressPromise; // EARLY RETURN
+            return this._load_Num_PSM_Data_From_Num_PSMs_Webservice__InProgressPromise; // EARLY RETURN
         }
 
         const promise_load = this._load_Num_PSM_Data_From_Num_PSMs_Webservice_Actual();
