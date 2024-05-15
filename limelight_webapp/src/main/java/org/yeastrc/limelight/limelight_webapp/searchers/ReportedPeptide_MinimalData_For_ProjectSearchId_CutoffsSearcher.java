@@ -238,7 +238,6 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 		
 		sqlSB.append( SQL_FIRST_PART );
 		
-		
 		if ( ! proteinCutoffValuesList.isEmpty() ) {
 			
 			// Filter on Protein Annotations.  Subquery to remove duplicate reported_peptide_id 
@@ -519,6 +518,10 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 
 				if ( ( ! resultList_Temp.isEmpty() )
 						&& ( ( psmCutoffValuesList != null && psmCutoffValuesList.size() > 1 )
+								
+								//  NO PSM Filters AND Search has PSMs that are Decoy
+								|| ( ( psmCutoffValuesList == null || psmCutoffValuesList.size() == 0 ) && searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() )
+										
 								|| ( modificationPositionCutoffValuesList != null && ( ! modificationPositionCutoffValuesList.isEmpty() ) )
 								|| minimumNumberOfPSMsPerReportedPeptide > 1 ) ) {
 
