@@ -45,6 +45,9 @@ import {CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Hol
 import {CommonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters_Holder} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters";
 import {PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 import {Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds_For_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_Filter} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds_For_PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_Filter";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 /**
  * object of this class is returned from function 'getReportedPeptideIdsForDisplay_AllProjectSearchIds' which is in this file
@@ -94,6 +97,7 @@ class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class__MainMethod_Requ
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
     peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
@@ -372,6 +376,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: requestParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject: requestParams.reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject: requestParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: requestParams.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject: requestParams.scan_RetentionTime_MZ_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject: requestParams.peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject: requestParams.peptideSequence_UserSelections_StateObject,
@@ -794,6 +799,7 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: requestParams.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                         reporterIonMass_UserSelections_StateObject: requestParams.reporterIonMass_UserSelections_StateObject,
                         scanFilenameId_On_PSM_Filter_UserSelection_StateObject: requestParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+                        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: requestParams.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
                         scan_RetentionTime_MZ_UserSelection_StateObject: requestParams.scan_RetentionTime_MZ_UserSelection_StateObject,
                         peptideUnique_UserSelection_StateObject: requestParams.peptideUnique_UserSelection_StateObject,
                         psm_Charge_Filter_UserSelection_StateObject: requestParams.psm_Charge_Filter_UserSelection_StateObject,

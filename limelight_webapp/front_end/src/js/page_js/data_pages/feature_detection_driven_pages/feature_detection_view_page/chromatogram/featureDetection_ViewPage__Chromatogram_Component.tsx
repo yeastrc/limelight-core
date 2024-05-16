@@ -90,6 +90,9 @@ import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTab
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 
 const _CHART_WIDTH = 800
@@ -531,6 +534,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : undefined,
                             reporterIonMass_UserSelections_StateObject : undefined,
                             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.featureDetection_ViewPage__Chromatogram_Component_Params.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,  // Filter on select searches Search Scan File Id
+                            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : undefined,
                             scan_RetentionTime_MZ_UserSelection_StateObject : undefined,
                             peptideUnique_UserSelection_StateObject : undefined,
                             peptideSequence_UserSelections_StateObject : undefined,

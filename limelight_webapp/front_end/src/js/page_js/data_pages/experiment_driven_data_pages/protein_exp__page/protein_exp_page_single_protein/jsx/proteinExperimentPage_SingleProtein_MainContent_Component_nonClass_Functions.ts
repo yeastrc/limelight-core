@@ -77,6 +77,9 @@ import {
     PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject__SelectionEnum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
 import { PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 
 /**
@@ -106,6 +109,7 @@ const initialPopulate = async function({
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
     reporterIonMass_UserSelections_StateObject,
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
     scan_RetentionTime_MZ_UserSelection_StateObject,
     psm_Charge_Filter_UserSelection_StateObject,
     peptideUnique_UserSelection_StateObject,
@@ -126,6 +130,7 @@ const initialPopulate = async function({
     modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass : ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
     scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
@@ -198,6 +203,7 @@ Promise<{
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
             reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
             psm_Charge_Filter_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,

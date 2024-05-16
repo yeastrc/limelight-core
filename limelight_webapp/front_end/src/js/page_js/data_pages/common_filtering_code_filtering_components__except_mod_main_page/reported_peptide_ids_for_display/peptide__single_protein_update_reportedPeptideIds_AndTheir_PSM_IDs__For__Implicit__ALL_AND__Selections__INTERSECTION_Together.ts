@@ -49,6 +49,9 @@ import {
 import { CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 
 ////////////////////////////////////////////
@@ -147,6 +150,7 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             dataPage_common_Flags_SingleSearch,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
             psm_Charge_Filter_UserSelection_StateObject,
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
@@ -163,6 +167,7 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             dataPage_common_Flags_SingleSearch: DataPage_common_Flags_SingleSearch
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
             scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
             psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
             psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject : Psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject
@@ -185,6 +190,13 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             const result = this._getFor__SelectionType_ALL___For__ScanFilenameId_On_PSM_Filter_UserSelection({
                 reportedPeptideIds_ProteinId_Params_PassedIn,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+            });
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push( result );
+        }
+        {
+            const result = this._getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection({
+                reportedPeptideIds_ProteinId_Params_PassedIn,
+                scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
             });
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push( result );
         }
@@ -447,6 +459,242 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
                     throw Error(msg);
                 }
                 if ( scanFilenameIds_Selected.has( psmTblData_For_PsmId.searchScanFileId ) ) {
+                    psmIds_Include__FilteredFor_SearchScanFileId.add( psmId );
+                }
+            }
+
+            if ( psmIds_Include__FilteredFor_SearchScanFileId.size === 0 ) {
+                //  No PSMs are in selected so skip
+                continue; // EARLY CONTINUE
+            }
+
+            const entry = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS({
+                reportedPeptideId, psmIds_Include: psmIds_Include__FilteredFor_SearchScanFileId
+            });
+
+            resultData.set_Entry_Using_entry_reportedPeptideId_AsKey( entry );
+        }
+
+        return resultData; // EARLY RETURN
+    }
+
+    //////////////////////////////////////////////////////
+
+    /**
+     * User has selected 'Filter On Scan Number:'
+     *
+     */
+    private _getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection(
+        {
+            reportedPeptideIds_ProteinId_Params_PassedIn,
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        }: {
+            reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        }): Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
+
+        if ( ( ! scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject )
+            || ( ! scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.is_AnySelections() ) ) {
+
+            //  NO Filtering
+
+            const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
+                noFilter_OR_FilterHasNoData: true, includeAll_ReportedPeptideIds: false
+            });
+            const result : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS = {
+                result: resultData,
+                promise: undefined
+            };
+
+            return result; // EARLY RETURN
+        }
+
+        const getData_Result = this._getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_GetData({})
+        if ( getData_Result.data ) {
+            return { promise: undefined, result: this._getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_AfterGetData({
+                    reportedPeptideIds_ProteinId_Params_PassedIn,
+                    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.data.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
+                    psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.data.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
+                })
+            }
+        } else if ( getData_Result.promise ) {
+            return { result: undefined, promise: new Promise<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>((resolve, reject) => { try {
+                    getData_Result.promise.catch(reason => reject(reason));
+                    getData_Result.promise.then(value_getData_Result => { try {
+                        const result = this._getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_AfterGetData({
+                            reportedPeptideIds_ProteinId_Params_PassedIn,
+                            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+                            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
+                            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
+                        })
+                        resolve(result);
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            }
+        } else {
+            throw Error("getData_Result: no data or promise")
+        }
+    }
+
+    /**
+     * User has selected 'Filter On Scan Number:'  --  Get Data
+     *
+     */
+    private _getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_GetData(
+        {
+        }: {
+        }): {
+        data: {
+            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
+        }
+        promise: Promise<{
+            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
+        }>
+    } {
+        let psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder = undefined
+        let psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder = undefined
+
+        const promises: Array<Promise<void>> = [];
+
+        { // psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+            const get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result =
+                this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters().
+                get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch();
+            if ( get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
+                psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder = get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.data.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+            } else if ( get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise ) {
+                const promise = new Promise<void>((resolve, reject) => {try {
+                    get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch(reason => { reject(reason)})
+                    get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then(value_get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result => { try {
+                        psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder = value_get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder;
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            } else {
+                throw Error("get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result: no data or promise")
+            }
+        }
+        {
+            const get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result =
+                this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters().
+                get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch();
+            if ( get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.data ) {
+                psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.data.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
+            } else if ( get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise ) {
+                const promise = new Promise<void>((resolve, reject) => {try {
+                    get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.catch(reason => { reject(reason)})
+                    get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.promise.then(value_get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result => { try {
+                        psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = value_get_PSM_TblData_For_ReportedPeptideIdHolder_AllForSearch_Result.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder;
+                        resolve();
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                promises.push(promise);
+            } else {
+                throw Error("get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result: no data or promise")
+            }
+        }
+
+        if ( promises.length === 0 ) {
+
+            //  EARLY RETURN
+
+            return { promise: undefined, data: {
+                    psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
+                }}
+        }
+
+        const promises_All = Promise.all(promises)
+
+        return { data: undefined, promise: new Promise<{
+                psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+                psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
+            }>((resolve, reject) => { try {
+                promises_All.catch(reason => reject(reason));
+                promises_All.then(noValue => { try {
+                    resolve({ psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder, psmTblData_For_ReportedPeptideId_For_MainFilters_Holder });
+                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        }
+    }
+
+    /**
+     * User has selected 'Filter On Scan Number:'  --  After Get Data
+     *
+     */
+    private _getFor__SelectionType_ALL___For__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_AfterGetData(
+        {
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+            reportedPeptideIds_ProteinId_Params_PassedIn,
+
+            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder
+        }: {
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+            reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
+            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+            psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder
+
+        }): Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS {
+
+        const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
+            noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: false
+        });
+
+        for (const reportedPeptideId of reportedPeptideIds_ProteinId_Params_PassedIn.reportedPeptideIds_StartingPointForFiltering) {
+
+            const psmTblData_For_ReportedPeptideId = psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId);
+            if ( ! psmTblData_For_ReportedPeptideId ) {
+                const msg = "psmTblData_For_ReportedPeptideId_For_MainFilters_Holder.get_PsmTblData_For_ReportedPeptideId(reportedPeptideId); returned nothing. " + reportedPeptideId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            let psmIds_to_CheckForSearchScanFileId = psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(reportedPeptideId);
+            if ( ! psmIds_to_CheckForSearchScanFileId ) {
+                const msg = "psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(reportedPeptideId); returned nothing. " + reportedPeptideId;
+                console.warn(msg);
+                throw Error(msg);
+            }
+
+            const psmIds_Include__FilteredFor_SearchScanFileId = new Set<number>();
+
+            for ( const psmId of psmIds_to_CheckForSearchScanFileId ) {
+
+                const psmTblData_For_PsmId = psmTblData_For_ReportedPeptideId.get_PsmTblData_For_PsmId(psmId);
+                if ( ! psmTblData_For_PsmId ) {
+                    const msg = "psmTblData_For_ReportedPeptideId.get_PsmTblData_For_PsmId(reportedPeptideId); returned nothing. " + psmId;
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+
+                let psm_FoundInSelection = false
+
+                for ( const selection_Entry of scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.get__scanNumber_ScanFilenameIds_ProjectSearchIds_Selections() ) {
+
+                    if ( psmTblData_For_PsmId.scanNumber === selection_Entry.scanNumber ) {
+
+                        if ( selection_Entry.allSearches_Selected ) {
+                            psm_FoundInSelection = true
+                            break
+                        }
+                        if ( selection_Entry.wholeSearches_Selected_ProjectSearchIds && selection_Entry.wholeSearches_Selected_ProjectSearchIds.has( this._projectSearchId ) ) {
+                            psm_FoundInSelection = true
+                            break
+                        }
+                        if ( selection_Entry.searchScanFile_Ids_Selected && selection_Entry.searchScanFile_Ids_Selected.has( psmTblData_For_PsmId.searchScanFileId ) ) {
+                            psm_FoundInSelection = true
+                            break
+                        }
+                    }
+                }
+
+                if ( psm_FoundInSelection ) {
                     psmIds_Include__FilteredFor_SearchScanFileId.add( psmId );
                 }
             }

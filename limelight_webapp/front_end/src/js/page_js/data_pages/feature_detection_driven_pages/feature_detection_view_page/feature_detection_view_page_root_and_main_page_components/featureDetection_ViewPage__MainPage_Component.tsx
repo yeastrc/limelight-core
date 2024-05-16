@@ -85,6 +85,9 @@ import {
 } from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page__protein_list/js/proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides";
 import { QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 /////////////////////////
 
@@ -336,6 +339,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined,
                         reporterIonMass_UserSelections_StateObject: undefined,
                         scanFilenameId_On_PSM_Filter_UserSelection_StateObject: undefined,
+                        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: undefined,
                         scan_RetentionTime_MZ_UserSelection_StateObject: undefined,
                         peptideUnique_UserSelection_StateObject: undefined,
                         peptideSequence_UserSelections_StateObject: undefined,

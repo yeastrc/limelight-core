@@ -25,6 +25,9 @@ import {currentFiltersDisplayBlock__PSM_Exclude_IndependentDecoy_PSMs_UserSelect
 import {Page_MainFiltersDisplay_CommonDisplayContainer_Component} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__each_root_component_and_their_data_objects/common/page_MainFiltersDisplay_CommonDisplayContainer_Component";
 import {currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PeptideSequence_MissedCleavageCount_UserSelections";
 import {currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections";
+import {
+    currentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/current_filters_display_block__common_and_page_specific/current_filters_display_block__common_display_elements/currentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection";
 
 
 
@@ -171,6 +174,18 @@ export class Peptide_Page_FiltersDisplay extends React.Component< Peptide_Page_F
 
                 const currentFilter = currentFiltersDisplayBlock__Peptide_SingleProtein__PeptideList__FilterOnCounts_PSM_UserSelections({
                     peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject: this.props.peptide_Page_FiltersDisplay_ComponentData.peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+                });
+                if ( currentFilter ) {
+                    currentFiltersArray.push( currentFilter );
+                }
+            }
+
+            {  //  Scan Number Filter
+                const currentFilter = currentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection({
+                    scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this.props.peptide_Page_FiltersDisplay_ComponentData.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+                    projectSearchIds: this.props.peptide_Page_FiltersDisplay_ComponentData.projectSearchIds,
+                    dataPageStateManager: this.props.peptide_Page_FiltersDisplay_ComponentData.dataPageStateManager,
+                    commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder: this.props.peptide_Page_FiltersDisplay_ComponentData.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
                 });
                 if ( currentFilter ) {
                     currentFiltersArray.push( currentFilter );

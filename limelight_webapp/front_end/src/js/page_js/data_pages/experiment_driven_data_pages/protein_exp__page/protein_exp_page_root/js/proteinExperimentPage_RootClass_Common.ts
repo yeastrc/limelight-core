@@ -82,6 +82,9 @@ import {
 import {
 	experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment
 } from "page_js/data_pages/experiment_data_pages_common/experiment_SelectedConditionIdsAndPaths_Clear_CentralStateManagerObject_If_AnySelection_NOT_Found_InExperiment";
+import {
+	ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
 
 
 
@@ -111,6 +114,8 @@ export class ProteinExperimentPage_RootClass_Common {
 	private _proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: ProteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject
 
 	private _scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+	private _scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+
 	private _scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
 
 	private _psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
@@ -337,6 +342,22 @@ export class ProteinExperimentPage_RootClass_Common {
 				this._scan_RetentionTime_MZ_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
+		{  //  this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData = this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._proteinExperimentPageRoot_CentralStateManagerObjectClass.set_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData({ scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData });
+			}
+			this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject = new ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._proteinExperimentPageRoot_CentralStateManagerObjectClass.get_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
 		{ // this._psm_Charge_Filter_UserSelection_StateObject
 
@@ -491,7 +512,8 @@ export class ProteinExperimentPage_RootClass_Common {
 					proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject: this._proteinList_FilterOnCounts_psm_peptide_uniquePeptide_UserSelections_StateObject,
 					scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
 					scan_RetentionTime_MZ_UserSelection_StateObject : this._scan_RetentionTime_MZ_UserSelection_StateObject,
-					psm_Charge_Filter_UserSelection_StateObject : this._psm_Charge_Filter_UserSelection_StateObject
+					psm_Charge_Filter_UserSelection_StateObject : this._psm_Charge_Filter_UserSelection_StateObject,
+					scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 				}
 
 				const props : ProteinExperimentPage_Display_Root_Component_Props = {

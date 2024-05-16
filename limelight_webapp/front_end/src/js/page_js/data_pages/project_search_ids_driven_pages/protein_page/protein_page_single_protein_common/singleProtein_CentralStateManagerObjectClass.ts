@@ -46,6 +46,7 @@ const _FILTER_ON_SCAN_RETENTION_TIME_MZ_USER_SELECTION_ENCODED_STATE_DATA_ENCODI
 const _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'n';
 const _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'o';
 const _PEPTIDE_MEETS_DIGESTION_AKA_TRYPTIC_PEPTIDE_ETC_USER_SELECTION__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'p';
+const _SCAN_NUMBER_SCAN_FILE_NAME_ID_PROJECT_SEARCH_ID_ON_PSM_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME = 'q';
 
 /**
  * 
@@ -64,6 +65,7 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		generatedPeptideContents_UserSelections__EncodedStateData?: any
 		peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData?: any
 		scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any
+		scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData? : any // ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 		scan_RetentionTime_MZ_UserSelection_EncodedStateData?: any
 		psm_Charge_Filter_UserSelection_EncodedStateData?: any
 		peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData? : any // PeptideSequence_MissedCleavageCount_UserSelections_StateObject
@@ -118,6 +120,7 @@ export class SingleProtein_CentralStateManagerObjectClass {
 				generatedPeptideContents_UserSelections__EncodedStateData: encodedStateData[ _GENERATED_PEPTIDE_CONTENTS__USER_SELECTIONS ],
 				peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_Selection_EncodedStateData: encodedStateData[ _FILTER_ON_COUNTS_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData: encodedStateData[ _FILTER_ON_SCAN_FILENAME_ID_ON_PSM_FILTER_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
+				scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData: encodedStateData[ _SCAN_NUMBER_SCAN_FILE_NAME_ID_PROJECT_SEARCH_ID_ON_PSM_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME ],
 				scan_RetentionTime_MZ_UserSelection_EncodedStateData: encodedStateData[ _FILTER_ON_SCAN_RETENTION_TIME_MZ_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				psm_Charge_Filter_UserSelection_EncodedStateData: encodedStateData[ _PSM_CHARGE__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: encodedStateData[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
@@ -300,6 +303,29 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		return this._value.scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData(
+		{
+			scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData
+		} :{
+			scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData: any
+		} ) {
+		this._value.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData = scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData
+	 */
+	get_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData() {
+		return this._value.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData;
+	}
+
 	set_scan_RetentionTime_MZ_UserSelection_EncodedStateData( { scan_RetentionTime_MZ_UserSelection_EncodedStateData }: { scan_RetentionTime_MZ_UserSelection_EncodedStateData: any } ) {
 		this._value.scan_RetentionTime_MZ_UserSelection_EncodedStateData = scan_RetentionTime_MZ_UserSelection_EncodedStateData;
 
@@ -432,6 +458,9 @@ export class SingleProtein_CentralStateManagerObjectClass {
 		}
 		if ( this._value.scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData !== undefined ) {
 			dataForEncoding[ _FILTER_ON_SCAN_FILENAME_ID_ON_PSM_FILTER_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData;
+		}
+		if ( this._value.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData !== undefined ) {
+			dataForEncoding[ _SCAN_NUMBER_SCAN_FILE_NAME_ID_PROJECT_SEARCH_ID_ON_PSM_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME ] = this._value.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData;
 		}
 		if ( this._value.scan_RetentionTime_MZ_UserSelection_EncodedStateData !== undefined ) {
 			dataForEncoding[ _FILTER_ON_SCAN_RETENTION_TIME_MZ_USER_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.scan_RetentionTime_MZ_UserSelection_EncodedStateData;

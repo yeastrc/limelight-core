@@ -197,14 +197,14 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                         {/*  Remove className=" filter-common-selection-inner-block " since have Input Field  */}
                         <div style={ { marginBottom: 6 } }>
 
-                            <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                            <div>
 
                                 { ( ! this.props.allSearches_Have_ScanFilenames ) ? (
-                                    <div >
+                                    <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                                         Not all searches have scan filenames
                                     </div>
                                 ) : ( show_ShowingAll_Message ) ? (
-                                    <div>
+                                    <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
                                         <span
                                             className=" filter-single-value-display-block clickable "
                                             onClick={ event => { this._remove_ShowingAllMessage() } }

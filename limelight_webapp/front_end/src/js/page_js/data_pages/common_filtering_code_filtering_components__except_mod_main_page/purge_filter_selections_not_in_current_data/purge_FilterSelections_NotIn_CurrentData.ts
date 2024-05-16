@@ -23,12 +23,81 @@ import {modificationMass_CommonRounding_ReturnNumber} from "../../modification_m
 import {reporterIonMass_CommonRounding_ReturnNumber} from "../../reporter_ion_mass_common/reporter_ion_mass_rounding";
 import {reportWebErrorToServer} from "../../../common_all_pages/reportWebErrorToServer";
 import {ModificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject} from "../filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__modification__reporter_ion/modification_mass_user_selections/js/modificationMass_Subpart_Variable_Open_Modifications_UserSelections_StateObject";
+import {
+    ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_file_name_on_psms_selection/js/scanFilenameId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
 
 
 /**
  *
  */
-export const purge_FilterSelections_NotIn_CurrentData = async function(
+export const purge_FilterSelections_NotIn_CurrentData = function(
+    {
+        projectSearchIds,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+        modificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject,
+        proteinPositionFilter_UserSelections_StateObject,
+        psm_Charge_Filter_UserSelection_StateObject,
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+    } : {
+        projectSearchIds : Array<number>,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+        modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
+        reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
+        proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject;
+        psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
+
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+
+    }  ) : Promise<void> {
+
+    return new Promise<void>((resolve, reject) => { try {
+
+        const part_1_Promise = _purge_FilterSelections_NotIn_CurrentData__Part_1({
+            projectSearchIds,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+            modificationMass_UserSelections_StateObject,
+            reporterIonMass_UserSelections_StateObject,
+            proteinPositionFilter_UserSelections_StateObject,
+            psm_Charge_Filter_UserSelection_StateObject
+        })
+
+        const part_2_Promise = _purge_FilterSelections_NotIn_CurrentData__Part_2({
+            projectSearchIds,
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+            scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+            scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        })
+
+        const promiseAll = Promise.all( [ part_1_Promise, part_2_Promise ] )
+
+        promiseAll.catch(reason => reject(reason))
+        promiseAll.then(novalue => { try {
+
+            resolve()
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+}
+
+
+/**
+ *  'async' function
+ *
+ *
+ *
+ */
+ const _purge_FilterSelections_NotIn_CurrentData__Part_1 = async function(
     {
         projectSearchIds,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
@@ -288,3 +357,73 @@ const _purge_dynamic_or_open_mods_selections = function(
     }
 }
 
+
+//////////////
+
+/**
+ * 'async' function
+ *
+ * @param projectSearchIds
+ * @param commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+ *
+ * @param scanFilenameId_On_PSM_Filter_UserSelection_StateObject
+ * @param scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+ */
+const _purge_FilterSelections_NotIn_CurrentData__Part_2 = async function (
+    {
+        projectSearchIds,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
+
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+    } : {
+        projectSearchIds : Array<number>,
+        commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
+
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+
+    }  ) : Promise<void> {
+
+    if (
+        ( ( ! scanFilenameId_On_PSM_Filter_UserSelection_StateObject )
+            || scanFilenameId_On_PSM_Filter_UserSelection_StateObject.areAllSelected__scanFilenameIds()
+            || ( !  scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected() )
+            || scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected().size === 0 )
+        && ( ( ! scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject )
+            || ( ! scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.is_AnySelections() ) ) ) {
+
+        //  NO selections to clear so return
+
+        return
+    }
+
+    const get_ScanFileDataHolder_Result =
+        await
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.
+            get__commonData_LoadedFromServer__Multiple_ProjectSearchIds().
+            get_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId().get_ScanFileDataHolder_ReturnPromise()
+
+    const commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder =
+        get_ScanFileDataHolder_Result.scanFileData_Holder
+
+    {
+        //  Remove entries in scanFilenameId_On_PSM_Filter_UserSelection_StateObject NOT IN commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder (loaded from server)
+
+        scanFilenameId_On_PSM_Filter_UserSelection_StateObject.
+        remove_scanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder({
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+        });
+    }
+    {
+        //  Purge props.propsValue.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject if needed
+
+        //  Remove entries in scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject NOT IN commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder (loaded from server)
+
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.
+        remove_ProjectSearchIds_Remove_ScanFilenameIds_Selected_NOT_Loaded_In_commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder({
+            projectSearchIds,
+            commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
+        });
+    }
+}
