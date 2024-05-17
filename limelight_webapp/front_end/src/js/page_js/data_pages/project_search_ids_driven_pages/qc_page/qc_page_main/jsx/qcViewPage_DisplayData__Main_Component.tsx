@@ -2276,8 +2276,8 @@ export class QcViewPage_DisplayData__Main_Component extends React.Component< QcV
                 { ( ! this.state.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts ) ? (
 
                     <div >
-                        <div >
-                            Loading Data
+                        <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 20 } }>
+                            Loading Data...
                         </div>
                         <div style={ { paddingTop: 40, paddingBottom: 80 } }>
                             <Spinner_Limelight_Component/>
