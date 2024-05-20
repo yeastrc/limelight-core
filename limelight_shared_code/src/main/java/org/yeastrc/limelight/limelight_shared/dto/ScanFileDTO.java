@@ -26,6 +26,11 @@ public class ScanFileDTO {
 	private int id;
 	private String spectralStorageAPIKey;
 	
+	/**
+	 * null if no related File Object Storage id
+	 */
+	private Integer fileObjectStorage_MainEntry_Id;
+	
 	//  hashCode and equals on spectralStorageAPIKey
 	
 	@Override
@@ -54,8 +59,10 @@ public class ScanFileDTO {
 
 	@Override
 	public String toString() {
-		return "ScanFileDTO [id=" + id + ", spectralStorageAPIKey=" + spectralStorageAPIKey + "]";
+		return "ScanFileDTO [id=" + id + ", spectralStorageAPIKey=" + spectralStorageAPIKey
+				+ ", fileObjectStorage_MainEntry_Id=" + fileObjectStorage_MainEntry_Id + "]";
 	}
+
 	public int getId() {
 		return id;
 	}
@@ -67,5 +74,11 @@ public class ScanFileDTO {
 	}
 	public void setSpectralStorageAPIKey(String spectralStorageAPIKey) {
 		this.spectralStorageAPIKey = spectralStorageAPIKey;
+	}
+	public Integer getFileObjectStorage_MainEntry_Id() {
+		return fileObjectStorage_MainEntry_Id;
+	}
+	public void setFileObjectStorage_MainEntry_Id(Integer fileObjectStorage_MainEntry_Id) {
+		this.fileObjectStorage_MainEntry_Id = fileObjectStorage_MainEntry_Id;
 	}
 }

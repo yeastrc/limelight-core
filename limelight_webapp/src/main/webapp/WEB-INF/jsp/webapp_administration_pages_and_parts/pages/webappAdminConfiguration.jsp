@@ -272,6 +272,72 @@
 			  </div>
 		    </div>
 		   
+   		
+			<div >
+			  <div >
+			  
+			  	<span title="(ONLY allowed if 'File Object Storage Service' is configured below)">
+					Save Scan File for download from Limelight: 
+					
+					<input type="checkbox" class=" config_checkbox_inputs_jq " id="save_scan_file_upload_to_file_object_storage_service_checkbox" 
+						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY %>"
+						data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
+						data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+			    </span> 
+			  </div>
+			</div>
+			
+			<%--  Error Message for 'Save Scan File for download ...' checked 
+			      but 'File Object Storage Service Base URL' not populated,
+			 --%>
+			<div style="position: relative;"> <%--  container div for error-message-container which is position absolute --%>
+			  <div style="position: absolute; top: -60px;">
+		  		<div class="error-message-container error_message_container_jq" 
+		  				id="error_message_save_scan_file_upload_to_file_object_storage_service_selected_file_object_storage_service_empty"
+		  				style="text-align: left; margin-left: 50px;width: 400px;" >
+		  			<div class="error-message-inner-container" >
+		  				<div class="error-message-close-x error_message_close_x_jq">X</div>
+			  			<div class="error-message-text" 
+			  			  >'Save Scan File for download from Limelight' is selected so 'File Object Storage Service' must have a value.</div>
+		  			</div>
+			  	</div>
+			  </div>
+		    </div>
+			
+			<div style="margin-bottom: 10px;">
+			  <div style="margin-bottom: 3px;" >
+			  
+			  	<span title="The download links for scan files will not be displayed and the download of scan file will not be allowed.
+Uncheck to stop users from downloading scan files.
+			  	
+(ONLY allowed if 'File Object Storage Service' is configured below)">
+					Scan File download from Limelight allowed (Not allowed if not checked): 
+					
+					<input type="checkbox" class=" config_checkbox_inputs_jq " id="save_scan_file_download_from_file_object_storage_service_allowed_checkbox" 
+						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY %>"
+						data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
+						data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+			    </span> 
+			  </div>
+			</div>
+			
+			<%--  Error Message for 'Save Scan File for download ...' checked 
+			      but 'File Object Storage Service Base URL' not populated,
+			 --%>
+			<div style="position: relative;"> <%--  container div for error-message-container which is position absolute --%>
+			  <div style="position: absolute; top: -60px;">
+		  		<div class="error-message-container error_message_container_jq" 
+		  				id="error_message_save_scan_file_upload_to_file_object_storage_service_selected_file_object_storage_service_empty"
+		  				style="text-align: left; margin-left: 50px;width: 400px;" >
+		  			<div class="error-message-inner-container" >
+		  				<div class="error-message-close-x error_message_close_x_jq">X</div>
+			  			<div class="error-message-text" 
+			  			  >'Save Scan File for download from Limelight' is selected so 'File Object Storage Service' must have a value.</div>
+		  			</div>
+			  	</div>
+			  </div>
+		    </div>
+			
 			<div>
 				Delete uploaded files after Successful Import: 
 				<input type="checkbox" class=" config_checkbox_inputs_jq "  
@@ -480,7 +546,7 @@
 		
 			<div style="margin-bottom: 3px;">
 				Web Service Base URL (Including Port): 
-				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
+				<input type="text" class=" config_text_inputs_jq " style="width: 650px;" id="file_object_storage_base_url_input_field"
 					data-config-key="<%= ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL %>"
 					data-FOOTER_CENTER_OF_PAGE_HTML="true">
 			</div>

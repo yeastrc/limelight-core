@@ -37,6 +37,10 @@ public class FileObjectStorage_FileContainer {
 	 * Populated when running the Import from the Run Importer Process
 	 */
 	private FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO;
+	
+	
+	private Integer id_InDBTable_file_object_storage_main_entry_tbl;
+	
 
 	/**
 	 * constructor
@@ -73,6 +77,15 @@ public class FileObjectStorage_FileContainer {
 
 	public void setFileImportTrackingSingleFileDTO(FileImportTrackingSingleFileDTO fileImportTrackingSingleFileDTO) {
 		this.fileImportTrackingSingleFileDTO = fileImportTrackingSingleFileDTO;
+	}
+
+	public Integer getId_InDBTable_file_object_storage_main_entry_tbl() {
+		return id_InDBTable_file_object_storage_main_entry_tbl;
+	}
+
+	public void setId_InDBTable_file_object_storage_main_entry_tbl(
+			Integer id_InDBTable_file_object_storage_main_entry_tbl) {
+		this.id_InDBTable_file_object_storage_main_entry_tbl = id_InDBTable_file_object_storage_main_entry_tbl;
 	}
 
 }

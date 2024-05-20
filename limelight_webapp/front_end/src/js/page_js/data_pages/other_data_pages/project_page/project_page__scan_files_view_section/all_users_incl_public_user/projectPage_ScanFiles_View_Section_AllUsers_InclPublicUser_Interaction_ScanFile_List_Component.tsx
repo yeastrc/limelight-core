@@ -49,6 +49,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -719,6 +723,73 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                 {/* Navigation etc */}
 
+                                { this.props.scanFile_Entry.canDownload ? (
+                                    <>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Click to download scan file
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ event => {
+
+                                                    event.stopPropagation();
+
+                                                    if ( limelight__IsTextSelected() ) {
+                                                        //  Text is selected so exit
+                                                        return; // EARLY RETURN
+                                                    }
+                                                    try {
+                                                        const requestJSONObject = {
+                                                            projectScanFile_Id: this.props.scanFile_Entry.projectScanFileId
+                                                        }
+
+                                                        const requestJSONString = JSON.stringify(requestJSONObject);
+
+                                                        //  Create and submit form
+
+                                                        const form = document.createElement("form");
+
+                                                        $(form).hide();
+
+                                                        form.setAttribute("method", "post");
+                                                        form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-project-scan-file-id");
+                                                        form.setAttribute("target", "_blank");
+
+                                                        const requestJSONStringField = document.createElement("textarea");
+                                                        requestJSONStringField.setAttribute("name", "requestJSONString");
+
+                                                        $(requestJSONStringField).text(requestJSONString);
+
+                                                        form.appendChild(requestJSONStringField);
+
+                                                        document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+                                                        try {
+                                                            form.submit();
+                                                        } finally {
+
+                                                            document.body.removeChild(form);
+                                                        }
+
+                                                    } catch ( e ) {
+                                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                        throw e
+                                                    }
+                                                } }
+                                            >
+                                                [Download]
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        <span> </span>
+                                    </>
+                                ) : null }
+
+
                                 { ( ( ! this.props.projectIsLocked ) && ( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ) ) ? (
                                     <>
 
@@ -794,40 +865,42 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                 <span> </span>
                                             </>
                                         ) : null }
-                                        { this.props.standardRunImporter_IsFullyConfigured ? (
-                                            <>
-                                                <span
-                                                    className=" fake-link "
-                                                    onClick={ event => {
 
-                                                        event.stopPropagation();
 
-                                                        if ( limelight__IsTextSelected() ) {
-                                                            //  Text is selected so exit
-                                                            return; // EARLY RETURN
-                                                        }
+                                        {/*{ this.props.standardRunImporter_IsFullyConfigured ? (*/}
+                                        {/*    <>*/}
+                                        {/*        <span*/}
+                                        {/*            className=" fake-link "*/}
+                                        {/*            onClick={ event => {*/}
 
-                                                        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
-                                                        getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({
-                                                            component_Params: {
-                                                                projectIdentifier: this.props.projectIdentifier,
-                                                                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
-                                                                scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array
-                                                            },
-                                                            uploadComplete_Callback: () : void => {
+                                        {/*                event.stopPropagation();*/}
 
-                                                                refresh_ProjectPage_UploadData_MainPage_Main_Component()
+                                        {/*                if ( limelight__IsTextSelected() ) {*/}
+                                        {/*                    //  Text is selected so exit*/}
+                                        {/*                    return; // EARLY RETURN*/}
+                                        {/*                }*/}
 
-                                                                refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
-                                                            }
-                                                        })
-                                                    } }
-                                                >
-                                                    [Import Feature Detection]
-                                                </span>
-                                                <span> </span>
-                                            </>
-                                        ) : null }
+                                        {/*                this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.*/}
+                                        {/*                getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({*/}
+                                        {/*                    component_Params: {*/}
+                                        {/*                        projectIdentifier: this.props.projectIdentifier,*/}
+                                        {/*                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,*/}
+                                        {/*                        scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array*/}
+                                        {/*                    },*/}
+                                        {/*                    uploadComplete_Callback: () : void => {*/}
+
+                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Main_Component()*/}
+
+                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()*/}
+                                        {/*                    }*/}
+                                        {/*                })*/}
+                                        {/*            } }*/}
+                                        {/*        >*/}
+                                        {/*            [Import Feature Detection]*/}
+                                        {/*        </span>*/}
+                                        {/*        <span> </span>*/}
+                                        {/*    </>*/}
+                                        {/*) : null }*/}
                                     </>
                                 ) : null }
                                 <span

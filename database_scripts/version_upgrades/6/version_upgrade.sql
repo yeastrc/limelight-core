@@ -322,6 +322,21 @@ COMMENT = 'When Copy a search to new project, track the from and to project sear
 CREATE INDEX project_search_id_new ON project_search_copy_from_to_ids_tbl (project_search_id_new ASC) VISIBLE;
 
 
+-- -----------------------------------------------------
+-- ALTER TABLE scan_file_tbl
+-- -----------------------------------------------------
+ALTER TABLE scan_file_tbl 
+ADD COLUMN file_object_storage_main_entry_id_fk INT UNSIGNED NULL AFTER spectral_storage_api_key,
+ADD INDEX scan_file_tbl_fos_meid_idx (file_object_storage_main_entry_id_fk ASC) VISIBLE;
+
+ALTER TABLE scan_file_tbl 
+ADD CONSTRAINT scan_file_tbl_fos_meid
+  FOREIGN KEY (file_object_storage_main_entry_id_fk)
+  REFERENCES file_object_storage_main_entry_tbl (id)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+
 
 --  !!!!!!!   UPGRADE SQL END    !!!!!!!!
     

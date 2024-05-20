@@ -44,6 +44,11 @@ public class ScanFileFileContainer {
 	 * Populated when running the Import from the Run Importer Process
 	 */
 	private FileImportTrackingSingleFileDTO scanFileDBRecord;
+	
+	/**
+	 * Populate when stored in File Object Storage
+	 */
+	private FileObjectStorage_FileContainer fileObjectStorage_FileContainer;
 
 	/**
 	 * constructor
@@ -144,6 +149,16 @@ public class ScanFileFileContainer {
 
 	public void setScanFilename_NoSuffix(String scanFilename_NoSuffix) {
 		this.scanFilename_NoSuffix = scanFilename_NoSuffix;
+	}
+
+
+	public FileObjectStorage_FileContainer getFileObjectStorage_FileContainer() {
+		return fileObjectStorage_FileContainer;
+	}
+
+
+	public void setFileObjectStorage_FileContainer(FileObjectStorage_FileContainer fileObjectStorage_FileContainer) {
+		this.fileObjectStorage_FileContainer = fileObjectStorage_FileContainer;
 	}
 
 

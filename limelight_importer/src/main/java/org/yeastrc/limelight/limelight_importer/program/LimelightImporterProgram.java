@@ -441,6 +441,15 @@ public class LimelightImporterProgram {
 				noLimelightXMLFileCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noLimelightXMLFileCommandLineOpt, Boolean.FALSE);
 				noScanFilesCommandLineOptChosen = (Boolean) cmdLineParser.getOptionValue( noScanFilesCommandLineOpt, Boolean.FALSE);
 				
+				if ( inputLimelightFileString == null && ( ! noLimelightXMLFileCommandLineOptChosen ) ) {
+					System.err.println( "'Limelight XML file' param (-i (--import-file=) ) is NOT specified AND '--no-limelight-xml-file' is NOT specified.  EXACTLY ONE of them is required to be specified.\n" );
+					System.err.println( "" );
+					System.err.println( FOR_HELP_STRING );
+					importResults.setImportSuccessStatus( false) ;
+					importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+					return importResults;  //  EARLY EXIT
+					
+				}
 				
 				String fastaFileString = (String)cmdLineParser.getOptionValue( fastaFileCommandLineOpt );
 				
@@ -631,9 +640,21 @@ public class LimelightImporterProgram {
 						scanFileFileContainer.setScanFile( scanFile );
 						scanFileFileContainer.setScanFilename( scanFilename );
 						scanFileFileContainer.setFileSize( scanFile.length() );
+
+												
+						FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+						
+						fileObjectStorage_FileContainer.setFile( scanFile );
+						fileObjectStorage_FileContainer.setFilename( scanFile.getName() );
+						fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(FileObjectStore_FileType_Enum.SCAN_FILE_TYPE);
+						
+						fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
+
+
+						scanFileFileContainer.setFileObjectStorage_FileContainer( fileObjectStorage_FileContainer );
+						
 						
 						scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
-
 					}
 				}
 			}
@@ -831,7 +852,8 @@ public class LimelightImporterProgram {
 			
 			} else if ( mainXMLFileToImport == null ) {
 			
-				Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( scanFileFileContainer_AllEntries, projectId );
+				Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( 
+						scanFileFileContainer_AllEntries, fileObjectStorage_FileContainer_AllEntries, projectId );
 				
 			} else {
 			

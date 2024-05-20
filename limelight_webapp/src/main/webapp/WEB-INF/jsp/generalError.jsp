@@ -82,6 +82,14 @@ if ( responseStatusCode != null ) {
 	  		  		The requested data was not found.
 	  		  	</div>
 	  		  </c:if>
+	  		    		  
+	  		  <c:if test="${ scanFileDownloadsNotAllowed }">
+	  		  	<div style="margin-top: 24px; margin-bottom: 24px; ">
+	  		  		Scan file downloads are not allowed.<br> 
+	  		  		Please refresh the page<br>
+	  		  		you clicked the scan file on.
+	  		  	</div>
+	  		  </c:if>
 	  		  
 	  		  <div style="margin-top: 20px;">
 	  		    <c:choose>

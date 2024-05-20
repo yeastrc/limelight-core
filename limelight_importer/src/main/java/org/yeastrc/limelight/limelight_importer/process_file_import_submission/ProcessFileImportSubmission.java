@@ -18,6 +18,7 @@
 package org.yeastrc.limelight.limelight_importer.process_file_import_submission;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,6 +53,7 @@ import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.
 import org.yeastrc.limelight.limelight_importer.utils.SHA1SumCalculator;
 import org.yeastrc.limelight.limelight_importer.utils.UnmarshalJSON_ToObject;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingRun_Shared_Get_DAO;
 import org.yeastrc.limelight.limelight_shared.file_import_limelight_xml_scans.dao.FileImportTrackingSingleFile_Shared_Get_DAO;
@@ -219,7 +221,7 @@ public class ProcessFileImportSubmission {
 		List<FileImportTrackingSingleFileDTO> fileDBRecordList = 
 				FileImportTrackingSingleFile_Shared_Get_DAO.getInstance()
 				.getForTrackingId( fileImportTrackingDTO.getId() );
-		
+				
 		FileImportTrackingSingleFileDTO limelightXMLFileDBRecord = null;
 		
 		List<FileImportTrackingSingleFileDTO> scanFilesDBRecords = new ArrayList<>( fileDBRecordList.size() );
@@ -230,11 +232,13 @@ public class ProcessFileImportSubmission {
 		for ( FileImportTrackingSingleFileDTO fileDBRecordItem : fileDBRecordList ) {
 			
 			if ( fileDBRecordItem.getFileType() == FileImportFileType.LIMELIGHT_XML_FILE ) {
+				
 				limelightXMLFileDBRecord = fileDBRecordItem;
 			
 			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.SCAN_FILE ) {
+				
 				scanFilesDBRecords.add( fileDBRecordItem );
-
+				
 			} else if ( fileDBRecordItem.getFileType() == FileImportFileType.FASTA_FILE
 					|| fileDBRecordItem.getFileType() == FileImportFileType.GENERIC_OTHER_FILE ) {
 				
@@ -255,68 +259,15 @@ public class ProcessFileImportSubmission {
 					throw new LimelightImporterInternalException( msg ); 
 					
 				}
-								
-				if ( StringUtils.isNotEmpty( fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine() ) ) {
-
-					//  Special code for when the filename with path is passed to the webapp from the submitter
-					
-					String fileString = fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine();
-					File file = new File( fileString );
-					if( ! file.exists() ) {
-						//  The User provided the path to this file 
-						//  when the import was submitted, so this is considered a data error
-						String msg = "Could not find File To Import: " + file.getCanonicalPath();
-						System.err.println( msg );
-						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
-						throw new LimelightImporterErrorProcessingRunIdException(msg);
-
-						//  importResults.setImportSuccessStatus( false ) ;
-						//
-						//  importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
-						//
-						//  return importResults;  //  EARLY EXIT
-					}
-					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
-					fileObjectStorage_FileContainer.setFile( file );
-					fileObjectStorage_FileContainer.setFilename( file.getName() );
-					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
-					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
-
-					
-				} else if ( StringUtils.isNotEmpty( fileDBRecordItem.getAws_s3_bucket_name() )  ) {
-
-					//  File is in AWS S3 bucket
-					
-					String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
-
-					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
-					fileObjectStorage_FileContainer.setFilename( filenameInUpload );
-					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
-					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
-					
-				} else {
-					
-					//  Standard processing to handle scan file has been copied to the server via the web app
-					
-					String filenameOnDisk_String = fileDBRecordItem.getFilenameOnDisk();
-					String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
-
-					File file = new File( filenameOnDisk_String );
-					if( ! file.exists() ) {
-						System.err.println( "Could not find file: " + file.getAbsolutePath() );
-						System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
-						System.err.println( "" );
-						throw new LimelightImporterErrorProcessingRunIdException();
-					}
-					FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
-					fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
-					fileObjectStorage_FileContainer.setFile( file );
-					fileObjectStorage_FileContainer.setFilename( filenameInUpload );
-					fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
-					fileObjectStorage_FileContainer_AllEntries.addEntry(fileObjectStorage_FileContainer);
-				}
+						
+				FileObjectStorage_FileContainer fileObjectStorage_FileContainer = 
+						create_FileObjectStorage_FileContainer(
+								fileDBRecordItem,
+								fileImportRunIdToProcess,
+								fileType_FileObjectStore_FileType
+								);
+				
+				fileObjectStorage_FileContainer_AllEntries.addEntry( fileObjectStorage_FileContainer );
 				
 			} else {
 				String msg = "Unexpected value in FileImportTrackingSingleFileDTO.fileType: " + fileDBRecordItem.getFileType();
@@ -337,12 +288,17 @@ public class ProcessFileImportSubmission {
 				log.error( msg );
 				throw new LimelightImporterInternalException( msg ); 
 			}
-			
+
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries =
-					create_ScanFileFileContainer_AllEntries__Populate_importResults(scanFilesDBRecords, importResults, fileImportRunIdToProcess);
+					create_ScanFileFileContainer_AllEntries__Populate_importResults__AddTo_fileObjectStorage_FileContainer_AllEntries(
+							scanFilesDBRecords, 
+							importResults, 
+							fileImportRunIdToProcess, 
+							fileObjectStorage_FileContainer_AllEntries );
 			
 
-			Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( scanFileFileContainer_AllEntries, projectId );
+			Process_ScanFiles_ONLY_Main__No_LimelightXMLFile.getInstance().process_ScanFiles_ONLY_Main__No_LimelightXMLFile( 
+					scanFileFileContainer_AllEntries, fileObjectStorage_FileContainer_AllEntries, projectId );
 			
 			return Importer__InsertedSearchId_When_NoSearchImported_Constants.INSERTED_SEARCH_ID_WHEN_NO_SEARCH_IMPORTED;  //  EARLY RETURN
 			
@@ -495,7 +451,11 @@ public class ProcessFileImportSubmission {
 		}
 		
 		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries =
-				create_ScanFileFileContainer_AllEntries__Populate_importResults(scanFilesDBRecords, importResults, fileImportRunIdToProcess);
+				create_ScanFileFileContainer_AllEntries__Populate_importResults__AddTo_fileObjectStorage_FileContainer_AllEntries(
+						scanFilesDBRecords, 
+						importResults, 
+						fileImportRunIdToProcess, 
+						fileObjectStorage_FileContainer_AllEntries );
 
 		int insertedSearchId = 
 				importerCoreEntryPoint.doImport(
@@ -535,6 +495,91 @@ public class ProcessFileImportSubmission {
 
 	}
 	
+	
+	/**
+	 * @param fileDBRecordItem
+	 * @param fileImportRunIdToProcess
+	 * @param fileType_FileObjectStore_FileType
+	 * @return
+	 * @throws LimelightImporterErrorProcessingRunIdException
+	 * @throws IOException
+	 */
+	private FileObjectStorage_FileContainer create_FileObjectStorage_FileContainer(
+			
+			FileImportTrackingSingleFileDTO fileDBRecordItem,
+			int fileImportRunIdToProcess,
+			FileObjectStore_FileType_Enum fileType_FileObjectStore_FileType
+			) throws LimelightImporterErrorProcessingRunIdException, IOException {
+		
+		
+		if ( StringUtils.isNotEmpty( fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine() ) ) {
+
+			//  Special code for when the filename with path is passed to the webapp from the submitter
+			
+			String fileString = fileDBRecordItem.getFilenameOnDiskWithPathSubSameMachine();
+			File file = new File( fileString );
+			if( ! file.exists() ) {
+				//  The User provided the path to this file 
+				//  when the import was submitted, so this is considered a data error
+				String msg = "Could not find File To Import: " + file.getCanonicalPath();
+				System.err.println( msg );
+				System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
+				throw new LimelightImporterErrorProcessingRunIdException(msg);
+
+				//  importResults.setImportSuccessStatus( false ) ;
+				//
+				//  importResults.setProgramExitCode( ImporterProgramExitCodes.PROGRAM_EXIT_CODE_INVALID_COMMAND_LINE_PARAMETER_VALUES );
+				//
+				//  return importResults;  //  EARLY EXIT
+			}
+			FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+			fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
+			fileObjectStorage_FileContainer.setFile( file );
+			fileObjectStorage_FileContainer.setFilename( file.getName() );
+			fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
+			
+			return fileObjectStorage_FileContainer;  // EARLY RETURN
+			
+		} else if ( StringUtils.isNotEmpty( fileDBRecordItem.getAws_s3_bucket_name() )  ) {
+
+			//  File is in AWS S3 bucket
+			
+			String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
+
+			FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+			fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
+			fileObjectStorage_FileContainer.setFilename( filenameInUpload );
+			fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
+
+			return fileObjectStorage_FileContainer;  // EARLY RETURN
+			
+		} else {
+			
+			//  Standard processing to handle scan file has been copied to the server via the web app
+			
+			String filenameOnDisk_String = fileDBRecordItem.getFilenameOnDisk();
+			String filenameInUpload = fileDBRecordItem.getFilenameInUpload();
+
+			File file = new File( filenameOnDisk_String );
+			if( ! file.exists() ) {
+				System.err.println( "Could not find file: " + file.getAbsolutePath() );
+				System.err.println( "fileImportRunIdToProcess: " + fileImportRunIdToProcess );
+				System.err.println( "" );
+				throw new LimelightImporterErrorProcessingRunIdException();
+			}
+			FileObjectStorage_FileContainer fileObjectStorage_FileContainer = new FileObjectStorage_FileContainer();
+			fileObjectStorage_FileContainer.setFileType_FileObjectStore_FileType(fileType_FileObjectStore_FileType);
+			fileObjectStorage_FileContainer.setFile( file );
+			fileObjectStorage_FileContainer.setFilename( filenameInUpload );
+			fileObjectStorage_FileContainer.setFileImportTrackingSingleFileDTO( fileDBRecordItem );
+
+			return fileObjectStorage_FileContainer;  // EARLY RETURN
+		}
+		
+		//  Unreachable code
+		//  throw new LimelightImporterInternalException( "SHOULD NOT GET HERE" );
+	}
+	
 	/**
 	 * @param scanFilesDBRecords
 	 * @param importResults
@@ -543,15 +588,33 @@ public class ProcessFileImportSubmission {
 	 * @throws LimelightImporterDataException
 	 * @throws Exception
 	 */
-	private ScanFileFileContainer_AllEntries create_ScanFileFileContainer_AllEntries__Populate_importResults(
+	private ScanFileFileContainer_AllEntries create_ScanFileFileContainer_AllEntries__Populate_importResults__AddTo_fileObjectStorage_FileContainer_AllEntries(
 			
 			List<FileImportTrackingSingleFileDTO> scanFilesDBRecords,
 			ImportResults importResults,
-			int fileImportRunIdToProcess
+			int fileImportRunIdToProcess,
+			
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries
 			
 			) throws LimelightImporterDataException, Exception {
 
 
+		boolean send_ScanFiles_To_FileObjectStorage = false;
+		{
+			String configValue_SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY );
+			
+			String configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = ConfigSystemDAO_Importer.getInstance().getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );
+			if ( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL != null ) {
+				configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL.trim();
+			}
+			
+			if ( ConfigSystemsValuesSharedConstants.TRUE.equals( configValue_SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY )
+					&& StringUtils.isNotEmpty( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL ) ) {
+				send_ScanFiles_To_FileObjectStorage = true;
+			}
+		}
+		
+		
 		ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries = new ScanFileFileContainer_AllEntries();
 		
 		if ( scanFilesDBRecords.isEmpty() ) {
@@ -561,6 +624,38 @@ public class ProcessFileImportSubmission {
 			Set<String> scanFilenameInUpload_NoSuffixes = new HashSet<>();
 			
 			for ( FileImportTrackingSingleFileDTO scanFileDBRecord : scanFilesDBRecords ) {
+				
+				
+				FileObjectStorage_FileContainer fileObjectStorage_FileContainer = null;
+
+				if ( send_ScanFiles_To_FileObjectStorage ) {
+					
+					fileObjectStorage_FileContainer = 
+							create_FileObjectStorage_FileContainer(
+									scanFileDBRecord,
+									fileImportRunIdToProcess,
+									FileObjectStore_FileType_Enum.SCAN_FILE_TYPE
+									);
+					
+					fileObjectStorage_FileContainer_AllEntries.addEntry( fileObjectStorage_FileContainer );
+					
+					
+					//  TODO
+					
+//					log.error( "*************************************" );
+//					
+//					log.error( "TODO:  Still need to associate File Object Storage Item with the scan_file_tbl entry");
+//					
+//					log.error( "*************************************" );
+					
+//					Need processing from other files after inserted into File Object Storage.
+//					Need to populate id on scan file table
+//					
+//					So need to keep object for inserting this with the object for inserting into Spectr
+				}
+
+				
+				
 				if ( StringUtils.isNotEmpty( scanFileDBRecord.getFilenameOnDiskWithPathSubSameMachine() ) ) {
 
 					//  Special code for when the filename with path is passed to the webapp from the submitter
@@ -592,6 +687,9 @@ public class ProcessFileImportSubmission {
 					scanFileFileContainer.setScanFilename( scanFile.getName() );
 					scanFileFileContainer.setFileSize( scanFile.length() );
 					scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
+					
+					scanFileFileContainer.setFileObjectStorage_FileContainer( fileObjectStorage_FileContainer );
+					
 					scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
 					
 				} else {
@@ -704,6 +802,9 @@ public class ProcessFileImportSubmission {
 						scanFileFileContainer.setScanFilename( scanFilenameInUpload );
 						scanFileFileContainer.setFileSize(fileSize);
 						scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
+						
+						scanFileFileContainer.setFileObjectStorage_FileContainer( fileObjectStorage_FileContainer );
+						
 						scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
 						
 					} else {
@@ -720,6 +821,9 @@ public class ProcessFileImportSubmission {
 						scanFileFileContainer.setScanFile( scanFile );
 						scanFileFileContainer.setScanFilename( scanFilenameInUpload );
 						scanFileFileContainer.setScanFileDBRecord( scanFileDBRecord );
+						
+						scanFileFileContainer.setFileObjectStorage_FileContainer( fileObjectStorage_FileContainer );
+						
 						scanFileFileContainer_AllEntries.addEntry(scanFileFileContainer);
 					}
 				}

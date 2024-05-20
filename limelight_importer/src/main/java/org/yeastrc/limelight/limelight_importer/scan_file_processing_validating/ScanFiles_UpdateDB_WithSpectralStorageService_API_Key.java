@@ -74,6 +74,9 @@ public class ScanFiles_UpdateDB_WithSpectralStorageService_API_Key {
 				ScanFileSourceFirstImportDTO scanFileSourceFirstImportDTO = new ScanFileSourceFirstImportDTO();
 				
 				scanFileDTO_ForInsert.setSpectralStorageAPIKey( searchScanFileImporterDTO.getSpectralStorageAPIKey() );
+				if ( searchScanFileEntry.getScanFileFileContainer().getFileObjectStorage_FileContainer() != null ) {
+					scanFileDTO_ForInsert.setFileObjectStorage_MainEntry_Id( searchScanFileEntry.getScanFileFileContainer().getFileObjectStorage_FileContainer().getId_InDBTable_file_object_storage_main_entry_tbl() );
+				}
 				
 				scanFileSourceFirstImportDTO.setSearchScanFileId( searchScanFileDTO.getId() );
 				scanFileSourceFirstImportDTO.setFilename( searchScanFileDTO.getFilename() );
@@ -98,7 +101,7 @@ public class ScanFiles_UpdateDB_WithSpectralStorageService_API_Key {
 				searchScanFileImporterDTO.setScanFileId( scanFileDTO_FromInsert.getId() );
 				
 				searchScanFileEntry.setScanFileDTO( scanFileDTO_FromInsert );
-				
+								
 				///
 				
 

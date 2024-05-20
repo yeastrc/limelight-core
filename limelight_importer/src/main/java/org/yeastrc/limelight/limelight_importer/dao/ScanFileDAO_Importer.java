@@ -89,6 +89,67 @@ public class ScanFileDAO_Importer {
 		return id;
 	}
 
+	/**
+	 * Get the id for the supplied spectral_storage_api_key from the database. 
+	 * @param id
+	 * @return null if not found
+	 * @throws Exception
+	 */
+	public Integer get_FileObjectStorage_MainEntry_Id_For_ScanFileId( int id ) throws Exception {
+		
+		Integer result = null;
+		
+		final String sql = "SELECT file_object_storage_main_entry_id_fk FROM scan_file_tbl WHERE id = ? ORDER BY id LIMIT 1";
+		
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				pstmt.setInt( 1, id );
+
+				try ( ResultSet rs = pstmt.executeQuery() ) {
+					if( rs.next() ) {
+						int fieldValue = rs.getInt( "file_object_storage_main_entry_id_fk" );
+						if ( ! rs.wasNull() ) {
+							result = fieldValue;
+						}
+					}
+				}
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: get_FileObjectStorage_MainEntry_Id_For_ScanFileId(...) sql: " + sql, e );
+			throw e;
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * Update record set fileObjectStorage_MainEntry_Id where id
+	 * 
+	 * @param fileObjectStorage_MainEntry_Id
+	 * @param id
+	 * @return null if not found
+	 * @throws Exception
+	 */
+	public void update_FileObjectStorage_MainEntry_Id_For_ScanFileId( int fileObjectStorage_MainEntry_Id, int id ) throws Exception {
+		
+		final String sql = "UPDATE scan_file_tbl SET file_object_storage_main_entry_id_fk = ? WHERE id = ?";
+		
+		try ( Connection dbConnection = ImportRunImporterDBConnectionFactory.getMainSingletonInstance().getConnection() ) {
+			try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql ) ) {
+				
+				pstmt.setInt( 1, fileObjectStorage_MainEntry_Id );
+
+				pstmt.setInt( 2, id );
+				
+				pstmt.executeUpdate();
+			}
+		} catch ( Exception e ) {
+			log.error( "ERROR: get_FileObjectStorage_MainEntry_Id_For_ScanFileId(...). id: " + id + ", fileObjectStorage_MainEntry_Id: " + fileObjectStorage_MainEntry_Id + ",  sql: " + sql, e );
+			throw e;
+		}
+		
+	}
 
 	/**
 	 * @param item
@@ -107,9 +168,9 @@ public class ScanFileDAO_Importer {
 	private final static String INSERT_SQL = 
 			
 			"INSERT INTO scan_file_tbl "
-			+ "( spectral_storage_api_key ) "
+			+ "( spectral_storage_api_key, file_object_storage_main_entry_id_fk ) "
 					
-			+ "VALUES (?)";
+			+ "VALUES (?, ?)";
 	
 	/**
 	 * @param item
@@ -120,9 +181,21 @@ public class ScanFileDAO_Importer {
 		final String sql = INSERT_SQL;
 		
 		try ( PreparedStatement pstmt = dbConnection.prepareStatement( sql, Statement.RETURN_GENERATED_KEYS ) ) {
+			
 			int counter = 0;
+			
 			counter++;
 			pstmt.setString( counter, item.getSpectralStorageAPIKey() );
+			
+			counter++;
+			
+			if ( item.getFileObjectStorage_MainEntry_Id() != null ) {
+				pstmt.setInt( counter, item.getFileObjectStorage_MainEntry_Id() );
+			} else {
+				pstmt.setNull( counter, java.sql.Types.INTEGER );
+			}
+			
+			
 			pstmt.executeUpdate();
 
 			try ( ResultSet rs = pstmt.getGeneratedKeys() ) {

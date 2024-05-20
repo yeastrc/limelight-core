@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.yeastrc.limelight.limelight_importer.dao.Project_ScanFile_DAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.Project_ScanFile_Importer_DAO_Importer;
 import org.yeastrc.limelight.limelight_importer.dao.Project_ScanFilename_DAO_Importer;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.scan_file_processing_validating.ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded;
@@ -17,6 +20,7 @@ import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_Importer_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFilename_DTO;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ScanFileSourceFirstImportDTO;
+import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 
 /**
  * 
@@ -29,17 +33,37 @@ public class Process_ScanFiles_ONLY_Main__No_LimelightXMLFile {
 	private Process_ScanFiles_ONLY_Main__No_LimelightXMLFile() { }
 	public static Process_ScanFiles_ONLY_Main__No_LimelightXMLFile getInstance() { return new Process_ScanFiles_ONLY_Main__No_LimelightXMLFile(); }
 	
-	
+
 	/**
 	 * @param scanFileFileContainer_AllEntries
+	 * @param fileObjectStorage_FileContainer_AllEntries
 	 * @param projectId
 	 * @throws Exception
 	 */
 	public void process_ScanFiles_ONLY_Main__No_LimelightXMLFile( 
 			
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
+			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries,
 			int projectId ) throws Exception {
 		
+		
+		
+		for ( FileObjectStorage_FileContainer fileObjectStorage_FileContainer: fileObjectStorage_FileContainer_AllEntries.get_FileObjectStorage_FileContainer_List() ) {
+		
+			if ( fileObjectStorage_FileContainer.getFileType_FileObjectStore_FileType() != FileObjectStore_FileType_Enum.SCAN_FILE_TYPE ) {
+				
+				String msg = "In process_ScanFiles_ONLY_Main__No_LimelightXMLFile(...) ALL fileObjectStorage_FileContainer.getFileType_FileObjectStore_FileType() MUST EQUAL FileObjectStore_FileType_Enum.SCAN_FILE_TYPE";
+				log.error(msg);
+				throw new LimelightImporterInternalException(msg);
+			}
+		}
+		
+
+		//  Insert File Object Storage files
+		
+		Process_FileObjectStorage_Files_SaveAndAddToDB.getInstance().process_FileObjectStorage_Files_SaveAndAddToDB( null /* searchId */, fileObjectStorage_FileContainer_AllEntries);
+		
+
 		
 		ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result scanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search_Result =
 				ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search.getInstance().sendScanFilesToSpectralStorageService(scanFileFileContainer_AllEntries);
@@ -63,6 +87,10 @@ public class Process_ScanFiles_ONLY_Main__No_LimelightXMLFile {
 			ScanFileSourceFirstImportDTO scanFileSourceFirstImportDTO = new ScanFileSourceFirstImportDTO();
 			
 			scanFileDTO_ForInsert.setSpectralStorageAPIKey( spectralStorage_API_Key );
+			
+			if ( resultItem.getFileObjectStorage_FileContainer() != null ) {
+				scanFileDTO_ForInsert.setFileObjectStorage_MainEntry_Id( resultItem.getFileObjectStorage_FileContainer().getId_InDBTable_file_object_storage_main_entry_tbl() );
+			}
 			
 			scanFileSourceFirstImportDTO.setSearchScanFileId( 0 );
 			scanFileSourceFirstImportDTO.setFilename( scanFileFileContainer.getScanFilename() );

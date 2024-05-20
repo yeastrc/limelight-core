@@ -40,6 +40,8 @@ public class SearchScanFileEntry {
 	private SearchScanFileImporterDTO searchScanFileImporterDTO;
 	private ScanFileDTO scanFileDTO;
 	
+	private ScanFileFileContainer scanFileFileContainer;
+	
 	/**
 	 * Package Private constructor
 	 */
@@ -92,6 +94,14 @@ public class SearchScanFileEntry {
 
 	public void setScanNumbersFromPSMs(List<Integer> scanNumbersFromPSMs) {
 		this.scanNumbersFromPSMs = scanNumbersFromPSMs;
+	}
+
+	public ScanFileFileContainer getScanFileFileContainer() {
+		return scanFileFileContainer;
+	}
+
+	public void setScanFileFileContainer(ScanFileFileContainer scanFileFileContainer) {
+		this.scanFileFileContainer = scanFileFileContainer;
 	}
 	
 }

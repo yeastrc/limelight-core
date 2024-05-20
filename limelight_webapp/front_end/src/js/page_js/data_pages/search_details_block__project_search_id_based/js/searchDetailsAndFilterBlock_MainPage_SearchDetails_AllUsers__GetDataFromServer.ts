@@ -310,13 +310,19 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDat
 
     readonly searchProgramsPerSearchList: Array<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__SearchProgramsPerSearchDTO_Item>
 
-    readonly scanFilenameList: Array<string>
-    readonly scanFilenames_CommaDelim: string
-
+    readonly scanFile_List: Array<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_Search_Scan_File_Item>
 
     readonly searchFileList: Array<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__SearchFile_Item>
     webLinkList: Array<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__WebLink_Item>
     commentList: Array<SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Comment_Item>
+}
+
+
+export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_Search_Scan_File_Item {
+
+    readonly id: number				// Search Scan File Id
+    readonly filename: string
+    readonly canDownload: boolean    // Has Data in File Object Storage so can be downloaded
 }
 
 /**

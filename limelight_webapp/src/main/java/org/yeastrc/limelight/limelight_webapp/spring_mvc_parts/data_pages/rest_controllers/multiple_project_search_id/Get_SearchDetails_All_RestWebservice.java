@@ -20,7 +20,6 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +38,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchCommentDTO;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchWebLinksDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
-import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.FileObjectStore_FileType_Enum;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
+import org.yeastrc.limelight.limelight_webapp.dao.ConfigSystemDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
@@ -57,7 +58,8 @@ import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearch_WebLinks_F
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFileProjectSearch_ForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_AndAssociatedData_For_SearchIds_Searcher.SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search__SearchDetailsDisplay_ForProjectSearchIdsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams;
 import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_ForSearch_ForSearchIdsSearcher.FileObjectStorage_ForSearch_ForSearchIdsSearcher_Return_Item;
@@ -87,10 +89,13 @@ public class Get_SearchDetails_All_RestWebservice {
 	private ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIds;
 
 	@Autowired
+	private ConfigSystemDAO_IF configSystemDAO;
+
+	@Autowired
 	private SearchProgramsPerSearchListForSearchIdSearcherIF searchProgramsPerSearchListForSearchIdSearcher;
 	
 	@Autowired
-	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
+	private SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_IF searchScanFile_AndAssociatedData_For_SearchIds_Searcher;
 	
 	@Autowired
 	private Search__SearchDetailsDisplay_ForProjectSearchIdsSearcherIF search_PathFastaFilenameImportEndTimestamp_ForProjectSearchIdsSearcher;
@@ -288,7 +293,6 @@ public class Get_SearchDetails_All_RestWebservice {
 		
 		//////////////////
 		//////////////////
-		
 
 		//  Get FASTA File data from File Object Storage data tables to support download of FASTA file
 
@@ -332,20 +336,20 @@ public class Get_SearchDetails_All_RestWebservice {
 
 		///////  scan filenames
 
-		Map<Integer, List<SearchScanFileDTO>> searchScanFileDTO_List_Map_Key_SearchId = new HashMap<>( searchIdList.size() );
+		Map<Integer, List<SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item>> searchScanFile_AndAssociatedData_Item_List_Map_Key_SearchId = new HashMap<>( searchIdList.size() );
 
 		{
-			List<SearchScanFileDTO> dbResults = 
-					searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIdList);
+			List<SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item> dbResults = 
+					searchScanFile_AndAssociatedData_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIdList);
 
-			for ( SearchScanFileDTO dbItem : dbResults ) {
+			for ( SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item dbItem : dbResults ) {
 
-				List<SearchScanFileDTO> searchScanFileDTO_List = searchScanFileDTO_List_Map_Key_SearchId.get( dbItem.getSearchId() );
-				if ( searchScanFileDTO_List == null ) {
-					searchScanFileDTO_List = new ArrayList<>();
-					searchScanFileDTO_List_Map_Key_SearchId.put( dbItem.getSearchId(), searchScanFileDTO_List );
+				List<SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item> searchScanFile_AndAssociatedData_Item_List = searchScanFile_AndAssociatedData_Item_List_Map_Key_SearchId.get( dbItem.getSearchId() );
+				if ( searchScanFile_AndAssociatedData_Item_List == null ) {
+					searchScanFile_AndAssociatedData_Item_List = new ArrayList<>();
+					searchScanFile_AndAssociatedData_Item_List_Map_Key_SearchId.put( dbItem.getSearchId(), searchScanFile_AndAssociatedData_Item_List );
 				}
-				searchScanFileDTO_List.add(dbItem);
+				searchScanFile_AndAssociatedData_Item_List.add(dbItem);
 			}
 		}
 
@@ -427,27 +431,52 @@ public class Get_SearchDetails_All_RestWebservice {
 				webserviceResult_PerProjectSearchId_Item.setFormatted_converterProgram_ConversionDate(formatted_converterProgram_ConversionDate);
 			}
 			
+
+			boolean scanFileDownload_Allowed_InConfig = false;
+			{
+				String configValue_SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY );
+				
+				String configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );
+				if ( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL != null ) {
+					configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL.trim();
+				}
+				
+				if ( ConfigSystemsValuesSharedConstants.TRUE.equals( configValue_SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY )
+						&& StringUtils.isNotEmpty( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL ) ) {
+					scanFileDownload_Allowed_InConfig = true;
+				}
+			}
+			
+			
 			List<SearchProgramsPerSearchDTO> searchProgramsPerSearchList =
 					searchProgramsPerSearchListForSearchIdSearcher
 					.getSearchProgramsPerSearchForSearchId( search_PathFastaFilename_Item.getSearchId() );
 			webserviceResult_PerProjectSearchId_Item.setSearchProgramsPerSearchList( searchProgramsPerSearchList );
 
 			{
-				List<SearchScanFileDTO> searchScanFileDTO_List = searchScanFileDTO_List_Map_Key_SearchId.get( search_PathFastaFilename_Item.getSearchId() );
-				if ( searchScanFileDTO_List != null ) {
+				List<SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item> searchScanFile_AndAssociatedData_Item_List = searchScanFile_AndAssociatedData_Item_List_Map_Key_SearchId.get( search_PathFastaFilename_Item.getSearchId() );
+				if ( searchScanFile_AndAssociatedData_Item_List != null ) {
 					
-					List<String> scanFilenameList = new ArrayList<>( searchScanFileDTO_List.size() );
-					for ( SearchScanFileDTO searchScanFileDTO : searchScanFileDTO_List ) {
-						scanFilenameList.add( searchScanFileDTO.getFilename() );
+
+			    	List<WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item> scanFile_List =
+			    			new ArrayList<>( searchScanFile_AndAssociatedData_Item_List.size() );
+			    	
+					for ( SearchScanFile_AndAssociatedData_For_SearchIds_Searcher_Result_Item searchScanFile_AndAssociatedData_Item : searchScanFile_AndAssociatedData_Item_List ) {
+						
+						WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item resultEntry = new WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item();
+						
+						resultEntry.id = searchScanFile_AndAssociatedData_Item.getId();
+						resultEntry.filename = searchScanFile_AndAssociatedData_Item.getFilename();
+						
+						if ( scanFileDownload_Allowed_InConfig && searchScanFile_AndAssociatedData_Item.getFile_object_storage_main_entry_tbl_id() != null ) {
+							
+							resultEntry.canDownload = true;
+						}
+						
+						scanFile_List.add( resultEntry );
 					}
 					
-					Collections.sort( scanFilenameList );
-					
-					webserviceResult_PerProjectSearchId_Item.setScanFilenameList(scanFilenameList);
-					
-					String scanFilenames_CommaDelim = StringUtils.join( scanFilenameList, ", " );
-					
-					webserviceResult_PerProjectSearchId_Item.setScanFilenames_CommaDelim(scanFilenames_CommaDelim);
+					webserviceResult_PerProjectSearchId_Item.scanFile_List = scanFile_List;
 				}
 			}
 			
@@ -492,7 +521,9 @@ public class Get_SearchDetails_All_RestWebservice {
 			
 			{
 				List<Integer> fileTypeIds_Exclude = new ArrayList<>(1);
-				fileTypeIds_Exclude.add( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE.value() );  // EXCLUDE FASTA file
+				
+				fileTypeIds_Exclude.add( FileObjectStore_FileType_Enum.FASTA_FILE_TYPE.value() );  // EXCLUDE FASTA file.  Processed above
+				fileTypeIds_Exclude.add( FileObjectStore_FileType_Enum.SCAN_FILE_TYPE.value() );  // EXCLUDE SCAN file.    Processed as part of Scan File Names above
 				
 				FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams requestParams = new FileObjectStorage_ForSearch_ForSearchIdsSearcher_RequestParams();
 				requestParams.setSearchIds(searchIdList);
@@ -705,9 +736,7 @@ public class Get_SearchDetails_All_RestWebservice {
 
     	private List<SearchProgramsPerSearchDTO> searchProgramsPerSearchList;
     	
-    	private List<String> scanFilenameList;
-    	private String scanFilenames_CommaDelim;
-
+    	private List<WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item> scanFile_List; // May be only filenames, may be more
     	
 		private List<WebserviceResult_PerProjectSearchId_Item_SearchFile_Item> searchFileList;
     	private List<WebserviceResult_PerProjectSearchId_Item_WebLink_Item> webLinkList;
@@ -811,19 +840,34 @@ public class Get_SearchDetails_All_RestWebservice {
 		public void setSearchProgramsPerSearchList(List<SearchProgramsPerSearchDTO> searchProgramsPerSearchList) {
 			this.searchProgramsPerSearchList = searchProgramsPerSearchList;
 		}
-		public List<String> getScanFilenameList() {
-			return scanFilenameList;
-		}
-		public void setScanFilenameList(List<String> scanFilenameList) {
-			this.scanFilenameList = scanFilenameList;
-		}
-		public String getScanFilenames_CommaDelim() {
-			return scanFilenames_CommaDelim;
-		}
-		public void setScanFilenames_CommaDelim(String scanFilenames_CommaDelim) {
-			this.scanFilenames_CommaDelim = scanFilenames_CommaDelim;
+		public List<WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item> getScanFile_List() {
+			return scanFile_List;
 		}
     }
+    
+
+	/**
+	 *  Search Scan File Item
+     *
+     * List per Project Search Id
+	 *
+	 */
+	public static class WebserviceResult_PerProjectSearchId_Item_Search_Scan_File_Item {
+		
+		private int id;					// Search Scan File Id
+		private String filename;
+		private boolean canDownload;  // Has Data in File Object Storage so can be downloaded
+
+		public int getId() {
+			return id;
+		}
+		public String getFilename() {
+			return filename;
+		}
+		public boolean isCanDownload() {
+			return canDownload;
+		}
+	}
 
     /**
      * SearchFile_Item

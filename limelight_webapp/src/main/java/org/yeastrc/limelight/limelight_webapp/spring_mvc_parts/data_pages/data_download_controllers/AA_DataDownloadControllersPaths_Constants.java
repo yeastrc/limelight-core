@@ -58,16 +58,30 @@ public class AA_DataDownloadControllersPaths_Constants {
 	//////////////
 	
 	/**
-	 * Download A Single Search File. Used on Project page for a specific search 
+	 * Download A Single Search File. Used In Search Details for a specific search 
 	 */
 	public static final String SEARCH_FILE_DOWNLOAD_CONTROLLER = 
 			"d/dnld/psb/search-file";
 
 	/**
-	 * Download A Single File Object Storage Entry. Used on Project page for a specific search 
+	 * Download A Single File Object Storage Entry. Used In Search Details for a specific search 
 	 */
 	public static final String FILE_OBJECT_STORAGE_ENTRY_DOWNLOAD_CONTROLLER = 
 			"d/dnld/psb/file-object-storage-entry";
+
+	//  !!  These next 2 paths are in same Controller Class
+	
+	/**
+	 * Download A Single Scan File Contents USING SearchScanFileId & Project Search Id FROM File Object Storage Entry. Used In Search Details for a specific search 
+	 */
+	public static final String SCAN_FILE_CONTENTS_FROM_FILE_OBJECT_STORAGE_ENTRY__USING__SEARCH_SCAN_FILE_ID__PROJECT_SEARCH_ID__DOWNLOAD_CONTROLLER = 
+			"d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-search-scan-file-id-psid";
+	
+	/**
+	 * Download A Single Scan File Contents USING SearchScanFileId & Project Search Id FROM File Object Storage Entry. Used In Search Details for a specific search 
+	 */
+	public static final String SCAN_FILE_CONTENTS_FROM_FILE_OBJECT_STORAGE_ENTRY__USING__PROJECT_SCAN_FILE_ID__DOWNLOAD_CONTROLLER = 
+			"d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-project-scan-file-id";
 	
 	/**
 	 * Download PSMs for Project Search Ids and Search Criteria. Optional Single Protein.  Used on Protein Page, Single Protein Overlay. 

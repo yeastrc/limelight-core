@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
+import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsValuesSharedConstants;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
 import org.yeastrc.limelight.limelight_webapp.access_control.result_objects.WebSessionAuthAccessLevel;
@@ -193,6 +194,23 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 			
 			/////////////
 			
+
+			boolean scanFileDownload_Allowed_InConfig = false;
+			{
+				String configValue_SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY );
+				
+				String configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = configSystemDAO.getConfigValueForConfigKey( ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL );
+				if ( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL != null ) {
+					configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL = configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL.trim();
+				}
+				
+				if ( ConfigSystemsValuesSharedConstants.TRUE.equals( configValue_SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY )
+						&& StringUtils.isNotEmpty( configValue_YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL ) ) {
+					scanFileDownload_Allowed_InConfig = true;
+				}
+			}
+			
+			
 			List<ProjectScanFile_For_ProjectId_Searcher_ResultItem> searcherResult_List = projectScanFile_For_ProjectId_Searcher.getProjectScanFile_For_ProjectId(projectId);
 
 			Map<Integer, WebserviceResultItem> webserviceResultItem_Map_Key_ProjectScanFileId = new HashMap<>( searcherResult_List.size() );
@@ -212,6 +230,12 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 					webserviceResultItem.projectScanFileId = searcherResult_Item.getProjectScanFileId();
 					webserviceResultItem.scanFileId = searcherResult_Item.getScanFileId();
 					webserviceResultItem.scanFilename_Set = new HashSet<>();
+					
+					if ( scanFileDownload_Allowed_InConfig && searcherResult_Item.getFile_object_storage_main_entry_tbl_id() != null ) {
+						// ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY
+						// Has scan_file_tbl.file_object_storage_main_entry_id_fk so scan file contents in File Object Storage
+						webserviceResultItem.canDownload = true;
+					}
 					
 					scanFileIds_Set.add( searcherResult_Item.getScanFileId() );
 				} else {
@@ -390,13 +414,16 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
     	
     	private int projectScanFileId;
     	private int scanFileId;
+		
     	private Set<String> scanFilename_Set;
     	private String scanFile_Code_FirstSix;
-    	
+
+		private boolean canDownload; // Has scan_file_tbl.file_object_storage_main_entry_id_fk so scan file contents in File Object Storage
+
     	private boolean userIsProjectOwner;
     	private boolean canDeleteEntry;
     	private boolean entryHasFeatureDetection;
-    	
+
 		public int getScanFileId() {
 			return scanFileId;
 		}
@@ -423,6 +450,10 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 		public boolean isEntryHasFeatureDetection() {
 			return entryHasFeatureDetection;
+		}
+
+		public boolean isCanDownload() {
+			return canDownload;
 		}
     }
     

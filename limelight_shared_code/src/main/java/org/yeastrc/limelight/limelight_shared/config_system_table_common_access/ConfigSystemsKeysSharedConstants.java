@@ -69,7 +69,11 @@ public class ConfigSystemsKeysSharedConstants {
 	public static final String file_import_limelight_xml_scans_AWS_S3_REGION_KEY = "file_import_limelight_xml_scans_aws_s3_region";
 
 	public static final String SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY = "scan_file_import_allowed_via_web_submit";
+
+	public static final String SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY = "scan_file_save_to_file_object_storage";
 	
+	public static final String SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY = "scan_file_download_from_file_object_storage_allowed";
+
 
 	public static final String LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY = "limelight_xml_file_max_file_size_in_gb";
 
@@ -118,6 +122,9 @@ public class ConfigSystemsKeysSharedConstants {
 		textConfigKeys.add( file_import_limelight_xml_scans_AWS_S3_REGION_KEY );
 
 		textConfigKeys.add( SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY );
+		textConfigKeys.add( SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY );
+		textConfigKeys.add( SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY );
+		
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_CREATION_WEB_SERVICE_BASE_URL );
 		textConfigKeys.add( BLIB_SPECTRAL_LIBRARY_FILE_RESULT_FILE_BASE_PATH );
 		

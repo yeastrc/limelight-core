@@ -79,6 +79,8 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 
 				//  SpectralStorageAPIKey is in DB and valid so return updated scanFileDTO
 				
+				ensure_ScanFileTbl_Record_Has__FileObjectStorage_MainEntry_Id( scanFileDTO );
+				
 				return scanFileDTO;  // EARLY RETURN
 			} 
 		}
@@ -108,6 +110,8 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 				
 				//  SpectralStorageAPIKey is now in DB and valid so return updated scanFileDTO
 				
+				ensure_ScanFileTbl_Record_Has__FileObjectStorage_MainEntry_Id( scanFileDTO );
+				
 				return scanFileDTO;  // EARLY RETURN
 			} 
 			
@@ -121,6 +125,8 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 		}
 		
 		//  No exception from save so return updated scanFileDTO
+		
+		ensure_ScanFileTbl_Record_Has__FileObjectStorage_MainEntry_Id( scanFileDTO );
 
 		return scanFileDTO;
 	}
@@ -212,5 +218,41 @@ public class ScanFile_Insert_scan_file_tbl_AndChildren_IfNeeded {
 		
 	}
 	
+	
+	/**
+	 * If file_object_storage_main_entry_id_fk is passed in DTO, ensure it is on the DB record
+	 * 
+	 * @param scanFileDTO
+	 * @throws Exception 
+	 */
+	private void ensure_ScanFileTbl_Record_Has__FileObjectStorage_MainEntry_Id( ScanFileDTO scanFileDTO ) throws Exception {
+		
+		
+		if ( scanFileDTO.getFileObjectStorage_MainEntry_Id() == null ) {
+			//  Nothing to save so exit
+			return; // EARLY RETURN
+		}
+		
+		Integer fileObjectStorage_MainEntry_Id_FromDB = ScanFileDAO_Importer.getInstance().get_FileObjectStorage_MainEntry_Id_For_ScanFileId( scanFileDTO.getId() );
+		
+		if ( fileObjectStorage_MainEntry_Id_FromDB == null ) {
+			
+			//  Add to DB record
+			
+			ScanFileDAO_Importer.getInstance().update_FileObjectStorage_MainEntry_Id_For_ScanFileId( scanFileDTO.getFileObjectStorage_MainEntry_Id(), scanFileDTO.getId() );
+						
+			return;  // EARLY RETURN
+		}
+		
+		if ( fileObjectStorage_MainEntry_Id_FromDB.intValue() != scanFileDTO.getFileObjectStorage_MainEntry_Id().intValue() ) {
+			
+			//  Invalid to not point to same fileObjectStorage_MainEntry_Id
+			
+			String msg = "ScanFileDAO_Importer.getInstance().get_FileObjectStorage_MainEntry_Id_For_ScanFileId( scanFileDTO.getId() ) is different value than scanFileDTO.getFileObjectStorage_MainEntry_Id().  scanFileId: "
+					+ scanFileDTO.getId();
+			log.error(msg);
+			throw new LimelightImporterInternalException(msg);
+		}
+	}
 
 }

@@ -132,7 +132,7 @@ public class ImporterCoreEntryPoint {
 			ScanFileFileContainer_AllEntries scanFileFileContainer_AllEntries,
 			Boolean skipPopulatingPathOnSearchLineOptChosen, SearchStatistics_General_SavedToDB searchStatistics_General_SavedToDB
 			) throws Exception, LimelightImporterProjectNotAllowImportException, LimelightImporterLimelightXMLDeserializeFailException {
-		
+
 		LimelightInput limelightInputForImport = null;
 		if ( limelightInputForImportParam != null ) {
 			limelightInputForImport = limelightInputForImportParam;

@@ -22,7 +22,12 @@ public enum FileObjectStore_FileType_Enum {
     /**
      * Generic Other file
      */
-    GENERIC_OTHER_FILE_TYPE(3);
+    GENERIC_OTHER_FILE_TYPE(3),
+    
+    /**
+     * Scan file - Submitted as Scan File to Limelight
+     */
+    SCAN_FILE_TYPE(4);
 
     
     private final int value;
@@ -30,7 +35,7 @@ public enum FileObjectStore_FileType_Enum {
 
     /**
      * @param enumValue
-     * @return 'Description' String
+     * @return 'Description' String for table file_object_storage_main_entry_file_type_lookup_tbl as well as other uses
      */
     public static String fileObjectStore_FileType_GetDescriptionString_ForEnumValue( FileObjectStore_FileType_Enum enumValue ) {
     	
@@ -48,6 +53,11 @@ public enum FileObjectStore_FileType_Enum {
     		
     		return "Generic File";
     	}
+
+    	if ( enumValue == FileObjectStore_FileType_Enum.SCAN_FILE_TYPE) {
+    		
+    		return "Scan File";
+    	}    	
     	
     	throw new IllegalArgumentException( "fileObjectStore_FileType_GetDescriptionString_ForEnumValue(...): enumValue is unknown.  enumValue.value(): " + enumValue.value() );
     }

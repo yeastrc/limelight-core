@@ -31,6 +31,8 @@ export class ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFil
     scanFilename_Array: Array<string>;
     scanFile_Code_FirstSix: string
 
+    canDownload: boolean; // Has scan_file_tbl.file_object_storage_main_entry_id_fk so scan file contents in File Object Storage
+
     userIsProjectOwner: boolean;
     canDeleteEntry: boolean;
     entryHasFeatureDetection: boolean;
@@ -137,6 +139,7 @@ const _process_WebserviceResponse = function (
             scanFileId: resultItem.scanFileId,
             scanFile_Code_FirstSix: resultItem.scanFile_Code_FirstSix,
             scanFilename_Array: resultItem.scanFilename_Set,
+            canDownload: resultItem.canDownload,
             canDeleteEntry: resultItem.canDeleteEntry,
             userIsProjectOwner: resultItem.userIsProjectOwner,
             entryHasFeatureDetection: resultItem.entryHasFeatureDetection

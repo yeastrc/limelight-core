@@ -31,6 +31,9 @@ public class ProjectScanFile_For_ProjectId_Searcher extends Limelight_JDBC_Base 
 		private int projectScanFileId;
 		private int scanFileId;
 		private String scanFilename;
+
+		//  may be null
+		private Integer file_object_storage_main_entry_tbl_id;
 		
 		public int getScanFileId() {
 			return scanFileId;
@@ -41,13 +44,19 @@ public class ProjectScanFile_For_ProjectId_Searcher extends Limelight_JDBC_Base 
 		public int getProjectScanFileId() {
 			return projectScanFileId;
 		}
+		public Integer getFile_object_storage_main_entry_tbl_id() {
+			return file_object_storage_main_entry_tbl_id;
+		}
 	}
 	
 	
 	private static final String SQL = 
-			"SELECT project_scan_file_tbl.id AS project_scan_file_tbl__id, project_scan_file_tbl.scan_file_id, project_scan_filename_tbl.scan_filename "
+			"SELECT project_scan_file_tbl.id AS project_scan_file_tbl__id, project_scan_file_tbl.scan_file_id, project_scan_filename_tbl.scan_filename,"
+			+ " file_object_storage_main_entry_tbl.id AS file_object_storage_main_entry_tbl_id "
 			+ " FROM project_scan_file_tbl "
 			+   " INNER JOIN project_scan_filename_tbl ON project_scan_file_tbl.id = project_scan_filename_tbl.project_scan_file_id"
+			+ " LEFT OUTER JOIN scan_file_tbl ON project_scan_file_tbl.scan_file_id = scan_file_tbl.id "
+			+ " LEFT OUTER JOIN file_object_storage_main_entry_tbl ON scan_file_tbl.file_object_storage_main_entry_id_fk = file_object_storage_main_entry_tbl.id "		
 			+ " WHERE project_id = ? ";
 	
 	@Override
@@ -73,6 +82,12 @@ public class ProjectScanFile_For_ProjectId_Searcher extends Limelight_JDBC_Base 
 					result.projectScanFileId = rs.getInt( "project_scan_file_tbl__id" );
 					result.scanFilename = rs.getString( "scan_filename" );
 					result.scanFileId = rs.getInt( "scan_file_id" );
+					{
+						int fieldValue = rs.getInt( "file_object_storage_main_entry_tbl_id" );
+						if ( ! rs.wasNull() ) {
+							result.file_object_storage_main_entry_tbl_id = fieldValue;
+						}
+					}
 					
 					resultList.add(result);
 				}

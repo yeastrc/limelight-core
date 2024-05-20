@@ -25,8 +25,13 @@ import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class,
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__SearchFile_Item,
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__WebLink_Item,
-    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_CommonForProject
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_CommonForProject,
+    SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_Search_Scan_File_Item
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -415,7 +420,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                         searchDetails_ForProjectSearchId={ this._searchDetails_ForProjectSearchId }
                     />
 
-                    { this._searchDetails_ForProjectSearchId.mainPart.scanFilenames_CommaDelim ? (
+                    { this._searchDetails_ForProjectSearchId.mainPart.scanFile_List && this._searchDetails_ForProjectSearchId.mainPart.scanFile_List.length > 0 ? (
                         <>
                             <div style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }>
                                 Scan Filenames:
@@ -425,7 +430,18 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                                 */ }
                             <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
                                 <span style={ { overflowWrap: "break-word" } }>
-                                    { this._searchDetails_ForProjectSearchId.mainPart.scanFilenames_CommaDelim }
+                                    { this._searchDetails_ForProjectSearchId.mainPart.scanFile_List.map( (scanFile_Entry, scanFile_Entry_Index, scanFile_List_Inside_Map) => {
+
+                                        const commaAfter = scanFile_Entry_Index !== scanFile_List_Inside_Map.length - 1;
+                                        return (
+                                            <Internal__Scan_File_Component
+                                                key={ scanFile_Entry.id }
+                                                search_Scan_File_Item={ scanFile_Entry}
+                                                projectSearchId={ this._searchDetails_ForProjectSearchId.mainPart.projectSearchId }
+                                                commaAfter={ commaAfter }
+                                            />
+                                        )
+                                    }) }
                                 </span>
                             </div>
                         </>
@@ -574,14 +590,23 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
                 <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
 
                     { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFile_FileObjectStorageId ? (
-                        <span
-                            style={ { overflowWrap: "break-word" } }
-                            className=" fake-link "
-                            title="Download file"
-                            onClick={ this._fasta_Filename_Clicked_For_Download_BindThis }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Click to download FASTA file
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
-                        </span>
+                            <span
+                                style={ { overflowWrap: "break-word" } }
+                                className=" fake-link "
+                                title="Download file"
+                                onClick={ this._fasta_Filename_Clicked_For_Download_BindThis }
+                            >
+                                { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : (
                         <span>
                             { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
@@ -596,6 +621,131 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
                         </>
                     ) : null }
                 </div>
+            </>
+        )
+    }
+}
+
+
+///////////////////
+
+/**
+ *
+ */
+interface Internal__Scan_File_Component_Props {
+
+    search_Scan_File_Item: SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result_Search_Scan_File_Item
+    projectSearchId: number
+    commaAfter: boolean
+}
+
+/**
+ *
+ */
+interface Internal__Scan_File_Component_State {
+
+    force_Rerender_Object?: object
+}
+
+/**
+ *
+ */
+class Internal__Scan_File_Component extends React.Component<Internal__Scan_File_Component_Props, Internal__Scan_File_Component_State> {
+
+    private _filename_Clicked_For_Download_BindThis = this._filename_Clicked_For_Download.bind(this)
+
+    /**
+     *
+     */
+    constructor( props: Internal__Scan_File_Component_Props ) {
+        super( props );
+
+        this.state = {
+            force_Rerender_Object: {}
+        };
+    }
+
+    /**
+     *
+     * @param event
+     * @private
+     */
+    private _filename_Clicked_For_Download( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+        try {
+            const requestJSONObject = {
+                projectSearchId: this.props.projectSearchId,
+                searchScanFile_Id : this.props.search_Scan_File_Item.id
+            }
+
+            const requestJSONString = JSON.stringify(requestJSONObject);
+
+            //  Create and submit form
+
+            const form = document.createElement("form");
+
+            $(form).hide();
+
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-search-scan-file-id-psid");
+            form.setAttribute("target", "_blank");
+
+            const requestJSONStringField = document.createElement("textarea");
+            requestJSONStringField.setAttribute("name", "requestJSONString");
+
+            $(requestJSONStringField).text(requestJSONString);
+
+            form.appendChild(requestJSONStringField);
+
+            document.body.appendChild(form);    // Not entirely sure if this is necessary
+
+            try {
+                form.submit();
+            } finally {
+
+                document.body.removeChild(form);
+            }
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
+
+    /**
+     *
+     */
+    render() {
+
+        return (
+            <>
+                { this.props.search_Scan_File_Item.canDownload ? (
+                    <>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Click to download scan file
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <span
+                                style={ { overflowWrap: "break-word" } }
+                                className=" fake-link "
+                                title="Download file"
+                                onClick={ this._filename_Clicked_For_Download_BindThis }
+                            >
+                                { this.props.search_Scan_File_Item.filename }
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    </>
+                ) : (
+                    <span>
+                        { this.props.search_Scan_File_Item.filename }
+                    </span>
+                ) }
+                { this.props.commaAfter ? (
+                    <span>, </span>
+                ) : null }
             </>
         )
     }

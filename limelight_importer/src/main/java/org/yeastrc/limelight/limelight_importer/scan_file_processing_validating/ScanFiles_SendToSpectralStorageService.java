@@ -77,6 +77,8 @@ public class ScanFiles_SendToSpectralStorageService {
 				log.error( msg );
 				throw new LimelightImporterInternalException( msg );
 			}
+			
+			searchScanFileEntry.setScanFileFileContainer( scanFileFileContainer );
 
 			SearchScanFileImporterDTO searchScanFileImporterDTO = new SearchScanFileImporterDTO();
 			

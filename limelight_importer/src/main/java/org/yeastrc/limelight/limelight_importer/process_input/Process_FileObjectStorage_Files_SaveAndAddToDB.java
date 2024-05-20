@@ -50,7 +50,7 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 	 */
 	public void process_FileObjectStorage_Files_SaveAndAddToDB( 
 			
-			int searchId,
+			Integer searchId,  //  null when NO Search like when only importing a scan file
 			FileObjectStorage_FileContainer_AllEntries fileObjectStorage_FileContainer_AllEntries
 			
 			) throws LimelightImporterFileObjectStorageServiceErrorException, Exception {
@@ -168,7 +168,11 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 					}
 				}
 				
-				{   //  File Object Store - Main Entry to Search Id mapping
+				
+				fileObjectStorage_FileContainer.setId_InDBTable_file_object_storage_main_entry_tbl( fileObjectStorage_MainEntry_Id );
+				
+				
+				if ( searchId != null ) {   //  File Object Store - Main Entry to Search Id mapping
 					
 					FileObjectStorage_ToSearch_DTO fileObjectStorage_ToSearch_DTO = new FileObjectStorage_ToSearch_DTO();
 					
@@ -186,7 +190,9 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 					FileObjectStorage_SourceFirstImport_DTO fileObjectStorage_SourceFirstImport_DTO = new FileObjectStorage_SourceFirstImport_DTO();
 
 					fileObjectStorage_SourceFirstImport_DTO.setFileObjectStorage_MainEntry_Id( fileObjectStorage_MainEntry_Id );
-					fileObjectStorage_SourceFirstImport_DTO.setSearch_Id(searchId);
+					if ( searchId != null ) {
+						fileObjectStorage_SourceFirstImport_DTO.setSearch_Id(searchId);
+					}
 					fileObjectStorage_SourceFirstImport_DTO.setFilenameAtImport( fileObjectStorage_FileContainer.getFilename() );
 					
 					if ( fileObjectStorage_FileContainer.getFile() != null ) {

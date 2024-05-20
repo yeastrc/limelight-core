@@ -1,0 +1,16 @@
+package org.yeastrc.limelight.limelight_webapp.searchers;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import org.yeastrc.limelight.limelight_webapp.searchers.FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher.FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher_Return_Item;
+
+public interface FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher_IF {
+
+	List<FileObjectStorage_Data_FOR_SearchScanFileId_AND_SearchId_Searcher_Return_Item>
+
+			getFileObjectStorage_Data_FOR_SearchScanFile_Id_AND_SearchId(
+
+					int searchScanFile_Id, int searchId) throws SQLException;
+
+}

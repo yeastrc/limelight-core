@@ -482,18 +482,62 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table file_object_storage_main_entry_file_type_lookup_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_main_entry_file_type_lookup_tbl (
+  id INT UNSIGNED NOT NULL,
+  description VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id))
+ENGINE = InnoDB;
+
+CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_file_type_lookup_tbl (description ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
+-- Table file_object_storage_main_entry_tbl
+-- -----------------------------------------------------
+CREATE TABLE  file_object_storage_main_entry_tbl (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  file_type_id INT UNSIGNED NOT NULL,
+  file_object_storage_api_key VARCHAR(300) NOT NULL,
+  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_file_object_storage_main_entry_tbl_1
+    FOREIGN KEY (file_type_id)
+    REFERENCES file_object_storage_main_entry_file_type_lookup_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1
+COLLATE = latin1_bin;
+
+CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_tbl (file_object_storage_api_key ASC) VISIBLE;
+
+CREATE INDEX fk_file_object_storage_main_entry_tbl_1_idx ON file_object_storage_main_entry_tbl (file_type_id ASC) VISIBLE;
+
+
+-- -----------------------------------------------------
 -- Table scan_file_tbl
 -- -----------------------------------------------------
 CREATE TABLE  scan_file_tbl (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   spectral_storage_api_key VARCHAR(300) NOT NULL,
+  file_object_storage_main_entry_id_fk INT UNSIGNED NULL,
   create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id))
+  PRIMARY KEY (id),
+  CONSTRAINT scan_file_tbl_fos_meid
+    FOREIGN KEY (file_object_storage_main_entry_id_fk)
+    REFERENCES file_object_storage_main_entry_tbl (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1
 COLLATE = latin1_bin;
 
 CREATE UNIQUE INDEX spectral_storage_api_key_UNIQUE ON scan_file_tbl (spectral_storage_api_key ASC) VISIBLE;
+
+CREATE INDEX scan_file_tbl_fos_meid_idx ON scan_file_tbl (file_object_storage_main_entry_id_fk ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -3521,42 +3565,6 @@ CREATE TABLE  import_and_pipeline_run_tracking_status_history_tbl (
 ENGINE = InnoDB;
 
 CREATE INDEX fk_import_and_pipeline_run_tracking_status_history_tbl_1_idx ON import_and_pipeline_run_tracking_status_history_tbl (import_and_pipeline_run_tracking_id ASC) VISIBLE;
-
-
--- -----------------------------------------------------
--- Table file_object_storage_main_entry_file_type_lookup_tbl
--- -----------------------------------------------------
-CREATE TABLE  file_object_storage_main_entry_file_type_lookup_tbl (
-  id INT UNSIGNED NOT NULL,
-  description VARCHAR(300) NOT NULL,
-  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id))
-ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_file_type_lookup_tbl (description ASC) VISIBLE;
-
-
--- -----------------------------------------------------
--- Table file_object_storage_main_entry_tbl
--- -----------------------------------------------------
-CREATE TABLE  file_object_storage_main_entry_tbl (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  file_type_id INT UNSIGNED NOT NULL,
-  file_object_storage_api_key VARCHAR(300) NOT NULL,
-  create_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_file_object_storage_main_entry_tbl_1
-    FOREIGN KEY (file_type_id)
-    REFERENCES file_object_storage_main_entry_file_type_lookup_tbl (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_bin;
-
-CREATE UNIQUE INDEX file_object_storage_api_key_UNIQUE ON file_object_storage_main_entry_tbl (file_object_storage_api_key ASC) VISIBLE;
-
-CREATE INDEX fk_file_object_storage_main_entry_tbl_1_idx ON file_object_storage_main_entry_tbl (file_type_id ASC) VISIBLE;
 
 
 -- -----------------------------------------------------

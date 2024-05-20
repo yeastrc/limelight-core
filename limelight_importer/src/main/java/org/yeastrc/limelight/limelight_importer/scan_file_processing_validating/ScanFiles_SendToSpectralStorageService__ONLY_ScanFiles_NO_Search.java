@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterErrorProcessingRunIdException;
+import org.yeastrc.limelight.limelight_importer.objects.FileObjectStorage_FileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer;
 import org.yeastrc.limelight.limelight_importer.objects.ScanFileFileContainer_AllEntries;
 import org.yeastrc.limelight.limelight_importer.spectral_storage_service_interface.ScanFileToSpectralStorageService_SendFile;
@@ -80,6 +81,12 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 		
 		String aws_RegionUsed;
 		long fileSize_From_FileOrS3Object;
+
+		/**
+		 * Populate when stored in File Object Storage
+		 */
+		private FileObjectStorage_FileContainer fileObjectStorage_FileContainer;
+		
 		
 		public String getSpectralStorageProcessKey() {
 			return spectralStorageProcessKey;
@@ -95,6 +102,12 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 		}
 		public long getFileSize_From_FileOrS3Object() {
 			return fileSize_From_FileOrS3Object;
+		}
+		public FileObjectStorage_FileContainer getFileObjectStorage_FileContainer() {
+			return fileObjectStorage_FileContainer;
+		}
+		public void setFileObjectStorage_FileContainer(FileObjectStorage_FileContainer fileObjectStorage_FileContainer) {
+			this.fileObjectStorage_FileContainer = fileObjectStorage_FileContainer;
 		}
 	}
 	
@@ -116,6 +129,8 @@ public class ScanFiles_SendToSpectralStorageService__ONLY_ScanFiles_NO_Search {
 			result_List.add(resultItem);
 
 			resultItem.scanFileFileContainer = scanFileFileContainer;
+			
+			resultItem.fileObjectStorage_FileContainer = scanFileFileContainer.getFileObjectStorage_FileContainer();
 			
 			
 			if ( StringUtils.isNotEmpty( scanFileFileContainer.getAws_s3_object_key() ) ) {

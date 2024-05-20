@@ -81,63 +81,104 @@ const saveListConfiguration = function() {
 	
 	var configList = [];
 	var input_footer_center_of_page_html_Val = null;
-	
-	var $allow_scan_file_upload_checkbox = $("#allow_scan_file_upload_checkbox");
-	var allow_scan_file_upload_checkboxChecked = $allow_scan_file_upload_checkbox.prop( "checked" );
-	
-	var $spectral_storage_service_accept_import_base_url_input_field = $("#spectral_storage_service_accept_import_base_url_input_field");
-	var spectral_storage_service_accept_import_base_url_input_fieldValue = $spectral_storage_service_accept_import_base_url_input_field.val();
 
-	var $spectral_storage_service_get_data_base_url_input_field = $("#spectral_storage_service_get_data_base_url_input_field");
-	var spectral_storage_service_get_data_base_url_input_fieldValue = $spectral_storage_service_get_data_base_url_input_field.val();
+	{  //  Validate values for allow_scan_file_upload_checkbox AND spectral_storage_service_accept_import_base_url_input_field AND spectral_storage_service_get_data_base_url_input_field
 
-	//  Validate that if one Spectral Storage URL is populated, they both are populated
-	
-	if ( ( spectral_storage_service_accept_import_base_url_input_fieldValue === "" &&
-			spectral_storage_service_get_data_base_url_input_fieldValue !== "" ) ||
-			 ( spectral_storage_service_accept_import_base_url_input_fieldValue !== "" && 
-					 spectral_storage_service_get_data_base_url_input_fieldValue === "") ) {
-		//  Display error message
-		var $error_message_allow_scan_file_selected_spectral_storage_empty = $("#error_message_spectral_storage_only_one_has_value");
-		showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
-		
-		 return;  //  EARLY EXIT
-	}	
-	
-	//  Validate that if allow scan files uploaded is checked, that the Spectral Storage URLs are populated
-	
-	if ( allow_scan_file_upload_checkboxChecked && spectral_storage_service_accept_import_base_url_input_fieldValue === "" ) {
-		//  Display error message since checkbox checked but input field empty
-		var $error_message_allow_scan_file_selected_spectral_storage_empty = $("#error_message_allow_scan_file_selected_spectral_storage_empty");
-		showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
-		
-		 return;  //  EARLY EXIT
-	}	
+		var $allow_scan_file_upload_checkbox = $( "#allow_scan_file_upload_checkbox" );
+		var allow_scan_file_upload_checkboxChecked = $allow_scan_file_upload_checkbox.prop( "checked" );
 
-	if ( allow_scan_file_upload_checkboxChecked && spectral_storage_service_get_data_base_url_input_fieldValue === "" ) {
-		//  Display error message since checkbox checked but input field empty
-		var $error_message_allow_scan_file_selected_spectral_storage_empty = $("#error_message_allow_scan_file_selected_spectral_storage_empty");
-		showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
-		
-		 return;  //  EARLY EXIT
-	}	
-	
-	//  Validate that if allow scan files uploaded is NOT checked, that the Spectral Storage URLs are NOT populated
-	
-	if ( ( ! allow_scan_file_upload_checkboxChecked ) && spectral_storage_service_accept_import_base_url_input_fieldValue !== "" ) {
-		//  Display error message since checkbox not checked but input field not empty
-		var $error_message_allow_scan_file_not_selected_spectral_storage_not_empty = $("#error_message_allow_scan_file_not_selected_spectral_storage_not_empty");
-		showErrorMsg( $error_message_allow_scan_file_not_selected_spectral_storage_not_empty );
-		
-		 return;  //  EARLY EXIT
-	}	
+		var $spectral_storage_service_accept_import_base_url_input_field = $( "#spectral_storage_service_accept_import_base_url_input_field" );
+		var spectral_storage_service_accept_import_base_url_input_fieldValue = $spectral_storage_service_accept_import_base_url_input_field.val();
 
-	if ( ( ! allow_scan_file_upload_checkboxChecked ) && spectral_storage_service_get_data_base_url_input_fieldValue !== "" ) {
-		//  Display error message since checkbox not checked but input field not empty
-		var $error_message_allow_scan_file_not_selected_spectral_storage_not_empty = $("#error_message_allow_scan_file_not_selected_spectral_storage_not_empty");
-		showErrorMsg( $error_message_allow_scan_file_not_selected_spectral_storage_not_empty );
-		
-		 return;  //  EARLY EXIT
+		var $spectral_storage_service_get_data_base_url_input_field = $( "#spectral_storage_service_get_data_base_url_input_field" );
+		var spectral_storage_service_get_data_base_url_input_fieldValue = $spectral_storage_service_get_data_base_url_input_field.val();
+
+		//  Validate that if one Spectral Storage URL is populated, they both are populated
+
+		if ( ( spectral_storage_service_accept_import_base_url_input_fieldValue === "" &&
+				spectral_storage_service_get_data_base_url_input_fieldValue !== "" ) ||
+			( spectral_storage_service_accept_import_base_url_input_fieldValue !== "" &&
+				spectral_storage_service_get_data_base_url_input_fieldValue === "" ) ) {
+			//  Display error message
+			var $error_message_allow_scan_file_selected_spectral_storage_empty = $( "#error_message_spectral_storage_only_one_has_value" );
+			showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
+
+			return;  //  EARLY EXIT
+		}
+
+		//  Validate that if allow scan files uploaded is checked, that the Spectral Storage URLs are populated
+
+		if ( allow_scan_file_upload_checkboxChecked && spectral_storage_service_accept_import_base_url_input_fieldValue === "" ) {
+			//  Display error message since checkbox checked but input field empty
+			var $error_message_allow_scan_file_selected_spectral_storage_empty = $( "#error_message_allow_scan_file_selected_spectral_storage_empty" );
+			showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
+
+			return;  //  EARLY EXIT
+		}
+
+		if ( allow_scan_file_upload_checkboxChecked && spectral_storage_service_get_data_base_url_input_fieldValue === "" ) {
+			//  Display error message since checkbox checked but input field empty
+			var $error_message_allow_scan_file_selected_spectral_storage_empty = $( "#error_message_allow_scan_file_selected_spectral_storage_empty" );
+			showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
+
+			return;  //  EARLY EXIT
+		}
+
+		//  Validate that if allow scan files uploaded is NOT checked, that the Spectral Storage URLs are NOT populated
+
+		if ( ( ! allow_scan_file_upload_checkboxChecked ) && spectral_storage_service_accept_import_base_url_input_fieldValue !== "" ) {
+			//  Display error message since checkbox not checked but input field not empty
+			var $error_message_allow_scan_file_not_selected_spectral_storage_not_empty = $( "#error_message_allow_scan_file_not_selected_spectral_storage_not_empty" );
+			showErrorMsg( $error_message_allow_scan_file_not_selected_spectral_storage_not_empty );
+
+			return;  //  EARLY EXIT
+		}
+
+		if ( ( ! allow_scan_file_upload_checkboxChecked ) && spectral_storage_service_get_data_base_url_input_fieldValue !== "" ) {
+			//  Display error message since checkbox not checked but input field not empty
+			var $error_message_allow_scan_file_not_selected_spectral_storage_not_empty = $( "#error_message_allow_scan_file_not_selected_spectral_storage_not_empty" );
+			showErrorMsg( $error_message_allow_scan_file_not_selected_spectral_storage_not_empty );
+
+			return;  //  EARLY EXIT
+		}
+	}
+
+	{  //  Validate values for save_scan_file_upload_to_file_object_storage_service_checkbox AND file_object_storage_base_url_input_field
+
+		var $save_scan_file_upload_to_file_object_storage_service_checkbox = $( "#save_scan_file_upload_to_file_object_storage_service_checkbox" );
+		var save_scan_file_upload_to_file_object_storage_service_checkboxChecked = $save_scan_file_upload_to_file_object_storage_service_checkbox.prop( "checked" );
+
+		var $file_object_storage_base_url_input_field = $( "#file_object_storage_base_url_input_field" );
+		var file_object_storage_base_url_input_fieldValue = $file_object_storage_base_url_input_field.val();
+
+		//  Validate that if save_scan_file_upload_to_file_object_storage_service is checked, that file_object_storage_base_url_input_field is populated
+
+		if ( save_scan_file_upload_to_file_object_storage_service_checkboxChecked && file_object_storage_base_url_input_fieldValue === "" ) {
+			//  Display error message since checkbox checked but input field empty
+			var $error_message_allow_scan_file_selected_spectral_storage_empty = $( "#error_message_save_scan_file_upload_to_file_object_storage_service_selected_file_object_storage_service_empty" );
+			showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
+
+			return;  //  EARLY EXIT
+		}
+	}
+
+	{  //  Validate values for save_scan_file_download_from_file_object_storage_service_allowed_checkbox AND file_object_storage_base_url_input_field
+
+		var $save_scan_file_download_from_file_object_storage_service_allowed_checkbox = $( "#save_scan_file_download_from_file_object_storage_service_allowed_checkbox" );
+		var save_scan_file_download_from_file_object_storage_service_allowed_checkboxChecked = $save_scan_file_download_from_file_object_storage_service_allowed_checkbox.prop( "checked" );
+
+		var $file_object_storage_base_url_input_field = $( "#file_object_storage_base_url_input_field" );
+		var file_object_storage_base_url_input_fieldValue = $file_object_storage_base_url_input_field.val();
+
+		//  Validate that if save_scan_file_upload_to_file_object_storage_service is checked, that file_object_storage_base_url_input_field is populated
+
+		if ( save_scan_file_download_from_file_object_storage_service_allowed_checkboxChecked && file_object_storage_base_url_input_fieldValue === "" ) {
+			//  Display error message since checkbox checked but input field empty
+			var $error_message_allow_scan_file_selected_spectral_storage_empty = $( "#error_message_save_scan_file_upload_to_file_object_storage_service_selected_file_object_storage_service_empty" );
+			showErrorMsg( $error_message_allow_scan_file_selected_spectral_storage_empty );
+
+			return;  //  EARLY EXIT
+		}
 	}
 
 	//////
