@@ -1456,7 +1456,7 @@ class Internal__ScanFileBrowser_SingleScan_Plot_Component extends React.Componen
 
                         //  Window:  m/z window for main m/z + X isotope
 
-                        let line_Label = "Monoisoptic"
+                        let line_Label = "Monoisotopic"
 
                         if ( isotope_Number > 0 ) {
                             line_Label = "13C x " + isotope_Number
