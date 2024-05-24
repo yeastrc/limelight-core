@@ -30,6 +30,11 @@ import {
     get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Component
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/jsx/scanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay";
 import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /**
  *
@@ -117,6 +122,10 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
         try {
             event.stopPropagation()
 
+            if ( limelight__IsTextSelected() ) {
+                return
+            }
+
             this._open_Add_Change_Overlay({ selection_Entry_To_Change: undefined })
 
         } catch( e ) {
@@ -189,35 +198,54 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                         <div style={ { display: "grid", gridTemplateColumns: "max-content 1fr", marginBottom: 4 } }>
                             {/*  2 Column Grid  */}
                             <div style={ { marginRight: 5 } }>
-                                <img
-                                    className=" fake-link-image icon-small "
-                                    title="Change Entry"
-                                    src="static/images/icon-edit.png"
-                                    onClick={ event => {
-                                        try {
-                                            this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Click to change filter value
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        className=" fake-link-image icon-small "
+                                        src="static/images/icon-edit.png"
+                                        onClick={ event => {
+                                            try {
+                                                this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
 
-                                            //  This code was for when was "Delete Entry"
+                                                //  This code was for when was "Delete Entry"
 
-                                            // this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.delete_Entry( selection_Entry )
-                                            //
-                                            // this.setState( { forceUpdate: {} } )
-                                            //
-                                            // this.props.updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback()
-                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-                                    } }
-                                />
+                                                // this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.delete_Entry( selection_Entry )
+                                                //
+                                                // this.setState( { forceUpdate: {} } )
+                                                //
+                                                // this.props.updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback()
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                                        } }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
-                            <div
-                                className=" clickable "
-                                title="Change Entry"
-                                onClick={ event => {
-                                    try {
-                                        this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
-                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
-                                } }
-                            >
-                                { "Mass " + selection_Entry.monoisotopicMass + " +/- " + selection_Entry.plus_Minus_MassRange_In_PPM + " Min % of max peak " + selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan  }
+                            <div>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Click to change filter value
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <span
+                                        className=" clickable "
+                                        title="Change Entry"
+                                        onClick={ event => {
+                                            try {
+                                                this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                                        } }
+                                    >
+                                        { "Mass " + selection_Entry.monoisotopicMass + " +/- " + selection_Entry.plus_Minus_MassRange_In_PPM + " Min % of max peak " + selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan  }
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
                         </div>
                     )
@@ -250,22 +278,41 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
 
                                 { ( ! selectionsElements ) ? (
                                     <div>
-                                        <span
-                                            className=" filter-single-value-display-block clickable "
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Click to add filter value
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            Not Filtering on Scan Peak
-                                        </span>
+                                            <span
+                                                className=" filter-single-value-display-block clickable "
+                                                onClick={ this._open_Add_Overlay_BindThis }
+                                            >
+                                                Not Filtering on Scan Peak
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : (
                                     selectionsElements
                                 )}
 
                                 <div>
-                                    <button
-                                        onClick={ this._open_Add_Overlay_BindThis }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Click to add filter value
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Add
-                                    </button>
+                                        <button
+                                            onClick={ this._open_Add_Overlay_BindThis }
+                                        >
+                                            Add
+                                        </button>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
                         </div>
