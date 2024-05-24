@@ -260,7 +260,8 @@ export const createReportedPeptideDisplayData = async function(
                     psmCount_after_Include = peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId.psmCount_after_Include;
                 }
                 peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId({
-                    reportedPeptideId, psmIds_Include, psmCount_after_Include
+                    reportedPeptideId, psmIds_Include, psmCount_after_Include,
+                    scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get___scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch__FOR_COPY_ONLY()
                 });
             }
 

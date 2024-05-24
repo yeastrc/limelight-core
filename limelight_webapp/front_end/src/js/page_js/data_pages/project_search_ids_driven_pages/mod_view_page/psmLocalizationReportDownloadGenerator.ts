@@ -2,7 +2,7 @@ import {ModView_VizOptionsData} from "page_js/data_pages/project_search_ids_driv
 import {ModViewDataManager} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewDataManager";
 import {ReportedPeptide} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/ReportedPeptide";
 import {ModViewDataVizRenderer_MultiSearch} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/modViewMainDataVizRender_MultiSearch";
-import {lorikeetSpectrumViewer_CreateURL} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL";
+import {lorikeetSpectrumViewer_CreateURL} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL";
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 import {PsmScanInfo} from "page_js/data_pages/project_search_ids_driven_pages/mod_view_page/PsmScanInfo";
@@ -26,7 +26,7 @@ export class PSMLocalizationReportDownloadGenerator {
         const pageControllerPath = ControllerPath_forCurrentPage_FromDOM.controllerPath_forCurrentPage_FromDOM();
         const urlBase = urlHref.split(pageControllerPath)[0];
 
-        return urlBase + lorikeetSpectrumViewer_CreateURL({projectSearchId, psmId, openModPosition:localization});
+        return urlBase + lorikeetSpectrumViewer_CreateURL({projectSearchId, psmId, openModPosition:localization, scanPeaks_MZ_That_PassFilters_Array__For_PsmId: undefined });
     }
 
     static async getPsmLocalizationReportText(

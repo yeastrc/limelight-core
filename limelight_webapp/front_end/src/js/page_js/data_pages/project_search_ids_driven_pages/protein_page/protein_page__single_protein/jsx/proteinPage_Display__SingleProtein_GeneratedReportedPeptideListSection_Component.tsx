@@ -353,7 +353,10 @@ class ReportedPeptideList_Component extends React.Component< ReportedPeptideList
         if ( this.props.peptideList_Empty ) {
 
             noPeptidesMessage = (
-                <div className=" padding-for-room-for-child-table-show-hide-icon ">
+                <div
+                    className=" padding-for-room-for-child-table-show-hide-icon "
+                    style={ { marginBottom: 20 } }
+                >
                     {/* add className padding-for-room-for-child-table-show-hide-icon to match positioning of peptide list table */}
                     No peptides meet the current filtering criteria.
                 </div>

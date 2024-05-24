@@ -58,6 +58,12 @@ import {
 import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 
 
 /////////   Returned Classes
@@ -70,12 +76,18 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
     private _projectSearchId: number
     private _entriesMap_KeyReportedPeptideId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId>
 
+    /**
+     * Initially created in the Filter that filters on Scan Peaks
+     */
+    private _scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
+
     constructor(
         {
-            projectSearchId, entriesMap_KeyReportedPeptideId
+            projectSearchId, entriesMap_KeyReportedPeptideId, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
         } : {
             projectSearchId: number
             entriesMap_KeyReportedPeptideId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId>
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
         }) {
         this._projectSearchId = projectSearchId;
         if (entriesMap_KeyReportedPeptideId) {
@@ -83,6 +95,7 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
         } else {
             this._entriesMap_KeyReportedPeptideId = new Map()
         }
+        this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch = scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
     }
 
     get_projectSearchId() {
@@ -117,6 +130,18 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 
         return this._entriesMap_KeyReportedPeptideId.values()
     }
+
+    get__scanPeaks_That_PassFilters_Array__For_PsmId( psmId: number ) {
+        if ( ! this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch ) {
+            return undefined
+        }
+        return this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch.get( psmId )
+    }
+
+
+    get___scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch__FOR_COPY_ONLY() {
+        return this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+    }
 }
 
 //////////////////////////////
@@ -138,25 +163,39 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
     readonly psmCount_after_Include_Map_Key_SearchSubGroupId : ReadonlyMap<number,number>
 
     /**
+     * Initially created in the Filter that filters on Scan Peaks
+     */
+    private _scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
+
+    /**
      *
      */
     constructor(
         {
             reportedPeptideId, psmCount_after_Include_Map_Key_SearchSubGroupId,
             psmIds_Include, psmIds_IncludeSet_Map_Key_SearchSubGroupId,
-            psmCount_after_Include
+            psmCount_after_Include, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
         }: {
             reportedPeptideId: number
             psmCount_after_Include_Map_Key_SearchSubGroupId? : ReadonlyMap<number,number>
             psmIds_Include: Set<number>
             psmIds_IncludeSet_Map_Key_SearchSubGroupId?: ReadonlyMap<number,ReadonlySet<number>>
             psmCount_after_Include: number
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
         }) {
         this.reportedPeptideId = reportedPeptideId
         this.psmCount_after_Include_Map_Key_SearchSubGroupId = psmCount_after_Include_Map_Key_SearchSubGroupId
         this.psmIds_Include = psmIds_Include
         this.psmIds_IncludeSet_Map_Key_SearchSubGroupId = psmIds_IncludeSet_Map_Key_SearchSubGroupId
         this.psmCount_after_Include = psmCount_after_Include
+        this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch = scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+    }
+
+    get__scanPeaks_That_PassFilters_Array__For_PsmId( psmId: number ) {
+        if ( ! this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch ) {
+            return undefined
+        }
+        return this._scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch.get( psmId )
     }
 }
 
@@ -185,6 +224,11 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
     private _includeAll_ReportedPeptideIds: boolean  //  When Filter applied, ALL Reported Peptide Ids are included (mostly from "Exclude" that excludes nothing)
 
     private _entriesMap_KeyReportedPeptideId: Map<number, Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__ForSingleReportedPeptideId__FILTERING_INTERNAL_CLASS> = new Map()
+
+    /**
+     * Initially created in the Filter that filters on Scan Peaks
+     */
+    private scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
 
     /**
      *
@@ -271,6 +315,23 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 
         return this._entriesMap_KeyReportedPeptideId.keys();
     }
+
+    /**
+     * Set or Copy to new Instance
+     *
+     * @param scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+     */
+    set__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch( scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>> ) {
+        this.scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch = scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+    }
+
+    /**
+     * ONLY Use when creating new instance of this class
+     */
+    get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch() {
+        return this.scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+    }
+
 }
 
 /**
@@ -282,17 +343,32 @@ export class Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__Single
 
     psmIds_Include: Set<number>
 
+    /**
+     * Initially created in the Filter that filters on Scan Peaks
+     */
+    private scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
+
     constructor(
         {
             reportedPeptideId,
-            psmIds_Include
+            psmIds_Include,
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
         } : {
             reportedPeptideId: number
             psmIds_Include: Set<number>
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch?: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
         }
     ) {
         this.reportedPeptideId = reportedPeptideId
         this.psmIds_Include = psmIds_Include;
+        this.scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch = scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
+    }
+
+    /**
+     * ONLY Use when creating new instance of this class
+     */
+    get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch() {
+        return this.scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch
     }
 
 }
@@ -312,6 +388,7 @@ class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class__MainMethod_Pa
     reporterIonMass_UserSelections_StateObject: ReporterIonMass_UserSelections_StateObject
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject: ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     scan_RetentionTime_MZ_UserSelection_StateObject: Scan_RetentionTime_MZ_UserSelections_StateObject
     peptideUnique_UserSelection_StateObject: PeptideUnique_UserSelection_StateObject;
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
@@ -497,7 +574,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             return {    // EARLY RETURN
                 data: {
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
-                        projectSearchId: this._projectSearchId, entriesMap_KeyReportedPeptideId: undefined
+                        projectSearchId: this._projectSearchId, entriesMap_KeyReportedPeptideId: undefined, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
                     })
                 },
                 promise: undefined
@@ -517,7 +594,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             return {    // EARLY RETURN
                 data: {
                     reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId: new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
-                        projectSearchId: this._projectSearchId, entriesMap_KeyReportedPeptideId: undefined
+                        projectSearchId: this._projectSearchId, entriesMap_KeyReportedPeptideId: undefined, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
                     })
                 },
                 promise: undefined
@@ -548,6 +625,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 reporterIonMass_UserSelections_StateObject: main_FunctionParams.reporterIonMass_UserSelections_StateObject,
                 scanFilenameId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                 scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : main_FunctionParams.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
                 scan_RetentionTime_MZ_UserSelection_StateObject: main_FunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
                 peptideUnique_UserSelection_StateObject: main_FunctionParams.peptideUnique_UserSelection_StateObject,
                 psm_Charge_Filter_UserSelection_StateObject : main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject,
@@ -652,6 +730,7 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             reporterIonMass_UserSelections_StateObject: main_FunctionParams.reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: main_FunctionParams.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+            scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : main_FunctionParams.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject: main_FunctionParams.scan_RetentionTime_MZ_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject: main_FunctionParams.peptideUnique_UserSelection_StateObject,
             psm_Charge_Filter_UserSelection_StateObject : main_FunctionParams.psm_Charge_Filter_UserSelection_StateObject,
@@ -832,13 +911,13 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                     dataPage_common_Flags_SingleSearch: filtering_Params_Main.dataPage_common_Flags_SingleSearch,
                     scanFilenameId_On_PSM_Filter_UserSelection_StateObject: filtering_Params_Main.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
                     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: filtering_Params_Main.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+                    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : filtering_Params_Main.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
                     scan_RetentionTime_MZ_UserSelection_StateObject: filtering_Params_Main.scan_RetentionTime_MZ_UserSelection_StateObject,
                     psm_Charge_Filter_UserSelection_StateObject: filtering_Params_Main.psm_Charge_Filter_UserSelection_StateObject,
                     psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: filtering_Params_Main.psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject,
                     peptideUnique_UserSelection_StateObject: filtering_Params_Main.peptideUnique_UserSelection_StateObject,
                     peptideSequence_UserSelections_StateObject: filtering_Params_Main.peptideSequence_UserSelections_StateObject,
                     peptideSequence_MissedCleavageCount_UserSelections_StateObject: filtering_Params_Main.peptideSequence_MissedCleavageCount_UserSelections_StateObject,
-                    peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: filtering_Params_Main.peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject,
                     proteinSequenceWidget_StateObject: filtering_Params_Main.proteinSequenceWidget_StateObject,
                     proteinPositionFilter_UserSelections_StateObject: filtering_Params_Main.proteinPositionFilter_UserSelections_StateObject,
                     userSearchString_LocationsOn_ProteinSequence_Root: filtering_Params_Main.userSearchString_LocationsOn_ProteinSequence_Root,
@@ -1363,7 +1442,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                         psmCount_after_Include: numPsms,
                         psmCount_after_Include_Map_Key_SearchSubGroupId: undefined,
                         psmIds_Include: undefined,
-                        psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined
+                        psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined,
+                        scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
                     });
 
                     entriesMap_KeyReportedPeptideId.set(reportedPeptideId, result_For_ReportedPeptideId);
@@ -1401,7 +1481,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                         psmIds_Include,
                         psmCount_after_Include: numPsms,
                         psmCount_after_Include_Map_Key_SearchSubGroupId: undefined,
-                        psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined
+                        psmIds_IncludeSet_Map_Key_SearchSubGroupId: undefined,
+                        scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
                     });
 
                     entriesMap_KeyReportedPeptideId.set(reportedPeptideId, result_For_ReportedPeptideId);
@@ -1411,7 +1492,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId =
                 new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
                     projectSearchId: this._projectSearchId,
-                    entriesMap_KeyReportedPeptideId
+                    entriesMap_KeyReportedPeptideId,
+                    scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS__Final.get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch()
                 });
         }
 
@@ -1495,7 +1577,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
 
         const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Result =  new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
             projectSearchId: this._projectSearchId,
-            entriesMap_KeyReportedPeptideId: undefined //  Constructor will create its own
+            entriesMap_KeyReportedPeptideId: undefined, //  Constructor will create its own
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: finalResultFormat__Input.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get___scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch__FOR_COPY_ONLY()
         });
 
         for ( const reportedPeptideIds_AndTheir_PSM_IDs_ExistingEntry of finalResultFormat__Input.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get_Entries_IterableIterator() ){
@@ -1604,7 +1687,8 @@ export class GetReportedPeptideIdsForDisplay_SingleProjectSearchId_Class {
                 psmIds_Include,
                 psmIds_IncludeSet_Map_Key_SearchSubGroupId : psmIds_IncludeSet_Map_Key_SearchSubGroupId,
                 psmCount_after_Include,
-                psmCount_after_Include_Map_Key_SearchSubGroupId
+                psmCount_after_Include_Map_Key_SearchSubGroupId,
+                scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: finalResultFormat__Input.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId.get___scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch__FOR_COPY_ONLY()
             })
 
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__Result.insert_Entry( reportedPeptideIds_AndTheir_PSM_IDs_ExistingEntry_New );
@@ -2140,6 +2224,22 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
         }
     }
 
+    //  Pulled from all search entry for use in creating new all search or reported peptide entry below
+    let scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: Map<number, Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>>
+
+    for ( const entry of reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array ) {
+        if ( entry.get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch() ) {
+            if ( scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch ) {
+                //  ERROR: Found more than one entry with this property set so error
+                const msg = "More than one entry has value for entry.get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch()"
+                console.warn(msg)
+                throw Error(msg)
+            }
+            //  Found in entry so copy to variable for use in creating any new entry or reported peptide entry below
+            scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch = entry.get__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch()
+        }
+    }
+
     //  Some Optimization checks
 
     {  // Anything of the INTERSECTION is Empty, return Empty
@@ -2153,6 +2253,7 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
                 const result = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
                     noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: false
                 });
+                result.set__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch(scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch)
 
                 return result; // EARLY RETURN
             }
@@ -2179,6 +2280,7 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
             const result = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
                 noFilter_OR_FilterHasNoData: true, includeAll_ReportedPeptideIds: false
             });
+            result.set__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch(scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch)
 
             return result; // EARLY RETURN
         }
@@ -2203,6 +2305,7 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
             const result = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
                 noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: true
             });
+            result.set__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch(scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch)
 
             return result; // EARLY RETURN
         }
@@ -2249,6 +2352,7 @@ const _merge_reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTIO
     const result = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
         noFilter_OR_FilterHasNoData: false, includeAll_ReportedPeptideIds: false
     });
+    result.set__scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch(scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch)
 
     for ( const reportedPeptideId of reportedPeptideIds_FromAny_ArrayEntry ) {
 

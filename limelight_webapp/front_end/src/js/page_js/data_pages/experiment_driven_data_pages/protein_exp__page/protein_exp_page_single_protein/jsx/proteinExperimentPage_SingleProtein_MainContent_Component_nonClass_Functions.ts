@@ -80,6 +80,9 @@ import { PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections
 import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 
 
 /**
@@ -110,6 +113,7 @@ const initialPopulate = async function({
     reporterIonMass_UserSelections_StateObject,
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
     scan_RetentionTime_MZ_UserSelection_StateObject,
     psm_Charge_Filter_UserSelection_StateObject,
     peptideUnique_UserSelection_StateObject,
@@ -131,6 +135,7 @@ const initialPopulate = async function({
     reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
     scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
     scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+    scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
     psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
     peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
@@ -204,6 +209,7 @@ Promise<{
             reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+            scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
             psm_Charge_Filter_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,

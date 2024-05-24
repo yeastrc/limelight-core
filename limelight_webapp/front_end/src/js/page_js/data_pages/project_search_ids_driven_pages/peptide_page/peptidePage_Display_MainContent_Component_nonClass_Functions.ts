@@ -60,6 +60,9 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 
 //////////////
 //////////////
@@ -78,6 +81,7 @@ const compute_FullPage_Except_SearchDetails = async function(
         reporterIonMass_UserSelections_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
         scan_RetentionTime_MZ_UserSelection_StateObject,
         peptideUnique_UserSelection_StateObject,
         peptideSequence_UserSelections_StateObject,
@@ -96,6 +100,7 @@ const compute_FullPage_Except_SearchDetails = async function(
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
         scan_RetentionTime_MZ_UserSelection_StateObject : Scan_RetentionTime_MZ_UserSelections_StateObject
         peptideUnique_UserSelection_StateObject : PeptideUnique_UserSelection_StateObject;
         peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
@@ -168,6 +173,7 @@ const compute_FullPage_Except_SearchDetails = async function(
             reporterIonMass_UserSelections_StateObject,
             scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+            scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
             scan_RetentionTime_MZ_UserSelection_StateObject,
             peptideUnique_UserSelection_StateObject,
             peptideSequence_UserSelections_StateObject,

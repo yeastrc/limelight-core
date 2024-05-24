@@ -535,6 +535,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                             reporterIonMass_UserSelections_StateObject : undefined,
                             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.featureDetection_ViewPage__Chromatogram_Component_Params.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,  // Filter on select searches Search Scan File Id
                             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : undefined,
+                            scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: undefined,
                             scan_RetentionTime_MZ_UserSelection_StateObject : undefined,
                             peptideUnique_UserSelection_StateObject : undefined,
                             peptideSequence_UserSelections_StateObject : undefined,
@@ -3555,7 +3556,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 openModPositionOverride: undefined,
                 searchDataLookupParamsRoot: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.searchDataLookupParamsRoot,
                 dataPageStateManager: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.dataPageStateManager_DataFrom_Server,
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable: undefined  // Since NO Filter on Scan Peaks on Feature Detection Page
             });
 
             this._psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results =

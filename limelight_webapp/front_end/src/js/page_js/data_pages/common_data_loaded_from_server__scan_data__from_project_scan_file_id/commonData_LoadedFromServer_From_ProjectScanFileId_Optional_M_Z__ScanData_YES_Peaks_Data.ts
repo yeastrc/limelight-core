@@ -82,6 +82,9 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
     precursorCharge: number;
     precursor_M_Over_Z: number;
 
+    // Peak with Max Intensity in the scan. IGNORES Scan Peak Filtering.  ONLY Returned if requested so NOT break old callers.
+    peak_WithMaxIntensityInAllOfScan: CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+
     // Peaks
     peaks: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>;
 
@@ -300,32 +303,60 @@ const _validate_ScanData = function(
             }
         }
 
+        if ( ! scanEntry.peak_WithMaxIntensityInAllOfScan  ) {
+            const msg = "( scanEntry.peak_WithMaxIntensityInAllOfScan is NOT populated )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        {
+            if ( scanEntry.peak_WithMaxIntensityInAllOfScan.intensity === undefined || scanEntry.peak_WithMaxIntensityInAllOfScan.intensity === null ) {
+                const msg = "( scanEntry.peak_WithMaxIntensityInAllOfScan.intensity === undefined || scanEntry.peak_WithMaxIntensityInAllOfScan.intensity === null )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.peak_WithMaxIntensityInAllOfScan.intensity ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.peak_WithMaxIntensityInAllOfScan.intensity ) )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( scanEntry.peak_WithMaxIntensityInAllOfScan.mz === undefined || scanEntry.peak_WithMaxIntensityInAllOfScan.mz === null ) {
+                const msg = "( scanEntry.peak_WithMaxIntensityInAllOfScan.mz === undefined || scanEntry.peak_WithMaxIntensityInAllOfScan.mz === null )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+            if ( ! limelight__variable_is_type_number_Check( scanEntry.peak_WithMaxIntensityInAllOfScan.mz ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( scanEntry.peak_WithMaxIntensityInAllOfScan.mz ) )";
+                console.warn(msg);
+                throw Error(msg);
+            }
+        }
+
         if ( scanEntry.peaks ) {
             if ( ! ( scanEntry.peaks instanceof Array ) ) {
                 throw Error("( ! ( scanEntry.peaks instanceof Array ) )")
             }
-        }
 
-        for ( const peak of scanEntry.peaks ) {
-            if ( peak.intensity === undefined || peak.intensity === null ) {
-                const msg = "( peak.intensity === undefined || peak.intensity === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! limelight__variable_is_type_number_Check( peak.intensity ) ) {
-                const msg = "( ! limelight__variable_is_type_number_Check( peak.intensity ) )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( peak.mz === undefined || peak.mz === null ) {
-                const msg = "( peak.mz === undefined || peak.mz === null )";
-                console.warn(msg);
-                throw Error(msg);
-            }
-            if ( ! limelight__variable_is_type_number_Check( peak.mz ) ) {
-                const msg = "( ! limelight__variable_is_type_number_Check( peak.mz ) )";
-                console.warn(msg);
-                throw Error(msg);
+            for ( const peak of scanEntry.peaks ) {
+                if ( peak.intensity === undefined || peak.intensity === null ) {
+                    const msg = "( peak.intensity === undefined || peak.intensity === null )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( ! limelight__variable_is_type_number_Check( peak.intensity ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( peak.intensity ) )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( peak.mz === undefined || peak.mz === null ) {
+                    const msg = "( peak.mz === undefined || peak.mz === null )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+                if ( ! limelight__variable_is_type_number_Check( peak.mz ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( peak.mz ) )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
             }
         }
     }

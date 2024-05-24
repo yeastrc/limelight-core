@@ -30,6 +30,9 @@ import { LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded } from './lorikeetSpec
 import {DataTable_RootTableDataObject} from "../../data_table_react/dataTable_React_DataObjects";
 import {LorikeetSpectrumViewer_Constants} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_Constants";
 import {LorikeetSpectrumViewer_DataFromServer_PSM_Peptide_Data_Entry} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_DataFromServer_PSM_Peptide_Data";
+import {
+	lorikeetSpectrumViewer_ParseURL
+} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL";
 
 
 /**
@@ -77,12 +80,10 @@ class LorikeetSpectrumViewer_OwnPage_Root {
 			throw Error("DOM element with id 'initial_url_psm_id' does not contain a number.  contains: " + psmIdString );
 		}
 
-		console.log( "window.location.search: ", window.location.search );
-
-		const urlSearchParams = new URLSearchParams( window.location.search )
+		const urlParsed = lorikeetSpectrumViewer_ParseURL() // ONLY Query String for now
 
 		//  openmodPosition - the position as a number OR 'n' OR 'c'.  see LorikeetSpectrumViewer_Constants
-		let openmodPosition_QueryParam_Value : string = urlSearchParams.get( "openmod-position" ); //  null if not found
+		let openmodPosition_QueryParam_Value : string = urlParsed.openmodPosition_QueryParam_Value //  null if not found
 
 		if ( openmodPosition_QueryParam_Value === undefined || openmodPosition_QueryParam_Value === null ) {
 

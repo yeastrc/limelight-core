@@ -553,7 +553,8 @@ export const reportedPeptidesForSingleSearch_createChildTableObjects = async fun
                         openModPositionOverride: undefined,
                         searchDataLookupParamsRoot,
                         dataPageStateManager,
-                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                        commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                        reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable: reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
                     });
 
                     const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params = {
