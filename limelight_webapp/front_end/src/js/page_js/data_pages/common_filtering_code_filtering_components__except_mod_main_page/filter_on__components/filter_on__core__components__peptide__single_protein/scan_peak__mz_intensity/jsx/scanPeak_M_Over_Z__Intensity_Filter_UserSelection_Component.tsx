@@ -43,13 +43,14 @@ export interface ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component_Pro
 
     scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject;
 
-    projectSearchIds : Array<number>
-
-    dataPageStateManager : DataPageStateManager
-
     scanPeak_M_Over_Z__Intensity_Filter_UserSelection_Object_Force_ResetToStateObject : object
 
     updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback : () => void
+
+    //  These are NOT USED.  Can Remove.
+
+    projectSearchIds : Array<number>
+    dataPageStateManager : DataPageStateManager
 }
 
 interface ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component_State {
@@ -167,8 +168,6 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
 
         const overlayComponent = get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Component( {
             selection_Entry_To_Change,
-            projectSearchIds: this.props.projectSearchIds,
-            dataPageStateManager: this.props.dataPageStateManager,
             scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
             callbackOn_Cancel_Close_Clicked,
             callbackOn_StateObject_Changed
@@ -192,10 +191,16 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
 
                 selectionsElements = []
 
+                let selection_Entry_Counter = 0
                 for ( const selection_Entry of this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
+                    selection_Entry_Counter++
+
                     selectionsElements.push(
-                        <div style={ { display: "grid", gridTemplateColumns: "max-content 1fr", marginBottom: 4 } }>
+                        <div
+                            key={ selection_Entry_Counter }
+                            style={ { display: "grid", gridTemplateColumns: "max-content 1fr", marginBottom: 4 } }
+                        >
                             {/*  2 Column Grid  */}
                             <div style={ { marginRight: 5 } }>
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -236,7 +241,6 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                 >
                                     <span
                                         className=" clickable "
-                                        title="Change Entry"
                                         onClick={ event => {
                                             try {
                                                 this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
@@ -286,34 +290,51 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                             }
                                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            <span
-                                                className=" filter-single-value-display-block clickable "
-                                                onClick={ this._open_Add_Overlay_BindThis }
-                                            >
-                                                Not Filtering on Scan Peak
+                                            <span>
+                                                <span
+                                                    className=" clickable "
+                                                    style={ { marginRight: 6 } }
+                                                    onClick={ this._open_Add_Overlay_BindThis }
+                                                >
+                                                    <span
+                                                        className=" filter-single-value-display-block "
+                                                    >
+                                                        Not Filtering on Scan Peak
+                                                    </span>
+                                                </span>
+                                                <button
+                                                    onClick={ this._open_Add_Overlay_BindThis }
+                                                >
+                                                    Add
+                                                </button>
                                             </span>
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : (
-                                    selectionsElements
-                                )}
+                                    <>
+                                    { selectionsElements }
 
-                                <div>
-                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                        title={
-                                            <span>
-                                                Click to add filter value
-                                            </span>
-                                        }
-                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                    >
-                                        <button
-                                            onClick={ this._open_Add_Overlay_BindThis }
-                                        >
-                                            Add
-                                        </button>
-                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                </div>
+                                        <div style={ { marginBottom: 10 } }>
+
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Click to add filter value
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <button
+                                                    onClick={ this._open_Add_Overlay_BindThis }
+                                                >
+                                                    Add
+                                                </button>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </div>
+                                    </>
+                                ) }
+
+
                             </div>
                         </div>
                     </div>
@@ -321,9 +342,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                 </React.Fragment>
             );
 
-        } catch( e ) {
-            console.warn("Exception caught in render", e );
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+        } catch ( e ) {
+            console.warn( "Exception caught in render", e );
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
             throw e;
         }
     }

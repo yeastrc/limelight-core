@@ -3458,9 +3458,9 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
                             let scanPeak_AddedTo__scanPeak_That_PassFilters_Array = false
 
-                            for ( let  charge_FOR_MassRange = _CHARGE_RANGE_START; charge_FOR_MassRange <= _CHARGE_RANGE_END; charge_FOR_MassRange++ ) {
+                            for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
-                                for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
+                                for ( const  charge_FOR_MassRange of scanPeak_M_Over_Z__Intensity_Selection.chargeEntries ) {
 
                                     const m_Over_Z_Mass_Base =
                                         PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge( {

@@ -29,15 +29,23 @@ const _ENCODED_DATA__SELECTED_DATA__ENCODING_PROPERTY_NAME = 'b';
 const _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS = 'a'
 const _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM = 'b'
 const _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN = 'c'
+const _ENCODED_DATA__CHARGE_ENTRIES = 'd'
 
 
 ///////
+
+const _CHARGE_ENTRIES_DEFAULT_AS_ARRAY = [ 1 ]
+
+export const get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES = function () {
+    return new Set( _CHARGE_ENTRIES_DEFAULT_AS_ARRAY )
+}
 
 export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY {
 
     monoisotopicMass: number
     plus_Minus_MassRange_In_PPM: number
     scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: number
+    chargeEntries: Set<number>
 }
 
 
@@ -80,48 +88,62 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
         return this._selections;
     }
-    /**
-     *
-     */
-    add_Entry( entry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
 
-        if ( ! this._selections ) {
-            this._selections = []
-        }
+    set__Selections( selections : Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> ) {
 
-        this._selections.push( entry )
+        this._selections = selections
 
         if ( ! this._valueChangedCallback ) {
-            throw Error("add_Entry::( ! this._valueChangedCallback )")
+            throw Error("set__Selections::( ! this._valueChangedCallback )")
         }
 
         this._valueChangedCallback();
     }
 
-    /**
-     * Uses Object Reference to delete
-     *
-     * @param entry_ToDelete
-     */
-    delete_Entry( entry_ToDelete: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
+    //  Validate if Uncomment this
 
-        this._selections = this._selections.filter( (entry_InArray) => {
-            if ( entry_InArray !== entry_ToDelete ) {
-                return true
-            }
-            return  false
-        })
-
-        if ( this._selections.length === 0 ) {
-            this._selections = undefined
-        }
-
-        if ( ! this._valueChangedCallback ) {
-            throw Error("add_Entry::( ! this._valueChangedCallback )")
-        }
-
-        this._valueChangedCallback();
-    }
+    // /**
+    //  *
+    //  */
+    // add_Entry( entry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
+    //
+    //     if ( ! this._selections ) {
+    //         this._selections = []
+    //     }
+    //
+    //     this._selections.push( entry )
+    //
+    //     if ( ! this._valueChangedCallback ) {
+    //         throw Error("add_Entry::( ! this._valueChangedCallback )")
+    //     }
+    //
+    //     this._valueChangedCallback();
+    // }
+    //
+    // /**
+    //  * Uses Object Reference to delete
+    //  *
+    //  * @param entry_ToDelete
+    //  */
+    // delete_Entry( entry_ToDelete: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY ) : void {
+    //
+    //     this._selections = this._selections.filter( (entry_InArray) => {
+    //         if ( entry_InArray !== entry_ToDelete ) {
+    //             return true
+    //         }
+    //         return  false
+    //     })
+    //
+    //     if ( this._selections.length === 0 ) {
+    //         this._selections = undefined
+    //     }
+    //
+    //     if ( ! this._valueChangedCallback ) {
+    //         throw Error("add_Entry::( ! this._valueChangedCallback )")
+    //     }
+    //
+    //     this._valueChangedCallback();
+    // }
 
     /**
      *
@@ -162,6 +184,7 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ] =  selection_Entry.monoisotopicMass
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ] =  selection_Entry.plus_Minus_MassRange_In_PPM
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ] =  selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
+                encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ] = Array.from( selection_Entry.chargeEntries )
 
                 encoded_Entry_Array.push( encoded_Entry )
             }
@@ -210,10 +233,23 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
                 for ( const encoded_Entry of encoded_Entry_Array ) {
 
+                    let chargeEntries = undefined
+
+                    {
+                        const chargeEntries_Array = encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ]
+                        if ( ! chargeEntries_Array ) {
+                            //  Not expected but to support early testing URLs
+                            chargeEntries = get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES()
+                        } else {
+                            chargeEntries = new Set( chargeEntries_Array )
+                        }
+                    }
+
                     const stateEntry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY = {
                         monoisotopicMass: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ],
                         plus_Minus_MassRange_In_PPM: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ],
-                        scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ]
+                        scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ],
+                        chargeEntries
                     }
 
                     this._selections.push( stateEntry )
