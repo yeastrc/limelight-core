@@ -35,6 +35,9 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
+import {
+    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
+} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 /**
  *
@@ -194,6 +197,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                 let selection_Entry_Counter = 0
                 for ( const selection_Entry of this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
+                    const chargeEntries_Array_Sorted = Array.from( selection_Entry.chargeEntries )
+                    limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array_Sorted )
+
                     selection_Entry_Counter++
 
                     selectionsElements.push(
@@ -247,7 +253,11 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
                                         } }
                                     >
-                                        { "Mass " + selection_Entry.monoisotopicMass + " +/- " + selection_Entry.plus_Minus_MassRange_In_PPM + " Min % of max peak " + selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan  }
+                                        { "Mass " + selection_Entry.monoisotopicMass +
+                                            " +/- " + selection_Entry.plus_Minus_MassRange_In_PPM +
+                                            " Min % of max peak " + selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan +
+                                            " charges: " + chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " )
+                                        }
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
