@@ -3057,12 +3057,6 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
             return result; // EARLY RETURN
         }
 
-        //  TODO  Return prev result if Selections encoded did not change from previous
-        console.warn( "Return prev result if Selections encoded did not change from previous:  scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.getEncodedStateData() " )
-
-        // scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.getEncodedStateData()
-
-
         const getData_Result = this._getData_Step_1({})
         if ( getData_Result.data ) {
 

@@ -7,6 +7,9 @@
  * State Object used in:   Peptide List - Peptide page and Single Protein  - Search Based and Experiment
  *
  */
+import {
+    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
+} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 ////////////////////
 
@@ -180,11 +183,14 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
             for ( const selection_Entry of this._selections ) {
 
+                const chargeEntries_Array = Array.from( selection_Entry.chargeEntries )
+                limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array )
+
                 const encoded_Entry: any = {}
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ] =  selection_Entry.monoisotopicMass
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ] =  selection_Entry.plus_Minus_MassRange_In_PPM
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ] =  selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
-                encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ] = Array.from( selection_Entry.chargeEntries )
+                encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ] = chargeEntries_Array
 
                 encoded_Entry_Array.push( encoded_Entry )
             }
