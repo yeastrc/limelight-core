@@ -237,10 +237,6 @@ class INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z_
 
     private _promise_And_scanNumbers_RetrieveInProgress_Array__Map_Key_ProjectScanFileId = new Map<number, Array<INTERNAL__SingleRequestToServer_RequestParams_AND_Promise>>()
 
-
-    // projectScanFileId: number;      TODO  REMOVE
-    // scanNumberList: Array<number>
-
     /**
      *
      *

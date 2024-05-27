@@ -3408,10 +3408,10 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
             for ( const psmTblData_For_PsmId__Array__SingleBlock of psmTblData_For_PsmId__Array__Array ) {
 
-                const scanNumberList: Array<number> = []
+                const scanNumber_Set: Set<number> = new Set()
 
                 for ( const psmTblData_For_PsmId of psmTblData_For_PsmId__Array__SingleBlock ) {
-                    scanNumberList.push( psmTblData_For_PsmId.scanNumber )
+                    scanNumber_Set.add( psmTblData_For_PsmId.scanNumber )
                 }
 
                 //  !!! WARNING:  NOT all scan numbers requested may result in scans returned, since filtering on scan peak m/z
@@ -3421,7 +3421,7 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.
                         get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_YES_Peaks_Data().get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise( {
                             searchScanFileId,
-                            scanNumberList,
+                            scanNumber_Set,
                             m_over_Z_Ranges: m_over_Z_Ranges
                         } )
 

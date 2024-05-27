@@ -1708,10 +1708,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                 const promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges =
                     this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                     get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_YES_Peaks_Data().get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise({
-                    searchScanFileId: searchScanFileId_Selected,
-                    scanNumberList: scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH,
-                    m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
-                } )
+                        searchScanFileId: searchScanFileId_Selected,
+                        scanNumber_Set: new Set( scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH ),
+                        m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
+                    } )
                 promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges.catch(reason => {
                     anyRequest_Rejected = true
                     reject(reason)
