@@ -436,6 +436,12 @@ class INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z_
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
     }
 
+    /**
+     *
+     * @param projectScanFileId
+     * @param scanNumberList
+     * @param m_over_Z_Ranges
+     */
     private _getData_FromServer(
         {
             projectScanFileId, scanNumberList, m_over_Z_Ranges
