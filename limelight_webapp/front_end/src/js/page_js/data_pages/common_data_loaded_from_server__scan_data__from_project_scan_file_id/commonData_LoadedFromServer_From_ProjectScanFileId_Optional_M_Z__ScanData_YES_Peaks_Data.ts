@@ -121,7 +121,9 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
  */
 export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data {
 
-    private _internal_GetData_CacheResults_Class_Object: INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match
+    private _internal_GetData_CacheResults_Class_Object__NO_FilterOn_MZ_Ranges: INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match
+
+    private _internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges: INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match
 
     /**
      *
@@ -173,21 +175,41 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
             promise: Promise<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult>
         } {
 
-        if ( ! this._internal_GetData_CacheResults_Class_Object ) {
+        if ( ! requestParams.m_over_Z_Ranges || requestParams.m_over_Z_Ranges.length === 0 ) {
 
-            this._internal_GetData_CacheResults_Class_Object =
-                new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match({
-                    m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
-                })
-        } else if ( ! _is_Equal__m_over_Z_Ranges__In__INTERNAL__SingleRequestToServer_RequestParams__M_over_Z_Ranges_Objects( requestParams.m_over_Z_Ranges, this._internal_GetData_CacheResults_Class_Object.get_m_over_Z_Ranges__CachingDataFor() ) ) {
+            //  Use this Cached data if NO m_over_Z_Ranges
 
-            this._internal_GetData_CacheResults_Class_Object =
-                new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match({
-                    m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
-                })
+            if ( ! this._internal_GetData_CacheResults_Class_Object__NO_FilterOn_MZ_Ranges ) {
+
+                this._internal_GetData_CacheResults_Class_Object__NO_FilterOn_MZ_Ranges =
+                    new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match( {
+                        m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
+                    } )
+            }
+            return this._internal_GetData_CacheResults_Class_Object__NO_FilterOn_MZ_Ranges.get_ScanData_YES_Peaks_DataHolder( requestParams )
+
+        } else {
+
+            //  Use this Cached data if YES m_over_Z_Ranges
+
+            if ( ! this._internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges ) {
+
+                this._internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges =
+                    new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match( {
+                        m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
+                    } )
+            } else if ( ! _is_Equal__m_over_Z_Ranges__In__INTERNAL__SingleRequestToServer_RequestParams__M_over_Z_Ranges_Objects( requestParams.m_over_Z_Ranges, this._internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges.get_m_over_Z_Ranges__CachingDataFor() ) ) {
+
+                //  Requested m_over_Z_Ranges have CHANGED so create new Cached data object to use
+
+                this._internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges =
+                    new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match( {
+                        m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
+                    } )
+            }
+
+            return this._internal_GetData_CacheResults_Class_Object__YES_FilterOn_MZ_Ranges.get_ScanData_YES_Peaks_DataHolder( requestParams )
         }
-
-        return this._internal_GetData_CacheResults_Class_Object.get_ScanData_YES_Peaks_DataHolder( requestParams )
     }
 }
 
@@ -256,11 +278,9 @@ class INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z_
 
         const scanNumbers_ToLoadDataFor_Set = new Set( requestParams.scanNumberList )
 
-
         { //  Find existing data loaded to return
 
             //  Remove from  the scan numbers tried to retrieve
-
 
             const scanNumbers_RetrievedScanDataFor_Set = this._scanNumbers_SentToWebserviceToRetrieveScanDataFor_Set_Map_Key_ProjectScanFileId.get( requestParams.projectScanFileId )
             if ( scanNumbers_RetrievedScanDataFor_Set ) {
@@ -290,17 +310,19 @@ class INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z_
                             }
                         }
                     }
-
                     const result = new CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data_ForSingle_ProjectScanFileId( {
                         scansArray
                     } )
 
+                    //  FOUND:  All Scan Numbers requested, so RETURN the data.
                     return {
                         promise: undefined, data: { scanData_YES_Peaks_Data_Holder: { scanData: result } } // EARLY RETURN
                     }
                 }
             }
         }
+
+        //  Return Promise that resolves after all data requested is retrieved
 
         return { data: undefined, promise: new Promise<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult>( (resolve_TopLevel, reject_TopLevel) => { try {
 
