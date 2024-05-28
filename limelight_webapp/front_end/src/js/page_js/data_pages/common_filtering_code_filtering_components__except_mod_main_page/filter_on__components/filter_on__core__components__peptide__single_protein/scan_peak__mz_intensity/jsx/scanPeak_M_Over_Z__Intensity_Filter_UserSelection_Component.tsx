@@ -149,6 +149,10 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
             selection_Entry_To_Change: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
         }
     ) {
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
+
         let overlay_AddedTo_DocumentBody_Holder: Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 
         const callbackOn_Cancel_Close_Clicked = (): void => {
@@ -250,6 +254,7 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                         onClick={ event => {
                                             try {
                                                 this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
+
                                             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
                                         } }
                                     >
