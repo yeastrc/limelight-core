@@ -286,7 +286,10 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
                     }
 
                     selectionsElements.push(
-                        <div style={ { display: "grid", gridTemplateColumns: "max-content 1fr", marginBottom: 4 } }>
+                        <div
+                            key={ selectionsElements.length }
+                            style={ { display: "grid", gridTemplateColumns: "max-content 1fr", alignItems: "baseline", marginBottom: 4 } }
+                        >
                             {/*  2 Column Grid  */}
                             <div style={ { marginRight: 5 } }>
                                 <img

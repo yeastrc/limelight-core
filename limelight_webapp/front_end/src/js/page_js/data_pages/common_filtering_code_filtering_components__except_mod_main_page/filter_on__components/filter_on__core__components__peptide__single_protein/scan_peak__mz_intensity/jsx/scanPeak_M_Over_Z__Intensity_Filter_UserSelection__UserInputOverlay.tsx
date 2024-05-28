@@ -17,7 +17,6 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
-import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
@@ -33,7 +32,7 @@ const _Overlay_Height_Min = 500;
 const _Overlay_Height_Max = 1000;
 
 
-const _INPUT_VALUE_NOT_SET = undefined
+// const _INPUT_VALUE_NOT_SET = undefined
 
 /**
  *
@@ -118,7 +117,9 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
         try {
             event.stopPropagation();
 
-            if ( ! _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries ) ) {
+            const validate_Result = _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries )
+
+            if ( validate_Result.foundError ) {
                 //  Cannot save since has errors
 
                 this._any_CurrentEntries_Have_Errors = true
@@ -164,8 +165,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
 
         const selectionsElements: Array<JSX.Element>  = []
 
-        if ( this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
-
+        {
             let counter = 0
             for ( const selectionEntry of this._existingEntries ) {
                 counter++
@@ -181,7 +181,9 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
 
                                 this._any_ChangesMade_To_CurrentEntries = true
 
-                                if ( ! _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries ) ) {
+                                const validate_Result = _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries )
+
+                                if ( validate_Result.foundError ) {
 
                                     this._any_CurrentEntries_Have_Errors = true
                                 } else {
@@ -199,6 +201,17 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                     }
                                     return true
                                 })
+
+                                this._any_ChangesMade_To_CurrentEntries = true
+
+                                const validate_Result = _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries )
+
+                                if ( validate_Result.foundError ) {
+
+                                    this._any_CurrentEntries_Have_Errors = true
+                                } else {
+                                    this._any_CurrentEntries_Have_Errors = false
+                                }
 
                                 this.setState({ objectForceRerender: {} })
                             } }
@@ -238,7 +251,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <div className=" error-text ">
-                                                To save, must fix all errors under 'Current Filter Entries:' or click "Cancel" to stop changing existing entries.
+                                                To save, must fix all errors under 'Current Filter Entries:' or click "Cancel" existing entries with errors.
                                             </div>
                                         }
                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -303,6 +316,17 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                             callbackOnAdd={ ( newEntry) => {
 
                                 this._existingEntries.push( newEntry )
+
+                                this._any_ChangesMade_To_CurrentEntries = true
+
+                                const validate_Result = _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array( this._existingEntries )
+
+                                if ( validate_Result.foundError ) {
+
+                                    this._any_CurrentEntries_Have_Errors = true
+                                } else {
+                                    this._any_CurrentEntries_Have_Errors = false
+                                }
 
                                 this.setState({ objectForceRerender: {} })
                             } }
@@ -478,15 +502,10 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             src="static/images/icon-circle-delete.png"
                             onClick={ event => {
                                 try {
-                                    // this._open_Add_Change_Overlay( { selection_Entry_To_Change: selection_Entry } )
+                                    this.props.callback_On_EntryDelete_Clicked()
 
-                                    //  This code was for when was "Delete Entry"
+                                    this.setState( { objectForceRerender: {} } )
 
-                                    // this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.delete_Entry( selection_Entry )
-                                    //
-                                    // this.setState( { forceUpdate: {} } )
-                                    //
-                                    // this.props.updateMadeTo_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_Callback()
                                 } catch ( e ) {
                                     reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
                                     throw e
@@ -775,7 +794,9 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
 
     private _enable_Disable_Add_Button__Validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry() {
 
-        if ( _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry( this._entry_InProgress ) ) {
+        const validateResult = _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry( this._entry_InProgress )
+
+        if ( validateResult.foundError ) {
             //  Has error so NOT enable button
             this._add_Entry_Button_Enabled = false;
         } else {
@@ -1045,25 +1066,47 @@ class INTERNAL__UserSelection_Add_OR_Change_InProgress_ENTRY {
 }
 
 
+/**
+ *
+ * @param internal_SelectionEntry_Array
+ * @returns { foundError: boolean }
+ */
+const _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array =
 
-const _validate_UserInput_SaveValidValuesToNumericFields_Internal_ExistingSelectionContainerEntry_Array = function ( internal_SelectionEntry_Array: Array<INTERNAL__UserSelection_Container_ENTRY> ) : boolean {
-
+    function ( internal_SelectionEntry_Array: Array<INTERNAL__UserSelection_Container_ENTRY> ) :
+        //  Returned values
+        {
+            foundError: boolean
+        } {
 
     let foundError = false
 
     for ( const internal_SelectionContainerEntry of internal_SelectionEntry_Array ) {
 
         if ( internal_SelectionContainerEntry.add_OrChange_InProgress_Entry ) {
-            if ( ! _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry( internal_SelectionContainerEntry.add_OrChange_InProgress_Entry ) ) {
+
+            const validateResult = _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry( internal_SelectionContainerEntry.add_OrChange_InProgress_Entry )
+            if ( validateResult.foundError ) {
                 foundError = true
             }
         }
     }
 
-    return foundError
+    return { foundError }
 }
 
-const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry = function ( internal_SelectionEntry: INTERNAL__UserSelection_Add_OR_Change_InProgress_ENTRY ) : boolean {
+/**
+ *
+ * @param internal_SelectionEntry
+ * @returns { foundError: boolean }
+ */
+const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry =
+
+    function ( internal_SelectionEntry: INTERNAL__UserSelection_Add_OR_Change_InProgress_ENTRY ) :
+        //  Returned values
+        {
+            foundError: boolean
+        } {
 
     let foundError = false
 
@@ -1079,17 +1122,18 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
         if ( ! _validate_InputString_IsNumber( internal_SelectionEntry.monoisotopicMass_UserInput_String ) ) {
             internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Not valid number"
             foundError = true
+        } else {
+            const valueParsed = Number.parseFloat( internal_SelectionEntry.monoisotopicMass_UserInput_String )
+            if ( Number.isNaN( valueParsed ) ) {
+                internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Not valid number"
+                foundError = true
+            } else if ( valueParsed < 0 ) {
+                internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
+                foundError = true
+            } else {
+                internal_SelectionEntry.monoisotopicMass = valueParsed
+            }
         }
-        const valueParsed = Number.parseFloat( internal_SelectionEntry.monoisotopicMass_UserInput_String )
-        if ( Number.isNaN( valueParsed ) ) {
-            internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Not valid number"
-            foundError = true
-        }
-        if ( valueParsed < 0 ) {
-            internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
-            foundError = true
-        }
-        internal_SelectionEntry.monoisotopicMass = valueParsed
     }
 
     // plus_Minus_MassRange_In_PPM
@@ -1104,17 +1148,18 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
         if ( ! _validate_InputString_IsNumber( internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_String ) ) {
             internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage = "Not valid number"
             foundError = true
+        } else {
+            const valueParsed = Number.parseFloat( internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_String )
+            if ( Number.isNaN( valueParsed ) ) {
+                internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage = "Not valid number"
+                foundError = true
+            } else if ( valueParsed < 0 ) {
+                internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
+                foundError = true
+            } else {
+                internal_SelectionEntry.plus_Minus_MassRange_In_PPM = valueParsed
+            }
         }
-        const valueParsed = Number.parseFloat( internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_String )
-        if ( Number.isNaN( valueParsed ) ) {
-            internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage = "Not valid number"
-            foundError = true
-        }
-        if ( valueParsed < 0 ) {
-            internal_SelectionEntry.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
-            foundError = true
-        }
-        internal_SelectionEntry.plus_Minus_MassRange_In_PPM = valueParsed
     }
 
     // scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
@@ -1129,17 +1174,18 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
         if ( ! _validate_InputString_IsNumber( internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String ) ) {
             internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage = "Not valid number"
             foundError = true
+        } else {
+            const valueParsed = Number.parseFloat( internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String )
+            if ( Number.isNaN( valueParsed ) ) {
+                internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage = "Not valid number"
+                foundError = true
+            } else if ( valueParsed < 0 || valueParsed > 100 ) {
+                internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage = "Must be 0 to 100"
+                foundError = true
+            } else {
+                internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan = valueParsed
+            }
         }
-        const valueParsed = Number.parseFloat( internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String )
-        if ( Number.isNaN( valueParsed ) ) {
-            internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage = "Not valid number"
-            foundError = true
-        }
-        if ( valueParsed < 0 || valueParsed > 100 ) {
-            internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage = "Must be 0 to 100"
-            foundError = true
-        }
-        internal_SelectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan = valueParsed
     }
 
     // charge_SelectionEntries
@@ -1152,7 +1198,7 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
         foundError = true
     }
 
-    return foundError
+    return { foundError }
 }
 
 const _validate_InputString_IsNumber = function ( inputString: string ) : boolean {
