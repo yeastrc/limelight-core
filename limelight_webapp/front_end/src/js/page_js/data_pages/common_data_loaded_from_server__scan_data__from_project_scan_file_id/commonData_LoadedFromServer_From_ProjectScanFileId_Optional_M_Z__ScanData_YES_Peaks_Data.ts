@@ -143,7 +143,7 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
     /**
      * !!!  Always return promise
      *
-     * NOT Currently caching result !!!!
+     * Somewhat caching result !!!!
      *
      */
     get_ScanData_YES_Peaks_DataHolder_ReturnPromise( requestParams: INTERNAL__SingleRequestToServer_RequestParams ): Promise<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult> {
@@ -167,7 +167,7 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
 
     /**
      *
-     * NOT Currently caching result !!!!
+     * Somewhat caching result !!!!
      */
     get_ScanData_YES_Peaks_DataHolder( requestParams: INTERNAL__SingleRequestToServer_RequestParams ):
         {
