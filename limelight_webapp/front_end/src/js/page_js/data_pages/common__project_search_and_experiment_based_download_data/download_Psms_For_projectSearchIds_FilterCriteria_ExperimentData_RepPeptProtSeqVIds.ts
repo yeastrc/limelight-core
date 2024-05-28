@@ -62,9 +62,60 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
     experimentId : number
 
 }  ) {
-    
+
+    //  Encode projectSearchIdsReportedPeptideIdsPsmIds
+
+
+    const _PSM_ID_SEPARATOR = "p"  // Between PSM Ids
+    const _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR = "q" // Between Reported Peptide Ids and its PSM Ids
+    const _REPORTED_PEPTIDE_ID_SEPARATOR = "r"   // Between Reported Peptide Id Blocks (block is a reported peptide id and its PSM Ids)
+
+    let toSend__projectSearchIdsReportedPeptideIdsPsmIds: Array<any> = undefined
+
+    if ( projectSearchIdsReportedPeptideIdsPsmIds ) {
+
+        toSend__projectSearchIdsReportedPeptideIdsPsmIds = []
+
+        for ( const projectSearchIdsReportedPeptideIdsPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds ) {
+
+            let reportedPeptideIdsAndTheirPsmIds__Encoded = undefined
+
+            if ( projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+
+                const reportedPeptideId_Block_Array : Array<string> = []
+
+                for ( const reportedPeptideIdsAndTheirPsmIds_Entry of projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds ) {
+
+                    let psmIds_Include_Encoded_With_SeparatorFrom_ReportedPeptideId = ""
+                    if ( reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include ) {
+                        psmIds_Include_Encoded_With_SeparatorFrom_ReportedPeptideId = _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR + reportedPeptideIdsAndTheirPsmIds_Entry.psmIds_Include.join( _PSM_ID_SEPARATOR )
+                    }
+
+                    //  block is a reported peptide id and its PSM Ids
+                    const reportedPeptideId_Block = reportedPeptideIdsAndTheirPsmIds_Entry.reportedPeptideId.toString() + psmIds_Include_Encoded_With_SeparatorFrom_ReportedPeptideId
+
+                    reportedPeptideId_Block_Array.push( reportedPeptideId_Block )
+                }
+
+                reportedPeptideIdsAndTheirPsmIds__Encoded = reportedPeptideId_Block_Array.join( _REPORTED_PEPTIDE_ID_SEPARATOR )
+            }
+
+            const projectSearchIdsReportedPeptideIdsPsmIds_ToSend_Entry = {
+                projectSearchId: projectSearchIdsReportedPeptideIdsPsmIds_Entry.projectSearchId,
+                searchSubGroup_Ids_Selected : projectSearchIdsReportedPeptideIdsPsmIds_Entry.searchSubGroup_Ids_Selected,
+
+                reportedPeptideIdsAndTheirPsmIds : undefined, // projectSearchIdsReportedPeptideIdsPsmIds_Entry.reportedPeptideIdsAndTheirPsmIds
+
+                reportedPeptideIdsAndTheirPsmIds__Encoded,
+
+                experimentDataForSearch : projectSearchIdsReportedPeptideIdsPsmIds_Entry.experimentDataForSearch
+            }
+            toSend__projectSearchIdsReportedPeptideIdsPsmIds.push( projectSearchIdsReportedPeptideIdsPsmIds_ToSend_Entry )
+        }
+    }
+
     const requestJSONObject = {
-        projectSearchIdsReportedPeptideIdsPsmIds,
+        projectSearchIdsReportedPeptideIdsPsmIds: toSend__projectSearchIdsReportedPeptideIdsPsmIds,
         searchDataLookupParamsRoot,
         proteinSequenceVersionIds,
         experimentId

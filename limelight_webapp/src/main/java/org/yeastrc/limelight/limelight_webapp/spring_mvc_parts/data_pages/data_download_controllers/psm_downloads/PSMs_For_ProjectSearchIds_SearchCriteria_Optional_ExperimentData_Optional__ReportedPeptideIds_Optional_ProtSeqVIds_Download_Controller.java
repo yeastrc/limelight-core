@@ -255,7 +255,17 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 
 		try {
+			//  Have internal_Request_Converted_Request_Root since have to convert some data for usage
+			Internal_Request_Converted_Request_Root internal_Request_Converted_Request_Root = new Internal_Request_Converted_Request_Root(); 
+			
+			
 			RequestJSONParsed webserviceRequest = unmarshalJSON_ToObject.getObjectFromJSONString( requestJSONString, RequestJSONParsed.class );
+			
+			internal_Request_Converted_Request_Root.proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
+			internal_Request_Converted_Request_Root.experimentId = webserviceRequest.experimentId;
+			internal_Request_Converted_Request_Root.searchDataLookupParamsRoot = webserviceRequest.searchDataLookupParamsRoot;
+			
+			
 
 			List<RequestJSONParsed_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds = webserviceRequest.projectSearchIdsReportedPeptideIdsPsmIds;
 
@@ -263,6 +273,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				log.warn( "No projectSearchIdsReportedPeptideIdsPsmIds entries" );
 				throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+			
+			List<Internal_Request_Converted_PerProjectSearchId> internal_Request_Converted_PerProjectSearchId_List = new ArrayList<>( projectSearchIdsReportedPeptideIdsPsmIds.size() );
+			internal_Request_Converted_Request_Root.projectSearchIdsReportedPeptideIdsPsmIds = internal_Request_Converted_PerProjectSearchId_List;
+			
 			
 			List<Integer> proteinSequenceVersionIds = webserviceRequest.proteinSequenceVersionIds;
 			
@@ -277,22 +291,95 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				}
 				projectSearchIds.add( entry.projectSearchId );
 				
+				Internal_Request_Converted_PerProjectSearchId internal_Request_Converted_PerProjectSearchId = new Internal_Request_Converted_PerProjectSearchId();
+				internal_Request_Converted_PerProjectSearchId_List.add(internal_Request_Converted_PerProjectSearchId);
+				
+				internal_Request_Converted_PerProjectSearchId.projectSearchId = entry.projectSearchId;
+				internal_Request_Converted_PerProjectSearchId.experimentDataForSearch = entry.experimentDataForSearch;
+				internal_Request_Converted_PerProjectSearchId.searchSubGroup_Ids_Selected = entry.searchSubGroup_Ids_Selected;
+				
 				if ( proteinSequenceVersionIds != null ) {
 					//  Have proteinSequenceVersionIds so cannot have reportedPeptideIdsAndTheirPsmIds
-					if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
-						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds being populated is not allowed " );
+//					if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+//						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds being populated is not allowed " );
+//						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//					}
+					if ( entry.reportedPeptideIdsAndTheirPsmIds__Encoded != null ) {
+						log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, proteinSequenceVersionIds is populated so entry.reportedPeptideIdsAndTheirPsmIds__Encoded being populated is not allowed " );
 						throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 					}
 				}
-				if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
-					for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : entry.reportedPeptideIdsAndTheirPsmIds ) {
-						Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
-						if ( reportedPeptideId == null ) {
-							log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, reportedPeptideId == null" );
+//				if ( entry.reportedPeptideIdsAndTheirPsmIds != null ) {
+//					for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : entry.reportedPeptideIdsAndTheirPsmIds ) {
+//						Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
+//						if ( reportedPeptideId == null ) {
+//							log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, reportedPeptideId == null" );
+//							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//						}
+//					}
+//				}
+				
+
+				if ( entry.reportedPeptideIdsAndTheirPsmIds__Encoded != null ) {
+					
+
+					///////  Decode reportedPeptideIds and possibly their PSMs in request
+					
+					List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = new ArrayList<>();
+					internal_Request_Converted_PerProjectSearchId.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+					
+//				    const _PSM_ID_SEPARATOR = "p"  // Between PSM Ids
+//				    const _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR = "q" // Between Reported Peptide Ids and its PSM Ids
+//				    const _REPORTED_PEPTIDE_ID_SEPARATOR = "r"   // Between Reported Peptide Id Blocks (block is a reported peptide id and its PSM Ids)
+
+					final String _PSM_ID_SEPARATOR = "p";  // Between PSM Ids
+					final String _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR = "q"; // Between Reported Peptide Ids and its PSM Ids
+					final String _REPORTED_PEPTIDE_ID_SEPARATOR = "r";   // Between Reported Peptide Id Blocks (block is a reported peptide id and its PSM Ids)
+
+					String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split = entry.reportedPeptideIdsAndTheirPsmIds__Encoded.split( _REPORTED_PEPTIDE_ID_SEPARATOR );
+				
+					for ( String reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry : reportedPeptideIdsAndTheirPsmIds__Encoded_Split ) {
+
+						Internal_Request_Converted_PerReportedPeptideId internal_Request_Converted_PerReportedPeptideId = new Internal_Request_Converted_PerReportedPeptideId();
+						reportedPeptideIdsAndTheirPsmIds.add(internal_Request_Converted_PerReportedPeptideId);
+						
+						String[] reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry.split( _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR );
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) {
+							log.warn( "Input Data Encoding Error: ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length > 2 ) reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry: " + reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry );
 							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+
+						String reportedPeptideId_String = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 0 ];
+						try {
+							internal_Request_Converted_PerReportedPeptideId.reportedPeptideId = Integer.parseInt( reportedPeptideId_String );
+						} catch ( Exception ex ) {
+							log.warn( "Integer.parseInt( reportedPeptideId_String ) Threw Error.  reportedPeptideId_String: " + reportedPeptideId_String );
+							throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+						}
+						
+						if ( reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split.length == 2 ) {
+							//  Have PSM Ids
+							String psmIds_Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded_Split_Entry_Split[ 1 ];
+							String[] psmIds_Encoded_Split = psmIds_Encoded.split( _PSM_ID_SEPARATOR );
+							
+							internal_Request_Converted_PerReportedPeptideId.psmIds_Include = new ArrayList<>( psmIds_Encoded_Split.length );
+							
+							for ( String psmId_String : psmIds_Encoded_Split ) {
+								try {
+									Long psmId = Long.parseLong( psmId_String );
+									internal_Request_Converted_PerReportedPeptideId.psmIds_Include.add( psmId );
+								} catch ( Exception ex ) {
+									log.warn( " Long.parseLong( psmId_String ); Threw Error.  psmId_String: " + psmId_String );
+									throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+								}
+								
+							}
 						}
 					}
 				}
+				
+				
 				if ( entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty() ) {
 					log.warn( "In projectSearchIdsReportedPeptideIdsPsmIds entry, entry.searchSubGroup_Ids_Selected != null && entry.searchSubGroup_Ids_Selected.isEmpty()" );
 					throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
@@ -502,7 +589,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		// Create list to pass to writeOutputToResponse
     		List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List = new ArrayList<>( projectSearchIdMapToSearchId.size() ); 
     		
-    		for ( RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : projectSearchIdsReportedPeptideIdsPsmIds ) {
+    		for ( Internal_Request_Converted_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds : internal_Request_Converted_PerProjectSearchId_List ) {
     			
     			Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
     			SearchItemMinimal searchItemMinimal = searchItemMinimal_Key_projectSearchId.get( projectSearchId );
@@ -514,7 +601,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		
     			WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId =
     					create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
-    							webserviceRequest, 
+    							internal_Request_Converted_Request_Root, 
     							paramsForProjectSearchIdsList, 
     							projectSearchIdMapToSearchId,
     							searchItemMinimal,
@@ -566,7 +653,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	//  create WriteOutputToResponse_Per_SearchId  For Single Search
 	
 	/**
-	 * @param webserviceRequest
+	 * @param webserviceRequest_Converted_Root
 	 * @param paramsForProjectSearchIdsList
 	 * @param projectSearchIdMapToSearchId
 	 * @param searchHasScanDataMap_Key_projectSearchId
@@ -578,13 +665,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 */
 	private WriteOutputToResponse_Per_SearchId create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
 			
-			RequestJSONParsed webserviceRequest,
+			Internal_Request_Converted_Request_Root webserviceRequest_Converted_Root,
 			List<SearchDataLookupParams_For_Single_ProjectSearchId> paramsForProjectSearchIdsList,
 			Map<Integer, Integer> projectSearchIdMapToSearchId,
 			SearchItemMinimal searchItemMinimal,
 			Map<Integer, Boolean> searchHasScanDataMap_Key_projectSearchId,
 			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
-			RequestJSONParsed_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds )
+			Internal_Request_Converted_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds )
 			throws SQLException, Exception {
 		
 		Integer projectSearchId = singleprojectSearchId_ReportedPeptideIdsPsmIds.projectSearchId;
@@ -718,7 +805,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		List<Integer> searchSubGroup_Ids_Selected = singleprojectSearchId_ReportedPeptideIdsPsmIds.searchSubGroup_Ids_Selected;
 		
 		//  Passed from client - Optional
-		List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
+		List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds = singleprojectSearchId_ReportedPeptideIdsPsmIds.reportedPeptideIdsAndTheirPsmIds;
 		
 		//  Process reportedPeptideIds in request, or retrieve reportedPeptideIds for cutoffs and Process
 		
@@ -729,14 +816,14 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			// Process reportedPeptideIds and possibly their PSMs in request
 			
 			//  Have reportedPeptideIds from client for this Project Search Id to process
-
+			
 			//  Get PSM core data for all Reported Peptide Ids
 
 			reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
 			
 			psmWebDisplayListForReportedPeptideIds = new ArrayList<>( reportedPeptideIdsAndTheirPsmIds.size() );
 
-			for ( RequestJSONParsed_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
+			for ( Internal_Request_Converted_PerReportedPeptideId reportedPeptideIdAndItsPsmIds : reportedPeptideIdsAndTheirPsmIds ) {
 				
 				Integer reportedPeptideId = reportedPeptideIdAndItsPsmIds.reportedPeptideId;
 				List<Long> psmIds_Include = reportedPeptideIdAndItsPsmIds.psmIds_Include;
@@ -785,7 +872,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				reportedPeptideIds_ForAdditionalProcessing.add( entry.getReportedPeptideId() );
 			}
 						
-			if ( webserviceRequest.proteinSequenceVersionIds != null && ( ! webserviceRequest.proteinSequenceVersionIds.isEmpty() ) ) {
+			if ( webserviceRequest_Converted_Root.proteinSequenceVersionIds != null && ( ! webserviceRequest_Converted_Root.proteinSequenceVersionIds.isEmpty() ) ) {
 				
 				//  If protein sequence version id restriction, filter Reported Peptide Ids to those protein sequence version ids
 				
@@ -793,7 +880,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 						reportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds_Searcher.
 						get_ReportedPeptideIds_For_SearchID_ProteinSequenceVersionIds_ReportedPeptideIds(
 								searchId, 
-								webserviceRequest.proteinSequenceVersionIds, 
+								webserviceRequest_Converted_Root.proteinSequenceVersionIds, 
 								reportedPeptideIds_ForAdditionalProcessing );
 				
 				reportedPeptideIds_ForAdditionalProcessing = new ArrayList<>( reportedPeptideIdsFiltered );
@@ -1871,6 +1958,13 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		String result = annotationTypeName + " (" + searchProgramName + ")";
 		return result;
 	}
+	
+	
+	///////////////////////////////
+	///////////////////////////////
+	
+	///////   Internal Classes While Processing
+	
 
 	/**
 	 * Internal PSMs for Single Reported Peptide Id
@@ -1923,9 +2017,63 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 		String subgroupName_fromImportFile;
 		String subgroupName_Display; // null until user enters a value
-
 	}
 	
+
+	
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	
+	///////   Internal Classes Convert Request Object To
+	
+
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_Request_Root {
+
+		private List<Internal_Request_Converted_PerProjectSearchId> projectSearchIdsReportedPeptideIdsPsmIds;
+		private SearchDataLookupParamsRoot searchDataLookupParamsRoot;
+		
+		private List<Integer> proteinSequenceVersionIds; // optional
+		
+		private Integer experimentId;
+	}
+
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_PerProjectSearchId {
+		
+		private Integer projectSearchId;
+		
+		private List<Integer> searchSubGroup_Ids_Selected; //  Optional
+		
+		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
+
+		/**
+		 * Converted From Request
+		 */
+		private List<Internal_Request_Converted_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
+		
+	}
+	
+	/**
+	 * Converted From Request
+	 */
+	public static class Internal_Request_Converted_PerReportedPeptideId {
+		
+		private Integer reportedPeptideId;
+		private List<Long> psmIds_Include;
+	}
+
+
+	///////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////
+	
+	///////   Request Object 
+	
+
 	////////////////
 
 	/**
@@ -1970,36 +2118,42 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 		
 		private List<Integer> searchSubGroup_Ids_Selected; //  Optional
 		
-		private List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
+		//  Replaced with reportedPeptideIdsAndTheirPsmIds__Encoded
+//		private List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds; //  Optional
+		
+		private String reportedPeptideIdsAndTheirPsmIds__Encoded;  //  Optional
 		
 		private List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch; //  Optional
 		
 		public void setProjectSearchId(Integer projectSearchId) {
 			this.projectSearchId = projectSearchId;
 		}
-		public void setReportedPeptideIdsAndTheirPsmIds( List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds) {
-			this.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
-		}
+//		public void setReportedPeptideIdsAndTheirPsmIds( List<RequestJSONParsed_PerReportedPeptideId> reportedPeptideIdsAndTheirPsmIds) {
+//			this.reportedPeptideIdsAndTheirPsmIds = reportedPeptideIdsAndTheirPsmIds;
+//		}
 		public void setExperimentDataForSearch(List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch) {
 			this.experimentDataForSearch = experimentDataForSearch;
 		}
 		public void setSearchSubGroup_Ids_Selected(List<Integer> searchSubGroup_Ids_Selected) {
 			this.searchSubGroup_Ids_Selected = searchSubGroup_Ids_Selected;
 		}
+		public void setReportedPeptideIdsAndTheirPsmIds__Encoded(String reportedPeptideIdsAndTheirPsmIds__Encoded) {
+			this.reportedPeptideIdsAndTheirPsmIds__Encoded = reportedPeptideIdsAndTheirPsmIds__Encoded;
+		}
 	}
 
-	public static class RequestJSONParsed_PerReportedPeptideId {
-		
-		private Integer reportedPeptideId;
-		private List<Long> psmIds_Include;
-		
-		public void setReportedPeptideId(Integer reportedPeptideId) {
-			this.reportedPeptideId = reportedPeptideId;
-		}
-		public void setPsmIds_Include(List<Long> psmIds_Include) {
-			this.psmIds_Include = psmIds_Include;
-		}
-	}
+//	public static class RequestJSONParsed_PerReportedPeptideId {
+//		
+//		private Integer reportedPeptideId;
+//		private List<Long> psmIds_Include;
+//		
+//		public void setReportedPeptideId(Integer reportedPeptideId) {
+//			this.reportedPeptideId = reportedPeptideId;
+//		}
+//		public void setPsmIds_Include(List<Long> psmIds_Include) {
+//			this.psmIds_Include = psmIds_Include;
+//		}
+//	}
 
 	public static class RequestJSONParsed_PerConditionGroupConditionData {
 
