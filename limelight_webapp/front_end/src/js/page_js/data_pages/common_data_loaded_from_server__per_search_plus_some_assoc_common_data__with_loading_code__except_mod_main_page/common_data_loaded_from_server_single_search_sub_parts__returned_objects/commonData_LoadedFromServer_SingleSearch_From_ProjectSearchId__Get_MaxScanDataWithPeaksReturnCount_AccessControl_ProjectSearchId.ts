@@ -8,6 +8,13 @@ import { webserviceCallStandardPost } from "page_js/webservice_call_common/webse
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { limelight__variable_is_type_number_Check } from "page_js/common_all_pages/limelight__variable_is_type_number_Check";
 
+const _VALUE_NOT_SET = undefined
+
+/**
+ * Cached response
+ */
+let maxScanDataWithPeaksReturnCount_CACHED: number = _VALUE_NOT_SET
+
 /**
  *
  */
@@ -15,6 +22,30 @@ export class CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_
 
     maxScanDataWithPeaksReturnCount: number
 }
+
+
+/**
+ *
+ * @param projectSearchId
+ */
+export const commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_ReturnPromise = function (
+    {
+        projectSearchId
+    } : {
+        projectSearchId: number
+    }
+) : Promise<CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result> {
+
+
+    const getResult = commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId({ projectSearchId })
+    if ( getResult.data ) {
+
+        return Promise.resolve( getResult.data )
+    }
+    return getResult.promise
+}
+
+
 
 /**
  *
@@ -26,63 +57,73 @@ export const commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_
     } : {
         projectSearchId: number
     }
-) : Promise<CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result> {
+) : {
+    data: CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result
+    promise: Promise<CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result>
+}{
 
-    return new Promise<CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result>(( resolve, reject) => { try {
+    if ( maxScanDataWithPeaksReturnCount_CACHED !== _VALUE_NOT_SET ) {
+        return { promise: undefined, data: { maxScanDataWithPeaksReturnCount: maxScanDataWithPeaksReturnCount_CACHED } }
+    }
 
-        let requestObject = {
-            projectSearchId: projectSearchId
-        };
+    return { data: undefined, promise: new Promise<CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result>(( resolve, reject) => { try {
 
-        const url = "d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-search-id";
+            let requestObject = {
+                projectSearchId: projectSearchId
+            };
 
-        console.log("AJAX Call START: URL: " + url + new Date() );
+            const url = "d/rws/for-page/psb/scan-with-peaks-max-return-count-ac-project-search-id";
 
-        const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
+            console.log("AJAX Call START: URL: " + url + new Date() );
 
-        const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
-        // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;
+            const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: true }) ;
 
-        promise_webserviceCallStandardPost.catch( () => {
+            const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
+            // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = webserviceCallStandardPostResponse.api;
 
-            console.log("AJAX Call END Rejected: URL: " + url + new Date() );
+            promise_webserviceCallStandardPost.catch( () => {
 
-            // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
-            window.alert( "Webservice call rejected. URL: " + url )
+                console.log("AJAX Call END Rejected: URL: " + url + new Date() );
 
-            reject()
-        });
-
-        promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
-            try {
                 // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
-
-                console.log("AJAX Call END: URL: " + url + new Date() );
-
-                const response: CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result = {
-                    maxScanDataWithPeaksReturnCount: responseData.maxScanDataWithPeaksReturnCount
-                }
-
-                if ( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null ) {
-                    throw Error("( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null )")
-                }
-                if ( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ) {
-                    throw Error("( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ): response.maxScanDataWithPeaksReturnCount: " + response.maxScanDataWithPeaksReturnCount )
-                }
-
-                resolve( response );
-
-            } catch( e ) {
-                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-
-                window.alert( "JS Error processing Webservice call response. URL: " + url )
+                window.alert( "Webservice call rejected. URL: " + url )
 
                 reject()
+            });
 
-                throw e;
-            }
-        });
+            promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => {
+                try {
+                    // webserviceCallStandardPost_ApiObject_Holder_Class.webserviceCallStandardPost_ApiObject_Class = null;
 
-    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    console.log("AJAX Call END: URL: " + url + new Date() );
+
+                    const response: CommonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_Result = {
+                        maxScanDataWithPeaksReturnCount: responseData.maxScanDataWithPeaksReturnCount
+                    }
+
+                    if ( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null ) {
+                        throw Error("( response.maxScanDataWithPeaksReturnCount === undefined || response.maxScanDataWithPeaksReturnCount === null )")
+                    }
+                    if ( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ) {
+                        throw Error("( ! limelight__variable_is_type_number_Check( response.maxScanDataWithPeaksReturnCount ) ): response.maxScanDataWithPeaksReturnCount: " + response.maxScanDataWithPeaksReturnCount )
+                    }
+
+                    maxScanDataWithPeaksReturnCount_CACHED = response.maxScanDataWithPeaksReturnCount
+
+                    resolve( response );
+
+                } catch( e ) {
+                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+
+                    window.alert( "JS Error processing Webservice call response. URL: " + url )
+
+                    reject()
+
+                    throw e;
+                }
+            });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}) }
+
 }
 
