@@ -1,0 +1,30 @@
+
+For all Data Download Items:
+
+
+**  The <form> contents gets form encoded before being sent to the server.
+
+	**  JSON when form encoded is many multiple times larger as each { , "  gets encoded.
+	
+			For anything with lots of repeating entries like Reported Peptide Ids and PSM Ids
+			use letters as delimiters/separators and put the resulting string into the JSON.
+			(Do NOT use letters that would be in the encoded to base 30 or whatever base used.
+			  Use letters starting backwards from 'Z' and capital letters and adjust the encoded base as needed)
+			
+			See PSM Download for this and other ideas like
+			 
+			**  Reported Peptide Id sent is difference from previous Reported Peptide Id (Sort on Reported Peptide Id first)
+			 
+			**  having the minimum PSM ID sent in the request for the search sent at search level 
+					and then the first PSM Id under each Reported Peptide Id is difference from that minimum PSM ID
+					
+		    **   For each group of PSM Id under a Reported Peptide Id
+		    
+		    			After the first PSM Id, each PSM Id sent is difference from previous PSM Id
+		    			
+		    			
+			**   Reported Peptide Id and PSM Id sent send as base 30 to make each entry in request shorter.
+					
+					Since already encoding with letter separators this does not introduce the of overhead of added " quote surrounding each value
+					
+			 
