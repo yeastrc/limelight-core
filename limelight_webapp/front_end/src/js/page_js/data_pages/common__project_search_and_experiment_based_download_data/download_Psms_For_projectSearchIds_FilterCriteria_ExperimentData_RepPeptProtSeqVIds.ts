@@ -68,6 +68,13 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
 
     //  Encode projectSearchIdsReportedPeptideIdsPsmIds
 
+    //  Make sure the NUMBER_ENCODING_RADIX does NOT include any of the Separator letters.
+    //      - Is likely that all .toString( radix ) only outputs lower case letters so using upper case letters as separators
+    //          should never result in collision but avoiding the same letters makes it for sure.
+
+    //   Separators are letters since This string will go into a <form> and characters other than letters are form encoded and result in many times the bytes compared to what is form encoded.
+
+    //        NOTE: JSON has been found to result in the form encoded being many times the bytes compared to what is form encoded.
 
     const _PSM_ID_SEPARATOR = "Z"  // Between PSM Ids
     const _REPORTED_PEPTIDE_ID_TO_PSM_ID_SEPARATOR = "Y" // Between Reported Peptide Ids and its PSM Ids
