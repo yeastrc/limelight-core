@@ -72,12 +72,12 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
         if ( selectionsElements.length === 0 ) {
             //  First Entry Text before
             selectionsElements.push(
-                <span key={ "text_before_" + selectionsElements.length }>Only showing data for Scan Peaks with </span>
+                <span key={ "text_before_" + selectionsElements.length }>Only showing data for PSMs that contain a peak with </span>
             )
         } else {
             //  NOT First Entry Text before
             selectionsElements.push(
-                <span key={ "text_before_" + selectionsElements.length }> or a </span>
+                <span key={ "text_before_" + selectionsElements.length }> or </span>
             )
         }
 
@@ -86,10 +86,12 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
 
         selectionsElements.push(
             <span key={ "text_before_" + selectionsElements.length }>
-                mass of { selection_Entry.monoisotopicMass }{ " "}
-                +/- { selection_Entry.plus_Minus_MassRange_In_PPM }{ " "}
-                Min Percentage Max Peak Intensity { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }{ " "}
-                charges: { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
+                a neutral mass of { selection_Entry.monoisotopicMass }{ " " }
+                Da and a charge state of
+                { " " }{ chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }{ " " }
+                within +/- { selection_Entry.plus_Minus_MassRange_In_PPM }{ " " }
+                ppm,
+                and a relative intensity of { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }{ "%" }
             </span>
         )
     }

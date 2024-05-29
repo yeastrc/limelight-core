@@ -253,16 +253,40 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                         className=" clickable "
                                         onClick={ event => {
                                             try {
-                                                this._open_Add_Change_Overlay({ selection_Entry_To_Change: selection_Entry })
+                                                this._open_Add_Change_Overlay( { selection_Entry_To_Change: selection_Entry } )
 
-                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+                                            } catch ( e ) {
+                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                throw e
+                                            }
                                         } }
                                     >
-                                        { "Mass " + selection_Entry.monoisotopicMass +
-                                            " +/- " + selection_Entry.plus_Minus_MassRange_In_PPM +
-                                            " Min % of max peak " + selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan +
-                                            " charges: " + chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " )
-                                        }
+                                        <span style={ { whiteSpace: "nowrap" } }>
+                                            Mass:
+                                            { " " }
+                                            { selection_Entry.monoisotopicMass }
+                                            { "," }
+                                        </span>
+                                        { " " }
+                                        <span style={ { whiteSpace: "nowrap" } }>
+                                            Tolerance:
+                                            { " +/-" }
+                                            { selection_Entry.plus_Minus_MassRange_In_PPM }
+                                            { " ppm," }
+                                        </span>
+                                        { " " }
+                                        <span style={ { whiteSpace: "nowrap" } }>
+                                            Relative
+                                            intensity: { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
+                                            { "%," }
+                                        </span>
+                                        { " " }
+                                        <span style={ { whiteSpace: "nowrap" } }>
+                                            { "Charge" }
+                                            { chargeEntries_Array_Sorted.length > 1 ? "s" : null }
+                                            { ": " }
+                                            { chargeEntries_Array_Sorted.map( value => "+" + value ).join( ", " ) }
+                                        </span>
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
@@ -277,23 +301,24 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                     {/* Parent is CSS Grid with 2 Columns */ }
 
                     <div className=" filter-common-filter-label ">
-                        Filter On Scan Peak:
+                        Filter On Special Ion:
 
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    Only data for the selected scan peaks will be used.
+                                    Only show PSMs that contain a peak for a given mass and charge.
                                 </span>
                             }
                         />
                     </div>
 
-                    <div className=" filter-common-selection-block " >
+                    <div className=" filter-common-selection-block ">
 
-                        {/*  Remove className=" filter-common-selection-inner-block " since have Input Field  */}
+                        {/*  Remove className=" filter-common-selection-inner-block " since have Input Field  */ }
                         <div style={ { marginBottom: 6 } }>
 
-                            <div className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
+                            <div
+                                className=" left-margin-same-as-checkbox ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */ }
 
                                 { ( ! selectionsElements ) ? (
                                     <div>
@@ -314,27 +339,27 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                                     <span
                                                         className=" filter-single-value-display-block "
                                                     >
-                                                        Not Filtering on Scan Peak
+                                                        Not filtering on special ions.
                                                     </span>
                                                 </span>
                                                 <button
                                                     onClick={ this._open_Add_Overlay_BindThis }
                                                 >
-                                                    Add
+                                                    Add Special Ion
                                                 </button>
                                             </span>
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : (
                                     <>
-                                    { selectionsElements }
+                                        { selectionsElements }
 
                                         <div style={ { marginBottom: 10 } }>
 
-                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                 title={
                                                     <span>
-                                                        Click to add filter value
+                                                        Click to change filter value
                                                     </span>
                                                 }
                                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -342,7 +367,7 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                                 <button
                                                     onClick={ this._open_Add_Overlay_BindThis }
                                                 >
-                                                    Add
+                                                    Change Special Ions
                                                 </button>
                                             </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         </div>

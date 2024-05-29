@@ -20,6 +20,7 @@ import {
 import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /////
 
@@ -251,7 +252,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <div className=" error-text ">
-                                                To save, must fix all errors under 'Current Filter Entries:' or click "Cancel" existing entries with errors.
+                                                To save, must fix all errors under 'Current Special Ion Filters:' or click "Cancel" existing entries with errors.
                                             </div>
                                         }
                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -266,7 +267,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                     <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                         title={
                                             <div className=" error-text ">
-                                                To save, must make changes to 'Current Filter Entries:' or Add a filter entry.
+                                                To save, must make changes to 'Current Special Ion Filters:' or Add a filter entry.
                                             </div>
                                         }
                                         { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -305,7 +306,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                 Add New Filter Entry:
                             </span>
                             <span> </span>
-                            <span> (Only entries that have been added to "Current Filter Entries:" will be saved)</span>
+                            <span> (Only entries that have been added to "Current Special Ion Filters:" will be saved)</span>
                         </div>
 
                         {/*  ADD Entry Component Render  */ }
@@ -347,7 +348,7 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                 ></div>
 
                                 <div style={ { fontSize: 18, fontWeight: "bold" } }>
-                                    Current Filter Entries:
+                                    Current Special Ion Filters:
                                 </div>
                             </>
                         ) : null }
@@ -429,6 +430,11 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
     private _change_Entry_Button_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
         try {
             event.stopPropagation();
+
+            if ( limelight__IsTextSelected() ) {
+                //  Text selected so exit
+                return // EARLY RETURN
+            }
 
             this._show_ChangeEntry_Component = true
 
@@ -526,15 +532,30 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             className=" clickable "
                             onClick={ this._change_Entry_Button_Clicked_BindThis }
                         >
-                            <span>
-                                mass: { this.props.existingContainerEntry.selectionEntry.monoisotopicMass }
-                                { "  "}
-                                +/- { this.props.existingContainerEntry.selectionEntry.plus_Minus_MassRange_In_PPM }
-                                { "  "}
-                                % of max
-                                peak { this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
-                                { "  "}
-                                charges: { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
+                            <span style={ { whiteSpace: "nowrap" } } >
+                                Mass:
+                                { " " }
+                                { this.props.existingContainerEntry.selectionEntry.monoisotopicMass }
+                                { "," }
+                            </span>
+                            { " " }
+                            <span style={ { whiteSpace: "nowrap" } } >
+                                Tolerance:
+                                { " +/-" }
+                                { this.props.existingContainerEntry.selectionEntry.plus_Minus_MassRange_In_PPM }
+                                { " ppm," }
+                            </span>
+                            { " " }
+                            <span style={ { whiteSpace: "nowrap" } } >
+                                Relative intensity: { this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
+                                { "%," }
+                            </span>
+                            { " " }
+                            <span style={ { whiteSpace: "nowrap" } } >
+                                { "Charge" }
+                                { chargeEntries_Array_Sorted.length > 1 ? "s" : null }
+                                { ": " }
+                                { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
                             </span>
                             <span> </span>
 
@@ -854,7 +875,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             title={
                                 <div>
                                     <div>
-                                        monoisotopic mass
+                                        The neutral mass of the ion.
                                     </div>
                                     { this._entry_InProgress.monoisotopicMass_UserInput_InvalidValue_ErrorMessage ? (
                                         <div className=" error-text ">
@@ -867,7 +888,6 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                         >
                             <div>
                                 <div style={ { whiteSpace: "nowrap" } }>
-
                                     <span>Mass: </span>
                                     <input
                                         style={ { width: 90 } }
@@ -889,7 +909,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             title={
                                 <div>
                                     <div>
-                                        +/- PPM
+                                        The ppm tolerance for peak finding.
                                     </div>
                                     { this._entry_InProgress.plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage ? (
                                         <div className=" error-text ">
@@ -902,13 +922,12 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                         >
                             <div>
                                 <div style={ { whiteSpace: "nowrap" } }>
-
                                     <span>+/-: </span>
                                     <input
                                         style={ { width: 60 } }
                                         type="text"
                                         maxLength={ 25 }
-                                        placeholder="+/- PPM"
+                                        placeholder="+/- ppm"
                                         value={ this._entry_InProgress.plus_Minus_MassRange_In_PPM_UserInput_String }
                                         onChange={ this._plus_Minus_MassRange_In_PPM_UserInput_FieldChanged_BindThis }
                                     />
@@ -924,7 +943,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             title={
                                 <div>
                                     <div>
-                                        Min % of Max Peak
+                                        Only peaks with at least an intensity of this percentage of the maximum peak in the scan will be considered.
                                     </div>
                                     { this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage ? (
                                         <div className=" error-text ">
@@ -955,19 +974,35 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                                 ) : null }
                             </div>
                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                        <div>
-                            <div style={ { whiteSpace: "nowrap" } }>
-
-                                <span>Charge: </span>
-
-                                { charge_Elements }
-                            </div>
-                            { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage ? (
-                                <div className=" error-text ">
-                                    { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <div>
+                                    <div>
+                                        The charge state(s) of the ion to consider.
+                                    </div>
+                                    { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage ? (
+                                        <div className=" error-text ">
+                                            { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage }
+                                        </div>
+                                    ) : null }
                                 </div>
-                            ) : null }
-                        </div>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div>
+                                <div style={ { whiteSpace: "nowrap" } }>
+
+                                    <span>Charge: </span>
+
+                                    { charge_Elements }
+                                </div>
+                                { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage ? (
+                                    <div className=" error-text ">
+                                        { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage }
+                                    </div>
+                                ) : null }
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <div style={ { position: "relative" } }>
                             { this.props.existingEntry ? (
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component

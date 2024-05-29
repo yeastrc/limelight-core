@@ -20,7 +20,7 @@ export class CommonData_LoadedFromServer_ProjectLevel_Get_MaxScanDataWithPeaksRe
  *
  * @param projectSearchId
  */
-export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId = function (
+export const commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_ReturnPromise = function (
     {
         projectScanFileId
     } : {
