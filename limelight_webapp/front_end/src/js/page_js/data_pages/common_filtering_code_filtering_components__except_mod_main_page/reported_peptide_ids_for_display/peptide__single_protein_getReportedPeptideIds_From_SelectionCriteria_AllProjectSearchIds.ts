@@ -653,9 +653,15 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
         reportedPeptideIds_Override_Map_Key_ProjectSearchId: Map<number, Array<number>>
     } {
 
+        //  Result
         const reportedPeptideIds_Override_Map_Key_ProjectSearchId: Map<number, Array<number>> = new Map()
 
+        //  Get All Peptide Ids From Reported Peptide Ids, Across ALL Searches
+
+        const peptideIds_FromReportedPeptideIds_AcrossAll_Searches_Set: Set<number> = new Set()
+
         for ( const projectSearchId of this._projectSearchIds ) {
+
             const reportedPeptideIds_AndTheir_PSM_IDs = data.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId(projectSearchId)
             if ( ! reportedPeptideIds_AndTheir_PSM_IDs ) {
                 continue;
@@ -704,11 +710,62 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
                     throw Error(msg)
                 }
 
-                const reportedPeptideIdEntries_For_PeptideId = peptideIds_For_MainFilters_Holder.get_ReportedPeptideIdEntries_For_PeptideId(peptideId)
-                if ( reportedPeptideIdEntries_For_PeptideId === undefined || reportedPeptideIdEntries_For_PeptideId === null ) {
-                    const msg = "peptideIdsHolder_AllForSearch_Result.data.peptideIds_For_MainFilters_Holder.get_ReportedPeptideIdEntries_For_PeptideId(peptideId); returned nothing for peptideId: " + peptideId;
+                peptideIds_FromReportedPeptideIds_AcrossAll_Searches_Set.add( peptideId )
+            }
+
+            reportedPeptideIds_Override_Map_Key_ProjectSearchId.set(projectSearchId, Array.from( reportedPeptideIds_Result ) )
+        }
+
+        // In each Search, get All Reported Peptide Ids for All Peptide Ids.  (The All Peptide Ids are for across all searches)
+
+        for ( const projectSearchId of this._projectSearchIds ) {
+
+            const reportedPeptideIds_AndTheir_PSM_IDs = data.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId(projectSearchId)
+            if ( ! reportedPeptideIds_AndTheir_PSM_IDs ) {
+                continue;
+            }
+
+            const peptideIds_For_MainFilters_Holder = peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId)
+
+            if ( ! peptideIds_For_MainFilters_Holder ) {
+                const msg = "peptideIds_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId); returned nothing for projectSearchId: " + projectSearchId;
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            let reportedPeptideIds_For_ProteinSequenceVersionId: Set<number>
+
+            if ( proteinSequenceVersionId !== undefined && proteinSequenceVersionId !== null ) {
+
+                // Single Protein
+
+                const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Key_ProjectSearchId.get(projectSearchId)
+                if ( ! proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder ) {
+                    const msg = "proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Key_ProjectSearchId.get(projectSearchId); returned nothing for projectSearchId: " + projectSearchId;
                     console.warn(msg)
                     throw Error(msg)
+                }
+
+                reportedPeptideIds_For_ProteinSequenceVersionId =
+                    proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(proteinSequenceVersionId)
+                if ( ! reportedPeptideIds_For_ProteinSequenceVersionId ) {
+                    const msg = "proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder.get_reportedPeptideIds_For_ProteinSequenceVersionId(proteinSequenceVersionId) returned nothing for proteinSequenceVersionId: " + proteinSequenceVersionId;
+                    console.warn(msg)
+                    throw Error(msg)
+                }
+            }
+
+            const reportedPeptideIds_Result: Set<number> = new Set()
+
+            for ( const peptideId of peptideIds_FromReportedPeptideIds_AcrossAll_Searches_Set ) {
+
+                const reportedPeptideIdEntries_For_PeptideId = peptideIds_For_MainFilters_Holder.get_ReportedPeptideIdEntries_For_PeptideId(peptideId)
+                if ( reportedPeptideIdEntries_For_PeptideId === undefined || reportedPeptideIdEntries_For_PeptideId === null ) {
+                    // Now Skip since have Peptide Id for All Searches
+                    continue; // EARLY CONTINUE
+                    // const msg = "peptideIdsHolder_AllForSearch_Result.data.peptideIds_For_MainFilters_Holder.get_ReportedPeptideIdEntries_For_PeptideId(peptideId); returned nothing for peptideId: " + peptideId;
+                    // console.warn(msg)
+                    // throw Error(msg)
                 }
 
                 for ( const reportedPeptideId of reportedPeptideIdEntries_For_PeptideId ) {
@@ -726,6 +783,8 @@ export class GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class {
 
         return { reportedPeptideIds_Override_Map_Key_ProjectSearchId };
     }
+
+    /////////////////////
 
     /**
      *
