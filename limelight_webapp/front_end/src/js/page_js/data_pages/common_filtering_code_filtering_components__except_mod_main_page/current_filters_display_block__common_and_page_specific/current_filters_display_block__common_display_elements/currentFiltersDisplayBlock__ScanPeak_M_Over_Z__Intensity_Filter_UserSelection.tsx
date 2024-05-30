@@ -86,12 +86,25 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
 
         selectionsElements.push(
             <span key={ "text_before_" + selectionsElements.length }>
-                a neutral mass of { selection_Entry.monoisotopicMass }{ " " }
-                Da and a charge state of
-                { " " }{ chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }{ " " }
-                within +/- { selection_Entry.plus_Minus_MassRange_In_PPM }{ " " }
-                ppm,
-                and a relative intensity of { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }{ "%" }
+                <span style={ { whiteSpace: "nowrap" } }>
+                    a neutral mass of { selection_Entry.monoisotopicMass } Da
+                </span>
+                { " " }
+                 and a
+                { " " }
+                <span style={ { whiteSpace: "nowrap" } }>
+                    charge state of { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
+                </span>
+                { " " }
+                <span style={ { whiteSpace: "nowrap" } }>
+                    within +/- { selection_Entry.plus_Minus_MassRange_In_PPM } ppm,
+                </span>
+                { " " }
+                and a
+                { " " }
+                <span style={ { whiteSpace: "nowrap" } }>
+                    relative intensity of { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }{ "%" }
+                </span>
             </span>
         )
     }
