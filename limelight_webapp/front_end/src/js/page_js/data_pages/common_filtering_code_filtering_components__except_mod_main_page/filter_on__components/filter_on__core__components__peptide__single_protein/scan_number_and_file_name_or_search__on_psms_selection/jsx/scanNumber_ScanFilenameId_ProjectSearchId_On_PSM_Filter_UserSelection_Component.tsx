@@ -339,6 +339,7 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
                                     <div>
                                         <span
                                             className=" filter-single-value-display-block clickable "
+                                            onClick={ this._open_Add_Overlay_BindThis }
                                         >
                                             Not Filtering on Scan Number
                                         </span>
