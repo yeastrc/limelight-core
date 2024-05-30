@@ -9,32 +9,18 @@ import React from 'react'
 import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
 import { SpectrumRetrieveAndDisplay_Use_lorikeet } from 'page_js/data_pages/data_pages_subparts_other/spectrumRetrieveAndDisplay_Use_lorikeet';
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
+import {
+    CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 
 
 
 export const get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent = function (
-    {
-        scanNumber,
-        searchHasScanData,
-        psmId,
-        projectSearchId,
-        openModPosition,
-    } : {
-        scanNumber: number
-        searchHasScanData: boolean
-        psmId : number
-        projectSearchId : number
-        openModPosition : OpenModPosition_DataType
-
-    }) : JSX.Element {
+    inputParams: Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams) : JSX.Element {
 
     return (
         <Internal__PsmList_ViewSpectrumCell_ExternalReactComponent
-            scanNumber={ scanNumber }
-            searchHasScanData={ searchHasScanData }
-            psmId={ psmId }
-            projectSearchId={ projectSearchId }
-            openModPosition={ openModPosition }
+            inputParams={ inputParams }
         />
     )
 }
@@ -42,13 +28,24 @@ export const get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComp
 /**
  *
  */
-interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
+interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams {
 
     scanNumber: number
     searchHasScanData: boolean
     psmId : number
     projectSearchId : number
     openModPosition : OpenModPosition_DataType
+
+    // Maybe null or undefined
+    scanPeaks_That_PassFilters_Array__For_PsmId: Array<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak>
+}
+
+/**
+ *
+ */
+interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_Props {
+
+    inputParams: Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_InputParams
 }
 
 interface Internal__PsmList_ViewSpectrumCell_ExternalReactComponent_State {
@@ -103,15 +100,22 @@ class Internal__PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Co
                 const znothing = 0;
             }
 
-            const projectSearchId = this.props.projectSearchId;
-            const psmId = this.props.psmId;
-            const openModPosition = this.props.openModPosition;
+            let scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number> = undefined
 
+            if ( this.props.inputParams.scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                scanPeaks_MZ_That_PassFilters_Array__For_PsmId = []
+                for ( const scanPeaks__Entry of this.props.inputParams.scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                    scanPeaks_MZ_That_PassFilters_Array__For_PsmId.push( scanPeaks__Entry.mz )
+                }
+            }
 
             const spectrumRetrieveAndDisplay_Use_lorikeet = new SpectrumRetrieveAndDisplay_Use_lorikeet(); // Params not used in constructor
 
             spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( {
-                psmId, projectSearchId, openModPosition
+                psmId: this.props.inputParams.psmId,
+                projectSearchId: this.props.inputParams.projectSearchId,
+                openModPosition: this.props.inputParams.openModPosition,
+                scanPeaks_MZ_That_PassFilters_Array__For_PsmId
             } );
 
 
@@ -127,9 +131,9 @@ class Internal__PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Co
 
         return (
             <>
-                <span>{ this.props.scanNumber }</span>
+                <span>{ this.props.inputParams.scanNumber }</span>
 
-                { this.props.searchHasScanData ? (
+                { this.props.inputParams.searchHasScanData ? (
                     <>
                         <span> </span>
                         <span className="table-data-cell-property-value fake-link"

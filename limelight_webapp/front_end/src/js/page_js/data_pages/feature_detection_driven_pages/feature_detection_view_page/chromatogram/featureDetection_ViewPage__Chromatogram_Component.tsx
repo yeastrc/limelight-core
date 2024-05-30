@@ -19,7 +19,7 @@ import Plotly from 'plotly.js-dist/plotly'
 import { limelight__Sort_ArrayOfNumbers_SortArrayInPlace } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import { C13_MASS_DELTA, PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
 import { smoothLowess, smoothSavitzkyGolay } from "page_js/data_pages/peptide_mass_utils/SmoothingUtils";
-import { commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId";
+import { commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_ReturnPromise } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId";
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder,
     CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_DataForSingleScanNumber
@@ -535,6 +535,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                             reporterIonMass_UserSelections_StateObject : undefined,
                             scanFilenameId_On_PSM_Filter_UserSelection_StateObject : this.props.featureDetection_ViewPage__Chromatogram_Component_Params.scanFilenameId_On_PSM_Filter_UserSelection_StateObject,  // Filter on select searches Search Scan File Id
                             scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : undefined,
+                            scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: undefined,
                             scan_RetentionTime_MZ_UserSelection_StateObject : undefined,
                             peptideUnique_UserSelection_StateObject : undefined,
                             peptideSequence_UserSelections_StateObject : undefined,
@@ -929,7 +930,7 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
 
                     //  Get MaxScanDataWithPeaksReturnCount every request and Store in module wide variable
                     const promise_Get_MaxScanDataWithPeaksReturnCount =
-                        commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId({ projectScanFileId: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId })
+                        commonData_LoadedFromServer_From_ProjectScanFileId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectScanFileId_ReturnPromise({ projectScanFileId: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.projectScanFileId })
                     promise_Get_MaxScanDataWithPeaksReturnCount.catch(reason => {
                         reject(reason)
                     })
@@ -3555,7 +3556,8 @@ export class Internal_ShowPlot_FeatureDetection_ViewPage__Chromatogram_Component
                 openModPositionOverride: undefined,
                 searchDataLookupParamsRoot: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.searchDataLookupParamsRoot,
                 dataPageStateManager: this.props.featureDetection_ViewPage__Chromatogram_Component_Params.dataPageStateManager_DataFrom_Server,
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable: undefined  // Since NO Filter on Scan Peaks on Feature Detection Page
             });
 
             this._psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results =

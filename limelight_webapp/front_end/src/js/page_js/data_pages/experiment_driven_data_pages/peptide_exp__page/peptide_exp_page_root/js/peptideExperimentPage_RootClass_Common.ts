@@ -94,6 +94,9 @@ import {
 import {
 	ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+	ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
 
 /**
  * 
@@ -119,6 +122,7 @@ export class PeptideExperimentPage_RootClass_Common {
 	private _psm_Charge_Filter_UserSelection_StateObject : Psm_Charge_Filter_UserSelection_StateObject
 
 	private _scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+	private _scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 
 	private _modificationMass_UserSelections_StateObject = new ModificationMass_UserSelections_StateObject();
 
@@ -389,6 +393,22 @@ export class PeptideExperimentPage_RootClass_Common {
 				this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
 			}
 		}
+		{  //  this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData = this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.getEncodedStateData();
+				this._peptideExperimentPageRoot_CentralStateManagerObjectClass.set_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData({ scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData });
+			}
+			this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject = new ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._peptideExperimentPageRoot_CentralStateManagerObjectClass.get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData();
+			if ( encodedStateData ) {
+				this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
 		let referrerFromURL = initialStateFromURL.referrer;
 		
@@ -535,6 +555,7 @@ export class PeptideExperimentPage_RootClass_Common {
 					scan_RetentionTime_MZ_UserSelection_StateObject : this._scan_RetentionTime_MZ_UserSelection_StateObject,
 					psm_Charge_Filter_UserSelection_StateObject: this._psm_Charge_Filter_UserSelection_StateObject,
 					scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: this._scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+					scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: this._scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
 
 					generatedPeptideContents_UserSelections_StateObject: this._generatedPeptideContents_UserSelections_StateObject
 				}

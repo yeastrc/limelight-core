@@ -25,7 +25,10 @@ import {addFlotSelectionToJquery} from 'libs/Lorikeet/jquery.flot.selection';
 import {addLorikeetToJquery} from 'libs/Lorikeet/specview';
 
 
-import {lorikeetSpectrumViewer_CreateURL} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
+import {
+	lorikeetSpectrumViewer_CreateURL,
+	lorikeetSpectrumViewer_ParseURL
+} from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL'
 import {
 	DataTable_DataGroupRowEntry,
 	DataTable_DataRowEntry,
@@ -46,6 +49,9 @@ import {
 import {LorikeetSpectrumViewer_Constants} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_Constants";
 import {lorikeetSpectrumViewer_createPsmPeptideTable_HeadersAndData} from "page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_createDataFor_PsmPeptideTable";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+	limelight__Sort_ArrayOfNumbers_SortArrayInPlace
+} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 //  Overrides for LorikeetOptions:
 
@@ -248,8 +254,13 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 	 */
 	private _insert_LorikeetSpectrumViewer() {
 
+		const urlParsed = lorikeetSpectrumViewer_ParseURL() // Only Query String for now
+
 		//  Update URL in browser
-		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed, openModPosition: this._openModPosition_Displayed });
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({
+			projectSearchId : this._projectSearchId, psmId : this._psmId_Displayed, openModPosition: this._openModPosition_Displayed, scanPeaks_MZ_That_PassFilters_Array__For_PsmId: urlParsed.scanPeaks_MZ_That_PassFilters_Array__For_PsmId
+		});
+
 		window.history.replaceState( null, null, lorikeetSpectrumViewer_newWindowURL );
 
 
@@ -434,6 +445,28 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			}
 		}
 
+		let userReporterIons = storedPsmPeptideDataForPsmId.reporterIonMassList
+
+		if ( urlParsed.scanPeaks_MZ_That_PassFilters_Array__For_PsmId && urlParsed.scanPeaks_MZ_That_PassFilters_Array__For_PsmId.length > 0) {
+
+			let userReporterIons_Temp: Array<number> = undefined
+
+			if ( storedPsmPeptideDataForPsmId.reporterIonMassList && ( storedPsmPeptideDataForPsmId.reporterIonMassList instanceof Array ) ) {
+				userReporterIons_Temp = Array.from( storedPsmPeptideDataForPsmId.reporterIonMassList )
+			} else {
+				userReporterIons_Temp = []
+			}
+
+			for ( const entry of urlParsed.scanPeaks_MZ_That_PassFilters_Array__For_PsmId ) {
+				if ( ! userReporterIons_Temp.includes( entry ) ) {
+					userReporterIons_Temp.push( entry )
+				}
+			}
+
+			limelight__Sort_ArrayOfNumbers_SortArrayInPlace( userReporterIons_Temp )
+
+			userReporterIons = userReporterIons_Temp
+		}
 
 		const new_lorikeetOptions : LorikeetSpectrumViewer_Data_ForLorikeet_Data_Root = {
 
@@ -444,7 +477,7 @@ export class LorikeetSpectrumViewer_PageMaintOnceDataIsLoaded {
 			variableMods,
 			ntermMod,
 			ctermMod,
-			userReporterIons: storedPsmPeptideDataForPsmId.reporterIonMassList,
+			userReporterIons,
 
 			//  From Spectrum Webservice
 

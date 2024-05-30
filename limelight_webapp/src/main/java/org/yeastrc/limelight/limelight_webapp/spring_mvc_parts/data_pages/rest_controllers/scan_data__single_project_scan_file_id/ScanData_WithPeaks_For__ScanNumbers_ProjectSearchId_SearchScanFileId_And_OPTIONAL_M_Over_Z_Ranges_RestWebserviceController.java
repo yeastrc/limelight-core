@@ -239,6 +239,8 @@ public class ScanData_WithPeaks_For__ScanNumbers_ProjectSearchId_SearchScanFileI
 				get_ScanDataFromScanNumbers_Request.setScanFileAPIKey( scanFileAPIKey );
 				get_ScanDataFromScanNumbers_Request.setScanNumbers( webserviceRequest.scanNumberList );
 				
+				get_ScanDataFromScanNumbers_Request.setReturnScanPeakWithMaxIntensityIgnoringSanPeakFilters( true );
+				
 				get_ScanDataFromScanNumbers_Request.setIncludeParentScans( Get_ScanDataFromScanNumbers_IncludeParentScans.NO );
 				get_ScanDataFromScanNumbers_Request.setExcludeReturnScanPeakData( Get_ScanData_ExcludeReturnScanPeakData.NO );
 				

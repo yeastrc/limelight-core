@@ -74,6 +74,8 @@ public class Call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice implemen
 		webserviceRequest.setIncludeReturnScanLevelTotalIonCurrentData(Get_ScanData_IncludeReturnScanLevelTotalIonCurrentData.YES);
 		webserviceRequest.setIncludeReturnIonInjectionTimeData(Get_ScanData_IncludeReturnIonInjectionTimeData.YES);
 		
+		webserviceRequest.setReturnScanPeakWithMaxIntensityIgnoringSanPeakFilters(true);
+		
 		Get_ScanDataFromScanNumbers_Response get_ScanDataFromScanNumber_Response =
 				callSpectralStorageWebservice.call_Get_ScanDataFromScanNumbers_Webservice( webserviceRequest );
 

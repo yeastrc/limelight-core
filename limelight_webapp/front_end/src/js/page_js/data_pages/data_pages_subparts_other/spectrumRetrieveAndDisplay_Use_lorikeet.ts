@@ -15,8 +15,11 @@
 
 //  module import 
 
-import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL'
+import { lorikeetSpectrumViewer_CreateURL } from 'page_js/data_pages/other_data_pages/lorikeet_spectrum_viewer_page/lorikeetSpectrumViewer_CreateURL_ParseURL'
 import {OpenModPosition_DataType} from "page_js/data_pages/data_pages__common_data_types_typescript/openModPosition_DataType_Typescript";
+import {
+	CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
+} from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 
 
 
@@ -45,14 +48,34 @@ export class SpectrumRetrieveAndDisplay_Use_lorikeet {
 	/**
 	 * 
 	 */
-	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition } : {
+	viewSpectrum_NewWindow( { psmId, projectSearchId, openModPosition, scanPeaks_MZ_That_PassFilters_Array__For_PsmId } : {
 
-		psmId: any
-		projectSearchId: any
+		psmId : number
+		projectSearchId : number
 		openModPosition : OpenModPosition_DataType
+		// Maybe null or undefined
+		scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number>
 	} ) {
 
-		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({ projectSearchId, psmId, openModPosition });
+		let scanPeaks_MZ_That_PassFilters_Array__For_PsmId_Rounded: Array<number> = undefined
+
+		if ( scanPeaks_MZ_That_PassFilters_Array__For_PsmId ) {
+
+			scanPeaks_MZ_That_PassFilters_Array__For_PsmId_Rounded = []
+
+			for ( const mz of scanPeaks_MZ_That_PassFilters_Array__For_PsmId ) {
+				//  Round to 2 decimal places
+				const mz_times100 = mz * 100
+				const mz_times100_Rounded = Math.round( mz_times100 )
+				const mz_times100_Rounded_Divide100 = mz_times100_Rounded / 100
+
+				scanPeaks_MZ_That_PassFilters_Array__For_PsmId_Rounded.push( mz_times100_Rounded_Divide100 )
+			}
+		}
+
+		const lorikeetSpectrumViewer_newWindowURL = lorikeetSpectrumViewer_CreateURL({
+			projectSearchId, psmId, openModPosition, scanPeaks_MZ_That_PassFilters_Array__For_PsmId: scanPeaks_MZ_That_PassFilters_Array__For_PsmId_Rounded
+		});
 		
 
 		let lorikeetNewWindowWidth = LORIKEET_VIEWER_NEW_WINDOW_SIZE_WIDTH;

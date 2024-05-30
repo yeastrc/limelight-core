@@ -53,6 +53,15 @@ public class MarshalObjectToJSON {
 
 		//  Jackson JSON Mapper object for JSON deserialization and serialization
 		ObjectMapper jacksonJSON_Mapper = new ObjectMapper();
+		
+		//    Disable since some JS code only checks for 'null' and not also 'undefined'
+		
+		//    This .setSerial... has NEVER been committed.  
+		//        It is a nice to have to reduce returned JSON size but is causing errors in existing JS code that is expecting null.
+		
+		//  NOT send any object field that is null
+		// jacksonJSON_Mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+		
 		//   serialize 
 		try {
 			jacksonJSON_Mapper.writeValue( baos, object );

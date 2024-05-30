@@ -41,6 +41,9 @@ import {
 import { get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_ScanNumber_AND_ViewSpectrum_TableCell_ExternalComponent";
 import { get_PsmList_MS_1_Scan_TableCell_ExternalReactComponent } from "page_js/data_pages/data_table_react_common_child_table_components/psm_list_etc_block__under_standard_project_search_id_peptide_or_reported_peptide_id_psm_ids_search_sub_groups/psm_list_etc_block__sub_components/psm_list/psm_list_view_spectrum_cell_ExternalComponent/jsx/psm_list_view_MS_1_Scan_TableCell_ExternalComponent";
 import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 const dataTableId_ThisTable = "Child Table PSM List Table";
 
@@ -63,6 +66,10 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
     readonly dataPageStateManager : DataPageStateManager
     readonly psmIds_Include : ReadonlySet<number> // Optional
     readonly commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+    /**
+     * NOT Passed from Mod Page
+     */
+    readonly reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
 
     /**
      *
@@ -76,7 +83,8 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             dataPageStateManager,
             psmIds_Include,
             openModPositionOverride,
-            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable
         } : {
             projectSearchId : number
             reportedPeptideId : number    // NOT required if have psmIds_Include
@@ -86,6 +94,10 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             psmIds_Include? : ReadonlySet<number> // Optional
             openModPositionOverride? : OpenModPosition_DataType  // optional
             commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            /**
+             * NOT Passed from Mod Page
+             */
+            reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
         }) {
 
         if ( reportedPeptideId === undefined && searchSubGroupId !== undefined ) {
@@ -100,6 +112,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         this.psmIds_Include = psmIds_Include;
         this.openModPositionOverride = openModPositionOverride;
         this.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+        this.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable
     }
 
     private _FAKE_TO_FORCE_USE_CONSTRUCTOR() {}
@@ -227,7 +240,10 @@ const _create_DataTable_RootTableObject = function(
         _getAnnotationTypeRecords_DisplayOrder( { projectSearchId, searchDataLookupParamsRoot, dataPageStateManager } );
     let psmAnnotationTypesForPsmListEntries_DisplayOrder : Array<AnnotationTypeItem> = annotationTypeRecords_DisplayOrder.psmAnnotationTypesForPsmListEntries;
 
-    const get_DataTable_DataRowEntries_Result = _get_DataTable_DataRowEntries({ psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, openModPositionOverride, ajaxResponse, topLevel_Params });
+    const get_DataTable_DataRowEntries_Result =
+        _get_DataTable_DataRowEntries({
+            psmList, projectSearchId, dataPageStateManager, psmAnnotationTypesForPsmListEntries_DisplayOrder, openModPositionOverride, ajaxResponse, topLevel_Params
+        });
     const dataTable_DataRowEntries = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries;
     const dataTable_DataRowEntries_Map_Key_Psm_Id = get_DataTable_DataRowEntries_Result.dataTable_DataRowEntries_Map_Key_Psm_Id;
 
@@ -243,7 +259,8 @@ const _create_DataTable_RootTableObject = function(
         anyPsmsHave_retentionTime : get_DataTable_DataRowEntries_Result.anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_reporterIonMassesDisplay,
         anyPsmsHave_openModificationMassesDisplay : get_DataTable_DataRowEntries_Result.anyPsmsHave_openModificationMassesDisplay,
-        anyPsmIs_IndependentDecoy: get_DataTable_DataRowEntries_Result.anyPsmIs_IndependentDecoy
+        anyPsmIs_IndependentDecoy: get_DataTable_DataRowEntries_Result.anyPsmIs_IndependentDecoy,
+        anyPsmsHave_SelectedScanPeaks: get_DataTable_DataRowEntries_Result.anyPsmsHave_SelectedScanPeaks
     });
 
     const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
@@ -283,7 +300,8 @@ const _getDataTableColumns = function({
     anyPsmsHave_retentionTime,
     anyPsmsHave_reporterIonMassesDisplay,
     anyPsmsHave_openModificationMassesDisplay,
-    anyPsmIs_IndependentDecoy
+    anyPsmIs_IndependentDecoy,
+    anyPsmsHave_SelectedScanPeaks
 
 } : { 
 
@@ -296,6 +314,7 @@ const _getDataTableColumns = function({
     anyPsmsHave_reporterIonMassesDisplay? : boolean
     anyPsmsHave_openModificationMassesDisplay? : boolean
     anyPsmIs_IndependentDecoy? : boolean
+    anyPsmsHave_SelectedScanPeaks?: boolean
 
 }) : {
     dataTable_Columns : Array<DataTable_Column>
@@ -336,7 +355,7 @@ const _getDataTableColumns = function({
         const dataTable_Column = new DataTable_Column({
             id : "scnNmbr", // Used for tracking sort order. Keep short
             displayName,
-            width : 100,
+            width : 150,
             sortable : true,
         });
         dataTable_Columns.push( dataTable_Column );
@@ -400,6 +419,22 @@ const _getDataTableColumns = function({
             id : "reporterIons", // Used for tracking sort order. Keep short
             displayName,
             width : 65,
+            sortable : true,
+        });
+        dataTable_Columns.push( dataTable_Column );
+
+        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    }
+
+    if ( anyPsmsHave_SelectedScanPeaks ) {
+
+        const displayName = "Selected Scan Peaks";
+
+        const dataTable_Column = new DataTable_Column({
+            id : "selScanPeaks", // Used for tracking sort order. Keep short
+            displayName,
+            width : 100,
             sortable : true,
         });
         dataTable_Columns.push( dataTable_Column );
@@ -489,6 +524,7 @@ interface Get_DataTable_DataRowEntries_Result {
     anyPsmsHave_reporterIonMassesDisplay? : boolean
     anyPsmsHave_openModificationMassesDisplay? : boolean
     anyPsmIs_IndependentDecoy?: boolean
+    anyPsmsHave_SelectedScanPeaks?: boolean
 }
 
 /**
@@ -542,6 +578,8 @@ const _get_DataTable_DataRowEntries = function(
 
     let anyPsmIs_IndependentDecoy = false;
 
+    let anyPsmsHave_SelectedScanPeaks = false
+
     for ( const psmListItem of psmList ) {
 
         if ( psmListItem.precursor_M_Over_Z !== undefined && psmListItem.precursor_M_Over_Z !== null ) {
@@ -559,6 +597,13 @@ const _get_DataTable_DataRowEntries = function(
 
         if ( psmListItem.psmIs_IndependentDecoy ) {
             anyPsmIs_IndependentDecoy = true;
+        }
+
+        if ( ! anyPsmsHave_SelectedScanPeaks ) {
+            if ( topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable
+                && topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.get__scanPeaks_That_PassFilters_Array__For_PsmId( psmListItem.psmId ) ) {
+                anyPsmsHave_SelectedScanPeaks = true
+            }
         }
     }
 
@@ -645,12 +690,15 @@ const _get_DataTable_DataRowEntries = function(
             const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
                 ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
 
+                    const scanPeaks_That_PassFilters_Array__For_PsmId = topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.get__scanPeaks_That_PassFilters_Array__For_PsmId( psmListItem.psmId )
+
                     return get_PsmList_ScanNumber_AND_ViewSpectrum_TableCell_ExternalReactComponent({
                         scanNumber: psmListItem.scanNumber,
                         searchHasScanData: ajaxResponse.searchHasScanData,
                         psmId: psmListItem.psmId,
                         projectSearchId,
-                        openModPosition
+                        openModPosition,
+                        scanPeaks_That_PassFilters_Array__For_PsmId
                     });
                 }
 
@@ -739,6 +787,35 @@ const _get_DataTable_DataRowEntries = function(
                 }
                 valueDisplay = reporterIonMassAsString_List.join(", ");
             }
+            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+            const columnEntry = new DataTable_DataRow_ColumnEntry({
+                searchTableData,
+                valueDisplay,
+                valueSort
+            })
+            columnEntries.push( columnEntry );
+
+            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        }
+
+        if ( anyPsmsHave_SelectedScanPeaks ) {
+            let valueDisplay = "";
+            let valueSort = "";
+
+            if ( topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable ) {
+                const scanPeaks_That_PassFilters_Array__For_PsmId = topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.get__scanPeaks_That_PassFilters_Array__For_PsmId( psmListItem.psmId )
+                if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                    const entriesAsString_List = [];
+                    for ( const entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                        const entriesAsString_List_Entry = "mz: " + entry.mz + " intensity: " + entry.intensity
+                        entriesAsString_List.push( entriesAsString_List_Entry )
+                    }
+                    valueDisplay = entriesAsString_List.join(" || ");
+                }
+            }
+
             const searchEntriesForColumn : Array<string> = [ valueDisplay ]
             const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
             const columnEntry = new DataTable_DataRow_ColumnEntry({
@@ -887,7 +964,8 @@ const _get_DataTable_DataRowEntries = function(
         anyPsmsHave_retentionTime,
         anyPsmsHave_reporterIonMassesDisplay,
         anyPsmsHave_openModificationMassesDisplay,
-        anyPsmIs_IndependentDecoy
+        anyPsmIs_IndependentDecoy,
+        anyPsmsHave_SelectedScanPeaks
     }
 }
 

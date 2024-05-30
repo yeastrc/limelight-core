@@ -89,7 +89,7 @@ public class LorikeetSpectrumViewer_PageController {
 	 * 
 	 */
 	public LorikeetSpectrumViewer_PageController() {
-		log.warn( "INFO: PRIMARY_CONTROLLER_PATH: " + PRIMARY_CONTROLLER_PATH );
+		log.warn( "INFO: PRIMARY_CONTROLLER_PATH_PSM_ID_SELECTED_IONS: " + PRIMARY_CONTROLLER_PATH_PSM_ID_SELECTED_IONS );
 	}
 
 	/**
@@ -115,7 +115,19 @@ public class LorikeetSpectrumViewer_PageController {
 			"{" + PATH_PARAMETER_LABEL_PSM_ID + "}";
 
 
-	private static final String PRIMARY_CONTROLLER_PATH = 
+	/**
+	 *   
+	 */
+	private static final String PATH_PARAMETER_LABEL_SELECTED_IONS_MZ = "sionsmz"; //  UNUSED:  Using Query String instead
+
+	/**
+	 * Spring MVC format for path parameter
+	 */
+	private static final String PATH_PARAMETER_LABEL_SELECTED_IONS_MZ_PATH_ADDITION =
+			"{" + PATH_PARAMETER_LABEL_SELECTED_IONS_MZ + "}";
+
+
+	private static final String PRIMARY_CONTROLLER_PATH_BASE = 
 			AA_PageControllerPaths_Constants.PATH_START_ALL
 			+ AA_PageControllerPaths_Constants.LORIKEET_SPECTRUM_VIEWER_PAGE_CONTROLLER
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
@@ -127,15 +139,43 @@ public class LorikeetSpectrumViewer_PageController {
 			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
 			+ PATH_PARAMETER_LABEL_PSM_ID_PATH_ADDITION;
 
-	@GetMapping( path = { PRIMARY_CONTROLLER_PATH } )
+	private static final String PRIMARY_CONTROLLER_PATH_PSM_ID_ONLY = PRIMARY_CONTROLLER_PATH_BASE;
 
-	public String controllerEntry(
+	private static final String PRIMARY_CONTROLLER_PATH_PSM_ID_SELECTED_IONS = 
+			PRIMARY_CONTROLLER_PATH_BASE
+			+ AA_PageControllerPaths_Constants.PATH_SEPARATOR
+			+ PATH_PARAMETER_LABEL_SELECTED_IONS_MZ_PATH_ADDITION;
+
+
+	
+	@GetMapping( path = { PRIMARY_CONTROLLER_PATH_PSM_ID_ONLY } )
+
+	public String controllerEntry_PsmId_Only(
 
 			@PathVariable(value = PATH_PARAMETER_LABEL_PROJECT_SEARCH_ID) 
 			String projectSearchIdString,
 
 			@PathVariable(value = PATH_PARAMETER_LABEL_PSM_ID) 
 			String psmIdString,
+
+			HttpServletRequest httpServletRequest ) {
+
+		return controllerEntry_PsmId_SelectedIons(projectSearchIdString, psmIdString, null /* selectedIonsString */, httpServletRequest);
+		
+	}
+	
+	@GetMapping( path = { PRIMARY_CONTROLLER_PATH_PSM_ID_SELECTED_IONS } )
+
+	public String controllerEntry_PsmId_SelectedIons(
+
+			@PathVariable(value = PATH_PARAMETER_LABEL_PROJECT_SEARCH_ID) 
+			String projectSearchIdString,
+
+			@PathVariable(value = PATH_PARAMETER_LABEL_PSM_ID) 
+			String psmIdString,
+
+			@PathVariable(value = PATH_PARAMETER_LABEL_SELECTED_IONS_MZ) 
+			String selectedIonsString,
 
 			HttpServletRequest httpServletRequest ) {
 

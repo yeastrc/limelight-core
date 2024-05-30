@@ -373,7 +373,8 @@ export class ModProteinSearchPeptideList_SubTableGenerator {
                 searchSubGroupId: undefined,
                 searchDataLookupParamsRoot: modViewDataManager.searchDataLookupParameters_Root,
                 openModPositionOverride: proteinData.openModPositionOverride,
-                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
+                commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
+                reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable: undefined  // NOT for mod page
             });
 
             const psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params = {

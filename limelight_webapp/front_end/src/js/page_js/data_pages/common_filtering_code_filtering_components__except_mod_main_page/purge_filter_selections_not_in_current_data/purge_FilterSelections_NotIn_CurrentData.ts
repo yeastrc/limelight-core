@@ -32,6 +32,10 @@ import {
 import {
     CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
+import {
+    ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
+import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataPageStateManager";
 
 
 /**
@@ -40,15 +44,18 @@ import {
 export const purge_FilterSelections_NotIn_CurrentData = function(
     {
         projectSearchIds,
+        dataPageStateManager,
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
         modificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject,
         proteinPositionFilter_UserSelections_StateObject,
         psm_Charge_Filter_UserSelection_StateObject,
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject,
-        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
+        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
     } : {
-        projectSearchIds : Array<number>,
+        projectSearchIds : Array<number>
+        dataPageStateManager: DataPageStateManager
         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
         modificationMass_UserSelections_StateObject : ModificationMass_UserSelections_StateObject,
         reporterIonMass_UserSelections_StateObject : ReporterIonMass_UserSelections_StateObject,
@@ -57,8 +64,35 @@ export const purge_FilterSelections_NotIn_CurrentData = function(
 
         scanFilenameId_On_PSM_Filter_UserSelection_StateObject : ScanFilenameId_On_PSM_Filter_UserSelection_StateObject
         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject : ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject : ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 
     }  ) : Promise<void> {
+
+    {
+        //  scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+
+        if ( scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject ) {
+
+            let allSearches_Have_ScanData = true;
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                const dataPage_common_Flags_SingleSearch_ForProjectSearchId = dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
+                if ( ! dataPage_common_Flags_SingleSearch_ForProjectSearchId ) {
+                    const msg = "this.props.propsValue.dataPageStateManager.get_DataPage_common_Searches_Flags().get_DataPage_common_Flags_SingleSearch_ForProjectSearchId(projectSearchId); returned NOTHING for projectSearchId: " + projectSearchId;
+                    console.warn( msg );
+                    throw Error( msg );
+                }
+                if ( ! dataPage_common_Flags_SingleSearch_ForProjectSearchId.hasScanData ) {
+                    allSearches_Have_ScanData = false;
+                    break;
+                }
+            }
+            if ( ! allSearches_Have_ScanData ) {
+                scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.clearAll()
+            }
+        }
+    }
 
     return new Promise<void>((resolve, reject) => { try {
 

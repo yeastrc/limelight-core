@@ -11,6 +11,9 @@
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import { CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__SingleProjectSearch";
 import { CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import {
+    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
+} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 /**
  *
@@ -82,10 +85,10 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
      */
     get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise(
         {
-            searchScanFileId, scanNumberList, m_over_Z_Ranges
+            searchScanFileId, scanNumber_Set, m_over_Z_Ranges
         } : {
             searchScanFileId: number
-            scanNumberList: Array<number>
+            scanNumber_Set: Set<number>
             m_over_Z_Ranges: Array<{
                 m_over_Z_Range_Min: number;
                 m_over_Z_Range_Max: number;
@@ -93,7 +96,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
         }
     ): Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_YES_Peaks_Data__get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data__FunctionResult> {
         try {
-            const result = this.get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters({ searchScanFileId, scanNumberList, m_over_Z_Ranges })
+            const result = this.get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters({ searchScanFileId, scanNumber_Set, m_over_Z_Ranges })
 
             if (result.data) {
 
@@ -114,10 +117,10 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
      */
     get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters(
         {
-            searchScanFileId, scanNumberList, m_over_Z_Ranges
+            searchScanFileId, scanNumber_Set, m_over_Z_Ranges
         } : {
             searchScanFileId: number
-            scanNumberList: Array<number>
+            scanNumber_Set: Set<number>
             m_over_Z_Ranges: Array<{
                 m_over_Z_Range_Min: number;
                 m_over_Z_Range_Max: number;
@@ -140,6 +143,9 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                     console.warn(msg)
                     throw Error(msg)
                 }
+
+                const scanNumberList = Array.from( scanNumber_Set )
+                limelight__Sort_ArrayOfNumbers_SortArrayInPlace( scanNumberList )
 
                 const get_ScanData_YES_Peaks_DataHolder_Result =
                     this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.get_ParentObject().
@@ -206,6 +212,9 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                                 console.warn(msg)
                                 throw Error(msg)
                             }
+
+                            const scanNumberList = Array.from( scanNumber_Set )
+                            limelight__Sort_ArrayOfNumbers_SortArrayInPlace( scanNumberList )
 
                             const get_ScanData_YES_Peaks_DataHolder_Result_Promise =
                                 this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId.get_ParentObject().

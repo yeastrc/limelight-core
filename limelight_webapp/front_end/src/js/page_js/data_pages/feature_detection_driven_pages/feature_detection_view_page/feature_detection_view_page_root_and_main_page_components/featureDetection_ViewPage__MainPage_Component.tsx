@@ -340,6 +340,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         reporterIonMass_UserSelections_StateObject: undefined,
                         scanFilenameId_On_PSM_Filter_UserSelection_StateObject: undefined,
                         scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject: undefined,
+                        scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject: undefined,
                         scan_RetentionTime_MZ_UserSelection_StateObject: undefined,
                         peptideUnique_UserSelection_StateObject: undefined,
                         peptideSequence_UserSelections_StateObject: undefined,

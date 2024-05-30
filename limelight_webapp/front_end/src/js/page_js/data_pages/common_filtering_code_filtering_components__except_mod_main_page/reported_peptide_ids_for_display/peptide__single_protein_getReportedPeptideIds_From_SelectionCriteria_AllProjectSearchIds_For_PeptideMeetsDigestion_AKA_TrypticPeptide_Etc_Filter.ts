@@ -559,7 +559,10 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
 
         for ( const projectSearchId of this._projectSearchIds ) {
 
-            const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({ projectSearchId, entriesMap_KeyReportedPeptideId: null })
+            const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId =
+                new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
+                    projectSearchId, entriesMap_KeyReportedPeptideId: null, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
+                })
 
             const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
             if (!reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId) {
@@ -822,7 +825,10 @@ export class Peptide__Single_Protein_getReportedPeptideIds_From_SelectionCriteri
 
         for ( const projectSearchId of this._projectSearchIds ) {
 
-            const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({ projectSearchId, entriesMap_KeyReportedPeptideId: null })
+            const result__peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId =
+                new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId({
+                    projectSearchId, entriesMap_KeyReportedPeptideId: null, scanPeaks_That_PassFilters_Array__Map_Key_PsmId__AllForSearch: undefined
+                })
 
             const reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId = data_MainMethod_ReturnContents_FilteredToThisPoint.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds.get_EntryFor_projectSearchId( projectSearchId )
             if (!reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId) {

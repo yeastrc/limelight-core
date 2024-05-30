@@ -1711,10 +1711,10 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                 const promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges =
                     this.props.psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
                     get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_YES_Peaks_Data().get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise({
-                    searchScanFileId: searchScanFileId_Selected,
-                    scanNumberList: scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH,
-                    m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
-                } )
+                        searchScanFileId: searchScanFileId_Selected,
+                        scanNumber_Set: new Set( scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH ),
+                        m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
+                    } )
                 promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges.catch(reason => {
                     anyRequest_Rejected = true
                     reject(reason)
@@ -2380,6 +2380,8 @@ export class PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component extends React
                                                 peptideIds_For_MainFilters_Holder={ this._peptideIds_For_MainFilters_Holder }
                                                 peptideSequences_For_MainFilters_Holder={ this._peptideSequences_For_MainFilters_Holder }
                                                 reportedPeptideSequences_Holder={ this._reportedPeptideSequences_Holder }
+
+                                                psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter={ this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter }
                                             />
                                         ) : null }
                                     </div>
@@ -2625,6 +2627,8 @@ interface Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Componen
     peptideIds_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PeptideIds_For_MainFilters_Holder
     peptideSequences_For_MainFilters_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__PeptideSequences_For_MainFilters_Holder
     reportedPeptideSequences_Holder: CommonData_LoadedFromServer_CommonAcrossSearches__ReportedPeptideSequences_Holder
+
+    psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
 }
 
 /**
@@ -2874,7 +2878,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             retentionTimeSeconds_Range_ForChart_Min,
             retentionTimeSeconds_Range_ForChart_Max,
             psmList_LOCAL_PossiblyFiltered,
-            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
+            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
         })
 
         {
@@ -2886,7 +2891,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     retentionTimeSeconds_Range_ForChart_Min,
                     retentionTimeSeconds_Range_ForChart_Max,
                     psmList_LOCAL_PossiblyFiltered,
-                    scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+                    scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
+                    psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter: this.props.psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
                 } )
             }
         }
@@ -2906,7 +2912,9 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
             retentionTimeSeconds_Range_ForChart_Min,
             retentionTimeSeconds_Range_ForChart_Max,
             psmList_LOCAL_PossiblyFiltered,
-            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime
+            scanItem_WithPeaks_WithoutPeaks_Array_SortOn_RetentionTime,
+
+            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
         } : {
             chartCreate__IonCurrent__IonCount__Enum: ChartCreate__IonCurrent__IonCount__Enum
 
@@ -2921,6 +2929,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                 scanNumber: number
                 scanLevel: number
             }>
+
+            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter
         }
     ) {
 
@@ -3285,6 +3295,21 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                         return; // EARLY RETURN
                     }
 
+                    let scanPeaks_MZ_That_PassFilters_Array__For_PsmId: Array<number> = undefined
+
+                    if ( psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable ) {
+
+                        const scanPeaks_That_PassFilters_Array__For_PsmId =
+                            psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.
+                            get__scanPeaks_That_PassFilters_Array__For_PsmId( psmItem_For_Associated_MS_1_ScanNumber.psmId )
+                        if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                            scanPeaks_MZ_That_PassFilters_Array__For_PsmId = []
+                            for ( const scanPeaks__Entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
+                                scanPeaks_MZ_That_PassFilters_Array__For_PsmId.push( scanPeaks__Entry.mz )
+                            }
+                        }
+                    }
+
                     // console.log( "PSM: PSM ID: " + psmItem_For_Associated_MS_1_ScanNumber.psmId + ", Scan Number: " + psmItem_For_Associated_MS_1_ScanNumber.scanNumber )
 
                     //  Open Lorikeet window for PSM ID
@@ -3294,7 +3319,8 @@ export class Internal_ShowPlot_PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Compo
                     spectrumRetrieveAndDisplay_Use_lorikeet.viewSpectrum_NewWindow( {
                         psmId: psmItem_For_Associated_MS_1_ScanNumber.psmId,
                         projectSearchId,
-                        openModPosition: undefined  //  TODO For now until figure out what to pass
+                        openModPosition: undefined,  //  TODO For now until figure out what to pass
+                        scanPeaks_MZ_That_PassFilters_Array__For_PsmId
                     } );
 
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }

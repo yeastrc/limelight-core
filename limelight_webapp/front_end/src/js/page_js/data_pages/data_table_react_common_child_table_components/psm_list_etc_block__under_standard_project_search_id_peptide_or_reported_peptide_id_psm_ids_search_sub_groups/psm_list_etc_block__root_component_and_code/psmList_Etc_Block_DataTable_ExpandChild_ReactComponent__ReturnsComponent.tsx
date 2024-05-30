@@ -21,6 +21,9 @@ import {
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component,
     PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params
 } from '../psm_list_etc_block__sub_components/chromatogram/psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component';
+import {
+    Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId";
 
 /**
  * ASSUMPTION:  This Component is NEVER in an overlay so it is able to use Overlay that uses CSS: body.data-page div.modal-overlay-container
@@ -51,7 +54,7 @@ export const psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComp
 
                     return (
                         <Internal_ReportedPeptide_SingleExpanded_ChildReactComponent
-                            params={ params }
+                            params_DataTableCallback={ params }
                             psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params={ psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params }
                             psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results }
                             psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter={ psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter }
@@ -71,7 +74,7 @@ export const psmList_Etc_Block_DataTable_ExpandChild_ReactComponent__ReturnsComp
  */
 interface Internal_ReportedPeptide_SingleExpanded_ChildReactComponent_Props {
 
-    params : DataTable_DataRowEntry__Get_RowChildContent_CallParams
+    params_DataTableCallback : DataTable_DataRowEntry__Get_RowChildContent_CallParams
     psmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params: PsmList_Etc_Block__Chromatogram_BasedOnPSMs_Component_Params
     psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Results: PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Result
     psmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter : PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects_Parameter

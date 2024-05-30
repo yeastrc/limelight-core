@@ -50,6 +50,7 @@ const _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODIN
 const _PEPTIDE_MEETS_DIGESTION_AKA_TRYPTIC_PEPTIDE_ETC_USER_SELECTION__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'p';
 const _EXPERIMENT__CONDITION_GROUPS_ORDER__SINGLE_PROTEIN = 'q'
 const _SCAN_NUMBER_SCAN_FILE_NAME_ID_PROJECT_SEARCH_ID_ON_PSM_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME = 'r';
+const _SCAN_PEAK_M_OVER_Z_INTENSITY_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME = 's';
 
 /**
  * for class property _value
@@ -67,6 +68,7 @@ class InternalStateObject {
 	generatedPeptideContents_UserSelections__EncodedStateData?: any
 	scanFilenameId_On_PSM_Filter_UserSelection_EncodedStateData?: any
 	scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData? : any // ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
+	scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData? : any //  ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 	scan_RetentionTime_MZ_UserSelection_EncodedStateData?: any
 	psm_Charge_Filter_UserSelection_EncodedStateData?: any  // Psm_Charge_Filter_UserSelection_StateObject
 	peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData? : any // PeptideSequence_MissedCleavageCount_UserSelections_StateObject
@@ -128,7 +130,8 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 				peptideSequence_MissedCleavageCount_UserSelections_StateObject_EncodedStateData: encodedStateData[ _PEPTIDE_SEQUENCE_MISSED_CLEAVAGE_COUNT__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
 				experiment_SelectedConditionIdsAndPaths__SingleProtein__EncodedStateData: encodedStateData[ _EXPERIMENT__SELECTED_CONDITION_IDS_AND_PATHS__SINGLE_PROTEIN ],
 				peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject_EncodedStateData: encodedStateData[ _PEPTIDE_MEETS_DIGESTION_AKA_TRYPTIC_PEPTIDE_ETC_USER_SELECTION__FILTER_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ],
-				experiment_ConditionGroups_Order__EncodedStateData: encodedStateData[ _EXPERIMENT__CONDITION_GROUPS_ORDER__SINGLE_PROTEIN ]
+				experiment_ConditionGroups_Order__EncodedStateData: encodedStateData[ _EXPERIMENT__CONDITION_GROUPS_ORDER__SINGLE_PROTEIN ],
+				scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData: encodedStateData[ _SCAN_PEAK_M_OVER_Z_INTENSITY_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME ]
 			};
 		}
 	}
@@ -311,6 +314,29 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 		return this._value.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_EncodedStateData;
 	}
 
+	/**
+	 *
+	 */
+	set_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData(
+		{
+			scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData
+		} :{
+			scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData: any
+		} ) {
+		this._value.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData = scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData;
+
+		if ( this._centralPageStateManager ) {
+			this._centralPageStateManager.setState( { component : this } );
+		}
+	}
+
+	/**
+	 * scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData
+	 */
+	get_scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData() {
+		return this._value.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData;
+	}
+
 	set_scan_RetentionTime_MZ_UserSelection_EncodedStateData( { scan_RetentionTime_MZ_UserSelection_EncodedStateData }: { scan_RetentionTime_MZ_UserSelection_EncodedStateData: any } ) {
 		this._value.scan_RetentionTime_MZ_UserSelection_EncodedStateData = scan_RetentionTime_MZ_UserSelection_EncodedStateData;
 
@@ -486,6 +512,9 @@ export class SingleProtein_ExpPage_CentralStateManagerObjectClass {
 		}
 		if ( this._value.experiment_ConditionGroups_Order__EncodedStateData ) {
 			dataForEncoding[ _EXPERIMENT__CONDITION_GROUPS_ORDER__SINGLE_PROTEIN ] = this._value.experiment_ConditionGroups_Order__EncodedStateData
+		}
+		if ( this._value.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData !== undefined ) {
+			dataForEncoding[ _SCAN_PEAK_M_OVER_Z_INTENSITY_FILTER_USER_SELECTION_STATE_OBJECT_ENCODED_STATE_DATA_PROPERTY_NAME ] = this._value.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject_EncodedStateData;
 		}
 
 		if ( Object.keys( dataForEncoding ).length === 0 ) {
