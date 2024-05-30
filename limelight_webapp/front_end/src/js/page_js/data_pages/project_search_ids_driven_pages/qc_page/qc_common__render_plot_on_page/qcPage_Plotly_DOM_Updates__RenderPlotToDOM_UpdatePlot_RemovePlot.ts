@@ -25,6 +25,8 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 import {qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_utils/qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object";
 
 
+const _TEMP_ADDED_DIV_CLASSNAME = "selector_qc_chart_temp_render_for_main_page__should_be_deleted"
+
 /**
  *
  */
@@ -107,16 +109,52 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
     ) {
         this._requestInProgress__RenderOn_MainPage__As_PNG = true;
 
-        const plot_addedDivElementDOM = document.createElement("div");
+        {  //  Delete any previous Charts for temporary render to get PNG
 
-        {  //  Add to Page DOM so can take measurements and positions using DOMElement.getBoundingClientRect()
-            plot_addedDivElementDOM.style.left = "-5000px";
             const documentBody = document.querySelector('body');
-            documentBody.appendChild(plot_addedDivElementDOM);
+
+            if ( documentBody.children ) {
+                for ( const bodyChild of documentBody.children ) {
+                    if ( bodyChild.className === _TEMP_ADDED_DIV_CLASSNAME ) {
+
+                        if ( bodyChild.children && bodyChild.children.length > 0 ) {
+                            const bodyChild_Child = bodyChild.children[0] //  First/Only Child assumed to hold the Plotly chart
+                            try {
+                                Plotly.purge(bodyChild_Child)
+                            } catch (e) {
+                                //  Eat Exception
+                            }
+                        }
+
+                        try {
+                            bodyChild.remove();
+                        } catch (e) {
+                            //  Eat Exception
+                        }
+                    }
+                }
+            }
         }
 
+
+        const plot_added_OuterDiv_ElementDOM = document.createElement("div");
+        plot_added_OuterDiv_ElementDOM.style.position = "relative";
+        plot_added_OuterDiv_ElementDOM.className = _TEMP_ADDED_DIV_CLASSNAME
+
+        {  //  Add to Page DOM so can take measurements and positions using DOMElement.getBoundingClientRect()
+            const documentBody = document.querySelector('body');
+            documentBody.appendChild(plot_added_OuterDiv_ElementDOM);
+        }
+
+        const plot_added_InnerDiv_ElementDOM = document.createElement("div");
+        plot_added_InnerDiv_ElementDOM.style.position = "absolute";  // Take out of page flow
+        plot_added_InnerDiv_ElementDOM.style.left = "-5000px";  //  Move to left out of view
+        plot_added_InnerDiv_ElementDOM.style.bottom = "0px"; // So not cause <body> to be longer and break layout
+
+        plot_added_OuterDiv_ElementDOM.appendChild( plot_added_InnerDiv_ElementDOM )
+
         const newPlotResulting_Promise = Plotly.newPlot(
-            plot_addedDivElementDOM,
+            plot_added_InnerDiv_ElementDOM,
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_Data,
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_Layout,
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_config
@@ -133,12 +171,12 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
             console.warn("Plotly.newPlot:  reject: qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_config: ", qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_config)
 
             try {
-                Plotly.purge(plot_addedDivElementDOM)
+                Plotly.purge(plot_added_InnerDiv_ElementDOM)
             } catch (e) {
                 //  Eat Exception
             }
             try {
-                plot_addedDivElementDOM.remove();
+                plot_added_OuterDiv_ElementDOM.remove();
             } catch (e) {
                 //  Eat Exception
             }
@@ -163,14 +201,14 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
                 const  {
                     updateLayoutNeeded, updateLayout
                 } = qc_Page_ChangePlotlyLayout_For_XaxisLabelLengths__Create_Plotly_ReLayout_Object({
-                    plotRoot_DOM_Element: plot_addedDivElementDOM,
+                    plotRoot_DOM_Element: plot_added_InnerDiv_ElementDOM,
                     xAxisLabels: qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.changePlotlyLayout_For_XaxisLabelLengths__Params.xAxisLabels,
                     xAxisTitle: qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.changePlotlyLayout_For_XaxisLabelLengths__Params.xAxisTitle,
                     adjustPlotHeight: true
                 });
 
                 if ( updateLayoutNeeded ) {
-                    const promise_Relayout = Plotly.relayout(plot_addedDivElementDOM, updateLayout);
+                    const promise_Relayout = Plotly.relayout(plot_added_InnerDiv_ElementDOM, updateLayout);
                     promise_Relayout.catch( reason => { try {
 
                         this._requestInProgress__RenderOn_MainPage__As_PNG = false;
@@ -181,12 +219,12 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
                         console.warn("Plotly.relayout:  reject: qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_config: ", qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_config)
 
                         try {
-                            Plotly.purge(plot_addedDivElementDOM)
+                            Plotly.purge(plot_added_InnerDiv_ElementDOM)
                         } catch (e) {
                             //  Eat Exception
                         }
                         try {
-                            plot_addedDivElementDOM.remove();
+                            plot_added_OuterDiv_ElementDOM.remove();
                         } catch (e) {
                             //  Eat Exception
                         }
@@ -207,21 +245,24 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
 
                         this._renderSinglePlot_MainPage_Step_2({
                             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
-                            plot_addedDivElementDOM
+                            plot_added_OuterDiv_ElementDOM,
+                            plot_added_InnerDiv_ElementDOM
                         });
 
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } else {
                     this._renderSinglePlot_MainPage_Step_2({
                         qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
-                        plot_addedDivElementDOM
+                        plot_added_OuterDiv_ElementDOM,
+                        plot_added_InnerDiv_ElementDOM
                     });
                 }
 
             } else {
                 this._renderSinglePlot_MainPage_Step_2({
                     qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
-                    plot_addedDivElementDOM
+                    plot_added_OuterDiv_ElementDOM,
+                    plot_added_InnerDiv_ElementDOM
                 });
             }
 
@@ -236,10 +277,12 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
     private _renderSinglePlot_MainPage_Step_2(
         {
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params,
-            plot_addedDivElementDOM
+            plot_added_OuterDiv_ElementDOM,
+            plot_added_InnerDiv_ElementDOM
         } : {
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params: QcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params
-            plot_addedDivElementDOM: HTMLDivElement
+            plot_added_OuterDiv_ElementDOM: HTMLDivElement
+            plot_added_InnerDiv_ElementDOM: HTMLDivElement
         }
     ) {
 
@@ -249,7 +292,7 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
             width: qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.plotly_CreatePlot_Params.chart_Layout.width
         }
 
-        const plotly_ToImage_Promise = Plotly.toImage( plot_addedDivElementDOM, plotly_ToImage_Options );
+        const plotly_ToImage_Promise = Plotly.toImage( plot_added_InnerDiv_ElementDOM, plotly_ToImage_Options );
 
         plotly_ToImage_Promise.catch(reason => {
             console.warn("Plotly.toImage:  reject: reason: ", reason )
@@ -258,12 +301,12 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
             this._requestInProgress__RenderOn_MainPage__As_PNG = false;
 
             try {
-                Plotly.purge(plot_addedDivElementDOM)
+                Plotly.purge(plot_added_InnerDiv_ElementDOM)
             } catch (e) {
                 //  Eat Exception
             }
             try {
-                plot_addedDivElementDOM.remove();
+                plot_added_OuterDiv_ElementDOM.remove();
             } catch (e) {
                 //  Eat Exception
             }
@@ -286,12 +329,12 @@ export class QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot {
             qcPage_Plotly_DOM_Updates__RenderPlotOnPage__RenderOn_MainPage_Params.image_DOM_Element.src = url;
 
             try {
-                Plotly.purge(plot_addedDivElementDOM)
+                Plotly.purge(plot_added_InnerDiv_ElementDOM)
             } catch (e) {
                 //  Eat Exception
             }
             try {
-                plot_addedDivElementDOM.remove();
+                plot_added_OuterDiv_ElementDOM.remove();
             } catch (e) {
                 //  Eat Exception
             }
