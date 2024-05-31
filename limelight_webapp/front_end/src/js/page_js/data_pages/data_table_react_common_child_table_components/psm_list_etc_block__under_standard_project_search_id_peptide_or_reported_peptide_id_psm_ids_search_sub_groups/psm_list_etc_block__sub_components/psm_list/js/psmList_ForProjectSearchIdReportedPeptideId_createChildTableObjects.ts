@@ -427,21 +427,23 @@ const _getDataTableColumns = function({
         dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
     }
 
-    if ( anyPsmsHave_SelectedScanPeaks ) {
+    //  Column ONLY for debugging so comment out
 
-        const displayName = "Selected Scan Peaks";
-
-        const dataTable_Column = new DataTable_Column({
-            id : "selScanPeaks", // Used for tracking sort order. Keep short
-            displayName,
-            width : 100,
-            sortable : true,
-        });
-        dataTable_Columns.push( dataTable_Column );
-
-        const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
-        dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
-    }
+    // if ( anyPsmsHave_SelectedScanPeaks ) {
+    //
+    //     const displayName = "Selected Scan Peaks";
+    //
+    //     const dataTable_Column = new DataTable_Column({
+    //         id : "selScanPeaks", // Used for tracking sort order. Keep short
+    //         displayName,
+    //         width : 100,
+    //         sortable : true,
+    //     });
+    //     dataTable_Columns.push( dataTable_Column );
+    //
+    //     const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+    //     dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+    // }
 
     if ( anyPsmsHave_openModificationMassesDisplay ) {
 
@@ -800,34 +802,36 @@ const _get_DataTable_DataRowEntries = function(
             dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
         }
 
-        if ( anyPsmsHave_SelectedScanPeaks ) {
-            let valueDisplay = "";
-            let valueSort = "";
+        //  Column ONLY for debugging so comment out
 
-            if ( topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable ) {
-                const scanPeaks_That_PassFilters_Array__For_PsmId = topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.get__scanPeaks_That_PassFilters_Array__For_PsmId( psmListItem.psmId )
-                if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
-                    const entriesAsString_List = [];
-                    for ( const entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
-                        const entriesAsString_List_Entry = "mz: " + entry.mz + " intensity: " + entry.intensity
-                        entriesAsString_List.push( entriesAsString_List_Entry )
-                    }
-                    valueDisplay = entriesAsString_List.join(" || ");
-                }
-            }
-
-            const searchEntriesForColumn : Array<string> = [ valueDisplay ]
-            const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
-            const columnEntry = new DataTable_DataRow_ColumnEntry({
-                searchTableData,
-                valueDisplay,
-                valueSort
-            })
-            columnEntries.push( columnEntry );
-
-            const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
-            dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
-        }
+        // if ( anyPsmsHave_SelectedScanPeaks ) {
+        //     let valueDisplay = "";
+        //     let valueSort = "";
+        //
+        //     if ( topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable ) {
+        //         const scanPeaks_That_PassFilters_Array__For_PsmId = topLevel_Params.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable.get__scanPeaks_That_PassFilters_Array__For_PsmId( psmListItem.psmId )
+        //         if ( scanPeaks_That_PassFilters_Array__For_PsmId ) {
+        //             const entriesAsString_List = [];
+        //             for ( const entry of scanPeaks_That_PassFilters_Array__For_PsmId ) {
+        //                 const entriesAsString_List_Entry = "mz: " + entry.mz + " intensity: " + entry.intensity
+        //                 entriesAsString_List.push( entriesAsString_List_Entry )
+        //             }
+        //             valueDisplay = entriesAsString_List.join(" || ");
+        //         }
+        //     }
+        //
+        //     const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+        //     const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+        //     const columnEntry = new DataTable_DataRow_ColumnEntry({
+        //         searchTableData,
+        //         valueDisplay,
+        //         valueSort
+        //     })
+        //     columnEntries.push( columnEntry );
+        //
+        //     const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+        //     dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+        // }
 
         if ( anyPsmsHave_openModificationMassesDisplay ) {
             let valueDisplay = "";
