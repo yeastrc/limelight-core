@@ -85,7 +85,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
      */
     get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise(
         {
-            searchScanFileId, scanNumber_Set, m_over_Z_Ranges
+            searchScanFileId, scanNumber_Set, m_over_Z_Ranges, yes_CacheResults_InJS
         } : {
             searchScanFileId: number
             scanNumber_Set: Set<number>
@@ -93,10 +93,18 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                 m_over_Z_Range_Min: number;
                 m_over_Z_Range_Max: number;
             }>
+            /**
+             * YES hold the webservice results here in this object.
+             * Use in "Filter On Special Ion:" (Filter on Scan Peak MZ) in class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+             */
+            yes_CacheResults_InJS: boolean
         }
     ): Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_YES_Peaks_Data__get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data__FunctionResult> {
         try {
-            const result = this.get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters({ searchScanFileId, scanNumber_Set, m_over_Z_Ranges })
+            const result =
+                this.get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters({
+                    searchScanFileId, scanNumber_Set, m_over_Z_Ranges, yes_CacheResults_InJS
+                })
 
             if (result.data) {
 
@@ -117,7 +125,7 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
      */
     get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters(
         {
-            searchScanFileId, scanNumber_Set, m_over_Z_Ranges
+            searchScanFileId, scanNumber_Set, m_over_Z_Ranges, yes_CacheResults_InJS
         } : {
             searchScanFileId: number
             scanNumber_Set: Set<number>
@@ -125,6 +133,11 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                 m_over_Z_Range_Min: number;
                 m_over_Z_Range_Max: number;
             }>
+            /**
+             * YES hold the webservice results here in this object.
+             * Use in "Filter On Special Ion:" (Filter on Scan Peak MZ) in class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+             */
+            yes_CacheResults_InJS: boolean
         }) : {
             data: CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_YES_Peaks_Data__get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data__FunctionResult
             promise: Promise<CommonData_LoadedFromServer_SingleSearch__ScanData_Single_SearchScanFileId_YES_Peaks_Data__get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data__FunctionResult>
@@ -152,7 +165,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                     get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data().get_ScanData_YES_Peaks_DataHolder({
                         projectScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_Entry.projectScanFileId,
                         scanNumberList,
-                        m_over_Z_Ranges
+                        m_over_Z_Ranges,
+                        yes_CacheResults_InJS
                     })
 
                 if ( get_ScanData_YES_Peaks_DataHolder_Result.data ) {
@@ -221,7 +235,8 @@ export class CommonData_LoadedFromServer_SingleSearch__ScanData_For_Single_Searc
                                 get__commonData_LoadedFromServer_From_ProjectScanFileId___ROOT().get_commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data().get_ScanData_YES_Peaks_DataHolder_ReturnPromise({
                                     projectScanFileId: scanFile_ProjectScanFileId_SearchScanFileId_Entry.projectScanFileId,
                                     scanNumberList,
-                                    m_over_Z_Ranges
+                                    m_over_Z_Ranges,
+                                    yes_CacheResults_InJS
                                 })
 
                             get_ScanData_YES_Peaks_DataHolder_Result_Promise.catch(reason => reject(reason))

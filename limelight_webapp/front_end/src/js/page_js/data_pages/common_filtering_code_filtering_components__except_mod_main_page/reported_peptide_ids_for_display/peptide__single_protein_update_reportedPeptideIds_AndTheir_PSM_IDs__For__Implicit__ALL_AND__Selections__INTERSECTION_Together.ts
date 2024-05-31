@@ -3074,27 +3074,6 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}) }
 
-            //  WAS
-            //
-            // const afterGetData_Step_1_Result = this._afterGetData_Step_1({
-            //         reportedPeptideIds_ProteinId_Params_PassedIn,
-            //         scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-            //         psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.data.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
-            //         psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: getData_Result.data.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder,
-            //         scanData_WholeSearch_NO_Peaks_Data_Holder: getData_Result.data.scanData_WholeSearch_NO_Peaks_Data_Holder,
-            // })
-            // if ( afterGetData_Step_1_Result.result ) {
-            //     return { promise: undefined, result: afterGetData_Step_1_Result.result }
-            // } else if ( afterGetData_Step_1_Result.promise ) {
-            //     return { result: undefined, promise: new Promise<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>((resolve, reject) => { try {
-            //             afterGetData_Step_1_Result.promise.catch(reason => reject(reason));
-            //             afterGetData_Step_1_Result.promise.then(value_afterGetData_Step_1_Result => { try {
-            //                 resolve(value_afterGetData_Step_1_Result);
-            //             } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-            //     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}) }
-            // } else {
-            //     throw Error("afterGetData_Step_1_Result: no data or promise")
-            // }
         } else if ( getData_Result.promise ) {
             return { result: undefined, promise: new Promise<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS>((resolve, reject) => { try {
                     getData_Result.promise.catch(reason => reject(reason));
@@ -3110,26 +3089,6 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                         afterGetData_Step_1_Result_Promise.then(value_afterGetData_Step_1_Result => { try {
                             resolve(value_afterGetData_Step_1_Result);
                         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-                        //  WAS
-
-                        // const afterGetData_Step_1_Result = this._afterGetData_Step_1({
-                        //     reportedPeptideIds_ProteinId_Params_PassedIn,
-                        //     scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
-                        //     psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder,
-                        //     psmTblData_For_ReportedPeptideId_For_MainFilters_Holder: value_getData_Result.psmTblData_For_ReportedPeptideId_For_MainFilters_Holder,
-                        //     scanData_WholeSearch_NO_Peaks_Data_Holder: value_getData_Result.scanData_WholeSearch_NO_Peaks_Data_Holder
-                        // })
-                        // if ( afterGetData_Step_1_Result.result ) {
-                        //     resolve( afterGetData_Step_1_Result.result )
-                        // } else if ( afterGetData_Step_1_Result.promise ) {
-                        //     afterGetData_Step_1_Result.promise.catch(reason => reject(reason));
-                        //     afterGetData_Step_1_Result.promise.then(value_afterGetData_Step_1_Result => { try {
-                        //         resolve(value_afterGetData_Step_1_Result);
-                        //     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-                        // } else {
-                        //     throw Error("afterGetData_Step_1_Result: no data or promise")
-                        // }
                     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
                 } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
             }
@@ -3288,19 +3247,6 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                     throw Error(msg);
                 }
 
-                // let psmTblData_For_PsmId__Array__Map_Key_PsmCharge = psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId.get( psmTblData_For_PsmId.searchScanFileId )
-                // if ( ! psmTblData_For_PsmId__Array__Map_Key_PsmCharge ) {
-                //     psmTblData_For_PsmId__Array__Map_Key_PsmCharge = new Map()
-                //     psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId.set( psmTblData_For_PsmId.searchScanFileId, psmTblData_For_PsmId__Array__Map_Key_PsmCharge )
-                // }
-                // let psmTblData_For_PsmId__Array = psmTblData_For_PsmId__Array__Map_Key_PsmCharge.get( psmTblData_For_PsmId.charge )
-                // if ( ! psmTblData_For_PsmId__Array ) {
-                //     psmTblData_For_PsmId__Array = []
-                //     psmTblData_For_PsmId__Array__Map_Key_PsmCharge.set( psmTblData_For_PsmId.charge, psmTblData_For_PsmId__Array )
-                // }
-
-                //  Remove Map on PsmCharge
-
                 let psmTblData_For_PsmId__Array = psmTblData_For_PsmId__Array__Map_Key_SearchScanFileId.get( psmTblData_For_PsmId.searchScanFileId )
                 if ( ! psmTblData_For_PsmId__Array ) {
                     psmTblData_For_PsmId__Array = []
@@ -3319,14 +3265,6 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
         //  Process each group of PSMs by charge by search scan file
 
-        // for ( const psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId__MapEntry of psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId ) {
-        //     const searchScanFileId = psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId__MapEntry[ 0 ]
-        //     const psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map = psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_Key_SearchScanFileId__MapEntry[ 1 ]
-        //
-        //     for ( const psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_MapEntry of psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map ) {
-        //         const psmCharge = psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_MapEntry[0]
-        //         const psmTblData_For_PsmId__Array = psmTblData_For_PsmId__Array__Map_Key_PsmCharge_Map_MapEntry[1]
-
         for ( const psmTblData_For_PsmId__Array__Map_Key_SearchScanFileId__MapEntry of psmTblData_For_PsmId__Array__Map_Key_SearchScanFileId ) {
             const searchScanFileId = psmTblData_For_PsmId__Array__Map_Key_SearchScanFileId__MapEntry[ 0 ]
             const psmTblData_For_PsmId__Array = psmTblData_For_PsmId__Array__Map_Key_SearchScanFileId__MapEntry[1]
@@ -3342,14 +3280,10 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                 return 0
             })
 
-            //  Remove Map on PsmCharge
-
             const m_over_Z_Ranges: Array<{
                 m_over_Z_Range_Min: number;
                 m_over_Z_Range_Max: number;
             }> = []
-
-            // for ( let  charge_FOR_MassRange = psmCharge; charge_FOR_MassRange <= ( psmCharge + 2 ); charge_FOR_MassRange++ ) {
 
             const _CHARGE_RANGE_START = 1
             const _CHARGE_RANGE_END = 1
@@ -3423,7 +3357,8 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
                         get_commonData_LoadedFromServer_SingleSearch__ScanData_For_Single_SearchScanFileId_AndOtherParams_YES_Peaks_Data().get_ScanData_ALL_For_Single_SearchScanFileId_YES_Peaks_Data_ForSearchScanFileId_AndOtherParameters_ReturnPromise( {
                             searchScanFileId,
                             scanNumber_Set,
-                            m_over_Z_Ranges: m_over_Z_Ranges
+                            m_over_Z_Ranges: m_over_Z_Ranges,
+                            yes_CacheResults_InJS: true
                         } )
 
 

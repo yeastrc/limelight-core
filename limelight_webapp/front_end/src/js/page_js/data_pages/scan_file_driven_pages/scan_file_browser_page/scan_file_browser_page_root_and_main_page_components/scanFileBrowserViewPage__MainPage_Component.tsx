@@ -480,7 +480,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             //  Called Code NOT Currently caching result !!!!
             this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.
             get_commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data().get_ScanData_YES_Peaks_DataHolder_ReturnPromise({
-                projectScanFileId: this.props.propsValue.projectScanFileId, scanNumberList: [ scanNumber ], m_over_Z_Ranges: undefined
+                projectScanFileId: this.props.propsValue.projectScanFileId, scanNumberList: [ scanNumber ], m_over_Z_Ranges: undefined, yes_CacheResults_InJS: true
             })
 
         this._promise_SingleScanData_Loading__For_ScanFileId_Map_Key_ScanNumber.set(scanNumber, promise)

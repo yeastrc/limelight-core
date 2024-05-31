@@ -1241,7 +1241,8 @@ export class FeatureDetection_ViewPage__Chromatogram_Component extends React.Com
                     get_ScanData_YES_Peaks_DataHolder_ReturnPromise({
                         projectScanFileId: projectScanFileId_Selected,
                         scanNumberList: scanNumberList_RetrieveScanDataFromServer_SINGLE_BATCH,
-                        m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans
+                        m_over_Z_Ranges: m_over_Z_Ranges__ForGet_MS_1_Scans,
+                        yes_CacheResults_InJS: false
                     } )
                 promise_Get_SingleScanFile_MS_1_ScanData_For_M_Over_Z_Ranges.catch(reason => {
                     anyRequest_Rejected = true

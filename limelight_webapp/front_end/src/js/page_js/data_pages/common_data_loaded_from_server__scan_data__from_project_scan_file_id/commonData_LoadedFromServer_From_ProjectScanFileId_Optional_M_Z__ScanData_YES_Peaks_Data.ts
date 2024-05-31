@@ -175,6 +175,20 @@ export class CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__Sc
             promise: Promise<CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult>
         } {
 
+        if ( ! requestParams.yes_CacheResults_InJS ) {
+
+            //  NOT cache results here
+
+            //  Use a temp created getData object, resulting in no caching
+
+            const getData_Object =
+                new INTERNAL__CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__Cache_When__Request__M_over_Z_Ranges__Match( {
+                    m_over_Z_Ranges__CachingDataFor: requestParams.m_over_Z_Ranges
+                } )
+
+            return getData_Object.get_ScanData_YES_Peaks_DataHolder( requestParams )  // EARLY RETURN
+        }
+
         if ( ! requestParams.m_over_Z_Ranges || requestParams.m_over_Z_Ranges.length === 0 ) {
 
             //  Use this Cached data if NO m_over_Z_Ranges
@@ -728,6 +742,11 @@ class INTERNAL__SingleRequestToServer_RequestParams {
     projectScanFileId: number;
     scanNumberList: Array<number>
     m_over_Z_Ranges: INTERNAL__SingleRequestToServer_RequestParams__M_over_Z_Ranges
+    /**
+     * YES hold the webservice results here in this object.
+     * Use in "Filter On Special Ion:" (Filter on Scan Peak MZ) in class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
+     */
+    yes_CacheResults_InJS: boolean
 }
 
 type INTERNAL__SingleRequestToServer_RequestParams__M_over_Z_Ranges =
