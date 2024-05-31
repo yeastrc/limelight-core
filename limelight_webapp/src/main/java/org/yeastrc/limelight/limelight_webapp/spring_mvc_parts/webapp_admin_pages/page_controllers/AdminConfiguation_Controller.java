@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,8 @@ import org.yeastrc.limelight.limelight_webapp.access_control.common.AccessContro
 import org.yeastrc.limelight.limelight_webapp.constants.AuthAccessLevelConstants;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightPageAcceessErrorException;
 import org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF;
+import org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.user_account_pages.page_controllers.AA_UserAccount_PageControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.user_session_management.UserSession;
 import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF;
@@ -38,7 +41,10 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.PopulatePageHeaderDataIF
  *
  */
 @Controller
-public class AdminConfiguation_Controller {
+public class AdminConfiguation_Controller
+
+implements InitializingBean // InitializingBean is Spring Interface for triggering running method afterPropertiesSet() 
+{
 
 	private static final Logger log = LoggerFactory.getLogger( AdminConfiguation_Controller.class );
 
@@ -50,6 +56,35 @@ public class AdminConfiguation_Controller {
 
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
+
+	@Autowired
+	private SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_IF spectralStorageService_Get_URL_Overrides_OfConfigTableValues__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup;
+	
+	private String spectralStorageService_GetData_URL_Override;
+	
+	/* 
+	 * Spring LifeCycle Method
+	 * 
+	 * (non-Javadoc)
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			{
+				SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup_Response response = 
+						spectralStorageService_Get_URL_Overrides_OfConfigTableValues__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.get_SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup();
+				
+				this.spectralStorageService_GetData_URL_Override = response.getSpectralStorageService_Connection_GetData_URL();
+			}
+			
+		} catch (Exception e) {
+			String msg = "In afterPropertiesSet(): Exception in processing";
+			log.error(msg);
+			throw e;
+		}
+	}
+	
 	
 	/**
 	 * @param httpServletRequest
@@ -112,6 +147,7 @@ public class AdminConfiguation_Controller {
 					FileUploadMaxFileSize_Config_WithConstantsDefaults.get_Max_Generic_Other_FileSize_From_Environment_Or_JVM_dashD_Property() );
 			
 			
+			httpServletRequest.setAttribute( "spectralStorageService_GetData_URL_Override", spectralStorageService_GetData_URL_Override );
 
 			return "webapp_administration_pages_and_parts/pages/webappAdminConfiguration.jsp";  // forward to JSP. Path to JSP specified in application.properties:spring.mvc.view.prefix
 

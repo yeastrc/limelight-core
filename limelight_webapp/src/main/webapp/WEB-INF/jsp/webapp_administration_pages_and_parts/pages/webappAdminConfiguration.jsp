@@ -7,6 +7,8 @@
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%>
 
+<%@page import="org.yeastrc.limelight.limelight_webapp.spectral_storage_service_interface.SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup"%>
+<%@page import="org.yeastrc.limelight.limelight_webapp.constants_config_filenames.SpectralStorageService_Connection__ConfigFilename_Constants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.file_import_limelight_xml_scans.config_with_constants_default.FileUploadMaxFileSize_Config_WithConstantsDefaults"%>
 <%@page import="org.yeastrc.limelight.limelight_shared.constants.EnvironmentVariable_Keys_Constants"%>
 <%@page import="org.yeastrc.limelight.limelight_webapp.constants.UserSignupConstants"%>
@@ -49,9 +51,9 @@
 	  <div style="margin-bottom: 3px;">
 		Allow Account Registration WITHOUT Invite: 
 		<input type="checkbox" class=" config_checkbox_inputs_jq " id="input_user_signup_allow_without_invite" 
-			data-config-key="<%= ConfigSystemsKeysConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY %>"
-			data-value-checked="<%= UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__TRUE %>" 
-			data-value-not-checked="<%= UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__FALSE %>" > 
+			data-config-key="<%=ConfigSystemsKeysConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY%>"
+			data-value-checked="<%=UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__TRUE%>" 
+			data-value-not-checked="<%=UserSignupConstants.USER_SIGNUP_ALLOW_WITHOUT_INVITE_KEY__FALSE%>" > 
 	  </div> 
 	</div>
 	
@@ -66,13 +68,13 @@
 			<div style="margin-bottom: 3px;">
 				Site key: 
 				<input type="text" class=" config_text_inputs_jq " style="width: 450px;"
-					data-config-key="<%= ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SITE_KEY_KEY %>"
+					data-config-key="<%=ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SITE_KEY_KEY%>"
 					data-FOOTER_CENTER_OF_PAGE_HTML="true">
 			</div>
 			<div>
 				Secret key: 
 				<input type="text" class=" config_text_inputs_jq " style="width: 450px;"
-					data-config-key="<%= ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SECRET_KEY_KEY %>"
+					data-config-key="<%=ConfigSystemsKeysConstants.GOOGLE_RECAPTCHA_SECRET_KEY_KEY%>"
 					data-FOOTER_CENTER_OF_PAGE_HTML="true">
 			</div>
 		</div>
@@ -83,7 +85,7 @@
 	  <div style="margin-bottom: 3px;">
 		HTML to put at center of bottom of web page: 
 		<input type="text" class=" config_text_inputs_jq " id="input_footer_center_of_page_html" style="width: 650px;"
-			data-config-key="<%= ConfigSystemsKeysConstants.FOOTER_CENTER_OF_PAGE_HTML_KEY %>"
+			data-config-key="<%=ConfigSystemsKeysConstants.FOOTER_CENTER_OF_PAGE_HTML_KEY%>"
 			data-FOOTER_CENTER_OF_PAGE_HTML="true"> 
 	  </div> 
 	</div>
@@ -92,7 +94,7 @@
 	  <div style="margin-bottom: 3px;">
 		Admin Email Address: 
 		<input type="text" class=" config_text_inputs_jq " id="admin_email_address" style="width: 450px;"
-			data-config-key="<%= ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY %>">
+			data-config-key="<%=ConfigSystemsKeysConstants.ADMIN_EMAIL_ADDRESS_KEY%>">
 	  </div>
 	</div>
 			
@@ -100,7 +102,7 @@
 	  <div style="margin-bottom: 3px;">
 		From Address for emails sent: 
 		<input type="text" class=" config_text_inputs_jq " id="input_email_from_address" style="width: 450px;"
-			data-config-key="<%= ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY %>">
+			data-config-key="<%=ConfigSystemsKeysConstants.EMAIL_FROM_ADDRESS_KEY%>">
 	  </div>
 	</div>
 					
@@ -136,7 +138,7 @@
 						Authentication Password: <input
 							type="text" class=" config_text_inputs_jq "
 							id="input_email_smtp_server_url" style="width: 450px;"
-							data-config-key="<%= ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY %>">
+							data-config-key="<%=ConfigSystemsKeysConstants.EMAIL_SMTP_SERVER_AUTH_PASSWORD_KEY%>">
 					</div>
 				</div>
 			</div>
@@ -146,7 +148,7 @@
 	  <div style="margin-bottom: 3px;">
 		Google Analytics Tracking Code: 
 		<input type="text" class=" config_text_inputs_jq " id="input_google_analytics_tracking_code" style="width: 450px;"
-			data-config-key="<%= ConfigSystemsKeysConstants.GOOGLE_ANALYTICS_TRACKING_CODE_KEY %>"> 
+			data-config-key="<%=ConfigSystemsKeysConstants.GOOGLE_ANALYTICS_TRACKING_CODE_KEY%>"> 
 	  </div> 
 	</div>
 	
@@ -160,7 +162,7 @@
 			<div style="margin-bottom: 3px;">
 				Run Importer Workspace: 
 				<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY %>"
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_TEMP_DIR_KEY%>"
 					>
 			</div>
 			<div>
@@ -174,7 +176,7 @@
 						<div style="color: red; margin-right: 3px;" >*</div>
 						<div>
 							AWS S3 Bucket Value set here is ignored since it is configured via Environment Variable or java -D parameter
-							'<%= EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET %>'
+							'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET%>'
 							with value 
 							'<c:out value="${ aws_s3_bucket__from_environment_variable_or_java_dash_d }"></c:out>'
 						</div>
@@ -186,12 +188,12 @@
 				<div>
 					AWS S3 Bucket: 
 					<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY %>"
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_BUCKET_KEY%>"
 					>
 				</div>
 				<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
 					(Or use Environment Variable or java -D parameter
-					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET %>')
+					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_BUCKET%>')
 				</div>
 			</div>
 			
@@ -202,7 +204,7 @@
 						<div style="color: red; margin-right: 3px;" >*</div>
 						<div>
 							AWS S3 Region Value set here is ignored since it is configured via Environment Variable or java -D parameter
-							'<%= EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION %>'
+							'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION%>'
 							with value 
 							'<c:out value="${ aws_s3_region__from_environment_variable_or_java_dash_d }"></c:out>'
 						</div>
@@ -214,21 +216,21 @@
 				<div>
 					AWS S3 Region: 
 					<input type="text" class=" config_text_inputs_jq " style="width: 650px;"
-						data-config-key="<%= ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY %>"
+						data-config-key="<%=ConfigSystemsKeysSharedConstants.file_import_limelight_xml_scans_AWS_S3_REGION_KEY%>"
 					>
 				</div>
 				<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
 					(Or use Environment Variable or java -D parameter
-					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION %>')
+					'<%=EnvironmentVariable_Keys_Constants.LIMELIGHT_FILE_UPLOADS_AWS_S3_REGION%>')
 				</div>
 			</div>
 			
 			<div>
 				Allow Scan file Upload: 
 				<input type="checkbox" class=" config_checkbox_inputs_jq "  id="allow_scan_file_upload_checkbox"
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY %>"
-					data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
-					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.SCAN_FILE_IMPORT_ALLOWED_VIA_WEB_SUBMIT_KEY%>"
+					data-value-checked="<%=ConfigSystemsValuesSharedConstants.TRUE%>" 
+					data-value-not-checked="<%=ConfigSystemsValuesSharedConstants.FALSE%>" > 
 			
 			</div>
 			
@@ -280,9 +282,9 @@
 					Save Scan File for download from Limelight: 
 					
 					<input type="checkbox" class=" config_checkbox_inputs_jq " id="save_scan_file_upload_to_file_object_storage_service_checkbox" 
-						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY %>"
-						data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
-						data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+						data-config-key="<%=ConfigSystemsKeysSharedConstants.SCAN_FILE_SAVED_TO_FILE_OBJECT_STORAGE_KEY%>"
+						data-value-checked="<%=ConfigSystemsValuesSharedConstants.TRUE%>" 
+						data-value-not-checked="<%=ConfigSystemsValuesSharedConstants.FALSE%>" > 
 			    </span> 
 			  </div>
 			</div>
@@ -314,9 +316,9 @@ Uncheck to stop users from downloading scan files.
 					Scan File download from Limelight allowed (Not allowed if not checked): 
 					
 					<input type="checkbox" class=" config_checkbox_inputs_jq " id="save_scan_file_download_from_file_object_storage_service_allowed_checkbox" 
-						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY %>"
-						data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
-						data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+						data-config-key="<%=ConfigSystemsKeysSharedConstants.SCAN_FILE_DOWNLOAD_FROM_FILE_OBJECT_STORAGE_ALLOWED_KEY%>"
+						data-value-checked="<%=ConfigSystemsValuesSharedConstants.TRUE%>" 
+						data-value-not-checked="<%=ConfigSystemsValuesSharedConstants.FALSE%>" > 
 			    </span> 
 			  </div>
 			</div>
@@ -341,9 +343,9 @@ Uncheck to stop users from downloading scan files.
 			<div>
 				Delete uploaded files after Successful Import: 
 				<input type="checkbox" class=" config_checkbox_inputs_jq "  
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES %>"
-					data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
-					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES%>"
+					data-value-checked="<%=ConfigSystemsValuesSharedConstants.TRUE%>" 
+					data-value-not-checked="<%=ConfigSystemsValuesSharedConstants.FALSE%>" > 
 			
 			</div>
 			<div style="margin-left: 10px; font-size: 12px;">
@@ -356,9 +358,9 @@ Uncheck to stop users from downloading scan files.
 			<div>
 				Delete uploaded files after Import processed, Success or Fail, after 3 days : 
 				<input type="checkbox" class=" config_checkbox_inputs_jq "  
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES__ALL_AFTER_3_DAYS %>"
-					data-value-checked="<%= ConfigSystemsValuesSharedConstants.TRUE %>" 
-					data-value-not-checked="<%= ConfigSystemsValuesSharedConstants.FALSE %>" > 
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.IMPORT_DELETE_UPLOADED_FILES__ALL_AFTER_3_DAYS%>"
+					data-value-checked="<%=ConfigSystemsValuesSharedConstants.TRUE%>" 
+					data-value-not-checked="<%=ConfigSystemsValuesSharedConstants.FALSE%>" > 
 			
 			</div>
 			
@@ -389,7 +391,7 @@ Uncheck to stop users from downloading scan files.
 					<div class="config_single_input_root_jq">
 						Limelight XML File Max Size in GB: 
 						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
-							data-config-key="<%= ConfigSystemsKeysSharedConstants.LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+							data-config-key="<%=ConfigSystemsKeysSharedConstants.LIMELIGHT_XML_FILE_MAX_FILE_SIZE_IN_GB_KEY%>"
 						>
 						
 						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
@@ -400,7 +402,7 @@ Uncheck to stop users from downloading scan files.
 						<span
 							style="margin-left: 6px"
 						>
-							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+							Default: <%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_LIMELIGHT_XML_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB()%>
 						</span>
 					</div>
 					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
@@ -430,7 +432,7 @@ Uncheck to stop users from downloading scan files.
 					<div class="config_single_input_root_jq">
 						FASTA File Max Size in GB: 
 						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
-							data-config-key="<%= ConfigSystemsKeysSharedConstants.FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+							data-config-key="<%=ConfigSystemsKeysSharedConstants.FASTA_FILE_MAX_FILE_SIZE_IN_GB_KEY%>"
 						>
 						
 						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
@@ -441,12 +443,12 @@ Uncheck to stop users from downloading scan files.
 						<span
 							style="margin-left: 6px"
 						>
-							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+							Default: <%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_MAX_FASTA_FILE_UPLOAD_SIZE__DEFAULT_IN_GB()%>
 						</span>
 					</div>
 					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
 						(Or use Environment Variable or java -D parameter
-						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FASTA_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL %>')
+						'<%=FileUploadMaxFileSize_Config_WithConstantsDefaults.MAX_FASTA_FILE_UPLOAD_SIZE_IN_GB__ENV_LABEL%>')
 					</div>
 				</div>
 				
@@ -471,7 +473,7 @@ Uncheck to stop users from downloading scan files.
 					<div class="config_single_input_root_jq">
 						Scan File Max Size in GB: 
 						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
-						data-config-key="<%= ConfigSystemsKeysSharedConstants.SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						data-config-key="<%=ConfigSystemsKeysSharedConstants.SCAN_FILE_MAX_FILE_SIZE_IN_GB_KEY%>"
 						>
 						
 						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
@@ -482,7 +484,7 @@ Uncheck to stop users from downloading scan files.
 						<span
 							style="margin-left: 6px"
 						>
-							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+							Default: <%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_SCAN_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB()%>
 						</span>
 					</div>
 					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
@@ -513,7 +515,7 @@ Uncheck to stop users from downloading scan files.
 					<div class="config_single_input_root_jq">
 						Generic Other File (--add-file= in Submit Import) Max Size in GB: 
 						<input type="text" class=" config_text_inputs_jq   config_integer_input_validate_jq " style="width: 20px;"
-						data-config-key="<%= ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY %>"
+						data-config-key="<%=ConfigSystemsKeysSharedConstants.GENERIC_OTHER_FILE_MAX_FILE_SIZE_IN_GB_KEY%>"
 						>
 						
 						<span class="config_integer_input_error_jq" style="color: red; margin-left: 6px; margin-right: 6px; display: none ">
@@ -524,7 +526,7 @@ Uncheck to stop users from downloading scan files.
 						<span
 							style="margin-left: 6px"
 						>
-							Default: <%= FileUploadMaxFileSize_Config_WithConstantsDefaults.get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB() %>
+							Default: <%=FileUploadMaxFileSize_Config_WithConstantsDefaults.get_GENERIC_OTHER_MAX_FILE_UPLOAD_SIZE__DEFAULT_IN_GB()%>
 						</span>
 					</div>
 					<div style="font-size: 10px; margin-left: 20px; margin-top: 2px;">
@@ -547,7 +549,7 @@ Uncheck to stop users from downloading scan files.
 			<div style="margin-bottom: 3px;">
 				Web Service Base URL (Including Port): 
 				<input type="text" class=" config_text_inputs_jq " style="width: 650px;" id="file_object_storage_base_url_input_field"
-					data-config-key="<%= ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL %>"
+					data-config-key="<%=ConfigSystemsKeysSharedConstants.YRC_FILE_OBJECT_STORAGE_WEB_SERVICE_BASE_URL%>"
 					data-FOOTER_CENTER_OF_PAGE_HTML="true">
 			</div>
 		</div>
@@ -559,10 +561,56 @@ Uncheck to stop users from downloading scan files.
 			Spectral Storage Service Accept Import Base URL (required if allow scan file uploads): 
 			<input type="text" class=" config_text_inputs_jq " id="spectral_storage_service_accept_import_base_url_input_field" 
 				style="width: 650px;"
-				data-config-key="<%= ConfigSystemsKeysSharedConstants.SPECTRAL_STORAGE_SERVICE_ACCEPT_IMPORT_BASE_URL %>"
+				data-config-key="<%=ConfigSystemsKeysSharedConstants.SPECTRAL_STORAGE_SERVICE_ACCEPT_IMPORT_BASE_URL%>"
 				>
 		</div>
 	</div>
+	
+	<c:choose>
+		<c:when test="${ not empty spectralStorageService_GetData_URL_Override }">
+			<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+				<div style="display: grid; grid-template-columns: min-content 1fr">
+					
+					<%--  2 Column CSS GRID --%>
+					
+					<div style="color: red; margin-right: 3px;" >*</div>
+					<div>
+						<div>
+							<span>
+								Spectral Storage Service Get Data Base URL Value set here is ignored since it is configured
+								via Config File <%=SpectralStorageService_Connection__ConfigFilename_Constants.CONFIG_FILENAME%>
+								OR Environment Variable or java -D parameter
+								'<%=SpectralStorageService_Connection_Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ENVIRONMENT_VARIABLE__SPECTRAL_STORAGE_SERVICE__GET_DATA_URL%>'
+								with value
+							</span> 
+							<span style="white-space: nowrap">
+								'<c:out value="${ spectralStorageService_GetData_URL_Override }"></c:out>'
+							</span>
+						</div>
+						<div>
+							This override is ONLY in effect in the webapp.  It is NOT used by the importer.
+						</div>
+					</div>
+				</div>
+			</div>
+		</c:when>
+		<c:otherwise>
+		<%--  Remove as Too Cluttered?
+			<div style="font-weight: bold; margin-left: 20px; margin-top: 4px; margin-bottom: 3px;">
+				<div style="display: grid; grid-template-columns: min-content 1fr">
+					
+					<div style="color: red; margin-right: 3px;" >*</div>
+					<div>
+						Spectral Storage Service Get Data Base URL Value set here can be Overridden if it is configured
+						via Config File <%= SpectralStorageService_Override_ConfigTable__ConfigFilename_Constants.CONFIG_FILENAME  %>
+						OR Environment Variable or java -D parameter
+						'<%= SpectralStorageService_Get_URL_Overrides_OfConfigTableValues__Read_ConfigFile_EnvironmentVariable_JVM_DashD_Param_OnStartup.ENVIRONMENT_VARIABLE__SPECTRAL_STORAGE_SERVICE__GET_DATA_URL_OVERRIDE %>'
+					</div>
+				</div>
+			</div>
+		 --%>
+		</c:otherwise>
+	</c:choose>
 	
 	<div style="margin-bottom: 10px;" >
 		<div style="margin-bottom: 3px;">
