@@ -1512,32 +1512,35 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
  */
 class Internal_ComputeFor_UserSearchString_Of_Sequences {
 
-    private _projectSearchId: number;
+    // private _projectSearchId: number;
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
 
-    private _first_GetCall = true;
-    private _proteinSequenceVersionId_In_First_GetCall: number
+    // private _first_GetCall = true;
+    // private _proteinSequenceVersionId_In_First_GetCall: number
+
+    // Remove Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
 
     /**
      * Cached Results
      */
-    private _userSearchString_CachedResults :  {
-        searchStrings_Set__ToGetReportedPeptideIdsFor : Set<string>,
-        reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString : Set<number>
-    }
+    // private _userSearchString_CachedResults :  {
+    //     searchStrings_Set__ToGetReportedPeptideIdsFor : Set<string>,
+    //     reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString : Set<number>
+    // }
 
     /**
      *
      */
     private constructor(
         {
-            projectSearchId, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+            projectSearchId,  // UNUSED
+            commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }: {
             projectSearchId: number;
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
         }
     ) {
-        this._projectSearchId = projectSearchId;
+        // this._projectSearchId = projectSearchId;
         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     }
 
@@ -1773,29 +1776,31 @@ class Internal_ComputeFor_UserSearchString_Of_Sequences {
 
         let reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString: Set<number> = undefined;
 
-        {  //  ONLY use cached results IF searchStrings_Set__ToGetReportedPeptideIdsFor matches cached results
+        // Remove Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
 
-            if (this._userSearchString_CachedResults) {
-
-                const searchStrings_Set__ToGetReportedPeptideIdsFor_Cached = this._userSearchString_CachedResults.searchStrings_Set__ToGetReportedPeptideIdsFor;
-                //  compare searchStrings_Set__ToGetReportedPeptideIdsFor_Cached to local searchStrings_Set__ToGetReportedPeptideIdsFor
-
-                if (searchStrings_Set__ToGetReportedPeptideIdsFor_Cached.size === searchStrings_Set__ToGetReportedPeptideIdsFor.size) {
-
-                    let currentAndCachedContentsSame = true;
-                    for (const searchString of searchStrings_Set__ToGetReportedPeptideIdsFor) {
-                        if (!searchStrings_Set__ToGetReportedPeptideIdsFor_Cached.has(searchString)) {
-                            currentAndCachedContentsSame = false;
-                            break;
-                        }
-                    }
-                    if (currentAndCachedContentsSame) {
-                        //  Search data same as cached so re-use cached data
-                        reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString = this._userSearchString_CachedResults.reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString;
-                    }
-                }
-            }
-        }
+        // {  //  ONLY use cached results IF searchStrings_Set__ToGetReportedPeptideIdsFor matches cached results
+        //
+        //     if (this._userSearchString_CachedResults) {
+        //
+        //         const searchStrings_Set__ToGetReportedPeptideIdsFor_Cached = this._userSearchString_CachedResults.searchStrings_Set__ToGetReportedPeptideIdsFor;
+        //         //  compare searchStrings_Set__ToGetReportedPeptideIdsFor_Cached to local searchStrings_Set__ToGetReportedPeptideIdsFor
+        //
+        //         if (searchStrings_Set__ToGetReportedPeptideIdsFor_Cached.size === searchStrings_Set__ToGetReportedPeptideIdsFor.size) {
+        //
+        //             let currentAndCachedContentsSame = true;
+        //             for (const searchString of searchStrings_Set__ToGetReportedPeptideIdsFor) {
+        //                 if (!searchStrings_Set__ToGetReportedPeptideIdsFor_Cached.has(searchString)) {
+        //                     currentAndCachedContentsSame = false;
+        //                     break;
+        //                 }
+        //             }
+        //             if (currentAndCachedContentsSame) {
+        //                 //  Search data same as cached so re-use cached data
+        //                 reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString = this._userSearchString_CachedResults.reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString;
+        //             }
+        //         }
+        //     }
+        // }
 
         if (!reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString) {
 
@@ -1846,10 +1851,12 @@ class Internal_ComputeFor_UserSearchString_Of_Sequences {
                 }
             }
 
-            this._userSearchString_CachedResults = {
-                searchStrings_Set__ToGetReportedPeptideIdsFor,
-                reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString: reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString
-            }
+            // Remove Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
+
+            // this._userSearchString_CachedResults = {
+            //     searchStrings_Set__ToGetReportedPeptideIdsFor,
+            //     reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString: reportedPeptideIds_SearchedAllAtCutoffs_Contain_SearchString
+            // }
         }
 
         const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
@@ -1935,20 +1942,22 @@ class Internal_ComputeFor_PeptideSequence_MissedCleavageCount_Meet_Filters {
     private _projectSearchId: number;
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
 
-    private _first_GetCall = true;
-    private _proteinSequenceVersionId_In_First_GetCall: number
+    // private _first_GetCall = true;
+    // private _proteinSequenceVersionId_In_First_GetCall: number
 
-    /**
-     * Cached Results
-     */
-    private _user_Selection_CachedResults :  {
-        countFilter_From : number
-        countFilter_To : number
-        cached_Results : Array<{
-            reportedPeptideId: number
-            psmIds_Include: Set<number>
-        }>
-    }
+    // Remove Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
+
+    // /**
+    //  * Cached Results
+    //  */
+    // private _user_Selection_CachedResults :  {
+    //     countFilter_From : number
+    //     countFilter_To : number
+    //     cached_Results : Array<{
+    //         reportedPeptideId: number
+    //         psmIds_Include: Set<number>
+    //     }>
+    // }
 
     /**
      *
@@ -2300,18 +2309,20 @@ class Internal_ComputeFor_PeptideSequence_MissedCleavageCount_Meet_Filters {
             psmIds_Include: Set<number>
         }>
 
-        {  //  ONLY use cached results IF filter matches
+        // Remove Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
 
-            if (this._user_Selection_CachedResults) {
-
-                if ( this._user_Selection_CachedResults.countFilter_From === peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__From__Filter() &&
-                    this._user_Selection_CachedResults.countFilter_To === peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__To__Filter() ) {
-
-                    //  Search data same as cached so re-use cached data
-                    results_Internal = this._user_Selection_CachedResults.cached_Results;
-                }
-            }
-        }
+        // {  //  ONLY use cached results IF filter matches
+        //
+        //     if (this._user_Selection_CachedResults) {
+        //
+        //         if ( this._user_Selection_CachedResults.countFilter_From === peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__From__Filter() &&
+        //             this._user_Selection_CachedResults.countFilter_To === peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__To__Filter() ) {
+        //
+        //             //  Search data same as cached so re-use cached data
+        //             results_Internal = this._user_Selection_CachedResults.cached_Results;
+        //         }
+        //     }
+        // }
 
         if ( ! results_Internal ) {
 
@@ -2548,11 +2559,11 @@ class Internal_ComputeFor_PeptideSequence_MissedCleavageCount_Meet_Filters {
                 }
             }
 
-            this._user_Selection_CachedResults = {
-                countFilter_From: peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__From__Filter(),
-                countFilter_To: peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__To__Filter(),
-                cached_Results: results_Internal
-            }
+            // this._user_Selection_CachedResults = {
+            //     countFilter_From: peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__From__Filter(),
+            //     countFilter_To: peptideSequence_MissedCleavageCount_UserSelections_StateObject.get_missedCleavageCount__To__Filter(),
+            //     cached_Results: results_Internal
+            // }
         }
 
         //  Build returned result
@@ -2588,6 +2599,10 @@ class Internal_ComputeFor__SelectionType_ALL___For__Scan_RetentionTime_MZ_UserSe
 
     private _projectSearchId: number;
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+
+
+    // DO NOT ADD Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
+
 
     /**
      *
@@ -2993,6 +3008,10 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
     private _projectSearchId: number;
     private _commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
+
+
+    // DO NOT ADD Cache results since this code is now called with subset of Reported Peptide Ids for "Include all versions of peptides found using modification filters:"
+
 
     /**
      *
