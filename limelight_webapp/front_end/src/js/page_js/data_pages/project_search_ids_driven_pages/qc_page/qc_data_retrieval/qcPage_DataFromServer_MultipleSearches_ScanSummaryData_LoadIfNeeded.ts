@@ -33,12 +33,12 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
             projectSearchIds,
             qcPage_Searches_Flags,
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-            scanFile_SummaryPerLevelData_Root
+            scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId
         } : {
             projectSearchIds: Array<number>
             qcPage_Searches_Flags: DataPage_common_Searches_Flags
             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-            scanFile_SummaryPerLevelData_Root : QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root //  UPDATED
+            scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId : Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root> //  UPDATED
         }
     ) : Promise<void> {
 
@@ -60,6 +60,13 @@ export class QcPage_DataFromServer_MultipleSearches_ScanSummaryData_LoadIfNeeded
             if ( ! qcPage_Flags_SingleSearch.hasScanData ) {
                 //  NO Scan Data for Search so Skip
                 continue; // EARLY CONTINUE
+            }
+
+            let scanFile_SummaryPerLevelData_Root= scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId.get( projectSearchId )
+
+            if ( ! scanFile_SummaryPerLevelData_Root ) {
+                scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
+                scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId.set( projectSearchId, scanFile_SummaryPerLevelData_Root )
             }
 
             const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId =

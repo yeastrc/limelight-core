@@ -52,7 +52,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
     private _qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput__PassedViaRegistrationCallback: QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput
 
-    private _scanFile_SummaryPerLevelData_Root = new QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root()
+    private _scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId : Map<number, QcPage_DataFromServer_AndDerivedData_Holder_SingleSearch_ScanFile_SummaryPerLevelData_Root> = new Map()
 
     /**
      *
@@ -222,7 +222,7 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
                 projectSearchIds: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds,
                 qcPage_Searches_Flags: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags,
                 commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
-                scanFile_SummaryPerLevelData_Root: this._scanFile_SummaryPerLevelData_Root
+                scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId: this._scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId
             });
             if ( promise_multipleSearches_ScanSummaryData_LoadIfNeeded ) {
 
@@ -555,7 +555,14 @@ export class QcViewPage_MultipleSearches__ScanFileSummaryDataBlock
 
             const dataPerSearch_PerScanLevel_Map_Key_ScanLevel: Map<number,DataPerSearch_PerScanLevel> = new Map();
 
-            for ( const summaryPerLevelData_Entry of this._scanFile_SummaryPerLevelData_Root.get_ScanFileData_IterableIterator() ) {
+            const scanFile_SummaryPerLevelData_Root = this._scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId.get( projectSearchId )
+            if ( ! scanFile_SummaryPerLevelData_Root ) {
+                const msg = "this._scanFile_SummaryPerLevelData_Root__Map_Key_ProjectSearchId.get( projectSearchId ) returned NOTHING for projectSearchId: " + projectSearchId
+                console.warn(msg)
+                throw Error(msg)
+            }
+
+            for ( const summaryPerLevelData_Entry of scanFile_SummaryPerLevelData_Root.get_ScanFileData_IterableIterator() ) {
 
                 // summaryPerLevelData_Entry.searchScanFileId
 
