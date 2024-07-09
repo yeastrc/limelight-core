@@ -66,4 +66,11 @@ public class AA_WebappAdmin_PageControllerPaths_Constants {
 	public static final String ADMIN_MANAGE_IMPORTER_PIPELINE_EXECUTION_PAGE_CONTROLLER = "admin/pg/manage-importer";
 
 
+	/**
+	 * Admin Manage Importer and Pipeline Queue Page - Manage queue of Imports and Pipeline runs to process and being processed
+	 */
+	public static final String ADMIN_MANAGE_IMPORTER_PIPELINE_QUEUE_PAGE_CONTROLLER = "admin/pg/manage-importer-queue";
+
+
+	
 }

@@ -39,8 +39,12 @@
 	   	<a href="admin/pg/manage-users">Manage Users</a>
 	</div>
 	
-   	<div >
+   	<div style="margin-bottom: 5px;">
 	   	<a href="admin/pg/manage-importer">Manage Importer</a>
+	</div>
+	
+   	<div >
+	   	<a href="admin/pg/manage-importer-queue">Manage Importer Queue</a>
 	</div>
 	
 	<h2>
