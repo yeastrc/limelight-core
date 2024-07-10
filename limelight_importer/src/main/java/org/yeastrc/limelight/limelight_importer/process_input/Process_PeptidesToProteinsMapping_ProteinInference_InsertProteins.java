@@ -848,17 +848,11 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 			List<String> proteinSequence_List = new ArrayList<>( update_DBRecords_BlockSize );
 
-			int update_CurrentCount = 0;
+			int update_CharacterCount = 0;
 
 			for ( MatchedProtein matchedProtein : matchedProteinsFromLimelightXML.getMatchedProtein() ) {
 
-				update_CurrentCount++;
-
-				//  Add to the batch
-
-				proteinSequence_List.add( matchedProtein.getSequence() );
-
-				if ( update_CurrentCount >= update_DBRecords_BlockSize ) {
+				if ( ( ! proteinSequence_List.isEmpty() ) && ( update_CharacterCount + matchedProtein.getSequence().length() >= 1000000 ) ) {  //  Limit 1,000,000 characters per update
 
 					// Updates to DB of the current batch
 
@@ -866,10 +860,17 @@ public class Process_PeptidesToProteinsMapping_ProteinInference_InsertProteins {
 
 					//  Reset holding Lists for next batch
 
-					update_CurrentCount = 0;
+					update_CharacterCount = 0;
 
 					proteinSequence_List.clear();
 				}
+				
+				update_CharacterCount += matchedProtein.getSequence().length();
+
+				//  Add to the batch
+
+				proteinSequence_List.add( matchedProtein.getSequence() );
+
 
 			}
 
