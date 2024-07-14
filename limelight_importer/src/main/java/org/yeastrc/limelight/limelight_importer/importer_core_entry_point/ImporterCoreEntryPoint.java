@@ -60,13 +60,17 @@ import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateMatched
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptides;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateModificationsOnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.ValidateReportedPeptideMatchedProteins_SequencesAreValidCharacters;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_AnnotationTypeRecords;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_FastaFilename_Matches_Submitted_FastaFile_Filename;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ModificationPositionAnnotations_OnReportedPeptidesAndPSMs;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsDecoyTrue_IsIndependentDecoyTrue;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_IsIndependentDecoyTrue_SearchHas_FastaFileStatistics;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_PSMs_PrecursorRetentionTime_PrecursorMZ__MaxValuesAllowed;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReportedPeptideStrings_AllUnique;
 import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_ReporterIons_OnPSMs;
+import org.yeastrc.limelight.limelight_importer.pre_validate_xml.Validate_StaticModEntries_Have_Unique_AminoAcidResidueLetters;
 import org.yeastrc.limelight.limelight_importer.process_input.ProcessLimelightInput;
 import org.yeastrc.limelight.limelight_importer.project_importable_validation.IsImportingAllowForProject;
 import org.yeastrc.limelight.limelight_shared.XMLInputFactory_XXE_Safe_Creator.XMLInputFactory_XXE_Safe_Creator;
@@ -335,7 +339,24 @@ public class ImporterCoreEntryPoint {
 				}
 				SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI ); 
 				Schema schema = sf.newSchema( xmlSchemaURL );
+				
+				
+//				{
+//					//  Test with different XSD file:
+//					
+//					String xsdFileWithPath = "<limelight-xml.xsd file with path>";
+//					
+//					System.out.println( "Special XSD File Path: " + xsdFileWithPath );
+//					
+//					schema = sf.newSchema( new File( xsdFileWithPath ) );
+//				}
+						
+				
 				unmarshaller.setSchema(schema);
+			} else {
+				log.warn( "" );
+				log.warn( "NOT Performing XSD validation since is false Limelight_XSD_XML_Schema_Enabled_And_Filename_With_Path_Constant.Limelight_XSD_XML_SCHEMA_VALIDATION_ENABLED" );
+				log.warn( "" );
 			}
 			Object unmarshalledObject = null;
 			try {
@@ -368,6 +389,7 @@ public class ImporterCoreEntryPoint {
 			e.printStackTrace( System.err );
 			throw e;
 		}
+		
 		return limelightInputForImport;
 	}
 
@@ -425,9 +447,21 @@ public class ImporterCoreEntryPoint {
 			//   Throws LimelightImporterDataException if data error found
 			Validate_FastaFilename_Matches_Submitted_FastaFile_Filename.getInstance()
 			.validate_FastaFilename_Matches_Submitted_FastaFile_Filename( limelightInputForImport, fileObjectStorage_FileContainer_AllEntries );
-			
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_StaticModEntries_Have_Unique_AminoAcidResidueLetters.getInstance().validate_StaticModEntries_Have_Unique_AminoAcidResidueLetters(limelightInputForImport);
+
+			//   Throws LimelightImporterDataException if data error found
+			ValidateReportedPeptideMatchedProteins_SequencesAreValidCharacters.getInstance().validateReportedPeptideMatchedProteins_SequencesAreValidCharacters( limelightInputForImport );
+
 			//   Throws LimelightImporterDataException if data error found
 			ValidateAnnotationTypeRecords.getInstance().validateAnnotationTypeRecords( limelightInputForImport );
+
+			//   Throws LimelightImporterDataException if data error found
+			Validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_AnnotationTypeRecords.getInstance().validate_AnnotationRecords_InAllPlaces_NoDuplicates_And_AllIn_AnnotationTypeRecords(limelightInputForImport);
+					
+			//   Throws LimelightImporterDataException if data error found
+			Validate_ReportedPeptideStrings_AllUnique.getInstance().validate_ReportedPeptideStrings_AllUnique( limelightInputForImport );
 			
 			//   Throws LimelightImporterDataException if data error found
 			ValidateMatchedProteinSection.getInstance().validateMatchedProteinSection( limelightInputForImport );
@@ -461,6 +495,16 @@ public class ImporterCoreEntryPoint {
 			
 			////////  End Validation
 			
+
+			
+//			{		//  TODO  TEMP   REMOVE:  this block  Is for TESTING ONLY
+//			
+//				log.warn( "" );
+//				log.warn( "Deserialazation of Limelight XML file AND Pre Validate XML is Complete");
+//				log.warn( "" );
+//				
+//				System.exit(1);
+//			}
 			
 			
 			//  Process Limelight Input

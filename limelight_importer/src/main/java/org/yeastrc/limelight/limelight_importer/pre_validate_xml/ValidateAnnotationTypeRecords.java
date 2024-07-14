@@ -74,8 +74,21 @@ public class ValidateAnnotationTypeRecords {
 	private void validateAnnotationNamesUniqueWithinSearchProgramAndType( LimelightInput limelightInput ) throws LimelightImporterDataException {
 		SearchProgramInfo searchProgramInfo = limelightInput.getSearchProgramInfo(); 
 		SearchPrograms limelightInputSearchPrograms = searchProgramInfo.getSearchPrograms();
-		List<SearchProgram> searchProgramList =
-				limelightInputSearchPrograms.getSearchProgram();
+		List<SearchProgram> searchProgramList = limelightInputSearchPrograms.getSearchProgram();
+		
+		{
+			Set<String> searchProgramNames_Set = new HashSet<>();
+			
+			for ( SearchProgram searchProgram : searchProgramList ) {
+				
+				if ( ! searchProgramNames_Set.add( searchProgram.getName() ) ) {
+					String msg = "Duplicate <search_program> attribute name '" + searchProgram.getName() + "' under <search_program_info>.";
+					log.error( msg );
+					throw new LimelightImporterDataException( msg );
+				}
+			}
+		}
+		
 		for ( SearchProgram searchProgram : searchProgramList ) {
 			validateMatchedProteinAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
 			validateReportedPeptideAnnotationNamesUniqueWithinSearchProgramAndType( searchProgram );
