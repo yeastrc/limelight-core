@@ -286,6 +286,13 @@ const _create__proteinPosition_SelectionDisplay_Entries = function(
 
     const selections_Ranges = proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges();
 
+    if ( ( ! selections_Ranges ) || ( ! selections_Ranges.entriesMap_Key_proteinSequenceVersionId ) ) {
+
+        //  No ranges to process so return empty array.  Not sure how code is getting to this function with proteinPositionFilter_UserSelections_StateObject.getSelections_Ranges() returning undefined but it happened.
+
+        return proteinPosition_SelectionDisplay_Entries  // EARLY RETURN
+    }
+
     for ( const mapEntry of selections_Ranges.entriesMap_Key_proteinSequenceVersionId.entries() ) {
         const per_proteinSequenceVersionId_Entry  = mapEntry[ 1 ];
         const proteinSequenceVersionId = per_proteinSequenceVersionId_Entry.proteinSequenceVersionId
