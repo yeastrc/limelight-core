@@ -40,17 +40,17 @@ project(":limelight__db_populate_new_fields__common_code").projectDir = new File
  include "limelight_submit_import_client_connector"
 project(":limelight_submit_import_client_connector").projectDir = new File( settingsDir, "../limelight_submit_import_client_connector")
  
+
+//  Moved ALL BELOW to ant file 'ant_create_war.xml':  
+  
 /*
  *  Specify dependency on limelight_submit_import to get built Submit Import Program Jar
  */
  
- include "limelight_submit_import"
-project(":limelight_submit_import").projectDir = new File( settingsDir, "../limelight_submit_import")
+// include "limelight_submit_import"
+// project(":limelight_submit_import").projectDir = new File( settingsDir, "../limelight_submit_import")
  
  
-
-//  Moved to ant file 'ant_create_war.xml':  
-  
 /*
  *  Specify dependency on subdirectory "front_end"
  */

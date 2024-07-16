@@ -4,13 +4,12 @@
  * This build file was Copied from https://spring.io/guides/gs/serving-web-content/.
  *
   	Task for building the war: 'build'
+  	
+  	DO NOT build the webapp by directly running this Gradle script.
+  	   Build by running the ant script 'ant_create_war.xml' in the same directory.
+  	   It first builds the 'Submit Import' app and the 'front_end' subdir for this webapp.
  */
  
- 	
-	//  http://ajoberstar.org/grgit/grgit-gradle.html
-	// Grgit: Generally, you should only apply the plugin to the root project of your build.
-	//  Plugin adds grgit property to your build, which is an instance of Grgit.
-	//     Plugin looks for .git directory in build directory and it's parents
  
 buildscript {
   repositories {
@@ -19,7 +18,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
+    classpath "org.ajoberstar.grgit:grgit-gradle:4.1.1"
   }
 }
 
@@ -277,7 +276,7 @@ task deleteExistingBuiltWar(type: GradleBuild) {
 /*
  * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  
  */
-processResources.dependsOn 'limelight_submit_import:shadowJar'
+// processResources.dependsOn 'limelight_submit_import:shadowJar'
 
 /*
  * Before the Gradle WAR processing creates the war, it copies limelight_submit_import jar to the web app  

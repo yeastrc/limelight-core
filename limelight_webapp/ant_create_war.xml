@@ -18,6 +18,10 @@
     	
     	<delete dir="build/libs" />
     	
+    	<!-- Build Submit Import Jar (in adjacent subdir  -->
+
+		<ant dir="..${file.separator}limelight_submit_import" antfile="ant__create_runnable_jar_submit_import.xml" />
+    	
     	<!-- Build front end  -->
     	
 		<exec executable="${executableToRun_CreateWar}" dir="front_end" failonerror="true" 

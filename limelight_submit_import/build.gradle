@@ -118,6 +118,8 @@ dependencies {
 }
 
 
+println("Subdir: limelight_submit_import. variable 'grgit' contents: " + grgit )
+
 //  Assign to grgit, created by plugin
 def gitRepo = grgit
 
