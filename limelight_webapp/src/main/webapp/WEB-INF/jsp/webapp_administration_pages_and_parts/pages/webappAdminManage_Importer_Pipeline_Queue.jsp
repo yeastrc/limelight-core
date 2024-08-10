@@ -47,8 +47,14 @@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" 
 	</div>
 	
 	<h3>
-		List of projects with Search and/or Scan file imports that are pending (running or in queue)
+		List of projects with Limelight XML file and/or Scan file imports that are pending (running or in queue)
 	</h3>
+	
+	<c:if test="${ empty projectList }">
+		<div>
+			No entries.
+		</div>
+	</c:if>
 
 	<table>
 		<c:forEach var="projectEntry" items="${ projectList }">

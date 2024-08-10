@@ -71,6 +71,10 @@ public class ProjectListForProjectIdListSearcher extends Limelight_JDBC_Base imp
 
 		List<ProjectListForProjectIdListSearcher_ResultItem> resultList = new ArrayList<>();
 		
+		if ( projectIdList == null || projectIdList.isEmpty() ) {
+			return resultList;
+		}
+		
 		StringBuilder sqlAddition = new StringBuilder( 10000 );
 		
 		for ( int counter = 1; counter <= projectIdList.size(); counter++ ) {
