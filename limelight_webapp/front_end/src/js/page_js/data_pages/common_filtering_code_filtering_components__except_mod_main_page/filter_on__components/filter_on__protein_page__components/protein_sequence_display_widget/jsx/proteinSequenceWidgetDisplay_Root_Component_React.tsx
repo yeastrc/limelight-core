@@ -27,6 +27,8 @@ import {
 } from './proteinSequenceWidgetDisplay_AllMainLines_Component_React';
 
 
+const _MAX_PROTEIN_LENGTH_TO_DISPLAY = 100000
+
 
 /**
  * 
@@ -208,6 +210,24 @@ export class ProteinSequenceWidgetDisplay_Root_Component_React extends React.Com
             const msg = "No value for this.props.proteinSequenceWidgetDisplay_Component_Data.selectedProteinSequencePositions";
             console.warn( msg );
             throw Error( msg );
+        }
+
+        {
+            if ( this.props.proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition.length > _MAX_PROTEIN_LENGTH_TO_DISPLAY ) {
+
+                //  Protein sequence is too long to display so display this message instead
+
+                return (
+                    <div style={ { marginTop: 10 } }>
+                        <div>
+                            Unable to display sequence coverage for proteins with length greater than { _MAX_PROTEIN_LENGTH_TO_DISPLAY.toLocaleString() }.
+                        </div>
+                        <div style={ { marginTop: 5 } }>
+                            Length of current protein sequence is { this.props.proteinSequenceWidgetDisplay_Component_Data.dataPerSequencePosition.length.toLocaleString() }.
+                        </div>
+                    </div>
+                )
+            }
         }
 
         return (                                            
