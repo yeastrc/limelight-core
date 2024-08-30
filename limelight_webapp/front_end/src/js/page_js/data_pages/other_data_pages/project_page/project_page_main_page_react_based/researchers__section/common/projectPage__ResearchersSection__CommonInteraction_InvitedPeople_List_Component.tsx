@@ -327,7 +327,7 @@ class INTERNAL__InvitedPeople_Entry_Component extends React.Component< INTERNAL_
      */
     private _remove_Clicked( event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
         try {
-            if ( ! window.confirm("Remove user from project?") ) {
+            if ( ! window.confirm("Remove invite from project?") ) {
                 return;
             }
 
