@@ -307,18 +307,22 @@ export class Experiment_SingleExperiment_ConditionsGraphicRepresentation extends
                         { ( clearSelectionLinkClickHandler && anySelection ) ? (
                             <span className=" fake-link " onClick={ clearSelectionLinkClickHandler }>Clear selection</span>
                         ) : null }
-                        { ( clearSelectionLinkClickHandler && conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
-                            //  Space between
-                            <span style={ { paddingRight: 10 } }> </span>
-                        ) : null ) }
-                        { ( conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
-                            <span
-                                className=" fake-link "
-                                onClick={ conditionGroups_ChangeOrder_Clicked_Callback_Local }
-                            >
-                                Condition Groups Change Order
-                            </span>
-                        ) : null ) }
+                        { experiment_ConditionGroupsContainer.conditionGroups && experiment_ConditionGroupsContainer.conditionGroups.length > 1 ? (
+                            <>
+                                { ( clearSelectionLinkClickHandler && conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
+                                    //  Space between
+                                    <span style={ { paddingRight: 10 } }> </span>
+                                ) : null ) }
+                                { ( conditionGroups_ChangeOrder_Clicked_Callback_Local ? (
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ conditionGroups_ChangeOrder_Clicked_Callback_Local }
+                                    >
+                                        Condition Groups Change Order
+                                    </span>
+                                ) : null ) }
+                            </>
+                        ) : null }
                     </div>
                 ) : null ) }
             </div>
