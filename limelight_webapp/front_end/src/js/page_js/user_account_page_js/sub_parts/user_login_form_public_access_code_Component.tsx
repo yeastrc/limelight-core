@@ -64,7 +64,7 @@ export class User_login_form_public_access_code_Component extends React.Componen
         const sign_in_page_project_idDOM = document.getElementById("sign_in_page_project_id")
         if ( ! sign_in_page_project_idDOM ) {
             throw Error("No DOm element with id 'sign_in_page_project_id'")
-        }
+        };
 
         const projectIdString = sign_in_page_project_idDOM.innerText;
 
@@ -73,8 +73,11 @@ export class User_login_form_public_access_code_Component extends React.Componen
             throw Error("Failed to parse number in DOM element with id 'sign_in_page_project_id'. contents: " + projectIdString );
         }
 
-        var public_access_code_value = this._public_access_code_value_Ref.current.value
-        if ( public_access_code_value.trim() === "" ) {
+        let public_access_code_value = this._public_access_code_value_Ref.current.value.trim()
+        if ( public_access_code_value.endsWith(".") ) {
+            public_access_code_value = public_access_code_value.substring(0, public_access_code_value.length - 1)
+        }
+        if ( public_access_code_value === "" ) {
             return;  //  !!!  EARLY EXIT
         }
 
