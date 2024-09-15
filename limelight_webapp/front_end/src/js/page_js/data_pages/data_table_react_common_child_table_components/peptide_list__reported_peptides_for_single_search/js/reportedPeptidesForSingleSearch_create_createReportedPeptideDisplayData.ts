@@ -497,7 +497,7 @@ const _getAnnotationTypeRecords_DisplayOrder = function( { projectSearchId, sear
     if ( ! searchDataLookupParams_Single_ProjectSearchId ) {
         throw Error("searchDataLookupParamsRoot.paramsForProjectSearchIds.paramsForProjectSearchIdsList not contain projectSearchId: " + projectSearchId )
     }
-    if ( ( ! searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay ) || searchDataLookupParams_Single_ProjectSearchId.psmAnnTypeDisplay.length === 0 ) {
+    if ( ( ! searchDataLookupParams_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay ) || searchDataLookupParams_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay.length === 0 ) {
         //  NOTHING to display so return empty array
         return { reportedPeptideAnnotationTypesForAnnotationTypeIds : [] }; // EARLY RETURN
     }
