@@ -7,15 +7,26 @@
 // String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 --%><%@page import="org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.page_controllers.AA_PageControllerPaths_Constants"
 %><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/pageEncodingDirective.jsp" %> <%-- Put on Every Page --%>
-
+<%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %> 
 
 <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/top_of_every_page_doctype__jsp_cache_directives.jsp" %>
 
 <html>
 <head>
-	<title><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_title_start.jsp" 
-				%> Scans View</title>
-	
+
+	<%-- Different <title> when > 1 search --%>
+	<c:choose>
+		<c:when test="${ projectIdSearchIdsMoreThanOneFlag }">
+			<title><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_title_start.jsp" 
+						%> Compare Results by Scan</title>
+			
+		</c:when>
+		<c:otherwise>
+			<title><%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_title_start.jsp" 
+						%> Scans View</title>
+		</c:otherwise>
+	</c:choose>
+
 	<script id="controller_path" type="text/text"><%= AA_PageControllerPaths_Constants.SCAN_FILE_TO_SEARCHES_VIEW_PAGE_CONTROLLER %></script>
 	
  <%@ include file="/WEB-INF/jsp/jsp_includes_head_section/head_section_include_data_pages.jsp" %> 
@@ -35,6 +46,7 @@
 	<div id="data_pages_nav_links_page_container" ></div>
 	
 	<h1>
+		<%-- Different main <h1> text when > 1 search --%>
 		<c:choose>
 			<c:when test="${ projectIdSearchIdsMoreThanOneFlag }">
 				Compare Results by Scan
