@@ -398,11 +398,14 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
     private _searchesContains_OpenModifications = false;
     private _searchesContains_StaticModifications = false;
 
+    private _projectSearchId_Count_GreaterThan_One = false
+
     private _searches_NOT_ContainScanFile_ProjectSearchId_Set: Set<number> = new Set()
 
     private _show_ScanFileSelectionBlock = false
 
     private _show_NoScanFileData_In_AnySearches = false
+
 
     /**
      * 
@@ -759,7 +762,40 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             return // EARLY RETURN
         }
 
-        let populated_rojectScanFileId_etc = true
+
+        {  //  Get ProjectScanFileId Unique Value Count
+
+            const projectScanFileId_Set = new Set<number>()
+
+            for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+                const scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder = this._scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder_Map_Key_ProjectSearchId.get( projectSearchId )
+                if ( ! scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder ) {
+                    continue // EARLY CONTINUE
+                }
+                const scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder = this._commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId( projectSearchId )
+                if ( ! scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder ) {
+                    continue // EARLY CONTINUE
+                    // throw new Error("No value from commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_For_ProjectSearchId(projectSearchId) for projectSearchId: " + projectSearchId );
+                }
+                for ( const searchScanFileData of scanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_SearchScanFileData_IterableIterator() ) {
+                    const scanFile_ProjectScanFileId_SearchScanFileId = scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId( searchScanFileData.searchScanFileId )
+                    if ( ! scanFile_ProjectScanFileId_SearchScanFileId ) {
+                        throw new Error( "No value from scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_SearchScanFileId(searchScanFileData.searchScanFileId) for searchScanFileData.searchScanFileId: " + searchScanFileData.searchScanFileId + ", projectSearchId: " + projectSearchId );
+                    }
+                    const projectScanFileId = scanFile_ProjectScanFileId_SearchScanFileId.projectScanFileId
+                    projectScanFileId_Set.add( projectScanFileId )
+                }
+            }
+
+            if ( projectScanFileId_Set.size === 0 ) {
+            }
+            if ( projectScanFileId_Set.size > 1) {
+
+                this._projectSearchId_Count_GreaterThan_One = true
+            }
+        }
+
+        let populated_projectScanFileId_etc = true
 
         const result__is_URL_ProjectScanFileId_etc =  this._runOnPageLoad_Is_URL_StateObject_ProjectScanFileId_SearchScanFileIds_In_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
 
@@ -790,7 +826,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
                 //  Compute ProjectScanFileId from current searches
 
-                const result__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches = this._runOnPageLoad_Set_URL_PageStateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
+                const result__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches =
+                    this._runOnPageLoad_Set_URL_PageStateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches__Populate_this_searches_NOT_ContainScanFile_ProjectSearchId_Set()
 
                 if ( ! result__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches.yes__Set_StateObject_ProjectScanFileId_SearchScanFileIds_From_CurrentSearches ) {
 
@@ -800,7 +837,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
                     window.alert( "no scan file names found in the searches.  No projectScanFileId Computed for Searches." )
 
-                    populated_rojectScanFileId_etc = false
+                    populated_projectScanFileId_etc = false
                 }
 
             } else {
@@ -808,7 +845,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
             }
         }
 
-        if ( ! populated_rojectScanFileId_etc ) {
+        if ( ! populated_projectScanFileId_etc ) {
 
             return // EARY RETURN
         }
@@ -3378,20 +3415,27 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                 const element = (
                     <div
                         key={ elementCounter }
+                        style={ { marginBottom: 3 } }
                     >
                         <span
-
                             className=" fake-link "
                             onClick={ event => {
+                                try {
+                                    this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
+                                        projectScanFileIdSelection: scanFileSections_Entry.projectScanFileId,
+                                        searchScanFileIdSelections_Set: scanFileSections_Entry.searchScanFileId_Set
+                                    })
+                                    this._searches_NOT_ContainScanFile_ProjectSearchId_Set = scanFileSections_Entry.searches_NOT_ContainScanFile_ProjectSearchId_Set
+                                    this._show_ScanFileSelectionBlock = false
 
-                                this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.set_projectScanFileIdSelection_searchScanFileIdSelections({
-                                    projectScanFileIdSelection: scanFileSections_Entry.projectScanFileId,
-                                    searchScanFileIdSelections_Set: scanFileSections_Entry.searchScanFileId_Set
-                                })
-                                this._searches_NOT_ContainScanFile_ProjectSearchId_Set = scanFileSections_Entry.searches_NOT_ContainScanFile_ProjectSearchId_Set
-                                this._show_ScanFileSelectionBlock = false
+                                    this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: false });
 
-                                this._recompute_FullPage_Except_SearchDetails({ initialPageLoad: false });
+                                } catch( e ) {
+                                    console.warn("Exception caught onClick");
+                                    console.warn( e );
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }
                             } }
                         >
                             { filenames_CommaDelim }
@@ -3542,16 +3586,20 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                                             { this.state.scanFile_Selected_ScanFilenames_CommaDelim }
                                         </span>
                                     </span>
-                                    <span> </span>
-                                    <span
-                                        className=" fake-link "
-                                        style={ { fontSize: 14 } }
-                                        onClick={ event => {
-                                            this._open_ScanFileSelections()
-                                        } }
-                                    >
-                                        Change
-                                    </span>
+                                    { this._projectSearchId_Count_GreaterThan_One ? (
+                                        <>
+                                            <span> </span>
+                                            <span
+                                                className=" fake-link "
+                                                style={ { fontSize: 14 } }
+                                                onClick={ event => {
+                                                    this._open_ScanFileSelections()
+                                                } }
+                                            >
+                                                Change
+                                            </span>
+                                        </>
+                                    ) : null }
                                 </div>
                             ) : null }
 
