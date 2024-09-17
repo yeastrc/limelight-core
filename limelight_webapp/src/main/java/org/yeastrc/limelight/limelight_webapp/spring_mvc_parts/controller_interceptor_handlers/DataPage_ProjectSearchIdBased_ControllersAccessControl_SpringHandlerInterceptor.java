@@ -1136,6 +1136,20 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 		{
 			httpServletRequest.setAttribute( WebConstants.REQUEST_CURRENT_PROJECT_ID, projectId );
 		}
+		
+		{
+			httpServletRequest.setAttribute( WebConstants.REQUEST_PROJECT_SEARCH_IDS,projectSearchIds );
+			
+			if ( projectSearchIds.size() == 1 ) {
+				httpServletRequest.setAttribute( WebConstants.REQUEST_PROJECT_SEARCH_IDS_ONLY_ONE_FLAG, true );
+			}
+
+			if ( projectSearchIds.size() > 1 ) {
+				httpServletRequest.setAttribute( WebConstants.REQUEST_PROJECT_SEARCH_IDS_MORE_THAN_ONE_FLAG, true );
+			}
+		}
+		
+		
 
 
 		Internal_UserAccessCheckResult result = new Internal_UserAccessCheckResult();

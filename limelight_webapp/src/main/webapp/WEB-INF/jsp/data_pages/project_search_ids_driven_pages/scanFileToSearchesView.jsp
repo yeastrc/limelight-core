@@ -35,7 +35,14 @@
 	<div id="data_pages_nav_links_page_container" ></div>
 	
 	<h1>
-		Scans View
+		<c:choose>
+			<c:when test="${ projectIdSearchIdsMoreThanOneFlag }">
+				Compare Results by Scan
+			</c:when>
+			<c:otherwise>
+				Scans View
+			</c:otherwise>
+		</c:choose>
 	</h1>
 	
 	<!--  Main Peptide View Container -->

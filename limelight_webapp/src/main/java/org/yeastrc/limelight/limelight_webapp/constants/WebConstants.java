@@ -82,6 +82,11 @@ public class WebConstants {
 	 */
 	public static final String REQUEST_CURRENT_PROJECT_ID = "currentProjectId";
 	
+	public static final String REQUEST_PROJECT_SEARCH_IDS = "projectIdSearchIds";
+	
+	public static final String REQUEST_PROJECT_SEARCH_IDS_ONLY_ONE_FLAG = "projectIdSearchIdsOnlyOneFlag";
+	public static final String REQUEST_PROJECT_SEARCH_IDS_MORE_THAN_ONE_FLAG = "projectIdSearchIdsMoreThanOneFlag";
+	
 	/**
 	 * Project Page 
 	 */
