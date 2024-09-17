@@ -120,6 +120,14 @@ label { // Surrounds checkbox and text with the checkbox
   }
 }
 
+div.label-element-like { // provides same formatting and hover behavior as <label>
+  padding-right: 2px;
+
+  &:hover {
+    background-color: $site-color-medium;
+  }
+}
+
 input[type="radio"], input[type="checkbox"] {
   vertical-align: middle;
   margin-top: 0px;

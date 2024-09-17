@@ -152,7 +152,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
      */
     render() {
         try {
-            let selectionsElements: Array<JSX.Element> = undefined;
+            let selectionsElementBlock: JSX.Element = undefined;
             let show_ShowingAll_Message : boolean = false;
 
             if ( this.props.allSearches_Have_ScanFilenames ) {
@@ -171,7 +171,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
 
                 } else {
                     //  Render all selections
-                    selectionsElements = this._render_ScanFilename_Selections();
+                    selectionsElementBlock = this._render_ScanFilename_Selections();
                 }
             }
 
@@ -221,7 +221,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                         </span>
                                     </div>
                                 ) : (
-                                    selectionsElements
+                                    selectionsElementBlock
                                 )}
                             </div>
                         </div>
@@ -244,7 +244,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
      *
      *
      */
-    private _render_ScanFilename_Selections() : Array<JSX.Element> {
+    private _render_ScanFilename_Selections() : JSX.Element {
 
         const selectionsElements: Array<JSX.Element> = [];
 
@@ -286,12 +286,55 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
 
                 const element = (
 
-                    <span key={ searchScanFileData.searchScanFileId } style={ { whiteSpace: "nowrap" } }>
-                                <label>
+                    <div
+                        key={ searchScanFileData.searchScanFileId }
+                    >
+                        <div className=" label-element-like ">  {/* CSS Class to make this <div> format and hover like <label>  */}
+                            <div
+                                className=" clickable "
+                                style={ { display: "flex", alignItems: "baseline" } }
+                                onClick={ event => {
+                                    try {
+                                        let all_SearchScanFileIds: Set<number> = undefined;
+                                        let scanFilenameIds_Selected_InOnChange = this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected();
+                                        if ( ! scanFilenameIds_Selected_InOnChange ) {
+                                            all_SearchScanFileIds = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds();
+                                            scanFilenameIds_Selected_InOnChange = new Set( all_SearchScanFileIds );
+                                        }
+
+                                        if ( ! scanFilenameIds_Selected_InOnChange.has( searchScanFileData.searchScanFileId ) ) {
+                                            scanFilenameIds_Selected_InOnChange.add( searchScanFileData.searchScanFileId );
+
+                                            if ( ! all_SearchScanFileIds ) {
+                                                all_SearchScanFileIds = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds();
+                                            }
+                                            if ( scanFilenameIds_Selected_InOnChange.size === all_SearchScanFileIds.size ) {
+                                                // All Selected so set to undefined
+                                                scanFilenameIds_Selected_InOnChange = undefined;
+                                            }
+                                        } else {
+                                            scanFilenameIds_Selected_InOnChange.delete( searchScanFileData.searchScanFileId );
+                                        }
+                                        this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected( scanFilenameIds_Selected_InOnChange );
+
+                                        this.setState( { forceUpdate: {} } );
+
+                                        this.props.updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback();
+
+
+                                    } catch( e ) {
+                                        console.warn("Exception caught in onclick", e );
+                                        reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                        throw e;
+                                    }
+                                }}
+                            >
+                                <div>
                                     <input
-                                        type="checkbox" checked={ showingForAllSearchScanFiles || scanFilenameIds_Selected.has( searchScanFileData.searchScanFileId ) }
+                                        type="checkbox"
+                                        checked={ showingForAllSearchScanFiles || scanFilenameIds_Selected.has( searchScanFileData.searchScanFileId ) }
                                         onChange={ event => {
-                                            let all_SearchScanFileIds : Set<number> = undefined;
+                                            let all_SearchScanFileIds: Set<number> = undefined;
                                             let scanFilenameIds_Selected_InOnChange = this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.get__scanFilenameIds_Selected();
                                             if ( ! scanFilenameIds_Selected_InOnChange ) {
                                                 all_SearchScanFileIds = this.props.commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder.get_All_SearchScanFileIds();
@@ -311,25 +354,40 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                             } else {
                                                 scanFilenameIds_Selected_InOnChange.delete( searchScanFileData.searchScanFileId );
                                             }
-                                            this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected(scanFilenameIds_Selected_InOnChange);
+                                            this.props.scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected( scanFilenameIds_Selected_InOnChange );
 
-                                            this.setState({ forceUpdate: {} });
+                                            this.setState( { forceUpdate: {} } );
 
                                             this.props.updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject_Callback();
 
-                                        }}
+                                        } }
                                     />
-                                    <span>
-                                         { searchScanFileData.filename }{ ( multipleSearches ) ? " (" + searchScanFileData.searchId + ")" : null }
-                                    </span>
-                                </label>
-                            </span>
+                                </div>
+                                <div style={ { wordBreak: "break-word" } }>
+                                    <span>{ searchScanFileData.filename }</span>
+                                    <span> </span>
+                                    { ( multipleSearches ) ? (
+                                        <span style={ { whiteSpace: "nowrap" } }>
+                                            { "(" + searchScanFileData.searchId + ")" }
+                                        </span>
+                                    ) : null }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 );
+
                 selectionsElements.push(element);
             }
         }
 
-        return selectionsElements;
+        const selectionsElementBlock = (
+            <div style={ { display: "flex", flexWrap: "wrap", columnGap: 2, rowGap: 2 } }>
+                { selectionsElements }
+            </div>
+        )
+
+        return selectionsElementBlock
     }
 }
 
