@@ -144,6 +144,8 @@ public class WebConstants {
 	//  searchDataLookupParametersLookupCode created/computed when URL has Project Search Id Code values
 	
 	public static final String SEARCH_DATA_LOOKUP_PARAMETERS_LOOKUP_CODE__COMPUTED = "searchDataLookupParametersLookupCode_Computed";
+
+	public static final String REQUEST_PROJECT_SCAN_FILE_ID = "projectScanFileId";
 	
 	//  Project Page:
 	

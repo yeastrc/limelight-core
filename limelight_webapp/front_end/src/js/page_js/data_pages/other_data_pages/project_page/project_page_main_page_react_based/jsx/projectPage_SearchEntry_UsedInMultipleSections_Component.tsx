@@ -137,6 +137,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
     private _deleteSearch_Clicked_BindThis = this._deleteSearch_Clicked.bind(this);
 
+    private _scanFileToSearch_Page_FakeLink_Clicked_BindThis = this._scanFileToSearch_Page_FakeLink_Clicked.bind(this)
     private _qc_Page_FakeLink_Clicked_BindThis = this._qc_Page_FakeLink_Clicked.bind(this);
     private _peptide_Page_FakeLink_Clicked_BindThis = this._peptide_Page_FakeLink_Clicked.bind(this);
     private _protein_Page_FakeLink_Clicked_BindThis = this._protein_Page_FakeLink_Clicked.bind(this);
@@ -355,9 +356,43 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
     /**
      *
      */
+    private _scanFileToSearch_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
+
+        const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        const search_Selected_InProgress = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__All_SearchSelectionData()
+        search_Selected_InProgress.add_For_ProjectSearchId_IfNotExists(projectSearchId )
+
+        const selected_Searches_Data_Object = new ProjectPage_SearchesSection_SearchesAndFoldersList_Component__Selected_Searches_Data_Object({
+            search_Selected_InProgress,
+            searchesSearchTagsFolders_Result_Root: this.props.searchesSearchTagsFolders_Result_Root,
+        })
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.scanFileToSearch_View_OpenDataPage({
+            selected_Searches_Data_Object,
+            searchesSearchTagsFolders_Result_Root: this.props.searchesSearchTagsFolders_Result_Root,
+            ctrlKeyOrMetaKey
+        })
+    }
+
+
+    /**
+     *
+     */
     private _qc_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
 
         event.stopPropagation();
+
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
 
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
@@ -384,6 +419,10 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
         event.stopPropagation();
 
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
+
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
@@ -409,6 +448,10 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
         event.stopPropagation();
 
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
+
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
 
@@ -431,6 +474,12 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
      *
      */
     private _modifications_Page_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        event.stopPropagation();
+
+        if ( limelight__IsTextSelected() ) {
+            return
+        }
 
         const projectSearchId = this.props.searchDisplayListItem.projectSearchId;
         const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
@@ -632,7 +681,19 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                             <div style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
 
-                                {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */}
+                                {/* Navigation Fake Links to Peptide, Protein, Modifications pages for Single Search */ }
+
+                                { searchDisplayListItem.searchHasScanDataFlag ? (
+                                    <>  {/*  Only display when have scan file uploaded  */}
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._scanFileToSearch_Page_FakeLink_Clicked_BindThis }
+                                        >
+                                            [Scans]
+                                        </span>
+                                        <span> </span>
+                                    </>
+                                ) : null }
 
                                 <span
                                     className=" fake-link "
@@ -662,7 +723,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                     [Modifications]
                                 </span>
 
-                                {/* Delete Search Icon */}
+                                {/* Delete Search Icon */ }
 
                                 { this.props.projectPage_SearchesAdmin && this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ? (
                                     <>
@@ -673,11 +734,11 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                              onClick={ this._deleteSearch_Clicked_BindThis }
                                         />
                                     </>
-                                ): null }
+                                ) : null }
                             </div>
                         </div>
 
-                        {/* Search Detail Container */}
+                        {/* Search Detail Container */ }
 
                         { this.state.searchDetails_EverShown ? (
                             <div style={ searchDetailsContainer_div_Style }>

@@ -68,6 +68,9 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
     readonly searchDataLookupParamsRoot : SearchDataLookupParameters_Root
     readonly dataPageStateManager : DataPageStateManager
     readonly psmIds_Include : ReadonlySet<number> // Optional
+
+    readonly dataTable__enable_Pagination_Download_Search? : boolean  // set on the Data Table Options  // Optional -- Defaults to True if undefined or null
+
     readonly commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
     /**
      * NOT Passed from Mod Page
@@ -86,6 +89,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             dataPageStateManager,
             psmIds_Include,
             openModPositionOverride,
+            dataTable__enable_Pagination_Download_Search, // ? : boolean  // set on the Data Table Options  // Optional -- Defaults to True if undefined or null
             commonData_LoadedFromServer_PerSearch_For_ProjectSearchId,
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable
         } : {
@@ -96,6 +100,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
             dataPageStateManager : DataPageStateManager
             psmIds_Include? : ReadonlySet<number> // Optional
             openModPositionOverride? : OpenModPosition_DataType  // optional
+            dataTable__enable_Pagination_Download_Search? : boolean  // set on the Data Table Options  // Optional -- Defaults to True if undefined or null
             commonData_LoadedFromServer_PerSearch_For_ProjectSearchId: CommonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
             /**
              * NOT Passed from Mod Page
@@ -114,6 +119,7 @@ export class PsmList_ForProjectSearchIdReportedPeptideId_createChildTableObjects
         this.dataPageStateManager = dataPageStateManager;
         this.psmIds_Include = psmIds_Include;
         this.openModPositionOverride = openModPositionOverride;
+        this.dataTable__enable_Pagination_Download_Search = dataTable__enable_Pagination_Download_Search
         this.commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_For_ProjectSearchId
         this.reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable = reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__WhenAvailable
     }
@@ -272,7 +278,13 @@ const _create_DataTable_RootTableObject = function(
         dataTable_DataRowEntries
     });
 
-    const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: true});
+    let enable_Pagination_Download_Search = true
+
+    if ( topLevel_Params.dataTable__enable_Pagination_Download_Search !== undefined && topLevel_Params.dataTable__enable_Pagination_Download_Search !== null ) {
+        enable_Pagination_Download_Search = topLevel_Params.dataTable__enable_Pagination_Download_Search
+    }
+
+    const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search});
 
     const dataTable_RootTableObject = new DataTable_RootTableObject({
         dataTableId : dataTableId_ThisTable,

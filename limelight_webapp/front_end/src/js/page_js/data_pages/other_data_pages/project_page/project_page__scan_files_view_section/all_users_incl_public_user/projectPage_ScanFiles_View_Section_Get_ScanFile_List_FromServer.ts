@@ -35,6 +35,7 @@ export class ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_ScanFil
 
     userIsProjectOwner: boolean;
     canDeleteEntry: boolean;
+    entryHasAnyRelatedProjectSearchId: boolean;
     entryHasFeatureDetection: boolean;
 }
 
@@ -128,6 +129,11 @@ const _process_WebserviceResponse = function (
         } else {
             resultItem.userIsProjectOwner = false
         }
+        if ( resultItem.entryHasAnyRelatedProjectSearchId ) {
+            resultItem.entryHasAnyRelatedProjectSearchId = true
+        } else {
+            resultItem.entryHasAnyRelatedProjectSearchId = false
+        }
         if ( resultItem.entryHasFeatureDetection ) {
             resultItem.entryHasFeatureDetection = true
         } else {
@@ -142,6 +148,7 @@ const _process_WebserviceResponse = function (
             canDownload: resultItem.canDownload,
             canDeleteEntry: resultItem.canDeleteEntry,
             userIsProjectOwner: resultItem.userIsProjectOwner,
+            entryHasAnyRelatedProjectSearchId: resultItem.entryHasAnyRelatedProjectSearchId,
             entryHasFeatureDetection: resultItem.entryHasFeatureDetection
         }
 

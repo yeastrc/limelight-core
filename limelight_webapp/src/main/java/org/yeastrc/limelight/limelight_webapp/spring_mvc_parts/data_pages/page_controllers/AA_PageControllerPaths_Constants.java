@@ -155,6 +155,12 @@ public class AA_PageControllerPaths_Constants {
 	public static final String QC_VIEW_PAGE_CONTROLLER = "d/pg/psb/qc-view/";
 
 
+	/**
+	 * Scan File to Searches View - Scan File View - 1 Scan File, 1 or multiple project search ids - Formatted similar to Peptide Page - Scan File stored in JS data after '/q/' in Path
+	 */
+	public static final String SCAN_FILE_TO_SEARCHES_VIEW_PAGE_CONTROLLER = "d/pg/psb/scan-file-to-searches-view/";
+
+
 	///////  Feature Detection Pages
 
 	/**

@@ -154,6 +154,9 @@ const mainConfig = (env, argv) => {
 		'data_pages/qcViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_LoggedInUsers.ts',
 		'data_pages/qcViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_root/qcViewPage_RootLaunch_PublicUser.ts',
 
+		'data_pages/scanFileToSearchesViewPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesViewPage_RootLaunch_LoggedInUsers.ts',
+		'data_pages/scanFileToSearchesViewPage_RootLaunch_PublicUser' : './src/js/page_js/data_pages/project_search_ids_driven_pages/scan_file_to_searches_page/main_page_code/scanFileToSearchesViewPage_RootLaunch_PublicUser.ts',
+
 		//  Experiment Data pages
 
 		'data_pages/peptideExperimentPage_RootLaunch_LoggedInUsers' : './src/js/page_js/data_pages/experiment_driven_data_pages/peptide_exp__page/peptide_exp_page_root/js/peptideExperimentPage_RootLaunch_LoggedInUsers.ts',

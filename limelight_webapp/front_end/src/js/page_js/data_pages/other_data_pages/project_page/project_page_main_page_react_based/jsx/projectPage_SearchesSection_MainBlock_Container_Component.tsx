@@ -102,6 +102,7 @@ interface ProjectPage_SearchesSection_MainBlock_Component_State {
  */
 export class ProjectPage_SearchesSection_MainBlock_Component extends React.Component< ProjectPage_SearchesSection_MainBlock_Component_Props, ProjectPage_SearchesSection_MainBlock_Component_State > {
 
+    private _compare_Scan_File_to_Searches_Clicked_BindThis = this._compare_Scan_File_to_Searches_Clicked.bind(this);
     private _compare_Stats_QC_Clicked_BindThis = this._compare_Stats_QC_Clicked.bind(this);
     private _compare_Peptides_Clicked_BindThis = this._compare_Peptides_Clicked.bind(this);
     private _compare_Proteins_Clicked_BindThis = this._compare_Proteins_Clicked.bind(this);
@@ -512,6 +513,25 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
         }
 
         limelight__ReloadPage_Function() //  Fallback when no callback is available
+    }
+
+    /**
+     *
+     */
+    private _compare_Scan_File_to_Searches_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ){
+
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        if ( ! this.state.selected_Searches_Data_Object ) {
+            //  NO searches selected
+            return; // EARLY RETURN
+        }
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.scanFileToSearch_View_OpenDataPage({
+            selected_Searches_Data_Object: this.state.selected_Searches_Data_Object,
+            searchesSearchTagsFolders_Result_Root: this._searchesSearchTagsFolders_Result_Root,
+            ctrlKeyOrMetaKey
+        })
     }
 
     /**
@@ -1171,6 +1191,23 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                             />
 
                             <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
+
+                                {/*  compare Scan File To Searches */}
+                                <div style={ { position: "relative", display: "inline-block" } }>
+                                    <input type="button" value="Compare by Scans"
+                                           disabled={ this.state.compareButtonsDisabled }
+                                           onClick={ this._compare_Scan_File_to_Searches_Clicked_BindThis }
+                                    />
+                                    { ( this.state.compareButtonsDisabled ) ? (
+                                        // overlay when button is disabled to show tooltip
+                                        <div
+                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            title="Select 2 or more searches to compare searches"
+                                        ></div>
+                                    ): null }
+                                </div>
+
+                                <span > </span>
 
                                 {/*  compare QC */}
                                 <div style={ { position: "relative", display: "inline-block" } }>

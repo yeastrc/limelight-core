@@ -548,6 +548,8 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 				resultItem.displayOrder = searchListDBItem.getDisplayOrder();
 				resultItem.name = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchListDBItem.getName(), searchListDBItem.getSearchId() );
 				resultItem.searchShortName = searchListDBItem.getSearchShortName();
+				resultItem.searchHasSubgroups = searchListDBItem.isSearchHasSubgroups();
+				resultItem.searchHasScanDataFlag = searchListDBItem.isSearchHasScanDataFlag();
 				searchList.add( resultItem );
 			}
 
@@ -806,7 +808,8 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
     	private int displayOrder; // zero if no display order applied.   Display Order for "All Searches"
     	private String name;
     	private String searchShortName;
-    	
+    	private boolean searchHasSubgroups;
+    	private boolean searchHasScanDataFlag;
 		public int getProjectSearchId() {
 			return projectSearchId;
 		}
@@ -824,6 +827,12 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 		}
 		public String getSearchShortName() {
 			return searchShortName;
+		}
+		public boolean isSearchHasSubgroups() {
+			return searchHasSubgroups;
+		}
+		public boolean isSearchHasScanDataFlag() {
+			return searchHasScanDataFlag;
 		}
     }
 

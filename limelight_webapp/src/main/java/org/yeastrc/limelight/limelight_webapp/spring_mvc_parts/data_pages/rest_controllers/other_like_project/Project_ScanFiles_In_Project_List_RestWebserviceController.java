@@ -292,7 +292,10 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 			List<WebserviceResultItem> resultItemList = new ArrayList<>( webserviceResultItem_Map_Key_ProjectScanFileId.values() );
 
-			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+			//  Remove Is Project Check since need to always check for if has any searches
+			
+			
+//			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
 				
 				//  Project Owner so determine if the scan file can be removed from the project.
 				
@@ -301,6 +304,7 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 				for ( WebserviceResultItem resultItem : resultItemList ) {
 
 					boolean canDeleteEntry = true;
+					boolean entryHasAnyRelatedProjectSearchId = false;
 					
 					boolean entryHasFeatureDetection = false;
 
@@ -309,6 +313,7 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 					if ( projectSearchId_AnyExists_For_ProjectScanFileId_Searcher.is_ProjectSearchId_AnyExists_For_ProjectScanFileId_Searcher( resultItem.projectScanFileId ) ) {
 
 						canDeleteEntry = false;
+						entryHasAnyRelatedProjectSearchId = true;
 					}
 					
 					//  SKIP since Foreign Key Cascade will delete Feature Detection entries for projectScanFileId
@@ -327,12 +332,13 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 					}
 					
 					resultItem.canDeleteEntry = canDeleteEntry;
+					resultItem.entryHasAnyRelatedProjectSearchId = entryHasAnyRelatedProjectSearchId;
 					
 					resultItem.entryHasFeatureDetection = entryHasFeatureDetection;
 					
 					resultItem.userIsProjectOwner = true;
 				}
-			}
+//			}
 			
     		WebserviceResult webserviceResult = new WebserviceResult();
     		webserviceResult.resultItemList = resultItemList;
@@ -422,6 +428,7 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
     	private boolean userIsProjectOwner;
     	private boolean canDeleteEntry;
+    	private boolean entryHasAnyRelatedProjectSearchId;
     	private boolean entryHasFeatureDetection;
 
 		public int getScanFileId() {
@@ -454,6 +461,10 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 
 		public boolean isCanDownload() {
 			return canDownload;
+		}
+
+		public boolean isEntryHasAnyRelatedProjectSearchId() {
+			return entryHasAnyRelatedProjectSearchId;
 		}
     }
     

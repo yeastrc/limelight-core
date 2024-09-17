@@ -32,16 +32,17 @@ public class SearchItemMinimal {
 	private String name;
 	private String searchShortName;
 	private boolean searchHasSubgroups;
+	private boolean searchHasScanDataFlag;
 	private Date importEndTimestamp;
-
+	
 	@Override
 	public String toString() {
 		return "SearchItemMinimal [projectSearchId=" + projectSearchId + ", searchId=" + searchId + ", projectId="
 				+ projectId + ", displayOrder=" + displayOrder + ", name=" + name + ", searchShortName="
-				+ searchShortName + ", searchHasSubgroups=" + searchHasSubgroups + ", importEndTimestamp="
-				+ importEndTimestamp + "]";
+				+ searchShortName + ", searchHasSubgroups=" + searchHasSubgroups + ", searchHasScanDataFlag="
+				+ searchHasScanDataFlag + ", importEndTimestamp=" + importEndTimestamp + "]";
 	}
-	
+
 	/**
 	 * @@@  WARNING:  Will return null if user did not assign a name to the search !!!
 	 * @return
@@ -98,6 +99,14 @@ public class SearchItemMinimal {
 
 	public void setSearchShortName(String searchShortName) {
 		this.searchShortName = searchShortName;
+	}
+
+	public boolean isSearchHasScanDataFlag() {
+		return searchHasScanDataFlag;
+	}
+
+	public void setSearchHasScanDataFlag(boolean searchHasScanDataFlag) {
+		this.searchHasScanDataFlag = searchHasScanDataFlag;
 	}
 		
 }

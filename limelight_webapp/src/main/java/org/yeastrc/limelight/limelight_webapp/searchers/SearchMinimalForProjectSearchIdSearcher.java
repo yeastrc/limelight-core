@@ -40,17 +40,11 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 		
 	private static final String QUERY_SQL = 
 			"SELECT project_search_tbl.search_name, project_search_tbl.search_short_name, project_search_tbl.id AS project_search_id, search_tbl.id AS search_id, "
-			+ " project_search_tbl.project_id AS project_id, search_tbl.has_search_sub_groups "
+			+ " project_search_tbl.project_id AS project_id, search_tbl.has_search_sub_groups, search_tbl.has_scan_data, search_tbl.import_end_timestamp "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
 			+ " WHERE project_search_tbl.id = ?";
 
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.searchers.SearchListForProjectIdSearcherIF#getSearchListForProjectId(int)
-	 */
-	/* (non-Javadoc)
-	 * @see org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectSearchIdSearcher_IF#getSearchListForProjectId(int)
-	 */
 	@Override
 	public SearchItemMinimal  getSearchListForProjectSearchId( int projectSearchId ) throws SQLException {
 
@@ -76,6 +70,14 @@ public class SearchMinimalForProjectSearchIdSearcher extends Limelight_JDBC_Base
 							result.setSearchHasSubgroups(true);
 						}
 					}
+					{
+						int resultInt = rs.getInt( "has_scan_data" );
+						if ( resultInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							result.setSearchHasScanDataFlag(true);
+						}
+					}
+
+					result.setImportEndTimestamp( rs.getTimestamp( "import_end_timestamp" ) );
 				}
 			}
 		} catch ( SQLException e ) {

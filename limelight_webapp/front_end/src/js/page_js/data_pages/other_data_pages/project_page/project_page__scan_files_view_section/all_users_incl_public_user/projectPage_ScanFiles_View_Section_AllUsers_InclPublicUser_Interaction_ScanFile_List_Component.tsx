@@ -53,6 +53,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
 
 /**
  *
@@ -546,6 +549,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
     private _iconOrMainRowClicked_BindThis = this._iconOrMainRowClicked.bind(this);
 
+    private _scanFileToSearch_Page_ScanFile_FakeLink_Clicked_BindThis = this._scanFileToSearch_Page_ScanFile_FakeLink_Clicked.bind(this)
     private _scanBrowser_Page_FakeLink_Clicked_BindThis = this._scanBrowser_Page_FakeLink_Clicked.bind(this);
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
@@ -621,6 +625,28 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
         this.props.expandedChange_CallbackFunction({ expanded: this._show_DetailsBlock, projectScanFileId: this.props.scanFile_Entry.projectScanFileId })
 
         this.setState( { force_Rerender: {} } );
+    }
+
+    /**
+     *
+     */
+    private _scanFileToSearch_Page_ScanFile_FakeLink_Clicked (event: React.MouseEvent<HTMLInputElement, MouseEvent> ) {
+
+        event.stopPropagation();
+        const ctrlKeyOrMetaKey = event.ctrlKey || event.metaKey;
+
+        if ( limelight__IsTextSelected() ) {
+            //  Text is selected so exit
+            return; // EARLY RETURN
+        }
+
+        this.props.scanFile_Entry.scanFile_Code_FirstSix
+
+        ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod.scanFileToSearch_View_OpenDataPage({
+            projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+            scanFile_Code_FirstSix: this.props.scanFile_Entry.scanFile_Code_FirstSix,
+            ctrlKeyOrMetaKey
+        })
     }
 
     /**
@@ -721,7 +747,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                         <div>
                             <div style={ { paddingLeft: 10, whiteSpace: "nowrap" } }>
 
-                                {/* Navigation etc */}
+                                {/* Navigation etc */ }
 
                                 { this.props.scanFile_Entry.canDownload ? (
                                     <>
@@ -748,32 +774,32 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                             projectScanFile_Id: this.props.scanFile_Entry.projectScanFileId
                                                         }
 
-                                                        const requestJSONString = JSON.stringify(requestJSONObject);
+                                                        const requestJSONString = JSON.stringify( requestJSONObject );
 
                                                         //  Create and submit form
 
-                                                        const form = document.createElement("form");
+                                                        const form = document.createElement( "form" );
 
-                                                        $(form).hide();
+                                                        $( form ).hide();
 
-                                                        form.setAttribute("method", "post");
-                                                        form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-project-scan-file-id");
-                                                        form.setAttribute("target", "_blank");
+                                                        form.setAttribute( "method", "post" );
+                                                        form.setAttribute( "action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-project-scan-file-id" );
+                                                        form.setAttribute( "target", "_blank" );
 
-                                                        const requestJSONStringField = document.createElement("textarea");
-                                                        requestJSONStringField.setAttribute("name", "requestJSONString");
+                                                        const requestJSONStringField = document.createElement( "textarea" );
+                                                        requestJSONStringField.setAttribute( "name", "requestJSONString" );
 
-                                                        $(requestJSONStringField).text(requestJSONString);
+                                                        $( requestJSONStringField ).text( requestJSONString );
 
-                                                        form.appendChild(requestJSONStringField);
+                                                        form.appendChild( requestJSONStringField );
 
-                                                        document.body.appendChild(form);    // Not entirely sure if this is necessary
+                                                        document.body.appendChild( form );    // Not entirely sure if this is necessary
 
                                                         try {
                                                             form.submit();
                                                         } finally {
 
-                                                            document.body.removeChild(form);
+                                                            document.body.removeChild( form );
                                                         }
 
                                                     } catch ( e ) {
@@ -829,7 +855,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                             </>
                                         ) : null }
 
-                                        */}
+                                        */ }
 
                                         { this.props.runFeatureDetection_IsFullyConfigured ? (
                                             <>
@@ -844,20 +870,19 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                             return; // EARLY RETURN
                                                         }
 
-                                                        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.
-                                                        getFunction__open_Run_Hardklor_File_Contents_For_ScanFile_Project_Overlay__Function()({
+                                                        this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.getFunction__open_Run_Hardklor_File_Contents_For_ScanFile_Project_Overlay__Function()( {
                                                             component_Params: {
                                                                 projectIdentifier: this.props.projectIdentifier,
                                                                 projectScanFileId_List: [ this.props.scanFile_Entry.projectScanFileId ],
                                                                 scanFilename_Array_Array: [ this.props.scanFile_Entry.scanFilename_Array ]
                                                             },
-                                                            uploadComplete_Callback: () : void => {
+                                                            uploadComplete_Callback: (): void => {
 
                                                                 refresh_ProjectPage_UploadData_MainPage_Main_Component()
 
                                                                 refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()
                                                             }
-                                                        })
+                                                        } )
                                                     } }
                                                 >
                                                     [Run Feature Detection]
@@ -867,51 +892,66 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                         ) : null }
 
 
-                                        {/*{ this.props.standardRunImporter_IsFullyConfigured ? (*/}
-                                        {/*    <>*/}
-                                        {/*        <span*/}
-                                        {/*            className=" fake-link "*/}
-                                        {/*            onClick={ event => {*/}
+                                        {/*{ this.props.standardRunImporter_IsFullyConfigured ? (*/ }
+                                        {/*    <>*/ }
+                                        {/*        <span*/ }
+                                        {/*            className=" fake-link "*/ }
+                                        {/*            onClick={ event => {*/ }
 
-                                        {/*                event.stopPropagation();*/}
+                                        {/*                event.stopPropagation();*/ }
 
-                                        {/*                if ( limelight__IsTextSelected() ) {*/}
-                                        {/*                    //  Text is selected so exit*/}
-                                        {/*                    return; // EARLY RETURN*/}
-                                        {/*                }*/}
+                                        {/*                if ( limelight__IsTextSelected() ) {*/ }
+                                        {/*                    //  Text is selected so exit*/ }
+                                        {/*                    return; // EARLY RETURN*/ }
+                                        {/*                }*/ }
 
-                                        {/*                this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.*/}
-                                        {/*                getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({*/}
-                                        {/*                    component_Params: {*/}
-                                        {/*                        projectIdentifier: this.props.projectIdentifier,*/}
-                                        {/*                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,*/}
-                                        {/*                        scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array*/}
-                                        {/*                    },*/}
-                                        {/*                    uploadComplete_Callback: () : void => {*/}
+                                        {/*                this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions.*/ }
+                                        {/*                getFunction__open_Import_Hardklor_Bullseye_Files_Contents_For_ScanFile_Project_Overlay()({*/ }
+                                        {/*                    component_Params: {*/ }
+                                        {/*                        projectIdentifier: this.props.projectIdentifier,*/ }
+                                        {/*                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,*/ }
+                                        {/*                        scanFilename_Array: this.props.scanFile_Entry.scanFilename_Array*/ }
+                                        {/*                    },*/ }
+                                        {/*                    uploadComplete_Callback: () : void => {*/ }
 
-                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Main_Component()*/}
+                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Main_Component()*/ }
 
-                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()*/}
-                                        {/*                    }*/}
-                                        {/*                })*/}
-                                        {/*            } }*/}
-                                        {/*        >*/}
-                                        {/*            [Import Feature Detection]*/}
-                                        {/*        </span>*/}
-                                        {/*        <span> </span>*/}
-                                        {/*    </>*/}
-                                        {/*) : null }*/}
+                                        {/*                        refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component()*/ }
+                                        {/*                    }*/ }
+                                        {/*                })*/ }
+                                        {/*            } }*/ }
+                                        {/*        >*/ }
+                                        {/*            [Import Feature Detection]*/ }
+                                        {/*        </span>*/ }
+                                        {/*        <span> </span>*/ }
+                                        {/*    </>*/ }
+                                        {/*) : null }*/ }
                                     </>
                                 ) : null }
+
+                                { this.props.scanFile_Entry.entryHasAnyRelatedProjectSearchId ? (
+                                    //  Only show when have any searches
+                                    <>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ this._scanFileToSearch_Page_ScanFile_FakeLink_Clicked_BindThis }
+                                        >
+                                            [Compare Results by Scan]
+                                        </span>
+                                        <span> </span>
+                                    </>
+                                ) : null }
+                                
                                 <span
                                     className=" fake-link "
                                     onClick={ this._scanBrowser_Page_FakeLink_Clicked_BindThis }
                                 >
                                     [Scan Browser]
                                 </span>
+
                                 { this.props.scanFile_Entry.userIsProjectOwner ? (
                                     <>
-                                        <span > </span>
+                                        <span> </span>
                                         { this.props.scanFile_Entry.canDeleteEntry ? (
                                             <img
                                                 className="icon-small clickable  "
@@ -946,41 +986,57 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 
-                                                    const webserviceCallStandardPostResponse = webserviceCallStandardPost({ dataToSend : requestObject, url, dataRetrieval_CanRetry: false }) ;
+                                                    const webserviceCallStandardPostResponse = webserviceCallStandardPost( {
+                                                        dataToSend: requestObject,
+                                                        url,
+                                                        dataRetrieval_CanRetry: false
+                                                    } );
 
                                                     const promise_webserviceCallStandardPost = webserviceCallStandardPostResponse.promise;
 
-                                                    promise_webserviceCallStandardPost.catch( (reason) => { try {
+                                                    promise_webserviceCallStandardPost.catch( ( reason ) => {
+                                                        try {
 
-                                                        console.log("END: REJECTED: getting data from URL: " + url);
+                                                            console.log( "END: REJECTED: getting data from URL: " + url );
 
-                                                        // reject();
+                                                            // reject();
 
-                                                        throw Error( "Delete Scan File Request Rejected: reason: " + reason)
+                                                            throw Error( "Delete Scan File Request Rejected: reason: " + reason )
 
-                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-                                                    promise_webserviceCallStandardPost.then( ({ responseData }: { responseData: any }) => { try {
-
-                                                        console.log( "END: Successful: AJAX Call: getting data from URL: " + url );
-
-                                                        if ( ! responseData.deleteSuccess ) {
-
-                                                            window.alert( "Scan file not deleted.  Unable to delete scan files with associated searches." )
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
                                                         }
+                                                    } )
 
-                                                        if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+                                                    promise_webserviceCallStandardPost.then( ( { responseData }: {
+                                                        responseData: any
+                                                    } ) => {
+                                                        try {
 
-                                                            this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+                                                            console.log( "END: Successful: AJAX Call: getting data from URL: " + url );
 
-                                                            return // EARLY RETURN
+                                                            if ( ! responseData.deleteSuccess ) {
+
+                                                                window.alert( "Scan file not deleted.  Unable to delete scan files with associated searches." )
+                                                            }
+
+                                                            if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
+
+                                                                this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback()
+
+                                                                return // EARLY RETURN
+                                                            }
+
+                                                            limelight__ReloadPage_Function()
+
+                                                        } catch ( e ) {
+                                                            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                            throw e
                                                         }
+                                                    } )
 
-                                                        limelight__ReloadPage_Function()
-
-                                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
-
-                                                }}
+                                                } }
                                             />
                                         ) : (
                                             <img
@@ -988,16 +1044,16 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                 title="Unable to delete scan files with associated searches."
                                                 src="static/images/icon-circle-delete-disabled.png"
                                             />
-                                        )}
+                                        ) }
                                     </>
                                 ) : null }
                             </div>
                         </div>
                     </div>
 
-                    {/*  Scan File Details  */}
+                    {/*  Scan File Details  */ }
                     <div
-                        style={ { display: ( ! this._show_DetailsBlock ) ? "none": null } }
+                        style={ { display: ( ! this._show_DetailsBlock ) ? "none" : null } }
                     >
                         { ( this._detailsBlock_EverShown ) ? (
                             <ScanFile_Details_Component

@@ -26,6 +26,8 @@
  		For use in Handlebars template file single_search_template.handlebars
   --%>
 
+  <script id="url_path__scan_file_to_search" type="text/text"><%= AA_PageControllerPaths_Constants.SCAN_FILE_TO_SEARCHES_VIEW_PAGE_CONTROLLER %></script>
+
   <script id="url_path__qc" type="text/text"><%=AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER%></script>
 
   <script id="url_path__peptide" type="text/text"><%=AA_PageControllerPaths_Constants.PEPTIDE_VIEW_PAGE_CONTROLLER%></script>
@@ -83,6 +85,8 @@
 	
 	<script type="text/text" id="project_search_id_code_block_start_end_identifier_strings"><%= ProjectSearchId_Based_Pages_Constants.PROJECT_SEARCH_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS %></script>
 	<script type="text/text" id="project_search_id_code_separator"><%= ProjectSearchId_Based_Pages_Constants.PROJECT_SEARCH_ID_CODE_SEPARATOR %></script>
+	
+	<script type="text/text" id="project_scan_file_id_code_block_start_end_identifier_strings"><%= ProjectSearchId_Based_Pages_Constants.PROJECT_SCAN_FILE_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS %></script>
 	
 	<%--Footer and related --%>
 	

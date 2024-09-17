@@ -27,6 +27,7 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
+import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchRecordStatus;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.objects.SearchItemMinimal;
@@ -43,7 +44,7 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 	private static final String QUERY_SQL = 
 			"SELECT project_search_tbl.id AS project_search_id, project_search_tbl.project_id AS project_id, search_tbl.id AS search_id,"
 			+ " project_search_tbl.search_display_order, project_search_tbl.search_name, project_search_tbl.search_short_name, "
-			+ " search_tbl.import_end_timestamp  "
+			+ " search_tbl.has_search_sub_groups, search_tbl.has_scan_data, search_tbl.import_end_timestamp  "
 			+ " FROM "
 			+ " project_search_tbl INNER JOIN search_tbl ON project_search_tbl.search_id = search_tbl.id "
 			+ " WHERE project_search_tbl.project_id = ? AND project_search_tbl.status_id = " + SearchRecordStatus.IMPORT_COMPLETE_VIEW.value();
@@ -71,6 +72,20 @@ public class SearchListForProjectIdSearcher extends Limelight_JDBC_Base implemen
 					item.setDisplayOrder( rs.getInt( "search_display_order" ) );
 					item.setName( rs.getString( "search_name" ) );
 					item.setSearchShortName( rs.getString( "search_short_name" ) );
+
+					{
+						int resultInt = rs.getInt( "has_search_sub_groups" );
+						if ( resultInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setSearchHasSubgroups(true);
+						}
+					}
+					{
+						int resultInt = rs.getInt( "has_scan_data" );
+						if ( resultInt == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
+							item.setSearchHasScanDataFlag(true);
+						}
+					}
+
 					item.setImportEndTimestamp( rs.getTimestamp( "import_end_timestamp" ) );
 					resultList.add( item );
 				}

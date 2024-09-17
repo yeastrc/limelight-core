@@ -61,12 +61,20 @@
 <script type="text/text" id="search_data_lookup_parameters_lookup_code__computed"><html><body><c:out value="${ searchDataLookupParametersLookupCode_Computed }"/></body><html></script>
 
 
+<%--    --%>
+<script type="text/text" id="project_scan_file_id_from_url"><html><body><c:out value="${ projectScanFileId }"/></body><html></script>
+
+
 <script type="text/text" id="page_navigation_links_data_json"
 >
 {
   "single_search" : <%-- Also used for multiple search  --%>
 	{
 	"nav_entries" : [
+		{
+		"label" : "Scans View",
+		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.SCAN_FILE_TO_SEARCHES_VIEW_PAGE_CONTROLLER %>"
+		},
 		{
 		"label" : "Stats/QC",
 		"nav_link_base_url" : "<%= AA_PageControllerPaths_Constants.QC_VIEW_PAGE_CONTROLLER %>"

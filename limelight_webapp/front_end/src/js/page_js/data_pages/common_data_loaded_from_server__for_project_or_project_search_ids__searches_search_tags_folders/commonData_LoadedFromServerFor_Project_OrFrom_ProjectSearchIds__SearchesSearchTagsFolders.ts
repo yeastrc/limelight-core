@@ -195,6 +195,9 @@ export class CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Re
     readonly searchShortName : string
     readonly displayOrder_AllSearches : number
 
+    readonly searchHasSubgroups: boolean
+    readonly searchHasScanDataFlag: boolean
+
     readonly searchTagIds_Set: ReadonlySet<number>
 }
 
@@ -587,6 +590,10 @@ const _getSearchList_FromServerResponseData = function ( responseData: any ) : C
             searchName : searchItem.name,
             searchShortName: searchItem.searchShortName,
             displayOrder_AllSearches : searchItem.displayOrder,
+
+            searchHasSubgroups: searchItem.searchHasSubgroups,
+            searchHasScanDataFlag: searchItem.searchHasScanDataFlag,
+
             searchTagIds_Set
         }
 

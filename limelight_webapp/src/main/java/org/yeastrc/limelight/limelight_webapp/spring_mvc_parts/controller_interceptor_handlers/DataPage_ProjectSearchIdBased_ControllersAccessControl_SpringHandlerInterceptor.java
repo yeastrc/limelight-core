@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.yeastrc.limelight.limelight_shared.dto.ProjectSearchIdCodeDTO;
+import org.yeastrc.limelight.limelight_shared.dto.Project_ScanFile_DTO;
 import org.yeastrc.limelight.limelight_shared.enum_classes.SearchDataLookupParametersLookup_CreatedByUserType;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIdsIF;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_page_controller.GetWebSessionAuthAccessLevelForProjectIds.GetWebSessionAuthAccessLevelForProjectIds_Result;
@@ -55,6 +56,8 @@ import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.main.SearchDataLookupParams_GetRecordForCodeIF;
 import org.yeastrc.limelight.limelight_webapp.search_data_lookup_parameters_code.params.SearchDataLookupParams_CreatedByInfo;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectIdsForProjectSearchIdsSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectScanFile_For_ProjectScanFileId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchIdList_For_ProjectScanFileId_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service_IF;
 import org.yeastrc.limelight.limelight_webapp.services.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service.SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result;
@@ -125,6 +128,12 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
 	
 	@Autowired
 	private Search_Has_SearchSubGroups_ForProjectSearchIdSearcher_IF search_Has_SearchSubGroups_ForProjectSearchIdSearcher;
+
+	@Autowired
+	private ProjectScanFile_For_ProjectScanFileId_Searcher_IF projectScanFile_For_ProjectScanFileId_Searcher;
+	
+	@Autowired
+	private ProjectSearchIdList_For_ProjectScanFileId_Searcher_IF projectSearchIdList_For_ProjectScanFileId_Searcher;
 	
 	@Autowired
 	private PopulatePageHeaderDataIF populatePageHeaderData;
@@ -215,6 +224,16 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     			
     			searchDataLookupParametersLookupCode_Computed_From_ProjectSearchIdCodes = true;
     			
+    		} else if ( searchDataLookupParametersLookupCode_From_URL.startsWith( ProjectSearchId_Based_Pages_Constants.PROJECT_SCAN_FILE_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS )
+        				&& searchDataLookupParametersLookupCode_From_URL.endsWith( ProjectSearchId_Based_Pages_Constants.PROJECT_SCAN_FILE_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS ) ) {
+        			
+    			//  Process Project Scan File Id in URL
+    			
+
+    			internal_LookupMethodResult = _process_ProjectScanFileIdCode_InURL( searchDataLookupParametersLookupCode_From_URL, httpServletRequest, httpServletResponse, requestURI );
+    			
+    			searchDataLookupParametersLookupCode_Computed_From_ProjectSearchIdCodes = true;
+        			
     		} else {
     			
     			//  Process Standard 'Search Data Lookup Parameters Code'
@@ -276,6 +295,11 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     			
     			httpServletRequest.setAttribute( WebConstants.REQUEST_SINGLE_SEARCH_HAS_SUB_GROUPS, true );
     		}
+    		
+    		
+			httpServletRequest.setAttribute( 
+					WebConstants.REQUEST_PROJECT_SCAN_FILE_ID, internal_LookupMethodResult.projectScanFileId );
+		
 
     		//		httpServletRequest.setAttribute( 
     		//				WebConstants.REQUEST_PROJECT_ID,  );
@@ -711,6 +735,189 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     }
     
     
+
+
+    ///////////////
+    
+    /**
+     *  Process  Project Scan File Id  in URL
+     * 
+     * @param Project Scan File Id 
+     * @param httpServletRequest
+     * @param httpServletResponse
+     * @param requestURI
+     * @return
+     * @throws Exception 
+     */
+    private Internal_LookupMethodResult _process_ProjectScanFileIdCode_InURL(
+    		
+    		String projectScanFileIdentifier_EncodedIn_URL, // Holds Project Scan File Id 
+    		HttpServletRequest httpServletRequest, 
+    		HttpServletResponse httpServletResponse,
+    		String requestURI
+    		) throws Exception {
+    	
+
+		int startEndIdentifier_Length = ProjectSearchId_Based_Pages_Constants.PROJECT_SEARCH_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS.length();
+		
+		String projectScanFileIdentifier_String = projectScanFileIdentifier_EncodedIn_URL.substring( startEndIdentifier_Length, projectScanFileIdentifier_EncodedIn_URL.length() - startEndIdentifier_Length );
+		
+		if ( StringUtils.isEmpty( projectScanFileIdentifier_String ) ) {
+
+			final int statusCode404 = 404; // Resource not found
+
+			httpServletResponse.setStatus( statusCode404 ); 
+
+			httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_SEARCH_NOT_FOUND, true ); // Control message on error page
+			//  WAS
+			// httpServletRequest.setAttribute( WebErrorPageKeysConstants.REQUESTED_DATA_NOT_FOUND, true ); // Control message on error page
+
+			final String mainErrorPageControllerURL =
+					AA_ErrorPageControllerPaths_Constants.PATH_START_ALL 
+					+ AA_ErrorPageControllerPaths_Constants.MAIN_ERROR_PAGE_CONTROLLER;
+
+			RequestDispatcher requestDispatcher = 
+					httpServletRequest.getServletContext().getRequestDispatcher( mainErrorPageControllerURL );
+
+			log.warn( "Error in URL to Project Search Based page, projectScanFileIdentifier_String is empty string. "
+					+ "setting HTTP status code to: " + statusCode404
+					+ ".  Forwarding to '"
+					+ mainErrorPageControllerURL
+					+ "'. requestURI: " + requestURI );
+
+			requestDispatcher.forward( httpServletRequest, httpServletResponse );
+
+			//
+
+			Internal_LookupMethodResult result = new Internal_LookupMethodResult();
+
+			result.return_False_FromTopLevelMethod = true;
+
+			return result; //  EARLY EXIT	
+		}
+		
+		// projectScanFileIdentifier_EncodedIn_URL IS:  a{scan file spectr code 1st 6 characters}{project id}z{scan file id base 35}
+		//  								starting 'a' means first layout version
+
+		if ( ! projectScanFileIdentifier_String.startsWith( "a" ) ) {
+			String msg = "projectScanFileIdentifier_String NOT start with 'a'. The start 'a' is the version";
+			log.warn(msg);
+			throw new LimelightErrorDataInWebRequestException(msg);
+		}
+
+		int projectScanFileId;
+
+		String scanFileCode_firstSix = projectScanFileIdentifier_String.substring(1, 7);  // skip first character and then take 6
+
+		{
+			String rest = projectScanFileIdentifier_String.substring(7);
+
+			String projectScanFileIdString = rest;
+
+			try {
+				projectScanFileId = Integer.parseInt(projectScanFileIdString, 35);	
+			} catch ( Exception e ) {
+				String msg = "projectScanFileIdString not parse to int: " + projectScanFileIdString;
+				log.warn(msg);
+				throw new LimelightErrorDataInWebRequestException( msg );
+			}
+		}
+
+		Project_ScanFile_DTO project_ScanFile_DTO =
+				projectScanFile_For_ProjectScanFileId_Searcher.get_For_ProjectScanFileId_Searcher(projectScanFileId);
+
+		if ( project_ScanFile_DTO == null ) {
+			String msg = "projectScanFileId not in DB: " + projectScanFileId;
+			log.warn(msg);
+			throw new LimelightErrorDataInWebRequestException( msg );
+		}
+
+		
+		List<Integer> projectSearchIdList_For_ProjectScanFileId = projectSearchIdList_For_ProjectScanFileId_Searcher.getForProjectScanFileId_ProjectSearchIdList(projectScanFileId);
+		
+		if ( projectSearchIdList_For_ProjectScanFileId.isEmpty() ) {
+
+			//  NO Searches for Project Scan File Id so Error
+			
+			//  TODO  Maybe different error
+			
+			log.warn( "NO Searches for Project Scan File Id. projectScanFileId: " + projectScanFileId );
+
+			Internal_LookupMethodResult result = new Internal_LookupMethodResult();
+
+			result.return_False_FromTopLevelMethod = true;
+			
+			return result; //  EARLY EXIT	
+		}
+
+		
+		
+		Integer projectId = null;
+		Integer userId = null;
+
+		{ // Perform Access Check
+			
+			Internal_UserAccessCheckResult internal_UserAccessCheckResult =
+					this._performUserAccessCheck_UpdateRequest_FromUserSession_ForPageHeader(projectSearchIdList_For_ProjectScanFileId, requestURI, httpServletRequest, httpServletResponse);
+			
+			if ( internal_UserAccessCheckResult.return_False_FromTopLevelMethod ) {
+				
+				//  Failed access check
+				
+				Internal_LookupMethodResult result = new Internal_LookupMethodResult();
+
+				result.return_False_FromTopLevelMethod = true;
+				
+				return result; //  EARLY EXIT				
+			}
+			
+			projectId = internal_UserAccessCheckResult.projectId;
+			
+			userId = internal_UserAccessCheckResult.userId;
+		}
+		
+
+		
+		SearchDataLookupParams_CreatedByInfo searchDataLookupParams_CreatedByInfo = new SearchDataLookupParams_CreatedByInfo();
+
+		if ( userId != null ) {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserId( userId );
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_USER );
+		} else {
+			searchDataLookupParams_CreatedByInfo.setCreatedByUserType(  
+					SearchDataLookupParametersLookup_CreatedByUserType.WEB_NON_USER );
+		}
+		
+		searchDataLookupParams_CreatedByInfo.setCreatedByRemoteIP( httpServletRequest.getRemoteAddr() );
+		
+		///
+		
+		SearchDataLookupParametersLookupCode__Create_InsertToDB__Service__Result serviceResult =
+				searchDataLookupParametersLookupCode__Create_InsertToDB__Service
+				.searchDataLookupParametersLookupCode__Create_InsertToDB__Service(
+						projectId, 
+						null /* searchDataLookupParamsRoot */, 
+						projectSearchIdList_For_ProjectScanFileId, 
+						searchDataLookupParams_CreatedByInfo );
+		
+		serviceResult.getSearchDataLookupParamsCode();
+		serviceResult.getSearchDataLookupParamsRoot();
+
+		Internal_LookupMethodResult result = new Internal_LookupMethodResult();
+
+		result.return_False_FromTopLevelMethod = false;
+		result.searchDataLookupParametersLookupCode = serviceResult.getSearchDataLookupParamsCode();
+		result.searchDataLookupParametersLookupDTO = serviceResult.getSearchDataLookupParametersLookupDTO();
+		result.projectSearchIds = projectSearchIdList_For_ProjectScanFileId;
+		result.searchDataLookupParametersLookupJSON = serviceResult.getSearchDataLookupParametersLookupDTO().getLookupParametersJSONMainData();
+		result.searchDataLookupParamsRoot = serviceResult.getSearchDataLookupParamsRoot();
+		result.projectScanFileId = projectScanFileId;
+		
+		return result;	
+    }
+    
+    
     /**
      * @param projectSearchIds
      * @param requestURI
@@ -968,6 +1175,7 @@ public class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandle
     	
     	String searchDataLookupParametersLookupJSON;
     	SearchDataLookupParamsRoot searchDataLookupParamsRoot;
+    	Integer projectScanFileId;
     	
     	
     	boolean return_False_FromTopLevelMethod;

@@ -25,4 +25,8 @@ public class ProjectSearchId_Based_Pages_Constants {
 
 	public static final String PROJECT_SEARCH_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS = "A";
 	public static final String PROJECT_SEARCH_ID_CODE_SEPARATOR = "W";
+	
+	//  Project Scan File Id
+	
+	public static final String PROJECT_SCAN_FILE_ID_CODE_BLOCK_START_END_IDENTIFIER_STRINGS = "B";
 }
