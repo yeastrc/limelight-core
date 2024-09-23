@@ -20,6 +20,10 @@ import {
 import {ProjectPage_UploadData_UploadFiles__Common_ScanFileSelection} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles_Overlay__Common_Constants_Classes";
 import {refresh_ProjectPage_UploadData_MainPage_Main_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Main_Component";
 import {refresh_ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__upload_data_section__main_page/projectPage_UploadData_MainPage_Pending_and_History_Sections_Display_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -164,10 +168,18 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_Sel
                             </button>
                             { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
                                 // overlay when button is disabled to show tooltip
-                                <div
-                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                    title="Select 1 or more scan files to run Feature Detection for"
-                                ></div>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Select 1 or more scan files <br/> to run Feature Detection for
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <div
+                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                    ></div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ): null }
                         </div>
                     </div>

@@ -16,6 +16,10 @@ import {
     tooltip_Limelight_Create_Tooltip,
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -405,7 +409,9 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
         const div_Inner_Style: React.CSSProperties = {  backgroundColor: tag_Entry.tag_Color_Background, color: tag_Entry.tag_Color_Font };
 
         let className_Addition_Inner = "";
-        let tooltip_Inner: string
+
+        //   WARNING:  'tooltip_Inner' MUST BE SET
+        let tooltip_Inner: JSX.Element = undefined
 
         if ( this.props.search_Tags_Selections_Object.searchTagIdsSelected_Boolean__AND.has( tag_Entry.tagId ) ) {
 
@@ -427,7 +433,16 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
 
             }
 
-            tooltip_Inner = tooltipStart + "\n\nClick to change or remove filter on this tag"
+            tooltip_Inner = (
+                <>
+                    <div style={ { marginBottom: 10 } }>
+                        { tooltipStart }
+                    </div>
+                    <div>
+                        Click to change or remove filter on this tag
+                    </div>
+                </>
+            )
 
         } else if ( this.props.search_Tags_Selections_Object.searchTagIdsSelected_Boolean__OR.has( tag_Entry.tagId ) ) {
 
@@ -435,7 +450,16 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
             div_Inner_Style.borderWidth = _SELECTION_BORDER_WIDTH;
             div_Inner_Style.borderColor = "black"
 
-            tooltip_Inner = "The search will have this tag OR any other tags with the OR designation.\n\nClick to change or remove filter on this tag."
+            tooltip_Inner = (
+                <>
+                    <div style={ { marginBottom: 10 } }>
+                        The search will have this tag OR any other tags with the OR designation.
+                    </div>
+                    <div>
+                        Click to change or remove filter on this tag
+                    </div>
+                </>
+            )
 
         } else if ( this.props.search_Tags_Selections_Object.searchTagIdsSelected_Boolean__NOT.has( tag_Entry.tagId ) ) {
 
@@ -445,12 +469,35 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
 
             className_Addition_Inner += " search-tag-display-everywhere--not-selection "
 
-            tooltip_Inner = "The search will not have this tag OR any other any other EXCLUDED tags.\n\nClick to change or remove filter on this tag."
+            tooltip_Inner = (
+                <>
+                    <div style={ { marginBottom: 10 } }>
+                        The search will not have this tag OR any other any other EXCLUDED tags.
+                    </div>
+                    <div>
+                        Click to change or remove filter on this tag
+                    </div>
+                </>
+            )
 
         } else {
             div_Outer_Style.padding = _SELECTION_BORDER_WIDTH;
 
-            tooltip_Inner = "Click to filter on this tag"
+            tooltip_Inner = (
+                <span>
+                    Click to filter on this tag
+                </span>
+            )
+        }
+
+        if ( ! tooltip_Inner ) {
+            try {
+                throw Error("tooltip_Inner is NOT set and MUST be set" )
+
+            } catch( e ) {
+                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                throw e;
+            }
         }
 
         return (
@@ -458,15 +505,23 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
                 key={ tag_Entry.tagId }
                 style={ div_Outer_Style }
             >
-                <div
-                    ref={ this._entry_Ref }
-                    className={ " clickable search-tag-display-everywhere " + className_Addition_Inner }
-                    style={ div_Inner_Style }
-                    title={ tooltip_Inner }
-                    onClick={ this._onClick_Handler_BindThis }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <div style={ { wordBreak: "break-word" } }>
+                            { tooltip_Inner }
+                        </div>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { tag_Entry.tagString }
-                </div>
+                    <div
+                        ref={ this._entry_Ref }
+                        className={ " clickable search-tag-display-everywhere " + className_Addition_Inner }
+                        style={ div_Inner_Style }
+                        onClick={ this._onClick_Handler_BindThis }
+                    >
+                        { tag_Entry.tagString }
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             </div>
         )
     }

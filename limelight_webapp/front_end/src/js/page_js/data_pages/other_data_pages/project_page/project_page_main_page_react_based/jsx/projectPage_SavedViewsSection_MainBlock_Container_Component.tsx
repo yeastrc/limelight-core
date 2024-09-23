@@ -14,6 +14,10 @@ import { ProjectPage_SavedViews_Section_LoggedInUsersInteraction } from "page_js
 import {
     ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component_Change_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -380,24 +384,40 @@ export class Internal__Single_SavedViewEntry_Component extends React.Component< 
                 { this.props.savedViewItem.canEdit ? (
                     <>
                         <span> </span>
-                        <img
-                            className="icon-small clickable"
-                            src="static/images/icon-edit.png"
-                            title="Edit name of Highlighted Result"
-                            onClick={ this._clickOn_EditLabelIcon_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Edit name of Highlighted Result
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                className="icon-small clickable"
+                                src="static/images/icon-edit.png"
+                                onClick={ this._clickOn_EditLabelIcon_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </>
                 ) : null }
 
                 { this.props.savedViewItem.canDelete ? (
                     <>
                         <span> </span>
-                        <img
-                            className="icon-small clickable"
-                            src="static/images/icon-circle-delete.png"
-                            title="Delete Highlighted Result"
-                            onClick={ this._clickOn_DeleteLabelIcon_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete Highlighted Result
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                className="icon-small clickable"
+                                src="static/images/icon-circle-delete.png"
+                                onClick={ this._clickOn_DeleteLabelIcon_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </>
                 ) : null }
 

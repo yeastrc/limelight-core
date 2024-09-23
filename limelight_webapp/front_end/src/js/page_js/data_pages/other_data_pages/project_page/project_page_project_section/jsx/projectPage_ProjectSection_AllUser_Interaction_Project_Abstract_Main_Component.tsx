@@ -21,6 +21,10 @@ import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorT
 import {
     ProjectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_Component_Change_Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_ProjectOwnerInteraction_Change_ProjectAbstract_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -166,20 +170,22 @@ export class ProjectPage__ProjectSection_AllUser_Interaction_Project_Abstract_Ma
                     { this._userCanEditAbstract ? (
                         <>
                             <span> </span>
-                            <input
-                                type="image" src="static/images/icon-edit.png"
-                                className=" icon-small " title="Edit project abstract"
-                                onClick={ this._edit_Clicked_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Edit project abstract
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-edit.png"
+                                    className=" icon-small "
+                                    onClick={ this._edit_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </>
                     ) : null }
-
-                    {/*<c:if test="${ webSessionAuthAccessLevel.projectOwnerAllowed }" >*/}
-                    {/*    <%--*/}
-                    {/*    --%>*/}
-                    {/*    <input id="change_project_abstract_button" type="image" src="static/images/icon-edit.png"  value="Update"*/}
-                    {/*           class=" icon-small " title="Edit project abstract" >*/}
-                    {/*</c:if>*/}
                 </div>
             </div>
 

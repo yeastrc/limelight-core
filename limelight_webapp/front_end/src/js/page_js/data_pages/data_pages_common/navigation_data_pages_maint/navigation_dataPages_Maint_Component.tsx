@@ -9,6 +9,10 @@ import React from 'react'
 import {ControllerPath_forCurrentPage_FromDOM} from "page_js/data_pages/data_pages_common/controllerPath_forCurrentPage_FromDOM";
 import {_REFERRER_PATH_WITH_LEADING_PATH_SEPARATOR} from "page_js/data_pages/data_pages_common/a_dataPagesCommonConstants";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 export enum Navigation_dataPages_Maint__NavigationType_Enum {
     SINGLE_SEARCH = "SINGLE_SEARCH",
@@ -283,13 +287,22 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
 
         return (
             <React.Fragment>
-                    <span title="Current page" className=" gray-text ">
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Current page
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <span className=" gray-text ">
                         [
                         <span>
                             { this.props.navigation_Entry_From_DOM.label }
                         </span>
                         ]
                     </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 <span > </span>
             </React.Fragment>
         )

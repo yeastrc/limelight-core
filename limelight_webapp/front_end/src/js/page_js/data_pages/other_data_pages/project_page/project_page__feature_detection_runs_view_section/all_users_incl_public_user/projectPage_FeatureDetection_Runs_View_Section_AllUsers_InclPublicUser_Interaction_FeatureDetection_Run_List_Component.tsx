@@ -41,6 +41,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -330,19 +334,34 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_FeatureDete
                         <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
                             {/*  Expand All and Collapse All Buttons  */}
-                            <input type="button" className="submit-button "
-                                   id="expand_all_search_details_button"
-                                   title="Show Details for All Feature Detection."
-                                   value="Expand All"
-                                   onClick={ this._expand_All_Button_Clicked_BindThis }
-                            />
+
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Show Details for All Feature Detection.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input type="button" className="submit-button "
+                                       value="Expand All"
+                                       onClick={ this._expand_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span> </span>
-                            <input className="submit-button " type="button"
-                                   id="collapse_all_search_details_button"
-                                   title="Hide Details for All Feature Detection."
-                                   value="Collapse All"
-                                   onClick={ this._collapse_All_Button_Clicked_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Hide Details for All Feature Detection.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input className="submit-button " type="button"
+                                       value="Collapse All"
+                                       onClick={ this._collapse_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
 
                         <div style={ { marginBottom: 10 } }>
@@ -750,10 +769,17 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                     <>
                                         <span > </span>
                                         {/*{ true ? (*/}
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Delete Feature Detection Run
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
                                             <img
                                                 className="icon-small clickable  "
                                                 src="static/images/icon-circle-delete.png"
-                                                title="Delete Feature Detection Run"
                                                 onClick={ event => {
 
                                                     event.stopPropagation();
@@ -793,6 +819,7 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
 
                                                 }}
                                             />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         {/*) : (*/}
                                         {/*    <img*/}
                                         {/*        className=" icon-small "*/}

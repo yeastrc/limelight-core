@@ -45,6 +45,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -806,19 +810,35 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                         <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
                             {/*  Expand All and Collapse All Buttons  */}
-                            <input type="button" className="submit-button "
-                                   id="expand_all_search_details_button"
-                                   title="Show Search Details for All Searches."
-                                   value="Expand All"
-                                   onClick={ this._expand_All_Button_Clicked_BindThis }
-                            />
+
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Show Search Details for All Searches.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input type="button" className="submit-button "
+                                       value="Expand All"
+                                       onClick={ this._expand_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span> </span>
-                            <input className="submit-button " type="button"
-                                   id="collapse_all_search_details_button"
-                                   title="Hide Search Details for All Searches."
-                                   value="Collapse All"
-                                   onClick={ this._collapse_All_Button_Clicked_BindThis }
-                            />
+
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Hide Search Details for All Searches.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input className="submit-button " type="button"
+                                       value="Collapse All"
+                                       onClick={ this._collapse_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                             {/*  Only For Logged In User  */}
                             { ( this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails ) ? (
@@ -835,16 +855,33 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             {/*  Copy Searches */}
 
                                             <div style={ { position: "relative", display: "inline-block" } }>
-                                                <input type="button" value="Copy Searches"
-                                                       disabled={ this.state.copy_move_ButtonsDisabled }
-                                                       onClick={ this._copySearches_Clicked_BindThis }
-                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Click here to copy the selected searches to another project.
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <input type="button" value="Copy Searches"
+                                                           disabled={ this.state.copy_move_ButtonsDisabled }
+                                                           onClick={ this._copySearches_Clicked_BindThis }
+                                                    />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 { ( this.state.copy_move_ButtonsDisabled ) ? (
                                                     // overlay when button is disabled to show tooltip
-                                                    <div
-                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                        title="Click here to copy the selected searches to another project."
-                                                    ></div>
+                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                        title={
+                                                            <span>
+                                                                Click here to copy the selected searches to another project.
+                                                            </span>
+                                                        }
+                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                    >
+                                                        <div
+                                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                        ></div>
+                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 ): null }
                                             </div>
 
@@ -853,16 +890,33 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             {/*  Delete Searches */}
 
                                             <div style={ { position: "relative", display: "inline-block" } }>
-                                                <input type="button" value="Delete Searches"
-                                                       disabled={ this.state.copy_move_ButtonsDisabled }
-                                                       onClick={ this._deleteSearches_Clicked_BindThis }
-                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Click here to delete the selected searches.
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <input type="button" value="Delete Searches"
+                                                           disabled={ this.state.copy_move_ButtonsDisabled }
+                                                           onClick={ this._deleteSearches_Clicked_BindThis }
+                                                    />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 { ( this.state.copy_move_ButtonsDisabled ) ? (
                                                     // overlay when button is disabled to show tooltip
-                                                    <div
-                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                        title="Click here to delete the selected searches."
-                                                    ></div>
+                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                        title={
+                                                            <span>
+                                                                Click here to delete the selected searches.
+                                                            </span>
+                                                        }
+                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                    >
+                                                        <div
+                                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                        ></div>
+                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 ): null }
                                             </div>
 
@@ -871,17 +925,33 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             {/*  Bulk set/update tags on Searches */}
 
                                             <div style={ { position: "relative", display: "inline-block" } }>
-                                                <input type="button" value="Tag Searches"
-                                                       title="Click here to add/remove tags on the selected searches."
-                                                       disabled={ this.state.copy_move_ButtonsDisabled }
-                                                       onClick={ this._bulk_set_update_TagsOnSearches_BindThis }
-                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Click here to add/remove tags on the selected searches.
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <input type="button" value="Tag Searches"
+                                                           disabled={ this.state.copy_move_ButtonsDisabled }
+                                                           onClick={ this._bulk_set_update_TagsOnSearches_BindThis }
+                                                    />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 { ( this.state.copy_move_ButtonsDisabled ) ? (
                                                     // overlay when button is disabled to show tooltip
+                                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                            title={
+                                                                <span>
+                                                                    Click here to add/remove tags on the selected searches.
+                                                                </span>
+                                                            }
+                                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                        >
                                                     <div
                                                         style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                        title="Click here to add/remove tags on the selected searches."
                                                     ></div>
+                                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                 ): null }
                                             </div>
 
@@ -890,10 +960,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             {/*  Manage ALL Tags in Project  */}
 
                                             <div style={ { position: "relative", display: "inline-block" } }>
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Click here to manage tags on the project.
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
                                                 <input type="button" value="Manage Tags"
-                                                       title="Click here to manage tags on the project."
                                                        onClick={ this._manageTagsInProject_BindThis }
                                                 />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </div>
 
                                             <span> </span>
@@ -924,22 +1002,38 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                             {/*  Organize Searches */}
                                             <div style={ { position: "relative", display: "inline-block" } }>
-                                                <input
-                                                    type="button"
-                                                    value="Organize Searches"
-                                                    title="CTRL-click or Command-click to open in new tab"
-                                                    onClick={ this._organizeSearchesButton_Clicked_BindThis }
-                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            CTRL-click or Command-click to open in new tab
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <input
+                                                        type="button"
+                                                        value="Organize Searches"
+                                                        onClick={ this._organizeSearchesButton_Clicked_BindThis }
+                                                    />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </div>
 
                                             <span> </span>
 
                                             {/*  Open Set Filter Overrides Overlay  */}
                                             <div style={ { position: "relative", display: "inline-block" } }>
-                                                <input type="button" value="Filter Overrides"
-                                                       title="Click here to set custom cutoffs for all searches.."
-                                                       onClick={ this._openFilterOverridesOverlay_Clicked_BindThis }
-                                                />
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Click here to set custom cutoffs for all searches..
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <input type="button" value="Filter Overrides"
+                                                           onClick={ this._openFilterOverridesOverlay_Clicked_BindThis }
+                                                    />
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </div>
 
                                         </React.Fragment>
@@ -1200,10 +1294,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     />
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Select 2 or more searches to compare searches"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Select 2 or more searches to compare searches
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ): null }
                                 </div>
 
@@ -1217,10 +1319,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     />
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Select 2 or more searches to compare searches"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Select 2 or more searches to compare searches
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ): null }
                                 </div>
 
@@ -1234,10 +1344,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     />
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Select 2 or more searches to compare searches"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Select 2 or more searches to compare searches
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ): null }
                                 </div>
 
@@ -1251,10 +1369,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     />
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Select 2 or more searches to compare searches"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Select 2 or more searches to compare searches
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ): null }
                                 </div>
 
@@ -1268,10 +1394,18 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                     />
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
-                                        <div
-                                            style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                            title="Select 2 or more searches to compare searches"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Select 2 or more searches to compare searches
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ): null }
                                 </div>
                             </div>

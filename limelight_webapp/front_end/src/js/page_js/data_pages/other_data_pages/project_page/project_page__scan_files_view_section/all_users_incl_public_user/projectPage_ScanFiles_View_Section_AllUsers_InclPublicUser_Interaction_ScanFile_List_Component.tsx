@@ -381,19 +381,35 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                         <div style={ { marginBottom: 10, whiteSpace: "nowrap" } }>
 
                             {/*  Expand All and Collapse All Buttons  */}
-                            <input type="button" className="submit-button "
-                                   id="expand_all_search_details_button"
-                                   title="Show Details for All Feature Detection."
-                                   value="Expand All"
-                                   onClick={ this._expand_All_Button_Clicked_BindThis }
-                            />
+
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Show Details for All Scan Files.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input type="button" className="submit-button "
+                                       value="Expand All"
+                                       onClick={ this._expand_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span> </span>
-                            <input className="submit-button " type="button"
-                                   id="collapse_all_search_details_button"
-                                   title="Hide Details for All Feature Detection."
-                                   value="Collapse All"
-                                   onClick={ this._collapse_All_Button_Clicked_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Hide Details for All Scan Files.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input className="submit-button " type="button"
+                                       id="collapse_all_search_details_button"
+                                       value="Collapse All"
+                                       onClick={ this._collapse_All_Button_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
 
                         <div style={ { marginBottom: 10 } }>
@@ -438,10 +454,18 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                                             </button>
                                             { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
                                                 // overlay when button is disabled to show tooltip
-                                                <div
-                                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                    title="Select 1 or more scan files to run Feature Detection for"
-                                                ></div>
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Select 1 or more scan files <br/> to run Feature Detection for
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                >
+                                                    <div
+                                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                    ></div>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             ): null }
                                         </div>
                                     </>
@@ -953,10 +977,17 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                     <>
                                         <span> </span>
                                         { this.props.scanFile_Entry.canDeleteEntry ? (
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Delete Scan File.
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
                                             <img
                                                 className="icon-small clickable  "
                                                 src="static/images/icon-circle-delete.png"
-                                                title="Delete Scan File"
                                                 onClick={ event => {
                                                     event.stopPropagation()
 
@@ -1038,12 +1069,21 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                                 } }
                                             />
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         ) : (
-                                            <img
-                                                className=" icon-small "
-                                                title="Unable to delete scan files with associated searches."
-                                                src="static/images/icon-circle-delete-disabled.png"
-                                            />
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Unable to delete scan files with associated searches.
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <img
+                                                    className=" icon-small "
+                                                    src="static/images/icon-circle-delete-disabled.png"
+                                                />
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         ) }
                                     </>
                                 ) : null }

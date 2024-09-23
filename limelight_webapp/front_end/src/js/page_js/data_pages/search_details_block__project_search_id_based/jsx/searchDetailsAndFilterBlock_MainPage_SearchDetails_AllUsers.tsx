@@ -848,14 +848,22 @@ class Internal__SubGroups_Component extends React.Component<Internal__SubGroups_
                     </div>
                     { this.props.searchDetails_CommonForProject.canEditSearchSubGroups ? (
                         <div>
-                             <span
-                                 className=" fake-link "
-                                 style={ { fontSize: 12, whiteSpace: "nowrap" } }
-                                 title="Manage Sub Searches"
-                                 onClick={ this._manage_SubGroups_Clicked_BindThis }
-                             >
-                                Manage
-                             </span>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Manage Sub Searches
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <span
+                                    className=" fake-link "
+                                    style={ { fontSize: 12, whiteSpace: "nowrap" } }
+                                    onClick={ this._manage_SubGroups_Clicked_BindThis }
+                                >
+                                    Manage
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     ) : null }
                 </div>
@@ -864,14 +872,23 @@ class Internal__SubGroups_Component extends React.Component<Internal__SubGroups_
 
                     { this.props.searchDetails_ForProjectSearchId.subGroupData.searchSubgroupItems.map( (searchSubgroupItem, index) => {
                         return (
-                            <span
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                 key={ searchSubgroupItem.searchSubGroupId }
-                                style={ { overflowWrap: "break-word" } }
-                                className=" filter-single-value-display-block "
-                                title={ searchSubgroupItem.subgroupName_fromImportFile }
+                                title={
+                                    <span>
+                                        { searchSubgroupItem.subgroupName_fromImportFile }
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                { searchSubgroupItem.subgroupName_Display }
-                            </span>
+                                <span
+                                    key={ searchSubgroupItem.searchSubGroupId }
+                                    style={ { overflowWrap: "break-word" } }
+                                    className=" filter-single-value-display-block "
+                                >
+                                    { searchSubgroupItem.subgroupName_Display }
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         )
                     } ) }
                 </div>

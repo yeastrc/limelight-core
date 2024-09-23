@@ -46,6 +46,10 @@ import {
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -728,11 +732,19 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                 { this.props.projectPage_SearchesAdmin && this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ? (
                                     <>
                                         <span> </span>
-                                        <img className="icon-small clickable  "
-                                             src="static/images/icon-circle-delete.png"
-                                             title="Delete search"
-                                             onClick={ this._deleteSearch_Clicked_BindThis }
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Delete search
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <img className="icon-small clickable  "
+                                                 src="static/images/icon-circle-delete.png"
+                                                 onClick={ this._deleteSearch_Clicked_BindThis }
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </>
                                 ) : null }
                             </div>

@@ -1223,13 +1223,21 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
                                     // { Only if project owner }
                                     <div>
-                                        <span
-                                            className=" fake-link "
-                                            onClick={ this._add_Change_SearchTags_Clicked_BindThis }
-                                            title="Add tags to this search"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Add tags to this search
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            +Add Tag
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ this._add_Change_SearchTags_Clicked_BindThis }
+                                            >
+                                                +Add Tag
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : null
                             ) }

@@ -13,6 +13,10 @@ import { webserviceCallStandardPost } from 'page_js/webservice_call_common/webse
 
 import { ProjectPage_ExperimentsList_SingleExperimentDetails } from './projPg_ExpermntsSection_ExpList_SingleExperimentDetails';
 import { ProjectPage_ExperimentsSection_LoggedInUsersInteraction } from './projPg_Expermnts_LoggedInUsersInteraction';
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -697,9 +701,18 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, Experiment
             editIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <img className=" fake-link-image icon-small " title="Edit Experiment" src="static/images/icon-edit.png"
-                        onClick={ this._experimentDraftEditClicked_BindThis }
-                    ></img>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Edit Experiment
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" fake-link-image icon-small " src="static/images/icon-edit.png"
+                            onClick={ this._experimentDraftEditClicked_BindThis }
+                        ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </React.Fragment>
             );
         }
@@ -709,9 +722,18 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, Experiment
             deleteIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <img className=" fake-link-image icon-small " title="Delete Experiment" src="static/images/icon-circle-delete.png"
-                        onClick={ this._experimentDraftDeleteClicked_BindThis }
-                    ></img>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Delete Experiment
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" fake-link-image icon-small " src="static/images/icon-circle-delete.png"
+                            onClick={ this._experimentDraftDeleteClicked_BindThis }
+                        ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </React.Fragment>
             );
         }
@@ -940,9 +962,18 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
             editIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <img className=" fake-link-image icon-small " title="Edit Experiment" src="static/images/icon-edit.png"
-                        onClick={ this._experimentEditClicked_BindThis }
-                    ></img>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Edit Experiment
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" fake-link-image icon-small " src="static/images/icon-edit.png"
+                            onClick={ this._experimentEditClicked_BindThis }
+                        ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </React.Fragment>
             );
         }
@@ -952,9 +983,18 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
             cloneIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <span className=" fake-link " title="Clone Experiment"
-                        onClick={ this._experimentCloneClicked_BindThis }
-                    >[clone experiment]</span>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Clone Experiment
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span className=" fake-link "
+                            onClick={ this._experimentCloneClicked_BindThis }
+                        >[clone experiment]</span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     {/* <img className=" fake-link-image icon-small " title="Clone Experiment" src="static/images/icon-edit.png"
                         onClick={ this._experimentCloneClicked_BindThis }
                     ></img> */}
@@ -967,9 +1007,18 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
             deleteIcon = (
                 <React.Fragment>
                     <span > </span>
-                    <img className=" fake-link-image icon-small " title="Delete Experiment" src="static/images/icon-circle-delete.png"
-                        onClick={ this._experimentDeleteClicked_BindThis }
-                    ></img>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Delete Experiment
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" fake-link-image icon-small " src="static/images/icon-circle-delete.png"
+                            onClick={ this._experimentDeleteClicked_BindThis }
+                        ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </React.Fragment>
             );
         }

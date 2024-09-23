@@ -19,6 +19,10 @@ import {
     projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer,
     ProjectPage_ScanFiles_View_Section_ScanFile_List_FromServer_Root
 } from "page_js/data_pages/other_data_pages/project_page/project_page__scan_files_view_section/all_users_incl_public_user/projectPage_ScanFiles_View_Section_Get_ScanFile_List_FromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 ////////////  Callback when user clicks on a scan file
 
@@ -151,12 +155,12 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_C
                     const element = (
                         <div
                             key={ scanFile_Entry.projectScanFileId }
-                            style={ { marginBottom: 5 } }
+                            style={ { marginBottom: 5, display: "flex", alignItems: "baseline" } }
                         >
                             { this.props.scanFileCheckboxSelectionChange_CallbackFunction ? (
                                 //  Only render Checkbox since have callback function
 
-                                <span style={ { marginRight: 10 } }>
+                                <div style={ { marginRight: 10 } }>
                                     <input
                                         type="checkbox"
                                         defaultChecked={ false }
@@ -170,27 +174,49 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_C
                                             this._updateFor__scanFiles_Selected_ProjectScanFileId_Set_Change()
                                         }}
                                     />
-                                </span>
+                                </div>
                             ) : null }
 
-                            <span
-                                className=" fake-link "
-                                onClick={ event => {
-                                    this.props.selectScanFile_Callback({
-                                        scanFileSelection: {
-                                            projectScanFileId_List: [ scanFile_Entry.projectScanFileId ],
-                                            scanFilename_Array_Array: [ scanFile_Entry.scanFilename_Array ]
-                                        }
-                                    })
-                                } }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    //  Repeat scan filenames in tooltip in case they are cutoff in the overlay
+                                    <div>
+                                        {/*  May be more than 1 scan filename for the scan file id so list them all comma delim  */}
+                                        <div style={ { fontWeight: "bold", whiteSpace: "nowrap", marginBottom: 4, wordBreak: "break-all" } }>
+                                            <span>Scan Filename</span>{ ( scanFile_Entry.scanFilename_Array.length > 1 ) ? <span>s</span> : null }
+                                            <span>: </span>
+                                        </div>
+
+                                        { scanFile_Entry.scanFilename_Array.map( (value, index) => {
+                                            return (
+                                                <div key={ index }>
+                                                    { value }
+                                                </div>
+                                            )
+                                        }) }
+                                    </div>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                {/*  May be more than 1 scan filename for the scan file id so list them all comma delim  */}
-                                <span style={ { whiteSpace: "nowrap" } }>
-                                    <span>Scan Filename</span>{ ( scanFile_Entry.scanFilename_Array.length > 1 ) ? <span>s</span> : null }
-                                    <span>: </span>
-                                </span>
-                                <span>{ scanFile_Entry.scanFilename_Array.join( ", " ) }</span>
-                            </span>
+                                <div
+                                    className=" fake-link "
+                                    onClick={ event => {
+                                        this.props.selectScanFile_Callback({
+                                            scanFileSelection: {
+                                                projectScanFileId_List: [ scanFile_Entry.projectScanFileId ],
+                                                scanFilename_Array_Array: [ scanFile_Entry.scanFilename_Array ]
+                                            }
+                                        })
+                                    } }
+                                >
+                                    {/*  May be more than 1 scan filename for the scan file id so list them all comma delim  */}
+                                    <span style={ { whiteSpace: "nowrap" } }>
+                                        <span>Scan Filename</span>{ ( scanFile_Entry.scanFilename_Array.length > 1 ) ? <span>s</span> : null }
+                                        <span>: </span>
+                                    </span>
+                                    <span>{ scanFile_Entry.scanFilename_Array.join( ", " ) }</span>
+                                </div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     )
 

@@ -13,6 +13,10 @@ import React from "react";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { showErrorMsg } from "page_js/common_all_pages/showHideErrorMessage";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -449,12 +453,20 @@ class INTERNAL__InvitedPeople_Entry_Component extends React.Component< INTERNAL_
 
                 <div style={ { marginRight } }>
                     { this.props.invitedPerson_ViaEmail_Entry.canRemoveEntry ? (
-                        <input
-                            type="image" src="static/images/icon-circle-delete.png"
-                            className=" icon-small "
-                            title="Remove from project"
-                            onClick={ this._remove_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Remove from project
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input
+                                type="image" src="static/images/icon-circle-delete.png"
+                                className=" icon-small "
+                                onClick={ this._remove_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : null }
                 </div>
                 <div style={ { marginRight } }>
@@ -463,37 +475,69 @@ class INTERNAL__InvitedPeople_Entry_Component extends React.Component< INTERNAL_
                 <div style={ { marginRight } }>
                     { this.props.invitedPerson_ViaEmail_Entry.canDemoteEntry ? (
                         this.props.invitedPerson_ViaEmail_Entry.accessLevelResearcher ? (
-                            <input
-                                type="image" src="static/images/icon-down-arrow.png"
-                                className=" icon-small "
-                                title="Demote to viewer"
-                                onClick={ this._changeUserTo_Viewer_ReadOnly_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Demote to viewer
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-down-arrow.png"
+                                    className=" icon-small "
+                                    onClick={ this._changeUserTo_Viewer_ReadOnly_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : (
-                            <input
-                                type="image" src="static/images/icon-down-arrow.png"
-                                className=" icon-small "
-                                title="Demote to researcher"
-                                onClick={ this._changeUserToAssistantProjectOwner_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Demote to researcher
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-down-arrow.png"
+                                    className=" icon-small "
+                                    onClick={ this._changeUserToAssistantProjectOwner_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         )
                     ) : null }
                     <span> </span>
                     { this.props.invitedPerson_ViaEmail_Entry.canPromoteEntry ? (
                         this.props.invitedPerson_ViaEmail_Entry.accessLevelResearcher ? (
-                            <input
-                                type="image" src="static/images/icon-up-arrow.png"
-                                className=" icon-small "
-                                title="Demote to viewer"
-                                onClick={ this._changeUserToProjectOwner_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Promote to owner
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-up-arrow.png"
+                                    className=" icon-small "
+                                    onClick={ this._changeUserToProjectOwner_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : (
-                            <input
-                                type="image" src="static/images/icon-up-arrow.png"
-                                className=" icon-small "
-                                title="Demote to researcher"
-                                onClick={ this._changeUserToAssistantProjectOwner_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Promote to researcher
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-up-arrow.png"
+                                    className=" icon-small "
+                                    onClick={ this._changeUserToAssistantProjectOwner_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         )
                     ) : null }
                 </div>
@@ -520,12 +564,20 @@ class INTERNAL__InvitedPeople_Entry_Component extends React.Component< INTERNAL_
                         <div
                             style={ { paddingLeft: 20 } }
                         >
-                            <button
-                                title="Resend Invite Email"
-                                onClick={ this._resend_Email_Clicked_BindThis }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Resend Invite Email
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Resend Email
-                            </button>
+                                <button
+                                    onClick={ this._resend_Email_Clicked_BindThis }
+                                >
+                                    Resend Email
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     ) : null }
                 </div>

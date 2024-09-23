@@ -21,6 +21,10 @@ import {
 import {
     Render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Component
 } from "page_js/data_pages/common_components__react/render_String_InComponent__SeparateOnNewLine__Links_to_A_HREF__Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -196,14 +200,22 @@ export class ProjectPage__ProjectSection_AllUsers_Interaction_ProjectNotes_Main_
                             ref={ this._outerContaining_Div_Ref }
                         >
                             <span>[</span>
-                            <span
-                                className="  fake-link "
-                                style={ { fontSize: "80%", textDecoration: "none" } }
-                                title="Add note to project"
-                                onClick={ this._add_Clicked_BindThis }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Add note to project
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                            +Note
-                        </span>
+                                <span
+                                    className="  fake-link "
+                                    style={ { fontSize: "80%", textDecoration: "none" } }
+                                    onClick={ this._add_Clicked_BindThis }
+                                >
+                                    +Note
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span>]</span>
                         </div>
                     ) : null }
@@ -396,23 +408,39 @@ class INTERNAL__Note_Entry_Component extends React.Component< INTERNAL__Existing
                     { this.props.note_Entry.canEdit && this.props.projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot ? (
                         <>
                             <span> </span>
-                            <img
-                                src="static/images/icon-edit.png"
-                                className=" icon-small clickable "
-                                title="Edit note"
-                                onClick={ this._edit_Clicked_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Edit note
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/icon-edit.png"
+                                    className=" icon-small clickable "
+                                    onClick={ this._edit_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </>
                     ) : null }
                     { this.props.note_Entry.canDelete && this.props.projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot ? (
                         <>
                             <span> </span>
-                            <img
-                                src="static/images/icon-circle-delete.png"
-                                className=" icon-small clickable "
-                                title="Remove note"
-                                onClick={ this._remove_Clicked_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Remove note
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/icon-circle-delete.png"
+                                    className=" icon-small clickable "
+                                    onClick={ this._remove_Clicked_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </>
                     ) : null }
                 </div>

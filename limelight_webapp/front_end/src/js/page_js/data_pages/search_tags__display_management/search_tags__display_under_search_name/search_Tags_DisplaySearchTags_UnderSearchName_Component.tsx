@@ -10,6 +10,10 @@
 
 import React from 'react'
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -351,15 +355,22 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             if ( this.props.changeTags_Clicked_Callback ) {
                 add_Change_Tags_Element = (
                     <div>
-                        <span> </span>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Change tags on this search
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
                         <span
                             className=" fake-link "
                             style={ { whiteSpace: "nowrap" } }
                             onClick={ this.props.changeTags_Clicked_Callback }
-                            title="Change tags on this search"
                         >
                             Change Tags
                         </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                 )
             }
@@ -369,14 +380,22 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             if ( this.props.addTag_Clicked_Callback ) {
                 add_Change_Tags_Element = (
                     <div>
-                        <span
-                            className=" fake-link "
-                            style={ { whiteSpace: "nowrap" } }
-                            onClick={ this.props.addTag_Clicked_Callback }
-                            title="Add tags to this search"
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Add tags to this search
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            +Add Tag
-                        </span>
+                            <span
+                                className=" fake-link "
+                                style={ { whiteSpace: "nowrap" } }
+                                onClick={ this.props.addTag_Clicked_Callback }
+                            >
+                                +Add Tag
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                 )
             }
@@ -433,18 +452,31 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
         const div_Inner_Style: React.CSSProperties = {  backgroundColor: tag_Entry.tag_Color_Background, color: tag_Entry.tag_Color_Font };
 
         return (
-            <div
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 key={ tag_Entry.tagId }
-                style={ div_Outer_Style }
-                title={ "Category: " + category_label + "\n" + "Tag: " + tag_Entry.tagString }
+                title={
+                    //  NOTE:  Any <div> inside a tooltip should have:  style={ { wordBreak: "break-word" } }
+                    <div style={ { width: "100%", display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: 5, columnGap: 5 } }>
+                        <div style={ { fontWeight: "bold", textAlign: "right" } }>Category:</div>
+                        <div style={ { wordBreak: "break-word" } }>{ category_label }</div>
+                        <div style={ { fontWeight: "bold", textAlign: "right" } }>Tag:</div>
+                        <div style={ { wordBreak: "break-word" } }>{ tag_Entry.tagString }</div>
+                    </div>
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
                 <div
-                    className=" search-tag-display-everywhere "
-                    style={ div_Inner_Style }
+                    key={ tag_Entry.tagId }
+                    style={ div_Outer_Style }
                 >
-                    { tag_Entry.tagString }
+                    <div
+                        className=" search-tag-display-everywhere "
+                        style={ div_Inner_Style }
+                    >
+                        { tag_Entry.tagString }
+                    </div>
                 </div>
-            </div>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         )
     }
 }

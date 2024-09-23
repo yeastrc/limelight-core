@@ -25,6 +25,10 @@ import {Limelight_Colors_For_SingleSearch__SubSearches} from "page_js/data_pages
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -616,19 +620,28 @@ interface SearchSubGroup_Entry_State {
         }
 
         return (
-            <div className={ "filter-common-single-entry-outer-div" } title={ this.props.searchSubGroupEntry.searchSubgroupName_fromImportFile } >
-                <label>
-                    <input type="checkbox" checked={ this.props.searchSubGroupEntry.selectedEntry } onChange={ this._checkboxChangeEvent_BindThis } />
+                <div className={ "filter-common-single-entry-outer-div" }>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                { this.props.searchSubGroupEntry.searchSubgroupName_fromImportFile }
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <label>
+                            <input type="checkbox" checked={ this.props.searchSubGroupEntry.selectedEntry } onChange={ this._checkboxChangeEvent_BindThis } />
 
-                    { ( colorBlockForSearchSubGroup_Color ) ? (
-                        <span
-                            style={ { marginLeft: 3, marginRight: 3, paddingLeft: 10, paddingRight: 10, backgroundColor: colorBlockForSearchSubGroup_Color } }
-                        >
-                        </span>
-                    ): null }
-                    { this.props.searchSubGroupEntry.subgroupName_Display }
-                </label>
-            </div>
+                            { ( colorBlockForSearchSubGroup_Color ) ? (
+                                <span
+                                    style={ { marginLeft: 3, marginRight: 3, paddingLeft: 10, paddingRight: 10, backgroundColor: colorBlockForSearchSubGroup_Color } }
+                                >
+                                </span>
+                            ): null }
+                            { this.props.searchSubGroupEntry.subgroupName_Display }
+                        </label>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                </div>
         )
     }
 

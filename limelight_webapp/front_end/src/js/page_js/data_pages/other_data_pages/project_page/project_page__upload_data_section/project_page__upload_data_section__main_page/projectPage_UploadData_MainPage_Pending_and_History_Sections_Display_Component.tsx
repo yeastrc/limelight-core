@@ -22,6 +22,10 @@ import {
     ProjectPage_UploadData_UploadFiles__Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles_Overlay";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -704,16 +708,24 @@ class Internal__Pending_OR_History_Section__Display_Component extends React.Comp
 
                                 <>
                                     <div style={ { marginBottom: 12 } }>
-                                        <span
-                                            className=" fake-link "
-                                            title="Show details for all items"
-                                            onClick={ event => {
-                                                event.stopPropagation()
-                                                this.setState({ force_ShowDetailsTrue: {} })
-                                            }}
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Show details for all items
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            [Expand All]
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ event => {
+                                                    event.stopPropagation()
+                                                    this.setState({ force_ShowDetailsTrue: {} })
+                                                }}
+                                            >
+                                                [Expand All]
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
 
                                     <div

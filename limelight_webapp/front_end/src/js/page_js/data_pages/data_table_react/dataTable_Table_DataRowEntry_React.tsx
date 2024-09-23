@@ -18,6 +18,10 @@ import {
     Tooltip_Limelight_Created_Tooltip
 } from "page_js/common_all_pages/tooltip_LimelightLocal_ReactBased";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  * 
@@ -324,7 +328,7 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
 
       //   "return" earlier for certain conditions
 
-      return (
+      const mainReturnElement = (
           <td
               ref={ this._displayNameValue_TD_Ref }
               style={ styleContainerDiv }
@@ -333,13 +337,29 @@ export class DataTable_Table_DataRowEntry extends React.Component< DataTable_Tab
               onMouseEnter={ cellContentsDiv_onMouseEnterCallback }
               onMouseLeave={ cellContentsDiv_onMouseLeaveCallback }
               // Set title attribute if have text tooltip
-              title={ tooltipText }
-              >
+          >
 
               { horizontalGraph }
               { horizontalGraph_SpaceAfter }
               { valueDisplay }{ cellDisplayContents_FromCallback }
           </td>
+      )
+
+      if ( ! tooltipText ) {
+          return mainReturnElement
+      }
+
+      return (
+          <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+              title={
+                  <span>
+                      { tooltipText }
+                  </span>
+              }
+              { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+          >
+              { mainReturnElement }
+          </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
       )
     }
 
