@@ -991,7 +991,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             // overlay when button is disabled to show tooltip
                                             <div
                                                 style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                title="Click here to copy the selected searches to another project."
+                                                title = "Click here to copy the selected searches to another project."
                                             ></div>
                                         ): null }
                                     </div>
@@ -1149,24 +1149,32 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             { this._searchName_SearchId_Filter_UserInput }
                                         </span>
                                         <span> </span>
-                                        <span
-                                            className=" fake-link "
-                                            style={ { fontSize: 10 } }
-                                            title="Clear text filters"
-                                            onClick={ event => {
-
-                                                this._searchName_SearchId_Filter_UserInput = "";
-
-                                                this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                                this.setState({ force_Rerender: {} })
-
-                                                this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
-                                                update_SearchName_SearchId_FilterValue({ updated_SearchName_SearchId_FilterValue: this._searchName_SearchId_Filter_UserInput })
-                                            }}
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Clear text filters
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            clear
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                style={ { fontSize: 10 } }
+                                                onClick={ event => {
+
+                                                    this._searchName_SearchId_Filter_UserInput = "";
+
+                                                    this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                    this.setState({ force_Rerender: {} })
+
+                                                    this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+                                                    update_SearchName_SearchId_FilterValue({ updated_SearchName_SearchId_FilterValue: this._searchName_SearchId_Filter_UserInput })
+                                                }}
+                                            >
+                                                clear
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : null }
 
@@ -1183,24 +1191,32 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                                 </span>
                                             </div>
                                             <div style={ { fontSize: 10, marginBottom: 10 } }>
-                                                <span
-                                                    className=" fake-link "
-                                                    style={ { fontSize: 10 } }
-                                                    title="Clear tag filters"
-                                                    onClick={ () => {
-
-                                                        this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
-
-                                                        this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                                        this.setState({ force_Rerender: {} })
-
-                                                        this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
-                                                        update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object })
-                                                    } }
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        <span>
+                                                            Clear tag filters
+                                                        </span>
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                 >
-                                                    clear
-                                                </span>
+                                                    <span
+                                                        className=" fake-link "
+                                                        style={ { fontSize: 10 } }
+                                                        onClick={ () => {
+
+                                                            this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance()
+
+                                                            this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                            this.setState({ force_Rerender: {} })
+
+                                                            this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet.
+                                                            update_SearchTagIds_Selected({ updated_SearchTagIds_Selected: this._search_Tags_Selections_Object })
+                                                        } }
+                                                    >
+                                                        clear
+                                                    </span>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </div>
                                         </div>
                                         <div>

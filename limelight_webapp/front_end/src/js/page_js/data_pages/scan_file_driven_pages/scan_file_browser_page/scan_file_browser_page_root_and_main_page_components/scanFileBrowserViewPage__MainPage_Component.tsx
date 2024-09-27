@@ -27,6 +27,10 @@ import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data__get_ScanData_YES_Peaks_DataHolder__FunctionResult,
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////////////////////////
 
@@ -723,22 +727,37 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                             { this.state.singleScanData ? (
 
                                 <React.Fragment>
-
-                                    <button
-                                        style={ { marginRight: 10 } }
-                                        title="Within selected scan levels"
-                                        onClick={ event => { this._prevScan_Clicked() } }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Within selected scan levels
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Previous Scan
-                                    </button>
+                                        <button
+                                            style={ { marginRight: 10 } }
+                                            onClick={ event => { this._prevScan_Clicked() } }
+                                        >
+                                            Previous Scan
+                                        </button>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     <span > </span>
-                                    <button
-                                        style={ { marginRight: 10 } }
-                                        title="Within selected scan levels"
-                                        onClick={ event => { this._nextScan_Clicked() } }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Within selected scan levels
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        Next Scan
-                                    </button>
+                                        <button
+                                            style={ { marginRight: 10 } }
+                                            onClick={ event => { this._nextScan_Clicked() } }
+                                        >
+                                            Next Scan
+                                        </button>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     <span> </span>
                                 </React.Fragment>
                             ) : null }
@@ -751,18 +770,42 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                                         event.stopPropagation()
                                         this._show_EnteredScanNumber_FormSubmit(event)
                                     }}>
-                                        <input
-                                            ref={ this._scanNumber_Input_Ref }
-                                            style={ { width: 60 } }
-                                            placeholder="scan #"
-                                            title="Enter scan number to show and click button"
-                                        />
-                                        <span> </span>
-                                        <button
-                                            title="Show entered scan number"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Enter scan number to show and click button
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            Show Scan
-                                        </button>
+                                            <input
+                                                ref={ this._scanNumber_Input_Ref }
+                                                style={ { width: 60 } }
+                                                placeholder="scan #"
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        <span> </span>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Close
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Show entered scan number
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <button>
+                                                    Show Scan
+                                                </button>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         { this.state.showScanNumber_ErrorMessage ? (
                                             <>
                                                 <span> </span>

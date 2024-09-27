@@ -7,6 +7,10 @@
 
 import React from "react";
 import {DataPageStateManager} from "page_js/data_pages/data_pages_common/dataPageStateManager";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -81,12 +85,20 @@ export class Blib_SpectralLibrary_File_Download__MainPage_Link_Component extends
             // render Disabled Link
 
             return (  // EARLY RETURN
-                <span
-                    style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" gray-text "
-                    title="Not enabled since not all searches have scan data"
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Not enabled since not all searches have scan data
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { linkLabel }
-                </span>
+                    <span
+                        style={ { marginLeft: 10, whiteSpace: "nowrap" } } className=" gray-text "
+                    >
+                        { linkLabel }
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
         }
 

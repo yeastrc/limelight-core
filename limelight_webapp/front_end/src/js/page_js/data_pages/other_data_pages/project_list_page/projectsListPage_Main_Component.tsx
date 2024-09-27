@@ -11,6 +11,10 @@ import React from "react";
 import { showErrorMsg } from "page_js/common_all_pages/showHideErrorMessage";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -275,27 +279,43 @@ class INTERNAL__Add_Project_Component extends React.Component< INTERNAL__Add_Pro
                         {/*   Same padding-right as <td> in single_project_template.handlebars  */}
 
                         { ! this._showSection_AddProject ? (
-                            <img
-                                src="static/images/icon-circle-plus.png"
-                                className=" fake-link-image icon-large "
-                                title="Add new project"
-                                onClick={ event => { try {
-                                    event.stopPropagation()
-                                    this._showSection_AddProject = true
-                                    this.setState({ force_Rerender_Object: {} })
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Add new project
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/icon-circle-plus.png"
+                                    className=" fake-link-image icon-large "
+                                    onClick={ event => { try {
+                                        event.stopPropagation()
+                                        this._showSection_AddProject = true
+                                        this.setState({ force_Rerender_Object: {} })
+                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : (
-                            <img
-                                src="static/images/icon-circle-delete.png"
-                                className=" fake-link-image icon-large "
-                                title="Cancel adding new project"
-                                onClick={ event => { try {
-                                    event.stopPropagation()
-                                    this._showSection_AddProject = false
-                                    this.setState({ force_Rerender_Object: {} })
-                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Cancel adding new project
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/icon-circle-delete.png"
+                                    className=" fake-link-image icon-large "
+                                    onClick={ event => { try {
+                                        event.stopPropagation()
+                                        this._showSection_AddProject = false
+                                        this.setState({ force_Rerender_Object: {} })
+                                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) }
                     </td>
                     <td>
@@ -303,18 +323,26 @@ class INTERNAL__Add_Project_Component extends React.Component< INTERNAL__Add_Pro
                             <div >
 
                                 <div className="new-project-text" >
-                                    <span
-                                        className="fake-link "
-                                        style={ { fontSize: 20 } }
-                                        title="Add new project"
-                                        onClick={ event => { try {
-                                            event.stopPropagation()
-                                            this._showSection_AddProject = true
-                                            this.setState({ force_Rerender_Object: {} })
-                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Add new project
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        New Project
-                                    </span>
+                                        <span
+                                            className="fake-link "
+                                            style={ { fontSize: 20 } }
+                                            onClick={ event => { try {
+                                                event.stopPropagation()
+                                                this._showSection_AddProject = true
+                                                this.setState({ force_Rerender_Object: {} })
+                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }}}
+                                        >
+                                            New Project
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
                         ) : (
@@ -339,17 +367,34 @@ class INTERNAL__Add_Project_Component extends React.Component< INTERNAL__Add_Pro
                                 */}
                                 <div className="new-project-text" >
                                     <div style={ { marginBottom: 5 } }>
-                                        <input
-                                            id="new_project_title"
-                                            type="text" placeholder="Title" title="Title"
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Title
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input
+                                                id="new_project_title"
+                                                type="text" placeholder="Title"
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                     <div style={ { marginBottom: 5 } }>
-                                        <textarea
-                                            id="new_project_abstract"
-                                            rows={ 10 } cols={ 100 }
-                                            placeholder="Abstract"
-                                            title="Abstract"></textarea>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Abstract
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <textarea
+                                                id="new_project_abstract"
+                                                rows={ 10 } cols={ 100 }
+                                                placeholder="Abstract"></textarea>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 </div>
                                 <button
@@ -465,23 +510,39 @@ class INTERNAL__SingleProject_Component extends React.Component< INTERNAL__Singl
                     <td style={ { paddingRight: _TABLE_FIRST_COLUMN_PADDING_RIGHT } }>
                         <div style={ { textAlign: "center" } }>
                             { this.props.projectData.projectLocked ? (
-                                <img
-                                    src="static/images/icon-locked.png"
-                                    className=" fake-link-image icon-small "
-                                    title="Project is locked"
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Project is locked
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        src="static/images/icon-locked.png"
+                                        className=" fake-link-image icon-small "
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : (
                                 // "x" icon should only appear if they're admins for that project/have permission to delete it and the project isn't locked
                                 this.props.projectData.canDelete ? (
-                                    <img
-                                        src="static/images/icon-circle-delete.png"
-                                        className=" delete_project_link_jq  fake-link-image icon-small "
-                                        title="Delete Project"
-                                        onClick={ event => {
-                                            event.stopPropagation()
-                                            this._markProjectForDeletion()
-                                        } }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Delete Project
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-circle-delete.png"
+                                            className=" fake-link-image icon-small "
+                                            onClick={ event => {
+                                                event.stopPropagation()
+                                                this._markProjectForDeletion()
+                                            } }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null
                             ) }
                         </div>

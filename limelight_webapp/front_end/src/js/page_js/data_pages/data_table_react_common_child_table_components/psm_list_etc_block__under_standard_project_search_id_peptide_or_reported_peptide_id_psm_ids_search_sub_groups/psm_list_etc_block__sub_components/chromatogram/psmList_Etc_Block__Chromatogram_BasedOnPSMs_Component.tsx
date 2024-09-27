@@ -64,6 +64,10 @@ import {
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _CHART_WIDTH = 800
@@ -4808,26 +4812,42 @@ class Internal__RetentionTime_Min_Max_UserEditable_Component extends React.Compo
                                     Update
                                 </button>
                                 { ! this._updateButton_Enabled ? (
-                                    <div
-                                        style={ { position: "absolute", inset: 0 } }
-                                        title="Start and End must be populated with decimal numbers"
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Start and End must be populated with decimal numbers
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                    </div>
+                                        <div
+                                            style={ { position: "absolute", inset: 0 } }
+                                        >
+                                        </div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
                             <span> </span>
-                            <button
-                                title="Reset to Defaults"
-                                onClick={ event => {
-                                    event.preventDefault()   //  Stop containing form onSubmit from running
-
-                                    this._set_LocalProperties_On_Create_Or_SetTo_Defaults()
-
-                                    this._updateButton_Clicked()
-                                }}
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Reset to Defaults
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Reset
-                            </button>
+                                <button
+                                    onClick={ event => {
+                                        event.preventDefault()   //  Stop containing form onSubmit from running
+
+                                        this._set_LocalProperties_On_Create_Or_SetTo_Defaults()
+
+                                        this._updateButton_Clicked()
+                                    }}
+                                >
+                                    Reset
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </form>
                     </div>
                 </div>

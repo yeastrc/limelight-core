@@ -17,6 +17,10 @@ import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject,
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject__ENTRY
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /////
@@ -330,11 +334,19 @@ class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection__Use
                                     Add
                                 </button>
                                 { ! this._add_Button_Enabled ? (
-                                    <div
-                                        style={ { position: "absolute", inset: 0 } }
-                                        title="Enter a Scan Number and select something below in searchs and scan numbers to add"
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Enter a Scan Number and select something below in searchs and scan numbers to add
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                    </div>
+                                        <div
+                                            style={ { position: "absolute", inset: 0 } }
+                                        >
+                                        </div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
                             <span> </span>

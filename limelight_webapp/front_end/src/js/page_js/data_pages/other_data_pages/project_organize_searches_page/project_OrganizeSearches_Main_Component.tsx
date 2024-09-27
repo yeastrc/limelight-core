@@ -34,13 +34,12 @@ import {
     open_Project_OrganizeSearches_Folder_Add_Change_SearchesInFolder_Overlay,
     Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent__Callback_update_SearchesInFolder
 } from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches__Folder_Add_Change_SearchesInFolder_OverlayComponent";
-import {
-    open_Project_OrganizeFolders_Re_Order_Folders_Overlay,
-    Project_OrganizeFolders_Re_Order_Folders_Overlay_OuterContainer_Component__Callback_update_OrderOf_Folders,
-    Project_OrganizeFolders_Re_Order_Folders_Overlay_OuterContainer_Component__Callback_update_OrderOf_Folders_Params
-} from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches__Re_Order_Folders_OverlayComponent";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -436,9 +435,17 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                         <div className={ "search-single-entry-container"} >
                                                             <div style={ { display: "grid", gridTemplateColumns : "20px auto" } } >
                                                                 <div style={ { marginLeft: 2, marginTop: 5, maxWidth: 20, overflowX : "hidden" } }>
-                                                                    <img  src="static/images/icon-draggable.png"
-                                                                          className=" icon-small "
-                                                                          title="Drag to change Search Order"/>
+                                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                        title={
+                                                                            <span>
+                                                                                Drag to change Search Order
+                                                                            </span>
+                                                                        }
+                                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                    >
+                                                                        <img  src="static/images/icon-draggable.png"
+                                                                              className=" icon-small " />
+                                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                 </div>
                                                                 <div
                                                                     key={ folderEntry.folderId }
@@ -448,63 +455,80 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                         { folderEntry.folderName }
                                                                     </span>
 
-                                                                    <img
-                                                                        className="icon-small clickable "
-                                                                        style={ { marginLeft: 3 } }
-                                                                        src="static/images/icon-edit.png"
-                                                                        title="Edit name of folder"
+                                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                        title={
+                                                                            <span>
+                                                                                Edit name of folder
+                                                                            </span>
+                                                                        }
+                                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                    >
+                                                                        <img
+                                                                            className="icon-small clickable "
+                                                                            style={ { marginLeft: 3 } }
+                                                                            src="static/images/icon-edit.png"
 
-                                                                        onClick={ event => { try {
+                                                                            onClick={ event => { try {
 
-                                                                            const buttonContainer = event.target as HTMLButtonElement
+                                                                                const buttonContainer = event.target as HTMLButtonElement
 
-                                                                            const buttonContainer_BoundingRect = buttonContainer.getBoundingClientRect();
+                                                                                const buttonContainer_BoundingRect = buttonContainer.getBoundingClientRect();
 
-                                                                            let position_top =  buttonContainer_BoundingRect.top;
-                                                                            let position_left =  buttonContainer_BoundingRect.left;
+                                                                                let position_top =  buttonContainer_BoundingRect.top;
+                                                                                let position_left =  buttonContainer_BoundingRect.left;
 
-                                                                            const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
-                                                                                (params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
+                                                                                const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
+                                                                                    (params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
 
-                                                                                    this._loadData_All();
-                                                                                }
+                                                                                        this._loadData_All();
+                                                                                    }
 
-                                                                            project_OrganizeSearches_Folder_AddRename_Component__openOverlay({
-                                                                                projectIdentifier: this.props.propsValue.projectIdentifier, // For Add
-                                                                                folderId_Existing: folderEntry.folderId,
-                                                                                folderName_Existing: folderEntry.folderName,
-                                                                                position_top,
-                                                                                position_left,
-                                                                                change_Callback,
-                                                                                cancel_Callback: () => {}
-                                                                            })
+                                                                                project_OrganizeSearches_Folder_AddRename_Component__openOverlay({
+                                                                                    projectIdentifier: this.props.propsValue.projectIdentifier, // For Add
+                                                                                    folderId_Existing: folderEntry.folderId,
+                                                                                    folderName_Existing: folderEntry.folderName,
+                                                                                    position_top,
+                                                                                    position_left,
+                                                                                    change_Callback,
+                                                                                    cancel_Callback: () => {}
+                                                                                })
 
-                                                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } }}
-                                                                    />
+                                                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } }}
+                                                                        />
+                                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                                                     <span> </span>
 
-                                                                    <img
-                                                                        src="static/images/icon-circle-delete.png"
-                                                                        className=" clickable icon-small "
-                                                                        title="Delete folder."
 
-                                                                        onClick={ event => { try {
+                                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                        title={
+                                                                            <span>
+                                                                                Delete folder.
+                                                                            </span>
+                                                                        }
+                                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                    >
+                                                                        <img
+                                                                            src="static/images/icon-circle-delete.png"
+                                                                            className=" clickable icon-small "
 
-                                                                            if ( ! window.confirm( "Delete Folder?" ) ) {
-                                                                                return; // EARLY RETURN
-                                                                            }
+                                                                            onClick={ event => { try {
 
-                                                                            const promise = _deleteFolderInDB({ folderId: folderEntry.folderId })
-                                                                            promise.catch(reason => { })
-                                                                            promise.then(novalue => { try {
+                                                                                if ( ! window.confirm( "Delete Folder?" ) ) {
+                                                                                    return; // EARLY RETURN
+                                                                                }
 
-                                                                                this._loadData_All();
+                                                                                const promise = _deleteFolderInDB({ folderId: folderEntry.folderId })
+                                                                                promise.catch(reason => { })
+                                                                                promise.then(novalue => { try {
 
-                                                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                                                                                    this._loadData_All();
 
-                                                                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } }}
-                                                                    />
+                                                                                } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+
+                                                                            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e } }}
+                                                                        />
+                                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                                                     <span> </span>
 
@@ -586,11 +610,19 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                                 Change Search Order
                                                                             </button>
                                                                             {/*  Overlay button so show tooltip  */}
-                                                                            <div
-                                                                                style={ { position: "absolute", top: 0, bottom: 0, left: 0, right: 0 } }
-                                                                                title="Folder contains no searches"
+                                                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                                title={
+                                                                                    <span>
+                                                                                        Folder contains no searches
+                                                                                    </span>
+                                                                                }
+                                                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                                             >
-                                                                            </div>
+                                                                                <div
+                                                                                    style={ { position: "absolute", top: 0, bottom: 0, left: 0, right: 0 } }
+                                                                                >
+                                                                                </div>
+                                                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                         </div>
                                                                     ) }
                                                                 </div>
@@ -660,9 +692,17 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                 style={{display: "grid", gridTemplateColumns: "20px auto"}}
                                                             >
                                                                 <div style={{marginLeft: 2, maxWidth: 20, overflowX: "hidden"}}>
+                                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                        title={
+                                                                            <span>
+                                                                                Drag to change Search Order
+                                                                            </span>
+                                                                        }
+                                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                    >
                                                                     <img src="static/images/icon-draggable.png"
-                                                                         className=" icon-small "
-                                                                         title="Drag to change Search Order"/>
+                                                                         className=" icon-small "/>
+                                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                 </div>
                                                                 <div style={{wordBreak: "break-word"}}>
                                                                     {searchData.searchName + " (" + searchData.searchId + ")"}
@@ -738,9 +778,17 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                 style={ { display: "grid", gridTemplateColumns: "20px auto" } }
                                                             >
                                                                 <div style={ { marginLeft: 2, maxWidth: 20, overflowX: "hidden" } }>
-                                                                    <img src="static/images/icon-draggable.png"
-                                                                         className=" icon-small "
-                                                                         title="Drag to change Search Order" />
+                                                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                                        title={
+                                                                            <span>
+                                                                                Drag to change Search Order
+                                                                            </span>
+                                                                        }
+                                                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                                                    >
+                                                                        <img src="static/images/icon-draggable.png"
+                                                                             className=" icon-small " />
+                                                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                 </div>
                                                                 <div style={ { wordBreak: "break-word" } }>
                                                                     { searchData.searchName + " (" + searchData.searchId + ")" }

@@ -3,7 +3,7 @@
  *
  * Tooltip from MUI (MaterialUI Library) Formatted for main Limelight Tooltip
  *
- *
+ * NOTE: property 'title' can be null which results in NO tooltip being triggered/rendered
  */
 
 import {styled} from "@mui/material/styles";
@@ -18,6 +18,8 @@ import React from "react";
  * Tooltip from MUI (MaterialUI Library) Formatted for main Limelight Tooltip
  *
  * INFO: Set property 'open' on TooltipProps to true to force tooltip to remain displayed for testing so can use DOM inspector on the tooltip
+ *
+ * NOTE: property 'title' can be null which results in NO tooltip being triggered/rendered
  */
 export const Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -43,6 +45,8 @@ type Limelight_Tooltip_React_Extend_Material_UI_Library__Main__TooltipProps__Rem
  * For Follow Mouse Pointer
  *
  * Use for most properties in use of <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component> above like
+ *
+ * NOTE: property 'title' can be null which results in NO tooltip being triggered/rendered
  *
  * <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
  *     title={  }
@@ -70,6 +74,8 @@ export const limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Pr
  * For NOT Follow Mouse Pointer
  *
  * Use for most properties in use of <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component> above like
+ *
+ * NOTE: property 'title' can be null which results in NO tooltip being triggered/rendered
  *
  * <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
  *     title={  }

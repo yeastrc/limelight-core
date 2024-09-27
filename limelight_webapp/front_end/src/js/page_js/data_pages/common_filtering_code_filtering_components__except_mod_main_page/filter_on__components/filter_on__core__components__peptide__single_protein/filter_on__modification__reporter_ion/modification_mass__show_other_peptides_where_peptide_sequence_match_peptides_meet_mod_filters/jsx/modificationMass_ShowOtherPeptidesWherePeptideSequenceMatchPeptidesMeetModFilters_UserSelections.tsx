@@ -14,6 +14,10 @@ import {ModificationMass_UserSelections_StateObject} from "page_js/data_pages/co
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -157,10 +161,18 @@ export class ModificationMass_ShowOtherPeptidesWherePeptideSequenceMatchPeptides
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
-                            <input type="checkbox" checked={ selected }
-                                   title="For all peptides found using the modification filters, include the unmodified versions of those peptides."
-                                   onChange={ this._inputFieldChanged_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        For all peptides found using the modification filters, include the unmodified versions of those peptides.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input type="checkbox" checked={ selected }
+                                       onChange={ this._inputFieldChanged_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     </div>
                 </div>

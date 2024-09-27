@@ -32,6 +32,10 @@ import {
     projectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile,
     ProjectPage_UploadData_UploadFiles__Common_Submit_Upload__LimelightXMLFile_AndOr_ScanFile__Request_Single_File
 } from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles__Common_Init_AND_Submit_Upload__LimelightXMLFile_AndOr_ScanFile";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 //////////////////////
 
@@ -590,9 +594,19 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_ONLY_ScanFiles_C
                                 Submit Upload
                             </button>
                             {/*  Cover button when disabled so have tooltip  */}
-                            <div id="import_limelight_xml_file_submit_button_disabled_overlay"
-                                 style={ { position: "absolute", inset: 0, display: ( ! this.state.submitButton_Enabled ) ? undefined : "none" } }
-                                 title="Submit Upload. Enabled when Limelight XML file is selected."></div>
+
+                            { ! this.state.submitButton_Enabled ? (
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Submit Upload. Enabled when at least one scan file is selected.
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <div style={ { position: "absolute", inset: 0 } }></div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            ) : null }
                         </div>
                     ) : null }
                     <span> </span>

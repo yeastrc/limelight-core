@@ -445,13 +445,21 @@ export class ProjectPage_Section_AllUsers_InclPublicUser_Interaction_ScanFile_Li
                                     <>
                                         {/*  Run Feature Detection */}
                                         <div style={ { position: "relative", display: "inline-block" } }>
-                                            <button
-                                                title="Run Feature Detection on selected scan files"
-                                                disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
-                                                onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Run Feature Detection on selected scan files
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                             >
-                                                Run Feature Detection
-                                            </button>
+                                                <button
+                                                    disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
+                                                    onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                                                >
+                                                    Run Feature Detection
+                                                </button>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
                                                 // overlay when button is disabled to show tooltip
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -1767,22 +1775,40 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
                         { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
                             <React.Fragment>
                                 <span> </span>
-                                <img
-                                    src="static/images/icon-edit.png" title="Change Label"
-                                    className="icon-small clickable  "
-                                    onClick={ this._edit_DisplayLabel_Clicked_BindThis }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Change Label
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        src="static/images/icon-edit.png"
+                                        className="icon-small clickable  "
+                                        onClick={ this._edit_DisplayLabel_Clicked_BindThis }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </React.Fragment>
                         ) : null }
 
                         { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
                             <React.Fragment>
                                 <span> </span>
-                                <img
-                                    src="static/images/icon-circle-delete.png" title="Delete Feature Detection Entry"
-                                    className="icon-small clickable  "
-                                    onClick={ this._delete_Entry_Clicked_BindThis }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Delete Feature Detection Entry
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        src="static/images/icon-circle-delete.png"
+                                        className="icon-small clickable  "
+                                        onClick={ this._delete_Entry_Clicked_BindThis }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </React.Fragment>
                         ) : null }
 
@@ -1937,11 +1963,20 @@ class GoldStandard_Entry_Component extends React.Component< GoldStandard_Entry_C
                         {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
                                 <React.Fragment>
                                     <span> </span>
-                                    <img
-                                        src="static/images/icon-edit.png" title="Change Label"
-                                        className="icon-small clickable  "
-                                        onClick={ this._edit_DisplayLabel_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Change Label
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-edit.png"
+                                            className="icon-small clickable  "
+                                            onClick={ this._edit_DisplayLabel_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </React.Fragment>
                             ) : null
                         )}
@@ -1949,11 +1984,20 @@ class GoldStandard_Entry_Component extends React.Component< GoldStandard_Entry_C
                         {( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
                                 <React.Fragment>
                                     <span> </span>
-                                    <img
-                                        src="static/images/icon-circle-delete.png" title="Delete Gold Standard Entry"
-                                        className="icon-small clickable  "
-                                        onClick={ this._delete_Entry_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Delete Gold Standard Entry
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-circle-delete.png"
+                                            className="icon-small clickable  "
+                                            onClick={ this._delete_Entry_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </React.Fragment>
                             ) : null
                         )}

@@ -33,6 +33,10 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -292,18 +296,26 @@ export class ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelecti
                         >
                             {/*  2 Column Grid  */}
                             <div style={ { marginRight: 5 } }>
-                                <img
-                                    className=" fake-link-image icon-small "
-                                    title="Delete Entry"
-                                    src="static/images/icon-circle-delete.png"
-                                    onClick={ event => {
-                                        this.props.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.delete_Entry( scanNumber_ScanFilenameIds_ProjectSearchIds_Selection_Entry )
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Delete Entry
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        className=" fake-link-image icon-small "
+                                        src="static/images/icon-circle-delete.png"
+                                        onClick={ event => {
+                                            this.props.scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject.delete_Entry( scanNumber_ScanFilenameIds_ProjectSearchIds_Selection_Entry )
 
-                                        this.setState( { forceUpdate: {} } )
+                                            this.setState( { forceUpdate: {} } )
 
-                                        this.props.updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback()
-                                    } }
-                                />
+                                            this.props.updateMadeTo_scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject_Callback()
+                                        } }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
                             <div>
                                 { "Scan number " + scanNumber_ScanFilenameIds_ProjectSearchIds_Selection_Entry.scanNumber + ( searchesAndTheirScanFilenamesText ? ( " " + searchesAndTheirScanFilenamesText ) : "" ) }

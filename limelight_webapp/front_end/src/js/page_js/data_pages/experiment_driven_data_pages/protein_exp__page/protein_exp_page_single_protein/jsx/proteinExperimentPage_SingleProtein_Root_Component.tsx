@@ -21,6 +21,10 @@ import { ProteinExperimentPage_SingleProtein_MainContent_Component, ProteinExper
 import {ProteinExperimentPage_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/experiment_driven_data_pages/protein_exp__page/protein_exp_page_single_protein/jsx/proteinExperimentPage_SingleProtein_ProteinNameDescription_Component";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {open_Limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex} from "page_js/common_all_pages/limelight_CoverWith_Spinner_On_StandardBackground_HigherZIndex";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -325,33 +329,36 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
             )
         }
 
-        let proteinName_Display_Header = null;
-
-        if ( this.props.proteinNames ) {
-            proteinName_Display_Header = this.props.proteinNames;
-        } else {
-            if (this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop) {
-                if ( this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop.proteinNames) {
-                    proteinName_Display_Header = this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop.proteinNames;
-                }
-            }
-        }
-
         //  This CSS calculation sets the width the lesser of 100% of parent element or view port width (100vw) minus 10 pixels
         //       (subtract 10 pixels since 100vw doesn't subtract for scrollbar if present)
         //       (Set 'width:' and 'maxWidth:' to this string)
         const view_single_protein_overlay_header_Style_width_maxWidth = "min( 100%, calc( 100vw - 10px ))";
 
+
+
+        let proteinName_Display_Header_Text: string = null;
+
+        if ( this.props.proteinNames ) {
+            proteinName_Display_Header_Text = this.props.proteinNames;
+        } else {
+            if (this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop) {
+                if ( this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop.proteinNames) {
+                    proteinName_Display_Header_Text = this.state.proteinExperimentPage_SingleProtein_MainContent_Component_Props_Prop.proteinNames;
+                }
+            }
+        }
+
         return (
-            <div >
-                <div id="single_protein_overlay_background" className="single-protein-modal-dialog-overlay-background" >
+            <div>
+                <div id="single_protein_overlay_background" className="single-protein-modal-dialog-overlay-background">
 
                 </div>
 
-                <div id="view_single_protein_overlay_div" className=" overall-enclosing-block " 
-                    style={ { marginLeft: "auto", marginRight: "auto", paddingLeft: 0, paddingRight: 0 } } >
+                <div id="view_single_protein_overlay_div" className=" overall-enclosing-block "
+                     style={ { marginLeft: "auto", marginRight: "auto", paddingLeft: 0, paddingRight: 0 } }>
 
-                    <div id="view_single_protein_inner_overlay_div"  className=" view-single-protein-overlay-div " ref={ this._view_single_protein_inner_overlay_div_Ref }>
+                    <div id="view_single_protein_inner_overlay_div" className=" view-single-protein-overlay-div "
+                         ref={ this._view_single_protein_inner_overlay_div_Ref }>
 
                         <div id="view_single_protein_overlay_header" className="view-single-protein-overlay-header" style={ { top: this.props.standard_Page_Header_Height } } >
 
@@ -361,26 +368,40 @@ export class ProteinExperimentPage_SingleProtein_Root_Component extends React.Co
 
                                 <div  style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
                                     {/* Next elements in the header are in a CSS Grid */}
-
-                                    <h1 className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
-                                        title="Close"
-                                    >X</h1>
-
-                                    <h1 className="view-single-protein-overlay-header-text"
-                                        title={ proteinName_Display_Header }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Close
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        <span>Protein</span>
-                                        { proteinName_Display_Header ? (
-                                            <span>: </span>
-                                        ) : null }
-                                        { proteinName_Display_Header }
-                                    </h1>
+                                        <h1
+                                            className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
+                                        >X</h1>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            proteinName_Display_Header_Text ? (
+                                                <span>
+                                                    { proteinName_Display_Header_Text }
+                                                </span>
+                                            ) : null
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <h1 className="view-single-protein-overlay-header-text"
+                                        >
+                                            <span>Protein</span>
+                                            { proteinName_Display_Header_Text ? (
+                                                <span>: </span>
+                                            ) : null }
+                                            <span>{ proteinName_Display_Header_Text }</span>
+                                        </h1>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
-                            {/*<h1 id="view_single_protein_overlay_X_for_exit_overlay" className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }*/}
-                            {/*>X</h1>*/}
-                            {/*                    */}
-                            {/*<h1 id="view_single_protein_overlay_header_text" className="view-single-protein-overlay-header-text" >Protein Data</h1>*/}
                         </div>
                         <div id="view_single_protein_overlay_body" className="view-single-protein-overlay-body" ref={ this._view_single_protein_overlay_body_Ref } >
 

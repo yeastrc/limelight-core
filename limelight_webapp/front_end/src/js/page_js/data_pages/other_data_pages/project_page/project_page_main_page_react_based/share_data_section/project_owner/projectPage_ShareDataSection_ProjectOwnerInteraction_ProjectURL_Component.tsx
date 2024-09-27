@@ -17,6 +17,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {ProjectPage_ShareDataSection_ProjectOwnerInteraction} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/project_owner/projectPage_ShareDataSection_ProjectOwnerInteraction";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 //  Loaded in initialize at bottom of page, called when main component mounts
 
@@ -251,9 +255,17 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction__CurrentURL
                                 </button>
 
                                 { this.props.projectIsLocked ? (
-                                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                         title="Cannot change since project is locked"
-                                    ></div>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Cannot change since project is locked
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                        ></div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
 
@@ -272,9 +284,17 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction__CurrentURL
                                     </button>
 
                                     { this.props.projectIsLocked ? (
-                                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                             title="Cannot change since project is locked"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Cannot change since project is locked
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                             )}

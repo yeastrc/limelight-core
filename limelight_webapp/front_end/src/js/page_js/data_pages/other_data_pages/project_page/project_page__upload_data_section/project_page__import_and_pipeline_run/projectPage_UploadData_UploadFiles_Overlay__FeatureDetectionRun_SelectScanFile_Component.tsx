@@ -159,13 +159,21 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionRun_Sel
 
                         {/*  Run Feature Detection */}
                         <div style={ { position: "relative", display: "inline-block" } }>
-                            <button
-                                title="Run Feature Detection on selected scan files"
-                                disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
-                                onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Run Feature Detection<br/>on selected scan files
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Run Feature Detection
-                            </button>
+                                <button
+                                    disabled={ this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled }
+                                    onClick={ this._run_FeatureDetection_For_Selected_ScanFiles_BindThis }
+                                >
+                                    Run Feature Detection
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             { ( this._buttons_For_ActOn_ScanFile_CheckboxSelections_Disabled ) ? (
                                 // overlay when button is disabled to show tooltip
                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component

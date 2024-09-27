@@ -23,6 +23,10 @@ import {
     limelight_add_ReactComponent_JSX_Element_To_DocumentBody,
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -400,9 +404,17 @@ class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEnt
                         <div className={ "search-single-entry-container"} >
                             <div style={ { display: "grid", gridTemplateColumns : "20px auto" } } >
                                 <div style={ { marginLeft: 2, maxWidth: 20, overflowX : "hidden" } }>
-                                    <img  src="static/images/icon-draggable.png"
-                                          className=" icon-small "
-                                          title="Drag to change Search Order"/>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Drag to change Search Order
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img  src="static/images/icon-draggable.png"
+                                              className=" icon-small " />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                                 <div ref={ this._searchNameText_Div_Ref }
                                     // onMouseEnter={ this._onMouseEnter_searchNameText_Div_BindThis }

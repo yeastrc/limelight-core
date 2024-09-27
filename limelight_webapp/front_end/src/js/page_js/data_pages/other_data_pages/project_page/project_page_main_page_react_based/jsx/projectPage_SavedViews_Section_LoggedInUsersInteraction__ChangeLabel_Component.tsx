@@ -15,6 +15,10 @@ import {
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import { SavedView_Label_Max_FieldLengths_Constants } from "page_js/constants_across_webapp/saved_view_constants/savedView_Label_Max_FieldLengths_Constants";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 ///////
 
@@ -184,15 +188,15 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
 
         const label_Value = this._label_Input_Ref.current.value.trim();
 
-        // if ( label_Value.length === 0 ) {
-        //
-        //     this.setState({ label_InvalidValue: true });
-        //     this._label_InvalidValue = true;
-        //
-        // } else {
-        //
-        //     this.setState({label_InvalidValue: false});
-        // }
+        if ( label_Value.length === 0 ) {
+
+            this.setState({ label_InvalidValue: true });
+            this._label_InvalidValue = true;
+
+        } else {
+
+            this.setState({label_InvalidValue: false});
+        }
 
         if ( this._label_InvalidValue ) {
             return {isValid: false, labelValue: null};  // EARLY EXIT
@@ -276,12 +280,12 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
      */
     render() {
 
-        let saveButton_Disabled = false;
-
         // let saveButton_Disabled = false;
-        // if (this.state.label_InvalidValue || this.state.label_InProgress === "") {
-        //     saveButton_Disabled = true;
-        // }
+
+        let saveButton_Disabled = false;
+        if (this.state.label_InvalidValue || this.state.label_InProgress === "") {
+            saveButton_Disabled = true;
+        }
 
         return (
 
@@ -300,6 +304,7 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
                             <div style={ { position: "relative" } }>
                                 <input type="text"
                                        style={ { width: this.props.label_InputField_Width } }
+                                       autoFocus={ true }
                                        maxLength={ SavedView_Label_Max_FieldLengths_Constants.SAVED_VIEW_MAX_LENGTH }
                                        ref={ this._label_Input_Ref }
                                        defaultValue={ ( this.state.label_InProgress ) ?  this.state.label_InProgress : "" }
@@ -325,11 +330,19 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
                                         Save
                                     </button>
                                     { ( saveButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title="Enter a label to enable 'Save'"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Enter a label to enable 'Save'
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>
@@ -352,7 +365,7 @@ class ProjectPage_SavedViews_Section_LoggedInUsersInteraction__ChangeLabel_Compo
                                 <div style={
                                     {
                                         position: "absolute", top: 0, left: 0, right: 0, bottom: 0 ,
-                                        backgroundColor: "white", textAlign: "center", paddingTop: 50, fontSize: 24
+                                        backgroundColor: "white", textAlign: "center", paddingTop: 18, fontSize: 24
                                     }
                                 } >
                                     Saving Data

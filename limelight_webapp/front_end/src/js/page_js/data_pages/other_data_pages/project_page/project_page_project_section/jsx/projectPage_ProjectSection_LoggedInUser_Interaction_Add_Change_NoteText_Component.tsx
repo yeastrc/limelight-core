@@ -14,6 +14,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 ///////
 
@@ -366,11 +370,19 @@ class ProjectPage_ProjectSection_LoggedInUser_Interaction_Add_Change_NoteText_Co
                                         { this._performing_ADD_NOTE ? "Add" : "Save" }
                                     </button>
                                     { ( saveButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title={ "Enter a value to enable '" + ( this._performing_ADD_NOTE ? "Add" : "Save" ) + "'" }
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    { "Enter a value to enable '" + ( this._performing_ADD_NOTE ? "Add" : "Save" ) + "'" }
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>

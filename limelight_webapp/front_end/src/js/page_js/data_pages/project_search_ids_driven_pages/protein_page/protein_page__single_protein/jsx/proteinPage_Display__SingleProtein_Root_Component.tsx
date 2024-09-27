@@ -13,6 +13,10 @@ import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorT
 import { ProteinPage_Display__SingleProtein_MainContent_Component, ProteinPage_Display__SingleProtein_MainContent_Component_Props_Prop } from './proteinPage_Display__SingleProtein_MainContent_Component'
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {ProteinPage_Display_SingleProtein_ProteinNameDescription_Component} from "page_js/data_pages/project_search_ids_driven_pages/protein_page/protein_page_single_protein_common/proteinPage_Display_SingleProtein_ProteinNameDescription_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -377,19 +381,37 @@ export class ProteinPage_Display__SingleProtein_Root_Component extends React.Com
                                 <div  style={ { display: "grid", gridTemplateColumns: "min-content auto" } }>
                                     {/* Next elements in the header are in a CSS Grid */}
 
-                                    <h1 className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
-                                        title="Close"
-                                    >X</h1>
-
-                                    <h1 className="view-single-protein-overlay-header-text"
-                                        title={ proteinName_Display_Header }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Close
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        <span>Protein</span>
-                                        { proteinName_Display_Header ? (
-                                            <span>: </span>
-                                            ) : null }
-                                        { proteinName_Display_Header }
-                                    </h1>
+                                        <h1 className="view-single-protein-overlay-X-for-exit-overlay" onClick={ closeOverlayClickHandler }
+                                        >X</h1>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            proteinName_Display_Header ? (
+                                                <span>
+                                                    { proteinName_Display_Header }
+                                                </span>
+                                            ) : null
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <h1 className="view-single-protein-overlay-header-text"
+                                        >
+                                            <span>Protein</span>
+                                            { proteinName_Display_Header ? (
+                                                <span>: </span>
+                                                ) : null }
+                                            { proteinName_Display_Header }
+                                        </h1>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             </div>
                         </div>

@@ -24,6 +24,10 @@ import {
 import {limelight__IsVariableAString} from "page_js/common_all_pages/limelight__IsVariableAString";
 import {set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer} from "page_js/data_pages/other_data_pages/project_page/project_page__set_project_wide_default_filter_cutoffs_overrides/js/set_ProjectWide_DefaultFilter_Cutoffs_Overrides_SaveDataToServer";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _Overlay_Title = "Set Custom Filters for Project"
@@ -274,11 +278,19 @@ class Set_ProjectWide_DefaultFilter_Cutoffs_Overrides__Overlay_Component extends
                                             onClick={ this._save_Button_Clicked_BindThis }
                                         />
                                         { ( this.state.disable_SaveButton ) ? (
-                                            <div
-                                                style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                                title="Save not available while invalid numbers are entered"
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Save not available while invalid numbers are entered
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                             >
-                                            </div>
+                                                <div
+                                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                                >
+                                                </div>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         ) : null }
                                     </div>
 
@@ -525,11 +537,18 @@ class Single_AnnotationTypeEntry_Component extends React.Component< Single_Annot
                     {( this.props.data_Per_AnnotationType_Name.defaultValues_From_AnnotationType_Records_DisplayString ) ? (
                         <React.Fragment>
                             <div>
-                                <span
-                                    title="Default values found on searches"
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Default values found on searches
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    Found:
-                                </span>
+                                    <span>
+                                        Found:
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
                                 <span>{ this.props.data_Per_AnnotationType_Name.defaultValues_From_AnnotationType_Records_DisplayString }</span>
                             </div>

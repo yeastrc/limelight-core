@@ -746,11 +746,20 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                             { this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions ? (
                                 <React.Fragment>
                                     <span> </span>
-                                    <img
-                                        src="static/images/icon-edit.png" title="Change Label"
-                                        className="icon-small clickable  "
-                                        onClick={ this._edit_DisplayLabel_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Change Label
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-edit.png"
+                                            className="icon-small clickable  "
+                                            onClick={ this._edit_DisplayLabel_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </React.Fragment>
                             ) : null }
                         </div>
@@ -820,13 +829,6 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                                 }}
                                             />
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                        {/*) : (*/}
-                                        {/*    <img*/}
-                                        {/*        className=" icon-small "*/}
-                                        {/*        title="Unable to delete feature detection run."*/}
-                                        {/*        src="static/images/icon-circle-delete-disabled.png"*/}
-                                        {/*    />*/}
-                                        {/*)}*/}
                                     </>
                                 {/*) : null }*/}
                             </div>

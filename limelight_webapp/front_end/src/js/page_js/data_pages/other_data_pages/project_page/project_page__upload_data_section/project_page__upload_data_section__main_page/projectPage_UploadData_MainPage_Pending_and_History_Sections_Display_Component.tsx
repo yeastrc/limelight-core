@@ -415,54 +415,70 @@ export class ProjectPage_UploadData_MainPage_Pending_and_History_Sections_Displa
             <div style={ { position: "relative" } }>
 
                 <div style={ { marginBottom: 10 } }>
-                    <button
-                        title="Import data into this project"
-                        onClick={ event => {
-                            event.stopPropagation()
-
-                            const callback_UpdateAfterSuccessfulSubmit = () : void => {
-
-                                this.load_Data_AndDisplay()
-                            }
-
-                            const projectPage_UploadData_UploadFiles__Params: ProjectPage_UploadData_UploadFiles__Params = {
-
-                                projectIdentifierFromURL: this.props.projectIdentifier,
-
-                                callback_UpdateAfterSuccessfulSubmit,
-
-                                is_uploading_FileObjectStorage_Files: _uploading_FileObjectStorage_Files,
-
-                                limelight_import_file_type_limelight_xml_file: _limelight_import_file_type_limelight_xml_file,
-                                limelight_import_file_type_fasta_file: _limelight_import_file_type_fasta_file,
-                                limelight_import_file_type_scan_file: _limelight_import_file_type_scan_file,
-
-                                maxLimelightXMLFileUploadSize: _maxLimelightXMLFileUploadSize,
-                                maxLimelightXMLFileUploadSizeFormatted: _maxLimelightXMLFileUploadSizeFormatted,
-                                maxFASTAFileUploadSize: _maxFASTAFileUploadSize,
-                                maxFASTAFileUploadSizeFormatted: _maxFASTAFileUploadSizeFormatted,
-                                maxScanFileUploadSize: _maxScanFileUploadSize,
-                                maxScanFileUploadSizeFormatted: _maxScanFileUploadSizeFormatted,
-                                scanFileSelection_For_GoldStandardImport: null,
-                                scanFileSelection_For_FeatureDetectionImport: null,
-                                scanFileSelection_For_FeatureDetectionRun: null
-                            }
-
-                            projectPage_UploadData_UploadFiles__OpenOverlay({ mainParams: projectPage_UploadData_UploadFiles__Params })
-                        }}
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Import data into this project
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        Import Data Files
-                    </button>
+                        <button
+                            onClick={ event => {
+                                event.stopPropagation()
+
+                                const callback_UpdateAfterSuccessfulSubmit = () : void => {
+
+                                    this.load_Data_AndDisplay()
+                                }
+
+                                const projectPage_UploadData_UploadFiles__Params: ProjectPage_UploadData_UploadFiles__Params = {
+
+                                    projectIdentifierFromURL: this.props.projectIdentifier,
+
+                                    callback_UpdateAfterSuccessfulSubmit,
+
+                                    is_uploading_FileObjectStorage_Files: _uploading_FileObjectStorage_Files,
+
+                                    limelight_import_file_type_limelight_xml_file: _limelight_import_file_type_limelight_xml_file,
+                                    limelight_import_file_type_fasta_file: _limelight_import_file_type_fasta_file,
+                                    limelight_import_file_type_scan_file: _limelight_import_file_type_scan_file,
+
+                                    maxLimelightXMLFileUploadSize: _maxLimelightXMLFileUploadSize,
+                                    maxLimelightXMLFileUploadSizeFormatted: _maxLimelightXMLFileUploadSizeFormatted,
+                                    maxFASTAFileUploadSize: _maxFASTAFileUploadSize,
+                                    maxFASTAFileUploadSizeFormatted: _maxFASTAFileUploadSizeFormatted,
+                                    maxScanFileUploadSize: _maxScanFileUploadSize,
+                                    maxScanFileUploadSizeFormatted: _maxScanFileUploadSizeFormatted,
+                                    scanFileSelection_For_GoldStandardImport: null,
+                                    scanFileSelection_For_FeatureDetectionImport: null,
+                                    scanFileSelection_For_FeatureDetectionRun: null
+                                }
+
+                                projectPage_UploadData_UploadFiles__OpenOverlay({ mainParams: projectPage_UploadData_UploadFiles__Params })
+                            }}
+                        >
+                            Import Data Files
+                        </button>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     <span> </span>
-                    <button
-                        title="Refresh this list"
-                        onClick={ event => {
-                            event.stopPropagation();
-                            this.load_Data_AndDisplay();
-                        }}
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Refresh this list
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        Refresh
-                    </button>
+                        <button
+                            onClick={ event => {
+                                event.stopPropagation();
+                                this.load_Data_AndDisplay();
+                            }}
+                        >
+                            Refresh
+                        </button>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     <span style={ { paddingLeft: 20 } }>
                        <button
                            onClick={ event => {
@@ -955,17 +971,27 @@ class Internal__Pending_OR_History_Section__SingleItem__Display_Component extend
 
                 {/*  Column 1  Delete Icon */}
                 <div style={ { whiteSpace: "nowrap", paddingRight: 7 } }>
-                    <input
-                        type="image"
-                        src="static/images/icon-circle-delete.png"
-                        className=" icon-small  "
-                        style={ { visibility: this.props.pending_OR_history_Item.statusStarted ? "hidden" : null } } //  Hide when currently running
-                        title={ deleteImage_TitleText }
-                        onClick={ event => {
-                            event.stopPropagation()
-                            this._delete_Clicked()
-                        }}
-                    />
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            deleteImage_TitleText ? (
+                            <span>
+                                { deleteImage_TitleText }
+                            </span>
+                            ) : null
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input
+                            type="image"
+                            src="static/images/icon-circle-delete.png"
+                            className=" icon-small  "
+                            style={ { visibility: this.props.pending_OR_history_Item.statusStarted ? "hidden" : null } } //  Hide when currently running
+                            onClick={ event => {
+                                event.stopPropagation()
+                                this._delete_Clicked()
+                            }}
+                        />
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
                 {/*  Column 2 Expand Icon */}
@@ -980,65 +1006,97 @@ class Internal__Pending_OR_History_Section__SingleItem__Display_Component extend
 
                     { this.state.showDetails ? (
 
-                        <img src="static/images/pointer-down.png"
-                             className=" icon-small "
-                             title="Hide Details"
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Hide Details
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img src="static/images/pointer-down.png"
+                                 className=" icon-small "
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : (
-                        <img src="static/images/pointer-right.png"
-                             className=" icon-small  "
-                             title="Show Details"
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Show Details
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img src="static/images/pointer-right.png"
+                                 className=" icon-small  "
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) }
                 </div>
 
                 {/*  Column 3  Main Data  */}
-                <div
-                    className=" clickable "
-                    style={ { paddingRight: 4 } }
-                    title="Click to Show/Hide Details"
-                    onClick={ event => {
-                        event.stopPropagation()
-                        this._show_Hide_Details_When_MainRowClicked()
-                    }}
-                >
-                    <span>{ this.props.pending_OR_history_Item.mainLine_DisplayString__ComputedInJS }</span>
-                    <span> </span>
-                    { ( this.props.pending_OR_history_Item.statusQueuedOrRequeued ) ? (
-                        <span style={ { whiteSpace: "nowrap" } }>
-                            <span>(Position in queue: </span>
-                            <span>{ this.props.pending_OR_history_Item.queuePositionFmt }</span>
-                            <span>)</span>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Click to Show/Hide Details
                         </span>
-                    ) : ( this.props.pending_OR_history_Item.statusStarted ) ? (
-                        <span style={ { whiteSpace: "nowrap" } }>(Running)</span>
-                    ) : ( this.props.pending_OR_history_Item.statusComplete ) ? (
-                        <span style={ { whiteSpace: "nowrap" } }>(Success)</span>
-                    ) : ( this.props.pending_OR_history_Item.statusFailed ) ? (
-                        <span style={ { whiteSpace: "nowrap" } }>(Error)</span>
-                    ) : (
-                        <span style={ { whiteSpace: "nowrap" } }>(Status Unknown)</span>
-                    )}
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <div
+                        className=" clickable "
+                        style={ { paddingRight: 4 } }
+                        onClick={ event => {
+                            event.stopPropagation()
+                            this._show_Hide_Details_When_MainRowClicked()
+                        }}
+                    >
+                        <span>{ this.props.pending_OR_history_Item.mainLine_DisplayString__ComputedInJS }</span>
+                        <span> </span>
+                        { ( this.props.pending_OR_history_Item.statusQueuedOrRequeued ) ? (
+                            <span style={ { whiteSpace: "nowrap" } }>
+                                <span>(Position in queue: </span>
+                                <span>{ this.props.pending_OR_history_Item.queuePositionFmt }</span>
+                                <span>)</span>
+                            </span>
+                        ) : ( this.props.pending_OR_history_Item.statusStarted ) ? (
+                            <span style={ { whiteSpace: "nowrap" } }>(Running)</span>
+                        ) : ( this.props.pending_OR_history_Item.statusComplete ) ? (
+                            <span style={ { whiteSpace: "nowrap" } }>(Success)</span>
+                        ) : ( this.props.pending_OR_history_Item.statusFailed ) ? (
+                            <span style={ { whiteSpace: "nowrap" } }>(Error)</span>
+                        ) : (
+                            <span style={ { whiteSpace: "nowrap" } }>(Status Unknown)</span>
+                        )}
 
-                </div>
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                 {/*  Column 4  Processed or Submitted Date*/}
-                <div
-                    className=" clickable "
-                    style={ { whiteSpace: "nowrap" } }
-                    title="Click to Show/Hide Details"
-                    onClick={ event => {
-                        event.stopPropagation()
-                        this._show_Hide_Details_When_MainRowClicked()
-                    }}
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Click to Show/Hide Details
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { this.props.pending_OR_history_Item.importEndDateTime ? (
-                        <span>Processed: { this.props.pending_OR_history_Item.importEndDateTime }</span>
-                    ) : (
-                        <span>Submitted: { this.props.pending_OR_history_Item.importSubmitDateTime }</span>
-                    ) }
+                    <div
+                        className=" clickable "
+                        style={ { whiteSpace: "nowrap" } }
+                        onClick={ event => {
+                            event.stopPropagation()
+                            this._show_Hide_Details_When_MainRowClicked()
+                        }}
+                    >
+                        { this.props.pending_OR_history_Item.importEndDateTime ? (
+                            <span>Processed: { this.props.pending_OR_history_Item.importEndDateTime }</span>
+                        ) : (
+                            <span>Submitted: { this.props.pending_OR_history_Item.importSubmitDateTime }</span>
+                        ) }
 
-                </div>
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
 
                 { this.state.showDetails ? (

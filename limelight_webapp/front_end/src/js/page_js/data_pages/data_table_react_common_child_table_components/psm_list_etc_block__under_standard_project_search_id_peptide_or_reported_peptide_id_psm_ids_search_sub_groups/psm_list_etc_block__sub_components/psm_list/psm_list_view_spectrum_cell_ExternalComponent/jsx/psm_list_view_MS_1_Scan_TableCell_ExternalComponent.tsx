@@ -18,6 +18,10 @@ import {
     _REFERRER_PATH_STRING,
     _STANDARD_PAGE_STATE_IDENTIFIER
 } from "page_js/data_pages/data_pages_common/a_dataPagesCommonConstants";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -173,23 +177,39 @@ class Internal__PsmList_ViewSpectrumCell_ExternalReactComponent extends React.Co
 
         if ( this._show_LoadingData_Message ) {
             return (
-                <span
-                    className="table-data-cell-property-value "
-                    title="Loading Data"
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Loading Data
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    Loading Data
-                </span>
+                    <span
+                        className="table-data-cell-property-value "
+                    >
+                        Loading Data
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
         }
 
         if ( this._show_DisabledSince_NO_MS1_ScanNumber ) {
             return (
-                <span
-                    className="table-data-cell-property-value fake-link-disabled "
-                    title="No MS1 data found for PSM."
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            No MS1 data found for PSM.
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    NO MS1 Scan
-                </span>
+                    <span
+                        className="table-data-cell-property-value fake-link-disabled "
+                    >
+                        NO MS1 Scan
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
         }
 

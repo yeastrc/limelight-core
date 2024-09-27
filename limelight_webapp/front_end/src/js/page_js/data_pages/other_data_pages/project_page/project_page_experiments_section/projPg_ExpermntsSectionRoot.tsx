@@ -421,11 +421,18 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
                         <div ></div>
                         {/* CSS Grid 2 Columns - Column 2 Item */}
                         <div > {/* Containing <div> since child <div> has "display: inline-block" to limit tooltip area */}
-                            <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 2, marginBottom : 10, display: "inline-block" } }
-                                title="Experiments that are in Draft status."
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Experiments that are in Draft status.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Experiment Drafts
-                            </div>
+                                <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 2, marginBottom : 10, display: "inline-block" } }>
+                                    Experiment Drafts
+                                </div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                         
                         { draftExperimentsList }
@@ -443,11 +450,18 @@ export class ProjectPage_ExperimentsSectionRoot extends React.Component< Project
                         <div ></div>
                         {/* CSS Grid 2 Columns - Column 2 Item */}
                         <div > {/* Containing <div> since child <div> has "display: inline-block" to limit tooltip area */}
-                            <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 10, marginBottom: 10, display: "inline-block" } }
-                                title="Published Experiments that all users can see and use."
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Published Experiments that all users can see and use.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Experiments
-                            </div>
+                                <div style={ { fontSize: 16, fontWeight : "bold", marginTop : 10, marginBottom: 10, display: "inline-block" } }>
+                                    Experiments
+                                </div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     </React.Fragment>
                 );

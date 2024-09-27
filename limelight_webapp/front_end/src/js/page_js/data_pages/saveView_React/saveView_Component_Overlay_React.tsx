@@ -10,6 +10,10 @@
 import React from 'react'
 
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _Overlay_Title = "Save Highlighted Result"
@@ -150,8 +154,17 @@ class SaveView_Overlay_Component extends React.Component< SaveView_Overlay_Compo
                             />
                         </div>
                         { ( this.state.label === "" ) ? (
-                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } title="A label is required">
-                            </div>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        A label is required
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } >
+                                </div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : null }
                     </div>
 

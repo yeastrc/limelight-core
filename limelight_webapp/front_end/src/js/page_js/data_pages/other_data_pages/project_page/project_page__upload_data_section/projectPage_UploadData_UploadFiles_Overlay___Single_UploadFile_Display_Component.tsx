@@ -10,6 +10,10 @@
 
 import React from "react";
 import {ProjectPage_UploadData_UploadFiles__Common_Single_UploadFile_Data} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/projectPage_UploadData_UploadFiles_Overlay__Common_Constants_Classes";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -63,14 +67,22 @@ export class ProjectPage_UploadData_UploadFiles_Overlay___Single_UploadFile_Disp
                         <React.Fragment>
                             <span> </span>
                             {/*  Remove Icon  */}
-                            <input
-                                type="image" src="static/images/icon-circle-delete.png"
-                                className=" icon-small "
-                                title="Remove"
-                                onClick={ event => {
-                                    this.props.callbackOn_Delete_Clicked()
-                                }}
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Remove
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image" src="static/images/icon-circle-delete.png"
+                                    className=" icon-small "
+                                    onClick={ event => {
+                                        this.props.callbackOn_Delete_Clicked()
+                                    }}
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </React.Fragment>
                     ) : null }
                     {/*  Upload Percentage  */}

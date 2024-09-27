@@ -51,6 +51,10 @@ import {
 import {limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam} from "page_js/common_all_pages/limelight__CompareStrings_CaseInsensitive_LocaleCompareWIthCaseInsensitiveParam";
 import {Spinner_Limelight_Component} from "page_js/common_all_pages/spinner_ReactComponent_Limelight";
 import {limelight__IsTextSelected} from "page_js/common_all_pages/limelight__IsTextSelected";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -1318,9 +1322,18 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                     Submit Upload
                                 </button>
                                 {/*  Cover button when disabled so have tooltip  */}
-                                <div id="import_limelight_xml_file_submit_button_disabled_overlay"
-                                     style={ { position: "absolute", inset: 0, display: ( ! this.state.submitButton_Enabled ) ? undefined : "none" } }
-                                     title="Submit Upload. Enabled when Limelight XML file is selected."></div>
+                                { ! this.state.submitButton_Enabled ? (
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Submit Upload. Enabled when Limelight XML file is selected.
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <div style={ { position: "absolute", inset: 0 } }></div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                                ) : null }
                             </div>
                         ) : null }
                         <span> </span>

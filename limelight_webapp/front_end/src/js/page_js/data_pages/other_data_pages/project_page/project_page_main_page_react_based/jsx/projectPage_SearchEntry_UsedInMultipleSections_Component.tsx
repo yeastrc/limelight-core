@@ -660,11 +660,19 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                                     { ( this.props.projectPage_SearchesAdmin && this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                         <>
                                             <span> </span>
-                                            <img className="icon-small clickable "
-                                                 src="static/images/icon-edit.png"
-                                                 title="Edit name of search"
-                                                 onClick={ this._changeSearchName_Clicked_BindThis }
-                                            />
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Edit name of search
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <img className="icon-small clickable "
+                                                     src="static/images/icon-edit.png"
+                                                     onClick={ this._changeSearchName_Clicked_BindThis }
+                                                />
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         </>
                                     ): null }
 

@@ -31,6 +31,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject_Class
 } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers__GetDataFromServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 //  Internal Constants
 
@@ -920,21 +924,37 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
                             { ( this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                 <React.Fragment>
                                     <span> </span>
-                                    <img src="static/images/icon-edit.png"
-                                         className=" clickable icon-small "
-                                         title="Edit name of folder"
-                                         onClick={ this._changeFolderName_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Edit name of folder
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img src="static/images/icon-edit.png"
+                                             className=" clickable icon-small "
+                                             onClick={ this._changeFolderName_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </React.Fragment>
                             ) : null }
                             { ( this.props.searchesSearchTagsFolders_Result_Root.is_userIsProjectOwner() ) ? (
                                 <React.Fragment>
                                     <span> </span>
-                                    <img src="static/images/icon-circle-delete.png"
-                                         className=" clickable icon-small "
-                                         title="Delete folder.  Searches in it become 'Unfiled'."
-                                         onClick={ this._deleteFolder_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Delete folder.  Searches in it become 'Unfiled'.
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img src="static/images/icon-circle-delete.png"
+                                             className=" clickable icon-small "
+                                             onClick={ this._deleteFolder_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </React.Fragment>
                             ) : null }
                         </div>

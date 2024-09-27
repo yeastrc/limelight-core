@@ -17,6 +17,10 @@ import {ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_ComponentData} 
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -193,10 +197,20 @@ export class ModificationMass_OpenModMassZeroNotOpenMod_UserSelection_Component 
                 <div className=" filter-common-selection-block peptide-sequence-selection-block "  style={ { marginBottom : marginBottomSize } } >
                     <div className=" filter-common-selection-inner-block ">
                         <div className=" ">  {/* left-margin-same-as-checkbox; to align with checkbox in Unique Peptide */}
-                            <input type="checkbox" checked={ treatOpenModMassZeroAsUnmodified_UserSelection }
-                                   title="Do not treat open modification masses that round to 0 (0.5 <= mass < 0.5) as open modifications."
-                                   onChange={ this._inputFieldChanged_BindThis }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        <span>Do not treat open modification masses that </span>
+                                        <span style={ { whiteSpace: "nowrap" } }>{ "round to 0 (0.5 <= mass < 0.5)" }</span>
+                                        <span> as open modifications.</span>
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input type="checkbox" checked={ treatOpenModMassZeroAsUnmodified_UserSelection }
+                                       onChange={ this._inputFieldChanged_BindThis }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     </div>
                 </div>

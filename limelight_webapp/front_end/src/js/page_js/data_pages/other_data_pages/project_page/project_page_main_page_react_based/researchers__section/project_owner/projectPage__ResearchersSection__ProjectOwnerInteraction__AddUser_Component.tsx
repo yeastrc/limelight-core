@@ -23,6 +23,10 @@ import { showErrorMsg } from "page_js/common_all_pages/showHideErrorMessage";
 import {
     projectPage__ResearchersSection__CommonCode_Get_UserLevels_FromDOM
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/researchers__section/common/projectPage__ResearchersSection__CommonCode_Get_UserLevels_FromDOM";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 /**
@@ -344,22 +348,38 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
 
             <div style={ { display: ( ! this._addUser_ShowBody ) ? "" : "none" } }>
                 <div className="invite-user-expand-icon-container">
-                    <span
-                        title="Invite new or existing user to project"
-                        className=" second-level-label clickable "
-                        onClick={ this._showBody_Clicked_BindThis }
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Invite new or existing user to project
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        <img src="static/images/icon-add-user.png" className=" icon-small "/>
-                    </span>
+                        <span
+                            className=" second-level-label clickable "
+                            onClick={ this._showBody_Clicked_BindThis }
+                        >
+                            <img src="static/images/icon-add-user.png" className=" icon-small "/>
+                        </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
                 <div>
-                    <span
-                        title="Invite new or existing user to project"
-                        className=" second-level-label fake-link "
-                        onClick={ this._showBody_Clicked_BindThis }
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            <span>
+                                Invite new or existing user to project
+                            </span>
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        Invite User
-                    </span>
+                        <span
+                            className=" second-level-label fake-link "
+                            onClick={ this._showBody_Clicked_BindThis }
+                        >
+                            Invite User
+                        </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
 
             </div>
@@ -378,13 +398,21 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
 
                 <div>
                     <div>
-                        <img
-                            src="static/images/icon-circle-delete.png"
-                            title="Close Invite User"
-                            className=" icon-small clickable "
-                            style={ { marginRight: 4 } }
-                            onClick={ this._hideBody_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Close Invite User
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                src="static/images/icon-circle-delete.png"
+                                className=" icon-small clickable "
+                                style={ { marginRight: 4 } }
+                                onClick={ this._hideBody_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                     <div style={ { position: "relative" } }>
                         { this._render_ErrorMessages() }
@@ -403,12 +431,20 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
 
                                 //  User Selected Existing User by Name so display only that
                                 <div>
-                                    <img
-                                        src="static/images/icon-circle-delete.png"
-                                        className=" icon-small clickable "
-                                        title="Clear chosen Last Name or Email Address"
-                                        onClick={ this._selected_ExistingUser_Cancel_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                Clear chosen Last Name or Email Address
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-circle-delete.png"
+                                            className=" icon-small clickable "
+                                            onClick={ this._selected_ExistingUser_Cancel_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     <span
                                         style={ { marginLeft: 10, marginRight: 10 } }
                                     >
@@ -442,13 +478,21 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
                                     </div>
                                     <div>
                                         <div>
-                                            <input
-                                                placeholder="Email Address"
-                                                title="Email Address"
-                                                style={ { marginRight: 8 } }
-                                                value={ this._email_Entered }
-                                                onChange={ this._email_Field__Changed_BindThis }
-                                            />
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    <span>
+                                                        Email Address
+                                                    </span>
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <input
+                                                    placeholder="Email Address"
+                                                    style={ { marginRight: 8 } }
+                                                    value={ this._email_Entered }
+                                                    onChange={ this._email_Field__Changed_BindThis }
+                                                />
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         </div>
                                         <div>
                                             New or existing user
@@ -478,10 +522,19 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction__AddUser_C
                                     Invite User
                                 </button>
                                 { this._inviteUser_Button_Disabled ? (
-                                    <div
-                                        style={ { position: "absolute", inset: 0 } }
-                                        title="First enter value for email or choose from selection for last name"
-                                    ></div>
+
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            <span>
+                                                First enter value for email or choose from selection for last name
+                                            </span>
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <div
+                                            style={ { position: "absolute", inset: 0 } }
+                                        ></div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
 
@@ -767,27 +820,35 @@ export class INTERNAL__ChooseExistingUser_AutoComplete_Component extends React.C
 
         return (
             //  Probably need to make this a child component so can set open to true on mount
-            <Autocomplete
-                title="Last Name. Must choose from list."
-                open={ this._open_Autocomplete_Prop } // hard code true for now.  Set to default true on component Mount
-                onOpen={ ( event ) => {
-                    this._autoComplete__OnOpen( event )
-                } }
-                onClose={ ( event, reason ) => {
-                    this._autoComplete__OnClose( event, reason )
-                } }
-                onChange={
-                    //  Put inline so get parameter types to ensure those types are used in the called method
-                    ( event, value, changeReason, changeDetails ) => {
-                        this._changed_AutoComplete( event, value, changeReason, changeDetails )
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={
+                    <span>
+                        Last Name. Must choose from list.
+                    </span>
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+            >
+                <Autocomplete
+                    open={ this._open_Autocomplete_Prop } // hard code true for now.  Set to default true on component Mount
+                    onOpen={ ( event ) => {
+                        this._autoComplete__OnOpen( event )
                     } }
-                disableClearable={ true }
-                // disablePortal
-                loading={ this._loading_Autocomplete_Prop } // Display loading message
-                options={ this._options_AutoComplete_Prop }
-                sx={ { width: 500 } }
-                renderInput={ ( params ) => <TextField { ...params } label="Last Name"/> }
-            />
+                    onClose={ ( event, reason ) => {
+                        this._autoComplete__OnClose( event, reason )
+                    } }
+                    onChange={
+                        //  Put inline so get parameter types to ensure those types are used in the called method
+                        ( event, value, changeReason, changeDetails ) => {
+                            this._changed_AutoComplete( event, value, changeReason, changeDetails )
+                        } }
+                    disableClearable={ true }
+                    // disablePortal
+                    loading={ this._loading_Autocomplete_Prop } // Display loading message
+                    options={ this._options_AutoComplete_Prop }
+                    sx={ { width: 500 } }
+                    renderInput={ ( params ) => <TextField { ...params } label="Last Name"/> }
+                />
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );
     }
 

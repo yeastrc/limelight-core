@@ -280,12 +280,20 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                                 ) : null }
                             </div>
                             <span> </span>
-                            <button
-                                title="Close without saving"
-                                onClick={ this.props.callbackOn_Cancel_Close_Clicked }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Close without saving
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Cancel
-                            </button>
+                                <button
+                                    onClick={ this.props.callbackOn_Cancel_Close_Clicked }
+                                >
+                                    Cancel
+                                </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                         <div>
                             No changes are saved until "Save" is clicked.
