@@ -146,6 +146,8 @@ class Common_Search_Selection_For_ProjectScanFileId_Overlay_OuterContainer_Compo
 
     private _show_UpdatingMessage = false
 
+    private _show_NoSearches_ForScanFile = false
+
     private _unmountCalled = false;
 
     /**
@@ -196,13 +198,19 @@ class Common_Search_Selection_For_ProjectScanFileId_Overlay_OuterContainer_Compo
             }
 
 
+            if ( projectSearchIds_Data_For_ProjectScanFileId.projectSearchIds.length === 0 ) {
 
-            // const projectIdentifier = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM()
+                this._show_NoSearches_ForScanFile = true
 
-            const getSearchesSearchTagsAndFolders_SingleProject_Result =
-                await getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: undefined, projectSearchIds: projectSearchIds_Data_For_ProjectScanFileId.projectSearchIds })
+            } else {
 
-            this._commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root = getSearchesSearchTagsAndFolders_SingleProject_Result
+                // const projectIdentifier = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM()
+
+                const getSearchesSearchTagsAndFolders_SingleProject_Result =
+                    await getSearchesSearchTagsAndFolders_SingleProject_OrFrom_ProjectSearchIds({ projectIdentifier: undefined, projectSearchIds: projectSearchIds_Data_For_ProjectScanFileId.projectSearchIds })
+
+                this._commonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root = getSearchesSearchTagsAndFolders_SingleProject_Result
+            }
 
             this._show_LoadingMessage = false
 
@@ -262,6 +270,24 @@ class Common_Search_Selection_For_ProjectScanFileId_Overlay_OuterContainer_Compo
 
                             <div style={ { marginTop: 80, marginBottom: 80, textAlign: "center" } }>
                                 <Spinner_Limelight_Component/>
+                            </div>
+
+                        </div>
+
+                    ) : this._show_NoSearches_ForScanFile ? (
+
+                        <div style={ { textAlign: "center" } }>
+                            <div style={ { fontSize: 24, fontWeight: "bold", marginTop: 20, marginBottom: 20 } }>
+                                No searches in the project for this scan file.
+                            </div>
+                            <div>
+                                <button
+                                    onClick={ event => {
+                                        this.props.callbackOn_Cancel_Close_Clicked()
+                                    }}
+                                >
+                                    Close
+                                </button>
                             </div>
 
                         </div>
