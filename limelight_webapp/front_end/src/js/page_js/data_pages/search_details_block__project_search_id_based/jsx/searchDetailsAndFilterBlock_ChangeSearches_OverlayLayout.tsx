@@ -15,6 +15,10 @@ import {
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback,
     SearchSelection_DisplayedNestedInFolders_Component__Update_Selected_Searches__Callback_Params
 } from "page_js/data_pages/search_selection__displayed_nested_in_folders__React_Component/searchSelection_DisplayedNestedInFolders_Component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -205,12 +209,19 @@ class SearchDetailsAndFilterBlock_ChangeSearches_Overlay_OuterContainer_Componen
                                 onClick={ this._updateButtonClicked_BindThis }
                             />
                             { this._updateButton_Disabled ? (
-                                <div
-                                    style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                    title="At least 1 search is required"
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            At least 1 search is required
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-
-                                </div>
+                                    <div
+                                        style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
+                                    >
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : null }
                         </div>
                         <span> </span>
