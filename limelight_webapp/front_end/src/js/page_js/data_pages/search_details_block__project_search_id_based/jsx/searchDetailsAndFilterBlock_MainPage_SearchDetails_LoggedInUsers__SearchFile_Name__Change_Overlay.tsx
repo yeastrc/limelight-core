@@ -14,6 +14,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 ///////////////////////////////////////
@@ -194,6 +198,8 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
     private _searchFileName_Input_Changed() {
 
         this._get_InputFields_AndValidate();
+
+        this.setState({ force_Rerender_Object: {} });
     }
 
     /**
@@ -214,6 +220,9 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
             } = this._get_InputFields_AndValidate();
 
             if ( ! isValid ) {
+
+                this.setState({ force_Rerender_Object: {} });
+
                 return;  // EARLY EXIT
             }
 
@@ -317,11 +326,19 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
                                         Save
                                     </button>
                                     { ( saveButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title="Enter a file name to enable 'Save'"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Enter a file name to enable 'Save'
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>

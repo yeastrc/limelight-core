@@ -14,6 +14,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 //   Add "WebLink Text"
@@ -361,11 +365,19 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
                                         Add URL for a RAW file
                                     </button>
                                     { ( this._addButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title="Enter a valid URL and a Label to enable 'Add URL for a RAW file'"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Enter a valid URL and a Label to enable 'Add URL for a RAW file'
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>

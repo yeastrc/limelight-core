@@ -27,6 +27,10 @@ import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToS
 import {copyObject_DeepCopy_Limelight} from "page_js/data_pages/data_pages_common/copyObject_DeepCopy";
 import {UpdatePageState_URL_With_NewFilterCutoffs_FromUser} from "page_js/data_pages/data_pages_common/updatePageState_URL_With_NewFilterCutoffs_FromUser";
 import {SearchDetailsAndFilterBlock_UserInputInOverlay_FilterValuesChanged_Callback_Param} from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsAndFilterBlock_UserInputInOverlay";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 const _Overlay_Title = "Change Search Filters"
 
@@ -750,8 +754,16 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
                         <div style={ { position: "relative", display: "inline-block" } }>
                             <input type="submit" value="Save" disabled={ ! this.state.saveButtonEnabled } />
                             { ( ! this.state.saveButtonEnabled ?
-                                <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                     title="All entered values must be valid for Save to be enabled."></div>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            All entered values must be valid for 'Save' to be enabled.
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 : undefined ) }
                         </div>
                         <input type="button" value="Cancel" onClick={ this._cancel_BindThis } style={ { marginLeft: 10 } } />

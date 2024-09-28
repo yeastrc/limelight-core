@@ -14,6 +14,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 //   Add "Comment Text"
@@ -33,9 +37,6 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__C
     change_Callback: SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__Comment__Add__Component_Change_Callback
     cancel_Callback: () => void
 }
-
-export type SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__Comment__Add__OpenOverlay__FunctionType =
-    ( params : SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__Comment__Add__OpenOverlay__FunctionParams ) => void
 
 /**
  *
@@ -93,7 +94,7 @@ export const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__C
     }
 
     const componentToAdd = (
-        <SearchName_and_SearchShortName_Change_Component
+        <INTERNAL__CommentAdd_Overlay_Component
             { ...params }
             change_Callback={ change_Callback_Local }
             cancel_Callback={ cancel_Callback_Local }
@@ -110,7 +111,7 @@ export const searchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__C
 /**
  *
  */
-class SearchName_and_SearchShortName_Change_Component_Props extends SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__Comment__Add__OpenOverlay__FunctionParams {
+class INTERNAL__CommentAdd_Overlay_Component_Props extends SearchDetailsAndFilterBlock_MainPage_SearchDetails_LoggedInUsers__Comment__Add__OpenOverlay__FunctionParams {
 
     commentText_InputField_Width: number
 
@@ -119,7 +120,7 @@ class SearchName_and_SearchShortName_Change_Component_Props extends SearchDetail
 /**
  *
  */
-interface SearchName_and_SearchShortName_Change_Component_State {
+interface INTERNAL__CommentAdd_Overlay_Component_State {
 
     force_Rerender_Object?: object
 
@@ -129,7 +130,7 @@ interface SearchName_and_SearchShortName_Change_Component_State {
 /**
  *
  */
-class SearchName_and_SearchShortName_Change_Component extends React.Component< SearchName_and_SearchShortName_Change_Component_Props, SearchName_and_SearchShortName_Change_Component_State > {
+class INTERNAL__CommentAdd_Overlay_Component extends React.Component< INTERNAL__CommentAdd_Overlay_Component_Props, INTERNAL__CommentAdd_Overlay_Component_State > {
 
     private _commentText_Input_Changed_BindThis = this._commentText_Input_Changed.bind(this);
     private _formSubmit_BindThis = this._formSubmit.bind(this);
@@ -140,12 +141,12 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
 
     private _cancelButton_Clicked = false
 
-    private _commentText_InvalidValue: boolean = false
+    private _commentText_InvalidValue: boolean = true
 
     /**
      *
      */
-    constructor(props: SearchName_and_SearchShortName_Change_Component_Props) {
+    constructor(props: INTERNAL__CommentAdd_Overlay_Component_Props) {
         super(props)
 
         this._commentText_Input_Ref = React.createRef<HTMLInputElement>();
@@ -184,6 +185,8 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
     private _commentText_Input_Changed() {
 
         this._get_InputFields_AndValidate();
+
+        this.setState({ force_Rerender_Object: {} });
     }
 
     /**
@@ -204,6 +207,8 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
             } = this._get_InputFields_AndValidate();
 
             if ( ! isValid ) {
+                this.setState({ force_Rerender_Object: {} });
+
                 return;  // EARLY EXIT
             }
 
@@ -291,11 +296,6 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
                                                onChange={ this._commentText_Input_Changed_BindThis }
                                         />
                                     </span>
-                                    { (this._commentText_InvalidValue ) ? (
-                                        <span style={ { marginLeft: 20, color: "red", whiteSpace: "nowrap" } }>
-                                            File Name is invalid.
-                                        </span>
-                                    ) : null }
                                 </div>
 
                             </div>
@@ -308,11 +308,19 @@ class SearchName_and_SearchShortName_Change_Component extends React.Component< S
                                         Add Comment
                                     </button>
                                     { ( addButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title="Enter a comment text to enable 'Add Comment'"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Enter a comment text to enable 'Add Comment'
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>

@@ -342,12 +342,20 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
 
                     { this._searchDetails_ForProjectSearchId.mainPart.converterProgram_Name ? (
                         <>
-                            <div
-                                style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
-                                title="Program used to generate Limelight XML file"
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        Program used to generate Limelight XML file
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                Converter Program:
-                            </div>
+                                <div
+                                    style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
+                                >
+                                    Converter Program:
+                                </div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <div style={ { display: "grid", gridTemplateColumns: "min-content 1fr", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
                                 <div style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }>
                                     Name:
@@ -367,23 +375,39 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                                 <div>
                                     { this._searchDetails_ForProjectSearchId.mainPart.converterProgram_Pgm_URI }
                                 </div>
-                                <div
-                                    style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
-                                    title="Date Conversion Program was run"
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Date Conversion Program was run
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    Conversion Date:
-                                </div>
+                                    <div
+                                        style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
+                                    >
+                                        Conversion Date:
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <div>
                                     { this._searchDetails_ForProjectSearchId.mainPart.formatted_converterProgram_ConversionDate }
                                 </div>
                                 { this._searchDetails_ForProjectSearchId.mainPart.converterProgram_Pgm_Arguments ? (
                                     <>
-                                        <div
-                                            style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
-                                            title="Command Line Arguments"
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                <span>
+                                                    Command Line Arguments
+                                                </span>
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            CLI Arguments:
-                                        </div>
+                                            <div
+                                                style={ { whiteSpace: "nowrap", marginRight: _STANDARD_LABEL_PADDING_RIGHT } }
+                                            >
+                                                CLI Arguments:
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         <div>
                                             { ! this._searchDetails_ForProjectSearchId__Show__converterProgram_Pgm_Arguments ? (
                                                 <span
@@ -601,7 +625,6 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
                             <span
                                 style={ { overflowWrap: "break-word" } }
                                 className=" fake-link "
-                                title="Download file"
                                 onClick={ this._fasta_Filename_Clicked_For_Download_BindThis }
                             >
                                 { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFilename }
@@ -731,7 +754,6 @@ class Internal__Scan_File_Component extends React.Component<Internal__Scan_File_
                             <span
                                 style={ { overflowWrap: "break-word" } }
                                 className=" fake-link "
-                                title="Download file"
                                 onClick={ this._filename_Clicked_For_Download_BindThis }
                             >
                                 { this.props.search_Scan_File_Item.filename }
@@ -1092,23 +1114,39 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
         return (
             <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
 
-                <span
-                    ref={ this._searchFileName_Div_Ref }
-                    className=" fake-link "
-                    title="Download file"
-                    onClick={ this._searchFile_Name_Clicked_BindThis }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <span>
+                            Download file
+                        </span>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { this.props.searchFile_Entry.name }
-                </span>
+                    <span
+                        ref={ this._searchFileName_Div_Ref }
+                        className=" fake-link "
+                        onClick={ this._searchFile_Name_Clicked_BindThis }
+                    >
+                        { this.props.searchFile_Entry.name }
+                    </span>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 { this.props.searchFile_Entry.canEdit ? (
                     <>
                         <span> </span>
-                        <img
-                            src="static/images/icon-edit.png"
-                            className="fake-link-image icon-small"
-                            title="Edit name"
-                            onClick={ this._edit_SearchFile_Name_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Edit name
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                src="static/images/icon-edit.png"
+                                className="fake-link-image icon-small"
+                                onClick={ this._edit_SearchFile_Name_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </>
                 ) : null }
             </div>
@@ -1236,15 +1274,23 @@ class Internal__Comments_Component extends React.Component<Internal__Comments_Co
                         <div>
                            <span style={ { whiteSpace: "nowrap" } }>
                                 <span>[</span>
-                                <span
-                                    ref={ this._add_Comment_Span_Ref }
-                                    className=" fake-link "
-                                    style={ { whiteSpace: "nowrap", fontSize: "80%", textDecoration: "none" } }
-                                    title="Add a Comment"
-                                    onClick={ this._add_Comment_Clicked_BindThis }
-                                >
-                                    +Comment
-                                </span>
+                               <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                   title={
+                                       <span>
+                                           Add a Comment
+                                       </span>
+                                   }
+                                   { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                               >
+                                    <span
+                                        ref={ this._add_Comment_Span_Ref }
+                                        className=" fake-link "
+                                        style={ { whiteSpace: "nowrap", fontSize: "80%", textDecoration: "none" } }
+                                        onClick={ this._add_Comment_Clicked_BindThis }
+                                    >
+                                        +Comment
+                                    </span>
+                               </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                <span>]</span>
                            </span>
                         </div>
@@ -1392,12 +1438,20 @@ class Internal__Comment_Entry_Component extends React.Component<Internal__Commen
             >
                 { this.props.comment_Entry.canDelete ? (
                     <>
-                        <img
-                            src="static/images/icon-circle-delete.png"
-                            className="fake-link-image icon-small"
-                            title="Delete Comment"
-                            onClick={ this._delete_Comment_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete Comment
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                src="static/images/icon-circle-delete.png"
+                                className="fake-link-image icon-small"
+                                onClick={ this._delete_Comment_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
                     </>
                 ) : null }
@@ -1407,12 +1461,20 @@ class Internal__Comment_Entry_Component extends React.Component<Internal__Commen
                 { this.props.comment_Entry.canEdit ? (
                     <>
                         <span> </span>
-                        <img
-                            src="static/images/icon-edit.png"
-                            className="fake-link-image icon-small"
-                            title="Edit Comment"
-                            onClick={ this._edit_Comment_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Edit Comment
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                src="static/images/icon-edit.png"
+                                className="fake-link-image icon-small"
+                                onClick={ this._edit_Comment_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </>
                 ) : null }
                 { this.props.comment_Entry.commentDate ? (
@@ -1550,15 +1612,23 @@ class Internal__WebLinks_Component extends React.Component<Internal__WebLinks_Co
                         <div>
                             <span style={ { whiteSpace: "nowrap" } }>
                                 <span>[</span>
-                                <span
-                                    ref={ this._add_WebLink_Span_Ref }
-                                    className=" fake-link "
-                                    style={ { whiteSpace: "nowrap", fontSize: "80%", textDecoration: "none" } }
-                                    title="Add a WebLink"
-                                    onClick={ this._add_WebLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        <span>
+                                            Add a Link to a Raw file
+                                        </span>
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    +Link to Raw file
-                                </span>
+                                    <span
+                                        ref={ this._add_WebLink_Span_Ref }
+                                        className=" fake-link "
+                                        style={ { whiteSpace: "nowrap", fontSize: "80%", textDecoration: "none" } }
+                                        onClick={ this._add_WebLink_Clicked_BindThis }
+                                    >
+                                        +Link to Raw file
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span>]</span>
                             </span>
                         </div>
@@ -1662,12 +1732,20 @@ class Internal__WebLink_Entry_Component extends React.Component<Internal__WebLin
             >
                 { this.props.webLink_Entry.canDelete ? (
                     <>
-                        <img
-                            src="static/images/icon-circle-delete.png"
-                            className="fake-link-image icon-small"
-                            title="Delete WebLink"
-                            onClick={ this._delete_WebLink_Clicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                <span>
+                                    Delete Link
+                                </span>
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                src="static/images/icon-circle-delete.png"
+                                className="fake-link-image icon-small"
+                                onClick={ this._delete_WebLink_Clicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span> </span>
                     </>
                 ) : null }
