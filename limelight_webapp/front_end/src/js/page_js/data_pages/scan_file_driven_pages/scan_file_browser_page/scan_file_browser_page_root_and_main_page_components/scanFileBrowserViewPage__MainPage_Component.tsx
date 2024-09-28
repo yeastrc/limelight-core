@@ -611,7 +611,7 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
             const _OVERALL_CONTAINER_WITH_BORDER_PADDING = 10
 
             return (
-                <div style={ { marginBottom: 20 } }>
+                <div style={ { display: "inline-block", marginBottom: 20 } }>
 
                     { this._scanFilenames ? (
                         <div
