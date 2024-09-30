@@ -16,6 +16,10 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { 
     Experiment_ConditionGroupsContainer, Experiment_ConditionGroup, Experiment_Condition 
 } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _CONDITION_TYPE_CONTINUOUS = "C";    //  Was ORDINAL
@@ -756,7 +760,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                 let disabledCoverDiv : JSX.Element = undefined;
                 if ( addSave_Disabled_Flag ) {
 
-                    let title = undefined;
+                    let title: string = undefined;
 
                     if ( this.props.data_ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint.isTimePoints ) {
                         if ( conditionHasEmptyLabel ) {
@@ -772,8 +776,15 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                         }
                     }
                     disabledCoverDiv = (
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } title={ title }>
-                        </div>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                title
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }>
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     );
                 }
 
@@ -795,8 +806,15 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                         title = "At least 1 time point must be added before the Time Points can be saved";
                     }
                     disabledCoverDiv = (
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } } title={ title }>
-                        </div>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                title
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }>
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     );
                 }
 
@@ -875,8 +893,15 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
             }
             conditionsBlockAddConditionLink = (
                 <div className=" top-level fixed-height modal-overlay-body-standard-padding-left" style={ { marginBottom: 5 } } >
-                    <span className=" fake-link " onClick={ this._addCondition_BindThis }
-                        title={ conditionsBlockAddConditionLink_Title }>+{ label_Conditions }</span>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            conditionsBlockAddConditionLink_Title
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span className=" fake-link " onClick={ this._addCondition_BindThis }
+                            >+{ label_Conditions }</span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
             )
             if ( this.state.conditionContainers && ( this.state.conditionContainers.length !== 0 ) ) {
@@ -1215,30 +1240,72 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
 
             labelInput = (
                 <div >
-                    <input ref={ this._inputField_Ref }
-                           title={ inputFieldTitleAttr }
-                           value={ conditionContainer.conditionLabel }
-                           style={ inputFieldStyle }
-                           onChange={ this._labelChanged_BindThis }
-                           autoFocus
-                           onBlur={ this._labelEdit_LabelInputBlur_BindThis }
-                    />
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            inputFieldTitleAttr
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input ref={ this._inputField_Ref }
+                               value={ conditionContainer.conditionLabel }
+                               style={ inputFieldStyle }
+                               onChange={ this._labelChanged_BindThis }
+                               autoFocus
+                               onBlur={ this._labelEdit_LabelInputBlur_BindThis }
+                        />
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
             );
         } else {
 
-            let title = undefined;
+            let title: JSX.Element = undefined;
             if ( this.props.isTimePoints ) {
                 if ( this.state.emptyConditionString ) {
-                    title = "Click to change Time Point Label\n\nTime Point Label Cannot Be Empty";
+                    title = (
+                        <div>
+                            <div>
+                                Click to change Time Point Label
+                            </div>
+                            <div style={ { marginTop: 15 } }>
+                                Time Point Label Cannot Be Empty
+                            </div>
+                        </div>
+                    )
                 } else {
-                    title = "Click to change Time Point Label\n\nDrag to change Time Point Order";
+                    title = (
+                        <div>
+                            <div>
+                                Click to change Time Point Label
+                            </div>
+                            <div style={ { marginTop: 15 } }>
+                                Drag to change Time Point Order
+                            </div>
+                        </div>
+                    )
                 }
             } else {
                 if ( this.state.emptyConditionString ) {
-                    title = "Click to change Condition Label\n\nCondition Label Cannot Be Empty";
+                    title = (
+                        <div>
+                            <div>
+                                Click to change Condition Label
+                            </div>
+                            <div style={ { marginTop: 15 } }>
+                                Condition Label Cannot Be Empty
+                            </div>
+                        </div>
+                    )
                 } else {
-                    title = "Click to change Condition Label\n\nDrag to change Condition Order";
+                    title = (
+                        <div>
+                            <div>
+                                Click to change Condition Label
+                            </div>
+                            <div style={ { marginTop: 15 } }>
+                                Drag to change Condition Order
+                            </div>
+                        </div>
+                    )
                 }
             }
 
@@ -1249,23 +1316,37 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
             }
 
             labelDisplay = (
-                <div
-                    style={ containerStyle }
-                    title={ title }
-                    onClick={ this._labelEdit_LabelClicked_BindThis }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        title
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    <div style={ { maxWidth: conditionItemPartsWidths.labelWidth, overflowX: "hidden", textOverflow: "ellipsis" } }
+                    <div
+                        style={ containerStyle }
                         onClick={ this._labelEdit_LabelClicked_BindThis }
-                        >
-                        { conditionContainer.conditionLabel }
-                        <img
-                            className=" fake-link-image icon-small "
-                            style={ { marginLeft: 2 } }
-                            title="Change Condition Label"
-                            src="static/images/icon-edit.png"
-                        />
+                    >
+                        <div style={ { maxWidth: conditionItemPartsWidths.labelWidth, overflowX: "hidden", textOverflow: "ellipsis" } }
+                            onClick={ this._labelEdit_LabelClicked_BindThis }
+                            >
+                            { conditionContainer.conditionLabel }
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                <div style={ { paddingTop: 10, paddingBottom: 10, paddingLeft: 3, paddingRight: 3 } }>
+                                    Click to Change Condition Label
+                                </div>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    className=" fake-link-image icon-small "
+                                    style={ { marginLeft: 2 } }
+                                    src="static/images/icon-edit.png"
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        </div>
                     </div>
-                </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             );
         }
 
@@ -1277,11 +1358,17 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
                 title = "Delete Time Point";
             }
             deleteIconComponent = (
-                <img
-                    onClick={ this._deleteCondition_BindThis }
-                    className=" icon-small clickable " src="static/images/icon-circle-delete.png" 
-                    title={ title }
-                />
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        title
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <img
+                        onClick={ this._deleteCondition_BindThis }
+                        className=" icon-small clickable " src="static/images/icon-circle-delete.png"
+                    />
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             );
         }
 

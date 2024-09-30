@@ -15,6 +15,10 @@ import React from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Experiment_ConditionGroup, Experiment_ConditionGroupsContainer } from 'page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroupsContainer_AndChildren_Classes';
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 const conditionGroupContainerWidths = {
     borderWidth: 2
@@ -270,24 +274,37 @@ export class ProjectPage_Experiments_SingleExperiment_MainRoot_ConditionGroupLis
                             >
                             Label
                         </div>
-                        <div style={ { 
-                                maxWidth: conditionGroupItemPartsWidths.conditionCountWidth, 
-                                // whiteSpace: "nowrap",
-                                overflowX: "hidden", textOverflow: "ellipsis" 
-                            } }
-                            title="Count of Conditions in Group"
-                            >
-                            Count
-                        </div>
-                        <div style={ { 
-                                maxWidth: conditionGroupItemPartsWidths.typeWidth, 
-                                // whiteSpace: "nowrap",
-                                overflowX: "hidden", textOverflow: "ellipsis" 
-                            } }
-                            title="Type of Condition Group"
-                            >
-                            Type
-                        </div>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Count of Conditions in Group"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ {
+                                    maxWidth: conditionGroupItemPartsWidths.conditionCountWidth,
+                                    // whiteSpace: "nowrap",
+                                    overflowX: "hidden", textOverflow: "ellipsis"
+                                } }
+                                >
+                                Count
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Type of Condition Group"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ {
+                                    maxWidth: conditionGroupItemPartsWidths.typeWidth,
+                                    // whiteSpace: "nowrap",
+                                    overflowX: "hidden", textOverflow: "ellipsis"
+                                } }
+                                >
+                                Type
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <div style={ { maxWidth: conditionGroupItemPartsWidths.subGroupName_Width, overflowX: "hidden" } }>
                             
                         </div>
@@ -435,11 +452,17 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
         if ( this.props.delete_conditionGroup_ClickHandler ) {
             
             deleteIconComponent = (
-                <img
-                    onClick={ this._deleteConditionGroup_ClickHandler_BindThis }
-                     className=" icon-small clickable " src="static/images/icon-circle-delete.png" 
-                    title="Delete Condition Group" 
-                />
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        "Delete Condition Group"
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <img
+                        onClick={ this._deleteConditionGroup_ClickHandler_BindThis }
+                         className=" icon-small clickable " src="static/images/icon-circle-delete.png"
+                    />
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
         }
 
@@ -447,29 +470,65 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
             <div style={ conditionGroupItemInnerStyle }
                 onClick={ this._mainClickHander_BindThis }>
                 <div style={ { marginLeft: 2, maxWidth: conditionGroupItemPartsWidths.draggableIconWidth, overflowX: "hidden" } }>
-                    <img className=" icon-small " src="static/images/icon-draggable.png"
-                        title="Drag to Change Condition Group Order" ></img> {/*  Replace with draggable icon */}
+
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Drag to Change Condition Group Order"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" icon-small " src="static/images/icon-draggable.png"></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
-                <div style={ { maxWidth: conditionGroupItemPartsWidths.display_SubGroupName_Width, paddingRight: 5, overflowX: "hidden", textOverflow: "ellipsis" } }
-                    title={ ( "Label:\n" + conditionGroup.label + "\n\nClick to change Condition Group" ) }>
-                    { conditionGroup.label }
-                </div>
-                <div style={ { 
-                        maxWidth: conditionGroupItemPartsWidths.conditionCountWidth, 
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <div style={ { wordBreak: "break-word" } }>
+                            <div style={ { fontWeight: "bold" } }>
+                                Label:
+                            </div>
+                            <div style={ { wordBreak: "break-word" } }>
+                                { conditionGroup.label }
+                            </div>
+                            <div style={ { marginTop: 15 } }>
+                                Click to change Condition Group
+                            </div>
+
+                        </div>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <div style={ { maxWidth: conditionGroupItemPartsWidths.display_SubGroupName_Width, paddingRight: 5, overflowX: "hidden", textOverflow: "ellipsis" } }>
+                        { conditionGroup.label }
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        "Number of Conditions in group: " + numberOfConditionsInGroup
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <div style={ {
+                        maxWidth: conditionGroupItemPartsWidths.conditionCountWidth,
                         // whiteSpace: "nowrap",
-                        overflowX: "hidden", textOverflow: "ellipsis" 
-                    } }
-                    title={ "Number of Conditions in group: " + numberOfConditionsInGroup }>
-                    { numberOfConditionsInGroup }
-                </div>
-                <div style={ { 
-                        maxWidth: conditionGroupItemPartsWidths.typeWidth, 
+                        overflowX: "hidden", textOverflow: "ellipsis"
+                    } }>
+                        { numberOfConditionsInGroup }
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        "Type: " + conditionGroupType
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <div style={ {
+                        maxWidth: conditionGroupItemPartsWidths.typeWidth,
                         // whiteSpace: "nowrap",
-                        overflowX: "hidden", textOverflow: "ellipsis" 
-                    } }
-                    title={ "Type: " + conditionGroupType }>
-                    { conditionGroupType }
-                </div>
+                        overflowX: "hidden", textOverflow: "ellipsis"
+                    } }>
+                        { conditionGroupType }
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 <div style={ { maxWidth: conditionGroupItemPartsWidths.subGroupName_Width, overflowX: "hidden" } }>
                     { deleteIconComponent }
                 </div>

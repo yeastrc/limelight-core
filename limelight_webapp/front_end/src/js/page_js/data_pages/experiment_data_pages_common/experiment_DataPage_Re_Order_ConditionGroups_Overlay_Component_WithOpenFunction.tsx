@@ -38,6 +38,10 @@ import {
 import {
     Experiment_ConditionGroups_Order_CentralStateManagerObjectClass
 } from "page_js/data_pages/experiment_data_pages_common/experiment_ConditionGroups_Order_CentralStateManagerObjectClass";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -485,11 +489,17 @@ class Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component extends Rea
                                 Apply
                             </button>
                             { this._disable_Apply_Button ? (
-                                <div
-                                    style={ { position: "absolute", inset: 0 } }
-                                    title="Change the order to enable"
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Change the order to enable"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                </div>
+                                    <div
+                                        style={ { position: "absolute", inset: 0 } }
+                                    >
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : null }
                         </div>
                         <div
@@ -504,12 +514,18 @@ class Experiment_DataPage_Re_Order_ConditionGroups_Overlay_Component extends Rea
                         <div
                             style={ { marginRight: 5, display: "inline-block", position: "relative" } }
                         >
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    "Revert to original experiment structure."
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
                             <button
                                 onClick={ this._revert_ButtonClicked_BindThis }
-                                title="Revert to original experiment structure."
                             >
                                 Revert
                             </button>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </div>
                     </div>
                 </div>
@@ -618,9 +634,15 @@ class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEnt
                         >
                             <div style={ { display: "grid", gridTemplateColumns : "20px auto" } } >
                                 <div style={ { marginLeft: 2, maxWidth: 20, overflowX : "hidden" } }>
-                                    <img  src="static/images/icon-draggable.png"
-                                    className=" icon-small "
-                                    title="Drag to change Search Order"/>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Drag to change Search Order"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img  src="static/images/icon-draggable.png"
+                                        className=" icon-small "/>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                                 <div ref={ this._conditionGroupNameText_Div_Ref }
                                      // onMouseEnter={ this._onMouseEnter_conditionGroupNameText_Div_BindThis }

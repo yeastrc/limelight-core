@@ -751,12 +751,26 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
             return (
                 <React.Fragment>
                     <div style={ { marginBottom: 1, whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }>
-                        <img className=" fake-link-image icon-small " title="Remove Search" src="static/images/icon-circle-delete.png"
-                            onClick={ this._deleteClicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Remove Search"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img className=" fake-link-image icon-small " src="static/images/icon-circle-delete.png"
+                                onClick={ this._deleteClicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         <span > </span>
                         <span >(</span><span >{ search.searchId }</span><span >) </span>
-                        <span style={ { overflowWrap: "break-word" }} title={ searchTitle } >{ search.searchName }</span>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                searchTitle
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <span style={ { overflowWrap: "break-word" }}>{ search.searchName }</span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>.
                     </div>
                     <div >
                         { filters }
@@ -849,13 +863,19 @@ class Search_Assigned_FilterData_ForType extends React.Component< Search_Assigne
                         <span className=" clickable " onClick={ this._filterLabelOrEditIconClicked_BindThis }>
                             { this.props.filterLabel } Filters:
                         </span>
-                        <img
-                            className=" fake-link-image icon-small "
-                            style={ { marginLeft: 2, marginRight: 8 } }
-                            title="Edit Filters"
-                            src="static/images/icon-edit.png"
-                            onClick={ this._filterLabelOrEditIconClicked_BindThis }
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Edit Filters"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                className=" fake-link-image icon-small "
+                                style={ { marginLeft: 2, marginRight: 8 } }
+                                src="static/images/icon-edit.png"
+                                onClick={ this._filterLabelOrEditIconClicked_BindThis }
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                     <div style={ { lineHeight } }>
                         { filterEntriesDisplay }

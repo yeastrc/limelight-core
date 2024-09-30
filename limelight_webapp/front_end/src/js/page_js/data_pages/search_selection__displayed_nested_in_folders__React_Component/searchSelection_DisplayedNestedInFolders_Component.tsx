@@ -39,6 +39,10 @@ import {Search_Tags_DisplaySearchTags_UnderSearchName_Component} from "page_js/d
 import {Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component} from "page_js/data_pages/search_tags__display_management/search_tags_SelectSearchTags_Component/search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Component";
 import {Search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage} from "page_js/data_pages/common__search_display_verbose_value_store_session_storage/search_DisplayVerbose_Value_StoreRetrieve_In_SessionStorage";
 import {Search_Tags_Selections_Object} from "page_js/data_pages/search_tags__display_management/search_Tags_Selections_Object";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -712,21 +716,27 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                                                     { this._searchName_SearchId_Filter_UserInput }
                                                 </span>
                                         <span> </span>
-                                        <span
-                                            className=" fake-link "
-                                            style={ { fontSize: 10 } }
-                                            title="Clear text filters"
-                                            onClick={ event => {
-
-                                                this._searchName_SearchId_Filter_UserInput = "";
-
-                                                this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                                this.setState({ force_Rerender: {} })
-                                            }}
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Clear text filters"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            clear
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                style={ { fontSize: 10 } }
+                                                onClick={ event => {
+
+                                                    this._searchName_SearchId_Filter_UserInput = "";
+
+                                                    this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                    this.setState({ force_Rerender: {} })
+                                                }}
+                                            >
+                                                clear
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 ) : null }
 
@@ -743,21 +753,27 @@ export class SearchSelection_DisplayedNestedInFolders_Component extends React.Co
                                                 </span>
                                             </div>
                                             <div style={ { fontSize: 10, marginBottom: 10 } }>
-                                                <span
-                                                    className=" fake-link "
-                                                    style={ { fontSize: 10 } }
-                                                    title="Clear tag filters"
-                                                    onClick={  () => {
-
-                                                        this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
-
-                                                        this._searchesAndFolders_Update_FilterOnSearchTags()
-
-                                                        this.setState({ force_Rerender: {} })
-                                                    }  }
+                                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                    title={
+                                                        "Clear tag filters"
+                                                    }
+                                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                 >
-                                                    clear
-                                                </span>
+                                                    <span
+                                                        className=" fake-link "
+                                                        style={ { fontSize: 10 } }
+                                                        onClick={  () => {
+
+                                                            this._search_Tags_Selections_Object = Search_Tags_Selections_Object.createEmptyInstance();
+
+                                                            this._searchesAndFolders_Update_FilterOnSearchTags()
+
+                                                            this.setState({ force_Rerender: {} })
+                                                        }  }
+                                                    >
+                                                        clear
+                                                    </span>
+                                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                             </div>
                                         </div>
                                         <div>
@@ -1063,13 +1079,19 @@ class Internal_Component__SearchEntry extends React.Component< SearchEntry_Props
                             {/*  2 Column Grid  */}
                             <div style={ { marginRight: 8 } }>
                                 {/*  Button hidden if selected search  */}
-                                <button
-                                    style={ selectButton_Style }
-                                    title="Select this search"
-                                    onClick={ this._searchName_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Select this search"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    Select
-                                </button>
+                                    <button
+                                        style={ selectButton_Style }
+                                        onClick={ this._searchName_Clicked_BindThis }
+                                    >
+                                        Select
+                                    </button>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
                         </>
                     ) : (

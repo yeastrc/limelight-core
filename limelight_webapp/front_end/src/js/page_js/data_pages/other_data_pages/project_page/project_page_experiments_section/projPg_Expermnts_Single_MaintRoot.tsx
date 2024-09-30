@@ -63,6 +63,10 @@ import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
 } from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
         //  !!!!  Possibly redesign constructor once this Component becomes a child of another component.
@@ -2184,15 +2188,28 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
         }
         let gotoStep_2_Button = (
             <div style={ { display: "inline-block", position: "relative", marginRight: 10 } }>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        "Go To Step 2 - Add searches to conditions"
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
                 <input type="button" value="Go To Step 2 - Add Searches" 
-                    title="Go To Step 2 - Add searches to conditions"
                     onClick={ this._gotoStep_2_ButtonClicked_BindThis }
                     style={ {  } }
                     disabled={ ! enabled_GoTo_Step_2_Button } 
                 />
-                {   ( ! enabled_GoTo_Step_2_Button ? 
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                {   ( ! enabled_GoTo_Step_2_Button ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment must be defined for button to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
                         <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment must be defined for button to be enabled."></div> 
+                            ></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null 
                     ) 
                 }
@@ -2203,25 +2220,44 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Add Time Points Link
             timePointsAddLinkBlock = (
                 <div style={ { marginTop: 5 }}>
-                    <span className=" fake-link " style={ { fontWeight: "bold", whiteSpace: "nowrap" } }
-                        onClick={ this._add_timePoints_ClickHandler_BindThis }
-                        title="Add Time Points"
-                    >Add Time Points</span>
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Add Time Points"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span className=" fake-link " style={ { fontWeight: "bold", whiteSpace: "nowrap" } }
+                            onClick={ this._add_timePoints_ClickHandler_BindThis }
+                        >Add Time Points</span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
             );
         } else {
             timePointsMaintBlock = (
                 <div style={ { marginTop: 5 }}>
-                    <span className=" fake-link " style={ { fontWeight: "bold", whiteSpace: "nowrap" } }
-                        title="Change Time Points"
-                        onClick={ this._update_timePoints_ClickHandler_BindThis }
-                    >Time Points: { this.state.numberTimePoints } </span>
-                    <img className=" icon-small clickable " 
-                        style={ { marginLeft : 6 } }
-                        src="static/images/icon-circle-delete.png" 
-                        title="Delete All Time Points"
-                        onClick={ this._delete_timePoints_ClickHandler_BindThis }
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Change Time Points"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span className=" fake-link " style={ { fontWeight: "bold", whiteSpace: "nowrap" } }
+                              onClick={ this._update_timePoints_ClickHandler_BindThis }
+                        >Time Points: { this.state.numberTimePoints } </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Delete All Time Points"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" icon-small clickable "
+                             style={ { marginLeft : 6 } }
+                             src="static/images/icon-circle-delete.png"
+                             onClick={ this._delete_timePoints_ClickHandler_BindThis }
                         ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
             );
         }
@@ -2322,12 +2358,23 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             
             saveAsDraftButton = (
                 <div style={ { position: "relative", display: "inline-block", marginRight: 10 } }>
-                    <input type="button" value="Save as Draft" onClick={ this._save_Experiment_AsDraft_Clicked_BindThis } disabled={ ! this.state.saveAsDraftButtonEnabled } 
-                        title="Save Draft of Experiment.  Only you will be able to see and use this experiment until it is published."
-                    />
-                    { ( ! this.state.saveAsDraftButtonEnabled ? 
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment name must be populated for 'Save as Draft' to be enabled."></div> 
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Save Draft of Experiment.  Only you will be able to see and use this experiment until it is published."
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input type="button" value="Save as Draft" onClick={ this._save_Experiment_AsDraft_Clicked_BindThis } disabled={ ! this.state.saveAsDraftButtonEnabled }/>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    { ( ! this.state.saveAsDraftButtonEnabled ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment name must be populated for 'Save as Draft' to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null ) }
                 </div>
             );
@@ -2338,12 +2385,23 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
 
             saveButton = (
                 <div style={ { position: "relative", display: "inline-block", marginRight: 10 } }>
-                    <input type="button" value="Save" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled } 
-                        title="Update Published Experiment"
-                    />
-                    { ( ! this.state.saveButtonEnabled ? 
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment must be complete for Button to be enabled."></div> 
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Update Published Experiment"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input type="button" value="Save" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled }/>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    { ( ! this.state.saveButtonEnabled ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment must be complete for Button to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null ) }
                 </div>
             );
@@ -2523,12 +2581,23 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             
             saveAsDraftButton = (
                 <div style={ { position: "relative", display: "inline-block", marginRight: 10 } }>
-                    <input type="button" value="Save as Draft" onClick={ this._save_Experiment_AsDraft_Clicked_BindThis } disabled={ ! this.state.saveAsDraftButtonEnabled } 
-                        title="Save Draft of Experiment.  Only you will be able to see and use this experiment until it is published."
-                    />
-                    { ( ! this.state.saveAsDraftButtonEnabled ? 
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment name must be populated for 'Save as Draft' to be enabled."></div> 
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Save Draft of Experiment.  Only you will be able to see and use this experiment until it is published."
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input type="button" value="Save as Draft" onClick={ this._save_Experiment_AsDraft_Clicked_BindThis } disabled={ ! this.state.saveAsDraftButtonEnabled }/>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    { ( ! this.state.saveAsDraftButtonEnabled ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment name must be populated for 'Save as Draft' to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null ) }
                 </div>
             );
@@ -2536,12 +2605,23 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Draft Experiment so Publish button
             publishExperimentButton = (
                 <div style={ { position: "relative", display: "inline-block", marginRight: 10 } }>
-                    <input type="button" value="Publish Experiment" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled } 
-                        title="Publish Experiment so all users can see and use it."
-                    />
-                    { ( ! this.state.saveButtonEnabled ? 
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment must be complete for Button to be enabled."></div> 
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Publish Experiment so all users can see and use it."
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input type="button" value="Publish Experiment" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled }/>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    { ( ! this.state.saveButtonEnabled ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment must be complete for Button to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null ) }
                 </div>
             );
@@ -2549,12 +2629,23 @@ export class ProjectPage_Experiments_SingleExperimentMaintRoot extends React.Com
             //  Not Draft Experiment so Save button
             saveButton = (
                 <div style={ { position: "relative", display: "inline-block", marginRight: 10 } }>
-                    <input type="button" value="Save" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled } 
-                        title="Update Published Experiment"
-                    />
-                    { ( ! this.state.saveButtonEnabled ? 
-                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                            title="Experiment must be complete for Button to be enabled."></div> 
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Update Published Experiment"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <input type="button" value="Save" onClick={ this._save_Experiment_Clicked_BindThis } disabled={ ! this.state.saveButtonEnabled }/>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                    { ( ! this.state.saveButtonEnabled ?
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Experiment must be complete for Button to be enabled."
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         : null ) }
                 </div>
             );

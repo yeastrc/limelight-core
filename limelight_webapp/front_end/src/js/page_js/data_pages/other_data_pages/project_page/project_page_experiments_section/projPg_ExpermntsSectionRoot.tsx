@@ -1009,9 +1009,6 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                             onClick={ this._experimentCloneClicked_BindThis }
                         >[clone experiment]</span>
                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                    {/* <img className=" fake-link-image icon-small " title="Clone Experiment" src="static/images/icon-edit.png"
-                        onClick={ this._experimentCloneClicked_BindThis }
-                    ></img> */}
                 </React.Fragment>
             );
         }

@@ -28,6 +28,10 @@ import {
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_Root,
     CommonData_LoadedFromServerFor_Project_SearchesSearchTagsFolders_Result_SingleSearch_Data
 } from "page_js/data_pages/common_data_loaded_from_server__for_project_or_project_search_ids__searches_search_tags_folders/commonData_LoadedFromServerFor_Project_OrFrom_ProjectSearchIds__SearchesSearchTagsFolders";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 // const _FILTER_LABEL_PSM = "PSM";
@@ -500,9 +504,15 @@ export class Experiment_User_Set_Searches_Filters extends React.Component< Exper
                             style={ { marginBottom: 10 } } >
                             <div style={ { position: "relative", display: "inline-block" } }>
                                 <input type="submit" value="Save" disabled={ ! this.state.saveButtonEnabled } />
-                                { ( ! this.state.saveButtonEnabled ? 
-                                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }
-                                        title="All entered values must be valid for Save to be enabled."></div> 
+                                { ( ! this.state.saveButtonEnabled ?
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "All entered values must be valid for Save to be enabled."
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     : undefined ) }
                             </div>
                             <input type="button" value="Cancel" onClick={ this._cancel_BindThis } style={ { marginLeft: 10 } } />

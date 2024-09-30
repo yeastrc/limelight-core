@@ -32,6 +32,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -794,10 +798,16 @@ class Search_Tags_Manage_TagsForProject_OverlayComponent extends React.Component
                                             Add Tag Category
                                         </button>
                                         { this._newTagCategoryLabel_Empty ? (
-                                            <div
-                                                style={ { position: "absolute", inset: 0 }}
-                                                title="Tag String required"
-                                            ></div>
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    "Tag String required"
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                            >
+                                                <div
+                                                    style={ { position: "absolute", inset: 0 }}
+                                                ></div>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         ) : null }
 
                                     </div>
@@ -1243,23 +1253,35 @@ class SelectTag_Category_Entry_OverlayComponent extends React.Component< SelectT
 
                             <span style={ { whiteSpace: "nowrap", paddingTop: 4, paddingBottom: 4 } }>
                                 <>
-                                    <img
-                                        src="static/images/icon-edit.png"
-                                        className="icon-small clickable "
-                                        title="Edit category"
-                                        onClick={ event => {
-                                            this._editEntry()
-                                        }}
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Edit category"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-edit.png"
+                                            className="icon-small clickable "
+                                            onClick={ event => {
+                                                this._editEntry()
+                                            }}
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     <span> </span>
-                                    <img
-                                        src="static/images/icon-circle-delete.png"
-                                        className="icon-small clickable  "
-                                        title="Delete category.  This will delete all tags under this category."
-                                        onClick={ event => {
-                                            this.props.callbackOn_DeleteTagCategoryId_Clicked( this.props.searchTagCategoryEntry.tagCategoryId );
-                                        }}
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Delete category.  This will delete all tags under this category."
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <img
+                                            src="static/images/icon-circle-delete.png"
+                                            className="icon-small clickable  "
+                                            onClick={ event => {
+                                                this.props.callbackOn_DeleteTagCategoryId_Clicked( this.props.searchTagCategoryEntry.tagCategoryId );
+                                            }}
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </>
                             </span>
                         </div>
@@ -1310,10 +1332,16 @@ class SelectTag_Category_Entry_OverlayComponent extends React.Component< SelectT
                                         disabled={ this._categoryLabelString_Empty }
                                     />
                                     { this._categoryLabelString_Empty ? (
-                                        <div
-                                            style={ { position: "absolute", inset: 0 }}
-                                            title="Category Label required"
-                                        ></div>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Category Label required"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <div
+                                                style={ { position: "absolute", inset: 0 }}
+                                            ></div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
 
@@ -1389,17 +1417,23 @@ class SelectTag_Category_Entry_OverlayComponent extends React.Component< SelectT
                                 <div
                                     style={ { marginBottom: 10 } }
                                 >
-                                    <span
-                                        className=" fake-link "
-                                        title="Add a tag to this category"
-                                        onClick={ event => {
-                                            event.stopPropagation()
-                                            this._show_AddTag_Component = true;
-                                            this.setState({ force_Rerender: {} })
-                                        }}
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Add a tag to this category"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                        +Add tag to category
-                                    </span>
+                                        <span
+                                            className=" fake-link "
+                                            onClick={ event => {
+                                                event.stopPropagation()
+                                                this._show_AddTag_Component = true;
+                                                this.setState({ force_Rerender: {} })
+                                            }}
+                                        >
+                                            +Add tag to category
+                                        </span>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 </div>
                             ) : (
                                 <div
@@ -1521,21 +1555,27 @@ class SelectTagEntry_OverlayComponent extends React.Component< SelectTagEntry_Co
                         style={ { borderStyle: "solid", borderWidth: 1, borderRadius: 10, paddingLeft: 2, paddingRight: 2, paddingTop: 6, paddingBottom: 6 } }
                     >
                         {/*  Display the Tag  */}
-                        <span
-                            style={ { backgroundColor: this.props.searchTagEntry.tag_Color_Background, color: this.props.searchTagEntry.tag_Color_Font } }
-                            className=" clickable search-tag-display-everywhere "
-                            title="Click to Edit Tag"
-                            onClick={ event => {
-
-                                if ( limelight__IsTextSelected() ) {
-                                    return
-                                }
-
-                                this._editEntry()
-                            }}
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Click to Edit Tag"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            { this.props.searchTagEntry.tagString }
-                        </span>
+                            <span
+                                style={ { backgroundColor: this.props.searchTagEntry.tag_Color_Background, color: this.props.searchTagEntry.tag_Color_Font } }
+                                className=" clickable search-tag-display-everywhere "
+                                onClick={ event => {
+
+                                    if ( limelight__IsTextSelected() ) {
+                                        return
+                                    }
+
+                                    this._editEntry()
+                                }}
+                            >
+                                { this.props.searchTagEntry.tagString }
+                            </span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                         <span> </span>
                         <span> </span>
@@ -1550,23 +1590,35 @@ class SelectTagEntry_OverlayComponent extends React.Component< SelectTagEntry_Co
 
                         ) : (
                             <>
-                                <img
-                                    src="static/images/icon-edit.png"
-                                    className="icon-small clickable "
-                                    title={ "Edit Tag '" + this.props.searchTagEntry.tagString + "'" }
-                                    onClick={ event => {
-                                        this._editEntry()
-                                    }}
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Edit Tag '" + this.props.searchTagEntry.tagString + "'"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        src="static/images/icon-edit.png"
+                                        className="icon-small clickable "
+                                        onClick={ event => {
+                                            this._editEntry()
+                                        }}
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
-                                <img
-                                    src="static/images/icon-circle-delete.png"
-                                    className="icon-small clickable  "
-                                    title={ "Delete Tag '" + this.props.searchTagEntry.tagString + "'" }
-                                    onClick={ event => {
-                                        this._deleteEntry();
-                                    }}
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Delete Tag '" + this.props.searchTagEntry.tagString + "'"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <img
+                                        src="static/images/icon-circle-delete.png"
+                                        className="icon-small clickable  "
+                                        onClick={ event => {
+                                            this._deleteEntry();
+                                        }}
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </>
                         )}
                     </div>
@@ -1803,34 +1855,40 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                             <div
                                 style={ { marginBottom: 6 } }
                             >
-                                <select
-                                    ref={ this._inputField_CategorySelect_Ref }
-                                    defaultValue={ this.props.searchTagEntry.tag_category_id ? this.props.searchTagEntry.tag_category_id : "" }
-                                    title="Change and then click 'Save Tag' to move to different category"
-                                    onChange={ event => {
-                                        //  Clear error message if set
-                                        if ( this._tagString_Duplicate_ErrorMessage ) {
-                                            this._tagString_Duplicate_ErrorMessage = false
-                                            this.setState({ force_Rerender: {} })
-                                        }
-                                    }}
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Change and then click 'Save Tag' to move to different category"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    <option
-                                        value=""
+                                    <select
+                                        ref={ this._inputField_CategorySelect_Ref }
+                                        defaultValue={ this.props.searchTagEntry.tag_category_id ? this.props.searchTagEntry.tag_category_id : "" }
+                                        onChange={ event => {
+                                            //  Clear error message if set
+                                            if ( this._tagString_Duplicate_ErrorMessage ) {
+                                                this._tagString_Duplicate_ErrorMessage = false
+                                                this.setState({ force_Rerender: {} })
+                                            }
+                                        }}
                                     >
-                                        Uncategorized
-                                    </option>
-                                    { this.props.searchTagCategories_DistinctInProject.map( searchTagCategory => {
-                                        return (
-                                            <option
-                                                key={ searchTagCategory.tagCategoryId }
-                                                value={ searchTagCategory.tagCategoryId }
-                                            >
-                                                { searchTagCategory.categoryLabel }
-                                            </option>
-                                        )
-                                    })}
-                                </select>
+                                        <option
+                                            value=""
+                                        >
+                                            Uncategorized
+                                        </option>
+                                        { this.props.searchTagCategories_DistinctInProject.map( searchTagCategory => {
+                                            return (
+                                                <option
+                                                    key={ searchTagCategory.tagCategoryId }
+                                                    value={ searchTagCategory.tagCategoryId }
+                                                >
+                                                    { searchTagCategory.categoryLabel }
+                                                </option>
+                                            )
+                                        })}
+                                    </select>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
 
                             <div style={ { gridColumn: "1 / -1"}}>
@@ -1873,18 +1931,24 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                                     <div
                                         style={ { display: "inline-block" } }
                                     >
-                                        <div
-                                            className=" clickable search-tag-display-everywhere "
-                                            style={ { display: "inline-block", marginRight: 0, backgroundColor: this._tag_Color.backgroundColor, color: this._tag_Color.fontColor  } }
-                                            title="Click to change the color for this tag"
-                                            onClick={ event => {
-                                                event.stopPropagation()
-                                                this._display_tag_colorPicker_Overlay = true;
-                                                this.setState({ force_Rerender: {} })
-                                            }}
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Click to change the color for this tag"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            Choose Color
-                                        </div>
+                                            <div
+                                                className=" clickable search-tag-display-everywhere "
+                                                style={ { display: "inline-block", marginRight: 0, backgroundColor: this._tag_Color.backgroundColor, color: this._tag_Color.fontColor  } }
+                                                onClick={ event => {
+                                                    event.stopPropagation()
+                                                    this._display_tag_colorPicker_Overlay = true;
+                                                    this.setState({ force_Rerender: {} })
+                                                }}
+                                            >
+                                                Choose Color
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                 </div>
                             </div>
@@ -1904,10 +1968,16 @@ class SelectTagEntry_EDIT_CHANGE_Component extends React.Component< SelectTagEnt
                                     }}
                                 />
                                 { this._tagString_Empty ? (
-                                    <div
-                                        style={ { position: "absolute", inset: 0 }}
-                                        title="Tag String required"
-                                    ></div>
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            "Tag String required"
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <div
+                                            style={ { position: "absolute", inset: 0 }}
+                                        ></div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
 
@@ -2339,29 +2409,36 @@ class Internal__New_SearchTag_Component extends React.Component< Internal__New_S
                     style={ { position: "relative" } }
                 >
                     <div>
-                        <input
-                            ref={ this._inputField_NewTagString_Ref }
-                            maxLength={ SearchTag_Max_FieldLengths_Constants.SEARCH_TAG_MAX_LENGTH__TAG_STRING }
-                            placeholder="New Tag String"
-                            style={ { width: 200 } }
-                            onChange={ event => {
-                                //  Clear error message if set
-                                if ( this._newTagString_Required_ErrorMessage || this._newTagString_Duplicate_ErrorMessage ) {
-                                    this._newTagString_Required_ErrorMessage = false;
-                                    this._newTagString_Duplicate_ErrorMessage = false
-                                    this.setState({ force_Rerender: {} })
-                                }
-                                if ( event.target.value.length === 0 ) {
-                                    this._newTagString_Empty = true;
-                                    this.setState({ force_Rerender: {} })
-                                } else {
-                                    if ( this._newTagString_Empty ) {
-                                        this._newTagString_Empty = false;
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "New Tag String"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input
+                                ref={ this._inputField_NewTagString_Ref }
+                                maxLength={ SearchTag_Max_FieldLengths_Constants.SEARCH_TAG_MAX_LENGTH__TAG_STRING }
+                                placeholder="New Tag String"
+                                style={ { width: 200 } }
+                                onChange={ event => {
+                                    //  Clear error message if set
+                                    if ( this._newTagString_Required_ErrorMessage || this._newTagString_Duplicate_ErrorMessage ) {
+                                        this._newTagString_Required_ErrorMessage = false;
+                                        this._newTagString_Duplicate_ErrorMessage = false
                                         this.setState({ force_Rerender: {} })
                                     }
-                                }
-                            }}
-                        />
+                                    if ( event.target.value.length === 0 ) {
+                                        this._newTagString_Empty = true;
+                                        this.setState({ force_Rerender: {} })
+                                    } else {
+                                        if ( this._newTagString_Empty ) {
+                                            this._newTagString_Empty = false;
+                                            this.setState({ force_Rerender: {} })
+                                        }
+                                    }
+                                }}
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                         <span> </span>
 
@@ -2371,18 +2448,24 @@ class Internal__New_SearchTag_Component extends React.Component< Internal__New_S
                             <div
                                 style={ { display: "inline-block" } }
                             >
-                                <div
-                                    className=" clickable search-tag-display-everywhere "
-                                    style={ { display: "inline-block", marginRight: 0, backgroundColor: this._newTag_Color.backgroundColor, color: this._newTag_Color.fontColor } }
-                                    title="Click to change the color for this tag"
-                                    onClick={ event => {
-                                        event.stopPropagation()
-                                        this._display_tag_colorPicker_Overlay = true;
-                                        this.setState({ force_Rerender: {} })
-                                    }}
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Click to change the color for this tag"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    Choose Color
-                                </div>
+                                    <div
+                                        className=" clickable search-tag-display-everywhere "
+                                        style={ { display: "inline-block", marginRight: 0, backgroundColor: this._newTag_Color.backgroundColor, color: this._newTag_Color.fontColor } }
+                                        onClick={ event => {
+                                            event.stopPropagation()
+                                            this._display_tag_colorPicker_Overlay = true;
+                                            this.setState({ force_Rerender: {} })
+                                        }}
+                                    >
+                                        Choose Color
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
                         </div>
 
@@ -2397,10 +2480,16 @@ class Internal__New_SearchTag_Component extends React.Component< Internal__New_S
                                 Add Tag
                             </button>
                             { this._newTagString_Empty ? (
-                                <div
-                                    style={ { position: "absolute", inset: 0 }}
-                                    title="Tag String required"
-                                ></div>
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Tag String required"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <div
+                                        style={ { position: "absolute", inset: 0 }}
+                                    ></div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : null }
 
                         </div>
