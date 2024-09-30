@@ -17,9 +17,12 @@ import React from "react";
 /**
  * Tooltip from MUI (MaterialUI Library) Formatted for main Limelight Tooltip
  *
- * INFO: Set property 'open' on TooltipProps to true to force tooltip to remain displayed for testing so can use DOM inspector on the tooltip
+ * NOTE: property 'title' can be a String in Quotes OR a JSX.ELEMENT (HTML Element)
  *
  * NOTE: property 'title' can be null which results in NO tooltip being triggered/rendered
+ *
+ * INFO: Set property 'open' on TooltipProps to true to force tooltip to remain displayed for testing so can use DOM inspector on the tooltip
+ *
  */
 export const Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
