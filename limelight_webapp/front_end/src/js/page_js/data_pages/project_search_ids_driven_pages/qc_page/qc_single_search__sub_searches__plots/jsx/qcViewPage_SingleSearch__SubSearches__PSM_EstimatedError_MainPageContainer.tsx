@@ -10,6 +10,9 @@ import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js
 import {QcPage_ChartBorder} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartBorder";
 import {QcViewPage_CommonData_To_All_SingleSearch__SubSearches_Components_From_MainSingleSearch__SubSearchesComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__sections/jsx/qc_SingleSearch__SubSearches_AA__Root_DisplayBlock";
 import {QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_StatisticsPlot} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_single_search__sub_searches__plots/jsx/qcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_StatisticsPlot";
+import {
+    QcPage_ChartFiller_NoData
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_components/qcPage_ChartFiller_NoData";
 
 /**
  *
@@ -97,6 +100,15 @@ export class QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_Statistics
                     <div>
                         N/A: Currently excluding independent decoys
                     </div>
+                ) : ( this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+                    proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList.length === 0 ) ? (
+
+                        //  NO data so display message inside the border
+
+                    <QcPage_ChartBorder>
+                        <QcPage_ChartFiller_NoData chartTitle={ QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_StatisticsPlot.chartTitle } />
+                    </QcPage_ChartBorder>
+
                 ) : (
                     <QcPage_ChartBorder>
                         <QcViewPage_SingleSearch__SubSearches__PSM_EstimatedError_StatisticsPlot
