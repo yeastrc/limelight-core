@@ -614,12 +614,18 @@ export class ScanFileBrowserViewPage__MainPage_Component extends React.Component
                 <div style={ { display: "inline-block", marginBottom: 20 } }>
 
                     { this._scanFilenames ? (
-                        <div
-                            style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }
-                            title={ this._scanFilenames.length === 1 ? "Scan Filename" : "Scan Filenames" }
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                this._scanFilenames.length === 1 ? "Scan Filename" : "Scan Filenames"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            { this._scanFilenames.join( ", " ) }
-                        </div>
+                            <div
+                                style={ { fontSize: 18, fontWeight: "bold", marginBottom: 10 } }
+                            >
+                                { this._scanFilenames.join( ", " ) }
+                            </div>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : null }
 
                     { ( this.state.scanData_NO_Peaks_Data_Holder || this.state.scan_DoesNotHave_totalIonCurrent_ForScan ) ? (
