@@ -64,11 +64,9 @@ export const project_OrganizeSearches_Folder_AddRename_Component__openOverlay = 
 
     const change_Callback_Local = ( params : Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params ) => {
 
-        const newEmail: string = params.newFolderName;
-
         addedOverlay.removeContents_AndContainer_FromDOM();
 
-        change_Callback({ newFolderName: newEmail });
+        change_Callback(params);
     }
 
     const cancel_Callback_Local = () => {
@@ -364,7 +362,9 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
                                     <span > </span>
                                     <button
                                         onClick={ ( event) => {
-                                            this.props.change_Callback({ newFolderName: null })
+                                            event.preventDefault()
+                                            event.stopPropagation()
+                                            this.props.cancel_Callback()
                                         }}
                                     >
                                         Cancel
