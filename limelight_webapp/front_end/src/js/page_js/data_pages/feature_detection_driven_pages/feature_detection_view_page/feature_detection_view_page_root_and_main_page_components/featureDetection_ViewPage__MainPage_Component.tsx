@@ -13,11 +13,14 @@ import {
     DataTable_Column,
     DataTable_Column_DownloadTable,
     DataTable_DataRow_ColumnEntry,
+    DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params,
     DataTable_DataRow_ColumnEntry_SearchTableData,
     DataTable_DataRowEntry,
     DataTable_DataRowEntry__Get_RowChildContent_CallParams,
     DataTable_DataRowEntry__Get_RowChildContent_Return_ChildContent,
     DataTable_DataRowEntry__Get_RowChildContent_Return_Promise_ChildContent,
+    DataTable_DataRowEntry__GetChildTableData_CallbackParams,
+    DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject,
     DataTable_DataRowEntry_DownloadTable,
     DataTable_DataRowEntry_DownloadTable_SingleColumn,
     DataTable_RootTableDataObject,
@@ -28,7 +31,8 @@ import { DataTable_TableRoot } from "page_js/data_pages/data_table_react/dataTab
 import { featureDetection_ViewPage__PersistentFeature_DataTable_ExpandChild_ReactComponent__ReturnsComponent } from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root_and_main_page_components/featureDetection_ViewPage__PersistentFeature_DataTable_ExpandChild_ReactComponent__ReturnsComponent";
 import {
     CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries,
-    CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
+    CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder,
+    CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry
 } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries";
 import { FeatureDetection_ViewPage__Chromatogram_Component_Params } from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/chromatogram/featureDetection_ViewPage__Chromatogram_Component";
 import { CommonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT } from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT";
@@ -86,8 +90,32 @@ import {
 import { QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common__render_plot_on_page/qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
 import {
-    ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_number_and_file_name_or_search__on_psms_selection/js/scanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject";
+    FeatureDetection_ViewPage_RootTableSelection_StateObject
+} from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootTableSelection_StateObject";
+import {
+    FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__show_hide__expand_collapse_container_component/filterSection_DataPage_ShowHide_ExpandCollapse_Container_Component";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc
+} from "page_js/data_pages/scan_file_driven_pages/scan_file_driven_pages__utils/scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc";
+import {
+    ScanFileBrowserPage_SingleScan_UserSelections_StateObject
+} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPage_SingleScan_UserSelections_StateObject";
+import {
+    ScanFileBrowserPageRoot_CentralStateManagerObjectClass
+} from "page_js/data_pages/scan_file_driven_pages/scan_file_browser_page/scan_file_browser_page_root/scanFileBrowserPageRoot_CentralStateManagerObjectClass";
+import { CentralPageStateManager } from "page_js/data_pages/central_page_state_manager/centralPageStateManager";
+import {
+    _REFERRER_PATH_STRING,
+    _STANDARD_PAGE_STATE_IDENTIFIER
+} from "page_js/data_pages/data_pages_common/a_dataPagesCommonConstants";
+import {
+    CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__feature_detection_data__from_feat_detect_to_project_scan_file_mapping_id/commonData_LoadedFromServer_FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id";
+import { StringDownloadUtils } from "page_js/data_pages/data_pages_common/downloadStringAsFile";
 
 /////////////////////////
 
@@ -113,6 +141,8 @@ export interface FeatureDetection_ViewPage__MainPage_Component_Props_Prop {
     dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay: DataPageStateManager
 
     searchDetailsBlockDataMgmtProcessing : SearchDetailsBlockDataMgmtProcessing
+
+    featureDetection_ViewPage_RootTableSelection_StateObject: FeatureDetection_ViewPage_RootTableSelection_StateObject
 }
 
 /**
@@ -139,6 +169,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this)
     private _callback_RemoveSearches_BindThis = this._callback_RemoveSearches.bind(this)
+    private _download_MS2_Collated_Features_ClickHandler_BindThis = this._download_MS2_Collated_Features_ClickHandler.bind(this)
 
     private _DONOTCALL() {
 
@@ -147,11 +178,13 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
     private _featureDetection_PersistentFeature_Entries: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries
 
-    private _featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: CommonData_LoadedFromServer__FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+    private _featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: CommonData_LoadedFromServer__FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+    
+    private _featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder: CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
 
     private _featureDetection_PersistentFeature_Entries_Holder: CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entries_Holder
 
-    private _featureDetection_PersistentFeatures_dataTable_RootTableObject: DataTable_RootTableObject
+    private _featureDetection_Page_TopLevelTable_DataTable_RootTableObject: DataTable_RootTableObject
 
     private _qc_SingleSearch_FeatureDetection_Statistics_Section_ExternallySpecified_FeatureDetection_Entry: Qc_SingleSearch_FeatureDetection_Statistics_Section_ExternallySpecified_FeatureDetection_Entry__PassedInObject
 
@@ -175,6 +208,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
     private _qcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot = new QcPage_Plotly_DOM_Updates__RenderPlotToDOM_UpdatePlot_RemovePlot()  //  Common across all Plotly Plots
 
+
+    private _dataLoaded_For_Either_MainTable = false
 
     /**
      *
@@ -226,31 +261,34 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
         try {
             const getFeatureDetection_DisplayNameDescription_ProjectScanFileId_Result =
                 await
-                    this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.
-                    get_commonData_LoadedFromServer_FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id().
-                    get_CommonData_LoadedFromServer__FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_ReturnPromise({
+                    this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.get_commonData_LoadedFromServer_FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id().get_CommonData_LoadedFromServer__FeatureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_ReturnPromise( {
+                        feature_detection_root__project_scnfl_mapping_tbl__id: this.props.propsValue.feature_detection_root__project_scnfl_mapping_tbl_id
+                    } )
+            this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder = getFeatureDetection_DisplayNameDescription_ProjectScanFileId_Result.featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
+
+            const get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_Result =
+                await
+                    this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT.get_commonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id().
+                    get_CommonData_LoadedFromServer__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_ReturnPromise({
                         feature_detection_root__project_scnfl_mapping_tbl__id: this.props.propsValue.feature_detection_root__project_scnfl_mapping_tbl_id
                     })
-            this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder = getFeatureDetection_DisplayNameDescription_ProjectScanFileId_Result.featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
-
+            this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder =
+                get_CommonData_LoadedFromServer_SingleSearch__FeatureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder_Result.featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder
 
             const get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnPromise_Result =
                 await
-                    this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.get_commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass().
-                    get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnPromise( this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId )
+                    this._commonData_LoadedFromServer_From_ProjectScanFileId___ROOT.get_commonData_LoadedFromServer__ProjectScanFilenames_Data_For_Single_ProjectScanFileId_MainClass().get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnPromise( this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId )
             const commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder = get_ProjectScanFilenames_DataHolder_For_ProjectScanFileId_ReturnPromise_Result.commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder
 
             const scanFilenames_Unique_Sorted_Array =
-                commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder.
-                get_ProjectScanFilenames_Data_For_ProjectScanFileId( this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId ).
-                    projectScanFilenames_ForScanFile_List
+                commonData_LoadedFromServer__ProjectScanFilenames_Data_Holder.get_ProjectScanFilenames_Data_For_ProjectScanFileId( this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId ).projectScanFilenames_ForScanFile_List
 
             this._qc_SingleSearch_FeatureDetection_Statistics_Section_ExternallySpecified_FeatureDetection_Entry = {
                 feature_detection_root__project_scnfl_mapping_tbl__id: this.props.propsValue.feature_detection_root__project_scnfl_mapping_tbl_id,
-                projectScanFileId: this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId,
+                projectScanFileId: this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.projectScanFileId,
 
-                featureDetection_Description: this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.description,
-                featureDetection_DisplayLabel: this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.displayLabel,
+                featureDetection_Description: this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.description,
+                featureDetection_DisplayLabel: this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.displayLabel,
 
                 scanFilenames_Unique_Sorted_Array,
 
@@ -261,9 +299,9 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
             const get_FeatureDetection_PersistentFeature_EntriesHolder_Result =
                 await
-                    this._featureDetection_PersistentFeature_Entries.get_FeatureDetection_PersistentFeature_EntriesHolder_ReturnPromise({
+                    this._featureDetection_PersistentFeature_Entries.get_FeatureDetection_PersistentFeature_EntriesHolder_ReturnPromise( {
                         feature_detection_root__project_scnfl_mapping_tbl__id: this.props.propsValue.feature_detection_root__project_scnfl_mapping_tbl_id
-                    })
+                    } )
             this._featureDetection_PersistentFeature_Entries_Holder = get_FeatureDetection_PersistentFeature_EntriesHolder_Result.featureDetection_PersistentFeature_Entries_Holder
 
             if ( this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root ) {
@@ -278,21 +316,20 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId )
                     if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
                         const msg = "this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ). projectSearchId: " + projectSearchId
-                        console.warn(msg)
-                        throw Error(msg)
+                        console.warn( msg )
+                        throw Error( msg )
                     }
 
                     const scanFile_ProjectScanFileId_SearchScanFileId =
                         await
-                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().
-                            get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
+                            commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch().get_ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_DataHolder_AllForSearch_ReturnPromise()
 
                     const scanFile_ProjectScanFileId_SearchScanFileId__FOR__ProjectScanFileId =
                         scanFile_ProjectScanFileId_SearchScanFileId.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_ProjectScanFileId( this.props.propsValue.project_scan_file_id )
                     if ( ! scanFile_ProjectScanFileId_SearchScanFileId__FOR__ProjectScanFileId ) {
                         const msg = "scanFile_ProjectScanFileId_SearchScanFileId.scanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder.get_For_ProjectScanFileId(this.props.propsValue.project_scan_file_id) returned NOTHING for this.props.propsValue.project_scan_file_id: " + this.props.propsValue.project_scan_file_id
-                        console.warn(msg)
-                        throw Error(msg)
+                        console.warn( msg )
+                        throw Error( msg )
                     }
 
                     searchScanFileIds_For_ProjectScanFileId.add( scanFile_ProjectScanFileId_SearchScanFileId__FOR__ProjectScanFileId.searchScanFileId )
@@ -300,9 +337,12 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                 //  scanFilenameId_On_PSM_Filter_UserSelection_StateObject Object
 
-                this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject = new ScanFilenameId_On_PSM_Filter_UserSelection_StateObject({ valueChangedCallback: () => {} }) // Dummy callback since never called
+                this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject = new ScanFilenameId_On_PSM_Filter_UserSelection_StateObject( {
+                    valueChangedCallback: () => {
+                    }
+                } ) // Dummy callback since never called
 
-                this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected(searchScanFileIds_For_ProjectScanFileId);
+                this._scanFilenameId_On_PSM_Filter_UserSelection_StateObject.set__scanFilenameIds_Selected( searchScanFileIds_For_ProjectScanFileId );
 
                 //  Main Filtering object
                 this._getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object = GetReportedPeptideIdsForDisplay_AllProjectSearchIds_Class.getNewInstance( {
@@ -315,7 +355,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                 {
 
-                    const peptidePage_Display_MainContent_Component_Props_Prop : PeptidePage_Display_MainContent_Component_Props_Prop = new PeptidePage_Display_MainContent_Component_Props_Prop();
+                    const peptidePage_Display_MainContent_Component_Props_Prop: PeptidePage_Display_MainContent_Component_Props_Prop = new PeptidePage_Display_MainContent_Component_Props_Prop();
 
 
                     const currentProjectId_FromDOM = currentProjectId_ProjectSearchId_Based_DataPages_FromDOM();
@@ -323,18 +363,18 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                     const qcViewPage_DisplayData__Main_Component_Props_Prop: QcViewPage_DisplayData__Main_Component_Props_Prop = {
 
                         currentProjectId_FromDOM,
-                        proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject : undefined,
-                        qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject : undefined
+                        proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: undefined,
+                        qcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject: undefined
                     }
 
                     //  Main Filtering object  Populated in 'this._loadData(...)
 
-                    const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = await this._getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise({
+                    const getReportedPeptideIdsForDisplay_AllProjectSearchIds_result = await this._getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object.getReportedPeptideIdsForDisplay_AllProjectSearchIds_ReturnPromise( {
 
-                        not_filtered_position_modification_selections : false,
-                        proteinSequenceVersionId : undefined,
+                        not_filtered_position_modification_selections: false,
+                        proteinSequenceVersionId: undefined,
                         searchSubGroup_Ids_Selected: undefined,
-                        proteinSequenceWidget_StateObject : undefined,
+                        proteinSequenceWidget_StateObject: undefined,
                         modificationMass_UserSelections_StateObject: undefined,
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined,
                         reporterIonMass_UserSelections_StateObject: undefined,
@@ -346,17 +386,17 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         peptideSequence_UserSelections_StateObject: undefined,
                         peptideSequence_MissedCleavageCount_UserSelections_StateObject: undefined,
                         peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: undefined,
-                        userSearchString_LocationsOn_ProteinSequence_Root : null,
+                        userSearchString_LocationsOn_ProteinSequence_Root: null,
                         proteinPositionFilter_UserSelections_StateObject: undefined,
                         psm_Charge_Filter_UserSelection_StateObject: undefined,
                         psm_Exclude_IndependentDecoy_PSMs_Filter_UserSelection_StateObject: undefined
-                    });
+                    } );
 
-                    const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds : Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
+                    const reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_AllProjectSearchIds =
                         getReportedPeptideIdsForDisplay_AllProjectSearchIds_result.reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds;
 
-                    const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result : ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result =
-                        await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides({
+                    const proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result: ProteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result =
+                        await proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides( {
                             proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: undefined, // this.props.propsValue_QC.proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject,
                             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined, // this.props.propsValue.modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass,
                             dataPageStateManager: this.props.propsValue.dataPageStateManager_DataFrom_Server,
@@ -364,17 +404,17 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                             reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                             projectSearchIds: this.props.propsValue.searchDataLookupParametersFromPage.projectSearchIds,
                             commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-                        });
+                        } );
 
 
-                    const qc_compute_Cache_create_GeneratedReportedPeptideListData = new Qc_compute_Cache_create_GeneratedReportedPeptideListData({
+                    const qc_compute_Cache_create_GeneratedReportedPeptideListData = new Qc_compute_Cache_create_GeneratedReportedPeptideListData( {
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         proteinViewPage_DisplayData_ProteinList__DistinctPeptideContents_UserSelections_StateObject: undefined,
                         modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: undefined,
                         dataPageStateManager: this.props.propsValue.dataPageStateManager_DataFrom_Server,
                         projectSearchIds: this.props.propsValue.searchDataLookupParametersFromPage.projectSearchIds,
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
-                    });
+                    } );
 
                     this._qcViewPage_CommonData_To_AllComponents_From_MainComponent = {
                         qcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback: new QcViewPage__Track_LatestUpdates_at_TopLevel_For_UserInput_CentralRegistration_And_Callback(),
@@ -382,10 +422,10 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         projectSearchIds: this.props.propsValue.searchDataLookupParametersFromPage.projectSearchIds,
                         currentProjectId_FromDOM: qcViewPage_DisplayData__Main_Component_Props_Prop.currentProjectId_FromDOM,
                         searchSubGroup_Ids_Selected: undefined,
-                        propsValue : peptidePage_Display_MainContent_Component_Props_Prop,
-                        propsValue_QC : qcViewPage_DisplayData__Main_Component_Props_Prop,
+                        propsValue: peptidePage_Display_MainContent_Component_Props_Prop,
+                        propsValue_QC: qcViewPage_DisplayData__Main_Component_Props_Prop,
                         commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT: this._commonData_LoadedFromServer_FeatureDetection_From_FeatureDetectionToProjectScanFileMappingId___ROOT,
-                        searchDataLookupParamsRoot : this.props.propsValue.searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load,
+                        searchDataLookupParamsRoot: this.props.propsValue.searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load,
                         qcPage_Searches_Flags: this.props.propsValue.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Flags(),
                         qcPage_Searches_Info: this.props.propsValue.dataPageStateManager_DataFrom_Server.get_DataPage_common_Searches_Info(),
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root,
@@ -394,7 +434,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds_ForCharts: reportedPeptideIds_AndTheir_PSM_IDs__AllProjectSearchIds,
                         dataPageStateManager: this.props.propsValue.dataPageStateManager_DataFrom_Server,
                         qc_compute_Cache_create_GeneratedReportedPeptideListData,
-                        updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR___Scan_RetentionTime_MZ_UserSelections_StateObject__OUTSIDE_AssociatedComponent__Callback : () => { },
+                        updateMadeTo_scanFilenameId_On_PSM_Filter_UserSelection_StateObject__OR___Scan_RetentionTime_MZ_UserSelections_StateObject__OUTSIDE_AssociatedComponent__Callback: () => {
+                        },
                         qcViewPage_CommonData_To_AllComponents_From_MainComponent__Processing__NO_FILTERING: undefined,
                         commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root__NO_FILTERING: undefined,
                         getReportedPeptideIdsForDisplay_AllProjectSearchIds_Object__NO_FILTERING: undefined,
@@ -404,28 +445,28 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
                     const commonData = this._qcViewPage_CommonData_To_AllComponents_From_MainComponent;
 
-                    const projectSearchId = commonData.projectSearchIds[0];
+                    const projectSearchId = commonData.projectSearchIds[ 0 ];
 
                     const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId );
                     if ( ! commonData_LoadedFromServer_PerSearch_For_ProjectSearchId ) {
                         const msg = "commonData.commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId( projectSearchId ) returned nothing. projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
+                        console.warn( msg );
+                        throw Error( msg );
                     }
 
                     const qcPage_Flags_SingleSearch_ForProjectSearchId =
                         this._qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
                     if ( ! qcPage_Flags_SingleSearch_ForProjectSearchId ) {
                         const msg = "this._qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
+                        console.warn( msg );
+                        throw Error( msg );
                     }
                     const qcPage_Searches_Info_SingleSearch_ForProjectSearchId =
                         this._qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Info.get_DataPage_common_Searches_Info_SingleSearch_ForProjectSearchId( projectSearchId );
                     if ( ! qcPage_Searches_Info_SingleSearch_ForProjectSearchId ) {
                         const msg = "this._qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Info.get_QcPage_Searches_Info_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing for projectSearchId: " + projectSearchId;
-                        console.warn(msg);
-                        throw Error(msg);
+                        console.warn( msg );
+                        throw Error( msg );
                     }
 
                     this._qcViewPage_CommonData_To_All_SingleSearch_Components_From_MainSingleSearchComponent = {
@@ -438,7 +479,308 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                 }
             }
 
+            this._dataLoaded_For_Either_MainTable = true
 
+            if ( ! this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.get_rootTableSelection_MS2_Scan() ) {
+
+                //  Top level Table is "Persistent Feature List"
+
+                const persistentFeatureList_TopLevelTable_createTableData_Result =
+                this._persistentFeatureList_TopLevelTable_createTableData({
+                    featureDetection_PersistentFeature_Entries_Array: this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries()
+                })
+
+                this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject = persistentFeatureList_TopLevelTable_createTableData_Result.dataTable_RootTableObject;
+
+                this.setState({ force_ReRender: {}, showLoadingMessage: false })
+
+            } else {
+
+                //  Top level Table is "MS 2 Scan List"
+
+                const ms2_Scan_List_TopLevelTable_createTableData_Result =
+                    this._ms2_Scan_List_TopLevelTable_createTableData({
+                        featureDetection_PersistentFeature_Entries_Array: this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries()
+                    })
+
+                this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject = ms2_Scan_List_TopLevelTable_createTableData_Result.dataTable_RootTableObject;
+
+                this.setState({ force_ReRender: {}, showLoadingMessage: false })
+
+            }
+
+        } catch ( e ) {
+            reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+            throw e
+        }
+    }
+
+    /**
+     * Create Table Data for Top Level Table:  MS 2 Scan List  (MS2 Scans for Persistent Features)
+     */
+    private _ms2_Scan_List_TopLevelTable_createTableData(
+        {
+            featureDetection_PersistentFeature_Entries_Array
+        } : {
+            featureDetection_PersistentFeature_Entries_Array: Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>
+        }
+    ) : {
+        dataTable_RootTableObject : DataTable_RootTableObject
+    } {
+        try {
+            /////////////
+
+            //  Create Table Columns (Header info and Data Info)
+
+            const dataTable_Columns : Array<DataTable_Column> = [];
+            const dataTable_Column_DownloadTable_Entries : Array<DataTable_Column_DownloadTable> = [];
+
+            { // Vew Scan
+
+                const dataTable_Column = new DataTable_Column({
+                    id : "viewScan", // Used for tracking sort order. Keep short
+                    displayName : "",
+                    width : 70,
+                    sortable : false,
+                    hideColumnHeader : true
+                });
+                dataTable_Columns.push( dataTable_Column );
+            }
+
+            {  //  MS 2 Scan Number
+
+                const displayName = "MS 2 Scan Number";
+
+                const dataTable_Column = new DataTable_Column({
+                    id : "scannum", // Used for tracking sort order. Keep short
+                    displayName,
+                    width : 200,
+                    sortable : true
+                });
+                dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+            {  //
+
+                const displayName = "Persistent Feature Count for Scan Number";
+
+                const dataTable_Column = new DataTable_Column({
+                    id : "pfcount", // Used for tracking sort order. Keep short
+                    displayName,
+                    width : 400,
+                    sortable : true
+                });
+                dataTable_Columns.push( dataTable_Column );
+
+                const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+            }
+
+            //  Create Table Body
+
+            const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
+
+            {
+                //  Put PersistentFeature_Entries in Array map key MS_2_ScanNumber
+                const featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber: Map<number, {
+                    featureDetection_PersistentFeature_Entry_Array: Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>
+                    ms_2_scanNumber: number
+                }> = new Map()
+
+                for ( const featureDetection_PersistentFeature_Entry of featureDetection_PersistentFeature_Entries_Array ) {
+
+                    for ( const ms_2_scanNumber of featureDetection_PersistentFeature_Entry.ms_2_scanNumbers_Array ) {
+
+                        let featureDetection_PersistentFeature_Entries_Array_For_Key_MS_2_ScanNumber = featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber.get( ms_2_scanNumber )
+
+                        if ( ! featureDetection_PersistentFeature_Entries_Array_For_Key_MS_2_ScanNumber ) {
+                            featureDetection_PersistentFeature_Entries_Array_For_Key_MS_2_ScanNumber = { ms_2_scanNumber, featureDetection_PersistentFeature_Entry_Array: [] }
+                            featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber.set( ms_2_scanNumber, featureDetection_PersistentFeature_Entries_Array_For_Key_MS_2_ScanNumber )
+                        }
+                        featureDetection_PersistentFeature_Entries_Array_For_Key_MS_2_ScanNumber.featureDetection_PersistentFeature_Entry_Array.push( featureDetection_PersistentFeature_Entry )
+                    }
+                }
+
+                const featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber__Values_SortedOn__MS_2_ScanNumber = Array.from( featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber.values() )
+                featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber__Values_SortedOn__MS_2_ScanNumber.sort( (a,b) => {
+                    if ( a.ms_2_scanNumber < b.ms_2_scanNumber ) {
+                        return -1
+                    } else if ( a.ms_2_scanNumber > b.ms_2_scanNumber ) {
+                        return 1
+                    }
+                    return 0
+                })
+
+                let listCounter = 0;
+
+                for ( const featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber of featureDetection_PersistentFeature_Entries_Array_Map_Key_MS_2_ScanNumber__Values_SortedOn__MS_2_ScanNumber ) {
+
+                    listCounter++
+
+
+                    const dataTable_DataRow_ColumnEntries: Array<DataTable_DataRow_ColumnEntry> = [];
+                    const dataColumns_tableDownload: Array<DataTable_DataRowEntry_DownloadTable_SingleColumn> = [];
+
+                    { //  Open Scan Number Fake Link
+
+                        const valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough =
+                            ( params : DataTable_DataRow_ColumnEntry__valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough_Params ) : JSX.Element => {
+
+                                return (
+                                    <span className="table-data-cell-property-value fake-link"
+                                          onClick={ event => {
+                                              event.preventDefault()
+                                              event.stopPropagation()
+
+                                              if ( limelight__IsTextSelected() ) {
+                                                  return
+                                              }
+
+                                              const scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result =
+                                                  scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc({
+                                                      projectScanFileId: this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.get_projectScanFileId(),
+                                                      scanFile_Code_FirstSix: this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.get_scanFile_Code_FirstSix()
+                                                  })
+
+                                              const scanFileBrowserPage_SingleScan_UserSelections_StateObject = new ScanFileBrowserPage_SingleScan_UserSelections_StateObject({ valueChangedCallback: undefined })
+                                              scanFileBrowserPage_SingleScan_UserSelections_StateObject.setScanNumber_Selected( featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.ms_2_scanNumber )
+
+                                              //  Sample code from Singular Feature
+                                              // {
+                                              //     scanFileBrowserPage_SingleScan_UserSelections_StateObject.set_featureDetection_IndividualFeature_OR_PSM__Root({
+                                              //         baseIsotopePeak__Containing_M_Over_Z: featureDetection_SingularFeature_Entry.base_isotope_peak,
+                                              //         charge: featureDetection_SingularFeature_Entry.charge,
+                                              //         monoisotopicMass: featureDetection_SingularFeature_Entry.monoisotopic_mass
+                                              //     })
+                                              // }
+
+                                              const singleSingleScanData = scanFileBrowserPage_SingleScan_UserSelections_StateObject.getEncodedStateData()
+
+                                              const scanFileBrowserPageRoot_CentralStateManagerObjectClass_ForNewWindow = new ScanFileBrowserPageRoot_CentralStateManagerObjectClass({ centralPageStateManager: undefined, no_centralPageStateManager: true })
+                                              scanFileBrowserPageRoot_CentralStateManagerObjectClass_ForNewWindow.set_SingleScanDataEncodedStateData({ singleSingleScanData })
+
+
+                                              const centralPageStateManager = new CentralPageStateManager()
+
+                                              const stateAsJSON_Compressed = centralPageStateManager.get_CurrentState_AsStringForUrl({ componentOverridesAdditions: [ scanFileBrowserPageRoot_CentralStateManagerObjectClass_ForNewWindow ]})
+
+                                              let newWindowURL = newURL_Build_PerProjectSearchIds_Or_ExperimentId({
+                                                  pageControllerPath: scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result.basePathURL,
+                                                  experimentId: undefined,
+                                                  featureDetectionId_Encoded: undefined,
+                                                  projectScanFileId_Encoded: scanFileBrowserPage__Create_BaseURL_With_Code_With_ProjectScanFileId_Etc__Result.codeForProjectScanFileId,
+                                                  searchDataLookupParamsCode: undefined,
+                                                  pageStateIdentifier: _STANDARD_PAGE_STATE_IDENTIFIER,
+                                                  pageStateString: stateAsJSON_Compressed,
+                                                  referrer: _REFERRER_PATH_STRING
+                                              });
+
+                                              const newWindow = window.open( newWindowURL, "_blank", "noopener" );
+                                          } }
+                                    >
+                                        View Scan
+                                    </span>
+                                )
+                            }
+
+                        const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                            valueDisplay_FunctionCallback_Return_JSX_Element_NoDataPassThrough
+                            //  NO Data for searchTableData
+                        })
+                        dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+                    }
+
+                    {
+                        const valueDisplay = featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.ms_2_scanNumber.toString();
+                        const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                        const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry( {
+                            searchTableData,
+                            valueDisplay,
+                            valueSort: featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.ms_2_scanNumber
+                        } );
+                        dataTable_DataRow_ColumnEntries.push( dataTable_DataRow_ColumnEntry );
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+
+                    {
+                        const valueDisplay = featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.featureDetection_PersistentFeature_Entry_Array.length.toString();
+                        const searchEntriesForColumn: Array<string> = [ valueDisplay ]
+                        const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData( { searchEntriesForColumn } )
+                        const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry( {
+                            searchTableData,
+                            valueDisplay,
+                            valueSort: featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.featureDetection_PersistentFeature_Entry_Array.length
+                        } );
+                        dataTable_DataRow_ColumnEntries.push( dataTable_DataRow_ColumnEntry );
+
+                        const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn( { cell_ColumnData_String: valueDisplay } )
+                        dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                    }
+
+
+                    const dataTable_DataRowEntry_DownloadTable = new DataTable_DataRowEntry_DownloadTable( { dataColumns_tableDownload } );
+
+                    const dataRow_GetChildTableData_Return_DataTable_RootTableObject : DataTable_DataRowEntry__GetChildTableData_Return_DataTable_RootTableObject =
+                        ( params: DataTable_DataRowEntry__GetChildTableData_CallbackParams ): DataTable_RootTableObject => {
+
+                            const persistentFeatureList_TopLevelTable_createTableData_Result = this._persistentFeatureList_TopLevelTable_createTableData({
+                                featureDetection_PersistentFeature_Entries_Array: featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.featureDetection_PersistentFeature_Entry_Array
+                            })
+                            return persistentFeatureList_TopLevelTable_createTableData_Result.dataTable_RootTableObject
+                        }
+
+                    const dataTable_DataRowEntry = new DataTable_DataRowEntry( {
+                        uniqueId: featureDetection_PersistentFeature_Entry_Array_For_MS_2_ScanNumber.ms_2_scanNumber,
+                        sortOrder_OnEquals: listCounter,  //  Preserve original sort order on sort with identical values  //  Must be sortable using Javascript < > comparators
+                        columnEntries: dataTable_DataRow_ColumnEntries,
+                        dataTable_DataRowEntry_DownloadTable,
+
+                        dataRow_GetChildTableData_Return_DataTable_RootTableObject
+                    } );
+
+                    dataTable_DataRowEntries.push( dataTable_DataRowEntry );
+                }
+            }
+
+            const dataTable_RootTableDataObject = new DataTable_RootTableDataObject({
+                columns : dataTable_Columns,
+                columns_tableDownload: dataTable_Column_DownloadTable_Entries,
+                dataTable_DataRowEntries
+            });
+
+            const tableOptions = new DataTable_TableOptions({enable_Pagination_Download_Search: true});
+
+            const dataTable_RootTableObject = new DataTable_RootTableObject({
+                dataTableId : "MS2 Scan Numbers for Feature Detection Persistent Features",
+                tableOptions,
+                tableDataObject : dataTable_RootTableDataObject
+            });
+
+            return {
+                dataTable_RootTableObject
+            }
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
+
+    /**
+     * Create Table Data for Top Level Table:  Persistent Feature List  (Persistent Features)
+     */
+    private _persistentFeatureList_TopLevelTable_createTableData(
+        {
+            featureDetection_PersistentFeature_Entries_Array
+        } : {
+            featureDetection_PersistentFeature_Entries_Array: Array<CommonData_LoadedFromServer__FeatureDetection_PersistentFeature_Entry>
+        }
+    ) : {
+        dataTable_RootTableObject : DataTable_RootTableObject
+    } {
+        try {
             /////////////
 
             //  Create Table Columns (Header info and Data Info)
@@ -577,7 +919,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
             const dataTable_DataRowEntries : Array<DataTable_DataRowEntry> = [];
 
             {
-                const featureDetection_PersistentFeature_Entries = Array.from( this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries() )
+                const featureDetection_PersistentFeature_Entries = Array.from( featureDetection_PersistentFeature_Entries_Array )
 
                 featureDetection_PersistentFeature_Entries.sort( (a,b) => {
                     //  Sort abundance_Total descending then id_PersistentFeature_Entry ascending
@@ -797,11 +1139,9 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                 tableDataObject : dataTable_RootTableDataObject
             });
 
-
-            this._featureDetection_PersistentFeatures_dataTable_RootTableObject = dataTable_RootTableObject;
-
-
-            this.setState({ force_ReRender: {}, showLoadingMessage: false })
+            return {
+                dataTable_RootTableObject
+            }
 
         } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
     }
@@ -969,6 +1309,61 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
         }
     }
 
+    ///////////////
+
+    private _download_MS2_Collated_Features_ClickHandler( event: React.MouseEvent<HTMLSpanElement, MouseEvent> ) {
+        try {
+            window.alert( "clicked")
+
+            const rows_StringArray: Array<string> = []
+
+            {
+                const columnTitles_Row_StringArray: Array<string> = []
+
+                columnTitles_Row_StringArray.push("MS2 Scan Number")
+                columnTitles_Row_StringArray.push("Feature Id")
+                columnTitles_Row_StringArray.push("Charge")
+                columnTitles_Row_StringArray.push("Monoisotopic Mass")
+                columnTitles_Row_StringArray.push("Retention Time Range (Start)")
+                columnTitles_Row_StringArray.push("Retention Time Range (End)")
+                columnTitles_Row_StringArray.push("Retention Time Range (Apex)")
+                columnTitles_Row_StringArray.push("Abundance (Retention Time Range Apex)")
+                columnTitles_Row_StringArray.push("Abundance (Total)")
+
+                const columnTitles_Row_StringDelim = columnTitles_Row_StringArray.join("\t")
+
+                rows_StringArray.push(columnTitles_Row_StringDelim)
+            }
+
+            for ( const featureDetection_PersistentFeature_Entry of this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries() ) {
+
+                for ( const ms_2_scanNumber of featureDetection_PersistentFeature_Entry.ms_2_scanNumbers_Array ) {
+
+                    const singleRow_Columns_StringArray: Array<string> = []
+
+                    singleRow_Columns_StringArray.push( ms_2_scanNumber.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.id_PersistentFeature_Entry.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.charge.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.monoisotopicMass.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.retentionTimeRange_Start.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.retentionTimeRange_End.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.retentionTimeRange_Apex.toString() )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.abundance_RetentionTimeRange_Apex.toPrecision( 3 ) )
+                    singleRow_Columns_StringArray.push( featureDetection_PersistentFeature_Entry.abundance_Total.toPrecision( 3 ) )
+
+
+                    const singleRow_Columns_StringDelim = singleRow_Columns_StringArray.join("\t")
+
+                    rows_StringArray.push(singleRow_Columns_StringDelim)
+                }
+            }
+
+            const stringToDownload = rows_StringArray.join("\n") + "\n"
+
+            StringDownloadUtils.downloadStringAsFile({ stringToDownload : stringToDownload, filename: 'features.txt' });
+
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
+    }
 
     ////////////////////////////////////////
 
@@ -977,7 +1372,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
      */
     render() {
         try {
-            if ( this.state.showLoadingMessage || ( ! this._featureDetection_PersistentFeatures_dataTable_RootTableObject ) ) {
+            if ( this.state.showLoadingMessage || ( ! this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject ) ) {
 
                 return (  //  EARLY RETURN
 
@@ -994,7 +1389,7 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
 
             let searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue : SearchDetailsAndFilterBlock_MainPage_Root_Props_PropValue = undefined
 
-            //  TODO   ONLY Execute if have Search Data in URL
+            //  ONLY Execute if have Search Data in URL
 
             if ( this.props.propsValue.searchDetailsBlockDataMgmtProcessing ) {
 
@@ -1022,8 +1417,8 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
             return (
                 <div >
                     <h2>
-                        <span>{ this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.description }</span>
-                        <span> ({ this._featureDetection_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.displayLabel })</span>
+                        <span>{ this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.description }</span>
+                        <span> ({ this._featureDetection_DisplayNameDescription_ProjectScanFileId_From_feature_detection_root__project_scnfl_mapping_tbl__id_Holder.displayLabel })</span>
                     </h2>
 
                     { searchDetailsAndFilterBlock_MainPage_Root_Props_PropValue ? (
@@ -1060,12 +1455,6 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                                     searchSubGroup_ManageGroupNames_Clicked_Callback={ () => { window.alert("searchSubGroup_ManageGroupNames_Clicked_Callback called"); throw Error("callback not handled")} }
                                 />
                             </SearchDetailsAndOtherFiltersOuterBlock_Layout>
-
-                            <AnnotationTypesToDisplay__MainPageComponent_to_Open_SelectionOverlay__Component
-                                projectSearchIds={ this.props.propsValue.dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay.get_projectSearchIds() }
-                                searchDataLookupParameters_Root={ this.props.propsValue.searchDataLookupParametersFromPage.search_data_lookup_parameters_at_page_load }
-                                dataPageStateManager_DataFrom_Server={ this.props.propsValue.dataPageStateManager_DataFrom_Server }
-                            />
                         </div>
 
                     ) : (  //  Add Search
@@ -1109,7 +1498,90 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         </div>
                     ) }
 
-                    {/*  Feature Detection Charts from QC Page Single Search  */}
+                    <div className="  filter-common-block-selection-container-block yes-section-labels  ">
+
+                        {/* Filter On ... */}
+
+                        <FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>   {/*  Show/Hide the filters */ }
+
+                            {/*Insert a blank line*/}
+                            <div  style={ { gridColumn: "1/-1" } }>&nbsp;
+                            </div>
+
+                            <div className=" filter-common-filter-label " style={ { fontWeight: "bold" } }>
+                                Collate by MS 2 Scan:
+
+                                <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                                    title={
+                                        <span>
+                                            Organize predicted features by the MS2 scans that resulted from their fragmentation.
+                                        </span>
+                                    }
+                                />
+                            </div>
+                            <div className=" filter-common-selection-block ">
+                                <input
+                                    type="checkbox"
+                                    checked={ this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.get_rootTableSelection_MS2_Scan() }
+                                    onChange={ event => {
+                                        this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.set_rootTableSelection_MS2_Scan( ! this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.get_rootTableSelection_MS2_Scan() )
+                                        this.setState( { force_ReRender: {} } )
+
+                                        if ( ! this._dataLoaded_For_Either_MainTable ) {
+
+                                            //  Main table data NOT loaded yet so return
+
+                                            return // EARLY RETURN
+                                        }
+
+                                        window.setTimeout( () => {
+                                            try {
+                                                if ( ! this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.get_rootTableSelection_MS2_Scan() ) {
+
+                                                    //  Top level Table is "Persistent Feature List"
+
+                                                    const persistentFeatureList_TopLevelTable_createTableData_Result =
+                                                        this._persistentFeatureList_TopLevelTable_createTableData( {
+                                                            featureDetection_PersistentFeature_Entries_Array: this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries()
+                                                        } )
+
+                                                    this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject = persistentFeatureList_TopLevelTable_createTableData_Result.dataTable_RootTableObject;
+
+                                                    this.setState( { force_ReRender: {}, showLoadingMessage: false } )
+
+                                                } else {
+
+                                                    //  Top level Table is "MS 2 Scan List"
+
+                                                    const ms2_Scan_List_TopLevelTable_createTableData_Result =
+                                                        this._ms2_Scan_List_TopLevelTable_createTableData( {
+                                                            featureDetection_PersistentFeature_Entries_Array: this._featureDetection_PersistentFeature_Entries_Holder.get_FeatureDetection_PersistentFeature_Entries()
+                                                        } )
+
+                                                    this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject = ms2_Scan_List_TopLevelTable_createTableData_Result.dataTable_RootTableObject;
+
+                                                    this.setState( { force_ReRender: {}, showLoadingMessage: false } )
+
+                                                }
+                                            } catch ( e ) {
+                                                reportWebErrorToServer.reportErrorObjectToServer( { errorException: e } );
+                                                throw e
+                                            }
+                                        } )
+                                    } }
+                                />
+                            </div>
+
+                            {/*Insert a blank line*/}
+                            <div  style={ { gridColumn: "1/-1" } }>&nbsp;
+                            </div>
+
+                        </FilterSection_DataPage_ShowHide_ExpandCollapse_Container_Component>
+
+                    </div>
+
+
+                    {/*  Feature Detection Charts from QC Page Single Search  */ }
 
                     { (
                         ( this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root && this._qcViewPage_CommonData_To_AllComponents_From_MainComponent )
@@ -1128,13 +1600,36 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
                         </div>
                     ) : null }
 
-                    <div style={ { fontSize: 18, fontWeight: "bold", marginTop: 10, marginBottom: 10 } }>
-                        Persistent Feature List
+                    <div style={ { marginTop: 10, marginBottom: 10 } }>
+
+                        <div>
+                            {/*  Display Label above table based on root table contents  */}
+                            <span style={ { fontSize: 18, fontWeight: "bold" } }>
+                                { this.props.propsValue.featureDetection_ViewPage_RootTableSelection_StateObject.get_rootTableSelection_MS2_Scan() ? (
+                                    <span>
+                                        MS2 Scans with Predicted Features
+                                    </span>
+                                ) : (
+                                    <span>
+                                        Persistent Feature List
+                                    </span>
+                                ) }
+                            </span>
+                            <span> </span>
+                            <span
+                                className=" fake-link "
+                                style={ { marginLeft: 20 } }
+                                onClick={ this._download_MS2_Collated_Features_ClickHandler_BindThis }
+                            >
+                                Download MS2-Collated Features
+                            </span>
+                        </div>
+
                     </div>
 
                     <div>
                         <DataTable_TableRoot
-                            tableObject={ this._featureDetection_PersistentFeatures_dataTable_RootTableObject }
+                            tableObject={ this._featureDetection_Page_TopLevelTable_DataTable_RootTableObject }
                         />
                     </div>
 
@@ -1145,4 +1640,3 @@ export class FeatureDetection_ViewPage__MainPage_Component extends React.Compone
     }
 
 }
-

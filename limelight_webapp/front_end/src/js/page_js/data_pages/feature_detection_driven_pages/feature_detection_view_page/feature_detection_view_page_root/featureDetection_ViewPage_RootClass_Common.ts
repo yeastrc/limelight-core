@@ -52,6 +52,12 @@ import { DataPageStateManager } from "page_js/data_pages/data_pages_common/dataP
 import { LoadCoreData_ProjectSearchIds_Based } from "page_js/data_pages/data_pages_common/loadCoreData_ProjectSearchIds_Based";
 import { SearchDetailsBlockDataMgmtProcessing } from "page_js/data_pages/search_details_block__project_search_id_based/js/searchDetailsBlockDataMgmtProcessing";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+	PeptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject
+} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on_counts_psm/js/peptideList_PeptidePage_SingleProtein_FilterOnCounts_psm_UserSelections_StateObject";
+import {
+	FeatureDetection_ViewPage_RootTableSelection_StateObject
+} from "page_js/data_pages/feature_detection_driven_pages/feature_detection_view_page/feature_detection_view_page_root/featureDetection_ViewPage_RootTableSelection_StateObject";
 
 /**
  *
@@ -64,6 +70,8 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 	///  Page Root Page State
 
 	private _featureDetection_View_CentralStateManagerObjectClass : FeatureDetection_View_CentralStateManagerObjectClass;
+
+	private _featureDetection_ViewPage_RootTableSelection_StateObject: FeatureDetection_ViewPage_RootTableSelection_StateObject
 
 	/**
 	 *
@@ -89,8 +97,8 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 
 		// this._page_UserDefault_processing.page_UserDefault_processing();
 
-		// let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
-		//
+		let initialStateFromURL = this._centralPageStateManager.getInitialStateFromURL();
+
 		// let referrerFromURL = initialStateFromURL.referrer;
 		//
 		// if ( referrerFromURL === _REFERRER_PATH_STRING ) {
@@ -110,6 +118,23 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 		mainPagesPopulateHeader.initialize();
 
 		this._featureDetection_View_CentralStateManagerObjectClass.initialize();
+
+		{ // this._featureDetection_ViewPage_RootTableSelection_StateObject
+
+			const valueChangedCallback = () => {
+
+				const featureDetection_ViewPage_RootTableSelection_EncodedStateData = this._featureDetection_ViewPage_RootTableSelection_StateObject.getEncodedStateData();
+				this._featureDetection_View_CentralStateManagerObjectClass.set_featureDetection_ViewPage_RootTableSelection_EncodedStateData( { featureDetection_ViewPage_RootTableSelection_EncodedStateData } );
+			}
+			this._featureDetection_ViewPage_RootTableSelection_StateObject = new FeatureDetection_ViewPage_RootTableSelection_StateObject({
+				valueChangedCallback
+			});
+
+			const encodedStateData = this._featureDetection_View_CentralStateManagerObjectClass.get_featureDetection_ViewPage_RootTableSelection_EncodedStateData();
+			if ( encodedStateData ) {
+				this._featureDetection_ViewPage_RootTableSelection_StateObject.set_encodedStateData({ encodedStateData })
+			}
+		}
 
 		//  "Root" Page State objects all initialized
 
@@ -308,7 +333,8 @@ export class FeatureDetection_ViewPage_RootClass_Common {
 			searchDataLookupParametersFromPage,
 			dataPageStateManager_DataFrom_Server,
 			dataPageStateManager_ProjectSearchIdsTheirFiltersAnnTypeDisplay,
-			searchDetailsBlockDataMgmtProcessing
+			searchDetailsBlockDataMgmtProcessing,
+			featureDetection_ViewPage_RootTableSelection_StateObject: this._featureDetection_ViewPage_RootTableSelection_StateObject
 		}
 
 		const props : FeatureDetection_ViewPage__Root_Component_Props = {

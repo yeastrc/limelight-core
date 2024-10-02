@@ -33,9 +33,7 @@ const _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION = 1;
 
 const _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME = 'a';
 
-const _XXXX = 'b';
-
-const _YYYY = 'c';
+const _FEATURE_DETECTION_VIEW_PAGE_ROOT_TABLE_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME = 'b';
 
 /**
  *
@@ -43,7 +41,7 @@ const _YYYY = 'c';
 export class FeatureDetection_View_CentralStateManagerObjectClass {
 
     private _value : {
-        xxxx?: any //
+        featureDetection_ViewPage_RootTableSelection_EncodedStateData?: any //  FeatureDetection_ViewPage_RootTableSelection_StateObject
         yyyy?: any   // QcPage_ShowSingleSearch_Not_SubSearches_UserSelections_StateObject
     };
 
@@ -69,9 +67,7 @@ export class FeatureDetection_View_CentralStateManagerObjectClass {
         let encodedStateData = this._centralPageStateManager.getEncodedData( { component : this } );
         if ( encodedStateData ) {
             this._value = {
-                // groupProteins_OLD_V1? : any //  OLD V1 value for groupProteins.  Only here for Backwards compatibility.   Now Handled in proteinGrouping_CentralStateManagerObjectClass.ts.
-                xxxx : encodedStateData[ _XXXX ],
-                yyyy : encodedStateData[ _YYYY ]
+                featureDetection_ViewPage_RootTableSelection_EncodedStateData : encodedStateData[ _FEATURE_DETECTION_VIEW_PAGE_ROOT_TABLE_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ]
             };
         }
     }
@@ -84,25 +80,12 @@ export class FeatureDetection_View_CentralStateManagerObjectClass {
         }
     }
 
-    get_XXXX_EncodedStateData() {
-        return this._value.xxxx;
+    get_featureDetection_ViewPage_RootTableSelection_EncodedStateData() {
+        return this._value.featureDetection_ViewPage_RootTableSelection_EncodedStateData;
     }
 
-    set_XXXX_EncodedStateData( { xxxx } : { xxxx: any } ) {
-        this._value.xxxx = xxxx;
-
-        if ( ! this._centralPageStateManager ) {
-            throw Error( "this._centralPageStateManager not set" );
-        }
-        this._centralPageStateManager.setState( { component : this } );
-    }
-
-    get_YYYY() {
-        return this._value.yyyy;
-    }
-
-    set_YYYY( { yyyy } : { yyyy: any } ) {
-        this._value.yyyy = yyyy;
+    set_featureDetection_ViewPage_RootTableSelection_EncodedStateData( { featureDetection_ViewPage_RootTableSelection_EncodedStateData } : { featureDetection_ViewPage_RootTableSelection_EncodedStateData: any } ) {
+        this._value.featureDetection_ViewPage_RootTableSelection_EncodedStateData = featureDetection_ViewPage_RootTableSelection_EncodedStateData;
 
         if ( ! this._centralPageStateManager ) {
             throw Error( "this._centralPageStateManager not set" );
@@ -125,13 +108,9 @@ export class FeatureDetection_View_CentralStateManagerObjectClass {
         const dataForEncoding = {}
         dataForEncoding[ _ENCODED_DATA_VERSION_NUMBER_ENCODING_PROPERTY_NAME ] = _ENCODED_DATA_VERSION_NUMBER_CURRENT_VERSION;
 
-        if ( this._value.xxxx !== undefined ) {
-            dataForEncoding[ _XXXX ] = this._value.xxxx;
+        if ( this._value.featureDetection_ViewPage_RootTableSelection_EncodedStateData !== undefined ) {
+            dataForEncoding[ _FEATURE_DETECTION_VIEW_PAGE_ROOT_TABLE_SELECTION_ENCODED_STATE_DATA_ENCODING_PROPERTY_NAME ] = this._value.featureDetection_ViewPage_RootTableSelection_EncodedStateData;
         }
-        if ( this._value.yyyy !== undefined ) {
-            dataForEncoding[ _YYYY ] = this._value.yyyy;
-        }
-
         return dataForEncoding;
     }
 }
