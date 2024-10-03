@@ -13,6 +13,10 @@ import {
     Limelight_ReactComponent_JSX_Element_AddedTo_DocumentBody_Holder_IF
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 ///////
@@ -83,6 +87,8 @@ interface UserAccountManagementPage_Change_Password_Component_State {
     oldPasswordIncorrect?: boolean
 
     show_SavingMessage?: boolean
+
+    force_ReRender?: object
 }
 
 /**
@@ -97,6 +103,9 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
     private _password_New_Input_Ref : React.RefObject<HTMLInputElement>; //  React.createRef()
     private _password_NewConfirm_Input_Ref : React.RefObject<HTMLInputElement>; //  React.createRef()
 
+    private _enableSaveButton = false
+    private _mainBlock_VisibilityShow = false
+
     /**
      *
      */
@@ -108,8 +117,20 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
         this._password_NewConfirm_Input_Ref = React.createRef<HTMLInputElement>();
 
         this.state = {
-
+            force_ReRender: {}
         }
+    }
+
+    componentDidMount() {
+
+        window.setTimeout( () => {
+            // Delay show to not have tooltip display on overlay open due to tooltip positioning problem
+
+            this._mainBlock_VisibilityShow = true
+
+            this.setState({ force_ReRender: {} })
+
+        }, 10 )
     }
 
     /**
@@ -120,36 +141,50 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
         newPasswordValue: string
         isValid: boolean
     } {
+        this._enableSaveButton = false
 
         const old_password_Value = this._password_Old_Input_Ref.current.value;
-
-        if ( old_password_Value.length === 0 ) {
-
-            return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
-        }
-
         const new_password_Value = this._password_New_Input_Ref.current.value;
-
-        if ( new_password_Value.length === 0 ) {
-
-            return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
-        }
-
         const newConfirm_password_Value = this._password_NewConfirm_Input_Ref.current.value;
 
-        if ( newConfirm_password_Value.length === 0 ) {
+        if ( new_password_Value.length === 0 ) {
+            if ( new_password_Value !== newConfirm_password_Value ) {
+                this.setState( { new_password_Confirm_InvalidValue: true } );
+            } else {
+                this.setState( { new_password_Confirm_InvalidValue: false } );
+            }
+            this.setState({ force_ReRender: {} })
+            return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
+        }
 
+        if ( newConfirm_password_Value.length === 0 ) {
+            if ( new_password_Value !== newConfirm_password_Value ) {
+                this.setState( { new_password_Confirm_InvalidValue: true } );
+            } else {
+                this.setState( { new_password_Confirm_InvalidValue: false } );
+            }
+            this.setState({ force_ReRender: {} })
             return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
         }
 
         if ( new_password_Value !== newConfirm_password_Value ) {
 
             this.setState({ new_password_Confirm_InvalidValue: true });
-
+            this.setState({ force_ReRender: {} })
             return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
         }
 
+        if ( old_password_Value.length === 0 ) {
+
+            this.setState({ force_ReRender: {} })
+            return { isValid: false, oldPasswordValue: null, newPasswordValue: null };  // EARLY EXIT
+        }
+
+        this._enableSaveButton = true
+
         this.setState({ new_password_Confirm_InvalidValue: false });
+
+        this.setState({ force_ReRender: {} })
 
         return { isValid: true, oldPasswordValue: old_password_Value, newPasswordValue: new_password_Value }
     }
@@ -206,6 +241,8 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
 
                     if ( responseData.oldPasswordInvalid ) {
 
+                        this._enableSaveButton = false
+
                         this.setState({ oldPasswordIncorrect: true, show_SavingMessage: false });
 
                         return;  // EARLY RETURN
@@ -230,9 +267,10 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
      */
     render() {
 
-        let saveButton_Disabled = false;
-        if (this.state.new_password_Confirm_InvalidValue ) {
-            saveButton_Disabled = true;
+        const mainBlock_Style : React.CSSProperties = { padding: 20, position: "relative" }
+
+        if ( ! this._mainBlock_VisibilityShow ) {
+            mainBlock_Style.visibility = "hidden"
         }
 
         return (
@@ -245,20 +283,27 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                      className=" modal-dialog-small-positioned-near-related-content-container "
                 >
 
-                    <div style={ { padding: 20, position: "relative" } }>
+                    <div style={ mainBlock_Style }>
 
                         <form
                             onSubmit={ this._formSubmit_BindThis }
                         >
                             <div>
-                                <input type="password" placeholder="Old Password" title="Old Password"
-                                       className="edit-value-input-field  "
-                                       maxLength={ 40 }
-                                       autoFocus={true}
-                                       ref={ this._password_Old_Input_Ref }
-                                       defaultValue={ "" }
-                                       onChange={ this._password_Input_Changed_BndThis }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Old Password"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <input type="password" placeholder="Old Password"
+                                           className="edit-value-input-field  "
+                                           maxLength={ 40 }
+                                           autoFocus={true}
+                                           ref={ this._password_Old_Input_Ref }
+                                           defaultValue={ "" }
+                                           onChange={ this._password_Input_Changed_BndThis }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                 { ( this.state.oldPasswordIncorrect ) ? (
                                     <span style={ { color: "red", whiteSpace: "nowrap", marginLeft: 10 } }>
@@ -267,24 +312,36 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                                 ) : null }
                             </div>
                             <div style={ { marginTop: 5 } }>
-                                <input type="password" placeholder="New Password" title="New Password"
-                                       className="edit-value-input-field  "
-                                       maxLength={ 40 }
-                                       ref={ this._password_New_Input_Ref }
-                                       defaultValue={ "" }
-                                       onChange={ this._password_Input_Changed_BndThis }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "New Password"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <input type="password" placeholder="New Password"
+                                           className="edit-value-input-field  "
+                                           maxLength={ 40 }
+                                           ref={ this._password_New_Input_Ref }
+                                           defaultValue={ "" }
+                                           onChange={ this._password_Input_Changed_BndThis }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
                             <div style={ { marginTop: 5, marginBottom: 6 } }>
-                                <input type="password" placeholder="Confirm New Password"
-                                       title="Confirm New Password"
-                                       className="edit-value-input-field  "
-                                       maxLength={ 40 }
-                                       ref={ this._password_NewConfirm_Input_Ref }
-                                       defaultValue={ "" }
-                                       onChange={ this._password_Input_Changed_BndThis }
-                                />
-
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Confirm New Password"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <input type="password" placeholder="Confirm New Password"
+                                           className="edit-value-input-field  "
+                                           maxLength={ 40 }
+                                           ref={ this._password_NewConfirm_Input_Ref }
+                                           defaultValue={ "" }
+                                           onChange={ this._password_Input_Changed_BndThis }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 { ( this.state.new_password_Confirm_InvalidValue ) ? (
                                     <span style={ { color: "red", whiteSpace: "nowrap", marginLeft: 10 } }>
                                         The new password and confirm password do not match
@@ -295,21 +352,29 @@ class UserAccountManagementPage_Change_Password_Component extends React.Componen
                             <div style={ { marginTop: 5 }}>
                                 <div style={ { position: "relative", display: "inline-block" } }>
                                     <button type="submit"
-                                            disabled={ saveButton_Disabled }
+                                            disabled={ ! this._enableSaveButton }
                                     >
                                         Save
                                     </button>
-                                    { ( saveButton_Disabled ) ? (
-                                        <div
-                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                            title="Enter an last name to enable 'Save'"
+                                    { ( ! this._enableSaveButton ) ? (
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Enter an old password and matching new password and confirm new password to enable 'Save'"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                        </div>
+                                            <div
+                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                            >
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     ) : null }
                                 </div>
                                 <span > </span>
                                 <button
                                     onClick={ ( event) => {
+                                        event.preventDefault()
+                                        event.stopPropagation()
                                         this.props.close_Callback()
                                     }}
                                 >

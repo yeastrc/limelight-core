@@ -311,19 +311,6 @@ export class Search_Tags_SelectSearchTags_DisplaySelectedTagsAndCategories_Compo
 
                 <div style={ { clear: "both" } }>
                 </div>
-
-                {/*  Moved 'clear' link
-                <div style={ { fontSize: 10, marginBottom: 10, clear: "both" } }>
-                    <span
-                        className=" fake-link "
-                        style={ { fontSize: 10 } }
-                        title="Clear tag filters"
-                        onClick={ this.props.clearSelection_Callback }
-                    >
-                        clear
-                    </span>
-                </div>
-                */}
             </div>
 
         )

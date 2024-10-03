@@ -6,6 +6,10 @@
 import React from "react";
 import { reportWebErrorToServer } from "page_js/common_all_pages/reportWebErrorToServer";
 import { webserviceCallStandardPost } from "page_js/webservice_call_common/webserviceCallStandardPost";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -366,27 +370,39 @@ class INTERNAL__UserEntry_Component extends React.Component< INTERNAL__UserEntry
                     <td style={ { paddingRight: 5, whiteSpace: "nowrap" } }>
 
                         { userEnabledAppSpecific && userEnabledUserMgmtGlobalLevel ? (
-                            <input
-                                type="image"
-                                src="static/images/icon-circle-delete.png"
-                                className="user_disable_button_jq"
-                                title="Disable User"
-                                onClick={ event => {
-                                    event.stopPropagation()
-                                    this._disableUser()
-                                } }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    "Disable User"
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image"
+                                    src="static/images/icon-circle-delete.png"
+                                    className="user_disable_button_jq"
+                                    onClick={ event => {
+                                        event.stopPropagation()
+                                        this._disableUser()
+                                    } }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) :  ( userEnabledUserMgmtGlobalLevel ) ? ( //  Only allow enable when NOT disabled Global
-                            <input
-                                type="image"
-                                src="static/images/icon-circle-plus.png"
-                                className="user_enable_button_jq"
-                                title="Enable User"
-                                onClick={ event => {
-                                    event.stopPropagation()
-                                    this._enableUser()
-                                } }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    "Enable User"
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <input
+                                    type="image"
+                                    src="static/images/icon-circle-plus.png"
+                                    className="user_enable_button_jq"
+                                    onClick={ event => {
+                                        event.stopPropagation()
+                                        this._enableUser()
+                                    } }
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : null }
                     </td>
                     <td style={ { whiteSpace: "nowrap" } }>
@@ -405,23 +421,35 @@ class INTERNAL__UserEntry_Component extends React.Component< INTERNAL__UserEntry
                             </span>
                         ) : (
                             userDataItem__UserAccessLevel__Administrator ? (
-                                <input type="image" src="static/images/icon-down-arrow.png"
-                                       title="Decrease User Access Level to 'User'"
-                                       onClick={ event => {
-                                           event.stopPropagation()
-                                           this._set_UserLevel_User()
-                                       } }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Decrease User Access Level to 'User'"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <input type="image" src="static/images/icon-down-arrow.png"
+                                           onClick={ event => {
+                                               event.stopPropagation()
+                                               this._set_UserLevel_User()
+                                           } }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : (
-                                <input
-                                    type="image"
-                                    src="static/images/icon-up-arrow.png"
-                                    title="Increase User Access Level to 'Administrator'"
-                                    onClick={ event => {
-                                        event.stopPropagation()
-                                        this._set_UserLevel_Administrator()
-                                    } }
-                                />
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Increase User Access Level to 'Administrator'"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                >
+                                    <input
+                                        type="image"
+                                        src="static/images/icon-up-arrow.png"
+                                        onClick={ event => {
+                                            event.stopPropagation()
+                                            this._set_UserLevel_Administrator()
+                                        } }
+                                    />
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             )
                         ) }
                     </td>

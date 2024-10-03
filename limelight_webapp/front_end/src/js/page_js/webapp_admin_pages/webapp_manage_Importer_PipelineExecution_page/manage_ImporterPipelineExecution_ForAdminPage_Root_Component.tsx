@@ -43,6 +43,10 @@ import {
     manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount,
     Manage_ImporterPipelineExecution_ForAdminPage_WebserviceCall_Get_Running_Queued_JobCount_Response
 } from "page_js/webapp_admin_pages/webapp_manage_Importer_PipelineExecution_page/manage__importer_pipeline_execution__for_admin_page__webservice_call__get__running_and_queued_job_counts";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 //   Root component and below that is MAIN component
@@ -700,7 +704,14 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                     { currentStatus_TriggeredByScheduled ? (
                         <>
                             <span> </span>
-                            <span title="Pause is due to scheduled pause below" > (Scheduled)</span>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    "Pause is due to scheduled pause below"
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <span> (Scheduled)</span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </>
                     ) : null }
                 </>
@@ -713,7 +724,14 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                     { currentStatus_TriggeredByScheduled ? (
                         <>
                             <span> </span>
-                            <span title="Pause is due to scheduled pause below" > (Scheduled)</span>
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    "Pause is due to scheduled pause below"
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <span> (Scheduled)</span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         </>
                     ) : null }
                     <span></span>
@@ -898,15 +916,21 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                         { pauseItem.durationInHours }
                         <span> hours </span>
                         {/*<span> </span>*/}
-                        <img
-                            style={ { marginLeft: 10 } }
-                            src="static/images/icon-circle-delete.png"
-                            className="icon-small clickable  "
-                            title="Delete entry"
-                            onClick={ event => {
-                                this._delete_ScheduleEntry({ pauseItem_index: pauseItem_index })
-                            }}
-                        />
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Delete entry"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <img
+                                style={ { marginLeft: 10 } }
+                                src="static/images/icon-circle-delete.png"
+                                className="icon-small clickable  "
+                                onClick={ event => {
+                                    this._delete_ScheduleEntry({ pauseItem_index: pauseItem_index })
+                                }}
+                            />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                 )
 
@@ -935,23 +959,28 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
 
                 <div>
                     { currentStatus_NotPaused ? (
-                        <button
-                            title="Let all in progress run to completion"
-                            onClick={ event => { try {
-                                this._update_RequestedStatus_ReloadAllStatus({
-                                    genericPauseRequested: true,
-                                    newRequestedStatus: null, // Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Request_Status_ID_Enum.PAUSE_WHEN_COMPLETE
-                                })
-                            } catch( e ) {
-                                reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                throw e;
-                            }}}
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Let all in progress run to completion"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
-                            Pause Imports
-                        </button>
+                            <button
+                                onClick={ event => { try {
+                                    this._update_RequestedStatus_ReloadAllStatus({
+                                        genericPauseRequested: true,
+                                        newRequestedStatus: null, // Manage_ImporterPipelineExecution_ForAdminPage_PauseProcessing_Request_Status_ID_Enum.PAUSE_WHEN_COMPLETE
+                                    })
+                                } catch( e ) {
+                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
+                                    throw e;
+                                }}}
+                            >
+                                Pause Imports
+                            </button>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     ) : ( ! currentStatus_TriggeredByScheduled ) ? (
                         <button
-                            title="Let all in progress run to completion"
                             onClick={ event => { try {
                                 this._update_RequestedStatus_ReloadAllStatus({
                                     genericPauseRequested: false,
@@ -1221,11 +1250,17 @@ export class Manage_ImporterPipelineExecution_ForAdminPage_MAIN_Component extend
                             </button>
                             { ! is_AllInputsSetForAddToSchedule ? (
                                 //  Overlay on "Add" button to show tooltip when disabled
-                                <div
-                                    style={ { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } }
-                                    title="Select Days, a start time, and a duration to add"
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        "Select Days, a start time, and a duration to add"
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                </div>
+                                    <div
+                                        style={ { position: "absolute", top: 0, left: 0, right: 0, bottom: 0 } }
+                                    >
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             ) : null }
                         </div>
                     </div>
@@ -1393,7 +1428,6 @@ class UserSelect_PauseType_OverlayComponent extends React.Component< UserSelect_
                     <div>
                         <div style={ { marginBottom: 10 } }>
                             <button
-                                // title="Let all in progress run to completion"
                                 onClick={ event => { try {
                                     this.props.mainParams.update_RequestedStatus_ReloadAllStatus_Params_Callback({
                                         genericPauseRequested: false,
@@ -1410,7 +1444,6 @@ class UserSelect_PauseType_OverlayComponent extends React.Component< UserSelect_
                         </div>
                         <div style={ { marginBottom: 10 } }>
                             <button
-                                // title=""
                                 onClick={ event => { try {
                                     this.props.mainParams.update_RequestedStatus_ReloadAllStatus_Params_Callback({
                                         genericPauseRequested: false,

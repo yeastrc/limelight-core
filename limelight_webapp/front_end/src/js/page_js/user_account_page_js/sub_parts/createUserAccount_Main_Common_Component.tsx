@@ -4,6 +4,10 @@
 
 
 import React from "react";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /**
  *
@@ -153,16 +157,69 @@ export class CreateUserAccount_Main_Common_Component extends React.Component< Cr
                         //     sss
                         // }}
                     >
-
-                        <input ref={ this._firstName_Ref } type="text" id="firstName" placeholder="First name" title="First name" className="input-field input_field_jq" maxLength={ 40 }/><br/>
-                        <input ref={ this._lastName_Ref } type="text" id="lastName" placeholder="Last name" title="Last name" className="input-field input_field_jq" maxLength={ 60 }/><br/>
-                        <input ref={ this._organization_Ref } type="text" id="organization" placeholder="Organization" title="Organization" className="input-field input_field_jq" maxLength={ 2000 } /><br/>
-                        <input ref={ this._email_Ref } type="text" id="email" placeholder="Email address" title="Email address" className="input-field input_field_jq" maxLength={ 255 } /><br/>
-
-                        <input ref={ this._username_Ref } type="text" id="username" placeholder="Username" title="Username" className="input-field input_field_jq" maxLength={ 40 } /><br/>
-
-                        <input ref={ this._password_Ref } type="password" id="password" placeholder="Password" title="Password" className="input-field input_field_jq" maxLength={ 40 } /><br/>
-                        <input ref={ this._passwordConfirm_Ref } type="password" id="passwordConfirm" placeholder="Confirm Password" title="Confirm Password" className="input-field input_field_jq" maxLength={ 40 } /><br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "First name"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._firstName_Ref } type="text" id="firstName" placeholder="First name" className="input-field input_field_jq" maxLength={ 40 }/>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Last name"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._lastName_Ref } type="text" id="lastName" placeholder="Last name" className="input-field input_field_jq" maxLength={ 60 }/>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Organization"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._organization_Ref } type="text" id="organization" placeholder="Organization" className="input-field input_field_jq" maxLength={ 2000 } />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Email address"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._email_Ref } type="text" id="email" placeholder="Email address" className="input-field input_field_jq" maxLength={ 255 } />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Username"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._username_Ref } type="text" id="username" placeholder="Username" className="input-field input_field_jq" maxLength={ 40 } />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Password"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._password_Ref } type="password" id="password" placeholder="Password" className="input-field input_field_jq" maxLength={ 40 } />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                "Confirm Password"
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <input ref={ this._passwordConfirm_Ref } type="password" id="passwordConfirm" placeholder="Confirm Password" className="input-field input_field_jq" maxLength={ 40 } />
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                        <br/>
 
                         { this.props.google_RecaptchaSiteKey ? (
                             <div style={ { textAlign: "center" } } id="limelight_google_recaptcha_container_div">
