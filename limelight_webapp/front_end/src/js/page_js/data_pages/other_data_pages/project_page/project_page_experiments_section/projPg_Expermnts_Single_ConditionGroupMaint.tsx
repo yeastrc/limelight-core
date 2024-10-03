@@ -837,7 +837,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                             <span >Condition Group Label: </span> 
                             <input type="text" onChange={ this._conditionGroupLabelChanged_BindThis } value={ this.state.conditionGroupLabel } autoFocus />
                         </div>
-                        <div  className=" top-level fixed-height modal-overlay-body-standard-padding-left " >
+                        <div  className=" top-level fixed-height modal-overlay-body-standard-padding-left " style={ { marginBottom: 5 } } >
                             <span >Condition Group Type: </span>
                             <select value={ this.state.conditionGroupType } onChange={ this._conditionGroupType_Changed_BindThis }>
                                 <option value={ _CONDITION_TYPE_CONTINUOUS }>Continuous</option> { /* _CONDITION_TYPE_CONTINUOUS is initial value so should be first */ }
@@ -876,6 +876,7 @@ export class ProjectPage_Experiments_SingleExperiment_ConditionGroupMaint extend
                     <select value={ this.state.conditionNumber } onChange={ this._conditionNumber_Changed_BindThis }>
                         { numberOfConditionsOptions }
                     </select>
+                    <span> </span>
                     <input type="button" value={ addButtonLabel } onClick={ this._addInitialConditions_BindThis } />
                 </div>
             )

@@ -770,7 +770,7 @@ class Search_Assigned extends React.Component< Search_Assigned_Props, {} > {
                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                         >
                             <span style={ { overflowWrap: "break-word" }}>{ search.searchName }</span>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>.
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </div>
                     <div >
                         { filters }
