@@ -1381,8 +1381,14 @@ class ConditionListEntry_DraggableContents extends React.Component< ConditionLis
             <div style={ conditionItemInnerStyle }>
 
                 <div style={ { marginLeft: 2, maxWidth: conditionItemPartsWidths.draggableIconWidth, overflowX: "hidden" } }>
-                    <img className=" icon-small " src="static/images/icon-draggable.png"
-                        title={ dragIconTitle } ></img> {/*  Replace with draggable icon */}
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            dragIconTitle
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" icon-small " src="static/images/icon-draggable.png"></img>{/*  Replace with draggable icon */}
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
                 {/*<div >*/}
                     { labelInput }

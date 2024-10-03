@@ -32,6 +32,10 @@ import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelig
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 /////
 
@@ -741,7 +745,9 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
         const borderColor = "black"
         const borderWidth = 6
 
-        let div_title: string
+        const div_title__SecondLineMarginTop = 10
+
+        let div_title: JSX.Element = undefined
 
         if ( tagEntry.tag_Selected === Internal__TagSelected.YES_SELECTED__ALL_SEARCHES ) {
 
@@ -750,17 +756,53 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
             divStyle.borderWidth = borderWidth
 
             if ( this.props.mainParams.searches.length > 1 ) {
-                div_title = "tag selected for all searches\n\nclick to not select for any searches";
+                div_title = (
+                    <div style={ { wordBreak: "break-word" } }>
+                        <div style={ { wordBreak: "break-word" } }>
+                            tag selected for all searches
+                        </div>
+                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                            click to not select for any searches
+                        </div>
+                    </div>
+                )
             } else {
-                div_title = "tag selected\n\nclick to not select";
+                div_title = (
+                    <div style={ { wordBreak: "break-word" } }>
+                        <div style={ { wordBreak: "break-word" } }>
+                            tag selected
+                        </div>
+                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                            click to not select
+                        </div>
+                    </div>
+                )
             }
 
         } else if ( tagEntry.tag_Selected === Internal__TagSelected.NO_SELECTED__ALL_SEARCHES ) {
 
             if ( this.props.mainParams.searches.length > 1 ) {
-                div_title = "tag not selected for any searches\n\nclick to select for all searches";
+                div_title = (
+                    <div style={ { wordBreak: "break-word" } }>
+                        <div style={ { wordBreak: "break-word" } }>
+                            tag not selected for any searches
+                        </div>
+                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                            click to select for all searches
+                        </div>
+                    </div>
+                )
             } else {
-                div_title = "tag not selected\n\nclick to select";
+                div_title = (
+                    <div style={ { wordBreak: "break-word" } }>
+                        <div style={ { wordBreak: "break-word" } }>
+                            tag not selected
+                        </div>
+                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                            click to select
+                        </div>
+                    </div>
+                )
             }
 
         } else if ( tagEntry.tag_Selected === Internal__TagSelected.SELECTED__SOME_SEARCHES ) {
@@ -769,25 +811,39 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
             divStyle.borderColor = borderColor
             divStyle.borderWidth = borderWidth
 
-            div_title = "tag selected for some searches\n\nclick to select for all searches";
+            div_title = (
+                <div style={ { wordBreak: "break-word" } }>
+                    <div style={ { wordBreak: "break-word" } }>
+                        tag selected for some searches
+                    </div>
+                    <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                        click to select for all searches
+                    </div>
+                </div>
+            )
 
         } else {
             throw Error("Unknown value for tagEntry.tag_Selected: " + tagEntry.tag_Selected )
         }
 
         return (
-            <div
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 key={ tagEntry.tagId }
-                style={ divStyle }
-                className=" clickable search-tag-display-everywhere "
                 title={ div_title }
-                onClick={ event => {
-                    event.stopPropagation()
-                    this._tagClicked( tagEntry.tagId )
-                }}
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
-                { tagEntry.tagString }
-            </div>
+                <div
+                    key={ tagEntry.tagId }
+                    style={ divStyle }
+                    className=" clickable search-tag-display-everywhere "
+                    onClick={ event => {
+                        event.stopPropagation()
+                        this._tagClicked( tagEntry.tagId )
+                    }}
+                >
+                    { tagEntry.tagString }
+                </div>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         )
     }
 }

@@ -288,14 +288,20 @@ export class ProjectPage_PublicAccessSection_ProjectOwnerInteraction__PublicAcce
                         Reviewer Access Code:
                     </span>
                     <span > </span>
-                    <span
-                        className={ reviewer_access_code_ClassNames }
-                        title={ ( ! this.state.reviewerAccessEnabled ) ?
-                            "Reviewer Mode is Disabled"
-                        : null }
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            ( ! this.state.reviewerAccessEnabled ) ?
+                                "Reviewer Mode is Disabled"
+                                : null
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                     >
-                        { this.state.reviewerAccessCode }
-                    </span>
+                        <span
+                            className={ reviewer_access_code_ClassNames }
+                        >
+                            { this.state.reviewerAccessCode }
+                        </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
                 <div>
                     { ( this.props.projectIsLocked ) ? (
@@ -404,16 +410,22 @@ class Generate_new_Access_Code_Disabled_Component_Component extends React.Compon
     render() {
 
         return (
-            <span
-                ref={ this._linkSpan_Ref }
-                className=" disabled-generate-link "
-                title={ this.props.tooltipText }
-                // onMouseEnter={ this._linkSpan_onMouseEnter_BindThis }
-                // onMouseLeave={ this._linkSpan_onMouseLeave_BindThis }
-                onClick={ this._linkSpan_onClick_BindThis }
+            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                title={
+                    this.props.tooltipText
+                }
+                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
             >
-                Generate new Access Code
-            </span>
+                <span
+                    ref={ this._linkSpan_Ref }
+                    className=" disabled-generate-link "
+                    // onMouseEnter={ this._linkSpan_onMouseEnter_BindThis }
+                    // onMouseLeave={ this._linkSpan_onMouseLeave_BindThis }
+                    onClick={ this._linkSpan_onClick_BindThis }
+                >
+                    Generate new Access Code
+                </span>
+            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
         );
     }
 

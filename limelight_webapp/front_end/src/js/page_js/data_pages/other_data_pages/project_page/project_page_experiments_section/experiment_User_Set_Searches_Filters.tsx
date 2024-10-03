@@ -818,11 +818,23 @@ const _get_filtersPerSearch_SingleSearch_Components = function({
     const result = (
         <div key={ projectSearchId }>
             <div style={ { display: "grid", gridTemplateColumns: "min-content min-content 1fr"  } }>
-                <div  style={ { gridColumn: "1 / -1", whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }
-                    title={ searchNameDisplay }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        <div style={ { wordBreak: "break-word" } }>
+                            <div style={ { wordBreak: "break-word", fontWeight: "bold" } }>
+                                Search:
+                            </div>
+                            <div style={ { wordBreak: "break-word", marginTop: 6 } }>
+                                { searchNameDisplay }
+                            </div>
+                        </div>
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { searchNameDisplay }
-                </div>
+                    <div  style={ { gridColumn: "1 / -1", whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis" } }>
+                        { searchNameDisplay }
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 { psmFiltersDisplay }
                 { reportedPeptideFiltersDisplay }
                 { matchedProteinFiltersDisplay }

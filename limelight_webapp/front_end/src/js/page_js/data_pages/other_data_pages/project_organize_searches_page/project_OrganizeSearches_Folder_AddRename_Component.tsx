@@ -13,6 +13,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {webserviceCallStandardPost} from "page_js/webservice_call_common/webserviceCallStandardPost";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 ///////
@@ -352,11 +356,17 @@ class Project_OrganizeSearches_Folder_AddRename_Component extends React.Componen
                                             )}
                                         </button>
                                         { ( saveButton_Disabled ) ? (
-                                            <div
-                                                style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                                title={ "Enter an folder name to enable " +  this.props.folderId_Existing ? "'Save'" : "'Add'" }
+                                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                                title={
+                                                    "Enter an folder name to enable " + ( this.props.folderId_Existing ? "'Save'" : "'Add'" )
+                                                }
+                                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                             >
-                                            </div>
+                                                <div
+                                                    style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                                >
+                                                </div>
+                                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         ) : null }
                                     </div>
                                     <span > </span>

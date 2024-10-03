@@ -993,13 +993,19 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                 </div>
                                 <div style={ { marginBottom: 6 } }>
                                     <div>
-                                        <input
-                                            // Keep maxLength in sync with database field size
-                                            maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH }
-                                            title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH + " characters" }
-                                            style={ { width: 450 } }
-                                            ref={ this._searchName_Ref }
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH + " characters"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input
+                                                // Keep maxLength in sync with database field size
+                                                maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_NAME_MAX_LENGTH }
+                                                style={ { width: 450 } }
+                                                ref={ this._searchName_Ref }
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                     <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
                                         Brief description of the search.
@@ -1015,13 +1021,19 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                     style={ { marginBottom: 10 } }
                                 >
                                     <div>
-                                        <input
-                                            // Keep maxLength in sync with database field size
-                                            maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH }
-                                            title={ "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH + " characters" }
-                                            style={ { width: 110 } }
-                                            ref={ this._searchShortName_Ref }
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Maximum length is " + SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH + " characters"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input
+                                                // Keep maxLength in sync with database field size
+                                                maxLength={ SearchName_SearchShortName_Max_FieldLengths_Constants.SEARCH_SHORT_NAME_MAX_LENGTH }
+                                                style={ { width: 110 } }
+                                                ref={ this._searchShortName_Ref }
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                     <div style={ { color: "#A55353", fontSize: "80%", whiteSpace: "nowrap" } }>
                                         Short label to display when space is limited.
@@ -1404,30 +1416,36 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Upload_LimelightXMLFile
                                 // style={ { : 6 } }
                             >
                                 {/*  Display the Tag  */}
-                                <div
-                                    style={ divStyle }
-                                    className=" clickable search-tag-display-everywhere "
-                                    title={ div_title }
-                                    onClick={ event => {
-
-                                        if ( limelight__IsTextSelected() ) {
-                                            return
-                                        }
-
-                                        if ( this._searchTagIds_Selected.has(  searchTagEntry.tagId ) ) {
-
-                                            this._searchTagIds_Selected.delete( searchTagEntry.tagId )
-
-                                        } else {
-
-                                            this._searchTagIds_Selected.add( searchTagEntry.tagId )
-                                        }
-
-                                        this.setState({ force_ReRender_Object: {} })
-                                    }}
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        div_title
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    { searchTagEntry.tagString }
-                                </div>
+                                    <div
+                                        style={ divStyle }
+                                        className=" clickable search-tag-display-everywhere "
+                                        onClick={ event => {
+
+                                            if ( limelight__IsTextSelected() ) {
+                                                return
+                                            }
+
+                                            if ( this._searchTagIds_Selected.has(  searchTagEntry.tagId ) ) {
+
+                                                this._searchTagIds_Selected.delete( searchTagEntry.tagId )
+
+                                            } else {
+
+                                                this._searchTagIds_Selected.add( searchTagEntry.tagId )
+                                            }
+
+                                            this.setState({ force_ReRender_Object: {} })
+                                        }}
+                                    >
+                                        { searchTagEntry.tagString }
+                                    </div>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                             </div>
                         </div>

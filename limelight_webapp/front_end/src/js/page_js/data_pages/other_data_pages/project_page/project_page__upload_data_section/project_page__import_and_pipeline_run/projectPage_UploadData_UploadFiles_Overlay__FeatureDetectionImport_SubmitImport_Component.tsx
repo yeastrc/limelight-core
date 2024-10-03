@@ -22,6 +22,10 @@ import {
 import {projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Import_Initialize_CallWebservice";
 import {projectPage_UploadData_FeatureDetection_Import_Submit_CallWebservice} from "page_js/data_pages/other_data_pages/project_page/project_page__upload_data_section/project_page__import_and_pipeline_run/projectPage_UploadData_FeatureDetection_Import_Submit_CallWebservice";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 
@@ -539,15 +543,21 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
                                     </div>
                                     {/*  Column 2  */}
                                     <div style={ { marginBottom: 5 } }>
-                                        <input
-                                            type="text"
-                                            defaultValue={ _DISPLAY_LABEL__DEFAULT_VALUE }
-                                            maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL }
-                                            ref={ this._displayLabel_InputElement_Ref }
-                                            onChange={ this._inputFields_Changed_BindThis }
-                                            title={ "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL + " characters" }
-                                            style={ { width: 110 } }
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL + " characters"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input
+                                                type="text"
+                                                defaultValue={ _DISPLAY_LABEL__DEFAULT_VALUE }
+                                                maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DISPLAY_LABEL }
+                                                ref={ this._displayLabel_InputElement_Ref }
+                                                onChange={ this._inputFields_Changed_BindThis }
+                                                style={ { width: 110 } }
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         { this.state.displayLabelField_Empty ? (
                                             <span style={ { marginLeft: 10, color: "red" }}>
                                             Label is required
@@ -565,15 +575,21 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__FeatureDetectionImport_
                                     </div>
                                     {/*  Column 2  */}
                                     <div style={ { marginBottom: 5 } }>
-                                        <input
-                                            type="text"
-                                            defaultValue={ _DESCRIPTION__DEFAULT_VALUE }
-                                            maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION }
-                                            ref={ this._description_InputElement_Ref }
-                                            onChange={ this._inputFields_Changed_BindThis }
-                                            title={ "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION + " characters" }
-                                            style={ { width: 450 } }
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                "Maximum length is " + FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION + " characters"
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input
+                                                type="text"
+                                                defaultValue={ _DESCRIPTION__DEFAULT_VALUE }
+                                                maxLength={ FeatureDetection_Max_FieldLengths_Constants.FEATURE_DETECTION_MAX_LENGTH__DESCRIPTION }
+                                                ref={ this._description_InputElement_Ref }
+                                                onChange={ this._inputFields_Changed_BindThis }
+                                                style={ { width: 450 } }
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
 
                                     {/*  Hardklor file to import  */}

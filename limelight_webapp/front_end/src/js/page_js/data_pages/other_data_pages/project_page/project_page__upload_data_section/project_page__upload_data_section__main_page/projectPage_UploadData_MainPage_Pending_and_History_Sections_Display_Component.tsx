@@ -687,18 +687,29 @@ class Internal__Pending_OR_History_Section__Display_Component extends React.Comp
                         }}
                     >
                         { this._show_List ? (
-
-                            <img
-                                src="static/images/pointer-down.png"
-                                className=" fake-link-image icon-small "
-                                title={ this.props.pending_OR_history_ENUM === Internal__Pending_OR_history_ENUM.PENDING ? ( "Hide pending" ) : ( "Hide history") }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    this.props.pending_OR_history_ENUM === Internal__Pending_OR_history_ENUM.PENDING ? ( "Hide pending" ) : ( "Hide history")
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/pointer-down.png"
+                                    className=" fake-link-image icon-small "
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         ) : (
-                            <img
-                                src="static/images/pointer-right.png"
-                                className=" fake-link-image icon-small "
-                                title={ this.props.pending_OR_history_ENUM === Internal__Pending_OR_history_ENUM.PENDING ? ( "Show pending" ) : ( "Show history") }
-                            />
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    this.props.pending_OR_history_ENUM === Internal__Pending_OR_history_ENUM.PENDING ? ( "Show pending" ) : ( "Show history")
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <img
+                                    src="static/images/pointer-right.png"
+                                    className=" fake-link-image icon-small "
+                                />
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                         )}
                         <span> </span>
 

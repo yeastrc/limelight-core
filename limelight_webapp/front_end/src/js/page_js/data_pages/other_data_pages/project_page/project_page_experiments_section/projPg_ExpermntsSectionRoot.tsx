@@ -701,14 +701,12 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, Experiment
 
         // {id: 16, name: "aa", canEdit: true, canDelete: true }
 
-        let name_title = undefined;
         let name_className = " ";
         let name_onClick = undefined;
 
         let editIcon = undefined;
 
         if ( this.props.experiment.canEdit ) {
-            // name_title = "Click to Edit Experiment"  //  Now show/hide Experiment details (Not on Draft)
             // name_className += " fake-link ";
             // name_onClick = this._experimentDraftNameClicked_BindThis;
 
@@ -758,7 +756,7 @@ class ExperimentDraft extends React.Component< ExperimentDraft_Props, Experiment
                 <div ></div>
                 {/* CSS Grid 2 Columns - Column 2 Item */}
                 <div style={ { marginBottom: 5 } }>
-                    <span className={ name_className } onClick={ name_onClick } title={ name_title }>
+                    <span className={ name_className } onClick={ name_onClick } >
                         { this.props.experiment.name }
                     </span>
                     { editIcon }
@@ -961,7 +959,6 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
      */
     render () {
 
-        let name_title : string = undefined;
         let name_className = " ";
         let name_onClick = undefined;
 
@@ -969,7 +966,6 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
         let cloneIcon : JSX.Element = undefined;
 
         if ( this.props.experiment.canEdit && this.props.experimentEditClicked ) {
-            // name_title = "Click to Edit Experiment"  //  Now show/hide Experiment details (Not on Draft)
             name_className += " clickable ";
             name_onClick = this._experimentNameClicked_BindThis;
 
@@ -1140,7 +1136,7 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                             { deleteIcon }
 
                         </div>
-                        <span className={ name_className } onClick={ name_onClick } title={ name_title }>
+                        <span className={ name_className } onClick={ name_onClick } >
                             { this.props.experiment.name }
                         </span>
                         { editIcon }
