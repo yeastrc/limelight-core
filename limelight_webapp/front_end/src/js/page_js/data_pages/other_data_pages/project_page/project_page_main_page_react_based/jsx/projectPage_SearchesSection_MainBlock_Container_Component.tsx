@@ -125,7 +125,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     private _callback_updateSelected_Searches_BindThis = this._callback_updateSelected_Searches.bind(this);
     private _callback_SearchChanged_BindThis = this._callback_SearchChanged.bind(this);
     private _callback_SearchDeleted_BindThis = this._callback_SearchDeleted.bind(this);
-    private _callback_FolderDeleted_BindThis = this._callback_FolderDeleted.bind(this);
+    private _callback_FolderRenamedOrDeleted_BindThis = this._callback_FolderRenamedOrDeleted.bind(this);
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
@@ -507,7 +507,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
     /**
      *
      */
-    private _callback_FolderDeleted() : void {
+    private _callback_FolderRenamedOrDeleted() : void {
 
         if ( this.props.update_force_ReloadFromServer_EmptyObjectReference_Callback ) {
 
@@ -1294,7 +1294,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                 projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet={ this._projectPage_SearchesSection_ROOT_Container_SessionStorage_SaveGet }
                                 callback_SearchChanged={ this._callback_SearchChanged_BindThis }
                                 callback_SearchDeleted={ this._callback_SearchDeleted_BindThis }
-                                callback_FolderDeleted={ this._callback_FolderDeleted_BindThis }
+                                callback_FolderRenamedOrDeleted={ this._callback_FolderRenamedOrDeleted_BindThis }
 
                                 searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject  }
                                 update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }

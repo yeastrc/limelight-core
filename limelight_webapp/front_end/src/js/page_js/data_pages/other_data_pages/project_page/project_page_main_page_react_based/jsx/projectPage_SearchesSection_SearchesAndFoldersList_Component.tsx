@@ -35,6 +35,10 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback,
+    Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params
+} from "page_js/data_pages/other_data_pages/project_organize_searches_page/project_OrganizeSearches_Folder_AddRename_Component";
 
 //  Internal Constants
 
@@ -144,7 +148,7 @@ export interface ProjectPage_SearchesSection_SearchesAndFoldersList_Component_Pr
 
     callback_SearchChanged: () => void
     callback_SearchDeleted: () => void
-    callback_FolderDeleted: () => void
+    callback_FolderRenamedOrDeleted: () => void
 
 }
 
@@ -498,7 +502,7 @@ export class ProjectPage_SearchesSection_SearchesAndFoldersList_Component extend
                         folderEntry_Expanded_Collapsed_Callback={ this._folderEntry_Expanded_Collapsed_Callback_BindThis }
                         callbackOn_SearchEntry_In_Folder_Selected_DeSelected={ this._searchEntry_In_Folder_Selected_DeSelected_Callback_BindThis }
                         callback_SearchChanged={ this._callback_SearchChanged_BindThis }
-                        callback_FolderDeleted={ this.props.callback_FolderDeleted }
+                        callback_FolderRenamedOrDeleted={ this.props.callback_FolderRenamedOrDeleted }
 
                         searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject={ this.props.searchDetails_AllUsers__GetDataFromServer_Result__Root__HolderObject }
                         update_force_ReRender_EmptyObjectReference_Callback={ this.props.update_force_ReRender_EmptyObjectReference_Callback }
@@ -635,7 +639,7 @@ interface FolderEntry_Props {
 
     folderEntry_Expanded_Collapsed_Callback: FolderEntry_Expanded_Collapsed_Callback_Type
     callbackOn_SearchEntry_In_Folder_Selected_DeSelected : SearchEntry_In_Folder_Selected_DeSelected_Callback_Type
-    callback_FolderDeleted: () => void
+    callback_FolderRenamedOrDeleted: () => void
 
     callback_SearchChanged: ProjectPage_SearchEntry_UsedInMultipleSections_Component__SearchChanged_Callback_Type
 
@@ -727,9 +731,16 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
         const position_top =  eventTarget_DOMElement_BoundingRect.top;
         const position_left =  eventTarget_DOMElement_BoundingRect.left;
 
+
+        const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
+        	(params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
+
+                this.props.callback_FolderRenamedOrDeleted()
+        	}
+
         this.props.projectPage_SearchesAdmin.renameFolder({
             folderId: this.props.folderEntry.folderId, folderName: this.props.folderEntry.folderName,
-            position_top, position_left
+            position_top, position_left, change_Callback
         });
     }
 
@@ -742,7 +753,7 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
 
         const callback_FolderDelete_Complete = () : void => {
 
-            this.props.callback_FolderDeleted()
+            this.props.callback_FolderRenamedOrDeleted()
         }
 
         this.props.projectPage_SearchesAdmin.deleteFolder({ folderId: this.props.folderEntry.folderId, callback_FolderDelete_Complete })
@@ -768,9 +779,9 @@ class FolderEntry extends React.Component< FolderEntry_Props, FolderEntry_State 
      */
     private _deleteSearch_Callback( params : ProjectPage_SearchEntry_UsedInMultipleSections_Component__DeleteSearch_Callback_Params ) {
 
-        if ( this.props.callback_FolderDeleted ) {
+        if ( this.props.callback_FolderRenamedOrDeleted ) {
 
-            this.props.callback_FolderDeleted()
+            this.props.callback_FolderRenamedOrDeleted()
 
             return;
         }

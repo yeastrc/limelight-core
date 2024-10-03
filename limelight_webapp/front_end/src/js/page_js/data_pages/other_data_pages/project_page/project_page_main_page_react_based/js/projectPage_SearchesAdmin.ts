@@ -163,20 +163,15 @@ export class ProjectPage_SearchesAdmin {
 
 	renameFolder(
 		{
-			folderId, folderName, position_top, position_left
+			folderId, folderName, position_top, position_left, change_Callback
 		} : {
 			folderId: number
 			folderName: string
 			position_top: number
 			position_left: number
+			change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback
 		}
 	) : void {
-
-		const change_Callback: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback =
-			(params: Project_OrganizeSearches_Folder_AddRename_Component_Change_Callback_Params) : void =>  {
-
-				limelight__ReloadPage_Function()
-			}
 
 		project_OrganizeSearches_Folder_AddRename_Component__openOverlay({
 			projectIdentifier: null, // For Add
