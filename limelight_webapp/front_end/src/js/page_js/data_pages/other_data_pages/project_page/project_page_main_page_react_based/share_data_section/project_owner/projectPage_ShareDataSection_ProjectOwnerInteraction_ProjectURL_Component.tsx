@@ -512,11 +512,17 @@ class CustomizeProjectURL_Overlay_Component extends React.Component< CustomizePr
                                     { addChange_Button_Text }
                                 </button>
                                 { ( addChangeButton_Disabled ) ? (
-                                    <div
-                                        style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
-                                        title={ disabled_addChange_Button_Overlay_Title }
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            disabled_addChange_Button_Overlay_Title
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                     >
-                                    </div>
+                                        <div
+                                            style={ { position: "absolute", left: 0, top: 0, right: 0, bottom: 0 } }
+                                        >
+                                        </div>
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 ) : null }
                             </div>
                             <span > </span>
