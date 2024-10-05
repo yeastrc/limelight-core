@@ -74,6 +74,8 @@ import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_P
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProjectSearchSubGroupDTOForProjectSearchIdSearcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
@@ -85,9 +87,12 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectS
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubGroupDTOForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result;
+import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmSearchSubGroupIdsForPsmIdsSearcher.PsmSearchSubGroupIdsForPsmIdsSearcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdSearcher_Item;
+import org.yeastrc.limelight.limelight_webapp.searchers_results.ProteinSequenceVersionAnnotationItem;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.ReportedPeptide_MinimalData_List_FromSearcher_Entry;
 import org.yeastrc.limelight.limelight_webapp.services.ReportedPeptide_MinimalData_List_For_ProjectSearchId_CutoffsCriteria_ServiceIF;
@@ -182,6 +187,12 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private PeptideStringForSearchIdReportedPeptideIdSearcherIF peptideStringForSearchIdReportedPeptideIdSearcher;
+	
+	@Autowired
+	private ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_IF proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher;
+	
+	@Autowired
+	private ProteinAnnotations_For_SearchID_ProteinVersionId_SearcherIF proteinAnnotations_For_SearchID_ProteinVersionId_Searcher;
 	
 	@Autowired
 	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
@@ -663,6 +674,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		}
 			
     		writeOutputToResponse(
+    				searcherCutoffValuesRootLevel,
     				requestURL_Base__Before__ControllerPath,
     				experimentId,
     				searchItemMinimal_Key_projectSearchId,
@@ -1464,6 +1476,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 * @throws Exception
 	 */
 	private void writeOutputToResponse(
+			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
 			String requestURL_Base__Before__ControllerPath,
 			Integer experimentId,
 			Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId,
@@ -1578,7 +1591,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			writer = new OutputStreamWriter( bos , DownloadsCharacterSetConstant.DOWNLOAD_CHARACTER_SET );
 			//  Write header line
 			writer.write( "SEARCH ID\tSEARCH NAME\tSUB GROUP NICKNAME\tSUB GROUP NAME\tSCAN NUMBER\tSPECTRUM VIEWER URLS (comma delim)\tPEPTIDE\tMODS" ); // 
-			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy" );
+			writer.write( "\tCHARGE\tOBSERVED M/Z\tRETENTION TIME (MINUTES)\tReporter Ions\tOpen Modification Mass\tOpen Modification Position(s)\tSCAN FILENAME\tIs Independent Decoy\tPROTEIN NAMES (comma delim)" );
 			
 			if ( ! writeOutputToResponse_Per_SearchId_List.isEmpty() ) {
 				WriteOutputToResponse_Per_SearchId writeOutputToResponse_For_SearchId = writeOutputToResponse_Per_SearchId_List.get( 0 );
@@ -1630,11 +1643,77 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 					AnnotationTypeDTO psmAnnotationTypeDTO = mapEntry.getValue();
 					annTypeIdsToRetrieve.add( psmAnnotationTypeDTO.getId() );
 				}
-				
-				if ( psmWebDisplayListForReportedPeptideIds != null && ( ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
-				
-					for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
 
+				if ( psmWebDisplayListForReportedPeptideIds != null && ( ! psmWebDisplayListForReportedPeptideIds.isEmpty() ) ) {
+					
+					//  Get Protein Names for Reported Peptide Ids
+
+					Map<Integer, List<String>> proteinNames_List__Map_Key_ReportedPeptideId = new HashMap<>();
+					
+					{
+
+						SearcherCutoffValuesSearchLevel searcherCutoffValuesSearchLevel = searcherCutoffValuesRootLevel.getPerSearchCutoffs( projectSearchId );
+
+						List<Integer> reportedPeptideIds = new ArrayList<>();
+
+						for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+							reportedPeptideIds.add( psmWebDisplayListForReportedPeptideIdsEntry.reportedPeptideId );
+						}
+						
+						ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result proteinCoverage_Result =
+								proteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.getProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIds(
+										searchId, reportedPeptideIds, searcherCutoffValuesSearchLevel);
+						
+						Set<Integer> proteinSequenceVersionId_Set = new HashSet<>();
+
+						for ( ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item proteinCoverage_ResultItem : proteinCoverage_Result.getResults() ) {
+							proteinSequenceVersionId_Set.add( proteinCoverage_ResultItem.getProteinSequenceVersionId() );
+						}
+						
+						Map<Integer, List<ProteinSequenceVersionAnnotationItem>> proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId = new HashMap<>();
+						
+						for ( Integer proteinSequenceVersionId : proteinSequenceVersionId_Set ) {
+							List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = 
+									proteinAnnotations_For_SearchID_ProteinVersionId_Searcher.getProteinAnnotations_For_SearchID_ProteinVersionId_Searcher(searchId, proteinSequenceVersionId);
+							proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.put( proteinSequenceVersionId,  proteinAnnotationDBList );
+						}
+
+						Map<Integer, Set<String>> proteinNames_Set__Map_Key_ReportedPeptideId = new HashMap<>();
+						
+						for ( ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result_Item proteinCoverage_ResultItem : proteinCoverage_Result.getResults() ) {
+							
+							Set<String> proteinNames_Set = proteinNames_Set__Map_Key_ReportedPeptideId.get( proteinCoverage_ResultItem.getReportedPeptideId() );
+							if ( proteinNames_Set == null ) {
+								proteinNames_Set = new HashSet<>();
+								proteinNames_Set__Map_Key_ReportedPeptideId.put( proteinCoverage_ResultItem.getReportedPeptideId(), proteinNames_Set );
+							}
+							
+							
+							List<ProteinSequenceVersionAnnotationItem> proteinAnnotationDBList = proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.get( proteinCoverage_ResultItem.getProteinSequenceVersionId() );
+							if ( proteinAnnotationDBList == null ) {
+								String msg = "proteinAnnotationDBList__Map_Key_ProteinSequenceVersionId.get( proteinCoverage_ResultItem.getProteinSequenceVersionId() ); returned null for proteinCoverage_ResultItem.getProteinSequenceVersionId(): " + proteinCoverage_ResultItem.getProteinSequenceVersionId();
+								log.error(msg);
+								throw new LimelightInternalErrorException(msg);
+							}
+							
+							for ( ProteinSequenceVersionAnnotationItem proteinAnnotationDBItem : proteinAnnotationDBList ) {
+								proteinNames_Set.add( proteinAnnotationDBItem.getName() );
+							}
+						}
+						
+						//  Transfer proteinNames_Set to List and Sort
+						
+						for ( Map.Entry<Integer, Set<String>> mapEntry : proteinNames_Set__Map_Key_ReportedPeptideId.entrySet() ) {
+							
+							List<String> proteinNames_List = new ArrayList<>( mapEntry.getValue() );
+							Collections.sort( proteinNames_List );
+							
+							proteinNames_List__Map_Key_ReportedPeptideId.put( mapEntry.getKey(), proteinNames_List );
+						}
+					}
+					
+					for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
+						
 						//  Get Peptide String and Mods for Reported Peptide Id
 
 						Integer reportedPeptideId = psmWebDisplayListForReportedPeptideIdsEntry.reportedPeptideId;
@@ -1884,6 +1963,19 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 								writer.write( "true" );
 							} else {
 								writer.write( "false" );
+							}
+							
+							{
+								List<String> proteinNames_List = proteinNames_List__Map_Key_ReportedPeptideId.get( reportedPeptideId );
+								if ( proteinNames_List == null ) {
+									String msg = "proteinNames_List__Map_Key_ReportedPeptideId.get( reportedPeptideId ); returned null for reportedPeptideId: " + reportedPeptideId;
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+								}
+								String proteinNames_String = StringUtils.join( proteinNames_List, ", " );
+								
+								writer.write( "\t" );
+								writer.write( proteinNames_String );
 							}
 							
 							List<RequestJSONParsed_PerConditionGroupConditionData> experimentDataForSearch = writeOutputToResponse_For_SearchId.experimentDataForSearch;
