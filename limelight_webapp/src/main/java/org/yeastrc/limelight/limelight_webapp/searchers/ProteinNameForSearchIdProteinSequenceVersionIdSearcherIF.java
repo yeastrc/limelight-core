@@ -19,18 +19,22 @@ package org.yeastrc.limelight.limelight_webapp.searchers;
 
 /**
  * @author danj
+ * 
+ * !!!!!!!!!!!!!!  NEVER USED SO COMMENT OUT.
+ * 
+ * !!!!!!!!!!!!!!  CODE MAY BE INCORRECT
  *
  */
 public interface ProteinNameForSearchIdProteinSequenceVersionIdSearcherIF {
 
-	/**
-	 * Get the name for this protein in the context of its search 
-	 * @param searchId
-	 * @param proteinSequenceVersionId
-	 * @return
-	 * @throws Exception
-	 */
-	String getProteinNameForSearchIdProteinSequenceVersionId(int searchId, int proteinSequenceVersionId)
-			throws Exception;
+//	/**
+//	 * Get the name for this protein in the context of its search 
+//	 * @param searchId
+//	 * @param proteinSequenceVersionId
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	String getProteinNameForSearchIdProteinSequenceVersionId(int searchId, int proteinSequenceVersionId)
+//			throws Exception;
 
 }
