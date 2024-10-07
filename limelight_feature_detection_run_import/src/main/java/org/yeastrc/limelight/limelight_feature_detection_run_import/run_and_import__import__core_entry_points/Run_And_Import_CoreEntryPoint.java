@@ -64,6 +64,8 @@ import org.yeastrc.limelight.limelight_feature_detection_run_import.run_feature_
 import org.yeastrc.limelight.limelight_feature_detection_run_import.run_feature_detection_service_communication.RunFeatureDetectionService_SubmitRequest_ReceiveObject;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.run_feature_detection_service_communication.RunFeatureDetectionService_SubmitRequest_SendObject;
 import org.yeastrc.limelight.limelight_feature_detection_run_import.searcher.SpectralStorageAPIKey_For_ProjectScanFileId_Searcher;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.spectral_storage_service_communication.Call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice;
+import org.yeastrc.limelight.limelight_feature_detection_run_import.spectral_storage_service_communication.ScanFileToSpectralStorageService_GetAllScanNumbersForAPIKey;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.dao.ConfigSystemDAO_Importer;
 import org.yeastrc.limelight.limelight_importer_runimporter_shared.import_and_pipeline_run.dao.FileImportAndPipelineRunTrackingRun_Importer_RunImporter_DAO;
 import org.yeastrc.limelight.limelight_shared.config_system_table_common_access.ConfigSystemsKeysSharedConstants;
@@ -199,6 +201,62 @@ public class Run_And_Import_CoreEntryPoint {
 			
 			if ( shutdownRequested ) {
 				throw new LimelightImporter_ThrowOnShutdownSet_Exception();
+			}
+			
+			{ //  Get and log "Is Centroid" for MS 1 Scan numbers in Scan File
+				try {
+					List<Integer> scanLevelsToInclude = new ArrayList<>( 1 );
+					scanLevelsToInclude.add(1);  // ONLY get scan numbers for Scan Level 1 since that is what the Limelight Feature Detection Pipeline assumes that Hardklor is processed on
+					
+					List<Integer> allScanNumbers_ForIncludedScanLevels = 
+							ScanFileToSpectralStorageService_GetAllScanNumbersForAPIKey.getInstance().getAllScanNumbersForAPIKey(spectralStorageAPIKey, scanLevelsToInclude, null /* scanLevelsToExclude */);
+					
+					List<SingleScan_SubResponse> singleScan_SubResponse_List =
+							Call_Get_ScanDataFromScanNumbers_SpectralStorageWebservice.getInstance()
+							.getScanDataFromSpectralStorageService(
+									allScanNumbers_ForIncludedScanLevels,
+									Get_ScanDataFromScanNumbers_IncludeParentScans.NO, 
+									Get_ScanData_ExcludeReturnScanPeakData.YES,
+									spectralStorageAPIKey );
+					
+					boolean outputMessage_WhenProcessingScans = false;
+					
+					Byte isCentroid_First_NotNullValue = null;
+					
+					for ( SingleScan_SubResponse singleScan_SubResponse : singleScan_SubResponse_List ) {
+						
+						if ( singleScan_SubResponse.getIsCentroid() == null ) {
+							//  IsCentroid comes from summary data per scan level or per whole scan file depending on Spectr index file version and multiple values for Is Centroid was found so null is returned
+							
+							System.out.println( "Processed all scans for scan level 1 in scan file.  At least one scan returned hasIsCentroid() == null.  IsCentroid comes from summary data per scan level or per whole scan file depending on Spectr index file version and multiple values for Is Centroid was found so null is returned " );
+							outputMessage_WhenProcessingScans = true;
+							break;
+						}
+						
+						if ( isCentroid_First_NotNullValue == null ) {
+							
+							isCentroid_First_NotNullValue = singleScan_SubResponse.getIsCentroid();
+						} else {
+							//  Compare to prev value
+							
+							if ( isCentroid_First_NotNullValue.byteValue() != singleScan_SubResponse.getIsCentroid() ) {
+								
+								System.out.println( "Processed all scans for scan level 1 in scan file.  The scans do NOT have the same value for hasIsCentroid()" );
+								outputMessage_WhenProcessingScans = true;
+								break;
+							}
+						}
+						
+					}
+					
+					if ( ! outputMessage_WhenProcessingScans ) {
+												
+						System.out.println( "Processed all scans for scan level 1 in scan file.  The ONLY value found for 'Is Centroid' is " + isCentroid_First_NotNullValue.byteValue() );
+					}
+					
+				} catch (Throwable t) {
+					// Eat exception
+				}
 			}
 
 			String requestId = null;
