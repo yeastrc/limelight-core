@@ -1857,10 +1857,6 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                         if ( ! searchName_OrShortName ) {
 
                             searchName_OrShortName = searchData_For_ProjectSearchId.name
-
-                            if ( searchName_OrShortName.length > searchName_MaxCharacterCount ) {
-                                searchName_OrShortName = searchData_For_ProjectSearchId.name.substring( 0, searchName_MaxCharacterCount ) + "..."
-                            }
                         }
 
                         const displayName = "(" + searchData_For_ProjectSearchId.searchId + ") " + searchName_OrShortName;
@@ -1870,6 +1866,9 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                             displayName,
                             width: 500,
                             sortable: true,
+                            // Table cell Style has overflow-x: hidden; text-overflow: ellipsis;  so the nowrap will cause search name to display in table header on single line with ellipsis at end
+                            style_override_HeaderRowCell_React: { whiteSpace: "nowrap" },
+
                             columnHeader_Tooltip_HTML_TitleAttribute: "Search: (" + searchData_For_ProjectSearchId.searchId + ") " + searchData_For_ProjectSearchId.name
                         } );
                         dataTable_Columns.push( dataTable_Column );
