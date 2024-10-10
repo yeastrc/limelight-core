@@ -13,6 +13,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 export enum Navigation_dataPages_Maint__NavigationType_Enum {
     SINGLE_SEARCH = "SINGLE_SEARCH",
@@ -269,15 +272,22 @@ class Navigation_dataPages_SingleNavItem extends React.Component< Navigation_dat
 
             return (
                 <React.Fragment>
-                    <span>
-                        [
-                        <span className=" fake-link "
-                            onClick={ this._navLinkClicked_BindThis }
-                        >
-                            {this.props.navigation_Entry_From_DOM.label}
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <span>
+                            [
+                            <span className=" fake-link "
+                                onClick={ this._navLinkClicked_BindThis }
+                            >
+                                {this.props.navigation_Entry_From_DOM.label}
+                            </span>
+                            ]
                         </span>
-                        ]
-                    </span>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     <span> </span>
                 </React.Fragment>
             )

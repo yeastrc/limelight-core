@@ -45,6 +45,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 
 /**
@@ -768,12 +771,19 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
 
                                 {/* Navigation etc */}
 
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._featureDetection_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [View Feature Detection Run]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._featureDetection_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [View Feature Detection Run]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 {/*{ true ? (*/}
                                     <>
                                         <span > </span>
@@ -1206,12 +1216,19 @@ class Internal__FeatureDetection_Run_Details_Component extends React.Component< 
                                     Scan Filename: { this.props.featureDetection_Run_Entry.scanFilename_Array.join( ", " ) }
                                 </span>
                                 <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._scanBrowser_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Scan Browser]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._scanBrowser_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Scan Browser]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             </div>
 
                             <div style={ { marginBottom: 9 } }>

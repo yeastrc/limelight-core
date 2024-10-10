@@ -50,6 +50,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 /////
 
@@ -697,43 +700,78 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
 
                                 { searchDisplayListItem.searchHasScanDataFlag ? (
                                     <>  {/*  Only display when have scan file uploaded  */}
-                                        <span
-                                            className=" fake-link "
-                                            onClick={ this._scanFileToSearch_Page_FakeLink_Clicked_BindThis }
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            [Scans]
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ this._scanFileToSearch_Page_FakeLink_Clicked_BindThis }
+                                            >
+                                                [Scans]
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         <span> </span>
                                     </>
                                 ) : null }
 
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._qc_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Stats/QC]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._qc_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Stats/QC]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._peptide_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Peptides]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._peptide_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Peptides]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Proteins]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._protein_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Proteins]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                 <span> </span>
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._modifications_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Modifications]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._modifications_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Modifications]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                 {/* Delete Search Icon */ }
 

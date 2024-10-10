@@ -56,6 +56,9 @@ import {
 import {
     ProjectPage_SearchesSection_Open_DataPages_PeptideProteinMod
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/js/projectPage_SearchesSection_Open_DataPages_PeptideProteinMod";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 /**
  *
@@ -964,22 +967,35 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                 { this.props.scanFile_Entry.entryHasAnyRelatedProjectSearchId ? (
                                     //  Only show when have any searches
                                     <>
-                                        <span
-                                            className=" fake-link "
-                                            onClick={ this._scanFileToSearch_Page_ScanFile_FakeLink_Clicked_BindThis }
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            [Compare Results by Scan]
-                                        </span>
+                                            <span
+                                                className=" fake-link "
+                                                onClick={ this._scanFileToSearch_Page_ScanFile_FakeLink_Clicked_BindThis }
+                                            >
+                                                [Compare Results by Scan]
+                                            </span>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                         <span> </span>
                                     </>
                                 ) : null }
-                                
-                                <span
-                                    className=" fake-link "
-                                    onClick={ this._scanBrowser_Page_FakeLink_Clicked_BindThis }
+                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                    title={
+                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                    }
+                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                 >
-                                    [Scan Browser]
-                                </span>
+                                    <span
+                                        className=" fake-link "
+                                        onClick={ this._scanBrowser_Page_FakeLink_Clicked_BindThis }
+                                    >
+                                        [Scan Browser]
+                                    </span>
+                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                                 { this.props.scanFile_Entry.userIsProjectOwner ? (
                                     <>
@@ -1761,7 +1777,7 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
     render() {
 
         return (
-            <div>
+            <div style={ { marginBottom: 5 } }>
                 <span
                     ref={ this._displayLabel_Div_Ref } // ref used to get position
                 >{ this.props.featureDetection_Entry.description } ({ this.props.featureDetection_Entry.displayLabel })</span>
@@ -1813,10 +1829,17 @@ class FeatureDetection_Entry_Component extends React.Component< FeatureDetection
                         ) : null }
 
                         <span> </span>
-                        <span
-                            className=" fake-link "
-                            onClick={ this._featureDetectionView_Page_FakeLink_Clicked_BindThis }
-                        >[View Feature Detection Run]</span>
+                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                            title={
+                                limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                            }
+                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                        >
+                            <span
+                                className=" fake-link "
+                                onClick={ this._featureDetectionView_Page_FakeLink_Clicked_BindThis }
+                            >[View Feature Detection Run]</span>
+                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                     </React.Fragment>
                 ) }
             </div>

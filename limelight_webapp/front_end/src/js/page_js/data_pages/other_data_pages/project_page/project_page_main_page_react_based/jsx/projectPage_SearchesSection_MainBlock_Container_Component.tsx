@@ -49,6 +49,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 /**
  *
@@ -1304,10 +1307,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                 {/*  compare Scan File To Searches */}
                                 <div style={ { position: "relative", display: "inline-block" } }>
-                                    <input type="button" value="Compare by Scans"
-                                           disabled={ this.state.compareButtonsDisabled }
-                                           onClick={ this._compare_Scan_File_to_Searches_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <input type="button" value="Compare by Scans"
+                                               disabled={ this.state.compareButtonsDisabled }
+                                               onClick={ this._compare_Scan_File_to_Searches_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -1329,10 +1339,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                 {/*  compare QC */}
                                 <div style={ { position: "relative", display: "inline-block" } }>
-                                    <input type="button" value="Compare Stats/QC View"
-                                           disabled={ this.state.compareButtonsDisabled }
-                                           onClick={ this._compare_Stats_QC_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <input type="button" value="Compare Stats/QC View"
+                                               disabled={ this.state.compareButtonsDisabled }
+                                               onClick={ this._compare_Stats_QC_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -1354,10 +1371,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                 {/*  compare peptide */}
                                 <div style={ { position: "relative", display: "inline-block" } }>
-                                    <input type="button" value="Compare Peptide View"
-                                           disabled={ this.state.compareButtonsDisabled }
-                                           onClick={ this._compare_Peptides_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <input type="button" value="Compare Peptide View"
+                                               disabled={ this.state.compareButtonsDisabled }
+                                               onClick={ this._compare_Peptides_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -1379,10 +1403,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                 {/*  compare Protein */}
                                 <div style={ { position: "relative", display: "inline-block" } }>
-                                    <input type="button" value="Compare Protein View"
-                                           disabled={ this.state.compareButtonsDisabled }
-                                           onClick={ this._compare_Proteins_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <input type="button" value="Compare Protein View"
+                                               disabled={ this.state.compareButtonsDisabled }
+                                               onClick={ this._compare_Proteins_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -1404,10 +1435,17 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
 
                                 {/*  compare Mod */}
                                 <div style={ { position: "relative", display: "inline-block" } }>
-                                    <input type="button" value="Compare Mod View"
-                                           disabled={ this.state.compareButtonsDisabled }
-                                           onClick={ this._compare_Mods_Clicked_BindThis }
-                                    />
+                                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                        title={
+                                            limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                        }
+                                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                    >
+                                        <input type="button" value="Compare Mod View"
+                                               disabled={ this.state.compareButtonsDisabled }
+                                               onClick={ this._compare_Mods_Clicked_BindThis }
+                                        />
+                                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     { ( this.state.compareButtonsDisabled ) ? (
                                         // overlay when button is disabled to show tooltip
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component

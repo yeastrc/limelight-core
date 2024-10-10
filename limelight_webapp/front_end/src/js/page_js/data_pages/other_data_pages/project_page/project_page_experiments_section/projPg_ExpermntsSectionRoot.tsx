@@ -17,6 +17,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab
+} from "page_js/common_all_pages/limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab";
 
 
 
@@ -1085,52 +1088,70 @@ class Experiment extends React.Component< Experiment_Props, Experiment_State > {
                 <div >
                     <div className=" hovered-div-highlight ">
                         <div style={ { float: "right", paddingLeft: 10 } }>
-
-                            <span
-                                className=" fake-link "
-                                onClick={ (event => {
-                                    event.stopPropagation();
-                                    if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( peptideLink, "_blank", "noopener" )
-                                    } else {
-                                        window.location.href = peptideLink
-                                    }
-                                })}
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                [Peptides]
-                            </span>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ (event => {
+                                        event.stopPropagation();
+                                        if ( event.ctrlKey || event.metaKey ) {
+                                            window.open( peptideLink, "_blank", "noopener" )
+                                        } else {
+                                            window.location.href = peptideLink
+                                        }
+                                    })}
+                                >
+                                    [Peptides]
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             <span>&nbsp;</span>
-
-                            <span
-                                className=" fake-link "
-                                onClick={ (event => {
-                                    event.stopPropagation();
-                                    if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( proteinLink, "_blank", "noopener" )
-                                    } else {
-                                        window.location.href = proteinLink
-                                    }
-                                })}
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                [Proteins]
-                            </span>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ (event => {
+                                        event.stopPropagation();
+                                        if ( event.ctrlKey || event.metaKey ) {
+                                            window.open( proteinLink, "_blank", "noopener" )
+                                        } else {
+                                            window.location.href = proteinLink
+                                        }
+                                    })}
+                                >
+                                    [Proteins]
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
                             {/*
                             <span>&nbsp;</span>
-
-                            <span
-                                className=" fake-link "
-                                onClick={ (event => {
-                                    event.stopPropagation();
-                                    if ( event.ctrlKey || event.metaKey ) {
-                                        window.open( modViewLink, "_blank", "noopener" )
-                                    } else {
-                                        window.location.href = modViewLink
-                                    }
-                                })}
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                             >
-                                [Modifications]
-                            </span>
+                                <span
+                                    className=" fake-link "
+                                    onClick={ (event => {
+                                        event.stopPropagation();
+                                        if ( event.ctrlKey || event.metaKey ) {
+                                            window.open( modViewLink, "_blank", "noopener" )
+                                        } else {
+                                            window.location.href = modViewLink
+                                        }
+                                    })}
+                                >
+                                    [Modifications]
+                                </span>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                             */}
 
                             { deleteIcon }
