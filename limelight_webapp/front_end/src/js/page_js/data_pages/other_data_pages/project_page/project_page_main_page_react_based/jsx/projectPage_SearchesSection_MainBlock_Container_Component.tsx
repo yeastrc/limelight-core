@@ -1007,9 +1007,7 @@ export class ProjectPage_SearchesSection_MainBlock_Component extends React.Compo
                                             <div style={ { position: "relative", display: "inline-block" } }>
                                                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                     title={
-                                                        <span>
-                                                            CTRL-click or Command-click to open in new tab
-                                                        </span>
+                                                        limelight__TooltipAddition_Component_ControlClick_OR_CommandClick_ToOpenInNewTab()
                                                     }
                                                     { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                                 >
