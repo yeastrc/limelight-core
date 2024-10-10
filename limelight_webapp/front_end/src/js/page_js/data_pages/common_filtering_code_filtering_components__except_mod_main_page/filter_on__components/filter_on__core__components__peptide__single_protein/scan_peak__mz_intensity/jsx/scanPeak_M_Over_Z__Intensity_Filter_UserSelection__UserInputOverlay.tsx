@@ -546,7 +546,7 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             { " " }
                             <span style={ { whiteSpace: "nowrap" } } >
                                 Relative intensity: { this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
-                                { "%," }
+                                { "%" }
                             </span>
                             <span> </span>
 

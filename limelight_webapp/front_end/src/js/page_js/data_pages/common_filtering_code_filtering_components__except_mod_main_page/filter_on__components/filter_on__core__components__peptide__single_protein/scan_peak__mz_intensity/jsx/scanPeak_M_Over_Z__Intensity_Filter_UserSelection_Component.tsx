@@ -267,9 +267,8 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                         </span>
                                         { " " }
                                         <span style={ { whiteSpace: "nowrap" } }>
-                                            Relative
-                                            intensity: { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
-                                            { "%," }
+                                            Relative intensity: { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
+                                            { "%" }
                                         </span>
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
