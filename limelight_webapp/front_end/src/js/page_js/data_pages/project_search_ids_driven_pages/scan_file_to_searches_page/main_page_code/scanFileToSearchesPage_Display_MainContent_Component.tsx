@@ -1754,9 +1754,16 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
             const psmTblData_Array_Map_Key_ScanNumber_Map_Key_ProjectSearchId: Map<number, Map<number, Array<CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>>> = new Map()
 
+            const projectSearchId_Set_Map_Key_ScanNumber: Map<number, Set<number>> = new Map()
+
             const scanNumbersAll_Set: Set<number> = new Set()
 
             for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+                if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
+                    //  Search does not have this scan file so skip
+                    continue // EARLY CONTINUE
+                }
 
                 const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = this._psmTblData_For_ReportedPeptideId_For_MainFilters_Holder_Map_Key_ProjectSearchId.get(projectSearchId)
                 if ( ! psmTblData_For_ReportedPeptideId_For_MainFilters_Holder ) {
@@ -1794,6 +1801,13 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                                     psmTblData_Array.push( psmTblData )
                                 }
                                 scanNumbersAll_Set.add( psmTblData.scanNumber )
+
+                                let projectSearchId_Set = projectSearchId_Set_Map_Key_ScanNumber.get( psmTblData.scanNumber )
+                                if ( ! projectSearchId_Set ) {
+                                    projectSearchId_Set = new Set()
+                                    projectSearchId_Set_Map_Key_ScanNumber.set( psmTblData.scanNumber, projectSearchId_Set )
+                                }
+                                projectSearchId_Set.add( projectSearchId )
                             }
                         }
                     } else {
@@ -1812,6 +1826,13 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                                     psmTblData_Array.push( psmTblData )
                                 }
                                 scanNumbersAll_Set.add( psmTblData.scanNumber )
+
+                                let projectSearchId_Set = projectSearchId_Set_Map_Key_ScanNumber.get( psmTblData.scanNumber )
+                                if ( ! projectSearchId_Set ) {
+                                    projectSearchId_Set = new Set()
+                                    projectSearchId_Set_Map_Key_ScanNumber.set( psmTblData.scanNumber, projectSearchId_Set )
+                                }
+                                projectSearchId_Set.add( projectSearchId )
                             }
                         }
                     }
@@ -1828,7 +1849,7 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
 
             {
 
-                {  // Generated Peptide sequence, including variable mods, etc
+                {  // Scan Number
 
                     const displayName = "Scan Number";
 
@@ -1844,7 +1865,30 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
                 }
 
+                {  // Count of searches this scan number is in
+
+                    const displayName = "Search Count";
+
+                    const dataTable_Column = new DataTable_Column({
+                        id : "scan_number_srch_count", // Used for tracking sort order. Keep short
+                        displayName,
+                        width : 60,
+                        sortable : true,
+                        columnHeader_Tooltip_HTML_TitleAttribute: "Number of searches this scan number is in"
+                    });
+                    dataTable_Columns.push( dataTable_Column );
+
+                    const dataTable_Column_DownloadTable = new DataTable_Column_DownloadTable({ cell_ColumnHeader_String : displayName });
+                    dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
+                }
+
+
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+                    if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
+                        //  Search does not have this scan file so skip
+                        continue // EARLY CONTINUE
+                    }
 
                     const searchData_For_ProjectSearchId = this.props.propsValue.dataPageStateManager.get_searchData_SearchName_Etc_Root().get_SearchData_For_ProjectSearchId( projectSearchId )
 
@@ -1910,10 +1954,39 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
                 }
 
+                if ( this.props.propsValue.projectSearchIds.length > 1 ) {
+
+                    //  Count of searches this scan number is in
+
+                    const projectSearchId_Set = projectSearchId_Set_Map_Key_ScanNumber.get( scanNumber )
+                    if ( ! projectSearchId_Set ) {
+                        throw Error("Processing  :  projectSearchId_Set_Map_Key_ScanNumber.get( scanNumber ) returned nothing for scanNumber: " + scanNumber )
+                    }
+
+                    const projectSearchId_Count = projectSearchId_Set.size
+
+                    const valueDisplay = projectSearchId_Count.toString();
+                    const searchEntriesForColumn : Array<string> = [ valueDisplay ]
+                    const searchTableData = new DataTable_DataRow_ColumnEntry_SearchTableData({ searchEntriesForColumn })
+                    const dataTable_DataRow_ColumnEntry = new DataTable_DataRow_ColumnEntry({
+                        searchTableData,
+                        valueDisplay,
+                        valueSort: projectSearchId_Count
+                    });
+                    dataTable_DataRow_ColumnEntries.push(dataTable_DataRow_ColumnEntry);
+
+                    const dataTable_DataRowEntry_DownloadTable_SingleColumn = new DataTable_DataRowEntry_DownloadTable_SingleColumn({ cell_ColumnData_String: valueDisplay })
+                    dataColumns_tableDownload.push( dataTable_DataRowEntry_DownloadTable_SingleColumn );
+                }
 
                 const childOfTableRow_Component_Data_PerSearch_Map_Key_ProjectSearchId: Map<number, ScanFileToSearchesPage_Display_MainTableRow_ChildBlock_Component_Data_SingleSearch> = new Map()
 
                 for ( const projectSearchId of this.props.propsValue.projectSearchIds ) {
+
+                    if ( this._searches_NOT_ContainScanFile_ProjectSearchId_Set.has( projectSearchId ) ) {
+                        //  Search does not have this scan file so skip
+                        continue // EARLY CONTINUE
+                    }
 
                     const psm_GeneratedPeptideSequence_Entries_All_ForSearch: Array<string> = []
 
