@@ -24,6 +24,10 @@ import {
 } from "page_js/common_all_pages/limelight_add_ReactComponent_JSX_Element_To_DocumentBody";
 import {updatePageState_URL_With_New_SearchDataLookupParameters_Root} from "page_js/data_pages/data_pages_common/updatePageState_URL_With_New_SearchDataLookupParameters_Root";
 import { limelight__ReloadPage_Function } from "page_js/common_all_pages/limelight__ReloadPage_Function";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _Overlay_Title = "Change Displayed Data"
@@ -752,19 +756,26 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
                 throw Error( "( ! searchProgramsPerSearchItem )" );
             }
             const display = (
-                <div
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     key={ annotationType.annotationTypeId }
-                    title={ annotationType.description }
-                    className=" clickable on-hover-standard-background-color-medium on-over-standard-border-color-dark-1px-wide "
-                    style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis", padding: 2 } }
-                    onClick={ event => {
-                        event.stopPropagation();
-                        this.props.annTypeDisplay.push( annotationType.annotationTypeId );
-                        this.props.callbackOn_DataChanged();
-                    }}
+                    title={
+                        annotationType.description
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    { annotationType.name } ({ searchProgramsPerSearchItem.name })
-                </div>
+                    <div
+                        key={ annotationType.annotationTypeId }
+                        className=" clickable on-hover-standard-background-color-medium on-over-standard-border-color-dark-1px-wide "
+                        style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis", padding: 2 } }
+                        onClick={ event => {
+                            event.stopPropagation();
+                            this.props.annTypeDisplay.push( annotationType.annotationTypeId );
+                            this.props.callbackOn_DataChanged();
+                        }}
+                    >
+                        { annotationType.name } ({ searchProgramsPerSearchItem.name })
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
             annotationTypeItems_NOT_Displayed_JSX.push(display)
         }
@@ -1023,26 +1034,44 @@ class AnnotationCurrentlyDisplayEntry_DraggableContents extends React.Component<
             >
 
                 <div style={ { marginLeft: 2, marginRight: 4, cursor: "move" } }>
-                    <img className=" icon-small " src="static/images/icon-draggable.png"
-                         title={ "Drag to change order of displayed data" } ></img> {/*  Replace with draggable icon */}
+                    <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                        title={
+                            "Drag to change order of displayed data"
+                        }
+                        { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                    >
+                        <img className=" icon-small " src="static/images/icon-draggable.png" ></img>
+                    </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                 </div>
-                <div
-                    style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis", cursor: "move" } }
-                    title={ this.props.description }
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        this.props.description
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                 >
-                    <span>{ this.props.name }</span>
-                    <span> </span>
-                    <span>(</span>
-                    <span>{ this.props.programName }</span>
-                    <span>)</span>
-                </div>
-                <div style={ { marginLeft: 5, cursor: "move" } }>
-                    <img
-                        onClick={ this._deleteEntry_BindThis }
-                        className=" icon-small clickable " src="static/images/icon-circle-delete.png"
-                        title={ "Remove item from display" }
-                    />
-                </div>
+                    <div
+                        style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis", cursor: "move" } }
+                    >
+                        <span>{ this.props.name }</span>
+                        <span> </span>
+                        <span>(</span>
+                        <span>{ this.props.programName }</span>
+                        <span>)</span>
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                    title={
+                        "Remove item from display"
+                    }
+                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                >
+                    <div style={ { marginLeft: 5, cursor: "move" } }>
+                        <img
+                            onClick={ this._deleteEntry_BindThis }
+                            className=" icon-small clickable " src="static/images/icon-circle-delete.png"
+                        />
+                    </div>
+                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             </div>
         );
     }
