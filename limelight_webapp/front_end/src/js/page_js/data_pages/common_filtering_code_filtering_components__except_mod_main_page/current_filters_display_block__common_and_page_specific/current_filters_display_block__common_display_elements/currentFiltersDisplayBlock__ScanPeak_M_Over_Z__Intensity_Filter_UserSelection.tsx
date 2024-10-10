@@ -10,9 +10,6 @@ import React from "react";
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
-import {
-    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
-} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 //  Set since what is returned is put into an Array.  Simply set to root function name.
 const _ROOT_REACT_ELEMENT_RETURNED__KEY = "currentFiltersDisplayBlock__ScanPeak_M_Over_Z__Intensity_Filter_UserSelection";
@@ -81,19 +78,10 @@ const CurrentFiltersDisplayBlock__ScanNumber_ScanFilenameId_ProjectSearchId_On_P
             )
         }
 
-        const chargeEntries_Array_Sorted = Array.from( selection_Entry.chargeEntries )
-        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array_Sorted )
-
         selectionsElements.push(
             <span key={ "text_before_" + selectionsElements.length }>
                 <span style={ { whiteSpace: "nowrap" } }>
-                    a neutral mass of { selection_Entry.monoisotopicMass } Da
-                </span>
-                { " " }
-                 and a
-                { " " }
-                <span style={ { whiteSpace: "nowrap" } }>
-                    charge state of { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
+                    a m/z of { selection_Entry.massOverCharge }
                 </span>
                 { " " }
                 <span style={ { whiteSpace: "nowrap" } }>

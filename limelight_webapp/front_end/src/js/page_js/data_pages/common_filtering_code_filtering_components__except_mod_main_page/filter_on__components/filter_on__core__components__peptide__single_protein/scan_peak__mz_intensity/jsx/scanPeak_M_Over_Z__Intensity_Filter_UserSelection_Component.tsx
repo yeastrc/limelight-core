@@ -13,9 +13,6 @@
 import React from 'react'
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
-    CommonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId_Holder,
-} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_multiple_searches_sub_parts__returned_objects/commonData_LoadedFromServer_MultipleSearches__ScanFile_SearchScanFileId_ScanFilename_ScanFileId";
-import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 import {
@@ -35,9 +32,6 @@ import {
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
-import {
-    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
-} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 
 /**
  *
@@ -201,9 +195,6 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                 let selection_Entry_Counter = 0
                 for ( const selection_Entry of this.props.scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
-                    const chargeEntries_Array_Sorted = Array.from( selection_Entry.chargeEntries )
-                    limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array_Sorted )
-
                     selection_Entry_Counter++
 
                     selectionsElements.push(
@@ -262,9 +253,9 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                         } }
                                     >
                                         <span style={ { whiteSpace: "nowrap" } }>
-                                            Mass:
+                                            m/z:
                                             { " " }
-                                            { selection_Entry.monoisotopicMass }
+                                            { selection_Entry.massOverCharge }
                                             { "," }
                                         </span>
                                         { " " }
@@ -279,13 +270,6 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_Component extends
                                             Relative
                                             intensity: { selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
                                             { "%," }
-                                        </span>
-                                        { " " }
-                                        <span style={ { whiteSpace: "nowrap" } }>
-                                            { "Charge" }
-                                            { chargeEntries_Array_Sorted.length > 1 ? "s" : null }
-                                            { ": " }
-                                            { chargeEntries_Array_Sorted.map( value => "+" + value ).join( ", " ) }
                                         </span>
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>

@@ -10,6 +10,7 @@
 import {
     limelight__Sort_ArrayOfNumbers_SortArrayInPlace
 } from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
+import { PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
 
 ////////////////////
 
@@ -33,22 +34,16 @@ const _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS = 'a'
 const _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM = 'b'
 const _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN = 'c'
 const _ENCODED_DATA__CHARGE_ENTRIES = 'd'
-
+const _ENCODED_DATA__SINGLE_ENTRY__MASS_OVER_CHARGE = 'e'
 
 ///////
 
-const _CHARGE_ENTRIES_DEFAULT_AS_ARRAY = [ 1 ]
-
-export const get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES = function () {
-    return new Set( _CHARGE_ENTRIES_DEFAULT_AS_ARRAY )
-}
 
 export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY {
 
-    monoisotopicMass: number
+    massOverCharge: number
     plus_Minus_MassRange_In_PPM: number
     scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: number
-    chargeEntries: Set<number>
 }
 
 
@@ -183,14 +178,10 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
             for ( const selection_Entry of this._selections ) {
 
-                const chargeEntries_Array = Array.from( selection_Entry.chargeEntries )
-                limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array )
-
                 const encoded_Entry: any = {}
-                encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ] =  selection_Entry.monoisotopicMass
+                encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ] =  selection_Entry.massOverCharge
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ] =  selection_Entry.plus_Minus_MassRange_In_PPM
                 encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ] =  selection_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
-                encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ] = chargeEntries_Array
 
                 encoded_Entry_Array.push( encoded_Entry )
             }
@@ -239,29 +230,66 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
                 for ( const encoded_Entry of encoded_Entry_Array ) {
 
-                    let chargeEntries = undefined
+                    const monoisotopicMass = encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ]
 
-                    {
-                        const chargeEntries_Array = encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ]
-                        if ( ! chargeEntries_Array ) {
-                            //  Not expected but to support early testing URLs
-                            chargeEntries = get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES()
-                        } else {
-                            chargeEntries = new Set( chargeEntries_Array )
+                    if ( monoisotopicMass !== undefined ) {
+
+                        //  Have OLD entry so need to convert to new entry(ies)
+
+                        let chargeEntries = undefined
+
+                        {
+                            const chargeEntries_Array = encoded_Entry[ _ENCODED_DATA__CHARGE_ENTRIES ]
+                            if ( ! chargeEntries_Array ) {
+                                //  Not expected but to support early testing URLs
+                                chargeEntries = _get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES()
+                            } else {
+                                chargeEntries = new Set( chargeEntries_Array )
+                            }
                         }
-                    }
 
-                    const stateEntry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY = {
-                        monoisotopicMass: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MONOISOPIC_MASS ],
-                        plus_Minus_MassRange_In_PPM: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ],
-                        scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ],
-                        chargeEntries
-                    }
+                        const chargeEntries_Array = Array.from( chargeEntries ) as Array<number>
+                        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array )
 
-                    this._selections.push( stateEntry )
+                        for ( const chargeEntry of chargeEntries_Array ) {
+
+                            const m_Over_Z_Mass_Base =
+                                PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge( {
+                                    monoisotopicMass: monoisotopicMass,
+                                    charge: chargeEntry
+                                } )
+
+
+                            const stateEntry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY = {
+                                massOverCharge: m_Over_Z_Mass_Base,
+                                plus_Minus_MassRange_In_PPM: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ],
+                                scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ],
+                            }
+
+                            this._selections.push( stateEntry )
+                        }
+                    } else {
+
+                        //  Have Current Entry
+
+                        const stateEntry: ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY = {
+                            massOverCharge: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__MASS_OVER_CHARGE ],
+                            plus_Minus_MassRange_In_PPM: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__PLUS_MINUS_MASS_RANGE_IN_PPM ],
+                            scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: encoded_Entry[ _ENCODED_DATA__SINGLE_ENTRY__SCAN_PEAK_INTENSITY_MINIMUM_PERCENTAGE_OF_MAX_SCAN_PEAK_INTENSITY_IN_SCAN ],
+                        }
+
+                        this._selections.push( stateEntry )
+                    }
                 }
             }
         }
     }
 }
 
+//  For OLD URLs
+
+const _CHARGE_ENTRIES_DEFAULT_AS_ARRAY = [ 1 ]
+
+const _get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES = function () {
+    return new Set( _CHARGE_ENTRIES_DEFAULT_AS_ARRAY )
+}

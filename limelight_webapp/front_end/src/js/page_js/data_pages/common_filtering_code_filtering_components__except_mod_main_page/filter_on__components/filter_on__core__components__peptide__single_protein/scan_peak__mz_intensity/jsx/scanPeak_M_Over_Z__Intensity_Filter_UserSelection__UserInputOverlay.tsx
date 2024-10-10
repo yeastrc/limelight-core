@@ -9,7 +9,6 @@ import React from 'react'
 import {ModalOverlay_Limelight_Component_v001_B_FlexBox} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
 import {
-    get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES,
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject,
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
@@ -17,14 +16,11 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
-import {
-    limelight__Sort_ArrayOfNumbers_SortArrayInPlace
-} from "page_js/common_all_pages/limelight__Sort_ArrayOfNumbers_SortArrayInPlace";
 import { limelight__IsTextSelected } from "page_js/common_all_pages/limelight__IsTextSelected";
 
 /////
 
-const _Overlay_Title = "Scan Peak m/z intensity Filter"
+const _Overlay_Title =  "MS/MS Ion Filter"
 
 const _Overlay_Width_Min = 900;
 const _Overlay_Width_Max = 900;
@@ -139,10 +135,9 @@ class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection__UserInputOverlay_Compon
                 if ( entry_Internal.add_OrChange_InProgress_Entry ) {
 
                     selections_StateObject.push( {
-                        monoisotopicMass: entry_Internal.add_OrChange_InProgress_Entry.monoisotopicMass,
+                        massOverCharge: entry_Internal.add_OrChange_InProgress_Entry.massOverCharge,
                         plus_Minus_MassRange_In_PPM: entry_Internal.add_OrChange_InProgress_Entry.plus_Minus_MassRange_In_PPM,
-                        scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: entry_Internal.add_OrChange_InProgress_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan,
-                        chargeEntries: new Set( entry_Internal.add_OrChange_InProgress_Entry.charge_SelectionEntries )
+                        scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: entry_Internal.add_OrChange_InProgress_Entry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
                     } )
                 } else {
                     selections_StateObject.push( entry_Internal.selectionEntry )
@@ -447,19 +442,17 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
             this._show_ChangeEntry_Component = true
 
             this.props.existingContainerEntry.add_OrChange_InProgress_Entry = {
-                monoisotopicMass: this.props.existingContainerEntry.selectionEntry.monoisotopicMass,
+                massOverCharge: this.props.existingContainerEntry.selectionEntry.massOverCharge,
                 plus_Minus_MassRange_In_PPM: this.props.existingContainerEntry.selectionEntry.plus_Minus_MassRange_In_PPM,
                 scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan,
-                charge_SelectionEntries: new Set( this.props.existingContainerEntry.selectionEntry.chargeEntries ),
 
-                monoisotopicMass_UserInput_String: this.props.existingContainerEntry.selectionEntry.monoisotopicMass.toString(),
+                massOverCharge_UserInput_String: this.props.existingContainerEntry.selectionEntry.massOverCharge.toString(),
                 plus_Minus_MassRange_In_PPM_UserInput_String: this.props.existingContainerEntry.selectionEntry.plus_Minus_MassRange_In_PPM.toString(),
                 scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String: this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan.toString(),
 
-                monoisotopicMass_UserInput_InvalidValue_ErrorMessage: undefined,
+                massOverCharge_UserInput_InvalidValue_ErrorMessage: undefined,
                 plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage: undefined,
-                scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage: undefined,
-                charge_SelectionEntries_InvalidValue_ErrorMessage: undefined
+                scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage: undefined
             }
 
             this.setState({ objectForceRerender: {} })
@@ -495,9 +488,6 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                 />
             )
         }
-
-        const chargeEntries_Array_Sorted = Array.from( this.props.existingContainerEntry.selectionEntry.chargeEntries )
-        limelight__Sort_ArrayOfNumbers_SortArrayInPlace( chargeEntries_Array_Sorted )
 
         return (
             <React.Fragment>
@@ -543,7 +533,7 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             <span style={ { whiteSpace: "nowrap" } } >
                                 Mass:
                                 { " " }
-                                { this.props.existingContainerEntry.selectionEntry.monoisotopicMass }
+                                { this.props.existingContainerEntry.selectionEntry.massOverCharge }
                                 { "," }
                             </span>
                             { " " }
@@ -557,13 +547,6 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             <span style={ { whiteSpace: "nowrap" } } >
                                 Relative intensity: { this.props.existingContainerEntry.selectionEntry.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan }
                                 { "%," }
-                            </span>
-                            { " " }
-                            <span style={ { whiteSpace: "nowrap" } } >
-                                { "Charge" }
-                                { chargeEntries_Array_Sorted.length > 1 ? "s" : null }
-                                { ": " }
-                                { chargeEntries_Array_Sorted.map(value => "+" + value ).join( ", " ) }
                             </span>
                             <span> </span>
 
@@ -652,19 +635,17 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
 
         this._entry_InProgress = {
 
-            monoisotopicMass: undefined,
+            massOverCharge: undefined,
             plus_Minus_MassRange_In_PPM: undefined,
             scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: undefined,
-            charge_SelectionEntries: get_ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY__DEFAULT_CHARGE_ENTRIES(),
 
-            monoisotopicMass_UserInput_String: "",
+            massOverCharge_UserInput_String: "",
             plus_Minus_MassRange_In_PPM_UserInput_String: "",
             scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String: "",
 
-            monoisotopicMass_UserInput_InvalidValue_ErrorMessage: undefined,
+            massOverCharge_UserInput_InvalidValue_ErrorMessage: undefined,
             plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage: undefined,
-            scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage: undefined,
-            charge_SelectionEntries_InvalidValue_ErrorMessage: undefined
+            scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage: undefined
         }
 
     }
@@ -686,10 +667,9 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
 
             const entryContainerToAdd: INTERNAL__UserSelection_Container_ENTRY = {
                 selectionEntry: {
-                    monoisotopicMass: this._entry_InProgress.monoisotopicMass,
+                    massOverCharge: this._entry_InProgress.massOverCharge,
                     plus_Minus_MassRange_In_PPM: this._entry_InProgress.plus_Minus_MassRange_In_PPM,
-                    scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan,
-                    chargeEntries: new Set( this._entry_InProgress.charge_SelectionEntries )
+                    scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan
                 },
                 add_OrChange_InProgress_Entry: undefined
             }
@@ -713,7 +693,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
         try {
             const newValue_InField = event.target.value.replaceAll( ",", "" ).trim()
 
-            this._entry_InProgress.monoisotopicMass_UserInput_String = newValue_InField
+            this._entry_InProgress.massOverCharge_UserInput_String = newValue_InField
 
             this._enable_Disable_Add_Button__Validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry()
 
@@ -790,37 +770,6 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
         }
     }
 
-    private _chargeChanged( charge: number, checked: boolean ) {
-        try {
-            if ( checked ) {
-                //  Add entry
-                this._entry_InProgress.charge_SelectionEntries.add( charge )
-            } else {
-                // Delete entry
-                this._entry_InProgress.charge_SelectionEntries.delete( charge )
-            }
-
-            this._enable_Disable_Add_Button__Validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry()
-
-            this.setState({ objectForceRerender: {} })
-
-            window.setTimeout( () => {
-                try {
-                    if ( this.props.callback_On_FieldChange_For_ExistingEntry ) {
-                        this.props.callback_On_FieldChange_For_ExistingEntry()
-                    }
-                } catch( e ) {
-                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                    throw e;
-                }
-            }, 10 )
-
-        } catch( e ) {
-            reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-            throw e;
-        }
-    }
-
     private _enable_Disable_Add_Button__Validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry() {
 
         const validateResult = _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry( this._entry_InProgress )
@@ -839,40 +788,6 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
      */
     render() {
 
-        const charge_Elements: Array<JSX.Element> = []
-
-        for ( let charge = 1; charge <= 5; charge++ ) {
-
-            const element = (
-                <label
-                    key={ charge }
-                >
-                    <span
-                        style={ { whiteSpace: "nowrap" } }
-                    >
-                        <input
-                            type="checkbox"
-                            checked={ this._entry_InProgress.charge_SelectionEntries.has( charge ) }
-                            onChange={ event => {
-                                try {
-                                    event.stopPropagation()
-
-                                    this._chargeChanged( charge, event.target.checked )
-
-                                } catch( e ) {
-                                    reportWebErrorToServer.reportErrorObjectToServer( { errorException : e } );
-                                    throw e;
-                                }
-                            }}
-                        />
-                        <span>+{ charge } </span>
-                    </span>
-                </label>
-            )
-
-            charge_Elements.push( element )
-        }
-
         return (
             <React.Fragment>
 
@@ -883,11 +798,11 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             title={
                                 <div>
                                     <div>
-                                        The neutral mass of the ion.
+                                        The m/z of the ion.
                                     </div>
-                                    { this._entry_InProgress.monoisotopicMass_UserInput_InvalidValue_ErrorMessage ? (
+                                    { this._entry_InProgress.massOverCharge_UserInput_InvalidValue_ErrorMessage ? (
                                         <div className=" error-text ">
-                                            { this._entry_InProgress.monoisotopicMass_UserInput_InvalidValue_ErrorMessage }
+                                            { this._entry_InProgress.massOverCharge_UserInput_InvalidValue_ErrorMessage }
                                         </div>
                                     ) : null }
                                 </div>
@@ -896,19 +811,19 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                         >
                             <div>
                                 <div style={ { whiteSpace: "nowrap" } }>
-                                    <span>Mass: </span>
+                                    <span>m/z: </span>
                                     <input
                                         style={ { width: 90 } }
                                         type="text"
                                         maxLength={ 25 }
                                         placeholder="Mass"
-                                        value={ this._entry_InProgress.monoisotopicMass_UserInput_String }
+                                        value={ this._entry_InProgress.massOverCharge_UserInput_String }
                                         onChange={ this._mass_UserInput_FieldChanged_BindThis }
                                     />
                                 </div>
-                                { this._entry_InProgress.monoisotopicMass_UserInput_InvalidValue_ErrorMessage ? (
+                                { this._entry_InProgress.massOverCharge_UserInput_InvalidValue_ErrorMessage ? (
                                     <div className=" error-text ">
-                                        { this._entry_InProgress.monoisotopicMass_UserInput_InvalidValue_ErrorMessage }
+                                        { this._entry_InProgress.massOverCharge_UserInput_InvalidValue_ErrorMessage }
                                     </div>
                                 ) : null }
                             </div>
@@ -951,7 +866,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             title={
                                 <div>
                                     <div>
-                                        Only peaks with at least an intensity of this percentage of the maximum peak in the scan will be considered.
+                                        Only peaks with at least an intensity of this percentage of the base peak in the scan will be considered.
                                     </div>
                                     { this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage ? (
                                         <div className=" error-text ">
@@ -965,7 +880,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                             <div>
                                 <div style={ { whiteSpace: "nowrap" } }>
 
-                                    <span>Min % of Max Peak: </span>
+                                    <span>Min % of Base Peak: </span>
                                     <input
                                         style={ { width: 60 } }
                                         type="text"
@@ -978,35 +893,6 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                                 { this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage ? (
                                     <div className=" error-text ">
                                         { this._entry_InProgress.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage }
-                                    </div>
-                                ) : null }
-                            </div>
-                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                            title={
-                                <div>
-                                    <div>
-                                        The charge state(s) of the ion to consider.
-                                    </div>
-                                    { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage ? (
-                                        <div className=" error-text ">
-                                            { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage }
-                                        </div>
-                                    ) : null }
-                                </div>
-                            }
-                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                        >
-                            <div>
-                                <div style={ { whiteSpace: "nowrap" } }>
-
-                                    <span>Charge: </span>
-
-                                    { charge_Elements }
-                                </div>
-                                { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage ? (
-                                    <div className=" error-text ">
-                                        { this._entry_InProgress.charge_SelectionEntries_InvalidValue_ErrorMessage }
                                     </div>
                                 ) : null }
                             </div>
@@ -1043,7 +929,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                             title={
                                                 <span>
-                                                    Enter valid values in all fields and choose at least one charge value to Add
+                                                    Enter valid values in all fields to Add
                                                 </span>
                                             }
                                             { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
@@ -1091,21 +977,19 @@ class INTERNAL__UserSelection_Container_ENTRY {
 class INTERNAL__UserSelection_Add_OR_Change_InProgress_ENTRY {
 
     //  set to undefined if invalid value in field
-    monoisotopicMass: number
+    massOverCharge: number
     plus_Minus_MassRange_In_PPM: number
     scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan: number
-    charge_SelectionEntries: Set<number>
 
     //  User Input Field Current Values
-    monoisotopicMass_UserInput_String: string
+    massOverCharge_UserInput_String: string
     plus_Minus_MassRange_In_PPM_UserInput_String: string
     scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_String: string
 
     //  User Input Field Invalid Value Error Message
-    monoisotopicMass_UserInput_InvalidValue_ErrorMessage: string
+    massOverCharge_UserInput_InvalidValue_ErrorMessage: string
     plus_Minus_MassRange_In_PPM_UserInput_InvalidValue_ErrorMessage: string
     scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan_UserInput_InvalidValue_ErrorMessage: string
-    charge_SelectionEntries_InvalidValue_ErrorMessage: string
 }
 
 
@@ -1153,28 +1037,28 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
 
     let foundError = false
 
-    // monoisotopicMass
+    // massOverCharge
 
     // Clear existing error
-    internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = undefined
+    internal_SelectionEntry.massOverCharge_UserInput_InvalidValue_ErrorMessage = undefined
 
-    if ( internal_SelectionEntry.monoisotopicMass_UserInput_String === "" ) {
-        internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Value Required"
+    if ( internal_SelectionEntry.massOverCharge_UserInput_String === "" ) {
+        internal_SelectionEntry.massOverCharge_UserInput_InvalidValue_ErrorMessage = "Value Required"
         foundError = true
     } else {
-        if ( ! _validate_InputString_IsNumber( internal_SelectionEntry.monoisotopicMass_UserInput_String ) ) {
-            internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Not valid number"
+        if ( ! _validate_InputString_IsNumber( internal_SelectionEntry.massOverCharge_UserInput_String ) ) {
+            internal_SelectionEntry.massOverCharge_UserInput_InvalidValue_ErrorMessage = "Not valid number"
             foundError = true
         } else {
-            const valueParsed = Number.parseFloat( internal_SelectionEntry.monoisotopicMass_UserInput_String )
+            const valueParsed = Number.parseFloat( internal_SelectionEntry.massOverCharge_UserInput_String )
             if ( Number.isNaN( valueParsed ) ) {
-                internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Not valid number"
+                internal_SelectionEntry.massOverCharge_UserInput_InvalidValue_ErrorMessage = "Not valid number"
                 foundError = true
             } else if ( valueParsed < 0 ) {
-                internal_SelectionEntry.monoisotopicMass_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
+                internal_SelectionEntry.massOverCharge_UserInput_InvalidValue_ErrorMessage = "Must be not negative"
                 foundError = true
             } else {
-                internal_SelectionEntry.monoisotopicMass = valueParsed
+                internal_SelectionEntry.massOverCharge = valueParsed
             }
         }
     }
@@ -1231,15 +1115,7 @@ const _validate_UserInput_SaveValidValuesToNumericFields_Internal_SelectionEntry
         }
     }
 
-    // charge_SelectionEntries
-
     // Clear existing error
-    internal_SelectionEntry.charge_SelectionEntries_InvalidValue_ErrorMessage = undefined
-
-    if ( internal_SelectionEntry.charge_SelectionEntries.size === 0 ) {
-        internal_SelectionEntry.charge_SelectionEntries_InvalidValue_ErrorMessage = "At least 1 is required"
-        foundError = true
-    }
 
     return { foundError }
 }

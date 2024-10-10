@@ -46,11 +46,6 @@ import {
     Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn,
     Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/reported_peptide_ids_for_display/peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_DataClasses";
-import {
-    PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
-} from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/filter_on__peptide_meets_digestion__aka_tryptic_peptide_etc/peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject";
-import { CommonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanFile_ProjectScanFileId_SearchScanFileId_All_ForSearch";
-import { CommonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId__ScanData_NO_Peaks_Data";
 import { CommonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data_Holder } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__ScanData_WholeSearch_NO_Peaks_Data";
 import {
     ScanNumber_ScanFilenameId_ProjectSearchId_On_PSM_Filter_UserSelection_StateObject
@@ -58,12 +53,10 @@ import {
 import {
     ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject
 } from "page_js/data_pages/common_filtering_code_filtering_components__except_mod_main_page/filter_on__components/filter_on__core__components__peptide__single_protein/scan_peak__mz_intensity/js/scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject";
-import { PeptideMassCalculator } from "page_js/data_pages/peptide_mass_utils/PeptideMassCalculator";
 import {
     CommonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_DataForSingleScanNumber_SinglePeak
 } from "page_js/data_pages/common_data_loaded_from_server__scan_data__from_project_scan_file_id/commonData_LoadedFromServer_From_ProjectScanFileId_Optional_M_Z__ScanData_YES_Peaks_Data";
 import {
-    commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId,
     commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId_ReturnPromise
 } from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch_From_ProjectSearchId__Get_MaxScanDataWithPeaksReturnCount_AccessControl_ProjectSearchId";
 
@@ -3311,11 +3304,7 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
                 for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
-                    const m_Over_Z_Mass_Base =
-                        PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge( {
-                            monoisotopicMass: scanPeak_M_Over_Z__Intensity_Selection.monoisotopicMass,
-                            charge: charge_FOR_MassRange
-                        } )
+                    const m_Over_Z_Mass_Base = scanPeak_M_Over_Z__Intensity_Selection.massOverCharge
 
                     const ppm_Mass_M_Over_Z_Min_PlusMinus = m_Over_Z_Mass_Base * scanPeak_M_Over_Z__Intensity_Selection.plus_Minus_MassRange_In_PPM / 1000000;  //  1000000d is for 1E6;
 
@@ -3405,46 +3394,29 @@ class Internal_ComputeFor__SelectionType_ALL___For__ScanPeak_M_Over_Z__Intensity
 
                         for ( const scanPeak of scanData_YES_Peaks_Data.peaks ) {
 
-                            let scanPeak_AddedTo__scanPeak_That_PassFilters_Array = false
-
                             for ( const scanPeak_M_Over_Z__Intensity_Selection of scanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject.get__Selections() ) {
 
-                                for ( const  charge_FOR_MassRange of scanPeak_M_Over_Z__Intensity_Selection.chargeEntries ) {
+                                const m_Over_Z_Mass_Base = scanPeak_M_Over_Z__Intensity_Selection.massOverCharge
 
-                                    const m_Over_Z_Mass_Base =
-                                        PeptideMassCalculator.calculateMZ_From_MonoisotopicMass_Charge( {
-                                            monoisotopicMass: scanPeak_M_Over_Z__Intensity_Selection.monoisotopicMass,
-                                            charge: charge_FOR_MassRange
-                                        } )
+                                const ppm_Mass_M_Over_Z_Min_PlusMinus = m_Over_Z_Mass_Base * scanPeak_M_Over_Z__Intensity_Selection.plus_Minus_MassRange_In_PPM / 1000000;  //  1000000d is for 1E6;
 
-                                    const ppm_Mass_M_Over_Z_Min_PlusMinus = m_Over_Z_Mass_Base * scanPeak_M_Over_Z__Intensity_Selection.plus_Minus_MassRange_In_PPM / 1000000;  //  1000000d is for 1E6;
+                                const m_over_Z_Range_Min = m_Over_Z_Mass_Base - ppm_Mass_M_Over_Z_Min_PlusMinus
+                                const m_over_Z_Range_Max = m_Over_Z_Mass_Base + ppm_Mass_M_Over_Z_Min_PlusMinus
 
-                                    const m_over_Z_Range_Min = m_Over_Z_Mass_Base - ppm_Mass_M_Over_Z_Min_PlusMinus
-                                    const m_over_Z_Range_Max = m_Over_Z_Mass_Base + ppm_Mass_M_Over_Z_Min_PlusMinus
+                                const min_ScanPeak_Intensity_FilterOn =
+                                    scanData_YES_Peaks_Data.peak_WithMaxIntensityInAllOfScan.intensity *
+                                    ( scanPeak_M_Over_Z__Intensity_Selection.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan / 100 )  // Percentage to Fraction so divide by 100
 
-                                    const min_ScanPeak_Intensity_FilterOn =
-                                        scanData_YES_Peaks_Data.peak_WithMaxIntensityInAllOfScan.intensity *
-                                        ( scanPeak_M_Over_Z__Intensity_Selection.scanPeak_Intensity_Minimum_Percentage_MaxScanPeakIntensity_In_Scan / 100 )  // Percentage to Fraction so divide by 100
+                                if ( scanPeak.mz >= m_over_Z_Range_Min && scanPeak.mz <= m_over_Z_Range_Max ) {
 
-                                    if ( scanPeak.mz >= m_over_Z_Range_Min && scanPeak.mz <= m_over_Z_Range_Max ) {
+                                    if ( scanPeak.intensity >= min_ScanPeak_Intensity_FilterOn ) {
 
-                                        if ( scanPeak.intensity >= min_ScanPeak_Intensity_FilterOn ) {
+                                        //  scanPeak meets ALL criteria so save it
 
-                                            //  scanPeak meets ALL criteria so save it
+                                        scanPeak_That_PassFilters_Array.push( scanPeak )
 
-                                            scanPeak_That_PassFilters_Array.push( scanPeak )
-
-                                            scanPeak_AddedTo__scanPeak_That_PassFilters_Array = true
-
-                                            break  // EARLY EXIT  Processing Selections
-                                        }
+                                        break  // EARLY EXIT  Processing Selections
                                     }
-                                }
-                                if ( scanPeak_AddedTo__scanPeak_That_PassFilters_Array ) {
-
-                                    //  Scan Peak added so SKIP to next Scan Peak
-
-                                    break  // EARLY EXIT  Processing Charge values
                                 }
                             }
                         }
