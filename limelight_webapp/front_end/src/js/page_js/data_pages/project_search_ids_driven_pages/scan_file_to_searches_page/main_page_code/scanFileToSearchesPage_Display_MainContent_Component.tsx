@@ -1865,7 +1865,8 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                     dataTable_Column_DownloadTable_Entries.push( dataTable_Column_DownloadTable );
                 }
 
-                {  // Count of searches this scan number is in
+                if ( this.props.propsValue.projectSearchIds.length > 1 ) {
+                    // Count of searches this scan number is in
 
                     const displayName = "Search Count";
 
