@@ -1245,8 +1245,13 @@ export class PeptideExperimentPage_Display_MainContent_Component extends React.C
         const currentWindowScrollY = window.scrollY;
 
         //  Hide Main Div inside of header/footer
-        const $data_page_overall_enclosing_block_div = $("#data_page_overall_enclosing_block_div");
-        $data_page_overall_enclosing_block_div.hide();
+        const data_page_overall_enclosing_block_divDOM = document.getElementById("data_page_overall_enclosing_block_div");
+        if (!data_page_overall_enclosing_block_divDOM) {
+            const msg = "No element on DOM with id 'data_page_overall_enclosing_block_div'";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        data_page_overall_enclosing_block_divDOM.style.display = "none";
 
         if ( ! this._proteinExperimentPage_Display_SingleProtein ) {
 

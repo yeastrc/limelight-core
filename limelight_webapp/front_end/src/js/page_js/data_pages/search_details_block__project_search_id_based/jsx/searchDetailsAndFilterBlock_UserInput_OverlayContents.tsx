@@ -1395,14 +1395,17 @@ class Single_Filterable_PerAnnotationType_Entry extends React.Component< Single_
 
             //  User Clicked on this annotation id data on main page so highlight this value and scroll so this is in view
 
-            const $element = $( this._inputField_Ref.current );
-            $element.select();
+            try {
+                this._inputField_Ref.current.select()
 
-            const boundingRect = this._inputField_Ref.current.getBoundingClientRect();
+                const boundingRect = this._inputField_Ref.current.getBoundingClientRect();
 
-            const top = boundingRect.top
+                const top = boundingRect.top
 
-            this.props.pass_top_of_SubElement_To_ScrollTo(top);
+                this.props.pass_top_of_SubElement_To_ScrollTo( top );
+            } catch ( e ) {
+                //  Eat exception if unable to select() element or scroll to element
+            }
         }
     }
 

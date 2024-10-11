@@ -9,13 +9,6 @@
 
 import React from 'react'
 
-import { reportWebErrorToServer } from 'page_js/common_all_pages/reportWebErrorToServer';
-import {
-    SearchDetailsAndOtherFiltersOuterBlock_Layout,
-    SearchDetailsAndOtherFiltersOuterBlock_Layout_Props
-} from "page_js/data_pages/search_details_and_other_filters_outer_block__project_search_id_based/jsx/searchDetailsAndOtherFiltersOuterBlock_Layout";
-
-
 /**
  *
  */
@@ -43,11 +36,7 @@ export class SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer ext
     constructor(props : SearchDetailsAndOtherFiltersOuterBlock_ReactRootRenderContainer_Props) {
         super(props);
 
-        // this._view_single_protein_inner_overlay_div_Ref = React.createRef<HTMLDivElement>();
-        // this._view_single_protein_overlay_body_Ref = React.createRef<HTMLDivElement>();
-
         this.state = {
-            // proteinPage_Display_SingleSearch_SingleProtein_MainContent_Component_Props_Prop : null
         };
     }
 
