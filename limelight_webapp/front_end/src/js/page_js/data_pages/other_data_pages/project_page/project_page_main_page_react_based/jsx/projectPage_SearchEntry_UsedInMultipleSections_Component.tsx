@@ -651,7 +651,7 @@ export class ProjectPage_SearchEntry_UsedInMultipleSections_Component extends Re
                             <div style={ { maxWidth: "calc( 100vw - 390px )" }}>
                                 <div
                                     ref={ this._searchName_Div_Ref }
-                                    style={ { marginBottom: 2, position: "relative" } }
+                                    style={ { marginBottom: 2, position: "relative", wordBreak: "break-word" } }
                                 >
                                     <span
                                         style={ { overflowWrap : "break-word"} }
