@@ -18,11 +18,11 @@ let webservice_sync_tracking_code = undefined;
 let getWebserviceSyncTrackingCode = function() {
 	
 	if ( ! webservice_sync_tracking_code ) {
-		let $webservice_sync_tracking_code = $("#webservice_sync_tracking_code");
-		if ( $webservice_sync_tracking_code.length === 0 ) {
+		const domElement = document.getElementById( "webservice_sync_tracking_code" )
+		if ( ! domElement ) {
 			throw Error("No DOM element for id 'webservice_sync_tracking_code'")
 		}
-		webservice_sync_tracking_code = $webservice_sync_tracking_code.text();
+		webservice_sync_tracking_code = domElement.innerText;
 	}
 	return webservice_sync_tracking_code;
 }

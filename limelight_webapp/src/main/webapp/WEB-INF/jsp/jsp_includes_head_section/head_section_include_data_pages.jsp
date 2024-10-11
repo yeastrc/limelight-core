@@ -18,10 +18,6 @@
   <script type="text/text" id="page_auth_access_level_project_owner_allowed">x</script>
  </c:if>
 
-<%--  Search Details Section Extras --%>
-<%@ include file="/WEB-INF/jsp/jsp_includes/searchDetailsSection_Extras.jsp" %>
-
-
 <%-- From Java class DataPage_ProjectSearchIdBased_ControllersAccessControl_SpringHandlerInterceptor and Experiment_Set_HTTPRequest_ForJSP --%>
 
 <script type="text/text" id="search_data_lookup_parameters_at_page_load_json"><html><body><c:out value="${ searchDataLookupParametersJSON }"/></body><html></script>

@@ -18,14 +18,11 @@ export const currentProjectId_ProjectSearchId_Based_DataPages_FromDOM = function
 		return currentProjectId_Cached;
 	}
 
-	let $main_page_current_project_id = $("#main_page_current_project_id");
-	if ( $main_page_current_project_id.length === 0 ) {
+	const domElement = document.getElementById( "main_page_current_project_id" )
+	if ( ! domElement ) {
 		throw Error( "No page element with id 'main_page_current_project_id'.  main_page_current_project_id. main_page_current_project_id is set on the JSP. " );
 	}
-	let main_page_current_project_id = $main_page_current_project_id.html();
-	if ( main_page_current_project_id === undefined || main_page_current_project_id === null || main_page_current_project_id === "" ) {
-		throw Error( "Page element with id 'main_page_current_project_id' not populated.  main_page_current_project_id. main_page_current_project_id is set on the JSP." );
-	}
+	const main_page_current_project_id = domElement.innerText
 
 	currentProjectId_Cached = main_page_current_project_id;
 

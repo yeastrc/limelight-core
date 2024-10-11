@@ -205,7 +205,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
     
     const form = document.createElement( "form" );
 
-    $( form ).hide();
+    form.style.display = "none"
 
     form.setAttribute( "method", "post" );
     form.setAttribute( "action", "d/dnld/psb/psms-for-project-search-ids-search-criteria-experiment-data" );
@@ -214,7 +214,7 @@ const download_Psms_For_projectSearchIds_FilterCriteria_ExperimentData_RepPeptPr
     const requestJSONStringField = document.createElement( "textarea" );
     requestJSONStringField.setAttribute("name", "requestJSONString");
 
-    $( requestJSONStringField ).text( requestJSONString );
+    requestJSONStringField.value = requestJSONString
 
     form.appendChild( requestJSONStringField );
 

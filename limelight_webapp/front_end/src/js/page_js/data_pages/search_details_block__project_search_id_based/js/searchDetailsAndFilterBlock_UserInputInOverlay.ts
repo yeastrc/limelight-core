@@ -54,10 +54,6 @@ export class SearchDetailsAndFilterBlock_UserInputInOverlay {
 
 	private _updatePageState_URL_With_NewFilterCutoffs_FromUser : UpdatePageState_URL_With_NewFilterCutoffs_FromUser;
 
-	private _type_display_label_psm : string;
-	private _type_display_label_peptide : string;
-	private _type_display_label_protein : string;
-
 	/**
 	 * 
 	 */
@@ -80,35 +76,6 @@ export class SearchDetailsAndFilterBlock_UserInputInOverlay {
 		
 		this._updatePageState_URL_With_NewFilterCutoffs_FromUser = 
 			new UpdatePageState_URL_With_NewFilterCutoffs_FromUser( { searchDetailsBlockDataMgmtProcessing } );
-
-		//  Get labels from page for "Per Type" entries
-		
-		let $search_details_section_single_search_details_root_type_label_psm = $("#search_details_section_single_search_details_root_type_label_psm");
-		this._type_display_label_psm = $search_details_section_single_search_details_root_type_label_psm.html();
-		if ( this._type_display_label_psm === undefined ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_psm").html() === undefined' );
-		}
-		if ( this._type_display_label_psm === null ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_psm").html() === null' );
-		}
-		
-		let $search_details_section_single_search_details_root_type_label_peptide = $("#search_details_section_single_search_details_root_type_label_peptide");
-		this._type_display_label_peptide = $search_details_section_single_search_details_root_type_label_peptide.html();
-		if ( this._type_display_label_peptide === undefined ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_peptide").html() === undefined' );
-		}
-		if ( this._type_display_label_peptide === null ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_peptide").html() === null' );
-		}
-		
-		let $search_details_section_single_search_details_root_type_label_protein = $("#search_details_section_single_search_details_root_type_label_protein");
-		this._type_display_label_protein = $search_details_section_single_search_details_root_type_label_protein.html();
-		if ( this._type_display_label_protein === undefined ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_protein").html() === undefined' );
-		}
-		if ( this._type_display_label_protein === null ) {
-			throw Error( ' $("#search_details_section_single_search_details_root_type_label_protein").html() === null' );
-		}
 	}
 
 	/**

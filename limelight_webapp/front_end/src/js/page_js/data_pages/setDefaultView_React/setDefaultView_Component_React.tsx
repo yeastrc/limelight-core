@@ -24,14 +24,35 @@ import {
 import {setDefaultView_dataPages_ProcessRequest_Common} from "page_js/data_pages/data_pages_common/setDefaultView_dataPages_Common";
 
 
+enum Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM {
+    YES, NO
+}
+
+let _valueNOTSET = undefined
+
+let _page_auth_access_level_project_owner_allowed_DOMElement_Found: Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM = _valueNOTSET
+
 /**
  * @returns null if not Project Owner
  */
 export const setDefaultView_Create_Component_React : Get_SetDefaultView_Component_React_Type = function( params : SetDefaultView_Component_React_Params ) : JSX.Element {
 
-    //  Get is user Project Owner
-    const $page_auth_access_level_project_owner_allowed = $("#page_auth_access_level_project_owner_allowed");
-    if ( $page_auth_access_level_project_owner_allowed.length === 0 ) {
+    if ( _page_auth_access_level_project_owner_allowed_DOMElement_Found === _valueNOTSET ) {
+
+        //  Get is user Project Owner
+
+        const page_auth_access_level_project_owner_allowed_DOMElement = document.getElementById( "page_auth_access_level_project_owner_allowed" )
+        if ( page_auth_access_level_project_owner_allowed_DOMElement ) {
+
+            //  YES Project Owner Access Level
+            _page_auth_access_level_project_owner_allowed_DOMElement_Found = Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM.YES
+        } else {
+            //  NO Project Owner Access Level
+            _page_auth_access_level_project_owner_allowed_DOMElement_Found = Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM.NO
+        }
+    }
+
+    if ( _page_auth_access_level_project_owner_allowed_DOMElement_Found === Page_auth_access_level_project_owner_allowed_DOMElement_Found_ENUM.NO ) {
 
         //  Not Project Owner Access Level so Exit
         return null; // EARLY RETURN
