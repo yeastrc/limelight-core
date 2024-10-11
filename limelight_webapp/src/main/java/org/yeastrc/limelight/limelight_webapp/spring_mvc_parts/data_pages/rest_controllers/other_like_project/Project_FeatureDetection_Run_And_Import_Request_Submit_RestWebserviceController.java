@@ -626,7 +626,7 @@ public class Project_FeatureDetection_Run_And_Import_Request_Submit_RestWebservi
 			
 			) throws Exception {
 		
-		List<Integer> insertedTrackingIds = new ArrayList( webserviceRequest.projectScanFileId_List.size() );
+		List<Integer> insertedTrackingIds = new ArrayList<>( webserviceRequest.projectScanFileId_List.size() );
 		
 		//  Loop over all entries in projectScanFileId_List EXCEPT first one.  First one was processed above
 		for ( int index = 1; index < webserviceRequest.projectScanFileId_List.size(); index++  ) {
