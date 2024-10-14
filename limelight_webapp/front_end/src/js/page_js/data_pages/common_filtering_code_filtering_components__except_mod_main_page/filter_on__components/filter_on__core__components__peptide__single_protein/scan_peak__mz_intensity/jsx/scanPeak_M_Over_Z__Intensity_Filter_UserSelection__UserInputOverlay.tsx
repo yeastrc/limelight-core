@@ -531,7 +531,7 @@ class INTERNAL__SingleFilterEntry__ExistingFilterDisplay__OR__DisplayComponentFo
                             onClick={ this._change_Entry_Button_Clicked_BindThis }
                         >
                             <span style={ { whiteSpace: "nowrap" } } >
-                                Mass:
+                                m/z:
                                 { " " }
                                 { this.props.existingContainerEntry.selectionEntry.massOverCharge }
                                 { "," }
@@ -816,7 +816,7 @@ class INTERNAL__SingleFilterEntry__Add_OR_Change__Component extends React.Compon
                                         style={ { width: 90 } }
                                         type="text"
                                         maxLength={ 25 }
-                                        placeholder="Mass"
+                                        placeholder="m/z"
                                         value={ this._entry_InProgress.massOverCharge_UserInput_String }
                                         onChange={ this._mass_UserInput_FieldChanged_BindThis }
                                     />
