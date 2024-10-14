@@ -153,7 +153,7 @@ public class Project_OrganizeSearches_SetFoldersOrder_RestWebserviceController {
 				if ( projectId == null ) {
 					projectId = projectIdFromFolderId;
 				} else {
-					if ( projectId != projectIdFromFolderId ) {
+					if ( projectId.intValue() != projectIdFromFolderId.intValue() ) {
 						//  Invalid request, searches not in from or to project
 						String msg = "Folders don't all have the same project id, projectFolderIdsInOrder: " + projectFolderIdsInOrder;
 						log.warn( msg );
