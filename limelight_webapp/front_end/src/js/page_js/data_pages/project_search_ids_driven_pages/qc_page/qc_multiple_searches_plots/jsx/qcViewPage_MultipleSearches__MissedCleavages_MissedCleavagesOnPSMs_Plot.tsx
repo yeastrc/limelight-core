@@ -335,6 +335,12 @@ export class QcViewPage_MultipleSearches__MissedCleavages_MissedCleavagesOnPSMs_
 
         const searchData_SearchName_Etc_Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
+        if ( ! this.props.compute_MissedCleavages_Data_Result_Root ) {
+            const msg = "if ( ! this.props.compute_MissedCleavages_Data_Result_Root ) : ";
+            console.warn(msg);
+            throw Error(msg);
+        }
+
         const qcViewPage_MultipleSearches__ComputeColorsForSearches = new QcViewPage_MultipleSearches__ComputeColorsForSearches({ projectSearchIds });
 
         const chart_X : Array<string> = []

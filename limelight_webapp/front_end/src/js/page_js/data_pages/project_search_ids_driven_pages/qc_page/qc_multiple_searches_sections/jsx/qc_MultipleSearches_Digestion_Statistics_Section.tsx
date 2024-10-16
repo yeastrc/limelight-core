@@ -367,7 +367,7 @@ export class Qc_MultipleSearches_Digestion_Statistics_Section extends React.Comp
 
                             <div className=" chart-container-multiple-on-same-row-block ">
 
-                                { ( this.state.show_LoadingData_Message ) ? (
+                                { ( this.state.show_LoadingData_Message || ( ! this.state.compute_MissedCleavages_Data_Result_Root ) ) ? (
 
                                     <div style={ { marginBottom: 20 } }>
                                         Loading Data

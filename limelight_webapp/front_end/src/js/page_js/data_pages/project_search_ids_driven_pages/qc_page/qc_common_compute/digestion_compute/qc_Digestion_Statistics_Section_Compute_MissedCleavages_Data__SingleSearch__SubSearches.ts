@@ -6,12 +6,18 @@
  */
 
 import {QcViewPage_CommonData_To_AllComponents_From_MainComponent} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_page_main/jsx/qcViewPage_DisplayData__Main_Component";
-import {Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data";
+import {
+    Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_ReportedPeptide,
+    Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root
+} from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data";
 import {
     Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__SingleSearch__SubSearches__Result,
     Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__SingleSearch__SubSearches__Result_PerSubSearch
 } from "page_js/data_pages/project_search_ids_driven_pages/qc_page/qc_common_compute/digestion_compute/qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__SingleSearch__SubSearches__Result";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+} from "page_js/data_pages/common_data_loaded_from_server__per_search_plus_some_assoc_common_data__with_loading_code__except_mod_main_page/common_data_loaded_from_server_single_search_sub_parts__returned_objects/commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters";
 
 
 /**
@@ -48,6 +54,33 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Singl
                 .get_Num_PSMs_By_SearchSubGroup_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise();
 
         const numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder = get_Num_PSMs_By_SearchSubGroup_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise_Result.numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder;
+
+
+        const psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set =
+            _qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Get_ProjectSearchIds_Load_PsmIds_For( {
+                compute_MissedCleavages_Initial_Data_Result_Root,
+                qcViewPage_CommonData_To_AllComponents_From_MainComponent
+            })
+
+        let psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder: CommonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+
+        if ( psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set.has( projectSearchId ) ) {
+
+            const get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result =
+                await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                get_commonData_LoadedFromServer_SingleSearch__PSM_IDs_For_ReportedPeptideId_For_MainFilters().get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_ReturnPromise()
+
+            psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder = get_PSM_IDs_For_ReportedPeptideIdHolder_AllForSearch_Result.psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder
+        }
+
+
+        const qcPage_Flags = qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
+        if ( ! qcPage_Flags ) {
+            const msg = "qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId;
+            console.warn(msg);
+            throw Error(msg);
+        }
+
 
         const computeDataForCharts_Result_ForSingle_ProjectSearchId = compute_MissedCleavages_Initial_Data_Result_Root.get_Result_ForSingle_ProjectSearchId(projectSearchId);
         if (!computeDataForCharts_Result_ForSingle_ProjectSearchId) {
@@ -134,40 +167,65 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Singl
                         continue; // EARLY CONTINUE
                     }
 
-                    if ( computeDataForCharts_Result__ForSingle_ReportedPeptide.get_isMissedCleavage() ) {
-
-                        foundMissedCleavage_For_DistinctPeptide_For_SearchSubgroupId = true;
-
-                    } else {
-                        var zunused = 0;
-                    }
-
                     if ( data_PerReportedPeptideId_SearchSubGroupId_Value.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
 
-                        const numPsmsFor_SearchSubGroupId = numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder.get_numPsmsFor_SearchSubGroupId__For_ReportedPeptideId( reportedPeptideId );
-                        if ( numPsmsFor_SearchSubGroupId === undefined || numPsmsFor_SearchSubGroupId === null ) {
-                            const msg = "numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get( reportedPeptideId ); returned nothing for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
+                        if ( qcPage_Flags.anyPsmHas_OpenModifications ) {
 
-                        const numPsms = numPsmsFor_SearchSubGroupId.get(searchSubgroupId);
-                        if ( numPsms === undefined || numPsms === null ) {
-                            const msg = "numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get( reportedPeptideId ); numPsmsFor_SearchSubGroupId.get(searchSubgroupId); returned nothing for searchSubgroupId:" + searchSubgroupId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
+                            const psmIds_For_ReportedPeptideId = psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId)
 
-                        psmCount_AllPSMs_NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms );
+                            if ( ! psmIds_For_ReportedPeptideId ) {
+                                throw Error("psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder.get_psmIds_For_ReportedPeptideId(dataPerReportedPeptideId.reportedPeptideId) returned NOTHING for data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId: " + data_PerReportedPeptideId_SearchSubGroupId_Value.reportedPeptideId )
+                            }
 
-                        if ( computeDataForCharts_Result__ForSingle_ReportedPeptide.get_isMissedCleavage() ) {
+                            const psmIdsSet: Set<number> = new Set(psmIds_For_ReportedPeptideId)
 
-                            psmCount_PSMs_With_MissedCleavage_NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms );
+                            const process_PsmIds_For_ReportedPeptideId_Result =
+                                _process_PsmIds_For_ReportedPeptideId({
+                                    psmIdsSet,
+                                    reportedPeptideId,
+                                    computeDataForCharts_Result__ForSingle_ReportedPeptide,
+                                    psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId,
+                                    missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId,
+                                    psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId,
+                                    projectSearchId_ForErrorLogging: projectSearchId
+                                })
 
-                            missedCleavage_Count__NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms * computeDataForCharts_Result__ForSingle_ReportedPeptide.get_missedCleavageCount() );
+                            if ( process_PsmIds_For_ReportedPeptideId_Result.allPsms_Have_AtLeastOne_MissedCleavage ) {
+
+                                foundMissedCleavage_For_DistinctPeptide_For_SearchSubgroupId = true;
+                            }
 
                         } else {
-                            var zunused = 0;
+
+                            //  NO Open Mods in search so follow standard processing
+
+                            const numPsmsFor_SearchSubGroupId = numPSMs_By_SearchSubGroup_For_ReportedPeptideId_For_MainFilters_Holder.get_numPsmsFor_SearchSubGroupId__For_ReportedPeptideId( reportedPeptideId );
+                            if ( numPsmsFor_SearchSubGroupId === undefined || numPsmsFor_SearchSubGroupId === null ) {
+                                const msg = "numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get( reportedPeptideId ); returned nothing for reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                                console.warn( msg );
+                                throw Error( msg );
+                            }
+
+                            const numPsms = numPsmsFor_SearchSubGroupId.get( searchSubgroupId );
+                            if ( numPsms === undefined || numPsms === null ) {
+                                const msg = "numPsmsFor_SearchSubGroupId_ReportedPeptideId_Map.get( reportedPeptideId ); numPsmsFor_SearchSubGroupId.get(searchSubgroupId); returned nothing for searchSubgroupId:" + searchSubgroupId + ", reportedPeptideId: " + reportedPeptideId + ", projectSearchId: " + projectSearchId;
+                                console.warn( msg );
+                                throw Error( msg );
+                            }
+
+                            psmCount_AllPSMs_NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms );
+
+                            if ( computeDataForCharts_Result__ForSingle_ReportedPeptide.get_isMissedCleavage() ) {
+
+                                psmCount_PSMs_With_MissedCleavage_NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms );
+
+                                missedCleavage_Count__NoPSMFiltering_Map_Key_ReportedPeptideId.set( reportedPeptideId, numPsms * computeDataForCharts_Result__ForSingle_ReportedPeptide.get_missedCleavageCount() );
+
+                                foundMissedCleavage_For_DistinctPeptide_For_SearchSubgroupId = true;
+
+                            } else {
+                                var zunused = 0;
+                            }
                         }
 
                     } else {
@@ -176,43 +234,21 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Singl
                             console.warn(msg);
                             throw Error(msg);
                         }
-                        {
-                            let psmIds__For_psmIds_AllPSMs_YesPSMFiltering = psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId.get(reportedPeptideId);
-                            if ( ! psmIds__For_psmIds_AllPSMs_YesPSMFiltering ) {
-                                psmIds__For_psmIds_AllPSMs_YesPSMFiltering = new Set();
-                                psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId.set(reportedPeptideId, psmIds__For_psmIds_AllPSMs_YesPSMFiltering);
-                            }
 
-                            let missedCleavage_Count_PerPsmId_Map_Key_PsmId = missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId.get( reportedPeptideId );
-                            if ( ! missedCleavage_Count_PerPsmId_Map_Key_PsmId ) {
-                                missedCleavage_Count_PerPsmId_Map_Key_PsmId = new Map();
-                                missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId.set( reportedPeptideId, missedCleavage_Count_PerPsmId_Map_Key_PsmId );
-                            }
+                        const process_PsmIds_For_ReportedPeptideId_Result =
+                            _process_PsmIds_For_ReportedPeptideId({
+                                psmIdsSet: data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet,
+                                reportedPeptideId,
+                                computeDataForCharts_Result__ForSingle_ReportedPeptide,
+                                psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId,
+                                missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId,
+                                psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId,
+                                projectSearchId_ForErrorLogging: projectSearchId
+                            })
 
-                            for ( const psmId of data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet ) {
+                        if ( process_PsmIds_For_ReportedPeptideId_Result.allPsms_Have_AtLeastOne_MissedCleavage ) {
 
-                                psmIds__For_psmIds_AllPSMs_YesPSMFiltering.add( psmId );  //  For Total PSM Count
-
-                                const computeDataForCharts_Result__ForSingle_Psm = computeDataForCharts_Result__ForSingle_ReportedPeptide.get_Result_ForSingle_Psm( psmId );
-                                if ( computeDataForCharts_Result__ForSingle_Psm ) {
-                                    //  Have value for psmId so use that
-                                    missedCleavage_Count_PerPsmId_Map_Key_PsmId.set( psmId, computeDataForCharts_Result__ForSingle_Psm.get_missedCleavageCount() );
-                                } else {
-                                    //  No value for psmId so use value at Reported Peptide level
-                                    missedCleavage_Count_PerPsmId_Map_Key_PsmId.set( psmId, computeDataForCharts_Result__ForSingle_ReportedPeptide.get_missedCleavageCount() );
-                                }
-                            }
-                        }
-
-                        if ( computeDataForCharts_Result__ForSingle_ReportedPeptide.get_isMissedCleavage() ) {
-                            let psmIds = psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId.get(reportedPeptideId);
-                            if ( ! psmIds ) {
-                                psmIds = new Set();
-                                psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId.set(reportedPeptideId, psmIds);
-                            }
-                            for ( const psmId of data_PerReportedPeptideId_SearchSubGroupId_Value.psmIdsSet ) {
-                                psmIds.add( psmId );
-                            }
+                            foundMissedCleavage_For_DistinctPeptide_For_SearchSubgroupId = true;
                         }
                     }
 
@@ -328,3 +364,181 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Singl
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 }
 
+
+
+
+const _qc_Digestion_Statistics_Section_Compute_MissedCleavages_Data__Get_ProjectSearchIds_Load_PsmIds_For = function (
+    {
+        compute_MissedCleavages_Initial_Data_Result_Root,
+        qcViewPage_CommonData_To_AllComponents_From_MainComponent
+    } : {
+        compute_MissedCleavages_Initial_Data_Result_Root: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_Root
+        qcViewPage_CommonData_To_AllComponents_From_MainComponent : QcViewPage_CommonData_To_AllComponents_From_MainComponent
+    }
+) : Set<number> {
+
+    const projectSearchIds = qcViewPage_CommonData_To_AllComponents_From_MainComponent.projectSearchIds;
+
+    //  result.peptideList contains the 'Distinct' peptides as chosen in State object for "Distinct Peptide Includes:"
+
+    const peptideDistinct_Array =
+        qcViewPage_CommonData_To_AllComponents_From_MainComponent.
+            proteinViewPage_DisplayData_ProteinList__CreateProteinDisplayData__Create_GeneratedPeptides_Result.peptideList;
+
+    const psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set: Set<number> = new Set()
+
+    for ( const peptideDistinct_Entry of peptideDistinct_Array ) {
+
+        for ( const projectSearchId of projectSearchIds ) {
+
+            if ( psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set.has( projectSearchId ) ) {
+                // Already loading for projectSearchId so skip
+                continue // EARLY CONTINUE
+            }
+
+            const dataPerReportedPeptideId_Map_Key_reportedPeptideId = peptideDistinct_Entry.dataPerReportedPeptideId_Map_Key_reportedPeptideId_InMap_KeyProjectSearchId.get( projectSearchId );
+            if ( ! dataPerReportedPeptideId_Map_Key_reportedPeptideId ) {
+                continue; // EARLY CONTINUE
+            }
+
+            const computeDataForCharts_Result_ForSingle_ProjectSearchId = compute_MissedCleavages_Initial_Data_Result_Root.get_Result_ForSingle_ProjectSearchId( projectSearchId );
+            if ( ! computeDataForCharts_Result_ForSingle_ProjectSearchId ) {
+                //  TODO  throw Error
+                continue; // EARLY CONTINUE
+            }
+
+            const qcPage_Flags = qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_DataPage_common_Flags_SingleSearch_ForProjectSearchId( projectSearchId );
+            if ( ! qcPage_Flags ) {
+                const msg = "qcViewPage_CommonData_To_AllComponents_From_MainComponent.qcPage_Searches_Flags.get_QcPage_Flags_SingleSearch_ForProjectSearchId( projectSearchId ); returned nothing. projectSearchId: " + projectSearchId;
+                console.warn( msg );
+                throw Error( msg );
+            }
+
+            if ( qcPage_Flags.anyPsmHas_OpenModifications ) {
+
+                for ( const dataPerReportedPeptideId_Map_Key_reportedPeptideId_EntryValue of dataPerReportedPeptideId_Map_Key_reportedPeptideId.values() ) {
+
+                    if ( dataPerReportedPeptideId_Map_Key_reportedPeptideId_EntryValue.no_SubFiltering_On_PsmIds_For_ReportedPeptideId_within_ProjectSearchId ) {
+
+                        //  Need to load All PsmIds for search for use below
+
+                        //  Add to Loading
+                        psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set.add( projectSearchId )
+
+                        break // EARLY EXIT
+                    }
+                }
+            }
+        }
+    }
+
+    return psm_IDs_For_ReportedPeptideId_For_MainFilters_Holder__Load_For_ProjectSearchId_Set
+}
+
+
+/**
+ *
+ * @param psmIdsSet
+ * @param reportedPeptideId
+ * @param computeDataForCharts_Result__ForSingle_ReportedPeptide
+ * @param psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId
+ * @param missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId
+ * @param psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId
+ * @param projectSearchId_ForErrorLogging
+ */
+const _process_PsmIds_For_ReportedPeptideId = function (
+    {
+        psmIdsSet,
+        reportedPeptideId,
+        computeDataForCharts_Result__ForSingle_ReportedPeptide,
+
+        //  Updated
+        psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId,    //  For Total PSM Count
+        missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId,
+        psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId,
+        // For logging
+        projectSearchId_ForErrorLogging
+    } : {
+        psmIdsSet: Set<number>
+        reportedPeptideId: number
+        computeDataForCharts_Result__ForSingle_ReportedPeptide: Qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_ReportedPeptide
+        psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId: Map<number, Set<number>>
+        missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId: Map<number, Map<number, number>>
+        psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId: Map<number, Set<number>>
+        projectSearchId_ForErrorLogging: number
+    }
+): {
+    allPsms_Have_AtLeastOne_MissedCleavage: boolean
+} {
+
+    let allPsms_Have_AtLeastOne_MissedCleavage = true
+
+    {
+        let psmIds__For_psmIds_AllPSMs_YesPSMFiltering = psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId.get(reportedPeptideId);
+        if ( ! psmIds__For_psmIds_AllPSMs_YesPSMFiltering ) {
+            psmIds__For_psmIds_AllPSMs_YesPSMFiltering = new Set();
+            psmIds_AllPSMs_YesPSMFiltering_Map_Key_ReportedPeptideId.set(reportedPeptideId, psmIds__For_psmIds_AllPSMs_YesPSMFiltering);
+        }
+
+        let missedCleavage_Count_PerPsmId_Map_Key_PsmId = missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId.get( reportedPeptideId );
+        if ( ! missedCleavage_Count_PerPsmId_Map_Key_PsmId ) {
+            missedCleavage_Count_PerPsmId_Map_Key_PsmId = new Map();
+            missedCleavage_Count_PerPsmId_Map_Key_PsmId_Map_Key_ReportedPeptideId.set( reportedPeptideId, missedCleavage_Count_PerPsmId_Map_Key_PsmId );
+        }
+
+        let psmIds = psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId.get(reportedPeptideId);
+        if ( ! psmIds ) {
+            psmIds = new Set();
+            psmIds_PSMs_With_MissedCleavage_YesPSMFiltering_Map_Key_ReportedPeptideId.set(reportedPeptideId, psmIds);
+        }
+
+        for ( const psmId of psmIdsSet ) {
+
+            psmIds__For_psmIds_AllPSMs_YesPSMFiltering.add( psmId );  //  For Total PSM Count
+
+            let missedCleavageCount_ToSave: number = undefined
+
+            {
+                const computeDataForCharts_Result__ForSingle_Psm = computeDataForCharts_Result__ForSingle_ReportedPeptide.get_Result_ForSingle_Psm( psmId );
+                if ( computeDataForCharts_Result__ForSingle_Psm ) {
+                    //  Have value for psmId so use that
+                    missedCleavageCount_ToSave = computeDataForCharts_Result__ForSingle_Psm.get_missedCleavageCount()
+                } else {
+                    //  No value for psmId so use value at Reported Peptide level
+                    missedCleavageCount_ToSave = computeDataForCharts_Result__ForSingle_ReportedPeptide.get_missedCleavageCount()
+                }
+            }
+
+            if ( missedCleavage_Count_PerPsmId_Map_Key_PsmId.has( psmId ) ) {
+                //  missedCleavage_Count_PerPsmId_Map_Key_PsmId ALREADY HAS psmId
+
+                //  Allow existing entries for same PSM ID with same Missed Cleavage count.  Same PsmID under multiple peptideDistinct_Entry for different localization of open mod.
+
+                const existingEntry_missedCleavage_Count = missedCleavage_Count_PerPsmId_Map_Key_PsmId.get( psmId )
+
+                if ( existingEntry_missedCleavage_Count !== missedCleavageCount_ToSave ) {
+                    const msg = "missedCleavage_Count_PerPsmId_Map_Key_PsmId ALREADY HAS psmId and New missedCleavageCount_ToSave is DIFFERENT from entry in map:   " + psmId +
+                        ", missedCleavageCount_ToSave: " + missedCleavageCount_ToSave +
+                        ", existingEntry_missedCleavage_Count: " + existingEntry_missedCleavage_Count +
+                        ", projectSearchId_ForErrorLogging: " + projectSearchId_ForErrorLogging
+                    console.warn( msg )
+                    throw Error( msg )
+                }
+            }
+
+            missedCleavage_Count_PerPsmId_Map_Key_PsmId.set( psmId, missedCleavageCount_ToSave )
+
+            if ( missedCleavageCount_ToSave > 0 ) {
+                psmIds.add( psmId );
+            }
+
+            if ( missedCleavageCount_ToSave === 0 ) {
+
+                allPsms_Have_AtLeastOne_MissedCleavage = false
+            }
+
+        }
+    }
+
+    return { allPsms_Have_AtLeastOne_MissedCleavage }
+}

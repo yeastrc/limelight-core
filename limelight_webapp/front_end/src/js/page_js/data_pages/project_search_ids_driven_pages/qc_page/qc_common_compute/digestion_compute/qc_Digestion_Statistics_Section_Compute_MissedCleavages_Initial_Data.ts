@@ -385,6 +385,10 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
                             openModifications_On_PSM_For_MainFilters_Holder.get_psmOpenModificationMassPerPSM_ForPsmIdMap_For_ReportedPeptideId(reportedPeptideId);
                     }
 
+                    if ( projectSearchId === 7280 ) {
+                        var z = 0
+                    }
+
                     if ( psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideId ) {
 
                         for ( const psmOpenModificationMassPerPSM_ForPsmIdMapValue of psmOpenModificationMassPerPSM_ForPsmIdMap_ForReportedPeptideId.psmOpenModificationMassPerPSM_ForPsmIdMap.values() ) {
@@ -392,7 +396,7 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
                             const psmId = psmOpenModificationMassPerPSM_ForPsmIdMapValue.psmId;
                             const result_ForSingle_Psm = new Qc_SingleSearch_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Data_Result_ForSingle_Psm({ psmId });
 
-                            if ( psmOpenModificationMassPerPSM_ForPsmIdMapValue.positionsMap_KeyPosition ) {
+                            if ( psmOpenModificationMassPerPSM_ForPsmIdMapValue.positionsMap_KeyPosition && psmOpenModificationMassPerPSM_ForPsmIdMapValue.positionsMap_KeyPosition.size > 0 ) {
 
                                 const openModPositions = new Set<number>();
 
@@ -413,13 +417,25 @@ export const qc_Digestion_Statistics_Section_Compute_MissedCleavages_Initial_Dat
 
                                         //  Open mod is localized to 1 or more positions.
 
-                                        //    'else' of this 'if' would be: Open Mod is NOT localized, it can be at any position and thus no position can have missed cleavage
+                                        //    OLD COMMENT THAT NO LONGER APPLIES:::  'else' of this 'if' would be: Open Mod is NOT localized, it can be at any position and thus no position can have missed cleavage
 
                                         if ( ! openModPositions.has( missedCleavagePositions_After_Remove_Variable_Dynamic_Static_Modifications_OneBased_Entry ) ) {
                                             //  Missed cleavage is not at any of open mod positions so count it.  (Already above removed missed cleavage sites at Variable/Dynamic or Static Mod sites)
                                             result_ForSingle_Psm.add_missedCleavageForCount();
                                         }
+
+                                    } else {
+                                        //  NO Open Mod Positions - Open Mod NOT Localized - Position is missed cleavage
+
+                                        result_ForSingle_Psm.add_missedCleavageForCount();
                                     }
+                                }
+                            } else {
+                                //  NO Open Mod Positions - Open Mod NOT Localized - Position is missed cleavage
+
+                                for ( const missedCleavagePositions_After_Remove_Variable_Dynamic_Static_Modifications_OneBased_Entry of missedCleavagePositions_After_Remove_Varible_Dynamic_Static_Modifications_OneBased ) {
+
+                                    result_ForSingle_Psm.add_missedCleavageForCount();
                                 }
                             }
 
