@@ -326,7 +326,7 @@ class BlibFile_Download_Overlay_Component extends React.Component< BlibFile_Down
 
         const form = document.createElement("form");
 
-        $(form).hide();
+        form.style.display = "none"
 
         form.setAttribute("method", "post");
         form.setAttribute("action", "d/dnld/psb/blib-spectral-library-download--get-created-file");
@@ -335,7 +335,7 @@ class BlibFile_Download_Overlay_Component extends React.Component< BlibFile_Down
         const requestJSONStringField = document.createElement("textarea");
         requestJSONStringField.setAttribute("name", "requestJSONString");
 
-        $(requestJSONStringField).text(requestJSONString);
+        requestJSONStringField.value = requestJSONString
 
         form.appendChild(requestJSONStringField);
 

@@ -815,7 +815,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
 
                                                         const form = document.createElement( "form" );
 
-                                                        $( form ).hide();
+                                                        form.style.display = "none"
 
                                                         form.setAttribute( "method", "post" );
                                                         form.setAttribute( "action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-project-scan-file-id" );
@@ -824,7 +824,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                                         const requestJSONStringField = document.createElement( "textarea" );
                                                         requestJSONStringField.setAttribute( "name", "requestJSONString" );
 
-                                                        $( requestJSONStringField ).text( requestJSONString );
+                                                        requestJSONStringField.value = requestJSONString
 
                                                         form.appendChild( requestJSONStringField );
 

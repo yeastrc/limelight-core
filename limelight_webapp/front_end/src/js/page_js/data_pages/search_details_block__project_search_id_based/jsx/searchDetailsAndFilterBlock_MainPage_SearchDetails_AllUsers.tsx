@@ -569,7 +569,7 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
 
             const form = document.createElement("form");
 
-            $(form).hide();
+            form.style.display = "none"
 
             form.setAttribute("method", "post");
             form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
@@ -578,7 +578,7 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
             const requestJSONStringField = document.createElement("textarea");
             requestJSONStringField.setAttribute("name", "requestJSONString");
 
-            $(requestJSONStringField).text(requestJSONString);
+            requestJSONStringField.value = requestJSONString
 
             form.appendChild(requestJSONStringField);
 
@@ -706,7 +706,7 @@ class Internal__Scan_File_Component extends React.Component<Internal__Scan_File_
 
             const form = document.createElement("form");
 
-            $(form).hide();
+            form.style.display = "none"
 
             form.setAttribute("method", "post");
             form.setAttribute("action", "d/dnld/psb/scan-file-contents-from-file-object-storage-entry-using-search-scan-file-id-psid");
@@ -715,7 +715,7 @@ class Internal__Scan_File_Component extends React.Component<Internal__Scan_File_
             const requestJSONStringField = document.createElement("textarea");
             requestJSONStringField.setAttribute("name", "requestJSONString");
 
-            $(requestJSONStringField).text(requestJSONString);
+            requestJSONStringField.value = requestJSONString
 
             form.appendChild(requestJSONStringField);
 
@@ -1009,7 +1009,7 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
 
         const form = document.createElement("form");
 
-        $(form).hide();
+        form.style.display = "none"
 
         form.setAttribute("method", "post");
         form.setAttribute("action", "d/dnld/psb/search-file");
@@ -1018,7 +1018,7 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
         const requestJSONStringField = document.createElement("textarea");
         requestJSONStringField.setAttribute("name", "requestJSONString");
 
-        $(requestJSONStringField).text(requestJSONString);
+        requestJSONStringField.value = requestJSONString
 
         form.appendChild(requestJSONStringField);
 
@@ -1049,7 +1049,7 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
 
         const form = document.createElement("form");
 
-        $(form).hide();
+        form.style.display = "none"
 
         form.setAttribute("method", "post");
         form.setAttribute("action", "d/dnld/psb/file-object-storage-entry");
@@ -1058,7 +1058,7 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
         const requestJSONStringField = document.createElement("textarea");
         requestJSONStringField.setAttribute("name", "requestJSONString");
 
-        $(requestJSONStringField).text(requestJSONString);
+        requestJSONStringField.value = requestJSONString
 
         form.appendChild(requestJSONStringField);
 
