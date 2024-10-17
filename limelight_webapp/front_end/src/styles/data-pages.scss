@@ -320,6 +320,7 @@
                             vertical-align: top;
                             //padding-top: 5px;
                             //padding-bottom: 5px;
+                            word-break: break-all; // Backup in case break-word is not supported
                             word-break: break-word; //  Keep this here as long as it works since not all cells will have the <span> with the class name 'table-data-cell-property-value'
 
                             span.table-data-cell-property-value {

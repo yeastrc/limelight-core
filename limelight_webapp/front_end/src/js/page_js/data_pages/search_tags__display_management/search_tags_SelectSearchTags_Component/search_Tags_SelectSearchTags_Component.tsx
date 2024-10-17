@@ -507,7 +507,7 @@ export class INTERNAL__Search_Tag_SINGLE_Component extends React.Component< INTE
             >
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
-                        <div style={ { wordBreak: "break-word" } }>
+                        <div className=" word-break-break-word-backup-break-all ">
                             { tooltip_Inner }
                         </div>
                     }

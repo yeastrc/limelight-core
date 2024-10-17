@@ -182,7 +182,7 @@ export class ProjectPage_UploadData_UploadFiles_Overlay__Common_SelectScanFile_C
                                     //  Repeat scan filenames in tooltip in case they are cutoff in the overlay
                                     <div>
                                         {/*  May be more than 1 scan filename for the scan file id so list them all comma delim  */}
-                                        <div style={ { fontWeight: "bold", whiteSpace: "nowrap", marginBottom: 4, wordBreak: "break-all" } }>
+                                        <div className=" word-break-break-word-backup-break-all " style={ { fontWeight: "bold", whiteSpace: "nowrap", marginBottom: 4 } }>
                                             <span>Scan Filename</span>{ ( scanFile_Entry.scanFilename_Array.length > 1 ) ? <span>s</span> : null }
                                             <span>: </span>
                                         </div>

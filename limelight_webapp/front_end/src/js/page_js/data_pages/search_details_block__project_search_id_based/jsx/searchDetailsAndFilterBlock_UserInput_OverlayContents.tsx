@@ -1238,8 +1238,10 @@ class Single_Search_Entry extends React.Component< Single_Search_Entry_Props, Si
                 <div ref={ this._projectDiv_Ref } style={ { fontWeight : "bold" } }>
                     Search:
                 </div>
-                <div  style={ { gridColumn: "2 / -1", wordBreak: "break-word" } }
-                      title={ "Search:\n\n" + searchNameDisplay }
+                <div
+                    className=" word-break-break-word-backup-break-all "
+                    style={ { gridColumn: "2 / -1" } }
+                    title={ "Search:\n\n" + searchNameDisplay }
                 >
                     { searchNameDisplay }
                 </div>

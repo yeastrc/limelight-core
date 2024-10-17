@@ -401,7 +401,7 @@ import {
 //                                     // onMouseEnter={ this._onMouseEnter_folderNameText_Div_BindThis }
 //                                     // onMouseLeave={ this._onMouseLeave_folderNameText_Div_BindThis }
 //                                     // title={ this.state.folderNameDisplay }
-//                                      style={ { wordBreak: "break-word" } }
+//                                      className=" word-break-break-word-backup-break-all "
 //                                 >
 //
 //                                     <span style={ { overflowWrap: "break-word" } }>

@@ -455,12 +455,12 @@ export class Search_Tags_DisplaySearchTags_UnderSearchName_Component extends Rea
             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                 key={ tag_Entry.tagId }
                 title={
-                    //  NOTE:  Any <div> inside a tooltip should have:  style={ { wordBreak: "break-word" } }
+                    //  NOTE:  Any <div> inside a tooltip should have:  className=" word-break-break-word-backup-break-all "
                     <div style={ { width: "100%", display: "grid", gridTemplateColumns: "max-content 1fr", rowGap: 5, columnGap: 5 } }>
                         <div style={ { fontWeight: "bold", textAlign: "right" } }>Category:</div>
-                        <div style={ { wordBreak: "break-word" } }>{ category_label }</div>
+                        <div className=" word-break-break-word-backup-break-all ">{ category_label }</div>
                         <div style={ { fontWeight: "bold", textAlign: "right" } }>Tag:</div>
-                        <div style={ { wordBreak: "break-word" } }>{ tag_Entry.tagString }</div>
+                        <div className=" word-break-break-word-backup-break-all ">{ tag_Entry.tagString }</div>
                     </div>
                 }
                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }

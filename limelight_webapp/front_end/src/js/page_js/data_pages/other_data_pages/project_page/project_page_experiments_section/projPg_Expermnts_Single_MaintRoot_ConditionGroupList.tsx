@@ -482,11 +482,11 @@ export class ConditionGroupListEntry_DraggableContents extends React.Component< 
                 </div>
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
-                        <div style={ { wordBreak: "break-word" } }>
+                        <div className=" word-break-break-word-backup-break-all ">
                             <div style={ { fontWeight: "bold" } }>
                                 Label:
                             </div>
-                            <div style={ { wordBreak: "break-word" } }>
+                            <div className=" word-break-break-word-backup-break-all ">
                                 { conditionGroup.label }
                             </div>
                             <div style={ { marginTop: 15 } }>

@@ -21,6 +21,11 @@ body {
   background-color: $site-standard-background-color;
 }
 
+.word-break-break-word-backup-break-all {
+  word-break: break-all; // Backup in case break-word is not supported
+  word-break: break-word;
+}
+
 //  Placed here from 'data-pages.scss' since used on Acct Management page by using main page header
 div.outermost-div {
   min-height: 100%;

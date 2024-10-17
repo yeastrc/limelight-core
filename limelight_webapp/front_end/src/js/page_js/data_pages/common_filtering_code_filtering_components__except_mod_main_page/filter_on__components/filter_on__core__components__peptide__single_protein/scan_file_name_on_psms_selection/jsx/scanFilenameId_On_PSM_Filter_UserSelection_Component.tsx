@@ -363,7 +363,7 @@ export class ScanFilenameId_On_PSM_Filter_UserSelection_Component extends React.
                                         } }
                                     />
                                 </div>
-                                <div style={ { wordBreak: "break-word" } }>
+                                <div className=" word-break-break-word-backup-break-all ">
                                     <span>{ searchScanFileData.filename }</span>
                                     <span> </span>
                                     { ( multipleSearches ) ? (

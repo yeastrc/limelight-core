@@ -704,7 +704,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                          className=" icon-small "/>
                                                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                 </div>
-                                                                <div style={{wordBreak: "break-word"}}>
+                                                                <div className=" word-break-break-word-backup-break-all ">
                                                                     {searchData.searchName + " (" + searchData.searchId + ")"}
                                                                 </div>
                                                             </div>
@@ -790,7 +790,7 @@ export class Project_OrganizeSearches_Main_Component extends React.Component< Pr
                                                                              className=" icon-small " />
                                                                     </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                                                 </div>
-                                                                <div style={ { wordBreak: "break-word" } }>
+                                                                <div className=" word-break-break-word-backup-break-all ">
                                                                     { searchData.searchName + " (" + searchData.searchId + ")" }
                                                                 </div>
                                                             </div>

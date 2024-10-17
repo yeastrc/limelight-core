@@ -147,7 +147,7 @@ const CurrentFiltersDisplayBlock__ScanFilenameId_On_PSM_Filter_UserSelection = f
     }
 
     return (
-        <div style={ { wordBreak: "break-word" } }>
+        <div className=" word-break-break-word-backup-break-all ">
             <span>
                 Only showing data from scan file
             </span>

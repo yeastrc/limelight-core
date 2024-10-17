@@ -820,11 +820,11 @@ const _get_filtersPerSearch_SingleSearch_Components = function({
             <div style={ { display: "grid", gridTemplateColumns: "min-content min-content 1fr"  } }>
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
-                        <div style={ { wordBreak: "break-word" } }>
-                            <div style={ { wordBreak: "break-word", fontWeight: "bold" } }>
+                        <div className=" word-break-break-word-backup-break-all ">
+                            <div className=" word-break-break-word-backup-break-all " style={ { fontWeight: "bold" } }>
                                 Search:
                             </div>
-                            <div style={ { wordBreak: "break-word", marginTop: 6 } }>
+                            <div className=" word-break-break-word-backup-break-all " style={ { marginTop: 6 } }>
                                 { searchNameDisplay }
                             </div>
                         </div>

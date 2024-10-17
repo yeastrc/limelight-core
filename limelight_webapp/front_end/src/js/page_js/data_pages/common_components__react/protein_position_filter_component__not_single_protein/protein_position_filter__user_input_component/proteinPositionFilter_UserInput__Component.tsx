@@ -760,7 +760,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                     </div>
 
                     {/*  Protein Name  */}
-                    <div style={ { marginBottom: bottomMargin, maxWidth: 350, marginRight: 20, wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all " style={ { marginBottom: bottomMargin, maxWidth: 350, marginRight: 20 } }>
                         <span style={ { overflowWrap: "break-word" } }>
                             <ProteinName_Component
                                 protein={ protein }
@@ -847,7 +847,7 @@ export class ProteinPositionFilter_UserInput__Component extends React.Component<
                     </div>
 
                     {/*  Protein Name  */}
-                    <div style={ { marginBottom: bottomMargin, maxWidth: 350, marginRight: 20, wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all " style={ { marginBottom: bottomMargin, maxWidth: 350, marginRight: 20 } }>
 
                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                             title={

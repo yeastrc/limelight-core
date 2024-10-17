@@ -757,22 +757,22 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
 
             if ( this.props.mainParams.searches.length > 1 ) {
                 div_title = (
-                    <div style={ { wordBreak: "break-word" } }>
-                        <div style={ { wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all ">
+                        <div className=" word-break-break-word-backup-break-all ">
                             tag selected for all searches
                         </div>
-                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                        <div className=" word-break-break-word-backup-break-all " style={ { marginTop: div_title__SecondLineMarginTop } }>
                             click to not select for any searches
                         </div>
                     </div>
                 )
             } else {
                 div_title = (
-                    <div style={ { wordBreak: "break-word" } }>
-                        <div style={ { wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all ">
+                        <div className=" word-break-break-word-backup-break-all ">
                             tag selected
                         </div>
-                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                        <div className=" word-break-break-word-backup-break-all " style={ { marginTop: div_title__SecondLineMarginTop } }>
                             click to not select
                         </div>
                     </div>
@@ -783,22 +783,22 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
 
             if ( this.props.mainParams.searches.length > 1 ) {
                 div_title = (
-                    <div style={ { wordBreak: "break-word" } }>
-                        <div style={ { wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all ">
+                        <div className=" word-break-break-word-backup-break-all ">
                             tag not selected for any searches
                         </div>
-                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                        <div className=" word-break-break-word-backup-break-all " style={ { marginTop: div_title__SecondLineMarginTop } }>
                             click to select for all searches
                         </div>
                     </div>
                 )
             } else {
                 div_title = (
-                    <div style={ { wordBreak: "break-word" } }>
-                        <div style={ { wordBreak: "break-word" } }>
+                    <div className=" word-break-break-word-backup-break-all ">
+                        <div className=" word-break-break-word-backup-break-all ">
                             tag not selected
                         </div>
-                        <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                        <div className=" word-break-break-word-backup-break-all " style={ { marginTop: div_title__SecondLineMarginTop } }>
                             click to select
                         </div>
                     </div>
@@ -812,11 +812,11 @@ class Search_Tags_Manage_TagsForSearch_OverallTags_Version_2_OverlayComponent ex
             divStyle.borderWidth = borderWidth
 
             div_title = (
-                <div style={ { wordBreak: "break-word" } }>
-                    <div style={ { wordBreak: "break-word" } }>
+                <div className=" word-break-break-word-backup-break-all ">
+                    <div className=" word-break-break-word-backup-break-all ">
                         tag selected for some searches
                     </div>
-                    <div style={ { wordBreak: "break-word", marginTop: div_title__SecondLineMarginTop } }>
+                    <div className=" word-break-break-word-backup-break-all " style={ { marginTop: div_title__SecondLineMarginTop } }>
                         click to select for all searches
                     </div>
                 </div>

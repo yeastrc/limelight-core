@@ -295,7 +295,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                             {/* Add  'word-break: break-word;' to keep path on overlay in single protein overlay.
                                 'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
                                 */ }
-                            <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+                            <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
                                 <span style={ { overflowWrap: "break-word" } }>
                                     { this._searchDetails_ForProjectSearchId.mainPart.path }
                                 </span>
@@ -434,7 +434,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                     {/* Add  'word-break: break-word;' to keep path on overlay in single protein overlay.
                         'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
                         */ }
-                    <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+                    <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
                         <span style={ { overflowWrap: "break-word" } }>
                             { this._searchDetails_ForProjectSearchId.mainPart.formattedLoadTime }
                         </span>
@@ -452,7 +452,7 @@ export class SearchDetailsAndFilterBlock_MainPage_SearchDetails_AllUsers_Compone
                             {/* Add  'word-break: break-word;' to keep path on overlay in single protein overlay.
                                 'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
                                 */ }
-                            <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+                            <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
                                 <span style={ { overflowWrap: "break-word" } }>
                                     { this._searchDetails_ForProjectSearchId.mainPart.scanFile_List.map( (scanFile_Entry, scanFile_Entry_Index, scanFile_List_Inside_Map) => {
 
@@ -611,7 +611,7 @@ class Internal__FASTA_File_Component extends React.Component<Internal__FASTA_Fil
                         'word-break: break-word;' is deprecated but adding 'overflow-wrap: break-word;' does not work.
                         */
                 }
-                <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+                <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
 
                     { this.props.searchDetails_ForProjectSearchId.mainPart.fastaFile_FileObjectStorageId ? (
                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
@@ -890,7 +890,7 @@ class Internal__SubGroups_Component extends React.Component<Internal__SubGroups_
                     ) : null }
                 </div>
 
-                <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+                <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
 
                     { this.props.searchDetails_ForProjectSearchId.subGroupData.searchSubgroupItems.map( (searchSubgroupItem, index) => {
                         return (
@@ -1112,7 +1112,7 @@ class Internal__SearchFile_Entry_Component extends React.Component<Internal__Sea
     render() {
 
         return (
-            <div style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }>
+            <div className=" word-break-break-word-backup-break-all " style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }>
 
                 <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                     title={
@@ -1434,7 +1434,8 @@ class Internal__Comment_Entry_Component extends React.Component<Internal__Commen
         return (
             <div
                 ref={ this._comment_Div_Ref }
-                style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }
+                className=" word-break-break-word-backup-break-all "
+                style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }
             >
                 { this.props.comment_Entry.canDelete ? (
                     <>
@@ -1728,7 +1729,8 @@ class Internal__WebLink_Entry_Component extends React.Component<Internal__WebLin
         return (
             <div
                 ref={ this._webLink_Div_Ref }
-                style={ { wordBreak: "break-word", paddingBottom: _STANDARD_PADDING_BOTTOM } }
+                className=" word-break-break-word-backup-break-all "
+                style={ { paddingBottom: _STANDARD_PADDING_BOTTOM } }
             >
                 { this.props.webLink_Entry.canDelete ? (
                     <>
