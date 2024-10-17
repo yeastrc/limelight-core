@@ -194,6 +194,13 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 			
 			/////////////
 			
+			boolean userIsProjectOwner = false;
+			
+			if ( webSessionAuthAccessLevel.isProjectOwnerAllowed() ) {
+				
+				userIsProjectOwner = true;
+			}
+			
 
 			boolean scanFileDownload_Allowed_InConfig = false;
 			{
@@ -336,7 +343,7 @@ public class Project_ScanFiles_In_Project_List_RestWebserviceController {
 					
 					resultItem.entryHasFeatureDetection = entryHasFeatureDetection;
 					
-					resultItem.userIsProjectOwner = true;
+					resultItem.userIsProjectOwner = userIsProjectOwner;
 				}
 //			}
 			

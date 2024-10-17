@@ -784,10 +784,10 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                         [View Feature Detection Run]
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                {/*{ true ? (*/}
+                                { ( this.props.projectPage_UserProjectOwner_CommonObjectsFactory_ReturnFunctions && ( ! this.props.projectIsLocked )) ? (
                                     <>
                                         <span > </span>
-                                        {/*{ true ? (*/}
+
                                         <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                             title={
                                                 <span>
@@ -840,7 +840,7 @@ class FeatureDetection_Run_Entry_Component extends React.Component< FeatureDetec
                                             />
                                         </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </>
-                                {/*) : null }*/}
+                                ) : null }
                             </div>
                         </div>
                     </div>

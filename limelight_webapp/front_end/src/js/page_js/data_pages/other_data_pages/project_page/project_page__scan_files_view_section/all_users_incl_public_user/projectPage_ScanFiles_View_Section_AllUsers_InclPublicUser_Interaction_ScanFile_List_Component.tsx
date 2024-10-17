@@ -732,20 +732,28 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
             <React.Fragment>
 
                 {/*  Column 1 of Grid  -  Checkbox  */}
-                <div style={ { width: 16, marginRight: 8, position: "relative" } }>
-                    <div style={ { position: "absolute", top: -2 } }>
-                        <input
-                            type="checkbox"
-                            onChange={ event => {
-                                if ( this.props.selectionCheckboxChanged_CallbackFunction ) {
-                                    this.props.selectionCheckboxChanged_CallbackFunction({
-                                        projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
-                                        checked: event.target.checked
-                                    })
-                                }
-                            }}
-                        />
-                    </div>
+
+                <div>
+                    { ( this.props.scanFile_Entry.userIsProjectOwner && ( ! this.props.projectIsLocked ) ) ? (
+
+                        // Currently ONLY show checkbox to Project Owner when Project is NOT Locked
+
+                        <div style={ { width: 16, marginRight: 8, position: "relative" } }>
+                            <div style={ { position: "absolute", top: -2 } }>
+                                <input
+                                    type="checkbox"
+                                    onChange={ event => {
+                                        if ( this.props.selectionCheckboxChanged_CallbackFunction ) {
+                                            this.props.selectionCheckboxChanged_CallbackFunction({
+                                                projectScanFileId: this.props.scanFile_Entry.projectScanFileId,
+                                                checked: event.target.checked
+                                            })
+                                        }
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    ) : null }
                 </div>
 
                 {/*  Column 2 of Grid  -  Triangle Icon for details open/closed  */}
@@ -997,7 +1005,7 @@ class ScanFileEntry_Component extends React.Component< ScanFileEntry_Component_P
                                     </span>
                                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
 
-                                { this.props.scanFile_Entry.userIsProjectOwner ? (
+                                { ( this.props.scanFile_Entry.userIsProjectOwner && ( ! this.props.projectIsLocked ) ) ? (
                                     <>
                                         <span> </span>
                                         { this.props.scanFile_Entry.canDeleteEntry ? (

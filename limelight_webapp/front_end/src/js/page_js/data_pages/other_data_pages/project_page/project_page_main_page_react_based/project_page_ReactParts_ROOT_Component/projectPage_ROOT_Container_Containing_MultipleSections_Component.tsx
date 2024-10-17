@@ -511,6 +511,7 @@ class ProjectPage_ROOT_Container_Containing_MultipleSections_Component extends R
                         force_Rerender_EmptyObjectReference={ this.state.force_Rerender_EmptyObjectReference }
                         force_ReloadFromServer_EmptyObjectReference={ this.state.force_ReloadFromServer_EmptyObjectReference }
                         projectIdentifier={ this.props.projectIdentifier }
+                        projectIsLocked={ this.props.projectIsLocked }
                         get_searchesSearchTagsFolders_Result_Root__Function={ this._searchesAndFolders_From_Webservice_CalledByChildrenComponents_BindThis }
                         dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }
                         projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }

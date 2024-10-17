@@ -59,7 +59,7 @@ import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
 import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_WebserviceSyncTracking_CodeIF;
 
 /**
- * For Copy/Move of Searches
+ * For Copy of Searches -- CANNOT allow MOVE searches since allow FROM Project to be LOCKED
  *
  */
 @RestController
@@ -67,7 +67,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
   
 	private static final Logger log = LoggerFactory.getLogger( Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceController.class );
 
-	private enum DoCopyOrDoMove { COPY, MOVE }
+//	private enum DoCopyOrDoMove { COPY, MOVE }
 	
 	@Autowired
 	private Validate_WebserviceSyncTracking_CodeIF validate_WebserviceSyncTracking_Code;
@@ -208,17 +208,30 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		DoCopyOrDoMove doCopyOrDoMove = null;
+    		//  ONLY SUPPORT COPY
     		
-    		if ( copyToOtherProject ) {
-    			doCopyOrDoMove = DoCopyOrDoMove.COPY;
-    		} else if ( moveToOtherProject ) {
-    			doCopyOrDoMove = DoCopyOrDoMove.MOVE;
-    		} else {
-    			log.warn( "copyToOtherProject and moveToOtherProject are both not assigned or false" );
+//    		DoCopyOrDoMove doCopyOrDoMove = null;
+//    		
+//    		if ( copyToOtherProject ) {
+//    			doCopyOrDoMove = DoCopyOrDoMove.COPY;
+//    		} else if ( moveToOtherProject ) {
+//    			doCopyOrDoMove = DoCopyOrDoMove.MOVE;
+//    		} else {
+//    			log.warn( "copyToOtherProject and moveToOtherProject are both not assigned or false" );
+//    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+//    		}
+
+    		
+    		if ( moveToOtherProject ) {
+    			log.warn( "NOT SUPPORTED:  Request property 'moveToOtherProject' CANNOT BE TRUE");
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
 
+    		if ( ! copyToOtherProject ) {
+    			log.warn( "NOT SUPPORTED:  Request property 'copyToOtherProject' MUST BE TRUE");
+    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+    		}
+    		
     		int projectId = 0;
 
     		try {
@@ -236,7 +249,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 			
 			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
 					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-					.validateProjectOwnerAllowed( projectIds, httpServletRequest );
+					.validateProjectOwnerIfProjectNotLockedAllowed( projectIds, httpServletRequest );
 
 			//  Validate access to Copy/Move To Project Id
 
@@ -260,7 +273,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 			}
 			
 
-    		WebserviceResult webserviceResult = internal_Process( webserviceRequest, projectId, userSession, doCopyOrDoMove );
+    		WebserviceResult webserviceResult = internal_Process( webserviceRequest, projectId, userSession /* , doCopyOrDoMove */ );
 
 		
     		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
@@ -292,8 +305,9 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     		
     		WebserviceRequest webserviceRequest,
     		int projectId,
-    		UserSession userSession,
-    		DoCopyOrDoMove doCopyOrDoMove
+    		UserSession userSession
+//    		,
+//    		DoCopyOrDoMove doCopyOrDoMove
     		) throws SQLException, InterruptedException {
 
 		WebserviceResult webserviceResult = new WebserviceResult();
@@ -367,7 +381,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 			webserviceResult.setCopyToProjectDisabled(true);
 			webserviceResult.setStatus(false);
 		} else {
-			if ( doCopyOrDoMove == DoCopyOrDoMove.COPY ) {
+//			if ( doCopyOrDoMove == DoCopyOrDoMove.COPY ) {
 				
 				final int counterMAX = 3;
 				
@@ -414,10 +428,10 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 					counter++;
 				}
 				
-			} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
-				
-				
-				throw new IllegalArgumentException( "NOT SUPPORTED:  ( doCopyOrDoMove == DoCopyOrDoMove.MOVE )");
+//			} else if ( doCopyOrDoMove == DoCopyOrDoMove.MOVE ) {
+//				
+//				
+//				throw new IllegalArgumentException( "NOT SUPPORTED:  ( doCopyOrDoMove == DoCopyOrDoMove.MOVE )");
 				
 				//  Move Project Search and associated records to new Project
 				
@@ -459,12 +473,14 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
 //					}
 //				}
 				
-			} else {
-				//  Only way to get here is a coding error above
-				String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
-				log.error( msg );
-				throw new LimelightInternalErrorException(msg);
-			}
+//			} else {
+//				//  Only way to get here is a coding error above
+//				String msg = "Unknown Value for doCopyOrDoMove: " + doCopyOrDoMove;
+//				log.error( msg );
+//				throw new LimelightInternalErrorException(msg);
+//			}
+				
+				
 			webserviceResult.setStatus(true);
 			webserviceResult.experimentsWhereDeleted = experimentsWhereDeleted;
 		}
@@ -489,7 +505,7 @@ public class Project_CopyOrMoveProjectSearchIdsToNewProject_RestWebserviceContro
     	private Set<Integer> experimentIds_Containing_ProjectSearchIds; // Optional
     	private Boolean copyAnyAssociatedTags;
     	private Boolean copyToOtherProject;
-    	private Boolean moveToOtherProject;
+    	private Boolean moveToOtherProject; //  NO LONGER SUPPORTED.  CANNOT BE true.
     	
 		public String getProjectIdentifier() {
 			return projectIdentifier;

@@ -35,6 +35,7 @@ export interface ProjectPage_SearchesSection_Root_Component_Props {
     force_ReloadFromServer_EmptyObjectReference: object  //  All child components need to compare this object reference for display updating message since a newer force_Rerender_EmptyObjectReference object may come down while the child component is getting data to refresh
 
     projectIdentifier : string
+    projectIsLocked: boolean
     get_searchesSearchTagsFolders_Result_Root__Function: ProjectPage_ROOT_Container_Containing_MultipleSections_Component__Get_searchesSearchTagsFolders_Result_Root__Function
     dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: DataPages_LoggedInUser_CommonObjectsFactory
     projectPage_SearchesAdmin: ProjectPage_SearchesAdmin
@@ -122,6 +123,7 @@ export class ProjectPage_SearchesSection_Root_Component extends React.Component<
                                 force_Rerender_EmptyObjectReference={ this.props.force_Rerender_EmptyObjectReference }
                                 force_ReloadFromServer_EmptyObjectReference={ this.props.force_ReloadFromServer_EmptyObjectReference }
                                 projectIdentifier={ this.props.projectIdentifier}
+                                projectIsLocked={ this.props.projectIsLocked }
                                 get_searchesSearchTagsFolders_Result_Root__Function={ this.props.get_searchesSearchTagsFolders_Result_Root__Function }
                                 projectPage_SearchesAdmin={ this.props.projectPage_SearchesAdmin }
                                 dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails={ this.props.dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails }

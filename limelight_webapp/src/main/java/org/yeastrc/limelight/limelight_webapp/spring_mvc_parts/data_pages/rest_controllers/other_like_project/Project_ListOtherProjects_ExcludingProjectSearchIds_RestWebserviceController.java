@@ -132,7 +132,7 @@ public class Project_ListOtherProjects_ExcludingProjectSearchIds_RestWebserviceC
     		}
 
     		WebserviceRequest webserviceRequest = unmarshal_RestRequest_JSON_ToObject.getObjectFromJSONByteArray( postBody, WebserviceRequest.class );
-
+    		
     		//		String postBodyAsString = new String( postBody, StandardCharsets.UTF_8 );
     		
     		String projectIdentifier = webserviceRequest.getProjectIdentifier();
@@ -161,9 +161,16 @@ public class Project_ListOtherProjects_ExcludingProjectSearchIds_RestWebserviceC
 			List<Integer> projectIds = new ArrayList<>( 1 );
 			projectIds.add( projectId );
 			
-			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
-					validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
-					.validateProjectOwnerAllowed( projectIds, httpServletRequest );
+			ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result = null;
+			
+			try {
+				validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result =
+						validateWebSessionAccess_ToWebservice_ForAccessLevelAnd_ProjectIds
+						.validateProjectOwnerIfProjectNotLockedAllowed( projectIds, httpServletRequest );
+			
+			} catch ( Exception e ) {
+				throw e;
+			}
 
 			UserSession userSession = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getUserSession();
 			WebSessionAuthAccessLevel webSessionAuthAccessLevel = validateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectIds_Result.getWebSessionAuthAccessLevel();
