@@ -105,11 +105,11 @@ public class ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main {
 		
 		if ( keepRunning ) {
 			
-			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
+			  //  Delete All Status INIT_INSERT_PRE_QUEUED OR Started (Started Import) and Table Record Last Updated over 15 days ago
 			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
 					ImportAndPipelineRun_RemoveDirs_VariousCriteria_Main_Searchers.getSingletonInstance()
-					.getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo(importRunImporterDBConnectionFactory);
+					.getAll_TrackingId_For_Status_INIT_INSERT_PRE_QUEUED_OR_Started_LastUpdate_Over_15_DaysAgo(importRunImporterDBConnectionFactory);
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}

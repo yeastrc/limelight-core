@@ -156,11 +156,11 @@ public class ImportFiles_DelayedRemoval_Main {
 		
 		if ( keepRunning ) {
 			
-			  //  Delete All Status Started (Started Import) and Table Record Last Updated over 15 days ago
+			  //  Delete All Status INIT_INSERT_PRE_QUEUED OR STARTED (Started Import) and Table Record Last Updated over 15 days ago
 			
 			List<Integer> fileImportTrackingIddList_To_Delete_Directories =
 					ImportFiles_DelayedRemoval_Main_Searchers.getSingletonInstance()
-					.getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo(importRunImporterDBConnectionFactory);
+					.getAll_TrackingId_For_Status_INIT_INSERT_PRE_QUEUED_or_STARTED__LastUpdate_Over_15_DaysAgo(importRunImporterDBConnectionFactory);
 			
 			delete_Directories_For_trackingIdList(fileImportTrackingIddList_To_Delete_Directories);
 		}

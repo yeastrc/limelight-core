@@ -127,10 +127,12 @@ public class ImportFiles_DelayedRemoval_Main_Searchers {
 			
 	////
 
-	private static final String GET_STATUS__STARTED__OVER_15_DAYS_AGO_SQL = 
+	private static final String GET_STATUS__INIT_INSERT_PRE_QUEUED_OR_STARTED__OVER_15_DAYS_AGO_SQL = 
 			
 			"SELECT id FROM file_import_tracking_tbl "
 			+ " WHERE status_id IN ( " 
+			+ 		FileImportStatus.INIT_INSERT_PRE_QUEUED.value()
+			+       " , "
 			+ 		FileImportStatus.STARTED.value()
 			+ 	") AND last_updated_date_time <  DATE_SUB(DATE(NOW()), INTERVAL 15 DAY)"
 			+ " ORDER BY last_updated_date_time ";
@@ -140,12 +142,12 @@ public class ImportFiles_DelayedRemoval_Main_Searchers {
 	 * @return import tracking id list
 	 * @throws Exception
 	 */
-	public List<Integer> getAll_TrackingId_For_Status_Started_LastUpdate_Over_15_DaysAgo( ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory ) throws Exception {
+	public List<Integer> getAll_TrackingId_For_Status_INIT_INSERT_PRE_QUEUED_or_STARTED__LastUpdate_Over_15_DaysAgo( ImportRunImporterDBConnectionFactory importRunImporterDBConnectionFactory ) throws Exception {
 
 
 		List<Integer> results = new ArrayList<>( 100000 );
 
-		final String sql = GET_STATUS__STARTED__OVER_15_DAYS_AGO_SQL;
+		final String sql = GET_STATUS__INIT_INSERT_PRE_QUEUED_OR_STARTED__OVER_15_DAYS_AGO_SQL;
 
 
 		try ( Connection dbConnection = importRunImporterDBConnectionFactory.getConnection() ) {
