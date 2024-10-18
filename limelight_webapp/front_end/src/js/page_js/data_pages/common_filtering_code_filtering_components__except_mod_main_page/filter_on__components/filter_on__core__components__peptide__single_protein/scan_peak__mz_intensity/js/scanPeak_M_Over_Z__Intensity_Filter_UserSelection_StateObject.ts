@@ -73,7 +73,7 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
 
     is_AnySelections() : boolean {
 
-        if ( this._selections ) {
+        if ( this._selections && this._selections.length > 0 ) {
             return true
         }
         return false
@@ -90,6 +90,10 @@ export class ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject {
     set__Selections( selections : Array<ScanPeak_M_Over_Z__Intensity_Filter_UserSelection_StateObject__ENTRY> ) {
 
         this._selections = selections
+
+        if ( this._selections && this._selections.length === 0 ) {
+            this._selections = undefined
+        }
 
         if ( ! this._valueChangedCallback ) {
             throw Error("set__Selections::( ! this._valueChangedCallback )")
