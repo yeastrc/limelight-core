@@ -64,7 +64,7 @@ public class Process_ScanFilenames_ScanFiles {
 			.sendScanFilesToSpectralStorageService( scanFileFileContainer_AllEntries, searchScanFileEntry_AllEntries );
 		}
 		
-		log.warn( "INFO:  !!  Finished processing Scan Files.");
+		log.warn( "INFO:  !!  Finished processing Scan Files and sending them to Spectral Storage Service.");
 		
 		return searchScanFileEntry_AllEntries;
 	}

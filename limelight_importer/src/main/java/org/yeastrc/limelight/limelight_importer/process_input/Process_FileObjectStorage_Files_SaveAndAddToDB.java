@@ -285,6 +285,8 @@ public class Process_FileObjectStorage_Files_SaveAndAddToDB {
 			
 		}
 		
+
+		log.warn( "INFO:  !!  Finished sending files to File Object Storage Service.");
 		
 	}
 }
