@@ -15,7 +15,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: limelight
   spectr:
-    image: mriffle/spectr:1.4.0
+    image: mriffle/spectr:1.5.0
     container_name: limelight-spectr
     restart: always
     environment:
