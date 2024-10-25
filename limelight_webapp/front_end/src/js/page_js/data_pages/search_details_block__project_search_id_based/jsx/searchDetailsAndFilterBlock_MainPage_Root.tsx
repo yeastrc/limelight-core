@@ -910,7 +910,7 @@ interface SearchNameAndDetails_Root_Props {
  */
 class SearchNameAndDetails_Root_State {
 
-    showSearchDetails? : boolean = false;
+    force_ReRender_Object?: object
 }
 
 /**
@@ -924,8 +924,10 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
 
     private _showSearchDetails_Clicked_BindThis = this._showSearchDetails_Clicked.bind(this);
     private _hideSearchDetails_Clicked_BindThis = this._hideSearchDetails_Clicked.bind(this);
+    private _searchName_Clicked_BindThis = this._searchName_Clicked.bind(this);
     private _add_Change_SearchTags_Clicked_BindThis = this._add_Change_SearchTags_Clicked.bind(this);
 
+    private _showSearchDetails = false;
     private _searchDetails_EverShown : boolean = false;
 
     /**
@@ -937,7 +939,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         this._searchName_Div_Ref = React.createRef<HTMLDivElement>();
 
         this.state = {
-            showSearchDetails : false
+            force_ReRender_Object : {}
         };
     }
 
@@ -947,7 +949,8 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
     componentDidUpdate(prevProps: Readonly<SearchNameAndDetails_Root_Props>, prevState: Readonly<SearchNameAndDetails_Root_State>, snapshot?: any): void {
 
         if ( prevProps.projectSearchId !== this.props.projectSearchId ) {
-            this.setState({ showSearchDetails : false });
+            this._showSearchDetails = false
+            this.setState({ force_ReRender_Object: {} });
         }
     }
 
@@ -963,9 +966,11 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
      */
     private _showSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
+        this._showSearchDetails = true
+
         this._searchDetails_EverShown = true
 
-        this.setState({ showSearchDetails : true });
+        this.setState({ force_ReRender_Object: {} });
     }
 
     /**
@@ -973,7 +978,21 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
      */
     private _hideSearchDetails_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
 
-        this.setState({ showSearchDetails : false });
+        this._showSearchDetails = false
+
+        this.setState({ force_ReRender_Object: {} });
+    }
+
+    private _searchName_Clicked( event :  React.MouseEvent<HTMLImageElement, MouseEvent> ) {
+
+        if ( this._showSearchDetails ) {
+            this._showSearchDetails = false
+        } else {
+            this._showSearchDetails = true
+            this._searchDetails_EverShown = true
+        }
+
+        this.setState({ force_ReRender_Object: {} });
     }
 
     ////////////////////////////////////////
@@ -1128,7 +1147,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
         }
 
         const searchDetailsContainer_div_Style : React.CSSProperties = {}
-        if ( ! this.state.showSearchDetails ) {
+        if ( ! this._showSearchDetails ) {
             searchDetailsContainer_div_Style.display = "none";
         }
 
@@ -1158,7 +1177,7 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                         </span>
                     ): null }
 
-                    { ( this.state.showSearchDetails ) ? (
+                    { ( this._showSearchDetails ) ? (
                         <img className="icon-small fake-link-image "
                              onClick={ this._hideSearchDetails_Clicked_BindThis }
                              src="static/images/pointer-down.png"/>
@@ -1173,7 +1192,11 @@ class SearchNameAndDetails_Root extends React.Component< SearchNameAndDetails_Ro
                         <div
                             ref={ this._searchName_Div_Ref }
                         >
-                            <span style={ { overflowWrap: "break-word" } }>
+                            <span
+                                className=" clickable "
+                                style={ { overflowWrap: "break-word" } }
+                                onClick={ this._searchName_Clicked_BindThis }
+                            >
                                 { searchNameObject.name }
                             </span>
                             { searchNameObject.searchShortName ? (
