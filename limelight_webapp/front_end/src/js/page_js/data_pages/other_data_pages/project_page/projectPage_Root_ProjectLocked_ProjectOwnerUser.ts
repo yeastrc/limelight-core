@@ -20,8 +20,6 @@ import { initShowHideErrorMessage } from 'page_js/common_all_pages/showHideError
 
 import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHeader';
 
-import { CollapsableSection_StandardProcessing } from 'page_js/main_pages/collapsableSection_StandardProcessing';
-
 
 //  Local Imports
 
@@ -82,10 +80,6 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 
 		const projectPage_CommonOverall = new ProjectPage_CommonOverall();
 		projectPage_CommonOverall.initialize();
-		
-		//  Collapse/Expand for Project Info and Searches
-		const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
-		collapsableSection_StandardProcessing.initialize();
 
 		{
 			this._projectPage_ProjectSection_AllUsersInclPublic_Interaction = new ProjectPage_ProjectSection_AllUsersInclPublic_Interaction()
