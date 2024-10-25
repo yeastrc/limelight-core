@@ -15,7 +15,7 @@ import React from "react";
 import {
     ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component,
     ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Expanded_Default
-} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/researcher_aka_assistant_project_owner/projectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component";
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/share_data_section/researcher_aka_assistant_project_owner__or__project_locked_logged_in_user/projectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component";
 
 /**
  *

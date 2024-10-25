@@ -99,6 +99,7 @@ export class ProjectPage__ResearchersSection__ProjectOwnerInteraction_ROOT_Compo
             <div className="top-level-container share-data-root ">
 
                 <ProjectPage__ResearchersSection__CommonInteraction_TopLevelLabel_Component
+                    userIsProjectOwner_ProjectNotLocked={ ! this.props.projectIsLocked }
                     expanded_Chosen_Callback={ this._expanded_Chosen_Callback_BindThis }
                     collapsed_Chosen_Callback={ this._collapsed_Chosen_Callback_BindThis }
                 />

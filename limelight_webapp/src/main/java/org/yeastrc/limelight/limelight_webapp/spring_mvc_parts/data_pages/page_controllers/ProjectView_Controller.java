@@ -221,6 +221,14 @@ public class ProjectView_Controller {
 				
 				//  Only needed for Assistant Project Owner (AKA Researcher)
 				
+			}
+			
+			
+			if ( webSessionAuthAccessLevel.isProjectOwnerIfProjectNotLockedAllowed()
+					||  webSessionAuthAccessLevel.isViewerReadOnlyIfProjectNotLockedAllowed() ) {
+
+				//  Only needed for Project Owner OR Assistant Project Owner (AKA Researcher)
+				
 				String projectShortName = projectDAO.get_ShortName_ForId( projectId );
 				
 				httpServletRequest.setAttribute( "projectShortName", projectShortName );

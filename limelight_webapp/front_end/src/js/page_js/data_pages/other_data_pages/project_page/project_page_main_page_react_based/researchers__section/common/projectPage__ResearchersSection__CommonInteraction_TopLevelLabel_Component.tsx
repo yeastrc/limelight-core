@@ -22,6 +22,7 @@ export const ProjectPage__ResearchersSection__CommonInteraction_TopLevelLabel_Co
  */
 export interface ProjectPage__ResearchersSection__CommonInteraction_Common_TopLevelLabel_Component_Props {
 
+    userIsProjectOwner_ProjectNotLocked: boolean
     expanded_Chosen_Callback: () => void
     collapsed_Chosen_Callback: () => void
 }
@@ -182,9 +183,15 @@ export class ProjectPage__ResearchersSection__CommonInteraction_TopLevelLabel_Co
 
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
-                                <span>
-                                    Invite, remove, and view users that have access to this project and its data.
-                                </span>
+                                this.props.userIsProjectOwner_ProjectNotLocked ? (
+                                    <span>
+                                        Invite, remove, and view users that have access to this project and its data.
+                                    </span>
+                                ) : (
+                                    <span>
+                                        View users that have access to this project and its data.
+                                    </span>
+                                )
                             }
                         />
                     </div>

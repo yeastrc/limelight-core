@@ -27,7 +27,8 @@ import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
 import { ProjectPage_ProjectSection_ProjectOwnerInteraction } from './project_page_project_section/js/projectPage_ProjectSection_ProjectOwnerInteraction';
 import {
-	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component
+	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
+	ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {
 	add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage
@@ -44,6 +45,9 @@ import {
 import {
 	ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInclPublic_Interaction";
+import {
+	getComponent_ProjectPage_Root_ProjectOwnerUser_ProjectLocked_SpecificComponentsForRoot_Component
+} from "page_js/data_pages/other_data_pages/project_page/projectPage_Root_ProjectOwnerUser_ProjectLocked_SpecificComponentsForRoot_Component";
 
 /**
  * 
@@ -113,6 +117,16 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 		add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage({ propsValue: { projectIdentifier: this._projectIdentifierFromURL, projectPage_ProjectSection_LoggedInUsersInteraction_PassTo_SectionReactRoot: undefined }})
 
 
+		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
+
+			return getComponent_ProjectPage_Root_ProjectOwnerUser_ProjectLocked_SpecificComponentsForRoot_Component({
+				projectIdentifier: params.projectIdentifierFromURL,
+				projectIsLocked: params.projectIsLocked,
+				force_ReloadFromServer_EmptyObjectReference: params.force_ReloadFromServer_EmptyObjectReference,
+				force_Rerender_EmptyObjectReference: params.force_Rerender_EmptyObjectReference
+			})
+		}
+
 		add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
 			projectIdentifierFromURL : this._projectIdentifierFromURL,
 			projectIsLocked: true,
@@ -122,7 +136,7 @@ class ProjectViewPage_Root_ProjectLocked_ProjectOwnerUser {
 			dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails,
 			projectPage_ExperimentsSection_LoggedInUsersInteraction: null,
 			projectPage_SavedViews_Section_LoggedInUsersInteraction: null,
-			getSubComponents__Callback_Function: null
+			getSubComponents__Callback_Function
 		})
 
 		this._initializeCalled = true;

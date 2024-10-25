@@ -11,6 +11,9 @@
 
 import React from "react";
 import {reportWebErrorToServer} from "page_js/common_all_pages/reportWebErrorToServer";
+import {
+    Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+} from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
 
 export const ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Expanded_Default = false
 
@@ -30,7 +33,7 @@ export interface ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLe
  */
 interface ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_State {
 
-    expanded?: boolean
+    force_ReRender_Object?: object
 }
 
 /**
@@ -40,10 +43,13 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
 
     private _expanded_Chosen_Callback_BindThis = this._expanded_Chosen_Callback.bind(this)
     private _collapsed_Chosen_Callback_BindThis = this._collapsed_Chosen_Callback.bind(this)
+    private _labelClicked_Callback_BindThis = this._labelClicked_Callback.bind(this)
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
     }
+
+    private _expanded = ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Expanded_Default
 
     /**
      *
@@ -51,10 +57,7 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
     constructor(props: ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Props) {
         super(props)
 
-        this.state = {
-
-            expanded: ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelLabel_Component_Expanded_Default
-        }
+        this.state = { force_ReRender_Object: {} }
     }
 
     /**
@@ -62,7 +65,9 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
      */
     private _expanded_Chosen_Callback() : void {
         try {
-            this.setState({ expanded: true });
+            this._expanded = true
+
+            this.setState({ force_ReRender_Object: {} });
 
             window.setTimeout( () => {
                 try {
@@ -88,11 +93,45 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
      */
     private _collapsed_Chosen_Callback() : void {
         try {
-            this.setState({ expanded: false });
+            this._expanded = false
+
+            this.setState({ force_ReRender_Object: {} });
 
             window.setTimeout( () => {
                 try {
                     this.props.collapsed_Chosen_Callback();
+
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({
+                        errorException : e
+                    });
+                    throw e;
+                }
+            }, 50 );
+        } catch (e) {
+            reportWebErrorToServer.reportErrorObjectToServer({
+                errorException : e
+            });
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _labelClicked_Callback() : void {
+        try {
+            this._expanded = ! this._expanded  // Invert the value
+
+            this.setState({ force_ReRender_Object: {} });
+
+            window.setTimeout( () => {
+                try {
+                    if ( this._expanded ) {
+                        this.props.expanded_Chosen_Callback()
+                    } else {
+                        this.props.collapsed_Chosen_Callback()
+                    }
 
                 } catch (e) {
                     reportWebErrorToServer.reportErrorObjectToServer({
@@ -118,7 +157,7 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
             <React.Fragment>
 
                 <div className="collapsable-link-container top-level-collapsable-link-container ">
-                    { ( this.state.expanded ) ? (
+                    { ( this._expanded ) ? (
                         <img src="static/images/pointer-down.png"
                              className=" icon-large fake-link-image "
                              onClick={ this._collapsed_Chosen_Callback_BindThis }
@@ -133,29 +172,40 @@ export class ProjectPage_ShareDataSection_ResearcherInteraction_Common_TopLevelL
 
                 <div className="top-level-label share-data-top-level-label-block">
 
-                    <div style={ { whiteSpace: "nowrap" } } >  {/*  column 1  */}
+                    <div style={ { whiteSpace: "nowrap" } }>  {/*  column 1  */ }
 
-                        {/*  Top Level Label  */}
-                        <span>
+                        {/*  Top Level Label  */ }
+                        <span
+                            className=" clickable "
+                            onClick={ this._labelClicked_Callback_BindThis }
+                        >
                             Share Data
                         </span>
 
                         {/*  Tags to right of Label
 
                             only show Public if both are true
-                         */}
+                         */ }
 
-                        { (this.props.show_Public_Tag ) ? (
+                        { ( this.props.show_Public_Tag ) ? (
                             <span className=" share-data-tag-container ">
                                 <span className=" share-data-tag share-data-tag-common ">
                                     Public
                                 </span>
                             </span>
                         ) : null }
+
+                        <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
+                            title={
+                                <span>
+                                    Project status of public sharing and project URL.
+                                </span>
+                            }
+                        />
                     </div>
 
                 </div>
-                
+
                 <div className="top-level-label-bottom-border"></div>
 
             </React.Fragment>

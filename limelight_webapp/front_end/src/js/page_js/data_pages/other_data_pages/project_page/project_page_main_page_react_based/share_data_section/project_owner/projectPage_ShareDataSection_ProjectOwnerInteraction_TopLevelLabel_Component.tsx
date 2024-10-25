@@ -204,7 +204,7 @@ export class ProjectPage_ShareDataSection_ProjectOwnerInteraction_TopLevelLabel_
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={
                                 <span>
-                                    Enable or disable reviewer mode and public sharing for this project.
+                                    Enable or disable reviewer mode and public sharing for this project.  Add a custom URL for the project.
                                 </span>
                             }
                         />

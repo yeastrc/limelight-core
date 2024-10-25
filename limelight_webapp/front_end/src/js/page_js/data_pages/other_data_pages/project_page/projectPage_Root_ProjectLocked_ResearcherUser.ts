@@ -25,7 +25,10 @@ import { MainPagesPopulateHeader } from 'page_js/main_pages/mainPagesPopulateHea
 
 import { ProjectPage_CommonOverall } from './projectPage_CommonOverall';
 
-import {add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
+import {
+	add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component,
+	ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params
+} from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/project_page_ReactParts_ROOT_Component/projectPage_ROOT_Container_Containing_MultipleSections_Component";
 import {
 	add_ProjectPage__ProjectSection_AllUser_Root_Component_ToPage
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/jsx/projectPage_ProjectSection_AllUser_Root_Component";
@@ -35,6 +38,9 @@ import {
 import {
 	ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
 } from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInclPublic_Interaction";
+import {
+	getComponent_ProjectPage_Root_ResearcherUser_ProjectLocked_SpecificComponentsForRoot_Component
+} from "page_js/data_pages/other_data_pages/project_page/projectPage_Root_ResearcherUser_ProjectLocked_SpecificComponentsForRoot_Component";
 
 
 /**
@@ -79,6 +85,16 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 		
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
 
+		const getSubComponents__Callback_Function = ( params: ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component__GetSubComponents__Callback_Params ) => {
+
+			return getComponent_ProjectPage_Root_ResearcherUser_ProjectLocked_SpecificComponentsForRoot_Component({
+				projectIdentifier: params.projectIdentifierFromURL,
+				projectIsLocked: params.projectIsLocked,
+				force_ReloadFromServer_EmptyObjectReference: params.force_ReloadFromServer_EmptyObjectReference,
+				force_Rerender_EmptyObjectReference: params.force_Rerender_EmptyObjectReference
+			})
+		}
+
 		try {
 			add_Component_to_Page__ProjectPage_ProjectPage_ROOT_Container_Containing_MultipleSections_Component({
 				projectIdentifierFromURL : this._projectIdentifierFromURL,
@@ -89,7 +105,7 @@ class ProjectViewPage_Root_ProjectLocked_ResearcherUser {
 				dataPages_LoggedInUser_CommonObjectsFactory_ForSearchDetails: null,
 				projectPage_ExperimentsSection_LoggedInUsersInteraction: null,
 				projectPage_SavedViews_Section_LoggedInUsersInteraction: null,
-				getSubComponents__Callback_Function: null
+				getSubComponents__Callback_Function
 			})
 
 		} catch (e) {

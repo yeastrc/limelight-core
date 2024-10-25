@@ -1,10 +1,11 @@
 /**
- * projectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component.tsx
+ * projectPage_Root_ProjectOwnerUser_ProjectLocked_SpecificComponentsForRoot_Component.tsx
  *
  * Project Page - Component
  *
- *  Components that go under Root Component for Researcher when project NOT Locked
+ *  Components that go under Root Component for Project Owner when project IS Locked
  *
+ *  Is using Researcher Components since they are "View Only"
  *
  */
 
@@ -18,10 +19,10 @@ import {
  *
  * @param props
  */
-export const getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : JSX.Element {
+export const getComponent_ProjectPage_Root_ProjectOwnerUser_ProjectLocked_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : JSX.Element {
 
     return (
-        <ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component
+        <ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component
             { ...props }
         />
     )
@@ -55,7 +56,7 @@ interface ProjectPage_SearchesSection_MainBlock_Component_State {
 /**
  *
  */
-class ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component extends React.Component< ProjectPage_SearchesSection_MainBlock_Component_Props, ProjectPage_SearchesSection_MainBlock_Component_State > {
+class ProjectPage_Root_ProjectOwnerUser_SpecificComponentsForRoot_Component extends React.Component< ProjectPage_SearchesSection_MainBlock_Component_Props, ProjectPage_SearchesSection_MainBlock_Component_State > {
 
     /**
      *

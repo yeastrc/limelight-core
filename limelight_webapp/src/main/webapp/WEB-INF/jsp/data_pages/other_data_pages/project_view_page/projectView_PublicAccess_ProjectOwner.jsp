@@ -32,6 +32,8 @@
 		<script type="text/text" id="share_data_project__public_access_code_enabled">true</script>
 	</c:if>
 
+		<script type="text/text" id="share_data_project_label_project_short_label"><html><body><c:out value="${ projectShortName }"></c:out></body></html></script>
+
 	<%--  Label for Short URL access to Project  (<context>/p/<label>) --%>
 
 	<script type="text/text" id="share_data_project_label_page_controller_path_separator"><%= AA_PageControllerPaths_Constants.PATH_SEPARATOR %></script>

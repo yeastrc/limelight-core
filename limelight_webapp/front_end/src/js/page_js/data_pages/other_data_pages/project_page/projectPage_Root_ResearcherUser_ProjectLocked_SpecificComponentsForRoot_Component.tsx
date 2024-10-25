@@ -1,9 +1,9 @@
 /**
- * projectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component.tsx
+ * projectPage_Root_ResearcherUser_ProjectLocked_SpecificComponentsForRoot_Component.tsx
  *
  * Project Page - Component
  *
- *  Components that go under Root Component for Researcher when project NOT Locked
+ *  Components that go under Root Component for Researcher when project IS Locked
  *
  *
  */
@@ -18,7 +18,7 @@ import {
  *
  * @param props
  */
-export const getComponent_ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : JSX.Element {
+export const getComponent_ProjectPage_Root_ResearcherUser_ProjectLocked_SpecificComponentsForRoot_Component = function( props: ProjectPage_SearchesSection_MainBlock_Component_Props ) : JSX.Element {
 
     return (
         <ProjectPage_Root_ResearcherUser_SpecificComponentsForRoot_Component
