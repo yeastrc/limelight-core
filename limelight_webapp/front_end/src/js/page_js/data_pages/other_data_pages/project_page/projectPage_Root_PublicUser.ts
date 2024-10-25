@@ -32,6 +32,9 @@ import {
 import {
 	addToPage_INTERNAL__ProjectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help__Root_Component
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help_Component";
+import {
+	ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
+} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInclPublic_Interaction";
 
 /**
  * 
@@ -41,6 +44,8 @@ class ProjectViewPage_Root_PublicUser {
 	private _initializeCalled = false;
 
 	private _projectIdentifierFromURL : string
+
+	private _projectPage_ProjectSection_AllUsersInclPublic_Interaction: ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
 
 	/**
 	 * 
@@ -64,6 +69,11 @@ class ProjectViewPage_Root_PublicUser {
 		//  Collapse/Expand for Project Info and Searches
 		const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
 		collapsableSection_StandardProcessing.initialize();
+
+		{
+			this._projectPage_ProjectSection_AllUsersInclPublic_Interaction = new ProjectPage_ProjectSection_AllUsersInclPublic_Interaction()
+			this._projectPage_ProjectSection_AllUsersInclPublic_Interaction.initialize()
+		}
 
 		this._projectIdentifierFromURL = this._getProjectIdentifierFromURL();
 

@@ -29,7 +29,7 @@ export interface ProjectPage_SearchesSection_Common_TopLevelLabel_Component_Prop
  */
 interface ProjectPage_SearchesSection_Common_TopLevelLabel_Component_State {
 
-    expanded?: boolean
+    force_ReRender_Object?: object
 }
 
 /**
@@ -39,10 +39,14 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
 
     private _expanded_Chosen_Callback_BindThis = this._expanded_Chosen_Callback.bind(this)
     private _collapsed_Chosen_Callback_BindThis = this._collapsed_Chosen_Callback.bind(this)
+    private _labelClicked_Callback_BindThis = this._labelClicked_Callback.bind(this)
+
 
     private _DO_NOT_CALL_VALIDATES_FunctionSignatures() {
 
     }
+
+    private _expanded = ProjectPage_SearchesSection_Common_TopLevelLabel_Component_Expanded_Default
 
     /**
      *
@@ -50,10 +54,7 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
     constructor(props: ProjectPage_SearchesSection_Common_TopLevelLabel_Component_Props) {
         super(props)
 
-        this.state = {
-
-            expanded: ProjectPage_SearchesSection_Common_TopLevelLabel_Component_Expanded_Default
-        }
+        this.state = { force_ReRender_Object: {} }
     }
 
     /**
@@ -61,7 +62,9 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
      */
     private _expanded_Chosen_Callback() : void {
         try {
-            this.setState({ expanded: true });
+            this._expanded = true
+
+            this.setState({ force_ReRender_Object: {} });
 
             window.setTimeout( () => {
                 try {
@@ -87,11 +90,45 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
      */
     private _collapsed_Chosen_Callback() : void {
         try {
-            this.setState({ expanded: false });
+            this._expanded = false
+
+            this.setState({ force_ReRender_Object: {} });
 
             window.setTimeout( () => {
                 try {
                     this.props.collapsed_Chosen_Callback();
+
+                } catch (e) {
+                    reportWebErrorToServer.reportErrorObjectToServer({
+                        errorException : e
+                    });
+                    throw e;
+                }
+            }, 50 );
+        } catch (e) {
+            reportWebErrorToServer.reportErrorObjectToServer({
+                errorException : e
+            });
+            throw e;
+        }
+    }
+
+    /**
+     *
+     */
+    private _labelClicked_Callback() : void {
+        try {
+            this._expanded = ! this._expanded  // Invert the value
+
+            this.setState({ force_ReRender_Object: {} });
+
+            window.setTimeout( () => {
+                try {
+                    if ( this._expanded ) {
+                        this.props.expanded_Chosen_Callback()
+                    } else {
+                        this.props.collapsed_Chosen_Callback()
+                    }
 
                 } catch (e) {
                     reportWebErrorToServer.reportErrorObjectToServer({
@@ -117,7 +154,7 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
             <React.Fragment>
 
                 <div className="collapsable-link-container top-level-collapsable-link-container ">
-                    { ( this.state.expanded ) ? (
+                    { ( this._expanded ) ? (
                         <img src="static/images/pointer-down.png"
                              className=" icon-large fake-link-image "
                              onClick={ this._collapsed_Chosen_Callback_BindThis }
@@ -135,9 +172,12 @@ export class ProjectPage_SearchesSection_Common_TopLevelLabel_Component extends 
                     <div style={ { whiteSpace: "nowrap" } } >
 
                         {/*  Top Level Label  */}
-                        <span>
-                                Explore Search Results
-                            </span>
+                        <span
+                            className=" clickable "
+                            onClick={ this._labelClicked_Callback_BindThis }
+                        >
+                            Explore Search Results
+                        </span>
 
                         <Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
                             title={

@@ -5,11 +5,11 @@
 
  <%@ include file="/WEB-INF/jsp/jsp_includes_taglib_imports/taglibImport.jsp" %>
 
-  <div class="top-level-container selector_collapsable_container" >
+  <div class="top-level-container " >
 
-	<div  class="collapsable-link-container top-level-collapsable-link-container selector_collapsable_link_container" >
-		<img  src="static/images/pointer-down.png"  class=" icon-large fake-link-image selector_collapsable_collapse_link ">
-		<img  src="static/images/pointer-right.png" class=" icon-large fake-link-image  selector_collapsable_expand_link " style="display: none; ">
+	<div  class="collapsable-link-container top-level-collapsable-link-container " >
+		<img id="project_page_project_info_block_hide_link"  src="static/images/pointer-down.png"  class=" icon-large fake-link-image ">
+		<img id="project_page_project_info_block_show_link"  src="static/images/pointer-right.png" class=" icon-large fake-link-image " style="display: none; ">
 	</div>
 
 	<div class="top-level-label">
@@ -17,7 +17,7 @@
 
 		  <div style=" white-space: nowrap ">
 		  
-		  	<span>Project Information</span
+		  	<span id="project_page_project_info_block_label_link" class=" clickable " >Project Information</span
 		  	
 		  	><c:choose
 		  		><c:when test="${ webSessionAuthAccessLevel.projectOwnerAllowed and ( not project.projectLocked ) }"
@@ -48,8 +48,8 @@ While locked, no data may be changed, added to, or deleted from the project."
 				
 				><%--  Researcher and Project Locked.  Display only of Lock symbol 
 				
-				--%><img  src="static/images/icon-locked.png" class="icon-large "
-				
+				--%> <img  src="static/images/icon-locked.png" class="icon-large "
+							title="Project is locked"
 				></c:when
 				
 			></c:choose
@@ -74,7 +74,7 @@ While locked, no data may be changed, added to, or deleted from the project."
 	
 	<div class="top-level-label-bottom-border" ></div>
 						
-	<div class="project-info-block  selector_collapsable_item">
+	<div id="project_page_project_info_block_element_to_show_hide" class="project-info-block ">
 	
 	  <%--  Project Title --%>
 	  

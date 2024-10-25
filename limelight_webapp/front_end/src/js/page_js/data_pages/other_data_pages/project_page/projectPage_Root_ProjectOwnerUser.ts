@@ -48,6 +48,9 @@ import {
 import {
 	addToPage_INTERNAL__ProjectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help__Root_Component
 } from "page_js/data_pages/other_data_pages/project_page/project_page_main_page_react_based/jsx/projectPage_ProjectInformation_Section_QuestionMark_WithCircle_Help_Component";
+import {
+	ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
+} from "page_js/data_pages/other_data_pages/project_page/project_page_project_section/js/projectPage_ProjectSection_AllUsersInclPublic_Interaction";
 
 /**
  * 
@@ -62,6 +65,8 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 
 	private _projectPage_SearchesAdmin : ProjectPage_SearchesAdmin
 	private _projectPage_SavedViews_Section_LoggedInUsersInteraction : ProjectPage_SavedViews_Section_LoggedInUsersInteraction
+
+	private _projectPage_ProjectSection_AllUsersInclPublic_Interaction: ProjectPage_ProjectSection_AllUsersInclPublic_Interaction
 
 	private _projectPage_ProjectSection_ProjectOwnerInteraction : ProjectPage_ProjectSection_ProjectOwnerInteraction
 
@@ -89,6 +94,11 @@ class ProjectViewPage_Root_ProjectOwnerUser {
 		//  Collapse/Expand for Project Info and Searches
 		const collapsableSection_StandardProcessing = new CollapsableSection_StandardProcessing();
 		collapsableSection_StandardProcessing.initialize();
+
+		{
+			this._projectPage_ProjectSection_AllUsersInclPublic_Interaction = new ProjectPage_ProjectSection_AllUsersInclPublic_Interaction()
+			this._projectPage_ProjectSection_AllUsersInclPublic_Interaction.initialize()
+		}
 
 		const userIsProjectOwner = true;
 		const projectLocked = false;
