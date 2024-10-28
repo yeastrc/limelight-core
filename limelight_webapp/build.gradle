@@ -23,7 +23,7 @@ plugins {
 	id 'java'
 	id 'war'
 	id 'eclipse'
-	id "org.springframework.boot" version "2.6.6"
+	id "org.springframework.boot" version "2.7.18"
 	id "io.spring.dependency-management" version "1.0.11.RELEASE"
 	id 'org.ajoberstar.grgit' version '4.1.1'
 }
@@ -212,10 +212,10 @@ dependencies {
 	providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
 	
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.6.6'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.7.18'
 
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
-	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.6.6'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.7.18'
 
 	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
 	implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.3.18'
