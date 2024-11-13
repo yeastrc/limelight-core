@@ -694,7 +694,7 @@ class Project_OrganizeSearches_Folder_Change_SearchesInFolder_OverlayComponent e
                                             <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
                                                 title={
                                                     <span>
-                                                        Clear text filters AAA
+                                                        Clear text filters
                                                     </span>
                                                 }
                                                 { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }

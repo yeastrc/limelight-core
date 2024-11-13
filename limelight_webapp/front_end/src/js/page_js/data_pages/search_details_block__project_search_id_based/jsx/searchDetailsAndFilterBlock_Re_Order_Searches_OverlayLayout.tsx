@@ -398,7 +398,7 @@ class DraggableSearchEntry extends React.Component< SearchEntry_Props, SearchEnt
                                 >
 
                                     <span style={ { overflowWrap: "break-word" } }>
-                                        { this.state.searchNameDisplay }AAA
+                                        { this.state.searchNameDisplay }
                                     </span>
 
                                 </div>
