@@ -255,7 +255,7 @@ export class PeptideSequence_UserSelections extends React.Component< PeptideSequ
                 notFoundMessage = (
                     <React.Fragment>
                         <span > </span>
-                        <span style={ { fontSize: 10, color: "red" } }
+                        <span style={ { fontSize: 10, color: "red", whiteSpace: "nowrap" } }
                         >*not found in protein</span>
                     </React.Fragment>
                 );

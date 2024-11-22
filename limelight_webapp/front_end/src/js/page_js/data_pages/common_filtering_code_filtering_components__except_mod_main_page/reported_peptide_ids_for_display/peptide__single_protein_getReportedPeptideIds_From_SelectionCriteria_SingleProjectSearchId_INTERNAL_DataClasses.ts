@@ -50,7 +50,6 @@ export class Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteri
     peptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject: PeptideMeetsDigestion_AKA_TrypticPeptide_Etc_UserSelections_StateObject
     proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
     proteinPositionFilter_UserSelections_StateObject: ProteinPositionFilter_UserSelections_StateObject
-    userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
 }
 
 /**

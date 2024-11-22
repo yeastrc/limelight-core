@@ -177,7 +177,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             peptideSequence_MissedCleavageCount_UserSelections_StateObject,
             proteinSequenceWidget_StateObject,
             proteinPositionFilter_UserSelections_StateObject,
-            userSearchString_LocationsOn_ProteinSequence_Root,
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
         }: {
             reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
@@ -194,7 +193,6 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
             peptideSequence_MissedCleavageCount_UserSelections_StateObject : PeptideSequence_MissedCleavageCount_UserSelections_StateObject
             proteinSequenceWidget_StateObject: ProteinSequenceWidget_StateObject
             proteinPositionFilter_UserSelections_StateObject : ProteinPositionFilter_UserSelections_StateObject
-            userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
             modificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass: ModificationMass_OpenModMassZeroNotOpenMod_UserSelection__CentralStateManagerObjectClass
 
         }): Array<Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS> {
@@ -255,8 +253,7 @@ export class Peptide__single_protein_update_reportedPeptideIds_AndTheir_PSM_IDs_
         {
             const result = this._internal_ComputeFor_UserSearchString_Of_Sequences.getFor__UserSearchString({
                 reportedPeptideIds_ProteinId_Params_PassedIn,
-                peptideSequence_UserSelections_StateObject,
-                userSearchString_LocationsOn_ProteinSequence_Root
+                peptideSequence_UserSelections_StateObject
             });
             reportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS__Array.push( result );
         }
@@ -1565,11 +1562,9 @@ class Internal_ComputeFor_UserSearchString_Of_Sequences {
         {
             reportedPeptideIds_ProteinId_Params_PassedIn,
             peptideSequence_UserSelections_StateObject,
-            userSearchString_LocationsOn_ProteinSequence_Root
         }: {
             reportedPeptideIds_ProteinId_Params_PassedIn: Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn
             peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
-            userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
         }): Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
 
         //  Validate proteinSequenceVersionId is same for all calls
@@ -1592,26 +1587,10 @@ class Internal_ComputeFor_UserSearchString_Of_Sequences {
 
         /////
 
-        if ( reportedPeptideIds_ProteinId_Params_PassedIn.reportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum ===
-            Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_INTERNAL_Filtering_ReportedPeptideIds_ProteinId_Params_PassedIn_Type_Enum.ALL_FOR_SINGLE_PROTEIN_IN_SEARCH
-        ) {
-
-            return this._getFor__UserSearchString_Have_proteinSequenceVersionId({
-                proteinSequenceVersionId: reportedPeptideIds_ProteinId_Params_PassedIn.get_proteinSequenceVersionId(),
-                userSearchString_LocationsOn_ProteinSequence_Root,
-                peptideSequence_UserSelections_StateObject
-            });
-
-        } else {
-
-            //  For processing with NO _proteinSequenceVersionId
-
-            return this._getFor__UserSearchString__NOT_Have_proteinSequenceVersionId({
-                reportedPeptideIds_ProteinId_Params_PassedIn,
-                peptideSequence_UserSelections_StateObject
-            });
-
-        }
+        return this._getFor__UserSearchString__NOT_Have_proteinSequenceVersionId({
+            reportedPeptideIds_ProteinId_Params_PassedIn,
+            peptideSequence_UserSelections_StateObject
+        });
     }
 
     /**
@@ -1863,59 +1842,6 @@ class Internal_ComputeFor_UserSearchString_Of_Sequences {
         }
 
         return resultData;
-    }
-
-    /**
-     * User has entered Protein Sequence "Filter On Peptide:" to filter on
-     *
-     */
-    private _getFor__UserSearchString_Have_proteinSequenceVersionId(
-        {
-            proteinSequenceVersionId,
-            userSearchString_LocationsOn_ProteinSequence_Root,
-            peptideSequence_UserSelections_StateObject,
-        }: {
-            proteinSequenceVersionId: number
-            userSearchString_LocationsOn_ProteinSequence_Root: UserSearchString_LocationsOn_ProteinSequence_Root
-            peptideSequence_UserSelections_StateObject : PeptideSequence_UserSelections_StateObject
-        }): Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS {
-
-        if ( ( ! peptideSequence_UserSelections_StateObject )
-            || ( ! peptideSequence_UserSelections_StateObject.isPeptideSearchString_AtLeastOneNotEmptyString() ) ) {
-
-            //  NO Filtering
-
-            const resultData = new Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FILTERING_INTERNAL_CLASS({
-                noFilter_OR_FilterHasNoData: true, includeAll_ReportedPeptideIds: false
-            });
-            const result : Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS = {
-                result: resultData,
-                promise: undefined
-            };
-
-            return result; // EARLY RETURN
-        }
-
-        const proteinPositions_CoveredBy_SearchStrings = userSearchString_LocationsOn_ProteinSequence_Root.proteinPositions_CoveredBy_SearchStrings
-        const proteinPositions_CoveredBy_SearchStrings_length = proteinPositions_CoveredBy_SearchStrings.length
-
-        const selectedProteinSequencePositions = new Set<number>()
-
-        for (let position = 1; position < proteinPositions_CoveredBy_SearchStrings_length; position++) {
-            if (proteinPositions_CoveredBy_SearchStrings[position]) {
-                selectedProteinSequencePositions.add(position)
-            }
-        }
-
-        const dataForPositions_ForEnteredSequence: Peptide__single_protein_ReportedPeptideIds_AndTheir_PSM_IDs__SingleProjectSearchId__FUNCTION_RESULT__FILTERING_INTERNAL_CLASS = (
-            Peptide__single_protein_getReportedPeptideIds_From_SelectionCriteria_SingleProjectSearchId_COMMON.getReportedPeptideIdsForDisplay_ProteinPositionsSelected({
-                selectedProteinSequencePositions,
-                proteinSequenceVersionId,
-                commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId: this._commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Single_ProjectSearchId
-            })
-        )
-
-        return dataForPositions_ForEnteredSequence;
     }
 }
 
