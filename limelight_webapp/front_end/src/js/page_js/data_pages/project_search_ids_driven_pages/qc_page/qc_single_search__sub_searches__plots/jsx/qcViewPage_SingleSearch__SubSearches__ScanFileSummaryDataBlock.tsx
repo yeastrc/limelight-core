@@ -779,7 +779,7 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
                                     value_Display = totalIonCurrent_ForScanLevel_FilteredScans.toExponential(3) +
                                         " (" +
                                         ( ( totalIonCurrent_ForScanLevel_FilteredScans / summaryPerScanLevelData.totalIonCurrent ) * 100 ).toFixed( 1 ) +
-                                        ")"
+                                        "%)"
                                 }
                             }
 
