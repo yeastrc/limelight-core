@@ -657,6 +657,13 @@ public class ProjectView_OrFrom_ProjectSearchIds_SearchList_RestWebserviceContro
 				if ( ( entry >= 'a' && entry <= 'v' )
 						|| ( entry >= 'A' && entry <= 'V' ) ) {
 					//  Only take a-v, A-v.
+					
+					if ( entry == 'a' || entry == 'e' || entry == 'i' || entry == 'o' || entry == 'u' || entry == 'y' 
+							|| entry == 'A' || entry == 'E' || entry == 'I' || entry == 'O' || entry == 'U' || entry == 'Y' ) {
+						// Skip all vowels so cannot spell words
+						continue;
+					}
+					
 					randomStringSB.append( entry );
 					insertedCharacterCount++;
 					if ( insertedCharacterCount >= RETURN_LENGTH ) {

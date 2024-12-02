@@ -393,17 +393,27 @@ public class Share_Page_Insert_RestWebserviceController {
 			char[] encodedLongArray = encodedLongExtract.toCharArray();
 			
 			for ( char entry : encodedLongArray ) {
-				if ( ( entry >= 'a' && entry <= 'z' )
-						|| ( entry >= 'A' && entry <= 'Z' )
+				if ( // ( entry >= 'a' && entry <= 'z' )
+						// || 
+						( entry >= 'A' && entry <= 'Z' )
 						|| ( entry >= '1' && entry <= '9' ) ) {
 					//  Only take a-z, A-Z, 1-9.
-					if ( entry != 'l' && entry != 'I' ) {
+
+					if ( entry == 'a' || entry == 'e' || entry == 'i' || entry == 'o' || entry == 'u' || entry == 'y' 
+							|| entry == 'A' || entry == 'E' || entry == 'I' || entry == 'O' || entry == 'U' || entry == 'Y' ) {
+						// Skip all vowels so cannot spell words
+						continue;
+					}
+					
+					if ( entry == 'l' || entry == 'I' ) {
 						//  Not take lower case l and upper case I since in many fonts they look too similar
-						randomStringSB.append( entry );
-						insertedCharacterCount++;
-						if ( insertedCharacterCount >= RETURN_LENGTH ) {
-							break;
-						}
+						continue;
+					}
+				
+					randomStringSB.append( entry );
+					insertedCharacterCount++;
+					if ( insertedCharacterCount >= RETURN_LENGTH ) {
+						break;
 					}
 				}
 			}
