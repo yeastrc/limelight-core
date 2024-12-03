@@ -27,14 +27,18 @@ to the GitHub repository for the individual converter for information on how to 
    :widths: 25 25
    :header-rows: 0
 
+   * - Casanovo
+     - https://github.com/yeastrc/limelight-import-casanovo
    * - Comet + Percolator
      - https://github.com/yeastrc/limelight-import-comet-percolator
    * - Comet + Trans Proteomic Pipeline
      - https://github.com/yeastrc/limelight-import-comet-tpp
    * - Comet-PTM
      - https://github.com/yeastrc/limelight-import-cometptm
-   * - Crux
+   * - Crux (Comet + Percolator)
      - https://github.com/yeastrc/limelight-import-crux-comet-percolator
+   * - Crux (Tide + Percolator)
+     - https://github.com/yeastrc/limelight-import-crux-tide-percolator
    * - Magnum + Percolator
      - https://github.com/yeastrc/limelight-import-magnum-percolator
    * - Magnum + Trans Proteomic Pipeline
