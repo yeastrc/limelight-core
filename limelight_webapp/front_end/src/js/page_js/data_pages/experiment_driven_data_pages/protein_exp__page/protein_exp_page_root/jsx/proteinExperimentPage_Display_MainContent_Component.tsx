@@ -2927,6 +2927,7 @@ export class ProteinExperimentPage_Display_MainContent_Component extends React.C
                             { saveView_Component }
 
                             <SharePage_Component
+                                experimentId={ this.props.propsValue.experimentId }
                                 projectSearchIds={ this.props.propsValue.projectSearchIds }
                             />
                         </div>
