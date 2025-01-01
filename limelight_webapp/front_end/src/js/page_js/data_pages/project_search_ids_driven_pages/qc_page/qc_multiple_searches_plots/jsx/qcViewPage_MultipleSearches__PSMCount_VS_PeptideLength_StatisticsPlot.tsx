@@ -510,6 +510,7 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_PeptideLength_StatisticsPl
                     }
                 }
             }
+
             const chart_X_Map_Key_ProjectSearchId : Map<number, Array<string>> = new Map()
             const chart_Y_Map_Key_ProjectSearchId : Map<number, Array<number>> = new Map()
 

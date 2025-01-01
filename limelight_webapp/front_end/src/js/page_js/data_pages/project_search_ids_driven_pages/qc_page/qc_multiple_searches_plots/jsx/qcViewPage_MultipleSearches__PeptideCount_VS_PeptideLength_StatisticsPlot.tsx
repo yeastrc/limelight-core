@@ -387,8 +387,10 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
             const searchData_SearchName_Etc_Root = this.props.qcViewPage_CommonData_To_AllComponents_From_MainComponent.dataPageStateManager.get_searchData_SearchName_Etc_Root();
 
 
-            const chart_X : Array<string> = []
-            const chart_Y : Array<number> = []
+
+            const chart_X_Map_Key_ProjectSearchId : Map<number, Array<string>> = new Map()
+            const chart_Y_Map_Key_ProjectSearchId : Map<number, Array<number>> = new Map()
+
             // const chart_Bars_labels: Array<string> = [];
             // const chart_Bars_Tooltips: Array<string> = [];
 
@@ -421,6 +423,18 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
 
                     projectSearchIds_Found.add(projectSearchId);
 
+                    let chart_X = chart_X_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_X ) {
+                        chart_X = []
+                        chart_X_Map_Key_ProjectSearchId.set( projectSearchId, chart_X )
+                    }
+
+                    let chart_Y = chart_Y_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_Y ) {
+                        chart_Y = []
+                        chart_Y_Map_Key_ProjectSearchId.set( projectSearchId, chart_Y )
+                    }
+
                     const peptideId_Set = new Set<number>();  //  Expected to only contain 1 entry
 
                     for (const dataPerReportedPeptideId_Map_Key_reportedPeptideId_Entry of dataPerReportedPeptideId_Map_Key_reportedPeptideId.entries()) {
@@ -439,6 +453,33 @@ export class QcViewPage_MultipleSearches__PeptideCount_VS_PeptideLength_Statisti
 
                         chart_X.push( x_Label )
                         chart_Y.push( peptideSequence_Length )
+                    }
+                }
+            }
+
+            const chart_X : Array<string> = []
+            const chart_Y : Array<number> = []
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                if ( projectSearchIds_Found.has( projectSearchId ) ) {
+
+                    const chart_X_FromMap = chart_X_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_X_FromMap ) {
+                        throw Error("No entry in chart_X_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId )
+                    }
+
+                    const chart_Y_FromMap = chart_Y_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_Y ) {
+                        throw Error("No entry in chart_Y_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId )
+                    }
+
+                    for ( const entry of chart_X_FromMap ) {
+                        chart_X.push( entry )
+                    }
+
+                    for ( const entry of chart_Y_FromMap ) {
+                        chart_Y.push( entry )
                     }
                 }
             }
