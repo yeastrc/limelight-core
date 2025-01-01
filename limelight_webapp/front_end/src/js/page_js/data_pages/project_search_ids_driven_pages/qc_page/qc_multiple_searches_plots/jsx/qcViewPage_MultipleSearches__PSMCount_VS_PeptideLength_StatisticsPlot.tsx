@@ -510,9 +510,9 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_PeptideLength_StatisticsPl
                     }
                 }
             }
+            const chart_X_Map_Key_ProjectSearchId : Map<number, Array<string>> = new Map()
+            const chart_Y_Map_Key_ProjectSearchId : Map<number, Array<number>> = new Map()
 
-            const chart_X : Array<string> = []
-            const chart_Y : Array<number> = []
 
             for ( const peptideLengthCounts_Map_Key_PeptideLength_Map_Key_ProjectSearchId_Entry of peptideLengthCounts_Map_Key_PeptideLength_Map_Key_ProjectSearchId.entries() ) {
 
@@ -533,6 +533,18 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_PeptideLength_StatisticsPl
                 }
 
                 projectSearchIds_Found.add(projectSearchId);
+
+                let chart_X = chart_X_Map_Key_ProjectSearchId.get(projectSearchId)
+                if ( ! chart_X ) {
+                    chart_X = []
+                    chart_X_Map_Key_ProjectSearchId.set( projectSearchId, chart_X )
+                }
+
+                let chart_Y = chart_Y_Map_Key_ProjectSearchId.get(projectSearchId)
+                if ( ! chart_Y ) {
+                    chart_Y = []
+                    chart_Y_Map_Key_ProjectSearchId.set( projectSearchId, chart_Y )
+                }
 
                 const x_Label = searchData.searchLabel__SearchShortName_OR_SearchId;
 
@@ -575,6 +587,34 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_PeptideLength_StatisticsPl
                 }
             }
 
+            const chart_X : Array<string> = []
+            const chart_Y : Array<number> = []
+
+            for ( const projectSearchId of projectSearchIds ) {
+
+                if ( projectSearchIds_Found.has( projectSearchId ) ) {
+
+                    const chart_X_FromMap = chart_X_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_X_FromMap ) {
+                        throw Error("No entry in chart_X_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId )
+                    }
+
+                    const chart_Y_FromMap = chart_Y_Map_Key_ProjectSearchId.get(projectSearchId)
+                    if ( ! chart_Y ) {
+                        throw Error("No entry in chart_Y_Map_Key_ProjectSearchId for projectSearchId: " + projectSearchId )
+                    }
+
+                    for ( const entry of chart_X_FromMap ) {
+                        chart_X.push( entry )
+                    }
+
+                    for ( const entry of chart_Y_FromMap ) {
+                        chart_Y.push( entry )
+                    }
+                }
+            }
+
+
             const transforms_styles: Array<any> = [];
 
             for ( const projectSearchId of projectSearchIds ) {
@@ -589,8 +629,6 @@ export class QcViewPage_MultipleSearches__PSMCount_VS_PeptideLength_StatisticsPl
                         console.warn(msg);
                         throw Error(msg);
                     }
-
-                    projectSearchIds_Found.add(projectSearchId);
 
                     const x_Label = searchData.searchLabel__SearchShortName_OR_SearchId;
 
