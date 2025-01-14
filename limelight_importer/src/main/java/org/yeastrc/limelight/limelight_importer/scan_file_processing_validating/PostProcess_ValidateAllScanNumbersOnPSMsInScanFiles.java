@@ -18,12 +18,15 @@
 package org.yeastrc.limelight.limelight_importer.scan_file_processing_validating;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterDataException;
 import org.yeastrc.limelight.limelight_importer.exceptions.LimelightImporterInternalException;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry;
 import org.yeastrc.limelight.limelight_importer.objects.SearchScanFileEntry_AllEntries;
@@ -61,8 +64,6 @@ public class PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles {
 		
 		ScanFileToSpectralStorageService_GetAllScanNumbersForAPIKey scanFileToSpectralStorageService_GetAllScanNumbersForAPIKey  = 
 				ScanFileToSpectralStorageService_GetAllScanNumbersForAPIKey.getInstance();
-		PostProcess_ValidateScanNumbersForSingleScanFile postProcess_ValidateScanNumbersForSingleScanFile = 
-				PostProcess_ValidateScanNumbersForSingleScanFile.getInstance();
 		
 		for ( SearchScanFileEntry searchScanFileEntry : searchScanFileEntry_AllEntries.allEntries_AsList() ) {
 			
@@ -82,17 +83,56 @@ public class PostProcess_ValidateAllScanNumbersOnPSMsInScanFiles {
 			List<Integer> scanLevelsToExclude = new ArrayList<>( 1 );
 			scanLevelsToExclude.add( SCAN_LEVEL_TO_EXCLUDE );
 			
-			List<Integer> allScanNumbersForScanFile =
+			List<Integer> allScanNumbersForScanFileList =
 					scanFileToSpectralStorageService_GetAllScanNumbersForAPIKey
 					.getAllScanNumbersForAPIKey(
 							scanFileDTO.getSpectralStorageAPIKey(), 
 							null /* scanLevelsToInclude */, 
 							scanLevelsToExclude );
-					
-			Set<Integer> allScanNumbersForScanFileSet = new HashSet<>( allScanNumbersForScanFile );
 			
-			postProcess_ValidateScanNumbersForSingleScanFile
-			.validateScanNumbersForSingleScanFile( searchScanFileEntry.getScanNumbersFromPSMs(), allScanNumbersForScanFileSet, searchScanFileDTO.getFilename() );
+			validateScanNumbersForSingleScanFile( searchScanFileEntry.getScanNumbersFromPSMs(), allScanNumbersForScanFileList, searchScanFileDTO.getFilename() );
+		}
+	}
+	
+
+	/**
+	 * Validate that all scan numbers on PSMs are in the scan file
+	 * 
+	 * @param scanNumbersFromPSMs
+	 * @param allScanNumbersForScanFileSet
+	 * @throws LimelightImporterDataException 
+	 */
+	private void validateScanNumbersForSingleScanFile( 
+			List<Integer> scanNumbersFromPSMs, 
+			List<Integer> allScanNumbersForScanFileList,
+			String scanFilename ) throws LimelightImporterDataException {
+		
+		Set<Integer> allScanNumbersForScanFileSet = new HashSet<>( allScanNumbersForScanFileList );
+		
+		for ( Integer scanNumbersFromPSM : scanNumbersFromPSMs ) {
+			if ( ! allScanNumbersForScanFileSet.contains( scanNumbersFromPSM ) ) {
+				
+				List<Integer> allScanNumbersForScanFileListSorted_For_ErrorMessage = new ArrayList<>( allScanNumbersForScanFileSet );
+				
+				
+				String msg_ScanNumbers = ".  NO scan numbers found in scan file, excluding scan level '" + SCAN_LEVEL_TO_EXCLUDE + "'.";
+				
+				if ( ! allScanNumbersForScanFileListSorted_For_ErrorMessage.isEmpty() ) {
+					
+					Collections.sort( allScanNumbersForScanFileListSorted_For_ErrorMessage );
+					
+					msg_ScanNumbers = ".  All scan numbers from scan file (Excluding scan level '" + SCAN_LEVEL_TO_EXCLUDE + "'): " + StringUtils.join( allScanNumbersForScanFileListSorted_For_ErrorMessage, ", ");
+				}
+				
+				String msg_DataExecption = "Scan Number on PSM not found in scan file.  Scan Filename: '" 
+						+ scanFilename
+						+ "',  scan number on PSM: "
+						+ scanNumbersFromPSM;
+//				String msg_Log = 
+				msg_DataExecption += msg_ScanNumbers;
+				log.error( msg_DataExecption );
+				throw new LimelightImporterDataException( msg_DataExecption );
+			}
 		}
 	}
 	
