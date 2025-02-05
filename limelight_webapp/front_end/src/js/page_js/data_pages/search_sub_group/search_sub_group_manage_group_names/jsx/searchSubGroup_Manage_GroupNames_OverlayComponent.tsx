@@ -7,7 +7,6 @@
  */
 
 import React from 'react'
-import { ModalOverlay_Limelight_Component } from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd";
 import {
     searchSubGroup_Manage_GroupNames_UpdateServer,
@@ -16,15 +15,21 @@ import {
 import {
     Tooltip__green_question_mark_in_circle__tooltip_on_hover__Component
 } from "page_js/common_all_pages/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component/tooltip__green_question_mark_in_circle__tooltip_on_hover__react_component";
+import {
+    ModalOverlay_Limelight_Component_v001_B_FlexBox
+} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+import {
+    limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
+    Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+} from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
 
 
 const _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH = 8;
 
-//  Modal width / height
+//  Modal width / height  --  Used in more places than just the modal component render
 
 const _WIDTH = 800;
 const _HEIGHT = 600;
-
 
 ////////////
 
@@ -528,31 +533,47 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                                 <div style={ subGroup_ItemInnerStyle }  >
 
                                     <div style={ { marginLeft: 2, marginTop: 4, maxWidth: subGroup_ItemPartsWidths.draggableIconWidth, overflowX: "hidden" } }>
-                                        <img className=" icon-small " src="static/images/icon-draggable.png"
-                                             title={ dragIconTitle } ></img>
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                dragIconTitle
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <img className=" icon-small " src="static/images/icon-draggable.png"></img>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
 
 
                                     <div style={ { width : subGroup_ItemPartsWidths.display_SubGroupName_Width, paddingBottom: 0 } }>
-                                        {/*'defaultValue' for uncontrolled input.*/}
-                                        {/*Change to 'value' for controlled input.*/}
-                                        <input type="text" style={ displayName_InputField_Style }
-                                               maxLength={ _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH }
-                                               value={ subGroup_Display_Object.displayName }
-                                               title={ displayName_InputField_TitleAttr }
-                                               onChange={ (event) => { this._changeGroupName( event.target.value, subGroup_Display_Object.id ) }}
-                                        />
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                displayName_InputField_TitleAttr
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                                        >
+                                            <input type="text" style={ displayName_InputField_Style }
+                                                   maxLength={ _DISPLAY_SUB_GROUP_NAME_MAX_LENGTH }
+                                                   value={ subGroup_Display_Object.displayName }
+                                                   onChange={ (event) => { this._changeGroupName( event.target.value, subGroup_Display_Object.id ) }}
+                                            />
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
                                     <div style={ { marginBottom: 0 } }>
-                                        <div style={ {
-                                            width : subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth, maxWidth: subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth,
-                                            overflow: "hidden", textOverflow: "ellipsis",
-                                            paddingTop : 3
-                                        } }
-                                            title={ subGroup_Display_Object.importedName }
+                                        <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                            title={
+                                                subGroup_Display_Object.importedName
+                                            }
+                                            { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
                                         >
-                                            { subGroup_Display_Object.importedName }
-                                        </div>
+                                            <div style={ {
+                                                width : subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth, maxWidth: subGroup_ItemPartsWidths.subGroupName_Width_TextDivWidth,
+                                                overflow: "hidden", textOverflow: "ellipsis",
+                                                paddingTop : 3
+                                            } }
+                                            >
+                                                { subGroup_Display_Object.importedName }
+                                            </div>
+                                        </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
                                     </div>
 
                                 </div>
@@ -601,9 +622,15 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
         // }
 
         return (
-            <ModalOverlay_Limelight_Component
-                width={ _WIDTH }
-                height={ _HEIGHT }
+
+            //  This is not a full conversion to use component ModalOverlay_Limelight_Component_v001_B_FlexBox.
+            //   Compare to other usage for more design options
+
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                widthMinimum={ _WIDTH }
+                widthMaximum={ _WIDTH }
+                heightMinimum={ _HEIGHT }
+                heightMaximum={ _HEIGHT }
                 title={ "Manage Sub Search Names" }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
@@ -677,7 +704,7 @@ class SearchSubGroup_Manage_GroupNames_Overlay_OuterContainer_Component extends 
                         </div>
                     </div>
                 </div>
-            </ModalOverlay_Limelight_Component>
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );
     }
 }
