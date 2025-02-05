@@ -905,16 +905,24 @@ export class QcViewPage_SingleSearch__SubSearches__ScanFileSummaryDataBlock
             dataDisplay = (
                 <div style={ { display: "inline-block", paddingRight: 30 } }>  {/*  Style to add some padding to right of grid  */}
 
-                    <div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>
-                        {/* Two column Grid */}
-                        { perSearch_HeaderRow }
-                        { perLevel_TotalIonCurrent_DisplayEntries }
-                        { perLevel_Count_DisplayEntries }
-                        <div  style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
-                            Scans with a <br/>PSM meeting filters
+                    { scanNumbersCount_For_FilteredPSMs_Percentage_JSX.length > 0 ? (
+                        //  YES have data
+                        <div style={ { display: "grid", gridTemplateColumns: gridTemplateColumns_String } }>
+                            {/* Two column Grid */}
+                            { perSearch_HeaderRow }
+                            { perLevel_TotalIonCurrent_DisplayEntries }
+                            { perLevel_Count_DisplayEntries }
+                            <div  style={ { paddingBottom: paddingBottom, paddingRight: paddingRight_Labels } }>
+                                Scans with a <br/>PSM meeting filters
+                            </div>
+                            { scanNumbersCount_For_FilteredPSMs_Percentage_JSX }
                         </div>
-                        { scanNumbersCount_For_FilteredPSMs_Percentage_JSX }
-                    </div>
+                    ) : (
+                        //  NO have data - Likely since NO PSMs passed filters
+                        <div>
+                            No PSMs passed filters so unable to separate data by sub search.
+                        </div>
+                    )}
                 </div>
             );
 
