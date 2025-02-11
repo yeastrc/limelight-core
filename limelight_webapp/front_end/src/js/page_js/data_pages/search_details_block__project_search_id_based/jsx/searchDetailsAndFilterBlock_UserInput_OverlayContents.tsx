@@ -16,7 +16,6 @@
 
 
 import React from 'react'
-import {ModalOverlay_Limelight_Component} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001/modalOverlay_WithTitlebar_React_v001";
 import {
     SearchDataLookupParameters_Root, SearchDataLookupParams_Filter_Per_AnnotationType,
     SearchDataLookupParams_For_ProjectSearchIds,
@@ -31,13 +30,18 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    ModalOverlay_Limelight_Component_v001_B_FlexBox
+} from "page_js/common_all_pages/modal_overlay_react/modal_overlay_with_titlebar_react_v001_B_FlexBox/modalOverlay_WithTitlebar_React_v001_B_FlexBox";
+
+
 
 const _Overlay_Title = "Change Search Filters"
 
-const _Overlay_Width = 800;
-const _Overlay_Height = 600;
-
-const _ScrollableDivMaxHeight = _Overlay_Height - 120;
+const _Overlay_Width_Min = 600;
+const _Overlay_Width_Max = 1000;
+const _Overlay_Height_Min = 400;
+const _Overlay_Height_Max = 1000;
 
 
 /**
@@ -211,9 +215,13 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
 
                     const top = boundingRect.top
 
-                    const offsetScrollableDivTop = _ScrollableDivMaxHeight - 100;
+                    const offsetScrollableDivTop = boundingRect.height - 100;
 
                     const scrollTop = this._top_of_SubElement_To_ScrollTo - top - offsetScrollableDivTop;
+
+                    //  TODO  FAKE set scrollTop
+
+                    // const scrollTop = 50
 
                     this._containerScrollableDiv_Ref.current.scrollTop = scrollTop;
 
@@ -235,9 +243,9 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
 
 
     /**
-     * User Clicked Save (type="submit") or hit enter in a field
+     * User Clicked Save button or hit enter in a field to submit the <form> using fake hidden type="submit" button at top of form
      */
-    _save( event ) {
+    _save( event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLInputElement, MouseEvent> ) {
         try {
             // console.warn("_save(...) called in searchDetailsAndFilterBlock_UserInput_OverlayContents.tsx")
 
@@ -728,53 +736,75 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
 
         return (
 
-            <ModalOverlay_Limelight_Component
-                width={ _Overlay_Width }
-                height={ _Overlay_Height }
+            <ModalOverlay_Limelight_Component_v001_B_FlexBox
+                widthMinimum={ _Overlay_Width_Min }
+                widthMaximum={ _Overlay_Width_Max }
+                heightMinimum={ _Overlay_Height_Min }
+                heightMaximum={ _Overlay_Height_Max }
                 title={ _Overlay_Title }
                 callbackOnClicked_Close={ this.props.callbackOn_Cancel_Close_Clicked }
                 close_OnBackgroundClick={ false }>
 
-                <form onSubmit={ this._save_BindThis }>
+                <div
+                    ref={ this._containerScrollableDiv_Ref }
+                    className=" search-cutoffs-user-input-search-bounding-box top-level single-entry-variable-height modal-overlay-body-standard-margin-top modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
+                    style={ { overflowY: "auto", overflowX: "hidden" } }
+                >
+                    <form onSubmit={ this._save_BindThis }>
 
-                    <div  className=" top-level single-entry-variable-height modal-overlay-body-standard-padding-top modal-overlay-body-standard-padding-left modal-overlay-body-standard-padding-right "
-                          >
+                        {/*  Hidden Button 'display: "none"'  Add this '<input type="submit"' so pressing enter in <input> field submits the form  */ }
+                        <input type="submit" value="" style={ { display: "none" } }/>
 
-                        <div ref={ this._containerScrollableDiv_Ref }
-                             style={ { overflowY: "auto", maxHeight : _ScrollableDivMaxHeight }} className={ " search-cutoffs-user-input-search-bounding-box "} >
-                            <div style={ { display: "grid", gridTemplateColumns: "min-content min-content 1fr"  } }>
+                        <div className={ "  " }>
+                            <div style={ { display: "grid", gridTemplateColumns: "min-content min-content 1fr" } }>
                                 { filtersPerSearches }
                             </div>
                         </div>
-                        {/* </div> */}
-                    </div>
 
-                    <div className=" top-level fixed-height modal-overlay-body-standard-padding-left modal-overlay-body-standard-padding-right "
-                         style={ { marginTop : 15, marginBottom: 10 } } >
-                        <div style={ { position: "relative", display: "inline-block" } }>
-                            <input type="submit" value="Save" disabled={ ! this.state.saveButtonEnabled } />
-                            { ( ! this.state.saveButtonEnabled ?
-                                <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
-                                    title={
-                                        <span>
-                                            All entered values must be valid for 'Save' to be enabled.
-                                        </span>
-                                    }
-                                    { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
-                                >
-                                    <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
-                                </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
-                                : undefined ) }
-                        </div>
-                        <input type="button" value="Cancel" onClick={ this._cancel_BindThis } style={ { marginLeft: 10 } } />
-                    </div>
+                    </form>
+                        {/* </div> */ }
+                </div>
 
-                    {/* Padding at bottom has to be in separate div */}
-                    <div className=" top-level fixed-height modal-overlay-body-standard-padding-bottom modal-overlay-body-standard-padding-left modal-overlay-body-standard-padding-right " >
-                    </div>
-                </form>
 
-            </ModalOverlay_Limelight_Component>
+                <div
+                    className=" top-level fixed-height modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right modal-overlay-body-standard-margin-bottom"
+                    style={ { marginTop: 15, marginBottom: 10 } }
+                >
+                    <div style={ { position: "relative", display: "inline-block" } }>
+                        <button
+                            disabled={ ! this.state.saveButtonEnabled }
+                            onClick={ this._save_BindThis }
+                        >
+                            Save
+                        </button>
+
+                        { ( ! this.state.saveButtonEnabled ?
+                            <Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
+                                title={
+                                    <span>
+                                        All entered values must be valid for 'Save' to be enabled.
+                                    </span>
+                                }
+                                { ...limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer() }
+                            >
+                                <div style={ { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 } }></div>
+                            </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
+                            : undefined ) }
+                    </div>
+                    <button
+                        onClick={ this._cancel_BindThis }
+                        style={ { marginLeft: 10 } }
+                    >
+                        Cancel
+                    </button>
+                </div>
+
+                {/* Padding at bottom has to be in separate div */ }
+                {/*<div*/}
+                {/*    className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right ">*/}
+                {/*</div>*/}
+
+            </ModalOverlay_Limelight_Component_v001_B_FlexBox>
         );
     }
 }
@@ -789,23 +819,23 @@ class SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component ex
 /**
  * Create Copy of Search Filters for Local Use with additional object properties
  */
-const _create_SearchFilters_LocalCopy = function(
+const _create_SearchFilters_LocalCopy = function (
     {
         props
-    } : {
-        props : SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component_Props
+    }: {
+        props: SearchDetailsAndFilterBlock_UserInputInOverlay_OuterContainer_Component_Props
 
-    }) : DataMapPerProjectSearchId_KeyProjectSearchId_Holder {
+    } ): DataMapPerProjectSearchId_KeyProjectSearchId_Holder {
 
-    const searchDetails_Filters_AnnTypeDisplayRootObject : SearchDataLookupParameters_Root = props.searchDetails_Filters_AnnTypeDisplayRootObject;
+    const searchDetails_Filters_AnnTypeDisplayRootObject: SearchDataLookupParameters_Root = props.searchDetails_Filters_AnnTypeDisplayRootObject;
     const annotationTypeData_Root = props.annotationTypeData_Root;
 
-    const searchDataLookupParams_For_ProjectSearchIds :  SearchDataLookupParams_For_ProjectSearchIds
+    const searchDataLookupParams_For_ProjectSearchIds: SearchDataLookupParams_For_ProjectSearchIds
         = searchDetails_Filters_AnnTypeDisplayRootObject.paramsForProjectSearchIds
 
     const searchDataLookupParams_For_ProjectSearchIds_List = searchDataLookupParams_For_ProjectSearchIds.paramsForProjectSearchIdsList
 
-    const resultMap_KeyProjectSearchId : Map<number, Internal_Single_For_ProjectSearchId_Entry> = new Map();
+    const resultMap_KeyProjectSearchId: Map<number, Internal_Single_For_ProjectSearchId_Entry> = new Map();
 
     // const projectSearchIds = props.projectSearchIds; //  Array of projectSearchIds to be processed
 
@@ -1157,7 +1187,12 @@ class Single_Search_Entry extends React.Component< Single_Search_Entry_Props, Si
         if ( psmFilters ) {
             psmFiltersDisplay = (
                 <React.Fragment>
-                    <div  style={ { fontWeight : "bold", gridColumn: "1 / -1", marginLeft: _TYPE_LABEL_INDENT, paddingTop: _TYPE_LABEL_PADDING_TOP } }>
+                    <div style={ {
+                        fontWeight: "bold",
+                        gridColumn: "1 / -1",
+                        marginLeft: _TYPE_LABEL_INDENT,
+                        paddingTop: _TYPE_LABEL_PADDING_TOP
+                    } }>
                         PSM Filters
                     </div>
                     { psmFilters }
