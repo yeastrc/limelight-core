@@ -572,7 +572,7 @@ const _create_AfterDataLoaded = function (
                         const dataTable_Column = new DataTable_Column({
                             id: "bestPsmAnn_" + annotationTypeItem.annotationTypeId + "_" + searchSubGroup.searchSubGroup_Id, // Used for tracking sort order. Keep short
                             displayName,
-                            width: 70,
+                            width: 100,
                             sortable: true
                         });
                         dataTable_Columns.push(dataTable_Column);
@@ -646,7 +646,7 @@ const _create_AfterDataLoaded = function (
                         const dataTable_Column = new DataTable_Column( {
                             id: "bestPsmAnn_" + annotationTypeItem.annotationTypeId + "_" + projectSearchId, // Used for tracking sort order. Keep short
                             displayName,
-                            width: 70,
+                            width: 100,
                             sortable: true
                         } );
                         dataTable_Columns.push( dataTable_Column );
