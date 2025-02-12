@@ -1667,7 +1667,7 @@ const _create_AfterDataLoaded = function (
 /**
  *  Get data from server, Only called when showProteins is true;
  */
-const _get_DataFromServer__For_If_ShowProteins = async function(
+const _get_DataFromServer__For_If_ShowProteins = function(
     {
         projectSearchIds, commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root
     } : {
@@ -1678,6 +1678,8 @@ const _get_DataFromServer__For_If_ShowProteins = async function(
     try {
         const get_DataFromServer__For_If_ShowProteins_Result = new Internal__get_DataFromServer__For_If_ShowProteins_Result()
 
+        const promises: Array<Promise<void>> = []
+
         for ( const projectSearchId of projectSearchIds ) {
 
             const commonData_LoadedFromServer_PerSearch_For_ProjectSearchId = commonData_LoadedFromServer_PerSearch_Plus_SomeAssocCommonData__Except_ModMainPage__Root.get__commonData_LoadedFromServer_PerSearch_For_ProjectSearchId(projectSearchId);
@@ -1686,21 +1688,67 @@ const _get_DataFromServer__For_If_ShowProteins = async function(
             }
 
             {
-                const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result =
-                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
-                    get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise()
-                const proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder = get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_ReturnPromise_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder
-                get_DataFromServer__For_If_ShowProteins_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(projectSearchId, proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder)
+                const get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.
+                    get_commonData_LoadedFromServer_SingleSearch__ProteinSequenceVersionIds_And_ProteinCoverage_From_ReportedPeptidePeptideIds_For_MainFilters().get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch()
+
+                if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data ) {
+                    get_DataFromServer__For_If_ShowProteins_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.
+                    set( projectSearchId, get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.data.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder )
+                } else if ( get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise ) {
+                    const promise = new Promise<void>( (resolve, reject) => { try {
+                        get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.catch(reason => { reject(reason) })
+                        get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result.promise.then(value => { try {
+                            get_DataFromServer__For_If_ShowProteins_Result.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder_Map_Key_ProjectSearchId.
+                            set( projectSearchId, value.proteinSequenceVersionIds_And_ProteinCoverage_For_MainFilters_Holder )
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    const msg = "get_ProteinSequenceVersionIds_And_ProteinCoverage_AllForSearch_Result no data or promise";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
             }
             {
-                const get_ProteinInfoHolder_AllForSearch_ReturnPromise_Result =
-                    await commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters().get_ProteinInfoHolder_AllForSearch_ReturnPromise();
-                const proteinInfo_For_MainFilters_Holder = get_ProteinInfoHolder_AllForSearch_ReturnPromise_Result.proteinInfo_For_MainFilters_Holder
-                get_DataFromServer__For_If_ShowProteins_Result.proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId.set(projectSearchId, proteinInfo_For_MainFilters_Holder);
+                const get_ProteinInfoHolder_AllForSearch_Result =
+                    commonData_LoadedFromServer_PerSearch_For_ProjectSearchId.get_commonData_LoadedFromServer_SingleSearch__ProteinInfo_For_MainFilters().get_ProteinInfoHolder_AllForSearch()
+
+                if ( get_ProteinInfoHolder_AllForSearch_Result.data ) {
+                    get_DataFromServer__For_If_ShowProteins_Result.proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId.
+                    set( projectSearchId, get_ProteinInfoHolder_AllForSearch_Result.data.proteinInfo_For_MainFilters_Holder )
+                } else if ( get_ProteinInfoHolder_AllForSearch_Result.promise ) {
+                    const promise = new Promise<void>( (resolve, reject) => { try {
+                        get_ProteinInfoHolder_AllForSearch_Result.promise.catch(reason => { reject(reason) })
+                        get_ProteinInfoHolder_AllForSearch_Result.promise.then(value => { try {
+                            get_DataFromServer__For_If_ShowProteins_Result.proteinInfo_For_MainFilters_Holder_Map_Key_ProjectSearchId.
+                            set( projectSearchId, value.proteinInfo_For_MainFilters_Holder )
+                            resolve();
+                        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+                    promises.push(promise);
+                } else {
+                    const msg = "get_ProteinInfoHolder_AllForSearch_Result no data or promise";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
             }
         }
 
-        return get_DataFromServer__For_If_ShowProteins_Result;
+        if ( promises.length === 0 ) {
+            return Promise.resolve( get_DataFromServer__For_If_ShowProteins_Result )
+        }
+
+        const promisesAll = Promise.all( promises )
+
+        return new Promise<Internal__get_DataFromServer__For_If_ShowProteins_Result>((resolve, reject) => { try {
+            promisesAll.catch(reason => { reject(reason) })
+            promisesAll.then(novalue => { try {
+                resolve( get_DataFromServer__For_If_ShowProteins_Result );
+
+            } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
+        } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }})
 
     } catch (e) { reportWebErrorToServer.reportErrorObjectToServer({errorException: e}); throw e }
 }
