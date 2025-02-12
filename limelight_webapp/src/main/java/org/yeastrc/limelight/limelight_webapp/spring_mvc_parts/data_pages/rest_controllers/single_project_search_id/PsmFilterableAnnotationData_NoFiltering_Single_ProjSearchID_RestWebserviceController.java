@@ -19,6 +19,8 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_Utils;
+import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_ErrorResponse_Base_Exception;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_InternalServerError_Exception;
@@ -74,7 +77,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_FILTERABLE_ANNOTATION_DATA_NO_FILTERING_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0004;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -232,28 +235,238 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 				log.warn( msg );
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
+			
+			
+			WebserviceResult webserviceResult = new WebserviceResult();
+			
+			
+			//  Sort so match the order of the output
+			Collections.sort( psmFilterableAnnotationTypeIds );
     			
-			List<Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem> resultItemList =
+			List<Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem> dbResultItemList =
 					psm_FilterableAnnotationData_AllFor_SearchId_Searcher.getPsmFilterableAnnotationDataList( searchId, psmFilterableAnnotationTypeIds, webserviceRequest.include_DecoyPSM );
+			
+			if ( dbResultItemList.isEmpty() ) {
+				
+				
+				
+			} else {
 
-			List<WebserviceResult_PerPSM_FilterableAnnotation_Entry> psmFilterableAnnotationDataList_List = new ArrayList<>( resultItemList.size() );
+				Collections.sort( dbResultItemList, new Comparator<Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem>() {
+					@Override
+					public int compare(Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem a,
+							Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem b) {
+						
+						//  Order on Psm Id, Ann Type Id
+						
+						if ( a.getPsmId() < b.getPsmId() ) {
+							return -1;
+						}
+						if ( a.getPsmId() > b.getPsmId() ) {
+							return 1;
+						}
+						if ( a.getAnnotationTypeId() < b.getAnnotationTypeId() ) {
+							return -1;
+						}
+						if ( a.getAnnotationTypeId() > b.getAnnotationTypeId() ) {
+							return 1;
+						}
+						throw new LimelightInternalErrorException( "Not Valid for 2 recorsd with same Psm Id and Annotation Type Id" );
+					}
+				} );
+				
+				
+				long starting_PsmId = dbResultItemList.get(0).getPsmId();
+				
 
-			for ( Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem resultItem : resultItemList ) {
+				boolean anyResults_Decoy = false;
+				boolean anyResults_IndependentDecoy = false;
+				
+				boolean psmIds_AreSequential = true;
+				int psmCount = 0;
+				
+				{
+					final long prev_PsmId_INITIAL_VALUE = -1;
+					final int annotationTypeIdIndex_INITIAL_VALUE = -1;
+					
+					long prev_PsmId = prev_PsmId_INITIAL_VALUE;
+					int annotationTypeIdIndex = annotationTypeIdIndex_INITIAL_VALUE;
+					
+	
+					for ( Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem dbResultItem : dbResultItemList ) {
+	
+						annotationTypeIdIndex++;
+						
+						if ( prev_PsmId != dbResultItem.getPsmId() ) {
+							annotationTypeIdIndex = 0;  // Reset to index zero
+							
+							psmCount++; // increment PsmId counter
+							
+							if ( prev_PsmId != prev_PsmId_INITIAL_VALUE && prev_PsmId != dbResultItem.getPsmId()  ) {
+								
+								if ( ( prev_PsmId + 1 ) != dbResultItem.getPsmId() ) {
+									psmIds_AreSequential = false;
+								}
+							}
+							
+							prev_PsmId = dbResultItem.getPsmId();
+						}
+						
+						if ( annotationTypeIdIndex >= psmFilterableAnnotationTypeIds.size() ) {
+							String msg = "Unexpected result from DB. In Preprocess Step ( annotationTypeIdIndex >= psmFilterableAnnotationTypeIds.size() ) ";
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+						
+						// Validate Expected Annotation Type Id
+						
+						if ( dbResultItem.getAnnotationTypeId() != psmFilterableAnnotationTypeIds.get(annotationTypeIdIndex) ) {
+							String msg = "Unexpected result from DB. In Preprocess Step ( resultItem.getAnnotationTypeId() != psmFilterableAnnotationTypeIds.get(annotationTypeIdIndex) ). "
+									+ "resultItem.getAnnotationTypeId(): " + dbResultItem.getAnnotationTypeId() + ", psmFilterableAnnotationTypeIds.get(annotationTypeIdIndex): " + psmFilterableAnnotationTypeIds.get(annotationTypeIdIndex);
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+						
+						if ( dbResultItem.isDecoyPSM() ) {
+							anyResults_Decoy = true;
+						}
+						if ( dbResultItem.isIndependentDecoyPSM() ) {
+							anyResults_IndependentDecoy = true;
+						}
+					}
+				}
+				
+				///////////
+				
+				//   TODO  ZZZ  FAKE FORCE  For Testing Only
+//				psmIds_AreSequential = false;
+//
+//				anyResults_Decoy = true;
+//				anyResults_IndependentDecoy = true;
+				
+				///////////
+				
+		    	long[] psmIds_OffsetFromPrevious_WhenNotSequential = null;
+		    	
+		    	 // Outer Array in order of psmFilterableAnnotationTypeIds
+		    	double[][] annotationValuesList_PerAnnotationTypeList = new double[ psmFilterableAnnotationTypeIds.size() ][];
+		    	
+		    	boolean[] psm_Is_Decoy = null;
+		    	boolean[] psm_Is_IndependentDecoy = null;
+		    	
+		    	{
+		    		//  Initialize arrays
+		    		
+		    		if ( ! psmIds_AreSequential ) {
+		    			psmIds_OffsetFromPrevious_WhenNotSequential = new long[ psmCount ];
+		    		}
+		    		
+		    		if ( anyResults_Decoy ) {
+		    			psm_Is_Decoy = new boolean[ psmCount ];
+		    		}
+		    		if ( anyResults_IndependentDecoy ) {
+		    			psm_Is_IndependentDecoy = new boolean[ psmCount ];
+		    		}
+		    		
+		    		for ( int index = 0; index < psmFilterableAnnotationTypeIds.size(); index++ ) {
+		    			annotationValuesList_PerAnnotationTypeList[ index ] = new double[ psmCount ];
+		    		}
+		    	}
+	
+		    	{
+		    		//  Populate the Arrays
+		    		
 
-				WebserviceResult_PerPSM_FilterableAnnotation_Entry entry = new WebserviceResult_PerPSM_FilterableAnnotation_Entry();
-				psmFilterableAnnotationDataList_List.add(entry);
-				entry.psmId = resultItem.getPsmId();
-				entry.annTpId = resultItem.getAnnotationTypeId();
-				entry.annVlNbr = resultItem.getAnnotationValueDouble();
-				entry.indDecoyPSM = resultItem.isIndependentDecoyPSM();
-				entry.decoyPSM = resultItem.isDecoyPSM();
-				psmFilterableAnnotationDataList_List.add( entry );
+					
+					long prev_PsmId = -1;  // Value Ignored and then replaced for first record
+					
+					int annotationTypeIdIndex = -1;  // Set to zero for first record
+					int psm_Index = -1;  // Set to zero for first record
+
+					
+					boolean firstRecord = true;
+
+	
+					for ( Psm_FilterableAnnotationData_AllFor_SearchId_Searcher_ResultItem dbResultItem : dbResultItemList ) {
+	
+						if ( firstRecord ) {
+							annotationTypeIdIndex = 0;
+						} else {
+							annotationTypeIdIndex++;
+						}
+						
+						if ( firstRecord || prev_PsmId != dbResultItem.getPsmId() ) {
+							
+							//  first record or PSM Id change
+							
+							annotationTypeIdIndex = 0;  // Reset to index zero 
+
+							if ( firstRecord ) {
+								psm_Index = 0;  // first record so set to zero
+							} else {
+								psm_Index++; // increment PsmId index
+							}
+							
+							
+							if ( psmIds_OffsetFromPrevious_WhenNotSequential != null ) {
+								if ( firstRecord ) {
+									psmIds_OffsetFromPrevious_WhenNotSequential[ psm_Index ] = dbResultItem.getPsmId();
+								} else {
+									psmIds_OffsetFromPrevious_WhenNotSequential[ psm_Index ] = dbResultItem.getPsmId() - prev_PsmId;
+								}
+							}
+
+							
+							if ( psm_Is_Decoy != null ) {
+								psm_Is_Decoy[ psm_Index ] = dbResultItem.isDecoyPSM();
+							}
+							if ( psm_Is_IndependentDecoy != null ) {
+								psm_Is_IndependentDecoy[ psm_Index ] = dbResultItem.isIndependentDecoyPSM();
+							}
+							
+							prev_PsmId = dbResultItem.getPsmId();
+						}
+						
+						//  Annotation Value
+						
+						try {
+							int rootLength = annotationValuesList_PerAnnotationTypeList.length;
+							
+							double[] arrayForAnnTypeIdIndex = annotationValuesList_PerAnnotationTypeList[ annotationTypeIdIndex ];
+							
+							int length = arrayForAnnTypeIdIndex.length;
+							
+							try {
+								arrayForAnnTypeIdIndex[ psm_Index ] = dbResultItem.getAnnotationValueDouble();
+							
+							} catch (Exception e) {
+								throw e;
+							}	
+						} catch (Exception e) {
+							throw e;
+						}
+
+						//
+						
+						firstRecord = false;
+					}
+		    	}
+		    	
+		    	webserviceResult.include_DecoyPSM_Requested = webserviceRequest.include_DecoyPSM;
+		    	webserviceResult.psmFilterableAnnotationTypeIds_InReturnedOrder = psmFilterableAnnotationTypeIds;
+		    	
+		    	webserviceResult.psmCount = psmCount;
+		    	
+		    	webserviceResult.starting_PsmId = starting_PsmId;
+		    	webserviceResult.psmIds_OffsetFromPrevious_WhenNotSequential = psmIds_OffsetFromPrevious_WhenNotSequential;
+		    	webserviceResult.annotationValuesList_PerAnnotationTypeList = annotationValuesList_PerAnnotationTypeList;
+		    	webserviceResult.psm_Is_Decoy = psm_Is_Decoy;
+		    	webserviceResult.psm_Is_IndependentDecoy = psm_Is_IndependentDecoy;
 			}
-			    		
-    		WebserviceResult result = new WebserviceResult();
-    		result.psmFilterableAnnotationDataList_List = psmFilterableAnnotationDataList_List;
+			
+			dbResultItemList = null;  // free memory before create JSON
     		
-    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
+    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( webserviceResult );
 
     		
     		byte[] responseAsJSON_GZIPPED = gzip_ByteArray_To_ByteArray.gzip_ByteArray_To_ByteArray(responseAsJSON);
@@ -319,41 +532,47 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResult_PerPSM_FilterableAnnotation_Entry> psmFilterableAnnotationDataList_List;
-
-		public List<WebserviceResult_PerPSM_FilterableAnnotation_Entry> getPsmFilterableAnnotationDataList_List() {
-			return psmFilterableAnnotationDataList_List;
-		}
-    }
-
-    /**
-     * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
-     *
-     */
-    public static class WebserviceResult_PerPSM_FilterableAnnotation_Entry {
-
-    	private long psmId;
-    	private int annTpId;
-    	private double annVlNbr;
-    	private boolean indDecoyPSM;
-    	private boolean decoyPSM;
+    	private boolean include_DecoyPSM_Requested;   //  include_DecoyPSM from request
+    	private List<Integer> psmFilterableAnnotationTypeIds_InReturnedOrder;  
     	
-		public long getPsmId() {
-			return psmId;
+    	private int psmCount;
+    	
+    	private long starting_PsmId;
+    	
+    	private long[] psmIds_OffsetFromPrevious_WhenNotSequential;
+    	
+    	private double[][] annotationValuesList_PerAnnotationTypeList; // Outer List in order of psmFilterableAnnotationTypeIds_Requested
+    	
+    	private boolean[] psm_Is_IndependentDecoy;
+    	private boolean[] psm_Is_Decoy;
+    	
+    	
+		public boolean isInclude_DecoyPSM_Requested() {
+			return include_DecoyPSM_Requested;
 		}
-		public int getAnnTpId() {
-			return annTpId;
+		public List<Integer> getPsmFilterableAnnotationTypeIds_InReturnedOrder() {
+			return psmFilterableAnnotationTypeIds_InReturnedOrder;
 		}
-		public double getAnnVlNbr() {
-			return annVlNbr;
+		public long getStarting_PsmId() {
+			return starting_PsmId;
 		}
-		public boolean isIndDecoyPSM() {
-			return indDecoyPSM;
+		public double[][] getAnnotationValuesList_PerAnnotationTypeList() {
+			return annotationValuesList_PerAnnotationTypeList;
 		}
-		public boolean isDecoyPSM() {
-			return decoyPSM;
+		public boolean[] getPsm_Is_IndependentDecoy() {
+			return psm_Is_IndependentDecoy;
+		}
+		public boolean[] getPsm_Is_Decoy() {
+			return psm_Is_Decoy;
+		}
+		public int getPsmCount() {
+			return psmCount;
+		}
+		public long[] getPsmIds_OffsetFromPrevious_WhenNotSequential() {
+			return psmIds_OffsetFromPrevious_WhenNotSequential;
 		}
     }
+
 }
 
 

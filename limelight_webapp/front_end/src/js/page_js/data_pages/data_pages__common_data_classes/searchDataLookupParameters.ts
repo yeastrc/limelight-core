@@ -61,6 +61,7 @@ class SearchDataLookupParams_For_Single_ProjectSearchId {
 	psmAnnTypeDisplay : Array<number>;
 	reportedPeptideAnnTypeDisplay : Array<number>;
 	matchedProteinAnnTypeDisplay : Array<number>;
+    bestPsm_AnnTypeDisplay : Array<number>;
 }
 
 
@@ -142,6 +143,7 @@ const copyAndValidate_ParsedJSON_Into_SearchDataLookupParameters_Root = function
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.reportedPeptideAnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.reportedPeptideAnnTypeDisplay, "reportedPeptideAnnTypeDisplay" );
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.psmAnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.psmAnnTypeDisplay, "psmAnnTypeDisplay" );
                 searchDataLookupParams_For_Single_ProjectSearchId_Output.matchedProteinAnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.matchedProteinAnnTypeDisplay, "matchedProteinAnnTypeDisplay" );
+                searchDataLookupParams_For_Single_ProjectSearchId_Output.bestPsm_AnnTypeDisplay = _copyAnnTypeDisplay( paramsForProjectSearchIdsList_Entry_Input.bestPsm_AnnTypeDisplay, "bestPsm_AnnTypeDisplay" );
             }
         }
     }

@@ -426,7 +426,7 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
                         include_DecoyPSM
                     };
 
-                    const url = "d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0003";
+                    const url = "d/rws/for-page/psb/psm-filterable-annotation-data--no-filtering--single-project-search-id-version-0004";
 
                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 
@@ -570,74 +570,191 @@ export class CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Fi
             psm_FilterableAnnotationData_Holder: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder
         }) : void {
 
-        if ( responseData.psmFilterableAnnotationDataList_List ) {
-            if ( ! ( responseData.psmFilterableAnnotationDataList_List instanceof Array ) ) {
-                const msg = "( ! ( responseData.psmFilterableAnnotationDataList_List instanceof Array ) )";
+        const include_DecoyPSM_Requested = responseData.include_DecoyPSM_Requested as boolean
+        const psmFilterableAnnotationTypeIds_InReturnedOrder = responseData.psmFilterableAnnotationTypeIds_InReturnedOrder as Array<number>
+
+        const psmCount = responseData.psmCount as number
+        const starting_PsmId = responseData.starting_PsmId as number
+        const psmIds_OffsetFromPrevious_WhenNotSequential = responseData.psmIds_OffsetFromPrevious_WhenNotSequential as Array<number>
+        const annotationValuesList_PerAnnotationTypeList = responseData.annotationValuesList_PerAnnotationTypeList as Array<Array<number>>
+
+        const psm_Is_IndependentDecoy = responseData.psm_Is_IndependentDecoy as Array<boolean>
+        const psm_Is_Decoy = responseData.psm_Is_Decoy as Array<boolean>
+
+
+        if ( ! psmFilterableAnnotationTypeIds_InReturnedOrder ) {
+            const msg = "( ! psmFilterableAnnotationTypeIds_InReturnedOrder )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( psmFilterableAnnotationTypeIds_InReturnedOrder instanceof Array ) ) {
+            const msg = "( ! ( psmFilterableAnnotationTypeIds_InReturnedOrder instanceof Array ) )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        for ( const psmFilterableAnnotationTypeId_Returned of psmFilterableAnnotationTypeIds_InReturnedOrder ) {
+            if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationTypeId_Returned ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationTypeId_Returned ) )";
                 console.warn(msg);
                 throw Error(msg);
             }
-            for ( const psmFilterableAnnotationDataList_List_Entry of responseData.psmFilterableAnnotationDataList_List ) {
+        }
 
-                if ( psmFilterableAnnotationDataList_List_Entry.psmId === undefined || psmFilterableAnnotationDataList_List_Entry.psmId === null ) {
-                    const msg = "( psmFilterableAnnotationDataList_List_Entry.psmId === undefined || psmFilterableAnnotationDataList_List_Entry.psmId === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) ) {
-                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.psmId ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( psmFilterableAnnotationDataList_List_Entry.annTpId === undefined || psmFilterableAnnotationDataList_List_Entry.annTpId === null ) {
-                    const msg = "( psmFilterableAnnotationDataList_List_Entry.annTpId === undefined || psmFilterableAnnotationDataList_List_Entry.annTpId === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) ) {
-                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annTpId ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( psmFilterableAnnotationDataList_List_Entry.annVlNbr === undefined || psmFilterableAnnotationDataList_List_Entry.annVlNbr === null ) {
-                    const msg = "( psmFilterableAnnotationDataList_List_Entry.annVlNbr === undefined || psmFilterableAnnotationDataList_List_Entry.annVlNbr === null )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
-                if ( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) ) {
-                    const msg = "( ! limelight__variable_is_type_number_Check( psmFilterableAnnotationDataList_List_Entry.annVlNbr ) )";
-                    console.warn(msg);
-                    throw Error(msg);
-                }
+        if ( ! psmCount ) {
+            const msg = "( ! psmCount )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! limelight__variable_is_type_number_Check( psmCount ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( psmCount ) )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( ! starting_PsmId ) {
+            const msg = "( ! starting_PsmId )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! limelight__variable_is_type_number_Check( starting_PsmId ) ) {
+            const msg = "( ! limelight__variable_is_type_number_Check( starting_PsmId ) )";
+            console.warn(msg);
+            throw Error(msg);
+        }
 
-                const psmId = psmFilterableAnnotationDataList_List_Entry.psmId as number;
-                const annotationTypeId = psmFilterableAnnotationDataList_List_Entry.annTpId as number;
-                const annotationValueNumber = psmFilterableAnnotationDataList_List_Entry.annVlNbr as number;
-                const decoyPSM = psmFilterableAnnotationDataList_List_Entry.decoyPSM as boolean;
-                const independentDecoyPSM = psmFilterableAnnotationDataList_List_Entry.indDecoyPSM as boolean;
+        if ( psmIds_OffsetFromPrevious_WhenNotSequential ) {
+            if ( ! ( psmIds_OffsetFromPrevious_WhenNotSequential instanceof Array ) ) {
+                const msg = "( ! ( psmIds_OffsetFromPrevious_WhenNotSequential instanceof Array ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( psmIds_OffsetFromPrevious_WhenNotSequential.length !== psmCount ) {
+                const msg = "( psmIds_WhenNotSequential.length !== psmCount )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            for ( const psmIds_OffsetFromPrevious_WhenNotSequential_Entry of psmIds_OffsetFromPrevious_WhenNotSequential ) {
+                if ( ! limelight__variable_is_type_number_Check( psmIds_OffsetFromPrevious_WhenNotSequential_Entry ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( psmIds_OffsetFromPrevious_WhenNotSequential_Entry ) )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+            }
+        }
 
-                if ( decoyPSM && ( ! include_DecoyPSM_Process_WebserviceResponse ) ) {
+        if ( ! annotationValuesList_PerAnnotationTypeList ) {
+            const msg = "( ! annotationValuesList_PerAnnotationTypeList )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( ! ( annotationValuesList_PerAnnotationTypeList instanceof Array ) ) {
+            const msg = "( ! ( annotationValuesList_PerAnnotationTypeList instanceof Array ) )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        if ( annotationValuesList_PerAnnotationTypeList.length !== psmFilterableAnnotationTypeIds_InReturnedOrder.length ) {
+            const msg = "( annotationValuesList_PerAnnotationTypeList.length !== psmFilterableAnnotationTypeIds_InReturnedOrder.length )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        for ( const annotationValuesList_PerAnnotationTypeList_InnerArray of annotationValuesList_PerAnnotationTypeList ) {
+            if ( ! ( annotationValuesList_PerAnnotationTypeList_InnerArray instanceof Array ) ) {
+                const msg = "( ! ( annotationValuesList_PerAnnotationTypeList_InnerArray instanceof Array ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( annotationValuesList_PerAnnotationTypeList_InnerArray.length !== psmCount ) {
+                const msg = "( annotationValuesList_PerAnnotationTypeList_InnerArray.length !== psmCount )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            for ( const annotationValuesList_PerAnnotationTypeList_InnerArrayEntry of annotationValuesList_PerAnnotationTypeList_InnerArray ) {
+                if ( ! limelight__variable_is_type_number_Check( annotationValuesList_PerAnnotationTypeList_InnerArrayEntry ) ) {
+                    const msg = "( ! limelight__variable_is_type_number_Check( annotationValuesList_PerAnnotationTypeList_InnerArrayEntry ) )";
+                    console.warn(msg);
+                    throw Error(msg);
+                }
+            }
+        }
+
+        if ( psm_Is_IndependentDecoy ) {
+            if ( ! ( psm_Is_IndependentDecoy instanceof Array ) ) {
+                const msg = "( ! ( psm_Is_IndependentDecoy instanceof Array ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( psm_Is_IndependentDecoy.length !== psmCount ) {
+                const msg = "( psm_Is_IndependentDecoy.length !== psmCount )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+        if ( psm_Is_Decoy ) {
+            if ( ! ( psm_Is_Decoy instanceof Array ) ) {
+                const msg = "( ! ( psm_Is_Decoy instanceof Array ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( psm_Is_Decoy.length !== psmCount ) {
+                const msg = "( psm_Is_Decoy.length !== psmCount )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        let psmId_Previous = 0  // Initialize to zero to add next offset.  Only used with psmIds_OffsetFromPrevious_WhenNotSequential
+
+        for ( let psmIndex = 0; psmIndex < psmCount; psmIndex++ ) {
+
+            if ( psm_Is_Decoy ) {
+                if ( psm_Is_Decoy[ psmIndex ] && ( ! include_DecoyPSM_Process_WebserviceResponse ) ) {
                     //  PSM is decoy and NOT include Decoy so skip
-
                     continue;  // EARLY CONTINUE
                 }
+            }
 
-                let per_Psm_Holder_Entry = psm_FilterableAnnotationData_Holder.get_Per_Psm_Holder_For_PsmId( psmId );
-                if ( ! per_Psm_Holder_Entry ) {
-                    per_Psm_Holder_Entry = new  CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_For_PSM_Holder__ForSinglePsmId({ psmId });
-                    psm_FilterableAnnotationData_Holder.set_Per_Psm_Holder_For_PsmId( per_Psm_Holder_Entry );
+            let psmId = starting_PsmId + psmIndex
+
+            if ( psmIds_OffsetFromPrevious_WhenNotSequential ) {
+                psmId = psmIds_OffsetFromPrevious_WhenNotSequential[ psmIndex ] + psmId_Previous
+            }
+
+            psmId_Previous = psmId
+
+            let per_Psm_Holder_Entry = psm_FilterableAnnotationData_Holder.get_Per_Psm_Holder_For_PsmId( psmId );
+            if ( ! per_Psm_Holder_Entry ) {
+                per_Psm_Holder_Entry = new  CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_For_PSM_Holder__ForSinglePsmId({ psmId });
+                psm_FilterableAnnotationData_Holder.set_Per_Psm_Holder_For_PsmId( per_Psm_Holder_Entry );
+            } else {
+                var z = 0
+            }
+
+            for ( let psmFilterableAnnotationTypeIds_InReturnedOrder_Index = 0; psmFilterableAnnotationTypeIds_InReturnedOrder_Index < psmFilterableAnnotationTypeIds_InReturnedOrder.length ; psmFilterableAnnotationTypeIds_InReturnedOrder_Index++  ) {
+
+                const psmFilterableAnnotationTypeId = psmFilterableAnnotationTypeIds_InReturnedOrder[ psmFilterableAnnotationTypeIds_InReturnedOrder_Index ]
+                const annotationValuesList = annotationValuesList_PerAnnotationTypeList[ psmFilterableAnnotationTypeIds_InReturnedOrder_Index ]
+                const annotationValueNumber = annotationValuesList[ psmIndex ]
+
+                let decoyPSM = false
+                let independentDecoyPSM = false
+
+                if ( psm_Is_Decoy ) {
+                    decoyPSM = psm_Is_Decoy[ psmIndex ]
+                }
+                if ( psm_Is_IndependentDecoy ) {
+                    independentDecoyPSM = psm_Is_IndependentDecoy[ psmIndex ]
                 }
 
-                const entry_ForSingleAnnotationTypeId : CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder__ForSingleAnnotationTypeId = {
-                    annotationTypeId, annotationValueNumber, psmId, decoyPSM, independentDecoyPSM
+                const entry_ForSingleAnnotationTypeId: CommonData_LoadedFromServer_SingleSearch__NO_PSM_Peptide_Protein_Filtering__PSM_FilterableAnnotationData_Holder__ForSingleAnnotationTypeId = {
+                    annotationTypeId: psmFilterableAnnotationTypeId, annotationValueNumber, psmId, decoyPSM, independentDecoyPSM
                 }
                 per_Psm_Holder_Entry.set_PsmFilterableAnnotationData( entry_ForSingleAnnotationTypeId );
             }
+
         }
 
         for ( const psmFilterableAnnotationTypeId of psmFilterableAnnotationTypeIds_Requested ) {
             psm_FilterableAnnotationData_Holder.add_psmFilterableAnnotationTypeId_Loaded( psmFilterableAnnotationTypeId );
         }
-
     }
 
 

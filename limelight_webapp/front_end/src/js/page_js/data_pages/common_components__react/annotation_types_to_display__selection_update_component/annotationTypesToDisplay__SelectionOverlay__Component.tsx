@@ -28,6 +28,9 @@ import {
     limelight_Tooltip_React_Extend_Material_UI_Library__Main__Common_Properties__For_FollowMousePointer,
     Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component
 } from "page_js/common_all_pages/tooltip_React_Extend_Material_UI_Library/limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component";
+import {
+    annotationName_Prefix_BestOfPsmValues_TextLabel
+} from "page_js/constants_across_webapp/annotation_constants/annotationName_Prefix_BestOfPsmValues";
 
 
 const _Overlay_Title = "Change Displayed Data"
@@ -106,6 +109,7 @@ class Local_AnnTypeDisplay_Per_ProjectSearchId {
     psmAnnTypeDisplay : Array<number>;
     reportedPeptideAnnTypeDisplay : Array<number>;
     matchedProteinAnnTypeDisplay : Array<number>;
+    bestPsm_AnnTypeDisplay: Array<number>;
 }
 
 class Local_SearchesList {
@@ -278,6 +282,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                     searchDataLookupParameters_Single_ProjectSearchId.psmAnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.psmAnnTypeDisplay;
                     searchDataLookupParameters_Single_ProjectSearchId.reportedPeptideAnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.reportedPeptideAnnTypeDisplay;
                     searchDataLookupParameters_Single_ProjectSearchId.matchedProteinAnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.matchedProteinAnnTypeDisplay;
+                    searchDataLookupParameters_Single_ProjectSearchId.bestPsm_AnnTypeDisplay = local_annTypeDisplay_For_ProjectSearchId.bestPsm_AnnTypeDisplay;
                 }
             }
 
@@ -312,6 +317,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
         const psmAnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.psmAnnTypeDisplay;
         const reportedPeptideAnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.reportedPeptideAnnTypeDisplay;
         const matchedProteinAnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.matchedProteinAnnTypeDisplay;
+        const bestPsm_AnnTypeDisplay = local_AnnTypeDisplay_For_ProjectSearchId.bestPsm_AnnTypeDisplay;
 
         const annotationTypeItems_PerProjectSearchId_Map :  Map<number, AnnotationTypeItems_PerProjectSearchId> =
             this.props.params.dataPageStateManager_DataFrom_Server.get_annotationTypeData_Root().annotationTypeItems_PerProjectSearchId_Map;
@@ -408,6 +414,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                             filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.psmFilterableAnnotationTypes }
                             descriptiveAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.psmDescriptiveAnnotationTypes }
                             searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                            annotationNameDisplay_Prefix={ null }
                             callbackOn_DataChanged={ () => {
                                 //  Force Rerender
                                 this.setState({ forceRerenderObject: {} });
@@ -420,6 +427,7 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                             filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.reportedPeptideFilterableAnnotationTypes }
                             descriptiveAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.reportedPeptideDescriptiveAnnotationTypes }
                             searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                            annotationNameDisplay_Prefix={ null }
                             callbackOn_DataChanged={ () => {
                                 //  Force Rerender
                                 this.setState({ forceRerenderObject: {} });
@@ -435,12 +443,29 @@ class AnnotationTypesToDisplay__SelectionOverlayComponent__Component extends Rea
                                 filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinFilterableAnnotationTypes }
                                 descriptiveAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.matchedProteinDescriptiveAnnotationTypes }
                                 searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                                annotationNameDisplay_Prefix={ null }
                                 callbackOn_DataChanged={ () => {
                                     //  Force Rerender
                                     this.setState({ forceRerenderObject: {} });
                                 } }
                             />
                         ) : null }
+
+                        {/* Best PSM Filterable Annotation Data */}
+
+                        <Internal__PerType_PSM_Peptide_Protein__Section__Component
+                            type_HeaderLabelText="Best PSM Data"
+                            annTypeDisplay={ bestPsm_AnnTypeDisplay }
+                            filterableAnnotationTypes={ annotationTypeItems_For_FirstKey_ProjectSearchId.psmFilterableAnnotationTypes }
+                            descriptiveAnnotationTypes={ undefined } //  Filterable only
+                            searchProgramsPerSearchItem_Map={ searchProgramsPerSearchItem_Map }
+                            annotationNameDisplay_Prefix={ annotationName_Prefix_BestOfPsmValues_TextLabel }
+                            callbackOn_DataChanged={ () => {
+                                //  Force Rerender
+                                this.setState({ forceRerenderObject: {} });
+                            } }
+                        />
+
                     </div>
 
                     <div className=" top-level fixed-height modal-overlay-body-standard-margin-bottom modal-overlay-body-standard-margin-left modal-overlay-body-standard-margin-right "
@@ -491,12 +516,23 @@ const _create_local_AnnTypeDisplay_ForAll_ProjectSearchId = function(props: Anno
 
         if ( searchDataLookupParameters_For_ProjectSearchId.psmAnnTypeDisplay ) {
             local_AnnTypeDisplay_Per_ProjectSearchId.psmAnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.psmAnnTypeDisplay );
+        } else {
+            local_AnnTypeDisplay_Per_ProjectSearchId.psmAnnTypeDisplay = []
         }
         if ( searchDataLookupParameters_For_ProjectSearchId.reportedPeptideAnnTypeDisplay ) {
             local_AnnTypeDisplay_Per_ProjectSearchId.reportedPeptideAnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.reportedPeptideAnnTypeDisplay );
+        } else {
+            local_AnnTypeDisplay_Per_ProjectSearchId.reportedPeptideAnnTypeDisplay = []
         }
         if ( searchDataLookupParameters_For_ProjectSearchId.matchedProteinAnnTypeDisplay ) {
             local_AnnTypeDisplay_Per_ProjectSearchId.matchedProteinAnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.matchedProteinAnnTypeDisplay );
+        } else {
+            local_AnnTypeDisplay_Per_ProjectSearchId.matchedProteinAnnTypeDisplay = []
+        }
+        if ( searchDataLookupParameters_For_ProjectSearchId.bestPsm_AnnTypeDisplay ) {
+            local_AnnTypeDisplay_Per_ProjectSearchId.bestPsm_AnnTypeDisplay = Array.from( searchDataLookupParameters_For_ProjectSearchId.bestPsm_AnnTypeDisplay );
+        } else {
+            local_AnnTypeDisplay_Per_ProjectSearchId.bestPsm_AnnTypeDisplay = []
         }
 
         annTypeDisplay_Per_ProjectSearchId_Map_Key_ProjectSearchId.set( projectSearchId, local_AnnTypeDisplay_Per_ProjectSearchId );
@@ -526,6 +562,8 @@ interface Internal__PerType_PSM_Peptide_Section__Component_Props {
     filterableAnnotationTypes: Map<number, AnnotationTypeItem>
     descriptiveAnnotationTypes: Map<number, AnnotationTypeItem>
     searchProgramsPerSearchItem_Map: Map<number, SearchProgramsPerSearchItem>
+
+    annotationNameDisplay_Prefix: string /* "Best " or null */
 
     callbackOn_DataChanged: () => void
 }
@@ -662,8 +700,11 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
         //  Separate into currently displayed and NOT currently displayed
 
         const annTypeIds_All = new Set<number>( filterableAnnotationTypes_Map.keys() );
-        for ( const annotationTypeId of descriptiveAnnotationTypes_Map.keys() ) {
-            annTypeIds_All.add( annotationTypeId );
+
+        if ( descriptiveAnnotationTypes_Map ) {
+            for ( const annotationTypeId of descriptiveAnnotationTypes_Map.keys() ) {
+                annTypeIds_All.add( annotationTypeId );
+            }
         }
 
         //  Start with All and remove all currently displayed
@@ -678,13 +719,17 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
 
             let annotationTypeItem = filterableAnnotationTypes_Map.get( annotationTypeId );
             if ( ! annotationTypeItem ) {
-                annotationTypeItem = descriptiveAnnotationTypes_Map.get( annotationTypeId );
-                if ( ! annotationTypeItem ) {
-                    throw Error("Not found in Filterable or Descriptive. from annTypeDisplay: annotationTypeId: " + annotationTypeId );
+                if ( descriptiveAnnotationTypes_Map ) {
+                    annotationTypeItem = descriptiveAnnotationTypes_Map.get( annotationTypeId );
+                    if ( ! annotationTypeItem ) {
+                        throw Error("Not found in Filterable or Descriptive. from annTypeDisplay: annotationTypeId: " + annotationTypeId );
+                    }
                 }
             }
 
-            annotationTypeItems_CurrentlyDisplayed.push(annotationTypeItem);
+            if ( annotationTypeItem ) {
+                annotationTypeItems_CurrentlyDisplayed.push( annotationTypeItem );
+            }
         }
 
         const annotationTypeItems_NOT_Displayed : Array<AnnotationTypeItem> = [];
@@ -693,12 +738,16 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
 
             let annotationTypeItem = filterableAnnotationTypes_Map.get( annotationTypeId );
             if ( ! annotationTypeItem ) {
-                annotationTypeItem = descriptiveAnnotationTypes_Map.get( annotationTypeId );
-                if ( ! annotationTypeItem ) {
-                    throw Error("Not found in Filterable or Descriptive. from annTypeIds_NOT_Displayed: annotationTypeId: " + annotationTypeId );
+                if ( descriptiveAnnotationTypes_Map ) {
+                    annotationTypeItem = descriptiveAnnotationTypes_Map.get( annotationTypeId );
+                    if ( ! annotationTypeItem ) {
+                        throw Error( "Not found in Filterable or Descriptive. from annTypeIds_NOT_Displayed: annotationTypeId: " + annotationTypeId );
+                    }
                 }
             }
-            annotationTypeItems_NOT_Displayed.push( annotationTypeItem );
+            if ( annotationTypeItem ) {
+                annotationTypeItems_NOT_Displayed.push( annotationTypeItem );
+            }
         }
 
         //  Sort NOT currently displayed on name then id
@@ -738,6 +787,7 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
                         name={ annotationType.name }
                         description={ annotationType.description }
                         programName={ searchProgramsPerSearchItem.name }
+                        annotationNameDisplay_Prefix={ this.props.annotationNameDisplay_Prefix }
                         deleteEntryHandler={ this._deleteAnnTypeId_BindThis }
                         draggableId={ draggableId }
                         index={ index }
@@ -773,7 +823,7 @@ class Internal__PerType_PSM_Peptide_Protein__Section__Component extends React.Co
                             this.props.callbackOn_DataChanged();
                         }}
                     >
-                        { annotationType.name } ({ searchProgramsPerSearchItem.name })
+                        { this.props.annotationNameDisplay_Prefix /* "Best " or null */ }{ annotationType.name } ({ searchProgramsPerSearchItem.name })
                     </div>
                 </Limelight_Tooltip_React_Extend_Material_UI_Library__Main_Tooltip_Component>
             )
@@ -904,6 +954,7 @@ interface DraggableAnnotationCurrentlyDisplayEntry_Props {
     name: string
     description: string
     programName: string
+    annotationNameDisplay_Prefix: string
     deleteEntryHandler: AnnotationCurrentlyDisplayEntry_DeleteEntry_Callback
 
     draggableId : string
@@ -955,6 +1006,7 @@ const DraggableAnnotationCurrentlyDisplayEntry = (props : DraggableAnnotationCur
                         name={ props.name }
                         description={ props.description }
                         programName={ props.programName }
+                        annotationNameDisplay_Prefix={ props.annotationNameDisplay_Prefix }
                         arrayIndex={ props.index }
                         deleteEntryHandler={ props.deleteEntryHandler }
                     />
@@ -970,6 +1022,8 @@ interface AnnotationCurrentlyDisplayEntry_DraggableContents_Props {
     name: string
     description: string
     programName: string
+    annotationNameDisplay_Prefix: string
+
     deleteEntryHandler: AnnotationCurrentlyDisplayEntry_DeleteEntry_Callback
 
     arrayIndex : number
@@ -1052,6 +1106,12 @@ class AnnotationCurrentlyDisplayEntry_DraggableContents extends React.Component<
                     <div
                         style={ { whiteSpace: "nowrap", overflowX: "hidden", textOverflow: "ellipsis", cursor: "move" } }
                     >
+                        { this.props.annotationNameDisplay_Prefix ? (
+                            <>
+                                <span>{ this.props.annotationNameDisplay_Prefix /* "Best " or null */ }</span>
+                                <span> </span>
+                            </>
+                        ) : null }
                         <span>{ this.props.name }</span>
                         <span> </span>
                         <span>(</span>
