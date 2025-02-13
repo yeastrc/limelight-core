@@ -19,13 +19,19 @@ package org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +42,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
+import org.yeastrc.limelight.limelight_shared.exceptions.LimelightShardCodeDatabaseContentErrorException;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.cached_data_in_webservices_mgmt.Cached_WebserviceResponse_Management_IF;
@@ -51,6 +59,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_Exclude_is_de
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.RestControllerUtils__Request_Accept_GZip_Response_Set_GZip_IF;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
@@ -71,6 +80,11 @@ import org.yeastrc.limelight.limelight_webapp.webservice_sync_tracking.Validate_
  * 
  * Excludes Decoy PSMs
  * Includes Independent Decoy PSMs
+ * 
+ * 
+ * 
+ * NOTE: This uses 'searchScanFile_For_SearchIds_Searcher' to get the search_scan_file_id when it is null on the psm_tbl but have exactly one search_scan_file_tbl record for search.
+ *          A LOT of other code in Limelight webapp needs to be changed to make this work.
  *
  */
 @RestController
@@ -85,7 +99,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	/**
 	 * Path for this Controller.  !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
 	 */
-	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_TABLE_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0002;
+	private static final String CONTROLLER_PATH = AA_RestWSControllerPaths_Constants.PSM_TABLE_DATA_PER_REPORTED_PEPTIDE_ID_FOR_SEARCHCRITERIA_SINGLE_PROJECT_SEARCH_ID_REST_WEBSERVICE_CONTROLLER_VERSION_0003;
 	
 	/**
 	 * Path, updated for use by Cached Response Mgmt ( Cached_WebserviceResponse_Management )
@@ -109,6 +123,9 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 	
 	@Autowired
 	private SearchIdForProjectSearchIdSearcherIF searchIdForProjectSearchIdSearcher;
+	
+	@Autowired
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
@@ -268,8 +285,35 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     				.createSearcherCutoffValuesSearchLevel(
     						projectSearchIdMapToSearchId, 
     						webserviceRequest.searchDataLookupParams_For_Single_ProjectSearchId );
+    		
+    		
+    		Set<Integer> searchScanFileIds_From_SearchScanFileTable = new HashSet<>();
 
+    		Integer searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry = null; // Populated if EXACTLY 1 entry
+    		
+    		{
+	    		List<Integer> searchIds = new ArrayList<>(1);
+	    		searchIds.add( searchId );
+	    		
+	    		List<SearchScanFileDTO> searchScanFileDTO_For_SearchId_List = 
+	    				searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds);
+	    		
+	    		for ( SearchScanFileDTO entry : searchScanFileDTO_For_SearchId_List ) {
+	    			searchScanFileIds_From_SearchScanFileTable.add( entry.getId() );
+	    		}
+	    		
+	    		if ( searchScanFileIds_From_SearchScanFileTable.size() == 1 ) {
+	    			
+	    			searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry = 
+	    					searchScanFileIds_From_SearchScanFileTable.iterator().next();
+	    		}
+    		}
+    		
+
+    		///
    			final int minimumNumberOfPSMsPerReportedPeptide = 1; // standard minimum # PSMs 
+   			
+   			
 
    			if ( reportedPeptideIds == null ) {
    				
@@ -289,45 +333,275 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
    				}
    			}
     		
+   			Collections.sort( reportedPeptideIds );
+   			
     		
-    		List<WebserviceResult_Entry> reportedPeptideId_psmTblDataList_List = new ArrayList<>( reportedPeptideIds.size() );
+    		List<Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB> reportedPeptideId_psmTblDataList_List = new ArrayList<>( reportedPeptideIds.size() );
     		
     		for ( Integer reportedPeptideId : reportedPeptideIds ) {
-    			
+  			
     			List<Long> psmIds =
     					psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmIdsForSearchIdReportedPeptideIdCutoffs( reportedPeptideId, searchId, searcherCutoffValuesSearchLevel );
     			
     			List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List = 
     					psmTblData_ForSearchIdReportedPeptideIdCutoffsSearcher.getPsmTblData_Exclude_is_decoy_For_PsmIds( psmIds );
+
+    			Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB = new Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB();
+    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.reportedPeptideId = reportedPeptideId;
+    			internal_Single_ReportedPeptide_AndIts_PSMs_FromDB.psmTblData_List = psmTblData_List;
     			
-    			List<WebserviceResult_PerPSM_Entry> psms = new ArrayList<>( psmTblData_List.size() );
+    			reportedPeptideId_psmTblDataList_List.add( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB );
+    		}
+    		
+    		//  Initial analysis of values
+    		
+    		int psmCount_Total = 0;
+    		
+    		boolean anyPsmHas_RetentionTimeSeconds_NotNull = false;
+    		boolean anyPsmHas_Precursor_M_Over_Z_NotNull = false;
+    		
+    		boolean anyPsmHas_HasModifications_True = false;
+    		boolean anyPsmHas_HasOpenModifications_True = false;
+    		boolean anyPsmHas_HasReporterIons_True = false;
+    		boolean anyPsmHas_IndependentDecoyPSM_True = false;
+    		
+    		boolean anyPsmHas_SearchScanFileId_NotNull = false;
+    		
+    		
+    		for ( Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry : reportedPeptideId_psmTblDataList_List ) {
     			
-    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry dbEntry : psmTblData_List ) {
-    				WebserviceResult_PerPSM_Entry resultEntry = new WebserviceResult_PerPSM_Entry();
-    				resultEntry.psmId = dbEntry.getPsmId();
-    				resultEntry.charge = dbEntry.getCharge();
-    				resultEntry.scanNumber = dbEntry.getScanNumber();
-    				resultEntry.searchScanFileId = dbEntry.getSearchScanFileId();
-    				resultEntry.retentionTimeSeconds = dbEntry.getRetentionTimeSeconds();
-    				resultEntry.precursor_M_Over_Z = dbEntry.getPrecursor_M_Over_Z();
-    				resultEntry.hasModifications = dbEntry.isHasModifications();
-    				resultEntry.hasOpenModifications = dbEntry.isHasOpenModifications();
-    				resultEntry.hasReporterIons = dbEntry.isHasReporterIons();
-    				resultEntry.independentDecoyPSM = dbEntry.isIndependentDecoyPSM();
+    			psmCount_Total += internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.psmTblData_List.size();
+    			
+    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry psmTblData_Entry : internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.psmTblData_List ) {
     				
-    				psms.add(resultEntry);
+    				if ( psmTblData_Entry.getRetentionTimeSeconds() != null ) {
+    					anyPsmHas_RetentionTimeSeconds_NotNull = true;
+    				}
+    				if ( psmTblData_Entry.getPrecursor_M_Over_Z() != null ) {
+    					anyPsmHas_Precursor_M_Over_Z_NotNull = true;
+    				}
+
+    				if ( psmTblData_Entry.isHasModifications() ) {
+    					anyPsmHas_HasModifications_True = true;
+    				}
+    				if ( psmTblData_Entry.isHasOpenModifications() ) {
+    					anyPsmHas_HasOpenModifications_True = true;
+    				}
+
+    				if ( psmTblData_Entry.isHasReporterIons() ) {
+    					anyPsmHas_HasReporterIons_True = true;
+    				}
+
+    				if ( psmTblData_Entry.isIndependentDecoyPSM() ) {
+    					anyPsmHas_IndependentDecoyPSM_True = true;
+    				}
+
+    				if ( psmTblData_Entry.getSearchScanFileId() != null ) {
+    					
+    					anyPsmHas_SearchScanFileId_NotNull = true;
+    					
+    					//  Validate SearchScanFileId on PSM is in search_scan_file_tbl for search
+    					
+    					if ( ! searchScanFileIds_From_SearchScanFileTable.contains( psmTblData_Entry.getSearchScanFileId() ) ) {
+    						String msg = "psm_tbl.search_scan_file_id is not in search_scan_file_tbl.  psm_tbl.search_scan_file_id: " + psmTblData_Entry.getSearchScanFileId() 
+    							+ ", searchScanFileIds_From_SearchScanFileTable: " + StringUtils.join( searchScanFileIds_From_SearchScanFileTable, ", " )
+    							+ ", searchId: " + searchId;
+    						log.error(msg);
+    						throw new LimelightShardCodeDatabaseContentErrorException(msg);
+    					}
+    				}
+    				
+    				if ( psmTblData_Entry.getSearchScanFileId() == null ) {
+    
+    					//  Validate since NO SearchScanFileId on PSM (is null), there is ZERO or ONE entry in search_scan_file_tbl for search
+    					
+    					if ( ! ( searchScanFileIds_From_SearchScanFileTable.size() > 1 ) ) {
+    						String msg = "psm_tbl.search_scan_file_id is null and there is > 1 entries in search_scan_file_tbl.  "  
+    							+ " searchScanFileIds_From_SearchScanFileTable: " + StringUtils.join( searchScanFileIds_From_SearchScanFileTable, ", " )
+    							+ ", searchId: " + searchId;
+    						log.error(msg);
+    						throw new LimelightShardCodeDatabaseContentErrorException(msg);
+    					}
+    				}
+    			}
+    		}
+    		
+    		int[] reportedPeptideId_OffsetFromPrevValue_Array = new int[ psmCount_Total ];
+    		long[] psmId_OffsetFromPrevValue_Array = new long[ psmCount_Total ];
+    		
+
+    		int[] psm_Charge_Array = new int[ psmCount_Total ];
+    		int[] psm_ScanNumber_Array = new int[ psmCount_Total ];
+        	
+    		Float[] psm_RetentionTimeSeconds_Array = null;
+    		Double[] psm_Precursor_M_Over_Z_Array = null;
+
+    		boolean[] psm_HasModifications_Array = null;
+    		boolean[] psm_HasOpenModifications_Array = null;
+    		boolean[] psm_HasReporterIons_Array = null;
+    		boolean[] psm_IndependentDecoyPSM_Array = null;
+    		
+    		Integer[] psm_SearchScanFileId_Array = null;
+    		
+
+    		/////////////
+
+    		//   TODO  FAKE Force to true to generate the array
+
+    		anyPsmHas_RetentionTimeSeconds_NotNull = true;
+    		anyPsmHas_Precursor_M_Over_Z_NotNull = true;
+    		
+    		anyPsmHas_HasModifications_True = true;
+    		anyPsmHas_HasOpenModifications_True = true;
+    		anyPsmHas_HasReporterIons_True = true;
+    		anyPsmHas_IndependentDecoyPSM_True = true;
+    		
+    		anyPsmHas_SearchScanFileId_NotNull = true;
+    		
+    		///////////////
+    		
+
+    		if ( anyPsmHas_RetentionTimeSeconds_NotNull ) {
+    			psm_RetentionTimeSeconds_Array = new Float[ psmCount_Total ];
+    		}
+    		if ( anyPsmHas_Precursor_M_Over_Z_NotNull ) {
+    			psm_Precursor_M_Over_Z_Array = new Double[ psmCount_Total ];
+    		}
+    		if ( anyPsmHas_HasModifications_True ) {
+    			psm_HasModifications_Array = new boolean[ psmCount_Total ];
+    		}
+    		if ( anyPsmHas_HasOpenModifications_True ) {
+    			psm_HasOpenModifications_Array = new boolean[ psmCount_Total ];
+    		}
+    		if ( anyPsmHas_HasReporterIons_True ) {
+    			psm_HasReporterIons_Array = new boolean[ psmCount_Total ];
+    		}
+    		if ( anyPsmHas_IndependentDecoyPSM_True ) {
+    			psm_IndependentDecoyPSM_Array = new boolean[ psmCount_Total ];
+    		}
+
+    		if ( anyPsmHas_SearchScanFileId_NotNull ) {
+    			psm_SearchScanFileId_Array = new Integer[ psmCount_Total ];
+    		}
+
+    		//  Updated every Reported Peptide Id
+    		int reportedPeptideId_Previous = 0;  // start at zero since is offset from previous
+    		
+			//  For output since updated every PSM
+    		int reportedPeptideId_Previous_ForOutput = 0;  // start at zero since is offset from previous
+    		
+    		long psmId_Previous = 0;  // start at zero since is offset from previous
+    		
+    		int psmOutput_Index = -1;  // start at -1 so after first increment it is zero
+    		
+
+    		for ( Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry : reportedPeptideId_psmTblDataList_List ) {
+    			
+    			int reportedPeptideId_Current = internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.reportedPeptideId;
+        		
+    			//  Sort on PsmId
+    			Collections.sort( internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.psmTblData_List, new Comparator<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry>() {
+					@Override
+					public int compare(PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry o1,
+							PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry o2) {
+						if ( o1.getPsmId() < o2.getPsmId() ) {
+							return -1;
+						}
+						if ( o1.getPsmId() > o2.getPsmId() ) {
+							return 1;
+						}
+						return 0;
+					}
+				});
+
+//    			boolean firstPsmRecord_For_ReportedPeptideId = true;
+
+    			for ( PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry psmTblData_Entry : internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.psmTblData_List ) {
+    				
+    				psmOutput_Index++; // Increment here since start at -1 so after first increment it is zero for first index position in arrays
+    				
+//    				if ( firstPsmRecord_For_ReportedPeptideId ) {
+//    				
+//    					firstPsmRecord_For_ReportedPeptideId = false;
+//    				} else {
+//    				}
+    				
+    				reportedPeptideId_OffsetFromPrevValue_Array[ psmOutput_Index ] = reportedPeptideId_Current - reportedPeptideId_Previous_ForOutput;
+    				
+    				psmId_OffsetFromPrevValue_Array[ psmOutput_Index ] = psmTblData_Entry.getPsmId() - psmId_Previous;
+    				
+    				psm_Charge_Array[ psmOutput_Index ] = psmTblData_Entry.getCharge();
+    				psm_ScanNumber_Array[ psmOutput_Index ] = psmTblData_Entry.getScanNumber();
+    				
+    				if ( psm_RetentionTimeSeconds_Array != null ) {
+    					psm_RetentionTimeSeconds_Array[ psmOutput_Index ] = psmTblData_Entry.getRetentionTimeSeconds();
+    				}
+
+    				if ( psm_Precursor_M_Over_Z_Array != null ) {
+    					psm_Precursor_M_Over_Z_Array[ psmOutput_Index ] = psmTblData_Entry.getPrecursor_M_Over_Z();
+    				}
+
+    				if ( psm_HasModifications_Array != null ) {
+    					psm_HasModifications_Array[ psmOutput_Index ] = psmTblData_Entry.isHasModifications();
+    				}
+
+    				if ( psm_HasOpenModifications_Array != null ) {
+    					psm_HasOpenModifications_Array[ psmOutput_Index ] = psmTblData_Entry.isHasOpenModifications();
+    				}
+
+    				if ( psm_HasReporterIons_Array != null ) {
+    					psm_HasReporterIons_Array[ psmOutput_Index ] = psmTblData_Entry.isHasReporterIons();
+    				}
+
+    				if ( psm_IndependentDecoyPSM_Array != null ) {
+    					psm_IndependentDecoyPSM_Array[ psmOutput_Index ] = psmTblData_Entry.isIndependentDecoyPSM();
+    				}
+    		    		
+
+    				if ( psm_SearchScanFileId_Array != null ) {
+    					
+    					
+    					Integer searchScanFileId_Output = psmTblData_Entry.getSearchScanFileId();
+    					
+    					if ( searchScanFileId_Output == null ) {
+    					
+    						if ( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry != null ) {
+    							//  psmTblData_Entry.getSearchScanFileId(); AND Exactly one entry in SearchScanFile Table so use entry in SearchScanFile Table
+    							searchScanFileId_Output = searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry;
+    						}
+    					}
+    					
+    					psm_SearchScanFileId_Array[ psmOutput_Index ] = searchScanFileId_Output;
+    						
+    				}
+
+
+    				psmId_Previous = psmTblData_Entry.getPsmId();
+
+    				//  For output since updated every PSM
+    				reportedPeptideId_Previous_ForOutput = internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.reportedPeptideId;
     			}
     			
-    			WebserviceResult_Entry entry = new WebserviceResult_Entry();
-    			entry.reportedPeptideId = reportedPeptideId;
-    			entry.psms = psms;
-    			reportedPeptideId_psmTblDataList_List.add( entry );
+    			//  Updated every Reported Peptide Id
+    			reportedPeptideId_Previous = internal_Single_ReportedPeptide_AndIts_PSMs_FromDB_Entry.reportedPeptideId;
     		}
-			    		
-    		WebserviceResult result = new WebserviceResult();
-    		result.reportedPeptideId_psmTblDataList_List = reportedPeptideId_psmTblDataList_List;
     		
-    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray( result );
+    		WebserviceResult result = new WebserviceResult();
+    		
+    		result.reportedPeptideId_OffsetFromPrevValue_Array = reportedPeptideId_OffsetFromPrevValue_Array;
+    		result.psmId_OffsetFromPrevValue_Array = psmId_OffsetFromPrevValue_Array;
+    		result.psm_Charge_Array = psm_Charge_Array;
+    		result.psm_ScanNumber_Array = psm_ScanNumber_Array;
+    		result.psm_RetentionTimeSeconds_Array = psm_RetentionTimeSeconds_Array;
+    		result.psm_Precursor_M_Over_Z_Array = psm_Precursor_M_Over_Z_Array;
+    		result.psm_HasModifications_Array = psm_HasModifications_Array;
+    		result.psm_HasOpenModifications_Array = psm_HasOpenModifications_Array;
+    		result.psm_HasReporterIons_Array = psm_HasReporterIons_Array;
+    		result.psm_IndependentDecoyPSM_Array = psm_IndependentDecoyPSM_Array;
+    		result.psm_SearchScanFileId_Array = psm_SearchScanFileId_Array;
+    		   		
+    		
+    		byte[] responseAsJSON = marshalObjectToJSON.getJSONByteArray_NotReturn_ObjectField_ThatIs_Null( result );
 
     		
     		byte[] responseAsJSON_GZIPPED = gzip_ByteArray_To_ByteArray.gzip_ByteArray_To_ByteArray(responseAsJSON);
@@ -364,8 +638,23 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
 			throw new Limelight_WS_InternalServerError_Exception();
     	}
     }
+    
+    /////////////////
+    
+    //  Internal Classes
+    
+    private static class Internal_Single_ReportedPeptide_AndIts_PSMs_FromDB {
+    	
+    	int reportedPeptideId;
+    	
+    	List<PsmTblData_Exclude_is_decoy_For_PsmIds_Searcher_ResultEntry> psmTblData_List;
+    }
+    
+    
+    /////////////////
 
-
+    //   Webservice Request and Response classes
+    
     /**
      * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
      *
@@ -394,77 +683,54 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
      */
     public static class WebserviceResult {
     	
-    	List<WebserviceResult_Entry> reportedPeptideId_psmTblDataList_List;
+    	int[] reportedPeptideId_OffsetFromPrevValue_Array;
+		long[] psmId_OffsetFromPrevValue_Array;
+		
+		int[] psm_Charge_Array;
+    	int[] psm_ScanNumber_Array;
+		
+		Float[] psm_RetentionTimeSeconds_Array;
+		Double[] psm_Precursor_M_Over_Z_Array;
 
-		public List<WebserviceResult_Entry> getReportedPeptideId_psmTblDataList_List() {
-			return reportedPeptideId_psmTblDataList_List;
+		boolean[] psm_HasModifications_Array;
+		boolean[] psm_HasOpenModifications_Array;
+		boolean[] psm_HasReporterIons_Array;
+		boolean[] psm_IndependentDecoyPSM_Array;   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
+		
+		Integer[] psm_SearchScanFileId_Array;
+		
+		public int[] getReportedPeptideId_OffsetFromPrevValue_Array() {
+			return reportedPeptideId_OffsetFromPrevValue_Array;
 		}
-    	
-    }
-
-    /**
-     * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
-     *
-     */
-    public static class WebserviceResult_Entry {
-    	
-    	int reportedPeptideId;
-    	List<WebserviceResult_PerPSM_Entry> psms;
-    	
-		public int getReportedPeptideId() {
-			return reportedPeptideId;
+		public long[] getPsmId_OffsetFromPrevValue_Array() {
+			return psmId_OffsetFromPrevValue_Array;
 		}
-		public List<WebserviceResult_PerPSM_Entry> getPsms() {
-			return psms;
+		public Float[] getPsm_RetentionTimeSeconds_Array() {
+			return psm_RetentionTimeSeconds_Array;
 		}
-    }
-
-    /**
-     * !!!  WARNING:  Update VERSION NUMBER in URL (And JS code that calls it) WHEN Change Webservice Request or Response  (Format or Contents) !!!!!!!!
-     *
-     */
-    public static class WebserviceResult_PerPSM_Entry {
-    	
-    	long psmId;
-    	int charge;
-    	int scanNumber;
-    	Integer searchScanFileId; // Can be null
-		Float retentionTimeSeconds;
-    	Double precursor_M_Over_Z;
-    	boolean hasModifications;
-    	boolean hasOpenModifications;
-    	boolean hasReporterIons;
-    	boolean independentDecoyPSM;   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
-    	
-		public boolean isHasModifications() {
-			return hasModifications;
+		public Double[] getPsm_Precursor_M_Over_Z_Array() {
+			return psm_Precursor_M_Over_Z_Array;
 		}
-		public boolean isHasOpenModifications() {
-			return hasOpenModifications;
+		public boolean[] getPsm_HasModifications_Array() {
+			return psm_HasModifications_Array;
 		}
-		public boolean isHasReporterIons() {
-			return hasReporterIons;
+		public boolean[] getPsm_HasOpenModifications_Array() {
+			return psm_HasOpenModifications_Array;
 		}
-		public int getCharge() {
-			return charge;
+		public boolean[] getPsm_HasReporterIons_Array() {
+			return psm_HasReporterIons_Array;
 		}
-		public Float getRetentionTimeSeconds() {
-			return retentionTimeSeconds;
+		public boolean[] getPsm_IndependentDecoyPSM_Array() {
+			return psm_IndependentDecoyPSM_Array;
 		}
-		public Double getPrecursor_M_Over_Z() {
-			return precursor_M_Over_Z;
+		public Integer[] getPsm_SearchScanFileId_Array() {
+			return psm_SearchScanFileId_Array;
 		}
-		public long getPsmId() {
-			return psmId;
+		public int[] getPsm_Charge_Array() {
+			return psm_Charge_Array;
 		}
-		public int getScanNumber() {
-			return scanNumber;
-		}
-		public Integer getSearchScanFileId() {
-			return searchScanFileId;
-		}
-		public boolean isIndependentDecoyPSM() {
-			return independentDecoyPSM;
+		public int[] getPsm_ScanNumber_Array() {
+			return psm_ScanNumber_Array;
 		}
     }
 

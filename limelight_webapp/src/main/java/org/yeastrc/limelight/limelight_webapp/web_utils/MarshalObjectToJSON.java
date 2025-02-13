@@ -37,13 +37,41 @@ public class MarshalObjectToJSON {
 
 	private static final Logger log = LoggerFactory.getLogger( MarshalObjectToJSON.class );
 	
+
 	/**
 	 * @param object
-	 * @param searchId
 	 * @return
 	 * @throws IOException
 	 */
 	public byte[] getJSONByteArray( Object object ) throws IOException {
+		
+		return getJSONByteArray_Internal( object, NotReturn_ObjectField_ThatIs_Null.NO );
+	}
+
+
+	/**
+	 * Any object fields that are null will not be serialized
+	 * 
+	 * Only use for new code where check the processing on the receiving end that is looking for 'null'.
+	 *     In Typescript/Javascript check for 'undefined' since the property is not serialized to JSON 
+	 * 
+	 * @param object
+	 * @return
+	 * @throws IOException
+	 */
+	public byte[] getJSONByteArray_NotReturn_ObjectField_ThatIs_Null( Object object ) throws IOException {
+		
+		return getJSONByteArray_Internal( object, NotReturn_ObjectField_ThatIs_Null.YES );
+	}
+	
+	private enum NotReturn_ObjectField_ThatIs_Null { NO, YES }
+	
+	/**
+	 * @param object
+	 * @return
+	 * @throws IOException
+	 */
+	private byte[] getJSONByteArray_Internal( Object object, NotReturn_ObjectField_ThatIs_Null notReturn_ObjectField_ThatIs_Null ) throws IOException {
 		
 		if ( object == null ) {
 			throw new IllegalArgumentException( "param cannot be null" );
@@ -54,13 +82,17 @@ public class MarshalObjectToJSON {
 		//  Jackson JSON Mapper object for JSON deserialization and serialization
 		ObjectMapper jacksonJSON_Mapper = new ObjectMapper();
 		
-		//    Disable since some JS code only checks for 'null' and not also 'undefined'
+		//  Only use for new code where check the processing on the receiving end that is looking for 'null'.
+		//	  In Typescript/Javascript check for 'undefined' since the property is not serialized to JSON
 		
-		//    This .setSerial... has NEVER been committed.  
-		//        It is a nice to have to reduce returned JSON size but is causing errors in existing JS code that is expecting null.
+		//        Some existing JS code only checks for 'null' and not also 'undefined'
 		
-		//  NOT send any object field that is null
-		// jacksonJSON_Mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+		if ( notReturn_ObjectField_ThatIs_Null == NotReturn_ObjectField_ThatIs_Null.YES ) {
+
+			//  NOT send any object field that is null
+			
+			jacksonJSON_Mapper.setSerializationInclusion(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL);
+		}
 		
 		//   serialize 
 		try {

@@ -431,148 +431,320 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
         const psmTblData_Map_Key_ReportedPeptideId = new Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSingleReportedPeptideId>();
         const psmTblData_Map_Key_PsmId = new Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>();
 
-        if ( responseData.reportedPeptideId_psmTblDataList_List ) {
-            if ( ! ( responseData.reportedPeptideId_psmTblDataList_List instanceof Array ) ) {
-                const msg = "( ! ( responseData.reportedPeptideId_psmTblDataList_List instanceof Array ) )";
-                console.warn(msg);
-                throw Error(msg);
+        const reportedPeptideId_OffsetFromPrevValue_Array = responseData.reportedPeptideId_OffsetFromPrevValue_Array as Array<number>
+        const psmId_OffsetFromPrevValue_Array = responseData.psmId_OffsetFromPrevValue_Array as Array<number>
+
+        const psm_Charge_Array = responseData.psm_Charge_Array as Array<number>
+        const psm_ScanNumber_Array = responseData.psm_ScanNumber_Array as Array<number>
+
+        const psm_RetentionTimeSeconds_Array = responseData.psm_RetentionTimeSeconds_Array as Array<number>
+        const psm_Precursor_M_Over_Z_Array = responseData.psm_Precursor_M_Over_Z_Array as Array<number>
+
+        const psm_HasModifications_Array = responseData.psm_HasModifications_Array as Array<boolean>
+        const psm_HasOpenModifications_Array = responseData.psm_HasOpenModifications_Array as Array<boolean>
+        const psm_HasReporterIons_Array = responseData.psm_HasReporterIons_Array as Array<boolean>
+        const psm_IndependentDecoyPSM_Array = responseData.psm_IndependentDecoyPSM_Array as Array<boolean>
+
+        const psm_SearchScanFileId_Array = responseData.psm_SearchScanFileId_Array as Array<boolean>
+
+        if ( reportedPeptideId_OffsetFromPrevValue_Array === undefined || reportedPeptideId_OffsetFromPrevValue_Array === null ) {
+            const msg = "( reportedPeptideId_OffsetFromPrevValue_Array === undefined || reportedPeptideId_OffsetFromPrevValue_Array === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        for ( const reportedPeptideId_OffsetFromPrevValue_Entry of reportedPeptideId_OffsetFromPrevValue_Array ) {
+            if ( reportedPeptideId_OffsetFromPrevValue_Entry === undefined || reportedPeptideId_OffsetFromPrevValue_Entry === null ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Entry === undefined || reportedPeptideId_OffsetFromPrevValue_Entry === null )";
+                console.warn( msg );
+                throw Error( msg );
             }
-            for ( const reportedPeptideId_psmTblDataList_Entry of responseData.reportedPeptideId_psmTblDataList_List ) {
-                if ( reportedPeptideId_psmTblDataList_Entry.reportedPeptideId === undefined || reportedPeptideId_psmTblDataList_Entry.reportedPeptideId === null ) {
-                    const msg = "( reportedPeptideId_psmTblDataList_Entry.reportedPeptideId === undefined || reportedPeptideId_psmTblDataList_Entry.reportedPeptideId === null )";
-                    console.warn(msg);
-                    throw Error(msg);
+            if ( ! limelight__variable_is_type_number_Check( reportedPeptideId_OffsetFromPrevValue_Entry ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( reportedPeptideId_OffsetFromPrevValue_Entry ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psmId_OffsetFromPrevValue_Array === undefined || psmId_OffsetFromPrevValue_Array === null ) {
+            const msg = "( psmId_OffsetFromPrevValue_Array === undefined || psmId_OffsetFromPrevValue_Array === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psmId_OffsetFromPrevValue_Array.length ) {
+            const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psmId_OffsetFromPrevValue_Array.length )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        for ( const psmId_OffsetFromPrevValue_Entry of psmId_OffsetFromPrevValue_Array ) {
+            if ( psmId_OffsetFromPrevValue_Entry === undefined || psmId_OffsetFromPrevValue_Entry === null ) {
+                const msg = "( psmId_OffsetFromPrevValue_Entry === undefined || psmId_OffsetFromPrevValue_Entry === null )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! limelight__variable_is_type_number_Check( psmId_OffsetFromPrevValue_Entry ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( psmId_OffsetFromPrevValue_Entry ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_Charge_Array === undefined || psm_Charge_Array === null ) {
+            const msg = "( psm_Charge_Array === undefined || psm_Charge_Array === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_Charge_Array.length ) {
+            const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_Charge_Array.length )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        for ( const psm_Charge_Entry of psm_Charge_Array ) {
+            if ( psm_Charge_Entry === undefined || psm_Charge_Entry === null ) {
+                const msg = "( psm_Charge_Entry === undefined || psm_Charge_Entry === null )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! limelight__variable_is_type_number_Check( psm_Charge_Entry ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( psm_Charge_Entry ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_ScanNumber_Array === undefined || psm_ScanNumber_Array === null ) {
+            const msg = "( psm_ScanNumber_Array === undefined || psm_ScanNumber_Array === null )";
+            console.warn(msg);
+            throw Error(msg);
+        }
+        if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_ScanNumber_Array.length ) {
+            const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_ScanNumber_Array.length )";
+            console.warn( msg );
+            throw Error( msg );
+        }
+        for ( const psm_ScanNumber_Entry of psm_ScanNumber_Array ) {
+            if ( psm_ScanNumber_Entry === undefined || psm_ScanNumber_Entry === null ) {
+                const msg = "( psm_ScanNumber_Entry === undefined || psm_ScanNumber_Entry === null )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            if ( ! limelight__variable_is_type_number_Check( psm_ScanNumber_Entry ) ) {
+                const msg = "( ! limelight__variable_is_type_number_Check( psm_ScanNumber_Entry ) )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_RetentionTimeSeconds_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_RetentionTimeSeconds_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_RetentionTimeSeconds_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            for ( const psm_RetentionTimeSeconds_Entry of psm_RetentionTimeSeconds_Array ) {
+                //  Value can be null
+                if ( psm_RetentionTimeSeconds_Entry !== undefined && psm_RetentionTimeSeconds_Entry !== null ) {
+                    if ( ! limelight__variable_is_type_number_Check( psm_RetentionTimeSeconds_Entry ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm_RetentionTimeSeconds_Entry ) )";
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
                 }
-                if ( ! limelight__variable_is_type_number_Check( reportedPeptideId_psmTblDataList_Entry.reportedPeptideId ) ) {
-                    const msg = "( ! limelight__variable_is_type_number_Check( reportedPeptideId_psmTblDataList_Entry.reportedPeptideId ) )";
-                    console.warn(msg);
-                    throw Error(msg);
+            }
+        }
+
+        if ( psm_Precursor_M_Over_Z_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_Precursor_M_Over_Z_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_Precursor_M_Over_Z_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            for ( const psm_Pecursor_M_Over_Z_Entry of psm_Precursor_M_Over_Z_Array ) {
+                //  Value can be null
+                if ( psm_Pecursor_M_Over_Z_Entry !== undefined && psm_Pecursor_M_Over_Z_Entry !== null ) {
+                    if ( ! limelight__variable_is_type_number_Check( psm_Pecursor_M_Over_Z_Entry ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm_Pecursor_M_Over_Z_Entry ) )";
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
                 }
-                if ( reportedPeptideId_psmTblDataList_Entry.psms === undefined || reportedPeptideId_psmTblDataList_Entry.psms === null ) {
-                    const msg = "( reportedPeptideId_psmTblDataList_Entry.psms === undefined || reportedPeptideId_psmTblDataList_Entry.psms === null )";
-                    console.warn(msg);
-                    throw Error(msg);
+            }
+        }
+
+        if ( psm_HasModifications_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasModifications_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasModifications_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_HasOpenModifications_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasOpenModifications_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasOpenModifications_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_HasReporterIons_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasReporterIons_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_HasReporterIons_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_IndependentDecoyPSM_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_IndependentDecoyPSM_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_IndependentDecoyPSM_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+        }
+
+        if ( psm_SearchScanFileId_Array ) {
+            // Optional property
+            if ( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_SearchScanFileId_Array.length ) {
+                const msg = "( reportedPeptideId_OffsetFromPrevValue_Array.length !== psm_SearchScanFileId_Array.length )";
+                console.warn( msg );
+                throw Error( msg );
+            }
+            for ( const psm_SearchScanFileId_Entry of psm_SearchScanFileId_Array ) {
+                //  Value can be null
+                if ( psm_SearchScanFileId_Entry !== undefined && psm_SearchScanFileId_Entry !== null ) {
+                    if ( ! limelight__variable_is_type_number_Check( psm_SearchScanFileId_Entry ) ) {
+                        const msg = "( ! limelight__variable_is_type_number_Check( psm_SearchScanFileId_Entry ) )";
+                        console.warn( msg );
+                        throw Error( msg );
+                    }
                 }
-                if ( ! ( reportedPeptideId_psmTblDataList_Entry.psms instanceof Array ) ) {
-                    const msg = "( ! ( reportedPeptideId_psmTblDataList_Entry.psms instanceof Array ) )";
-                    console.warn(msg);
-                    throw Error(msg);
+            }
+        }
+
+        let reportedPeptideId_Current = 0  //  Offsets computed from starting at zero
+        let reportedPeptideId_Prev = -1    //  Previous - Init to -1 since is not possible
+
+        let psmId_Current = 0  //  Offsets computed from starting at zero
+
+        let psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId : Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId> = undefined
+
+        for ( let allArrays_Index = 0; allArrays_Index < reportedPeptideId_OffsetFromPrevValue_Array.length; allArrays_Index++ ) {
+
+
+            const reportedPeptideId_OffsetFromPrevValue = reportedPeptideId_OffsetFromPrevValue_Array[ allArrays_Index ]
+
+            reportedPeptideId_Current += reportedPeptideId_OffsetFromPrevValue
+
+            const psmId_OffsetFromPrevValue = psmId_OffsetFromPrevValue_Array[ allArrays_Index ]
+
+            psmId_Current += psmId_OffsetFromPrevValue
+
+            const psm_Charge = psm_Charge_Array[ allArrays_Index ]
+            const psm_ScanNumber = psm_ScanNumber_Array[ allArrays_Index ]
+
+            let psm_RetentionTimeSeconds = null
+            if ( psm_RetentionTimeSeconds_Array ) {
+                psm_RetentionTimeSeconds = psm_RetentionTimeSeconds_Array[ allArrays_Index ]
+                if ( psm_RetentionTimeSeconds === undefined ) {
+                    psm_RetentionTimeSeconds = null
                 }
+            }
 
-                const reportedPeptideId = reportedPeptideId_psmTblDataList_Entry.reportedPeptideId;
-
-                const psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId = new Map<number, CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId>();
-
-                for ( const psmEntry of reportedPeptideId_psmTblDataList_Entry.psms ) {
-
-                    //  Copy in from Parent reportedPeptideId_psmTblDataList_Entry
-                    psmEntry.reportedPeptideId = reportedPeptideId;
-
-                    //  independentDecoyPSM may be not set and thus 'undefined'.  convert that to false.
-
-                    if ( psmEntry.independentDecoyPSM ) {
-                        psmEntry.independentDecoyPSM = true
-                    } else {
-                        psmEntry.independentDecoyPSM = false;
-                    }
-
-                    const psm : CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId = psmEntry;
-
-                    if ( psm.psmId === undefined || psm.psmId === null ) {
-                        const msg = "( psm.psmId === undefined || psm.psmId === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( ! limelight__variable_is_type_number_Check( psm.psmId ) ) {
-                        const msg = "( ! limelight__variable_is_type_number_Check( psm.psmId ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.reportedPeptideId === undefined || psm.reportedPeptideId === null ) {
-                        const msg = "( psm.reportedPeptideId === undefined || psm.reportedPeptideId === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( ! limelight__variable_is_type_number_Check( psm.reportedPeptideId ) ) {
-                        const msg = "( ! limelight__variable_is_type_number_Check( psm.reportedPeptideId ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.charge === undefined || psm.charge === null ) {
-                        const msg = "( psm.charge === undefined || psm.charge === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( ! limelight__variable_is_type_number_Check( psm.charge ) ) {
-                        const msg = "( ! limelight__variable_is_type_number_Check( psm.charge ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.scanNumber === undefined || psm.scanNumber === null ) {
-                        const msg = "( psm.scanNumber === undefined || psm.scanNumber === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( ! limelight__variable_is_type_number_Check( psm.scanNumber ) ) {
-                        const msg = "( ! limelight__variable_is_type_number_Check( psm.scanNumber ) )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    //  Optional values
-                    if ( psm.searchScanFileId !== undefined && psm.searchScanFileId !== null ) {
-                        if ( ! limelight__variable_is_type_number_Check( psm.searchScanFileId ) ) {
-                            const msg = "( ! limelight__variable_is_type_number_Check( psm.searchScanFileId ) )";
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
-                    }
-                    if ( psm.retentionTimeSeconds !== undefined && psm.retentionTimeSeconds !== null ) {
-                        if ( ! limelight__variable_is_type_number_Check( psm.retentionTimeSeconds ) ) {
-                            const msg = "( ! limelight__variable_is_type_number_Check( psm.retentionTimeSeconds ) )";
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
-                    }
-                    if ( psm.precursor_M_Over_Z !== undefined && psm.precursor_M_Over_Z !== null ) {
-                        if ( ! limelight__variable_is_type_number_Check( psm.precursor_M_Over_Z ) ) {
-                            const msg = "( ! limelight__variable_is_type_number_Check( psm.precursor_M_Over_Z ) )";
-                            console.warn(msg);
-                            throw Error(msg);
-                        }
-                    }
-                    //  Boolean values
-                    if ( psm.hasModifications === undefined || psm.hasModifications === null ) {
-                        const msg = "( psm.hasModifications === undefined || psm.hasModifications === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.hasOpenModifications === undefined || psm.hasOpenModifications === null ) {
-                        const msg = "( psm.hasOpenModifications === undefined || psm.hasOpenModifications === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.hasReporterIons === undefined || psm.hasReporterIons === null ) {
-                        const msg = "( psm.hasReporterIons === undefined || psm.hasReporterIons === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-                    if ( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null ) {
-                        const msg = "( psm.independentDecoyPSM === undefined || psm.independentDecoyPSM === null )";
-                        console.warn(msg);
-                        throw Error(msg);
-                    }
-
-                    psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId.set( psm.psmId, psm );
-
-                    psmTblData_Map_Key_PsmId.set( psm.psmId, psm );
+            let psm_Precursor_M_Over_Z = null
+            if ( psm_Precursor_M_Over_Z_Array ) {
+                psm_Precursor_M_Over_Z = psm_Precursor_M_Over_Z_Array[ allArrays_Index ]
+                if ( psm_Precursor_M_Over_Z === undefined ) {
+                    psm_Precursor_M_Over_Z = null
                 }
+            }
+
+            let psm_HasModifications = false
+            if ( psm_HasModifications_Array ) {
+                psm_HasModifications = psm_HasModifications_Array[ allArrays_Index ]
+                if ( psm_HasModifications ) {
+                    psm_HasModifications = true
+                } else {
+                    psm_HasModifications = false
+                }
+            }
+
+            let psm_HasOpenModifications = false
+            if ( psm_HasOpenModifications_Array ) {
+                psm_HasOpenModifications = psm_HasOpenModifications_Array[ allArrays_Index ]
+                if ( psm_HasOpenModifications ) {
+                    psm_HasOpenModifications = true
+                } else {
+                    psm_HasOpenModifications = false
+                }
+            }
+
+            let psm_HasReporterIons = false
+            if ( psm_HasReporterIons_Array ) {
+                psm_HasReporterIons = psm_HasReporterIons_Array[ allArrays_Index ]
+                if ( psm_HasReporterIons ) {
+                    psm_HasReporterIons = true
+                } else {
+                    psm_HasReporterIons = false
+                }
+            }
+
+            let psm_IndependentDecoyPSM = false
+            if ( psm_IndependentDecoyPSM_Array ) {
+                psm_IndependentDecoyPSM = psm_IndependentDecoyPSM_Array[ allArrays_Index ]
+                if ( psm_IndependentDecoyPSM ) {
+                    psm_IndependentDecoyPSM = true
+                } else {
+                    psm_IndependentDecoyPSM = false
+                }
+            }
+
+            let psm_SearchScanFileId = null
+            if ( psm_SearchScanFileId_Array ) {
+                psm_SearchScanFileId = psm_SearchScanFileId_Array[ allArrays_Index ]
+                if ( psm_SearchScanFileId === undefined ) {
+                    psm_SearchScanFileId = null
+                }
+            }
+
+            const psmTableDataEntry: CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSinglePsmId = {
+
+                psmId: psmId_Current,
+                reportedPeptideId: reportedPeptideId_Current,
+                charge: psm_Charge,
+                scanNumber: psm_ScanNumber,
+                searchScanFileId: psm_SearchScanFileId, // Can be null
+                retentionTimeSeconds: psm_RetentionTimeSeconds, // Float, Can be null
+                precursor_M_Over_Z: psm_Precursor_M_Over_Z, // Double, Can be null
+
+                hasModifications: psm_HasModifications,
+                hasOpenModifications: psm_HasOpenModifications,
+                hasReporterIons: psm_HasReporterIons,
+
+                independentDecoyPSM: psm_IndependentDecoyPSM   // skip 'is_decoy' since is excluded in WHERE clause in SQL query
+            }
+
+            if ( reportedPeptideId_Prev !== reportedPeptideId_Current ) {
+
+                psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId = new Map()
 
                 const single_ReportedPeptideId_Entry = new CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder__ForSingleReportedPeptideId({
-                    reportedPeptideId, psmTblData_Map_Key_PsmId: psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId
+                    reportedPeptideId: reportedPeptideId_Current, psmTblData_Map_Key_PsmId: psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId
                 })
 
-                psmTblData_Map_Key_ReportedPeptideId.set( reportedPeptideId, single_ReportedPeptideId_Entry )
+                psmTblData_Map_Key_ReportedPeptideId.set( reportedPeptideId_Current, single_ReportedPeptideId_Entry )
+
+                reportedPeptideId_Prev = reportedPeptideId_Current
             }
+
+            psmTblData_Map_Key_PsmId__For_Single_ReportedPeptideId.set( psmTableDataEntry.psmId, psmTableDataEntry );
+
+            psmTblData_Map_Key_PsmId.set( psmTableDataEntry.psmId, psmTableDataEntry );
         }
 
         const psmTblData_For_ReportedPeptideId_For_MainFilters_Holder = new CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedPeptideId_For_MainFilters_Holder({
