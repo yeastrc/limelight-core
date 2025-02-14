@@ -415,7 +415,7 @@ InitializingBean // InitializingBean is Spring Interface for triggering running 
     
     					//  Validate since NO SearchScanFileId on PSM (is null), there is ZERO or ONE entry in search_scan_file_tbl for search
     					
-    					if ( ! ( searchScanFileIds_From_SearchScanFileTable.size() > 1 ) ) {
+    					if ( searchScanFileIds_From_SearchScanFileTable.size() > 1 ) {
     						String msg = "psm_tbl.search_scan_file_id is null and there is > 1 entries in search_scan_file_tbl.  "  
     							+ " searchScanFileIds_From_SearchScanFileTable: " + StringUtils.join( searchScanFileIds_From_SearchScanFileTable, ", " )
     							+ ", searchId: " + searchId;
