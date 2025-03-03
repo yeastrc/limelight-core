@@ -380,7 +380,7 @@ export class CommonData_LoadedFromServer_SingleSearch__PSM_TblData_For_ReportedP
                         searchDataLookupParams_For_Single_ProjectSearchId: this._searchDataLookupParams_For_Single_ProjectSearchId,
                     };
 
-                    const url = "d/rws/for-page/psb/psm-table-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0002";
+                    const url = "d/rws/for-page/psb/psm-table-data-per-reported-peptide-id-for-searchcriteria-single-project-search-id-version-0003";
 
                     console.log( "START: AJAX Call to: getting data from URL: " + url );
 
