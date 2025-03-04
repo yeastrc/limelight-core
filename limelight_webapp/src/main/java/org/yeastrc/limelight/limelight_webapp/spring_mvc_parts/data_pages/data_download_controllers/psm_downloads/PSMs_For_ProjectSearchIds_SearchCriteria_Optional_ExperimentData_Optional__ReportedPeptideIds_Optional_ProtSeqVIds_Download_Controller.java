@@ -1781,6 +1781,10 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							}
 							writer.write( "\t" );
 							writer.write( String.valueOf( psmWebDisplay.getScanNumber() ) );
+
+							//  IF search has scan data: Link(s) to Spectrum Viewer (Lorikeet)
+							
+							writer.write( "\t" );
 							
 							if ( searchHasScanData ) {
 								
@@ -1831,14 +1835,12 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 									spectrumViewerURLs = spectrumViewer_BaseURL;
 								}
 
-								writer.write( "\t" );
 								writer.write( spectrumViewerURLs );
 								
 							} else {
 								
 								//  NO Scan Data
 								
-								writer.write( "\t\t" );
 							}
 							
 							writer.write( "\t" );
