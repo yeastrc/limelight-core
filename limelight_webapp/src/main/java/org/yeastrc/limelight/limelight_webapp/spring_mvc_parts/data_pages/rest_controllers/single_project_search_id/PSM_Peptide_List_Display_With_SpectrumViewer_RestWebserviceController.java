@@ -66,13 +66,14 @@ import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationMasses_P
 import org.yeastrc.limelight.limelight_webapp.searchers.OpenModificationPositions_PsmLevel_ForOpenModIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PeptideStringForSearchIdReportedPeptideIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmDynamicModification_For_PsmId_SearcherIF;
-import org.yeastrc.limelight.limelight_webapp.searchers.PsmsWithSameScanNumberScanFilenameIdSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_For_SearchId_PsmIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SrchRepPept_DynamicMod_For_SearchIdReportedPeptideId_SearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.PsmTblData_For_SearchId_PsmIds_Searcher.PsmTblData_For_SearchId_PsmIds_Searcher_ResultEntry;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmsForScanNumberScanFilenameIdSearchId_Result;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.data_pages.rest_controllers.AA_RestWSControllerPaths_Constants;
 import org.yeastrc.limelight.limelight_webapp.spring_mvc_parts.rest_controller_utils_common.Unmarshal_RestRequest_JSON_ToObject;
 import org.yeastrc.limelight.limelight_webapp.web_utils.MarshalObjectToJSON;
@@ -120,7 +121,10 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
 	
 	@Autowired
-	private PsmsWithSameScanNumberScanFilenameIdSearchIdSearcherIF psmsWithSameScanNumberScanFilenameIdSearchIdSearcher;
+	private PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF psmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF;
+	
+	@Autowired
+	private PsmTblData_For_SearchId_PsmIds_Searcher_IF psmTblData_For_SearchId_PsmIds_Searcher;
 
 	@Autowired
 	private PsmDynamicModification_For_PsmId_SearcherIF psmDynamicModification_For_PsmId_Searcher;
@@ -261,12 +265,6 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			if ( psmDTOForInitialPsmId.getSearchScanFileId() == null ) {
-				String msg = "psmDTO.getSearchScanFileId() == null (no value). psmId: " + psmIdFromWebserviceRequest + ", searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			
 			Boolean searchHasScanData = searchHasScanDataForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
 			if ( searchHasScanData == null ) {
 				String msg = "No searchHasScanData for searchId: " + searchId;
@@ -292,13 +290,16 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 			
 			//  Get all PSMs for this PSM Id with same scan number and scan filename id
 			
-			List<PsmsForScanNumberScanFilenameIdSearchId_Result> psmsFromDBList = 
-					psmsWithSameScanNumberScanFilenameIdSearchIdSearcher
-					.getPsmsWithSameScanNumberScanFilenameIdSearchId( psmIdFromWebserviceRequest, searchId );
+			List<Long> psmIdsFromDBList = 
+					psmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF
+					.getPsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher( searchId, psmDTOForInitialPsmId.getScanNumber(), psmDTOForInitialPsmId.getSearchScanFileId() );
+			
+			List<PsmTblData_For_SearchId_PsmIds_Searcher_ResultEntry> psmsFromDBList = 
+					psmTblData_For_SearchId_PsmIds_Searcher.getPsmTblData_For_SearchId_PsmIds(searchId, psmIdsFromDBList);
 			
     		List<WebserviceResult_Item> resultList = new ArrayList<>( psmsFromDBList.size() );
     		
-    		for ( PsmsForScanNumberScanFilenameIdSearchId_Result psmFromDBItem : psmsFromDBList ) {
+    		for ( PsmTblData_For_SearchId_PsmIds_Searcher_ResultEntry psmFromDBItem : psmsFromDBList ) {
     			
     			final long psmIdForDbItem = psmFromDBItem.getPsmId(); 
     			final int reportedPeptideId = psmFromDBItem.getReportedPeptideId();
@@ -309,10 +310,10 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     			result.charge = psmFromDBItem.getCharge();
     			result.reportedPeptideId = reportedPeptideId;
     			
-    			result.psm_precursor_RetentionTime = psmFromDBItem.getPrecursor_RetentionTime();
-    			result.psm_precursor_MZ = psmFromDBItem.getPrecursor_MZ();
+    			result.psm_precursor_RetentionTime = psmFromDBItem.getRetentionTimeSeconds();
+    			result.psm_precursor_MZ = psmFromDBItem.getPrecursor_M_Over_Z();
     			
-    			result.psmIs_IndependentDecoy = psmFromDBItem.isPsmIs_IndependentDecoy();
+    			result.psmIs_IndependentDecoy = psmFromDBItem.isIndependentDecoyPSM();
     			
     			result.scanNumber = psmFromDBItem.getScanNumber();
 
@@ -741,8 +742,8 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
     	private long psmId;
 
     	private int charge;
-    	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
-    	private BigDecimal psm_precursor_MZ;            // precursor_m_z
+    	private Float psm_precursor_RetentionTime; // precursor_retention_time
+    	private Double psm_precursor_MZ;            // precursor_m_z
     	
     	private boolean psmIs_IndependentDecoy;     //  NOT return 'is_decoy' since Excluded in SQL
     	
@@ -778,10 +779,10 @@ public class PSM_Peptide_List_Display_With_SpectrumViewer_RestWebserviceControll
 		public int getCharge() {
 			return charge;
 		}
-		public BigDecimal getPsm_precursor_RetentionTime() {
+		public Float getPsm_precursor_RetentionTime() {
 			return psm_precursor_RetentionTime;
 		}
-		public BigDecimal getPsm_precursor_MZ() {
+		public Double getPsm_precursor_MZ() {
 			return psm_precursor_MZ;
 		}
 		public int getScanNumber() {

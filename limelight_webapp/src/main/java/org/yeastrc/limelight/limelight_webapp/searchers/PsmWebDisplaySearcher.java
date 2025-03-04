@@ -45,10 +45,13 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 			+ 		" psm_tbl.has_modifications, psm_tbl.has_open_modifications, psm_tbl.has_reporter_ions, "
 			+ 		" is_independent_decoy, "  //  Not return 'is_decoy' since excluded in SQL
 			+ 		" psm_tbl.charge, psm_tbl.precursor_retention_time, psm_tbl.precursor_m_z, "
-			+ 		 " psm_tbl.scan_number AS scan_number, psm_tbl.search_scan_file_id, "
-			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
+			+ 		 " psm_tbl.scan_number AS scan_number"
+			+ 		", psm_tbl.search_scan_file_id"
+//			+ 		", "
+//			+        " search_scan_file_tbl.filename AS scan_filename, search_scan_file_tbl.scan_file_id AS scan_file_id "
 			+ " FROM psm_tbl  "
-			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id ";
+//			+ " LEFT OUTER JOIN search_scan_file_tbl ON psm_tbl.search_scan_file_id = search_scan_file_tbl.id "
+			;
 	
 	private static final String SQL_INNER_JOIN_SEARCH_SUB_GROUP_TABLE =
 			" INNER JOIN psm_search_sub_group_tbl ON psm_tbl.id = psm_search_sub_group_tbl.psm_id ";
@@ -181,18 +184,26 @@ public class PsmWebDisplaySearcher extends Limelight_JDBC_Base implements PsmWeb
 					psmWebDisplay.setPsm_precursor_MZ( rs.getBigDecimal( "precursor_m_z" ) );
 					
 					psmWebDisplay.setScanNumber( rs.getInt( "scan_number" ) );
+
 					{
 						int searchScanFileId = rs.getInt( "search_scan_file_id" );
 						if ( ! rs.wasNull() ) {
 							psmWebDisplay.setSearchScanFileId( searchScanFileId );
 						}
 					}
-					psmWebDisplay.setScanFilename( rs.getString( "scan_filename" ) );
 					
-					int scanFileId = rs.getInt( "scan_file_id" );
-					if ( ! rs.wasNull() ) {
-						psmWebDisplay.setScanFileId( scanFileId );
-					}
+					
+					//  REMOVED since change to look up in search_scan_file_tbl when have id or have null
+					
+//					
+//					psmWebDisplay.setScanFilename( rs.getString( "scan_filename" ) );
+//					
+//					int scanFileId = rs.getInt( "scan_file_id" );
+//					if ( ! rs.wasNull() ) {
+//						psmWebDisplay.setScanFileId( scanFileId );
+//					}
+					
+					
 
 					psms.add( psmWebDisplay );
 				}

@@ -50,6 +50,7 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchProgramsPerSearchDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.dto.SearchSubGroupDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesRootLevel;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
@@ -85,6 +86,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.SearchHasScanDataForSear
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchMinimalForProjectSearchIdSearcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchProgramsPerSearchListForSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchSubGroupDTOForSearchIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher.DynamicModificationsInReportedPeptidesForSearchIdReportedPeptideIdsSearcher_Result;
 import org.yeastrc.limelight.limelight_webapp.searchers.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher.ProteinCoverage_RepPeptId_ProtSeqVId_ProteinStartPosition_ForSearchIdReportedPeptideIdsSearcher_Result;
@@ -169,6 +171,9 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	
 	@Autowired
 	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
+	
+	@Autowired
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
@@ -590,6 +595,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     		Map<Integer,Integer> projectSearchIdMapToSearchId = new HashMap<>();
     		Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId = new HashMap<>();
     		Map<Integer,Boolean> searchHasScanDataMap_Key_projectSearchId = new HashMap<>();
+
+    		Map<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId = new HashMap<>();
     		
     		for ( Integer projectSearchId : projectSearchIds ) {
     		
@@ -617,6 +624,24 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				
 	    		projectSearchIdMapToSearchId.put( projectSearchId, searchId );
 	    		searchHasScanDataMap_Key_projectSearchId.put( projectSearchId, searchHasScanData );
+	    		
+	    		{
+
+	        		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = new HashMap<>();
+	        		
+	        		searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.put( projectSearchId, searchScanFileDTO_Map_Key_SearchScanFileId );
+	        		
+		    		List<Integer> searchIds = new ArrayList<>(1);
+		    		searchIds.add( searchId );
+		    		
+		    		List<SearchScanFileDTO> searchScanFileDTO_For_SearchId_List = 
+		    				searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds);
+		    		
+		    		for ( SearchScanFileDTO entry : searchScanFileDTO_For_SearchId_List ) {
+		    			
+		    			searchScanFileDTO_Map_Key_SearchScanFileId.put( entry.getId(), entry );
+		    		}
+	    		}
     		}
     		
     		//  SearcherCutoffValues_Factory.SkipWebserviceCutoffs_NotIn_projectSearchIdMapToSearchId.YES
@@ -659,7 +684,14 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				log.error( msg );
     				throw new LimelightInternalErrorException(msg);
     			}
-    		
+    			
+        		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId );
+        		if ( searchScanFileDTO_Map_Key_SearchScanFileId == null ) {
+    				String msg = "searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId ) returned null before call create_WriteOutputToResponse_Per_SearchId__For_SingleSearch. projectSearchId: " + projectSearchId;
+    				log.error( msg );
+    				throw new LimelightInternalErrorException(msg);
+    			}
+    			
     			WriteOutputToResponse_Per_SearchId writeOutputToResponse_Per_SearchId =
     					create_WriteOutputToResponse_Per_SearchId__For_SingleSearch(
     							internal_Request_Converted_Request_Root, 
@@ -668,6 +700,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     							searchItemMinimal,
     							searchHasScanDataMap_Key_projectSearchId, 
     							searcherCutoffValuesRootLevel,
+    							searchScanFileDTO_Map_Key_SearchScanFileId,
     							singleprojectSearchId_ReportedPeptideIdsPsmIds );
     			
     			writeOutputToResponse_Per_SearchId_List.add( writeOutputToResponse_Per_SearchId );
@@ -679,6 +712,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
     				experimentId,
     				searchItemMinimal_Key_projectSearchId,
     				writeOutputToResponse_Per_SearchId_List,
+    				searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId,
 					httpServletResponse );
     		
 		} catch ( Limelight_WS_BadRequest_InvalidParameter_Exception e ) {
@@ -733,6 +767,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			SearchItemMinimal searchItemMinimal,
 			Map<Integer, Boolean> searchHasScanDataMap_Key_projectSearchId,
 			SearcherCutoffValuesRootLevel searcherCutoffValuesRootLevel,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId,
 			Internal_Request_Converted_PerProjectSearchId singleprojectSearchId_ReportedPeptideIdsPsmIds )
 			throws SQLException, Exception {
 		
@@ -990,12 +1025,12 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			if ( searchHasScanData ) {
 				//  Get Scan Data from Spectral Storage Service
 				scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId =
-						getScanDataFromSpectralStorageService( psmWebDisplayListForReportedPeptideIds );
+						getScanDataFromSpectralStorageService( psmWebDisplayListForReportedPeptideIds, searchScanFileDTO_Map_Key_SearchScanFileId );
 			}
 
 			if ( searchHasScanData ) {
 				//  Validate all PSMs have scan data
-				validate_All_PSMs_haveScanData( psmWebDisplayListForReportedPeptideIds, scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId );
+				validate_All_PSMs_haveScanData( psmWebDisplayListForReportedPeptideIds, scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId, searchScanFileDTO_Map_Key_SearchScanFileId );
 			}
 		}
 		
@@ -1336,23 +1371,43 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 */
 	private void validate_All_PSMs_haveScanData(
 			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
-			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId) {
+			Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId ) {
+		
 		for ( PSMsForSingleReportedPeptideId psmWebDisplayListForReportedPeptideIdsEntry : psmWebDisplayListForReportedPeptideIds ) {
 			for ( PsmEntry_InternalClass psmEntry_InternalClass : psmWebDisplayListForReportedPeptideIdsEntry.psmEntry_InternalClass_List ) {
 
 				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
-				
+
+				SearchScanFileDTO searchScanFileDTO_Entry = null;
+    			{
+    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+						if ( searchScanFileDTO_Entry == null ) {
+							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+    				} else {
+    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+    						
+    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+    					}
+    				}
+    			}
+    			
 				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
-						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
+						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
 				if ( scanData_KeyedOn_ScanNumber == null ) {
-					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
+					String msg = "ScanFileId not found in lookup map: " + searchScanFileDTO_Entry.getScanFileId();
 					log.error(msg);
 					throw new LimelightInternalErrorException(msg);
 				}
 				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
 				if ( scan == null ) {
 					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
-					+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
+					+ ", ScanFileId: " + searchScanFileDTO_Entry.getScanFileId();
 					log.error(msg);
 					throw new LimelightInternalErrorException(msg);
 				}
@@ -1376,7 +1431,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 	 * @throws Exception
 	 */
 	private Map<Integer, Map<Integer, SingleScan_SubResponse>> getScanDataFromSpectralStorageService(
-			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds )
+			List<PSMsForSingleReportedPeptideId> psmWebDisplayListForReportedPeptideIds,
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId )
 					throws SQLException, Exception {
 
  		Map<Integer, Map<Integer, SingleScan_SubResponse>> scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId = new HashMap<>();
@@ -1393,13 +1449,31 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 
 				PsmWebDisplayWebServiceResult psmWebDisplay = psmEntry_InternalClass.psmWebDisplayWebServiceResult;
 
- 				Integer scanFileId = psmWebDisplay.getScanFileId();
+				SearchScanFileDTO searchScanFileDTO_Entry = null;
+    			{
+    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+						if ( searchScanFileDTO_Entry == null ) {
+							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+    				} else {
+    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+    						
+    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+    					}
+    				}
+    			}
+    			
  				Integer scanNumber = psmWebDisplay.getScanNumber();
- 				if ( scanFileId != null && scanNumber != null ) {
- 					Set<Integer> scanNumbers = scanNumbers_KeyedOn_ScanFileId.get( scanFileId );
+ 				
+ 				if ( searchScanFileDTO_Entry != null && scanNumber != null ) {
+ 					Set<Integer> scanNumbers = scanNumbers_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
  					if ( scanNumbers == null ) {
  						scanNumbers = new HashSet<>();
- 						scanNumbers_KeyedOn_ScanFileId.put( scanFileId, scanNumbers );
+ 						scanNumbers_KeyedOn_ScanFileId.put( searchScanFileDTO_Entry.getScanFileId(), scanNumbers );
  					}
  					scanNumbers.add( scanNumber );
  				}
@@ -1481,6 +1555,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 			Integer experimentId,
 			Map<Integer, SearchItemMinimal> searchItemMinimal_Key_projectSearchId,
 			List<WriteOutputToResponse_Per_SearchId> writeOutputToResponse_Per_SearchId_List,
+			Map<Integer, Map<Integer, SearchScanFileDTO>> searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId,
 			HttpServletResponse httpServletResponse )
 			throws Exception {
 		
@@ -1636,6 +1711,15 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 				}
 				
 				String searchNameDisplay = searchNameReturnDefaultIfNull.searchNameReturnDefaultIfNull( searchItemMinimal.getName(), searchItemMinimal.getSearchId() );
+				
+				
+				Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId.get( projectSearchId );
+				if ( searchScanFileDTO_Map_Key_SearchScanFileId == null ) {
+					String msg = "searchScanFileDTO_Map_Key_SearchScanFileId_Map_Key_ProjectSearchId does not contain projectSearchId: " + projectSearchId;
+					log.error( msg );
+					throw new LimelightInternalErrorException(msg);
+				}
+				
 				
 				Set<Integer> annTypeIdsToRetrieve = new HashSet<>();
 				
@@ -1850,6 +1934,28 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							writer.write( "\t" );
 
 							writer.write( String.valueOf( psmWebDisplay.getCharge() ) );
+							
+							
+
+							SearchScanFileDTO searchScanFileDTO_Entry = null;
+			    			{
+			    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+			    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+									if ( searchScanFileDTO_Entry == null ) {
+										String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+										log.error(msg);
+										throw new LimelightInternalErrorException(msg);
+									}
+			    				} else {
+			    					if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+			    						
+			    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+			    					}
+			    				}
+			    			}
+			    			
+			    			
 
 
 							if ( psmWebDisplay.getPsm_precursor_RetentionTime() != null 
@@ -1872,11 +1978,17 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 								
 							} else {
 
+				    			if ( searchScanFileDTO_Entry == null ) {
+				    				String msg = "'else' of '} else if ( ( ! searchHasScanData )': ( searchScanFileDTO_Entry == null ).  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileDTO_Map_Key_SearchScanFileId.size(): " + searchScanFileDTO_Map_Key_SearchScanFileId.size();
+									log.error(msg);
+									throw new LimelightInternalErrorException(msg);
+				    			}
+				    			
 								Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
-										scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
+										scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
 								if ( scanData_KeyedOn_ScanNumber == null ) {
 									String msg = "ScanFileId not found in lookup map: " 
-											+ psmWebDisplay.getScanFileId()
+											+ searchScanFileDTO_Entry.getScanFileId()
 											+ ", search id: " + searchId;
 									log.error(msg);
 									throw new LimelightInternalErrorException(msg);
@@ -1885,7 +1997,7 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 								if ( scan == null ) {
 									String msg = "ScanNumber not found in lookup map: ScanNumber: " 
 											+ psmWebDisplay.getScanNumber()
-											+ ", ScanFileId: " + psmWebDisplay.getScanFileId()
+											+ ", ScanFileId: " + searchScanFileDTO_Entry.getScanFileId()
 											+ ", search id: " + searchId;
 									log.error(msg);
 									throw new LimelightInternalErrorException(msg);
@@ -1956,8 +2068,8 @@ public class PSMs_For_ProjectSearchIds_SearchCriteria_Optional_ExperimentData_Op
 							}
 
 							writer.write( "\t" );
-							if ( psmWebDisplay.getScanFilename() != null ) {
-								writer.write( psmWebDisplay.getScanFilename() );
+							if ( searchScanFileDTO_Entry != null && searchScanFileDTO_Entry.getFilename() != null ) {
+								writer.write( searchScanFileDTO_Entry.getFilename() );
 							}
 
 							writer.write( "\t" );

@@ -32,7 +32,6 @@ import org.yeastrc.limelight.limelight_shared.dto.*;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.PsmDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
-import org.yeastrc.limelight.limelight_webapp.dao.SearchScanFileDAO_IF;
 import org.yeastrc.limelight.limelight_webapp.dto_lorikeet.*;
 import org.yeastrc.limelight.limelight_webapp.exceptions.LimelightInternalErrorException;
 import org.yeastrc.limelight.limelight_webapp.exceptions.webservice_access_exceptions.Limelight_WS_BadRequest_InvalidParameter_Exception;
@@ -52,7 +51,9 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -87,7 +88,7 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
 	private SearchHasScanDataForSearchIdSearcherIF searchHasScanDataForSearchIdSearcher;
 
 	@Autowired
-	private SearchScanFileDAO_IF searchScanFileDAO;
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
 
 	@Autowired
 	private ScanFileDAO_IF scanFileDAO;
@@ -212,10 +213,40 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
 			}
 			
-			if ( psmDTO.getSearchScanFileId() == null ) {
-				String msg = "psmDTO.getSearchScanFileId() == null (no value). psmId: " + psmId + ", searchId: " + searchId;
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
+			SearchScanFileDTO searchScanFileDTO = null;
+
+			{
+	    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = new HashMap<>();
+	    		
+
+	    		List<Integer> searchIds = new ArrayList<>(1);
+	    		searchIds.add( searchId );
+	    		
+	    		List<SearchScanFileDTO> searchScanFileDTO_For_SearchId_List = 
+	    				searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds);
+	    		
+	    		for ( SearchScanFileDTO entry : searchScanFileDTO_For_SearchId_List ) {
+	    			
+	    			searchScanFileDTO_Map_Key_SearchScanFileId.put( entry.getId(), entry );
+	    		}
+	    		
+
+				if ( psmDTO.getSearchScanFileId() != null ) {
+
+					searchScanFileDTO = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmDTO.getSearchScanFileId() );
+					if ( searchScanFileDTO == null ) {
+						String msg = "( psmDTO.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmDTO.getSearchScanFileId() ) returned null.  psmDTO.getSearchScanFileId(): " + psmDTO.getSearchScanFileId();
+						log.error(msg);
+						throw new LimelightInternalErrorException(msg);
+					}
+				} else if ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ) {
+						
+					searchScanFileDTO = searchScanFileDTO_Map_Key_SearchScanFileId.values().iterator().next();
+				} else {
+					String msg = "NEITHER OF ( psmDTO.getSearchScanFileId() != null ) NOR ( searchScanFileDTO_Map_Key_SearchScanFileId.size() == 1 ).  psmDTO.getId(): " + psmDTO.getId();
+					log.error(msg);
+					throw new LimelightInternalErrorException(msg);
+				}
 			}
 			
 			Boolean searchHasScanData = searchHasScanDataForSearchIdSearcher.getSearchHasScanDataForSearchId( searchId );
@@ -231,13 +262,6 @@ public class Spectrum_For_Lorikeet_For_PSM_Id_RestWebserviceController {
     			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
     		}
     		
-    		SearchScanFileDTO searchScanFileDTO = searchScanFileDAO.getById( psmDTO.getSearchScanFileId() );
-			if ( searchScanFileDTO == null ) {
-				String msg = "No searchScanFileDTO for Id: " + psmDTO.getSearchScanFileId();
-				log.warn( msg );
-    			throw new Limelight_WS_BadRequest_InvalidParameter_Exception();
-			}
-			
 			Integer scanFileId = searchScanFileDTO.getScanFileId();
 			
 			if ( scanFileId == null ) {

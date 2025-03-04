@@ -40,49 +40,56 @@ public class PsmWebDisplayWebServiceResult {
 	private BigDecimal psm_precursor_RetentionTime; // precursor_retention_time
 	private BigDecimal psm_precursor_MZ;            // precursor_m_z
 	private int scanNumber;
-	private Integer searchScanFileId;
-	private String scanFilename;
-	private Integer scanFileId;
+	private Integer searchScanFileId;   
 
 	private int searchId;
+	
+//  REMOVED since change to look up in search_scan_file_tbl when have id or have null
+	
+//	private String scanFilename;
+//	private Integer scanFileId;
+	
+	
+	 //  REMOVED since change to look up in search_scan_file_tbl when have id or have null
 
+//	public String getScanFilename() {
+//		return scanFilename;
+//	}
+//	public Integer getScanFileId() {
+//		return scanFileId;
+//	}
+//	public void setScanFilename(String scanFilename) {
+//		this.scanFilename = scanFilename;
+//	}
+//	public void setScanFileId(Integer scanFileId) {
+//		this.scanFileId = scanFileId;
+//	}
+	
+
+	public Integer getSearchScanFileId() {
+		return searchScanFileId;
+	}
+	public void setSearchScanFileId(Integer searchScanFileId) {
+	this.searchScanFileId = searchScanFileId;
+}
+
+	public int getSearchId() {
+		return searchId;
+	}
+	public void setSearchId(int searchId) {
+		this.searchId = searchId;
+	}
 	public long getPsmId() {
 		return psmId;
 	}
 	public void setPsmId(long psmId) {
 		this.psmId = psmId;
 	}
-
-	public String getScanFilename() {
-		return scanFilename;
-	}
-
-	public void setScanFilename(String scanFilename) {
-		this.scanFilename = scanFilename;
-	}
-
-	public int getSearchId() {
-		return searchId;
-	}
-
-	public void setSearchId(int searchId) {
-		this.searchId = searchId;
-	}
-
 	public int getCharge() {
 		return charge;
 	}
-
 	public void setCharge(int charge) {
 		this.charge = charge;
-	}
-
-	public Integer getScanFileId() {
-		return scanFileId;
-	}
-
-	public void setScanFileId(Integer scanFileId) {
-		this.scanFileId = scanFileId;
 	}
 	public BigDecimal getPsm_precursor_RetentionTime() {
 		return psm_precursor_RetentionTime;
@@ -119,12 +126,6 @@ public class PsmWebDisplayWebServiceResult {
 	}
 	public void setHasModifications(boolean hasModifications) {
 		this.hasModifications = hasModifications;
-	}
-	public Integer getSearchScanFileId() {
-		return searchScanFileId;
-	}
-	public void setSearchScanFileId(Integer searchScanFileId) {
-		this.searchScanFileId = searchScanFileId;
 	}
 	public boolean isPsmIs_IndependentDecoy() {
 		return psmIs_IndependentDecoy;

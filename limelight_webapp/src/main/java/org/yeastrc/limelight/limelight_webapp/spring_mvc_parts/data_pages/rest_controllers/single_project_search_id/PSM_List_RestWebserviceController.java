@@ -48,6 +48,7 @@ import org.yeastrc.limelight.limelight_shared.dto.PsmDescriptiveAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmFilterableAnnotationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationDTO;
 import org.yeastrc.limelight.limelight_shared.dto.PsmOpenModificationPositionDTO;
+import org.yeastrc.limelight.limelight_shared.dto.SearchScanFileDTO;
 import org.yeastrc.limelight.limelight_shared.searcher_psm_peptide_cutoff_objects.SearcherCutoffValuesSearchLevel;
 import org.yeastrc.limelight.limelight_webapp.access_control.access_control_rest_controller.ValidateWebSessionAccess_ToWebservice_ForAccessLevelAndProjectSearchIdsIF;
 import org.yeastrc.limelight.limelight_webapp.dao.ScanFileDAO_IF;
@@ -66,6 +67,7 @@ import org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_OR_PsmCount_ForSe
 import org.yeastrc.limelight.limelight_webapp.searchers.PsmWebDisplaySearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIdSearcherIF;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchIdForProjectSearchIdSearcherIF;
+import org.yeastrc.limelight.limelight_webapp.searchers.SearchScanFile_For_SearchIds_Searcher_IF;
 import org.yeastrc.limelight.limelight_webapp.searchers.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher.ReporterIonMasses_PsmLevel_ForPsmIds_Searcher_ResultItem;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
 import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmWebDisplayWebServiceResult;
@@ -86,6 +88,11 @@ import org.yeastrc.spectral_storage.get_data_webapp.shared_server_client.webserv
  *             Need to validate Project Search ID values in URL with values in POST JSON
  *               Already done for Ann Type Cutoffs in called code that translates cutoffs to objects sent to searcher
  *
+ *
+ * IMPORTANT:  This webservice returns the search_scan_file_id, scan filename, scan_file_id.
+ * 			   **  IF this webservice is changed to cache the results, 
+ *                 then fields scan filename, scan_file_id should NOT be returned 
+ *                 and the client JS code should compute those by retrieving the search_scan_filename_tbl contents for the search. 
  */
 @RestController
 public class PSM_List_RestWebserviceController {
@@ -106,6 +113,9 @@ public class PSM_List_RestWebserviceController {
 
 	@Autowired
 	private SearcherCutoffValues_Factory searcherCutoffValuesRootLevel_Factory;
+
+	@Autowired
+	private SearchScanFile_For_SearchIds_Searcher_IF searchScanFile_For_SearchIds_Searcher;
 
 	@Autowired
 	private PsmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcherIF psmIds_OR_PsmCount_ForSearchIdReportedPeptideIdCutoffsSearcher;
@@ -258,6 +268,35 @@ public class PSM_List_RestWebserviceController {
     						projectSearchIdMapToSearchId, 
     						searchDataLookupParams_For_Single_ProjectSearchId );
 
+
+    		Map<Integer, SearchScanFileDTO> searchScanFileDTO_Map_Key_SearchScanFileId = new HashMap<>();
+    		
+    		Set<Integer> searchScanFileIds_From_SearchScanFileTable = new HashSet<>();
+
+    		Integer searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry = null; // Populated if EXACTLY 1 entry
+    		
+    		{
+	    		List<Integer> searchIds = new ArrayList<>(1);
+	    		searchIds.add( searchId );
+	    		
+	    		List<SearchScanFileDTO> searchScanFileDTO_For_SearchId_List = 
+	    				searchScanFile_For_SearchIds_Searcher.getSearchScanFile_For_SearchIds(searchIds);
+	    		
+	    		for ( SearchScanFileDTO entry : searchScanFileDTO_For_SearchId_List ) {
+	    			searchScanFileIds_From_SearchScanFileTable.add( entry.getId() );
+	    			
+	    			searchScanFileDTO_Map_Key_SearchScanFileId.put( entry.getId(), entry );
+	    		}
+	    		
+	    		if ( searchScanFileIds_From_SearchScanFileTable.size() == 1 ) {
+	    			
+	    			searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry = 
+	    					searchScanFileIds_From_SearchScanFileTable.iterator().next();
+	    		}
+    		}
+    		
+
+    		
 			//  PSM Annotation data for Ann Type Display
 			
 			Set<Integer> annTypeIdsToRetrieve = new HashSet<>();
@@ -312,15 +351,45 @@ public class PSM_List_RestWebserviceController {
     				}
         			
         			
-        			Integer scanFileId = psmWebDisplay.getScanFileId();
         			Integer scanNumber = psmWebDisplay.getScanNumber();
-        			if ( scanFileId != null && scanNumber != null ) {
-        				Set<Integer> scanNumbers = scanNumbers_KeyedOn_ScanFileId.get( scanFileId );
-        				if ( scanNumbers == null ) {
-        					scanNumbers = new HashSet<>();
-        					scanNumbers_KeyedOn_ScanFileId.put( scanFileId, scanNumbers );
+        			
+    				SearchScanFileDTO searchScanFileDTO_Entry = null;
+        			{
+        				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+        					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+    						if ( searchScanFileDTO_Entry == null ) {
+    							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+    							log.error(msg);
+    							throw new LimelightInternalErrorException(msg);
+    						}
+        				} else {
+        					if ( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry != null ) {
+        						
+        						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry );
+        						if ( searchScanFileDTO_Entry == null ) {
+        							String msg = "( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry ) returned null.  searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry: " + searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry;
+        							log.error(msg);
+        							throw new LimelightInternalErrorException(msg);
+        						}
+        					}
         				}
-        				scanNumbers.add( scanNumber );
+        			}
+        			
+        			
+        			if ( searchScanFileDTO_Entry != null && scanNumber != null ) {
+
+            			Integer scanFileId = searchScanFileDTO_Entry.getScanFileId();
+            			
+            			if ( scanFileId != null ) {
+            			
+	        				Set<Integer> scanNumbers = scanNumbers_KeyedOn_ScanFileId.get( scanFileId );
+	        				if ( scanNumbers == null ) {
+	        					scanNumbers = new HashSet<>();
+	        					scanNumbers_KeyedOn_ScanFileId.put( scanFileId, scanNumbers );
+	        				}
+	        				scanNumbers.add( scanNumber );
+            			}
         			}
         		}
         		
@@ -377,6 +446,29 @@ public class PSM_List_RestWebserviceController {
     		List<WebserviceResponse_PSM_Item> resultList = new ArrayList<>( psmWebDisplayList.size() );
     		
     		for ( PsmWebDisplayWebServiceResult psmWebDisplay : psmWebDisplayList ) {
+
+				SearchScanFileDTO searchScanFileDTO_Entry = null;
+    			{
+    				if ( psmWebDisplay.getSearchScanFileId() != null ) {
+
+    					searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() );
+						if ( searchScanFileDTO_Entry == null ) {
+							String msg = "( psmWebDisplay.getSearchScanFileId() != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( psmWebDisplay.getSearchScanFileId() ) returned null.  psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId();
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+						}
+    				} else {
+    					if ( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry != null ) {
+    						
+    						searchScanFileDTO_Entry = searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry );
+    						if ( searchScanFileDTO_Entry == null ) {
+    							String msg = "( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry != null ) BUT searchScanFileDTO_Map_Key_SearchScanFileId.get( searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry ) returned null.  searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry: " + searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry;
+    							log.error(msg);
+    							throw new LimelightInternalErrorException(msg);
+    						}
+    					}
+    				}
+    			}
     			
     			WebserviceResponse_PSM_Item result = new WebserviceResponse_PSM_Item();
     			result.setPsmId( psmWebDisplay.getPsmId() );
@@ -384,12 +476,18 @@ public class PSM_List_RestWebserviceController {
     			result.setReportedPeptideId( psmWebDisplay.getReportedPeptideId() );
     			result.setCharge( psmWebDisplay.getCharge() );
     			result.setScanNumber( psmWebDisplay.getScanNumber() );
-    			result.setScanFilename( psmWebDisplay.getScanFilename() );
-    			result.setSearchScanFileId( psmWebDisplay.getSearchScanFileId() );
+    			
+    			if ( searchScanFileDTO_Entry != null ) {
+    				result.setSearchScanFileId( searchScanFileDTO_Entry.getId() );
+    			}
     			
     			result.setHasReporterIons( psmWebDisplay.isHasReporterIons() );
     			result.setHasOpenModifications( psmWebDisplay.isHasOpenModifications() );
     			result.setHasVariableModifications( psmWebDisplay.isHasModifications() );
+    			
+    			if ( searchScanFileDTO_Entry != null ) {
+    				result.setScanFilename( searchScanFileDTO_Entry.getFilename() );
+    			}
     			
     			//  Not return 'is_decoy' since excluded in Searcher
     			
@@ -400,18 +498,24 @@ public class PSM_List_RestWebserviceController {
     				//  Execute ONLY if one or both of PSM not populated for RT or M/Z
 	
 	    			if ( searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) {
-	    				
+
+	        			if ( searchScanFileDTO_Entry == null ) {
+	        				String msg = "( searchFlagsForSearchIdSearcher_Result_Item.isHasScanData() ) BUT SearchScanFileDTO searchScanFileDTO_Entry is null. psmWebDisplay.getSearchScanFileId(): " + psmWebDisplay.getSearchScanFileId() + ", searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry: " + searchScanFileId_From_SearchScanFileTable_IfExactlyOneEntry + ", projectSearchId: " + projectSearchId;
+							log.error(msg);
+							throw new LimelightInternalErrorException(msg);
+	        			}
+	        			
 	    				Map<Integer, SingleScan_SubResponse> scanData_KeyedOn_ScanNumber =
-	    						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( psmWebDisplay.getScanFileId() );
+	    						scanData_KeyedOn_ScanNumber_KeyedOn_ScanFileId.get( searchScanFileDTO_Entry.getScanFileId() );
 	    				if ( scanData_KeyedOn_ScanNumber == null ) {
-	    					String msg = "ScanFileId not found in lookup map: " + psmWebDisplay.getScanFileId();
+	    					String msg = "ScanFileId not found in lookup map: " + searchScanFileDTO_Entry.getScanFileId();
 	    					log.error(msg);
 	    					throw new LimelightInternalErrorException(msg);
 	    				}
 	    				SingleScan_SubResponse scan = scanData_KeyedOn_ScanNumber.get( psmWebDisplay.getScanNumber() );
 	    				if ( scan == null ) {
 	    					String msg = "ScanNumber not found in lookup map: ScanNumber: " + psmWebDisplay.getScanNumber()
-	    							+ ", ScanFileId: " + psmWebDisplay.getScanFileId();
+	    							+ ", ScanFileId: " + searchScanFileDTO_Entry.getScanFileId();
 	    					log.error(msg);
 	    					throw new LimelightInternalErrorException(msg);
 	    				}

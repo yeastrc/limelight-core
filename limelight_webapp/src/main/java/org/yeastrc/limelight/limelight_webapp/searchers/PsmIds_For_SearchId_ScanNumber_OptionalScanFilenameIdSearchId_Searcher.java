@@ -30,53 +30,47 @@ import org.springframework.stereotype.Component;
 import org.yeastrc.limelight.limelight_shared.constants.Database_OneTrueZeroFalse_Constants;
 import org.yeastrc.limelight.limelight_webapp.db.Limelight_JDBC_Base;
 import org.yeastrc.limelight.limelight_webapp.searchers.SearchFlagsForSearchIdSearcher.SearchFlagsForSearchIdSearcher_Result_Item;
-import org.yeastrc.limelight.limelight_webapp.searchers_results.PsmsForScanNumberScanFilenameIdSearchId_Result;
 import org.yeastrc.limelight.limelight_webapp.services.SearchFlagsForSingleSearchId_SearchResult_Cached_IF;
 
 /**
- * Get all PSMs for PSM id where all PSMs have same search id and same scan number and same scan file id
+ * 
  *
  */
 @Component
-public class PsmsWithSameScanNumberScanFilenameIdSearchIdSearcher extends Limelight_JDBC_Base implements PsmsWithSameScanNumberScanFilenameIdSearchIdSearcherIF {
+public class PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher extends Limelight_JDBC_Base implements PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF {
 
-	private static final Logger log = LoggerFactory.getLogger( PsmsWithSameScanNumberScanFilenameIdSearchIdSearcher.class );
+	private static final Logger log = LoggerFactory.getLogger( PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher.class );
 
 	@Autowired
 	private SearchFlagsForSingleSearchId_SearchResult_Cached_IF searchFlagsForSingleSearchId_SearchResult_Cached;
 
 	private static final String SQL = 
-			"SELECT psm_primary_tbl.id AS psm_id, psm_primary_tbl.reported_peptide_id AS reported_peptide_id, "
-			+ " psm_primary_tbl.charge, psm_primary_tbl.precursor_retention_time, psm_primary_tbl.precursor_m_z, "
-			+ " psm_primary_tbl.is_independent_decoy, "  	//  NOT return 'is_decoy' since Excluded in SQL
-			+ " psm_primary_tbl.scan_number AS scan_number "
+			"SELECT id "
 			
-			+ " FROM psm_tbl AS psm_psm_lookup_tbl  "
+			+ " FROM psm_tbl "
 
-			+ " INNER JOIN psm_tbl AS psm_primary_tbl  "
-								
-			// Join PSM table to self
-			+ 		" ON  psm_psm_lookup_tbl.search_id = psm_primary_tbl.search_id "  //  Same Search Id
-			+ 			" AND psm_psm_lookup_tbl.scan_number = psm_primary_tbl.scan_number " // Same Scan Number
-			+ 			" AND psm_psm_lookup_tbl.search_scan_file_id = psm_primary_tbl.search_scan_file_id " // Same Scan File
+			+ " WHERE search_id = ? AND scan_number = ? ";
+
+	private static final String SQL_WHERE_search_scan_file_id = " AND search_scan_file_id = ? ";
 	
-			+ " WHERE psm_psm_lookup_tbl.id = ?  ";
-
-	/**
-	 * @param psmId
-	 * @return
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see org.yeastrc.limelight.limelight_webapp.searchers.PsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher_IF#getPsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher(int, int, java.lang.Integer)
 	 */
 	@Override
-	public List<PsmsForScanNumberScanFilenameIdSearchId_Result> getPsmsWithSameScanNumberScanFilenameIdSearchId( long psmId, int searchId ) throws Exception {
+	public List<Long> getPsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher( int searchId, int scanNumber, Integer searchScanFileId ) throws Exception {
 		
-		List<PsmsForScanNumberScanFilenameIdSearchId_Result> resultList = new ArrayList<>();
+		List<Long> resultList = new ArrayList<>();
 
 		SearchFlagsForSearchIdSearcher_Result_Item searchFlagsForSearchIdSearcher_Result_Item = searchFlagsForSingleSearchId_SearchResult_Cached.get_SearchFlagsForSearchIdSearcher_Result_Item_For_SearchId(searchId);
 
 		StringBuilder sqlSB = new StringBuilder( 10000 );
 		
 		sqlSB.append( SQL );
+		
+		if ( searchScanFileId != null ) {
+			
+			sqlSB.append( SQL_WHERE_search_scan_file_id );
+		}
 
 		if ( searchFlagsForSearchIdSearcher_Result_Item.isAnyPsmHas_IsDecoy_True() ) {
 			// Exclude  records where is_decoy = 'true'
@@ -90,35 +84,29 @@ public class PsmsWithSameScanNumberScanFilenameIdSearchIdSearcher extends Limeli
 			     PreparedStatement preparedStatement = connection.prepareStatement( sql ) ) {
 			
 			int paramCounter = 0;
+			
 			paramCounter++;
-			preparedStatement.setLong( paramCounter, psmId );
+			preparedStatement.setInt( paramCounter, searchId );
 
+			paramCounter++;
+			preparedStatement.setInt( paramCounter, scanNumber );
+
+			if ( searchScanFileId != null ) {
+
+				paramCounter++;
+				preparedStatement.setInt( paramCounter, searchScanFileId );
+			}
+			
 			try ( ResultSet rs = preparedStatement.executeQuery() ) {
 				while( rs.next() ) {
-					PsmsForScanNumberScanFilenameIdSearchId_Result resultItem = new PsmsForScanNumberScanFilenameIdSearchId_Result();
 					
-					resultItem.setPsmId( rs.getLong( "psm_id" ) );
-					resultItem.setReportedPeptideId( rs.getInt( "reported_peptide_id" ) );
-					resultItem.setCharge( rs.getInt( "charge" ) );
-					resultItem.setPrecursor_RetentionTime( rs.getBigDecimal( "precursor_retention_time" ) );
-					resultItem.setPrecursor_MZ( rs.getBigDecimal( "precursor_m_z" ) );
-
-					//  NOT return 'is_decoy' since Excluded in SQL
-
-					{
-						int intValue = rs.getInt("is_independent_decoy" );
-						if ( intValue == Database_OneTrueZeroFalse_Constants.DATABASE_FIELD_TRUE ) {
-							resultItem.setPsmIs_IndependentDecoy( true );
-						}
-					}
-
-					resultItem.setScanNumber( rs.getInt( "scan_number" ) );
-
-					resultList.add( resultItem );
+					long psmId = rs.getLong( "id" );
+					
+					resultList.add( psmId );
 				}
 			}
 		} catch ( Exception e ) {
-			String msg = "Exception in getPsmsWithSameScanNumberScanFilenameIdSearchId( ... ): sql: " + sql;
+			String msg = "Exception in getPsmIds_For_SearchId_ScanNumber_OptionalScanFilenameIdSearchId_Searcher( ... ): sql: " + sql;
 			log.error( msg, e );
 			throw e;
 		}
