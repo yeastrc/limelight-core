@@ -1819,12 +1819,14 @@ export class ScanFileToSearchesPage_Display_MainContent_Component extends React.
                         for ( const psmTblData of psmTblData_For_ReportedPeptideId.get_PsmTblData_Entries_IterableIterator() ) {
 
                             if ( this.props.propsValue.projectScanFileId_ScanFileToSearchesPage_UserSelections_StateObject.get_searchScanFileIdSelections().has( psmTblData.searchScanFileId ) ) {
+
                                 let psmTblData_Array = psmTblData_Array_Map_Key_ScanNumber.get( psmTblData.scanNumber )
                                 if ( ! psmTblData_Array ) {
                                     psmTblData_Array = []
                                     psmTblData_Array_Map_Key_ScanNumber.set( psmTblData.scanNumber, psmTblData_Array )
-                                    psmTblData_Array.push( psmTblData )
                                 }
+                                psmTblData_Array.push( psmTblData )
+
                                 scanNumbersAll_Set.add( psmTblData.scanNumber )
 
                                 let projectSearchId_Set = projectSearchId_Set_Map_Key_ScanNumber.get( psmTblData.scanNumber )
